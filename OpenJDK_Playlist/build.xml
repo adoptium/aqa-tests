@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="cmdLineTests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		stage openjdk test make files
+	</description>
+
+	<!-- set properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/OpenJDK_Playlist" />
+	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
+	<property name="src" location="." />
+
+	<target name="init">
+		<mkdir dir="${dist}"/>
+	</target>
+
+	<target name="dist" depends="init" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+	
+	<target name="build" >
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
