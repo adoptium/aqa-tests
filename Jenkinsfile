@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent any
+    agent {label 'linux&&x64&&test'}
     environment {
                 JAVA_BIN='$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin'
                 JCL_VERSION='current'
@@ -11,23 +11,29 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-            	sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
-                sh 'chmod 755 $OPENJDK_TEST/get.sh'
-                sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST'
+				timestamps{
+            		sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
+                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
+                	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST'
+					}
                 }
         }
         stage('BuildAndRun') {
             steps {
-                echo 'Building and running tests...'
-                sh 'printenv'
-                sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
+				timestamps{
+                	echo 'Building and running tests...'
+                	sh 'printenv'
+                	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
+					}
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
-                step([$class: "TapPublisher", testResults: "**/*.tap"])
-                archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+				timestamps {
+                	echo 'Deploying....'
+                	step([$class: "TapPublisher", testResults: "**/*.tap"])
+                	archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+				}
             }
         }
     }
