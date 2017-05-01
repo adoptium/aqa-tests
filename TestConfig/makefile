@@ -87,11 +87,15 @@ endif
 ifdef JTREG_DIR
 # removing "
 JTREG_DIR := $(subst ",,$(JTREG_DIR))
+else
+JTREG_DIR := $(JVM_TEST_ROOT)$(D)TestConfig$(D)lib$(D)jtreg
 endif
 
 ifdef JTREG_TEST_DIR
 # removing "
 JTREG_TEST_DIR := $(subst ",,$(JTREG_TEST_DIR))
+else
+JTREG_TEST_DIR := $(JVM_TEST_ROOT)$(D)OpenJDK_Playlist$(D)openjdk-jdk8u$(D)jdk$(D)test
 endif
 
 #######################################

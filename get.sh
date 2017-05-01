@@ -46,5 +46,20 @@ wget http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.j
 mv testng-6.10.jar testng.jar
 mv jcommander-1.48.jar jcommander.jar
 
+cd $openjdktest/TestConfig/lib
+echo 'get jtreg...'
+wget https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
+if [ $? -ne 0 ]; then
+	echo "Failed to retrieve the jtreg binary, exiting"
+exit
+fi
+tar xf jtreg-4.2.0-tip.tar.gz
+
+cd $openjdktest/OpenJDK_Playlist
+echo 'Get openjdk...'
+git clone -b dev https://github.com/AdoptOpenJDK/openjdk-jdk8u.git
+
+
+
 
 
