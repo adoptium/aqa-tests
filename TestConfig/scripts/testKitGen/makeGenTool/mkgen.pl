@@ -15,6 +15,8 @@ use warnings;
 use Data::Dumper;
 use feature 'say';
 
+use constant DEBUG => 0;
+ 
 my @allGroups = ( "sanity", "extended", "promotion", "openjdk" );
 
 my $headerComments =
@@ -59,7 +61,7 @@ sub runmkgen {
 	}
 	
 	if (!(($serviceResponse) && (%{$modes_hs}) && (%{$sp_hs}))) {
-		print "Warning: Cannot get data from modes service! Getting data from modes.xml and ottawa.csv...\n";
+		print "Cannot get data from modes service! Getting data from modes.xml and ottawa.csv...\n";
 		require "parseFiles.pl";
 		my $data = getFileData($modesxml, $ottawacsv);
 		$modes_hs = $data->{'modes'};
@@ -78,10 +80,10 @@ sub runmkgen {
 	}
 	
 	specToPlatGen( $specToPlatmk, $graphSpecs );
-	print "\nGenerated $specToPlatmk!\n";
+	print "\nGenerated $specToPlatmk\n";
 	
 	jvmTestGen( $jvmTestmk, \%tests, $allSubsets );
-	print "Generated $jvmTestmk!\n";
+	print "Generated $jvmTestmk\n";
 	return \%tests;
 }
 
@@ -292,9 +294,9 @@ sub genMK {
 				print $fhOut "$name: TEST_RESROOT=$jvmtestroot\n";
 
 				if ($jvmoptions) {
-					print $fhOut "$name: JVM_OPTIONS=\$(CMPRSSPTRS) $jvmoptions \$(EXTRA_OPTIONS)\n";
+					print $fhOut "$name: JVM_OPTIONS=\$(RESERVED_OPTIONS) $jvmoptions \$(EXTRA_OPTIONS)\n";
 				} else {
-					print $fhOut "$name: JVM_OPTIONS=\$(CMPRSSPTRS) \$(EXTRA_OPTIONS)\n";
+					print $fhOut "$name: JVM_OPTIONS=\$(RESERVED_OPTIONS) \$(EXTRA_OPTIONS)\n";
 				}
 
 				print $fhOut "$name: TEST_GROUP=level.$group\n"; 
@@ -371,7 +373,7 @@ sub genMK {
 	$project{'testgroups'} = \%testgroups;
 
 	close $fhOut;
-	print "Generated $makeFile!\n";
+	print "Generated $makeFile\n";
 	
 	return \%project;
 }
@@ -458,7 +460,7 @@ sub specToPlatGen {
 		if ( defined $sp_hs->{$graphSpec} ) {
 			$spec2platform .= "ifeq" . " (\$(SPEC),$graphSpec)\n\tPLATFORM=" . $sp_hs->{$graphSpec}->{"platform"} . "\nendif\n\n";
 		} else {
-			print "\nWarning: cannot find spec $graphSpec in ModesDictionaryService or ottawa.csv file!\n";
+			print "\nWarning: cannot find spec $graphSpec in ModesDictionaryService or ottawa.csv file!\n" if DEBUG;
 		}
 	}
 	print $fhOut $spec2platform;
@@ -541,7 +543,7 @@ sub subdir2make {
 	}
 
 	close $fhOut;
-	print "Generated $makeFile!\n";
+	print "Generated $makeFile\n";
 }
 
 1;
