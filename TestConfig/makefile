@@ -24,7 +24,7 @@ help:
 	@echo "This makefile is used to build and execute JVM tests. You should specify the following"
 	@echo "variables before using this script:"
 	@echo "JAVA_BIN  Path to java bin dir which will be used to built and executed JVM tests"
-	@echo "SPEC      Should match the current platform (e.g. SPEC=linux_x86-64, SPEC=linux_x86, SPEC=linux_x86-64_cmprssptrs)"
+	@echo "SPEC      Should match the current platform (e.g. SPEC=linux_x86-64, SPEC=linux_x86, SPEC=linux_x86-64)"
 
 CD        = cd
 ECHO      = echo
@@ -132,14 +132,10 @@ JAVA_COMMAND:=$(Q)$(JAVA_BIN_TMP)$(D)java$(Q)
 #######################################
 ifneq (,$(findstring aix,$(SPEC)))
 	JAVA_LIB_DIR:=$(JAVA_BIN)$(D)..$(D)lib
-	ifneq (,$(findstring cmprssptrs,$(SPEC)))
-		ADD_JVM_LIB_DIR_ON_AIX=export LIBPATH=$(Q)$(JAVA_LIB_DIR)$(D)ppc64$(D)compressedrefs$(P)$(LIBPATH)$(Q);
+	ifneq (,$(findstring 64,$(SPEC)))
+		ADD_JVM_LIB_DIR_ON_AIX=export LIBPATH=$(Q)$(JAVA_LIB_DIR)$(D)ppc64$(D)default$(P)$(LIBPATH)$(Q);
 	else
-		ifneq (,$(findstring 64,$(SPEC)))
-			ADD_JVM_LIB_DIR_ON_AIX=export LIBPATH=$(Q)$(JAVA_LIB_DIR)$(D)ppc64$(D)default$(P)$(LIBPATH)$(Q);
-		else
-			ADD_JVM_LIB_DIR_ON_AIX=export LIBPATH=$(Q)$(JAVA_LIB_DIR)$(D)ppc$(D)default$(P)$(LIBPATH)$(Q);
-		endif
+		ADD_JVM_LIB_DIR_ON_AIX=export LIBPATH=$(Q)$(JAVA_LIB_DIR)$(D)ppc$(D)default$(P)$(LIBPATH)$(Q);
 	endif
 endif
 
