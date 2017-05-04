@@ -157,7 +157,7 @@ sub xml2make {
 
 sub parseXML {
 	my ($playlistXML) = @_;
-	open( my $fhIn, '<', $playlistXML ) or die "Cannot open file $_[0]!";
+	open( my $fhIn, '<', $playlistXML ) or die "Cannot open file $_[0]";
 	my @tests = ();
 	while ( my $line = <$fhIn> ) {
 		my %test;
@@ -229,7 +229,7 @@ sub getElementsByTag {
 
 sub genMK {
 	my ( $makeFile, $tests, $currentdirs, $subdirsHavePlaylist ) = @_;
-	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile!";
+	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile";
 	my %project = ();
 	print $fhOut $headerComments;
 
@@ -249,7 +249,7 @@ sub genMK {
 
 				my $clArg_arr = $vardoc->{'clArg'};
 				if ( !$clArg_arr ) {
-					die "Error: Cannot find mode $mode in database!";
+					die "Error: Cannot find mode $mode in database";
 				}
 
 				my $clArgs = join(' ', @{$clArg_arr});
@@ -303,25 +303,27 @@ sub genMK {
 	
 				my $indent .= "\t";
 				print $fhOut "$name:\n";
-				print $fhOut "$indent\@echo \"\";\n";
-				print $fhOut "$indent\@echo \"===============================================\";\n";
-				print $fhOut "$indent\@echo \"Running test \$\@ ...\";\n";
-				print $fhOut "$indent\@echo \"===============================================\";\n";
+				print $fhOut "$indent\@echo \"\" | tee -a TestTargetResult;\n";
+				print $fhOut "$indent\@echo \"===============================================\" | tee -a TestTargetResult;\n";
+				print $fhOut "$indent\@echo \"Running test \$\@ ...\" | tee -a TestTargetResult;\n";
+				print $fhOut "$indent\@echo \"===============================================\" | tee -a TestTargetResult;\n";
 				if ($condition) {
 					print $fhOut "ifeq (\$($condition),)\n";
 				}
 	
 				if ($jvmoptions) {
-					print $fhOut "$indent\@echo \"test with $var\";\n";
+					print $fhOut "$indent\@echo \"test with $var\" | tee -a TestTargetResult;\n";
 				}
 				else {
-					print $fhOut "$indent\@echo \"test with NoOptions\";\n";
+					print $fhOut "$indent\@echo \"test with NoOptions\" | tee -a TestTargetResult;\n";
 				}
 				my $command = $test->{'command'};
-				print $fhOut "$indent$command\n";
+				$command =~ s/^\s+//;
+				$command =~ s/\s+$//;
+				print $fhOut "$indent\{ $command; \} 2>&1 | tee -a TestTargetResult\n";
 				if ($condition) {
 					print $fhOut "else\n";
-					print $fhOut "$indent\$(TEST_SKIP_STATUS)\n";
+					print $fhOut "$indent\$(TEST_SKIP_STATUS) | tee -a TestTargetResult\n";
 					print $fhOut "endif\n";
 				}
 				print $fhOut "\n";
@@ -450,7 +452,7 @@ sub getAllInvalidSpecs {
 
 sub specToPlatGen {
 	my ( $specToPlatmk ) = @_;
-	open( my $fhOut, '>', $specToPlatmk ) or die "Cannot create file $specToPlatmk!";
+	open( my $fhOut, '>', $specToPlatmk ) or die "Cannot create file $specToPlatmk";
 	print $fhOut $headerComments;
 	
 	print $fhOut "PLATFORM=\n";
@@ -460,7 +462,7 @@ sub specToPlatGen {
 		if ( defined $sp_hs->{$graphSpec} ) {
 			$spec2platform .= "ifeq" . " (\$(SPEC),$graphSpec)\n\tPLATFORM=" . $sp_hs->{$graphSpec}->{"platform"} . "\nendif\n\n";
 		} else {
-			print "\nWarning: cannot find spec $graphSpec in ModesDictionaryService or ottawa.csv file!\n" if DEBUG;
+			print "\nWarning: cannot find spec $graphSpec in ModesDictionaryService or ottawa.csv file\n" if DEBUG;
 		}
 	}
 	print $fhOut $spec2platform;
@@ -470,7 +472,7 @@ sub jvmTestGen {
 	my ( $jvmTestmk, $tests ) = @_;
 	my %container = ();
 
-	open( my $fhOut, '>', $jvmTestmk ) or die "Cannot create file $jvmTestmk!";
+	open( my $fhOut, '>', $jvmTestmk ) or die "Cannot create file $jvmTestmk";
 	print $fhOut $headerComments;
 
 	foreach my $projectName (sort keys %{$tests}) {
@@ -508,7 +510,7 @@ sub jvmTestGen {
 
 sub subdir2make {
 	my ($makeFile, $currentdirs, $subdirsHavePlaylist) = @_;
-	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile!";
+	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile";
 	my $mkname = basename($makeFile);
 	my %project = ();
 	print $fhOut $headerComments;

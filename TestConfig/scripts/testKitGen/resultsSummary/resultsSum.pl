@@ -12,10 +12,13 @@
 
 use strict;
 use warnings;
+use Data::Dumper;
+use feature 'say';
 
 my $resultFile;
 my $failuremkarg;
 my $tapFile;
+my $diagnostic = 'failure';
 
 for (my $i = 0; $i < scalar(@ARGV); $i++) {
 	my $arg = $ARGV[$i];
@@ -25,6 +28,8 @@ for (my $i = 0; $i < scalar(@ARGV); $i++) {
 		($resultFile) = $arg =~ /^\-\-resultFile=(.*)/;
 	} elsif ($arg =~ /^\-\-tapFile=/) {
 		($tapFile) = $arg =~ /^\-\-tapFile=(.*)/;
+	} elsif ($arg =~ /^\-\-diagnostic=/) {
+		($diagnostic) = $arg =~ /^\-\-diagnostic=(.*)/;
 	}
 }
 
@@ -50,27 +55,53 @@ sub resultReporter {
 	print "\n\n";
 
 	while ( my $result = <$fhIn> ) {
-		$result =~ s/\R//;
-		if ($result =~ /_PASSED$/) {
-			$result =~ s/_PASSED$//;
-			push (@passed, $result);
-			$numOfPassed++;
-			$numOfTotal++;
-			$tapString .= "ok " . $numOfTotal . " - " . $result . "\n";
-		} elsif ($result =~ /_FAILED$/) {
-			$result =~ s/_FAILED$//;
-			push (@failed, $result);
-			$numOfFailed++;
-			$numOfTotal++;
-			$tapString .= "not ok " . $numOfTotal . " - " . $result . "\n";
-		} elsif ($result =~ /_SKIPPED$/) {
-			$result =~ s/_SKIPPED$//;
-			push (@skipped, $result);
-			$numOfSkipped++;
-			$numOfTotal++;
-			$tapString .= "ok " . $numOfTotal . " - " . $result . " # skip\n";
-		} else {
-			print("Warning: detect non test result input!\n");
+		if ($result =~ /===============================================\n/) {
+			my $output = "  ---\n    output:\n      |\n";
+			$output .= '        ' . $result;
+			my $testName = '';
+			while ( $result = <$fhIn> ) {
+				if ($result =~ /Running test (.*) \.\.\.\n/) {
+					$testName = $1;
+				} elsif ($result =~ /_PASSED\n$/) {
+					$result =~ s/_PASSED\n$//;
+					push (@passed, $result);
+					$numOfPassed++;
+					$numOfTotal++;
+					$tapString .= "ok " . $numOfTotal . " - " . $result . "\n";
+					if ($diagnostic eq 'all') {
+						if ($testName eq $result) {
+							$output .= "  ...\n";
+							$tapString .= $output;
+						} else {
+							print "warning: test description does not match test result, drop test diagnostic information!" if $tapFile;
+						}
+					}
+					last;
+				} elsif ($result =~ /_FAILED\n$/) {
+					$result =~ s/_FAILED\n$//;
+					push (@failed, $result);
+					$numOfFailed++;
+					$numOfTotal++;
+					$tapString .= "not ok " . $numOfTotal . " - " . $result . "\n";
+					if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
+						if ($testName eq $result) {
+							$output .= "  ...\n";
+							$tapString .= $output;
+						} else {
+							print "warning: test description does not match test result, drop test diagnostic information!" if $tapFile;
+						}
+					}
+					last;	
+				} elsif ($result =~ /_SKIPPED\n$/) {
+					$result =~ s/_SKIPPED\n$//;
+					push (@skipped, $result);
+					$numOfSkipped++;
+					$numOfTotal++;
+					$tapString .= "ok " . $numOfTotal . " - " . $result . " # skip\n";
+					last;
+				}
+				$output .= '        ' . $result;
+			}
 		}
 	}
 
