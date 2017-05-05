@@ -6,28 +6,29 @@ We want:
 - the latitude to use a variety of tests that use many different test frameworks
 - test results to have a common look & feel for easier viewing and comparison
 
-There are a great number of tests available to test a JVM, starting with the already existing OpenJDK regression tests.  We will increase the amount of testing and coverage by pulling in other open tests.  These new tests are not necessarily written using the jtreg format.  
+There are a great number of tests available to test a JVM, starting with the OpenJDK regression tests.  In addition to running the OpenJDK regression tests, we will increase the amount of testing and coverage by pulling in other open tests.  These new tests are not necessarily written using the jtreg format.  
 
-You may ask, why the need for other testing?  The OpenJDK regression tests are a great start, but eventually you may want to be able to test how performant is your code, and whether some open-source projects and 3rd party applications still work.  We will begin to incorporate more types of testing, including: 
+Why the need for other testing?  The OpenJDK regression tests are a great start, but eventually you may want to be able to test how performant is your code, and whether some 3rd party applications still work.  We will begin to incorporate more types of testing, including: 
 - additional API and functional tests
 - stress/load tests
 - system level tests such as 3rd party application tests
 - performance tests
 
-The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  It is a thin wrapper around a varied set of tests, to allow us to easily run all types of tests via make targets and as stages in the Jenkins pipeline builds.  
+The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  It is a thin wrapper around a varied set of tests, to allow us to easily run all types of tests via make targets and as stages in our Jenkins CI pipeline builds.  
 
-# User Stories for AdoptOpenJDK Tests
+# Running AdoptOpenJDK Tests
 ## 0. Configure environment and get dependencies:
-#### pick up the dependencies
+#### clone the repo and pick up the dependencies
 ``` bash
-cd openjdk-test
+git clone https://github.com/AdoptOpenJDK/openjdk-tests
+cd openjdk-tests
 get.sh
 ```
 #### required environment variables and default values
 ``` bash
-cd open-jdk-test/TestConfig
+cd openjdk-tests/TestConfig
 export JAVA_BIN=/location_of_JVM_under_test (for SE80 use /<your_jvm>/jre/bin)
-export SPEC=platform_on_which_to_test (linux_x86-64|mac_os|... )
+export SPEC=platform_on_which_to_test (linux_x86-64|mac_os|...)
 export JAVA_VERSION=[SE80|SE90] (SE90 default value)
 make -f run_configure.mk
  ```
@@ -65,7 +66,7 @@ make sanity
 ``` bash
 make openjdk
 ```
-This target will run all or a subset of the OpenJDK regression tests, you can add or subtract directories of tests by changing the contents of the `OpenJDK_Playlist/playlist.xml` file.
+This target will run all or a subset of the OpenJDK regression tests, you can add or subtract directories of tests by changing the contents of the `OpenJDK_Playlist/playlist.xml` file.  Currently the jdk_lang group are included in the sanity target, which will be triggered off of AdoptOpenJDK merge requests automatically. 
 
 #### extended tests
 ``` bash
