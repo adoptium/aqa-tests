@@ -12,5 +12,10 @@
 # limitations under the License.
 
 cd $1/TestConfig
-make -f run_configure.mk
-make test
+if [ "$#" -eq 1 ];then
+	make -f run_configure.mk
+	make compile
+else
+	make $2
+fi
+
