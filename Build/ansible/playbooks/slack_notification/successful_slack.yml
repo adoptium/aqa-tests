@@ -1,0 +1,11 @@
+# Success! Send Slack notification, all is good
+    - include_vars: /home/ubuntu/slack_token
+    - name: Sending successful notification message to slack channel
+      slack:
+        token: '{{ slack_token }}'
+        channel: "#infrastructure"
+        domain: "adoptopenjdk.slack.com"
+        parse: "full"
+        color: "good"
+        msg: 'Playbook ran successfully on {{ inventory_hostname }}. :smile:'
+      delegate_to: localhost
