@@ -6,6 +6,7 @@
   - block:
     - name: Add the openjdk repository
       apt_repository: repo='ppa:openjdk-r/ppa'
+      when: (ansible_distribution == "Debian" and ansible_distribution_major_version == "16")
 
     - name: Install Build tools
       apt: pkg={{ item }} state=latest update_cache=yes
