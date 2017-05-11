@@ -10,11 +10,11 @@
   - name: Install Nagios plugins
     apt: pkg={{ item }} state=latest update_cache=yes
     with_items:
-      - nagios-plugins-common
-      - nagios-plugins
-      - gcc
-      - perl
       - fping
+      - gcc
+      - nagios-plugins
+      - nagios-plugins-common
+      - perl
       - qstat
 
   - name: Creates Nagios folder
