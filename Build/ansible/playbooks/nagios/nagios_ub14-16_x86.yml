@@ -1,11 +1,5 @@
 # Playbook to install Nagios plugins on Ubuntu 14 and 16 systems
-  - debug:
-    msg: "Installing Nagios plugins"
-
-  - name: Test Operating System
-    fail:
-      msg="Error: You must be running either Ubuntu 14 or 16 to use this playbook"
-    when: (ansible_distribution == "Debian" and ansible_distribution_major_version == "14") or (ansible_distribution == "Debian" and ansible_distribution_major_version == "16")
+  - debug: msg='Installing Nagios plugins'
 
   - name: Install Nagios plugins
     apt: pkg={{ item }} state=latest update_cache=yes
