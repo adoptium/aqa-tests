@@ -6,7 +6,7 @@
   - block:
     - name: Add the openjdk repository
       apt_repository: repo='ppa:openjdk-r/ppa'
-      when: (ansible_distribution == "Debian" and ansible_distribution_major_version == "16")
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "16")
 
     - name: Install Build tools
       apt: pkg={{ item }} state=latest update_cache=yes
@@ -55,19 +55,21 @@
       unarchive:
         src: /home/jenkins/ccache.tar.gz
         dest: /home/jenkins
-        remote_src: True
         copy: False
 
     - name: Running ./configure & make for CCACHE
       shell: cd /home/jenkins/ccache-3.1.9 && ./configure && make && sudo make install
       become: yes
 
-    - debug: msg='Host OS setup completed, Calling Nagios playbook'
-    - include: nagios/nagios_ub14-16.yml
+    - debug: msg='Host OS setup completed. Calling Nagios playbook'
+    - include: nagios/nagios_ub14-16_x86.yml
+      static: yes
 
     - debug: msg='Send Slack notification, successful'
     - include: slack_notification/successful_slack.yml
+      static: yes
 
     rescue:
     - debug: msg='Something went wrong... Sending Slack notification failure'
     - include: slack_notification/failure_slack.yml
+      static: yes
