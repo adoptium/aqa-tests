@@ -1,0 +1,106 @@
+# Some RHEL machines require that the system is registered to Red Hat Subscription Management service before you can download packages.
+
+- hosts: all
+  remote_user: root
+  become: yes
+
+  tasks:
+  - block:
+    - name: Install Build tools
+      yum: name={{item}} state=installed update_cache=yes
+      with_items:
+        - alsa-lib-devel
+        - bind-utils
+        - cups-devel
+        - freetype-devel
+        - gcc
+        - gcc-c++
+        - glibc
+        - glibc-common
+        - java-1.7.0-openjdk-devel
+        - libXext-devel
+        - libXrender-devel
+        - libXrender-devel
+        - libXt-devel
+        - libXt-devel
+        - libXtst-devel
+        - libXtst-devel
+        - make
+        - openssl-devel
+        - zip
+
+    - name: Install Test tools
+      yum: name={{item}} state=installed
+      with_items:    
+        - ant
+        - git
+        - perl
+        - wget
+
+    - name: Download ant-contrib
+      get_url:
+        url: https://sourceforge.net/projects/ant-contrib/files/ant-contrib/ant-contrib-1.0b2/ant-contrib-1.0b2-bin.tar.gz
+        dest: /tmp/
+        mode: 0440
+        timeout: 25
+
+    - name: Extract ant-contrib
+      unarchive:
+        src: /tmp/ant-contrib-1.0b2-bin.tar.gz 
+        dest: /tmp/
+        copy: False
+
+    - name: Move ant-contrib.jar to lib folder
+      command: mv /tmp/ant-contrib/lib/ant-contrib.jar /usr/share/ant/lib/
+
+    - name: Clean ant-contrib tmp files
+      file:
+        state: absent
+        path: "/tmp/ant-contrib/"
+
+    - file:
+        state: absent
+        path: "/tmp/ant-contrib-1.0b2-bin.tar.gz"
+
+    - name: Install JSON
+      shell: |
+        cpanm --with-recommends JSON
+
+    - name: Create jenkins user
+      action: user name=jenkins state=present
+      ignore_errors: yes
+
+    - name: Set authorized key for jenkins
+      authorized_key:
+        user: jenkins
+        state: present
+        key: "{{ lookup('file', '/home/ubuntu/keys/id_rsa.pub') }}"
+
+    - name: Download ccache.tar.gz
+      get_url:
+        url: https://www.samba.org/ftp/ccache/ccache-3.1.9.tar.gz
+        dest: /home/jenkins/ccache.tar.gz
+        mode: 0440
+
+    - name: Extract ccache
+      unarchive:
+        src: /home/jenkins/ccache.tar.gz
+        dest: /home/jenkins
+        copy: False
+
+    - name: Running ./configure & make for CCACHE
+      shell: cd /home/jenkins/ccache-3.1.9 && ./configure && make && sudo make install
+      become: yes
+
+    - debug: msg='Host OS setup completed, Calling Nagios playbook'
+    - include: nagios/nagios_rhel_7_x86.yml
+      static: yes
+
+    - debug: msg='Send Slack notification, successful'
+    - include: slack_notification/successful_slack.yml
+      static: yes
+
+    rescue:
+    - debug: msg='Something went wrong... Sending Slack notification failure'
+    - include: slack_notification/failure_slack.yml
+      static: yes
