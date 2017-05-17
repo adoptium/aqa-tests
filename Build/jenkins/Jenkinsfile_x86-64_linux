@@ -1,7 +1,6 @@
 #!groovy
 pipeline {
     agent {label 'linux&&x64&&test'}
-    parameters { string (name: 'TARGET', defaultValue: 'sanity', description: 'define what group should run') }
     environment {
                 JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin"
                 JCL_VERSION='current'
@@ -32,7 +31,7 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Running tests...'
-                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
+                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST runtest"
 					}
             }
         }
