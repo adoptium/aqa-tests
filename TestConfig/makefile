@@ -167,11 +167,11 @@ REPORTDIR = $(Q)$(TESTOUTPUT)$(D)$@$(Q)
 #######################################
 # TEST_STATUS
 #######################################
-TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); else $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); fi | tee -a TestTargetResult
+TEST_STATUS=if [ $$? -eq 0 ] ; then $(ECHO) $(Q)$@$(Q)$(Q)_PASSED$(Q); else $(ECHO) $(Q)$@$(Q)$(Q)_FAILED$(Q); fi
 ifneq ($(DEBUG),)
 $(info TEST_STATUS is $(TEST_STATUS))
 endif
-TEST_SKIP_STATUS=@$(ECHO) $@_SKIPPED | tee -a TestTargetResult
+TEST_SKIP_STATUS=@$(ECHO) $@_SKIPPED
 
 #######################################
 # include sub makefile
@@ -245,7 +245,7 @@ rmResultFile:
 	$(RM) $(Q)$(TEMPRESULTFILE)$(Q)
 
 resultsSummary:
-	@perl $(JVM_TEST_ROOT)$(D)TestConfig$(D)scripts$(D)testKitGen$(D)resultsSummary$(D)resultsSum.pl --failuremk=$(Q)$(FAILEDTAGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q)
+	@perl $(JVM_TEST_ROOT)$(D)TestConfig$(D)scripts$(D)testKitGen$(D)resultsSummary$(D)resultsSum.pl --failuremk=$(Q)$(FAILEDTAGETS)$(Q) --resultFile=$(Q)$(TEMPRESULTFILE)$(Q) --tapFile=$(Q)$(TAPRESULTFILE)$(Q) --diagnostic=failure
 
 sanity: JVM_TEST_ROOT := $(BUILD_ROOT)
 sanity: rmResultFile sanity_$(JAVA_VERSION) resultsSummary

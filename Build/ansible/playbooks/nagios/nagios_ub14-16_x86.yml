@@ -1,0 +1,51 @@
+# Playbook to install Nagios plugins on Ubuntu 14 and 16 systems
+  - debug: msg='Installing Nagios plugins'
+
+  - name: Install Nagios plugins
+    apt: pkg={{ item }} state=latest update_cache=yes
+    with_items:
+      - fping
+      - gcc
+      - nagios-plugins
+      - nagios-plugins-common
+      - perl
+      - qstat
+
+  - name: Creates Nagios folder
+    file: path=/usr/local/nagios/ state=directory
+
+  - name: Create symlink to plugins
+    file: src=/usr/lib/nagios/plugins dest=/usr/local/nagios/libexec state=link
+
+  - name: Setup Nagios user
+    shell: adduser nagios --shell /bin/bash --disabled-password --gecos ""
+    args:
+       warn: no
+
+  - name: Create SSH Key folder for Nagios
+    file: 
+      path: ~/.ssh
+      owner: nagios
+      group: nagios
+      mode: 0700
+      state: directory
+
+  - name: Setup authorized_keys
+    file:
+      path: ~/.ssh/authorized_keys
+      owner: nagios
+      group: nagios    
+      mode: 0600
+      state: file
+
+  - name: Add key
+    authorized_key:
+      user: nagios
+      state: present
+      key: "{{ lookup('file', '/home/nagios/key/id_rsa.pub') }}"
+    
+  - name: Download add-on check_mem plugin
+    get_url: 
+      url: https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl
+      dest: /usr/local/nagios/libexec/check_mem
+      mode: 0755

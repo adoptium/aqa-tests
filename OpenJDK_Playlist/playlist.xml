@@ -30,6 +30,41 @@
 			<tag>openjdk</tag>
 		</tags>
 	</test>
+	
+	<test>
+		<testCaseName>jdk_beans</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_beans$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_io</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_io$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
 	<test>
 		<testCaseName>jdk_lang</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
@@ -38,13 +73,370 @@
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR)$(D)java$(D)lang$(Q); \
+	$(Q)$(JTREG_TEST_DIR):jdk_lang$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
 		</subsets>
 		<tags>
 			<tag>sanity</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_math</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_math$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_other</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_other$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_net</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_net$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_nio</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_nio$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_security1</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_security1$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_security2</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_security2$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+		<test>
+		<testCaseName>jdk_security3</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_security3$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_text</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_text$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_util</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_util$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_time</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_time$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_awt</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_awt$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_management</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_management$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_jmx</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_jmx$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_rmi</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_rmi$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_sound</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_sound$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_swing</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_swing$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_sound</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_sound$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_tools</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_tools$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_jdi</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_jdi$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_jfr</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_jfr$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>jdk_core</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_core$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
 		</tags>
 	</test>
 </playlist>

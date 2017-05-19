@@ -1,0 +1,11 @@
+# Failure! send Slack notification, Error has occurred
+    - include_vars: /home/ubuntu/slack_token
+    - name: Sending failure notification message to slack channel
+      slack:
+        token: '{{ slack_token }}'
+        channel: "#infrastructure"
+        domain: "adoptopenjdk.slack.com"
+        parse: "full"
+        color: "danger"
+        msg: 'Oh no, Playbook failed to run on {{ inventory_hostname }}. :rage:'
+      delegate_to: localhost

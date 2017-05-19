@@ -1,29 +1,38 @@
 #!groovy
 pipeline {
     agent {label 'linux&&x64&&test'}
+    parameters { string (name: 'TARGET', defaultValue: 'sanity', description: 'define what group should run') }
     environment {
-                JAVA_BIN='$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin'
+                JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin"
                 JCL_VERSION='current'
-                OPENJDK_TEST='$WORKSPACE/openjdk-test'
+                OPENJDK_TEST="$WORKSPACE/openjdk-test"
                 JAVA_VERSION='SE80'
-                SPEC='linux_x86-64_cmprssptrs'
+                SPEC='linux_x86-64'
                 }
     stages {
         stage('Setup') {
             steps {
 				timestamps{
+					sh 'printenv'
             		sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
                 	sh 'chmod 755 $OPENJDK_TEST/get.sh'
                 	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST'
 					}
                 }
         }
-        stage('BuildAndRun') {
+        stage('Build') {
             steps {
 				timestamps{
-                	echo 'Building and running tests...'
-                	sh 'printenv'
+                	echo 'Building tests...'
                 	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
+					}
+            }
+        }
+        stage('Test') {
+            steps {
+				timestamps{
+                	echo 'Running tests...'
+                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
 					}
             }
         }
