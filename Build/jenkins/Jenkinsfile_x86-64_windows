@@ -4,7 +4,7 @@ pipeline {
     environment {
         JCL_VERSION='current'        
         JAVA_VERSION='SE80'
-        SPEC='linux_x86-64'
+        SPEC='win_x86-64'
     }
     stages {
         stage('Setup') {
@@ -25,7 +25,7 @@ pipeline {
                 	}
                 	withEnv(["OPENJDK_TEST=${WORKSPACE}/openjdk-test"]) {
 	                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
-						sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST'
+						bat "${OPENJDK_TEST}/get.bat ${WORKSPACE} ${OPENJDK_TEST}"
 					}
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                 	echo 'Building tests...'
                  	withEnv(["OPENJDK_TEST=${WORKSPACE}/openjdk-test", "JAVA_BIN=${WORKSPACE}/openjdkbinary/j2sdk-image/jre/bin"]) {
 	                	sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
-						sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
+						bat "${OPENJDK_TEST}/maketest.bat ${OPENJDK_TEST}"
 					}
 				}
             }
@@ -46,7 +46,7 @@ pipeline {
 				timestamps{
                 	echo 'Running tests...'
                 	withEnv(["OPENJDK_TEST=${WORKSPACE}/openjdk-test", "JAVA_BIN=${WORKSPACE}/openjdkbinary/j2sdk-image/jre/bin"]) {
-	                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST runtest"
+	                	bat "${OPENJDK_TEST}/maketest.bat ${OPENJDK_TEST} runtest"
 	                }
 	            }
             }
@@ -57,6 +57,7 @@ pipeline {
                 	echo 'Deploying....'
                 	step([$class: "TapPublisher", testResults: "**/*.tap"])
                 	archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+                	archiveArtifacts artifacts: '**/TestTargetResult', fingerprint: true
 				}
             }
         }
