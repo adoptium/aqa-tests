@@ -55,6 +55,16 @@
         url: https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl
         dest: /usr/local/nagios/libexec/check_mem
         mode: 0755
+        
+    - name: Allow Nagios to use yum while restricting it to check-update only
+      shell: |
+        echo "nagios ALL = NOPASSWD: /usr/bin/yum --security check-update" >> /etc/sudoers 
+
+    - name: Download add-on check_yum plugin
+      get_url: 
+        url: https://raw.githubusercontent.com/AdoptOpenJDK/openjdk-tests/master/Build/ansible/playbooks/nagios/additional_plugins/check_yum
+        dest: /usr/local/nagios/libexec/check_yum
+        mode: 0755
 
     - name: Clean nagios-plugins tmp files
       file:
