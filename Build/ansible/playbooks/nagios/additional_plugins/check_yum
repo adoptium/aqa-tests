@@ -1,0 +1,28 @@
+#!/bin/bash
+# Test for yum
+if [ ! -x /usr/bin/yum ] ; then
+        echo 'yum CRITICAL - Yum not found!'
+        exit 2
+fi
+# Test for patches required
+/usr/bin/yum --security check-update 2> /dev/null > /tmp/nagios_yum.tmp
+yum_sec=`cat /tmp/nagios_yum.tmp | grep 'package(s)' | awk '{print $1}' `
+yum_needed=`cat /tmp/nagios_yum.tmp | grep 'package(s)' | sed 's/.*out of //' | awk '{print $1}'`
+
+if [[ $yum_needed = "" ]] ; then
+	yum_needed=`cat /tmp/nagios_yum.tmp | grep 'packages' | sed 's/.*; //' | awk '{print $1}'`
+fi
+if [[ $yum_sec -gt 0 ]] ; then
+        echo "yum CRITICAL: "$yum_needed "packages available for upgrade ("$yum_sec "critical updates)"
+	rm /tmp/nagios_yum.tmp
+        exit 2
+fi
+if [[ $yum_needed -gt 0 ]] ; then
+        echo "yum WARNING: "$yum_needed "packages available for upgrade"
+	rm /tmp/nagios_yum.tmp
+        exit 1
+fi
+
+echo "yum OK - No updates available"
+rm /tmp/nagios_yum.tmp
+exit 0
