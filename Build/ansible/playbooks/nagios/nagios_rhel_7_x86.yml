@@ -13,7 +13,7 @@
 
     - name: Create SSH Key folder for Nagios
       file: 
-        path: ~/.ssh
+        path: /home/nagios/.ssh
         owner: nagios
         group: nagios
         mode: 0700
@@ -21,7 +21,7 @@
 
     - name: Setup authorized_keys
       file:
-        path: ~/.ssh/authorized_keys
+        path: /home/nagios/authorized_keys
         owner: nagios
         group: nagios    
         mode: 0600
@@ -31,7 +31,7 @@
       authorized_key:
         user: nagios
         state: present
-        key: "{{ lookup('file', '/home/nagios/key/id_rsa.pub') }}"
+        key: "{{ lookup('file', '/home/nagios/keys/id_rsa.pub') }}"
 
     - name: Download nagios-plugins
       get_url:
