@@ -62,8 +62,11 @@ P=:
 endif
 
 ifndef SRC_ROOT
-SRC_ROOT := $(shell $(PWD))$(D)..
-SRC_ROOT := $(subst \,/,$(SRC_ROOT))
+	SRC_ROOT := $(shell $(PWD))$(D)..
+	ifneq (,$(findstring win,$(SPEC)))
+		SRC_ROOT := $(shell cygpath -w $(SRC_ROOT))
+	endif
+	SRC_ROOT := $(subst \,/,$(SRC_ROOT))
 endif
 $(info set SRC_ROOT to $(SRC_ROOT))
 
