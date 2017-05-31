@@ -6,6 +6,12 @@
 
   tasks:
   - block:
+  
+    - name: yum upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+  
     - name: Install Build tools
       yum: name={{item}} state=installed update_cache=yes
       with_items:
@@ -95,6 +101,85 @@
     - debug: msg='Host OS setup completed, Calling Nagios playbook'
     - include: nagios/nagios_rhel_7_x86.yml
       static: yes
+      
+    - name: Setup zeus user
+      shell: useradd zeus --shell /bin/bash -m 
+      args:
+         warn: no
+
+    - name: Create SSH Key folder for zeus
+      file: 
+        path: /home/zeus/.ssh
+        owner: zeus
+        group: zeus
+        mode: 0700
+        state: directory
+
+    - name: Setup authorized_keys
+      file:
+        path: /home/zeus/.ssh/authorized_keys
+        owner: zeus
+        group: zeus    
+        mode: 0600
+        state: file
+
+    - name: Add key
+      authorized_key:
+        user: zeus
+        state: present
+        key: "{{ lookup('file', '/home/ubuntu/keys/zeus.key') }}"
+
+    - name: Grant zeus sudo powers
+      shell: echo "zeus ALL=NOPASSWD: ALL" >> /etc/sudoers
+      args:
+         warn: no
+
+     - name: Check if swap file exists
+       shell: cat /etc/fstab
+       register: check_fstab
+
+     - name: Create swap file
+       command: fallocate -l 2G /swapfile
+       when: check_fstab.stdout.find('swap') == ""
+
+     - name: Set swap file permissions
+       file: path=/swapfile
+             owner=root
+             group=root
+             mode=0600
+       when: check_fstab.stdout.find('swap') == ""
+
+     - name: Create swap area device
+       command: mkswap /swapfile
+       when: check_fstab.stdout.find('swap') == ""
+
+     - name: Mount swap file
+       command: swapon /swapfile
+       when: check_fstab.stdout.find('swap') == ""
+
+     - name: Add swap to fstab
+       mount: src=/swapfile
+         name=none
+         fstype=swap
+         opts=sw
+         passno=0
+         dump=0
+         state=present
+       when: check_fstab.stdout.find('swap') == ""
+      
+    - name: Add cron job to check for updates
+      cron: name="Check for Updates every Sunday at 5am"
+            weekday="6"
+            minute="0"
+            hour="5"
+            user=root
+            job="/usr/bin/yum -y update"
+            state=present
+
+    - name: yum Clean Up
+      command: yum -y autoremove
+      args:
+         warn: no
 
     - debug: msg='Send Slack notification, successful'
     - include: slack_notification/successful_slack.yml
