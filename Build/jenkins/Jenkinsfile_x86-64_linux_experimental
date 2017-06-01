@@ -54,6 +54,7 @@ pipeline {
                 	echo 'Deploying....'
                 	step([$class: "TapPublisher", testResults: "**/*.tap"])
                 	archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+                	archiveArtifacts artifacts: '**/TestTargetResult', fingerprint: true
 				}
             }
         }
