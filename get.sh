@@ -20,18 +20,11 @@ then
 	cd $1
 	mkdir openjdkbinary
 	cd openjdkbinary
-	case $(uname) in
-    *CYGWIN*)
-		wget https://github.com/AdoptOpenJDK/openjdk-releases/releases/download/jdk8u152-b04/OpenJDK8_x64_Win_jdk8u152-b04.zip
-		unzip OpenJDK8_x64_Win_jdk8u152-b04.zip
-		;;
-    *)
-      	download_url=`curl https://api.github.com/repos/AdoptOpenJDK/openjdk-releases/releases/latest | jq -r '.assets[] | select(.browser_download_url | contains("x64_Linux_jdk")) | {url: .browser_download_url} | select (.url | contains("tar.gz")) | .[]'`
-		wget "${download_url}"
-		jar_file_url=$download_url
-		jar_file_name=${jar_file_url##*/}
-		tar -zxvf $jar_file_name ;;		
-  	esac
+ 	download_url=`curl https://api.github.com/repos/AdoptOpenJDK/openjdk-releases/releases/latest | jq -r '.assets[] | select(.browser_download_url | contains("x64_Linux_jdk")) | {url: .browser_download_url} | select (.url | contains("tar.gz")) | .[]'`
+	wget "${download_url}"
+	jar_file_url=$download_url
+	jar_file_name=${jar_file_url##*/}
+	tar -zxvf $jar_file_name
 elif [ "$#" -eq 1 ]; then
 	openjdktest=$1
 fi
