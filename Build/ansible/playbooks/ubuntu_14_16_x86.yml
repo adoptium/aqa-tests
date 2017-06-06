@@ -68,8 +68,7 @@
 
     - name: Setup zeus user
       shell: adduser zeus --shell /bin/bash --disabled-password --gecos ""
-      args:
-         warn: no
+      ignore_errors: yes
 
     - name: Create SSH Key folder for zeus
       file: 
