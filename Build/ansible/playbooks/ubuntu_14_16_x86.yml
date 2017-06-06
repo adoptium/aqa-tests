@@ -141,10 +141,6 @@
             job="/usr/bin/apt-get update && /usr/bin/apt-get -y upgrade"
             state=present
 
-    - name: apt-get clean up 
-      apt:
-        autoremove: yes
-
     - debug: msg='Send Slack notification, successful'
     - include: slack_notification/successful_slack.yml
       static: yes
