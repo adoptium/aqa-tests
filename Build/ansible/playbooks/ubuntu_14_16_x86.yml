@@ -105,39 +105,38 @@
         regexp: '^zeus'
         line: 'zeus ALL=(ALL) NOPASSWD: ALL'
 
-   - name: Check if swap file exists
-     shell: cat /etc/fstab
-     register: check_fstab
+    - name: Check if swap file exists
+      shell: cat /etc/fstab
+      register: check_fstab
 
-   - name: Create swap file
-     command: fallocate -l 2G /swapfile
-     when: check_fstab.stdout.find('swap') == ""
+    - name: Create swap file
+      command: fallocate -l 2G /swapfile
+      when: check_fstab.stdout.find('swap') == ""
 
-   - name: Set swap file permissions
-     file: path=/swapfile
-         owner=root
-         group=root
-         mode=0600
-     when: check_fstab.stdout.find('swap') == ""
+    - name: Set swap file permissions
+      file: path=/swapfile
+          owner=root
+          group=root
+          mode=0600
+      when: check_fstab.stdout.find('swap') == ""
 
-   - name: Create swap area device
-     command: mkswap /swapfile
-     when: check_fstab.stdout.find('swap') == ""
+    - name: Create swap area device
+      command: mkswap /swapfile
+      when: check_fstab.stdout.find('swap') == ""
 
-   - name: Mount swap file
-     command: swapon /swapfile
-     when: check_fstab.stdout.find('swap') == ""
+    - name: Mount swap file
+      command: swapon /swapfile
+      when: check_fstab.stdout.find('swap') == ""
 
-   - name: Add swap to fstab
-     mount: src=/swapfile
-       name=none
-       fstype=swap
-       opts=sw
-       passno=0
-       dump=0
-       state=present
-     when: check_fstab.stdout.find('swap') == ""
-
+    - name: Add swap to fstab
+      mount: src=/swapfile
+        name=none
+        fstype=swap
+        opts=sw
+        passno=0
+        dump=0
+        state=present
+      when: check_fstab.stdout.find('swap') == ""
 
     - name: Add cron job to check for updates
       cron: name="Check for Updates every Sunday at 5am"
