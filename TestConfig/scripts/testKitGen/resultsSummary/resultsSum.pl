@@ -83,14 +83,14 @@ sub resultReporter {
 					$numOfFailed++;
 					$numOfTotal++;
 					$tapString .= "not ok " . $numOfTotal . " - " . $result . "\n";
-					if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
-						if ($testName eq $result) {
-							$output .= "  ...\n";
-							$tapString .= $output;
-						} else {
-							print "warning: test description does not match test result, drop test diagnostic information!" if $tapFile;
-						}
-					}
+#					if (($diagnostic eq 'failure') || ($diagnostic eq 'all')) {
+#						if ($testName eq $result) {
+#							$output .= "  ...\n";
+#							$tapString .= $output;
+#						} else {
+#							print "warning: test description does not match test result, drop test diagnostic information!" if $tapFile;
+#						}
+#					}
 					last;	
 				} elsif ($result =~ /_SKIPPED\n$/) {
 					$result =~ s/_SKIPPED\n$//;
