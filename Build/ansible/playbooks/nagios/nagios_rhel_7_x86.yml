@@ -31,7 +31,7 @@
       authorized_key:
         user: nagios
         state: present
-        key: "{{ lookup('file', '/home/nagios/keys/id_rsa.pub') }}"
+        key: "{{ lookup('file', '/home/nagios/key/id_rsa.pub') }}"
 
     - name: Download nagios-plugins
       get_url:
