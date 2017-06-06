@@ -19,8 +19,7 @@
 
   - name: Setup Nagios user
     shell: adduser nagios --shell /bin/bash --disabled-password --gecos ""
-    args:
-       warn: no
+    ignore_errors: yes
 
   - name: Create SSH Key folder for Nagios
     file: 
