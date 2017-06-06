@@ -104,8 +104,7 @@
       
     - name: Setup zeus user
       shell: useradd zeus --shell /bin/bash -m 
-      args:
-         warn: no
+      ignore_errors: yes
 
     - name: Create SSH Key folder for zeus
       file: 
@@ -130,9 +129,11 @@
         key: "{{ lookup('file', '/home/ubuntu/keys/zeus.key') }}"
 
     - name: Grant zeus sudo powers
-      shell: echo "zeus ALL=NOPASSWD: ALL" >> /etc/sudoers
-      args:
-         warn: no
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^zeus'
+        line: 'zeus ALL=(ALL) NOPASSWD: ALL'
 
      - name: Check if swap file exists
        shell: cat /etc/fstab
