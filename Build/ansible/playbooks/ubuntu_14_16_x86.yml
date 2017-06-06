@@ -78,14 +78,6 @@
         mode: 0700
         state: directory
 
-    - name: Setup authorized_keys
-      file:
-        path: /home/zeus/.ssh/authorized_keys
-        owner: zeus
-        group: zeus    
-        mode: 0600
-        state: file
-
     - name: Add key
       authorized_key:
         user: zeus
