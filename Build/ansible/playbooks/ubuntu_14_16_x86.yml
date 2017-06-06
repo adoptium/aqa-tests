@@ -5,11 +5,6 @@
   tasks:
   - block:
   
-    - name: apt-get update and upgrade 
-      apt:
-        upgrade: yes
-        update_cache: yes
-    
     - name: Add the openjdk repository
       apt_repository: repo='ppa:openjdk-r/ppa'
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "16")
