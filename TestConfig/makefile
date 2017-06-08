@@ -87,6 +87,20 @@ ifeq ($(JAVA_VERSION),SE80)
 JDK_HOME := $(JAVA_BIN_TMP)$(D)..$(D)..
 endif
 
+NPROCS:=1
+OS:=$(shell uname -s)
+
+ifeq ($(OS),Linux)
+	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
+endif
+ifeq ($(OS),Darwin)
+	NPROCS:=$(shell system_profiler | awk '/Number Of CPUs/{print $4}{next;}')
+endif
+ifneq (,$(findstring CYGWIN_NT,$(OS)))
+ 	NPROCS:=$(NUMBER_OF_PROCESSORS)
+endif
+EXTRA_JTREG_OPTIONS += -concurrency:$(NPROCS)
+
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
 JTREG_BASIC_OPTIONS += -a
@@ -106,6 +120,8 @@ JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
 # Create junit xml
 JTREG_XML_OPTION = -xml:verify
 JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
+# Add any extra options
+JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
 ifdef JTREG_DIR
 # removing "
