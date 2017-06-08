@@ -87,6 +87,26 @@ ifeq ($(JAVA_VERSION),SE80)
 JDK_HOME := $(JAVA_BIN_TMP)$(D)..$(D)..
 endif
 
+JTREG_BASIC_OPTIONS += -agentvm
+# Only run automatic tests
+JTREG_BASIC_OPTIONS += -a
+# Always turn on assertions
+JTREG_ASSERT_OPTION = -ea -esa
+JTREG_BASIC_OPTIONS += $(JTREG_ASSERT_OPTION)
+# Report details on all failed or error tests, times too
+JTREG_BASIC_OPTIONS += -v:fail,error,time
+# Retain all files for failing tests
+JTREG_BASIC_OPTIONS += -retain:fail,error
+# Ignore tests are not run and completely silent about it
+JTREG_IGNORE_OPTION = -ignore:quiet
+JTREG_BASIC_OPTIONS += $(JTREG_IGNORE_OPTION)
+# Multiple by 4 the timeout numbers
+JTREG_TIMEOUT_OPTION =  -timeoutFactor:4
+JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
+# Create junit xml
+JTREG_XML_OPTION = -xml:verify
+JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
+
 ifdef JTREG_DIR
 # removing "
 JTREG_DIR := $(subst ",,$(JTREG_DIR))
