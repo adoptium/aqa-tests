@@ -133,7 +133,7 @@
             user=root
             job="/usr/bin/apt-get update && /usr/bin/apt-get -y upgrade"
             state=present
-			
+
     - name: Install Test tools
       apt: name={{item}} state=installed
       with_items:
@@ -149,8 +149,8 @@
       with_items:
         - xauth
         - xorg
-  	    - xserver-xorg-legacy 
-	  
+        - xserver-xorg-legacy 
+
     - name: Create X11 Wrapper config file
   	  shell: touch /etc/X11/Xwrapper.config
 	  
@@ -158,7 +158,7 @@
         dest: /etc/X11/Xwrapper.config	
         block: |
           allowed_users=anybody	
-  		  needs_root_rights=yes
+          needs_root_rights=yes
 	 
     - name: Start X11
       sudo: yes
