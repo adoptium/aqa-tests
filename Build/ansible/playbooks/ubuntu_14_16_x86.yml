@@ -153,13 +153,13 @@
 
     - name: Create X11 Wrapper config file
   	  shell: touch /etc/X11/Xwrapper.config
-	  
+
     - blockinfile:
         dest: /etc/X11/Xwrapper.config	
         block: |
           allowed_users=anybody	
           needs_root_rights=yes
-	 
+
     - name: Start X11
       sudo: yes
       sudo_user: jenkins
