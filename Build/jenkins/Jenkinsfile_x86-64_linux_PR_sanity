@@ -1,7 +1,6 @@
 #!groovy
 pipeline {
     agent {label 'linux&&x64&&test'}
-    parameters { string (name: 'TARGET', defaultValue: 'sanity', description: 'define what group should run') }
     environment {
                 JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin"
                 JCL_VERSION='current'
@@ -16,18 +15,6 @@ pipeline {
 					sh 'printenv'
             		sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
                 	sh 'chmod 755 $OPENJDK_TEST/get.sh'
-                	script {
-                		if (fileExists('openjdkbinary')) {
-                			dir('openjdkbinary') {
-                				deleteDir()
-                			}
-                		}
-                		if (fileExists('jvmtest')) {
-                			dir('jvmtest') {
-                				deleteDir()
-                			}
-                		}
-                	}
                 	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST'
 					}
                 }
@@ -44,7 +31,7 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Running tests...'
-                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
+                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST sanity"
 					}
             }
         }
@@ -54,7 +41,6 @@ pipeline {
                 	echo 'Deploying....'
                 	step([$class: "TapPublisher", testResults: "**/*.tap"])
                 	archiveArtifacts artifacts: '**/*.tap', fingerprint: true
-                	archiveArtifacts artifacts: '**/TestTargetResult', fingerprint: true
 				}
             }
         }
