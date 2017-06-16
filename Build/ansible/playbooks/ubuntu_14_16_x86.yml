@@ -27,16 +27,16 @@
         - make
         - openjdk-7-jdk
         - zip
+        - wget		
+        - git		
 
     - name: Install Test tools
       apt: name={{item}} state=installed
       with_items:    
         - ant
         - ant-contrib
-        - git
         - jq
         - perl
-        - wget
 
     - name: Create jenkins user
       action: user name=jenkins state=present
@@ -134,6 +134,39 @@
             user=root
             job="/usr/bin/apt-get update && /usr/bin/apt-get -y upgrade"
             state=present
+
+    - name: Install Test tools
+      apt: name={{item}} state=installed
+      with_items:
+        - ant
+        - ant-contrib
+        - git
+        - jq
+        - perl
+        - wget
+
+    - name: Install X11
+      apt: name={{item}} state=latest update_cache=yes
+      with_items:
+        - xauth
+        - xorg
+        - xserver-xorg-legacy 
+
+    - name: Create X11 Wrapper config file
+  	  shell: touch /etc/X11/Xwrapper.config
+
+    - blockinfile:
+        dest: /etc/X11/Xwrapper.config	
+        block: |
+          allowed_users=anybody	
+          needs_root_rights=yes
+
+    - name: Start X11
+      sudo: yes
+      sudo_user: jenkins
+  	  shell: startx -- :1 &
+  	  ignore_errors: True
+  	  no_log: True
 
     - debug: msg='Send Slack notification, successful'
     - include: slack_notification/successful_slack.yml

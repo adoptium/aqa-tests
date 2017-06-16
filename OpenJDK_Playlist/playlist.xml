@@ -254,7 +254,7 @@
 	</test>
 	<test>
 		<testCaseName>jdk_awt</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
@@ -339,7 +339,7 @@
 	</test>
 	<test>
 		<testCaseName>jdk_swing</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
