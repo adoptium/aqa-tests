@@ -27,16 +27,16 @@
         - make
         - openjdk-7-jdk
         - zip
+        - wget		
+        - git		
 
     - name: Install Test tools
       apt: name={{item}} state=installed
       with_items:    
         - ant
         - ant-contrib
-        - git
         - jq
         - perl
-        - wget
 
     - name: Create jenkins user
       action: user name=jenkins state=present
