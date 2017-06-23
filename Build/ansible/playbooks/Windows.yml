@@ -84,18 +84,34 @@
     - name: Install Text::CSV_XS
       win_command: C:\Strawberry\perl\bin\perl -MCPAN -e "install Text::CSV_XS"
 
+    - name: Download Java 6
+      win_get_url:
+        url: http://javadl.sun.com/webapps/download/AutoDL?BundleId=43883
+        dest: 'C:\TEMP\java6.exe'
+
+    - name: Install Java 6
+      raw: 'C:\TEMP\java6.exe /s SPONSORS=0 /l*v C:\TEMP\java6_install_log.txt'
+
+    - name: Download Java 7
+      win_get_url:
+        url: http://javadl.sun.com/webapps/download/AutoDL?BundleId=81821
+        dest: 'C:\TEMP\java7.exe'
+
+    - name: Install Java 7
+      raw: 'C:\TEMP\java7.exe /s SPONSORS=0 /l*v C:\TEMP\java7_install_log.txt'
+
     - name: Download Java 8
       win_get_url:
         url: http://javadl.sun.com/webapps/download/AutoDL?BundleId=109708
-        dest: 'C:\TEMP\java.exe'
+        dest: 'C:\TEMP\java8.exe'
 
     - name: Install Java 8
-      raw: 'C:\TEMP\java.exe /s SPONSORS=0 /l*v C:\TEMP\java_install_log.txt'
+      raw: 'C:\TEMP\java8.exe /s SPONSORS=0 /l*v C:\TEMP\java8_install_log.txt'
 
-    - name: Set JAVA_HOME
+    - name: Set JAVA_HOME to version 7
       win_path:
         name: JAVA_HOME
-        elements: C:\Program Files\Java\jre1.8.0_60\bin
+        elements: C:\Program Files\Java\jre7\bin
         scope: machine
 
     - name: Download Apache ANT
