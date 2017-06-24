@@ -172,6 +172,16 @@
     - include: slack_notification/successful_slack.yml
       static: yes
 
+    - name: Include Jenkins to audio group
+      replace:
+        backup: yes		
+        dest: /etc/group
+        regexp: '^(audio(?!.*\bjenkins\b).*)$'
+        replace: '\1jenkins'
+
+    - name: Install Pulseaudio
+      apt: pkg=pulseaudio state=latest update_cache=yes
+
     rescue:
     - debug: msg='Something went wrong... Sending Slack notification failure'
     - include: slack_notification/failure_slack.yml
