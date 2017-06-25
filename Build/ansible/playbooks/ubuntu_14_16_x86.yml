@@ -173,11 +173,9 @@
       static: yes
 
     - name: Include Jenkins to audio group
-      replace:
-        backup: yes		
-        dest: /etc/group
-        regexp: '^(audio(?!.*\bjenkins\b).*)$'
-        replace: '\1jenkins'
+      user: name=jenkins
+        groups=audio
+        append=yes
 
     - name: Install Pulseaudio
       apt: pkg=pulseaudio state=latest update_cache=yes
