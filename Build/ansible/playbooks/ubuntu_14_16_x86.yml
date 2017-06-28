@@ -172,6 +172,14 @@
     - include: slack_notification/successful_slack.yml
       static: yes
 
+    - name: Add jenkins to the audio group
+      user: name=jenkins
+        groups=audio
+        append=yes
+
+    - name: Install Pulseaudio
+      apt: pkg=pulseaudio state=latest update_cache=yes
+
     rescue:
     - debug: msg='Something went wrong... Sending Slack notification failure'
     - include: slack_notification/failure_slack.yml
