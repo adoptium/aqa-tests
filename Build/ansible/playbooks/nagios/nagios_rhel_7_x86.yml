@@ -1,0 +1,76 @@
+# Playbook to install Nagios plugins on RHEL 7 x86 systems
+    - debug: msg='Installing Nagios plugins'
+
+    - name: Setup Nagios user
+      user: name=nagios
+        home=/home/nagios
+        shell=/bin/bash
+
+    - name: Configure nagios user's home folder
+      shell: |
+        install -d -m 0700 ~/.ssh && touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+      become_user: nagios
+
+    - name: Create SSH Key folder for Nagios
+      file: 
+        path: /home/nagios/.ssh
+        owner: nagios
+        group: nagios
+        mode: 0700
+        state: directory
+
+    - name: Setup authorized_keys
+      file:
+        path: /home/nagios/authorized_keys
+        owner: nagios
+        group: nagios    
+        mode: 0600
+        state: file
+
+    - name: Add key
+      authorized_key:
+        user: nagios
+        state: present
+        key: "{{ lookup('file', '/home/nagios/key/id_rsa.pub') }}"
+
+    - name: Download nagios-plugins
+      get_url:
+        url: https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+        dest: /tmp/
+        mode: 0440
+        timeout: 25
+
+    - name: Extract nagios-plugins
+      unarchive:
+        src: /tmp/nagios-plugins-2.2.1.tar.gz 
+        dest: /tmp/
+        copy: False
+
+    - name: Configure, make and make install nagios-plugins
+      shell: cd /tmp/nagios-plugins-2.2.1/ && ./configure --prefix=/usr/local/nagios && make && make install
+      become: yes
+
+    - name: Download add-on check_mem plugin
+      get_url: 
+        url: https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl
+        dest: /usr/local/nagios/libexec/check_mem
+        mode: 0755
+        
+    - name: Allow Nagios to use yum while restricting it to check-update only
+      shell: |
+        echo "nagios ALL = NOPASSWD: /usr/bin/yum --security check-update" >> /etc/sudoers 
+
+    - name: Download add-on check_yum plugin
+      get_url: 
+        url: https://raw.githubusercontent.com/AdoptOpenJDK/openjdk-tests/master/Build/ansible/playbooks/nagios/additional_plugins/check_yum
+        dest: /usr/local/nagios/libexec/check_yum
+        mode: 0755
+
+    - name: Clean nagios-plugins tmp files
+      file:
+        state: absent
+        path: "/tmp/nagios-plugins-2.2.1/"
+
+    - file:
+        state: absent
+        path: "/tmp/nagios-plugins-2.2.1.tar.gz"

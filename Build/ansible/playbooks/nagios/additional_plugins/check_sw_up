@@ -1,0 +1,23 @@
+#!/bin/bash
+# Nagios Plugin to check for OS updates using ‘softwareupdate’ for MacOSX
+#
+# Check if any patches are required
+/usr/sbin/softwareupdate -l > /tmp/check_sw_up.tmp
+# Test if any are Security patches or just normal patches
+MAC_sec=`cat /tmp/check_sw_up.tmp | grep "*" | grep -i Security | wc -l`
+MAC_needed=`cat /tmp/check_sw_up.tmp | grep "*" | wc -l`
+#
+if [[ $MAC_sec -gt 0 ]] ; then
+        echo "SW_Updates CRITICAL: "$MAC_needed "packages available for upgrade ("$MAC_sec" critical updates)"
+        rm /tmp/check_sw_up.tmp
+        exit 2
+fi
+if [[ $MAC_needed -gt 0 ]] ; then
+        echo "SW_Updates WARNING: "$MAC_needed "packages available for upgrade"
+        rm /tmp/check_sw_up.tmp
+        exit 1
+fi
+#
+echo "SW_Updates OK: No updates available"
+rm /tmp/check_sw_up.tmp
+exit 0
