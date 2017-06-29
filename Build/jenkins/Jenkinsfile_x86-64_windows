@@ -51,20 +51,13 @@ pipeline {
 	            }
             }
         }
-        stage('Deploy') {
-            steps {
-				timestamps {
-                	echo 'Deploying....'
-                	step([$class: "TapPublisher", testResults: "**/*.tap"])
-                	archiveArtifacts artifacts: '**/*.tap', fingerprint: true
-                	archiveArtifacts artifacts: '**/TestTargetResult', fingerprint: true
-				}
-            }
-        }
     }
     post {
- 		success {
- 			deleteDir()
+    	always {
+ 			step([$class: "TapPublisher", testResults: "**/*.tap"])
+            archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+            junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
+            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true 
  		}
  	}
     
