@@ -2,7 +2,7 @@
 # Nagios Plugin to check for OS updates using ‘softwareupdate’ for MacOSX
 #
 # Check if any patches are required
-/usr/sbin/softwareupdate -l > /tmp/check_sw_up.tmp
+/usr/sbin/softwareupdate -l 2>/dev/null > /tmp/check_sw_up.tmp
 # Test if any are Security patches or just normal patches
 MAC_sec=`cat /tmp/check_sw_up.tmp | grep "*" | grep -i Security | wc -l`
 MAC_needed=`cat /tmp/check_sw_up.tmp | grep "*" | wc -l`
