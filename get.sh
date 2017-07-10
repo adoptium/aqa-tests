@@ -25,6 +25,8 @@ then
 	jar_file_url=$download_url
 	jar_file_name=${jar_file_url##*/}
 	tar -zxvf $jar_file_name
+	binaryDir=$(echo $jar_file_name | cut -d_ -f4 | cut -d. -f1)
+	mv $binaryDir j2sdk-image
 elif [ "$#" -eq 1 ]; then
 	openjdktest=$1
 fi
