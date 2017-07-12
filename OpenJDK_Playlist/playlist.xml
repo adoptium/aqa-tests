@@ -30,7 +30,38 @@
 			<tag>openjdk</tag>
 		</tags>
 	</test>
-	
+	<test>
+		<testCaseName>hotspot_all</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_all$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+		<testCaseName>hotspot_jre</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR):jre$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<tags>
+			<tag>extended</tag>
+		</tags>
+	</test>
 	<test>
 		<testCaseName>jdk_beans</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \

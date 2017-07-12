@@ -137,6 +137,12 @@ else
 JTREG_TEST_DIR := $(JVM_TEST_ROOT)$(D)OpenJDK_Playlist$(D)openjdk-jdk8u$(D)jdk$(D)test
 endif
 
+ifdef JTREG_HOTSPOT_TEST_DIR
+# removing "
+JTREG_HOTSPOT_TEST_DIR := $(subst ",,$(JTREG_TEST_DIR))
+else
+JTREG_HOTSPOT_TEST_DIR := $(JVM_TEST_ROOT)$(D)OpenJDK_Playlist$(D)openjdk-jdk8u$(D)hotspot$(D)test
+endif
 #######################################
 # Set OS, ARCH and BITS based on SPEC
 #######################################
