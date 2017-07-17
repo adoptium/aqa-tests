@@ -94,7 +94,7 @@ ifeq ($(OS),Linux)
 	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
 endif
 ifeq ($(OS),Darwin)
-	NPROCS:=$(shell system_profiler | awk '/Number Of CPUs/{print $4}{next;}')
+	NPROCS:=$(shell sysctl -n hw.ncpu)
 endif
 ifneq (,$(findstring CYGWIN_NT,$(OS)))
  	NPROCS:=$(NUMBER_OF_PROCESSORS)

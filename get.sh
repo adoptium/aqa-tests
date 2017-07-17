@@ -20,28 +20,23 @@ then
 platform=$3
 fi
 
-if [ "$#" -eq 2 ]
+if [ "$#" -eq 1 ]
 then
+	openjdktest=$1
+else
 	openjdktest=$2
 	echo 'Get binary openjdk...'
 	cd $1
 	mkdir openjdkbinary
 	cd openjdkbinary
-  	download_url="https://api.adoptopenjdk.net/releases/" . "${platform}" . "/latest/binary"
-    wget "${download_url}"
-	jar_file_url=$download_url
-	jar_file_name=${jar_file_url##*/}
+	download_url="https://api.adoptopenjdk.net/openjdk/releases/$platform/latest/binary"
+	wget --no-check-certificate ${download_url}
+	jar_file_name=`ls`
 	tar -zxvf $jar_file_name
-	binaryDir=$(echo $jar_file_name | cut -d_ -f4 | cut -d. -f1)
-	mv $binaryDir j2sdk-image
-elif [ "$#" -eq 1 ]; then
-	openjdktest=$1
+	sdkDir=`ls -d */`
+	sdkDirName=${sdkDir%?}
+	mv $sdkDirName j2sdk-image
 fi
-
-whoami
-which wget
-echo $PATH
-echo $SHELL
 
 cd $openjdktest/TestConfig
 mkdir lib
@@ -60,7 +55,7 @@ mv jcommander-1.48.jar jcommander.jar
 
 cd $openjdktest/TestConfig/lib
 echo 'get jtreg...'
-wget https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
+wget --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
 if [ $? -ne 0 ]; then
 	echo "Failed to retrieve the jtreg binary, exiting"
 exit
