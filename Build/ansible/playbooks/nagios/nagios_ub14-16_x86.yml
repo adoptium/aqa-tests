@@ -1,6 +1,11 @@
-# Playbook to install Nagios plugins on Ubuntu 14 and 16 systems
-  - debug: msg='Installing Nagios plugins'
+#################################################################################################
+# AdoptOpenJDK - Ansible Playbook to install NAgios plugins on Ubuntu 14 and 16 on x86 hardware #
+#################################################################################################
 
+  - debug: msg='Installing Nagios plugins'
+  ########################################
+  # Install Nagios dependencies packages #
+  ########################################  
   - name: Install Nagios plugins
     apt: pkg={{ item }} state=latest update_cache=yes
     with_items:
@@ -10,13 +15,19 @@
       - nagios-plugins-common
       - perl
       - qstat
-
+  
+  ##########
+  # Layout #
+  ##########
   - name: Creates Nagios folder
     file: path=/usr/local/nagios/ state=directory
 
   - name: Create symlink to plugins
     file: src=/usr/lib/nagios/plugins dest=/usr/local/nagios/libexec state=link
-
+ 
+  ###############
+  # Nagios user #
+  ###############
   - name: Setup Nagios user
     shell: adduser nagios --shell /bin/bash --disabled-password --gecos ""
     ignore_errors: yes
@@ -42,7 +53,10 @@
       user: nagios
       state: present
       key: "{{ lookup('file', '/home/nagios/key/id_rsa.pub') }}"
-    
+  
+  ##############################
+  # Install additional plugins #
+  ##############################
   - name: Download add-on check_mem plugin
     get_url: 
       url: https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl
