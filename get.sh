@@ -13,22 +13,29 @@
 # limitations under the License.
 
 openjdktest=$(pwd)
-if [ "$#" -eq 2 ]
+# possible platforms : x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux 
+platform=x64_linux
+if [ "$#" -gt 2 ]
 then
+platform=$3
+fi
+
+if [ "$#" -eq 1 ]
+then
+	openjdktest=$1
+else
 	openjdktest=$2
 	echo 'Get binary openjdk...'
 	cd $1
 	mkdir openjdkbinary
 	cd openjdkbinary
- 	download_url=`curl https://api.github.com/repos/AdoptOpenJDK/openjdk-releases/releases/latest | jq -r '.assets[] | select(.browser_download_url | contains("x64_Linux_jdk")) | {url: .browser_download_url} | select (.url | contains("tar.gz")) | .[]'`
-	wget "${download_url}"
-	jar_file_url=$download_url
-	jar_file_name=${jar_file_url##*/}
+	download_url="https://api.adoptopenjdk.net/openjdk/releases/$platform/latest/binary"
+	wget --no-check-certificate ${download_url}
+	jar_file_name=`ls`
 	tar -zxvf $jar_file_name
-	binaryDir=$(echo $jar_file_name | cut -d_ -f4 | cut -d. -f1)
-	mv $binaryDir j2sdk-image
-elif [ "$#" -eq 1 ]; then
-	openjdktest=$1
+	sdkDir=`ls -d */`
+	sdkDirName=${sdkDir%?}
+	mv $sdkDirName j2sdk-image
 fi
 
 cd $openjdktest/TestConfig
@@ -48,7 +55,7 @@ mv jcommander-1.48.jar jcommander.jar
 
 cd $openjdktest/TestConfig/lib
 echo 'get jtreg...'
-wget https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
+wget --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
 if [ $? -ne 0 ]; then
 	echo "Failed to retrieve the jtreg binary, exiting"
 exit
@@ -58,8 +65,4 @@ tar xf jtreg-4.2.0-tip.tar.gz
 cd $openjdktest/OpenJDK_Playlist
 echo 'Get openjdk...'
 git clone -b dev https://github.com/AdoptOpenJDK/openjdk-jdk8u.git
-
-
-
-
 

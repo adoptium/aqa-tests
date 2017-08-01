@@ -1,13 +1,12 @@
 #!groovy
 pipeline {
-    agent any
-    parameters { string (name: 'TARGET', defaultValue: 'sanity', description: 'define what group should run') }
+    agent {label 'mac&&x64&&test'}
     environment {
                 JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/jre/bin"
                 JCL_VERSION='current'
                 OPENJDK_TEST="$WORKSPACE/openjdk-test"
                 JAVA_VERSION='SE80'
-                SPEC='linux_x86-64'
+                SPEC='mac_os'
                 }
     stages {
         stage('Setup') {
@@ -28,7 +27,7 @@ pipeline {
                 			}
                 		}
                 	}
-                	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST x64_linux'
+                	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST x64_mac'
 					}
                 }
         }
@@ -44,7 +43,7 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Running tests...'
-                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
+                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST runtest"
 					}
             }
         }
