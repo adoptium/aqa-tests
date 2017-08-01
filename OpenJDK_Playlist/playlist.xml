@@ -284,23 +284,6 @@
 		</tags>
 	</test>
 	<test>
-		<testCaseName>jdk_awt</testCaseName>
-		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR):jdk_awt$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-		</subsets>
-		<tags>
-			<tag>extended</tag>
-		</tags>
-	</test>
-	<test>
 		<testCaseName>jdk_management</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -343,40 +326,6 @@
 	-jdk:$(Q)$(JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_rmi$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-		</subsets>
-		<tags>
-			<tag>extended</tag>
-		</tags>
-	</test>
-	<test>
-		<testCaseName>jdk_sound</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR):jdk_sound$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-		</subsets>
-		<tags>
-			<tag>extended</tag>
-		</tags>
-	</test>
-	<test>
-		<testCaseName>jdk_swing</testCaseName>
-		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR):jdk_swing$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
