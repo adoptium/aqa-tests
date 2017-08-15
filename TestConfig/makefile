@@ -99,7 +99,6 @@ endif
 
 NPROCS:=1
 OS:=$(shell uname -s)
-
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
 endif
@@ -109,8 +108,16 @@ endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
 endif
+
+JAVAMX:= -Xmx512m
+ARCH:=$(shell uname -a)
+ifneq (,$(findstring aarch64, $(ARCH)))
+	JAVAMX:= -Xmx120g
+endif
+
 EXTRA_JTREG_OPTIONS += -concurrency:$(NPROCS)
 
+JTREG_BASIC_OPTIONS += $(JAVAMX)
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
 JTREG_BASIC_OPTIONS += -a
