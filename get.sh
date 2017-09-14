@@ -14,10 +14,10 @@
 
 openjdktest=$(pwd)
 # possible platforms : x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux 
-platform=x64_linux
 if [ "$#" -gt 2 ]
 then
 platform=$3
+jvm_version=$4
 fi
 
 if [ "$#" -eq 1 ]
@@ -29,7 +29,7 @@ else
 	cd $1
 	mkdir openjdkbinary
 	cd openjdkbinary
-	download_url="https://api.adoptopenjdk.net/openjdk/releases/$platform/latest/binary"
+	download_url="https://api.adoptopenjdk.net/$jvm_version/releases/$platform/latest/binary"
 	wget --no-check-certificate ${download_url}
 	jar_file_name=`ls`
 	tar -zxvf $jar_file_name
