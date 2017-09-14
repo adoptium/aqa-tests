@@ -32,6 +32,30 @@
 			<property name="JAVAC" value="${JAVA_BIN}/../../bin/javac" />
 		</else>
 	</if>
+	
+	<var name="build.list" value= "" />
+	<if>
+		<equals arg1="${BUILD_LIST}" arg2=""/>
+		<then>
+			<var name="build.list" value= "*/build.xml" />
+		</then>
+		<else>
+			<for list="${BUILD_LIST}" param="builddir">
+				<sequential>
+					<if>
+						<equals arg1="${build.list}" arg2="" /> 
+						<then>
+							<var name="build.list" value="@{builddir}/build.xml" />
+						</then>
+						<else>
+							<var name="build.list" value="${build.list},@{builddir}/build.xml" />
+						</else>
+					</if>
+				</sequential>
+			</for>
+		</else>
+	</if>
+	<echo> build.list is ${build.list} </echo>
 
 	<target name="build" depends="stage_test_material" description="using ${JAVA_VERSION} compile the source ">
 		<if>
@@ -42,8 +66,7 @@
 					<property name="not.overloaded" value="not.overloaded" />
 					<property name="JAVA_VERSION" value="${JAVA_VERSION}" />
 					<property name="compiler.javac" value="${JAVAC}" />
-					<fileset dir="../../">
-						<include name="*/build.xml" />
+					<fileset dir="../../" includes="${build.list}" >
 						<exclude name="TEST_*/build.xml" />
 						<exclude name="cmd*/build.xml" />
 					</fileset>
@@ -55,8 +78,7 @@
 					<property name="not.overloaded" value="not.overloaded" />
 					<property name="JAVA_VERSION" value="${JAVA_VERSION}" />
 					<property name="compiler.javac" value="${JAVAC}" />
-					<fileset dir="../../">
-						<include name="*/build.xml" />
+					<fileset dir="../../" includes="${build.list}" >
 						<exclude name="TEST_*/build.xml" />
 					</fileset>
 				</subant>
