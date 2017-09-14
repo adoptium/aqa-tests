@@ -121,8 +121,7 @@ sub generateOnDir {
 		return 1;
 	} elsif (@subdirsHavePlaylist) {
 		print "\nGenerating make file based on subdirs...\n";
-		my $makeFile = $absolutedir . "/" . $mkName;
-		subdir2make($makeFile, \@currentdirs, \@subdirsHavePlaylist, $allSubsets);
+		subdir2make($absolutedir, \@currentdirs, \@subdirsHavePlaylist, $allSubsets);
 		return 1;
 	}
 
@@ -136,7 +135,10 @@ sub generate {
 	my $makeFile         = $absolutedir . "/" . $mkName;
 
 	if ($output) {
-		my $outputdir = $output . '/' . join('/', @{$currentdirs});
+		my $outputdir = $output;
+		if (@{$currentdirs}) {
+			$outputdir .= '/' . join('/', @{$currentdirs});
+		}
 		make_path($outputdir);
 		$makeFile = $outputdir . "/" . $mkName;
 	}
@@ -509,7 +511,17 @@ sub jvmTestGen {
 }
 
 sub subdir2make {
-	my ($makeFile, $currentdirs, $subdirsHavePlaylist) = @_;
+	my ($absolutedir, $currentdirs, $subdirsHavePlaylist) = @_;
+	my $makeFile = $absolutedir . "/" . $mkName;
+	if ($output) {
+		my $outputdir = $output;
+		if (@{$currentdirs}) {
+			$outputdir .= '/' . join('/', @{$currentdirs});
+		}
+		make_path($outputdir);
+		$makeFile = $outputdir . "/" . $mkName;
+	}
+	
 	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile";
 	my $mkname = basename($makeFile);
 	my %project = ();
