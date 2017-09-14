@@ -47,6 +47,7 @@ make test
 
 #### only compile but do not run tests
 ``` bash
+export BUILD_LIST=comma_separated_projects_to_be_compiled (defaults to all projects)
 make compile
 ```
 
