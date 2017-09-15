@@ -7,6 +7,8 @@ pipeline {
                 OPENJDK_TEST="$WORKSPACE/openjdk-test"
                 JAVA_VERSION='SE80'
                 SPEC='linux_x86-64'
+                JVM_TEST_ROOT="$WORKSPACE/jvmtest"
+                SRC_ROOT="$WORKSPACE/openjdk-test"
                 }
     stages {
         stage('Setup') {
@@ -28,33 +30,71 @@ pipeline {
                 		}
                 	}
                 	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST x64_linux'
-					}
-                }
-        }
+				}
+			}
+		}
         stage('Build') {
             steps {
 				timestamps{
                 	echo 'Building tests...'
                 	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
-					}
-            }
-        }
+					echo "Stash jdk, test"
+            		dir ('./') {
+            			fileOperations([fileZipOperation('jdk_test')])
+                   	 	stash includes: 'jdk_test.zip', name: 'jdk_test_zip'
+            		}
+				}
+			}
+		}
         stage('Test') {
             steps {
-				timestamps{
-                	echo 'Running tests...'
-                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST runtest"
-					}
+				script {
+	            	parallel "extended" : {
+	            		node ('test-scaleway-x64-ubuntu-16.04-1'){
+	            			timestamps {
+	            			   	unstash 'jdk_test_zip'
+	            			   	fileOperations([fileUnZipOperation(filePath: 'jdk_test.zip', targetLocation: '.')])
+                       			sh 'chmod 755 $OPENJDK_TEST/maketest.sh' 
+	            			   	sh '''
+	            		    		mkdir extended
+									cd extended
+									$OPENJDK_TEST/maketest.sh $OPENJDK_TEST extended parallel
+								'''
+								step([$class: "TapPublisher", testResults: "**/*.tap"])
+                				archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+                				dir('extended') {
+                					deleteDir()
+                  				}
+	            			}
+	            		}
+	            	},
+	            	"sanity" : {
+	            		node ('test-packet-x64-ubuntu-16.04-1') {
+	            			timestamps {
+								unstash 'jdk_test_zip'
+								fileOperations([fileUnZipOperation(filePath: 'jdk_test.zip', targetLocation: '.')])
+                       			sh 'chmod 755 $OPENJDK_TEST/maketest.sh'  
+	            				sh '''
+	            		    		mkdir sanity
+									cd sanity
+									$OPENJDK_TEST/maketest.sh $OPENJDK_TEST sanity parallel
+								'''
+								archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+								junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
+								archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true 
+                				dir('sanity') {
+                					deleteDir()
+                  				}
+                  			}
+	            		}
+	            	}
+				}
             }
         }
     }
-    post {
-    	always {
- 			step([$class: "TapPublisher", testResults: "**/*.tap"])
-            archiveArtifacts artifacts: '**/*.tap', fingerprint: true
-            junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true 
- 		}
- 	}
-    
+	post {
+		success {
+			deleteDir()
+		}
+	}
 }

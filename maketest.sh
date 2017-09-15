@@ -11,11 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ######
-cd $1/TestConfig
 if [ "$#" -eq 1 ];then
+	cd $1/TestConfig
 	make -f run_configure.mk
 	make compile
-else
+elif [ "$#" -eq 2 ];then
+	cd $1/TestConfig
 	make $2
+else
+	make -f $1/TestConfig/makefile $2
 fi
 
