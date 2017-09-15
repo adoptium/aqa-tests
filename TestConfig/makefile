@@ -61,9 +61,19 @@ else
 P=:
 endif
 
+# Environment variable OSTYPE is set to cygwin if running under cygwin.
+ifndef CYGWIN
+	OSTYPE?=$(shell echo $$OSTYPE)
+	ifeq ($(OSTYPE),cygwin)
+		CYGWIN:=1
+	else
+		CYGWIN:=0
+	endif
+endif
+
 ifndef SRC_ROOT
 	SRC_ROOT := $(shell $(PWD))$(D)..
-	ifneq (,$(findstring win,$(SPEC)))
+	ifeq ($(CYGWIN),1)
 		SRC_ROOT := $(shell cygpath -w $(SRC_ROOT))
 	endif
 	SRC_ROOT := $(subst \,/,$(SRC_ROOT))
@@ -96,7 +106,7 @@ endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
 endif
-ifneq (,$(findstring CYGWIN_NT,$(OS)))
+ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(NPROCS)
@@ -271,7 +281,7 @@ endif
 $(info set JAVA_VERSION to $(JAVA_VERSION))
 # compile all tests under $(SRC_ROOT)
 compile:
-	ant -f $(SRC_ROOT)$(D)TestConfig$(D)scripts$(D)build_test.xml -DSRC_ROOT=$(SRC_ROOT) -DBUILD_ROOT=$(BUILD_ROOT) -DJAVA_BIN=$(JAVA_BIN) -DJAVA_VERSION=$(JAVA_VERSION) -DJCL_VERSION=$(JCL_VERSION)
+	ant -f $(SRC_ROOT)$(D)TestConfig$(D)scripts$(D)build_test.xml -DSRC_ROOT=$(SRC_ROOT) -DBUILD_ROOT=$(BUILD_ROOT) -DJAVA_BIN=$(JAVA_BIN) -DJAVA_VERSION=$(JAVA_VERSION) -DJCL_VERSION=$(JCL_VERSION) -DBUILD_LIST=${BUILD_LIST}
 
 #######################################
 # failed target
