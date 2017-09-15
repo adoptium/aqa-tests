@@ -15,6 +15,18 @@ pipeline {
 					sh 'printenv'
             		sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
                 	sh 'chmod 755 $OPENJDK_TEST/get.sh'
+                	script {
+                		if (fileExists('openjdkbinary')) {
+                			dir('openjdkbinary') {
+                				deleteDir()
+                			}
+                		}
+                		if (fileExists('jvmtest')) {
+                			dir('jvmtest') {
+                				deleteDir()
+                			}
+                		}
+                	}
                 	sh '$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST x64_linux'
 					}
                 }
@@ -26,12 +38,12 @@ pipeline {
                 	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
 					}
             }
-        }
-        stage('Test') {
+		}
+		stage('Test') {
             steps {
 				timestamps{
-                	echo 'Running tests...'
-                	sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST sanity"
+					echo 'Running tests...'
+					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST sanity"
 					}
             }
         }
