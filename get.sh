@@ -64,5 +64,14 @@ tar xf jtreg-4.2.0-tip.tar.gz
 
 cd $openjdktest/OpenJDK_Playlist
 echo 'Get openjdk...'
-git clone -b dev https://github.com/AdoptOpenJDK/openjdk-jdk8u.git
 
+openjdkGit="openjdk-jdk8u"
+if [[ $jvm_version =~ "openjdk9" ]]; then
+	openjdkGit="openjdk-jdk9"
+fi
+
+git clone -b dev https://github.com/AdoptOpenJDK/$openjdkGit.git
+
+openjdkDir=`ls -d */`
+openjdkDirName=${openjdkDir%?}
+mv $openjdkDirName openjdk-jdk
