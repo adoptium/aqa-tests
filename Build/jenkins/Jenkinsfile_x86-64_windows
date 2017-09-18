@@ -24,8 +24,7 @@ pipeline {
                 		}
                 	}
                 	withEnv(["OPENJDK_TEST=${WORKSPACE}/openjdk-test"]) {
-	                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
-						bat "${OPENJDK_TEST}/get.bat ${WORKSPACE} ${OPENJDK_TEST}"
+	                	bat "${OPENJDK_TEST}/get.bat ${WORKSPACE} ${OPENJDK_TEST}"
 					}
                 }
             }
@@ -35,8 +34,7 @@ pipeline {
 				timestamps{
                 	echo 'Building tests...'
                  	withEnv(["OPENJDK_TEST=${WORKSPACE}/openjdk-test", "JAVA_BIN=${WORKSPACE}/openjdkbinary/j2sdk-image/jre/bin"]) {
-	                	sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
-						bat "${OPENJDK_TEST}/maketest.bat ${OPENJDK_TEST}"
+	                	bat "${OPENJDK_TEST}/maketest.bat ${OPENJDK_TEST}"
 					}
 				}
             }
