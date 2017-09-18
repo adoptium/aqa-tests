@@ -14,23 +14,6 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>OpenJDK_stackWalker</testCaseName>
-		<command>$(JAVA_COMMAND) $(CMPRSSPTRS) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
-	-agentvm -a -ea -esa -v:fail,error,time -retain:fail,error -ignore:quiet -timeoutFactor:4 -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR)$(D)java$(D)lang$(D)StackWalker$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE90</subset>
-		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-		</tags>
-	</test>
-	<test>
 		<testCaseName>hotspot_all</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_DIR)$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -125,9 +108,10 @@
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
+			<subset>SE90</subset>
 		</subsets>
 		<tags>
-			<tag>extended</tag>
+			<tag>openjdk</tag>
 		</tags>
 	</test>
 	<test>
