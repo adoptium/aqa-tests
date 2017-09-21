@@ -37,7 +37,6 @@ make -f run_configure.mk
 #### for Java8/Java9 functionality       
 Check out /test/TestExample for the format to use. We prefer to write Java unit and FV tests with TestNG. We leverage TestNG groups to create test make targets. This means that minimally your test source code should  belong to either `level.sanity` or `level.extended` group.
 
-#### for a Java9 only features
     
 ## 2. Compile tests:
 #### compile and run all tests
