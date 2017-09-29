@@ -14,6 +14,9 @@
 cd $1/TestConfig
 if [ "$#" -eq 1 ];then
 	make -f run_configure.mk
+	if [ $? -ne 0 ]; then
+		exit 1
+	fi
 	make compile
 else
 	make $2

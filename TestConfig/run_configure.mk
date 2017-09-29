@@ -30,6 +30,9 @@ endif
 autogen:
 	cd $(CURRENT_DIR)$(D)scripts$(D)testKitGen; \
 	perl testKitGen.pl $(OPTS); \
+	if [ $$? -ne 0 ] ; then \
+		exit 1; \
+	fi
 	cd $(CURRENT_DIR);
 
 AUTOGEN_FILES = $(wildcard $(CURRENT_DIR)$(D)jvmTest.mk)
