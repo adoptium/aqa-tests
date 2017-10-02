@@ -15,8 +15,11 @@
 	</target>
 
 	<target name="dist" depends="init" description="generate the distribution">
+		<copy todir="${dist}">
+			<fileset dir="${src}" includes="*.xml, ProblemList.txt"/>
+		</copy>
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
+			<fileset dir="${src}" includes="*.mk"/>
 		</copy>
 	</target>
 	
