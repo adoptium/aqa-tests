@@ -33,7 +33,7 @@ else
 	wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
 	if [ $? -ne 0 ]; then
 		echo "Failed to retrieve the jdk binary, exiting"
-		exit
+		exit 1
 	fi
 	jar_file_name=`ls`
 	tar -zxf $jar_file_name
@@ -62,7 +62,7 @@ echo 'get jtreg...'
 wget -q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
 if [ $? -ne 0 ]; then
 	echo "Failed to retrieve the jtreg binary, exiting"
-exit
+	exit 1
 fi
 tar xf jtreg-4.2.0-tip.tar.gz
 
@@ -75,6 +75,10 @@ if [[ $jvm_version =~ "openjdk9" ]]; then
 fi
 
 git clone -b dev -q https://github.com/AdoptOpenJDK/$openjdkGit.git
+if [ $? -ne 0 ]; then
+	echo "Failed to retrieve the openjdk, exiting"
+	exit 1
+fi
 
 openjdkDir=`ls -d */`
 openjdkDirName=${openjdkDir%?}
