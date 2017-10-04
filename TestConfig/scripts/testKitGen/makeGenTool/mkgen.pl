@@ -16,7 +16,7 @@ use Data::Dumper;
 use feature 'say';
 
 use constant DEBUG => 0;
- 
+
 my @allGroups = ( "sanity", "extended", "promotion", "openjdk" );
 
 my $headerComments =
@@ -43,7 +43,7 @@ sub runmkgen {
 	my $modesxml = $_[4];
 	my $ottawacsv = $_[5];
 	my $includeModesService = 1;
-	
+
 	if ( exists $ENV{'JCL_VERSION'} ) {
 		$JCL_VERSION = $ENV{'JCL_VERSION'};
 	} else {
@@ -59,7 +59,7 @@ sub runmkgen {
 			$sp_hs = getDataFromService('http://testmgmt.stage1.mybluemix.net/modesDictionaryService/getSpecPlatMapping', 'spec');
 		};
 	}
-	
+
 	if (!(($serviceResponse) && (%{$modes_hs}) && (%{$sp_hs}))) {
 		print "Cannot get data from modes service! Getting data from modes.xml and ottawa.csv...\n";
 		require "parseFiles.pl";
@@ -67,9 +67,9 @@ sub runmkgen {
 		$modes_hs = $data->{'modes'};
 		$sp_hs = $data->{'specPlatMapping'};
 	}
-	
+
 	generateOnDir();
-	
+
 	my $specToPlatmk = $projectRootDir . "/TestConfig/specToPlat.mk";
 	my $jvmTestmk = $projectRootDir . "/TestConfig/jvmTest.mk";
 	if ($output) {
@@ -78,10 +78,10 @@ sub runmkgen {
 		$specToPlatmk = $outputdir . "/specToPlat.mk";
 		$jvmTestmk = $outputdir . "/jvmTest.mk";
 	}
-	
+
 	specToPlatGen( $specToPlatmk, $graphSpecs );
 	print "\nGenerated $specToPlatmk\n";
-	
+
 	jvmTestGen( $jvmTestmk, \%tests, $allSubsets );
 	print "Generated $jvmTestmk\n";
 	return \%tests;
@@ -99,7 +99,7 @@ sub generateOnDir {
 	while ( my $entry = readdir $dir ) {
 		next if $entry eq '.' or $entry eq '..';
 		# temporarily exclude projects for CCM build (i.e., when JCL_VERSION is latest)
-		my $disabledDir = "cmdline_options_tester cmdline_options_testresources cmdLineTests JLM_Tests Jsr292 Jsr335";
+		my $disabledDir = "thirdparty_containers";
 		if (($JCL_VERSION ne "latest") or ($disabledDir !~ $entry )) {
 			my $projectDir  = $absolutedir . '/' . $entry;
 			if (( -f $projectDir ) && ( $entry eq 'playlist.xml' )) {
@@ -291,7 +291,7 @@ sub genMK {
 					$condition = "$name\_INVALID_PLATFORM_CHECK";
 					print $fhOut "$condition=\$(filter $string, \$(SPEC))\n";
 				}
-				
+
 				my $jvmtestroot = "\$(JVM_TEST_ROOT)\$(D)" . join("\$(D)", @{$currentdirs}) . "\$(D)$subset";
 				print $fhOut "$name: TEST_RESROOT=$jvmtestroot\n";
 
@@ -301,8 +301,8 @@ sub genMK {
 					print $fhOut "$name: JVM_OPTIONS=\$(RESERVED_OPTIONS) \$(EXTRA_OPTIONS)\n";
 				}
 
-				print $fhOut "$name: TEST_GROUP=level.$group\n"; 
-	
+				print $fhOut "$name: TEST_GROUP=level.$group\n";
+
 				my $indent .= "\t";
 				print $fhOut "$name:\n";
 				print $fhOut "$indent\@echo \"\" | tee -a TestTargetResult;\n";
@@ -312,7 +312,7 @@ sub genMK {
 				if ($condition) {
 					print $fhOut "ifeq (\$($condition),)\n";
 				}
-	
+
 				if ($jvmoptions) {
 					print $fhOut "$indent\@echo \"test with $var\" | tee -a TestTargetResult;\n";
 				}
@@ -368,9 +368,9 @@ sub genMK {
 			}
 		}
 		if ($isempty == 1) {
-			print $fhOut ";";	
+			print $fhOut ";";
 		}
-		
+
 		print $fhOut "\n";
 	}
 
@@ -378,7 +378,7 @@ sub genMK {
 
 	close $fhOut;
 	print "Generated $makeFile\n";
-	
+
 	return \%project;
 }
 
@@ -456,7 +456,7 @@ sub specToPlatGen {
 	my ( $specToPlatmk ) = @_;
 	open( my $fhOut, '>', $specToPlatmk ) or die "Cannot create file $specToPlatmk";
 	print $fhOut $headerComments;
-	
+
 	print $fhOut "PLATFORM=\n";
 	my $spec2platform = '';
 	my @graphSpecs_arr = split( ',', $graphSpecs );
@@ -521,7 +521,7 @@ sub subdir2make {
 		make_path($outputdir);
 		$makeFile = $outputdir . "/" . $mkName;
 	}
-	
+
 	open( my $fhOut, '>', $makeFile ) or die "Cannot create make file $makeFile";
 	my $mkname = basename($makeFile);
 	my %project = ();

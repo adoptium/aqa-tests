@@ -20,12 +20,14 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_HOME/bin:$PATH
+	export JAVA_VERSION=SE80
 	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java9"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_HOME/bin:$PATH
+	export JAVA_VERSION=SE90
 	java -version
 else
 	echo "Using docker image default Java"
@@ -33,13 +35,13 @@ else
 	suffix="/java"
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
+	export JAVA_VERSION=SE80
 	echo "JAVA_BIN is: $JAVA_BIN"
 	$JAVA_BIN/java -version
+
 fi
 
 export SPEC=linux_x86-64
-export JAVA_VERSION=SE80
-
 
 cd /test/TestConfig
 make -f run_configure.mk

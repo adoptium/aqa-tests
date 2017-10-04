@@ -32,7 +32,7 @@
 			<property name="JAVAC" value="${JAVA_BIN}/../../bin/javac" />
 		</else>
 	</if>
-	
+
 	<var name="build.list" value= "" />
 	<if>
 		<equals arg1="${BUILD_LIST}" arg2=""/>
@@ -43,7 +43,7 @@
 			<for list="${BUILD_LIST}" param="builddir">
 				<sequential>
 					<if>
-						<equals arg1="${build.list}" arg2="" /> 
+						<equals arg1="${build.list}" arg2="" />
 						<then>
 							<var name="build.list" value="@{builddir}/build.xml" />
 						</then>
@@ -67,8 +67,7 @@
 					<property name="JAVA_VERSION" value="${JAVA_VERSION}" />
 					<property name="compiler.javac" value="${JAVAC}" />
 					<fileset dir="../../" includes="${build.list}" >
-						<exclude name="TEST_*/build.xml" />
-						<exclude name="cmd*/build.xml" />
+						<exclude name="thirdparty_containers/build.xml" />
 					</fileset>
 				</subant>
 			</then>
@@ -79,7 +78,6 @@
 					<property name="JAVA_VERSION" value="${JAVA_VERSION}" />
 					<property name="compiler.javac" value="${JAVAC}" />
 					<fileset dir="../../" includes="${build.list}" >
-						<exclude name="TEST_*/build.xml" />
 					</fileset>
 				</subant>
 			</else>
