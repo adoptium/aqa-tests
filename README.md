@@ -28,7 +28,7 @@ get.sh
 ``` bash
 cd openjdk-tests/TestConfig
 export JAVA_BIN=/location_of_JVM_under_test (for SE80 use /<your_jvm>/jre/bin)
-export SPEC=platform_on_which_to_test (linux_x86-64|mac_os|...)
+export SPEC=platform_on_which_to_test (linux_x86-64|mac_x86-64|...)
 export JAVA_VERSION=[SE80|SE90] (SE90 default value)
 make -f run_configure.mk
  ```
