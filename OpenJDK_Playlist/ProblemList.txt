@@ -47,13 +47,13 @@ gc/g1/TestShrinkAuxiliaryData20.java 110 generic-all
 runtime/os/AvailableProcessors.java	110	linux-all
 compiler/5091921/Test7005594.java	116	generic-all
 compiler/c1/TestUnresolvedFieldMain.java	116	generic-all
-compiler/c1/Test8172751.java	116	macosx-all
-compiler/c1/TestPinnedIntrinsics.java	116	macosx-all
-compiler/c2/FloatingPointFoldingTest.java	116 macosx-all
+compiler/c1/Test8172751.java	116	generic-all
+compiler/c1/TestPinnedIntrinsics.java	116	generic-all
+compiler/c2/FloatingPointFoldingTest.java	116 generic-all
 compiler/jsr292/PollutedTrapCounts.java		116	generic-all
 compiler/jsr292/RedefineMethodUsedByMultipleMethodHandles.java	116	generic-all
 compiler/loopopts/UseCountedLoopSafepoints.java	116	generic-all
-compiler/loopopts/TestImpossibleIV.java	116	macosx-all
+compiler/loopopts/TestImpossibleIV.java	116	generic-all
 compiler/types/correctness/OffTest.java	116	generic-all
 compiler/unsafe/TestRawAliasing.java	116	linux-all
 gc/TestVerifySilently.java	116	generic-all
@@ -102,6 +102,7 @@ runtime/NMT/NMTWithCDS.java	124	generic-all
 runtime/memory/ReserveMemory.java	124	generic-all
 serviceability/jvmti/TestRedefineWithUnresolvedClass.java	124	generic-all
 serviceability/jvmti/GetObjectSizeOverflow.java	124	linux-all
+serviceability/sa/jmap-hashcode/Test8028623.java	124	linux-all
 compiler/unsafe/TestRawAliasing.java	131	macosx-all
 ############################################################################
 
@@ -153,7 +154,10 @@ java/beans/XMLEncoder/sun_swing_PrintColorUIResource.java	125	macosx-all
 # jdk_lang
 jdk/lambda/vm/InterfaceAccessFlagsTest.java	126	linux-all
 java/lang/Math/HypotTests.java	128	linux-all
-java/lang/System/finalization/FinInterrupt.java	141	macosx-all
+java/lang/System/finalization/FinInterrupt.java	141	generic-all
+java/lang/invoke/LFCaching/LFMultiThreadCachingTest.java	128	generic-all
+java/lang/invoke/LFCaching/LFSingleThreadCachingTest.java	128	generic-all
+java/lang/invoke/MethodHandlesTest.java	128 generic-all
 ############################################################################
 
 # jdk_management
@@ -189,12 +193,15 @@ java/io/Serializable/unresolvableObjectStreamClass/UnresolvableObjectStreamClass
 ############################################################################
 
 # jdk_nio
-java/nio/Buffer/Basic.java 118	linux-all 
+java/nio/Buffer/Basic.java 118	linux-all
+sun/nio/ch/TestMaxCachedBufferSize.java 118	linux-all
+sun/nio/cs/FindDecoderBugs.java 118	linux-all
+sun/nio/cs/FindEncoderBugs.java 118	linux-all
 ############################################################################
 
 # jdk_rmi
 java/rmi/Naming/legalRegistryNames/LegalRegistryNames.java 61	linux-all
-java/rmi/registry/serialFilter/RegistryFilterTest.java	61 macosx-all
+java/rmi/registry/serialFilter/RegistryFilterTest.java	61 generic-all
 
 ############################################################################
 
@@ -208,13 +215,13 @@ sun/security/pkcs11/ec/TestECDH.java	125	linux-all
 sun/security/pkcs11/ec/TestECDSA.java	125	linux-all
 sun/security/pkcs11/ec/TestECGenSpec.java	125	linux-all
 sun/security/pkcs11/rsa/TestCACerts.java	125	linux-all
-javax/crypto/CryptoPermission/CryptoPolicyFallback.java	125	macosx-all
-javax/crypto/CryptoPermission/TestUnlimited.java	125	macosx-all
+javax/crypto/CryptoPermission/CryptoPolicyFallback.java	125	generic-all
+javax/crypto/CryptoPermission/TestUnlimited.java	125	generic-all
 sun/security/rsa/TestCACerts.java	125	generic-all
 java/security/KeyStore/PKCS12/MetadataStoreLoadTest.java	130	macosx-all
 java/security/KeyStore/PKCS12/StoreTrustedCertAPITest.java	130	macosx-all
 java/security/KeyStore/PKCS12/StoreTrustedCertKeytool.java	130	macosx-all
-sun/security/ssl/SSLSocketImpl/SSLSocketCloseHang.java	125	macosx-all
+sun/security/ssl/SSLSocketImpl/SSLSocketCloseHang.java	125	generic-all
 
 ############################################################################
 
@@ -348,5 +355,5 @@ java/util/ResourceBundle/Control/Bug6530694.java	137	macosx-all
 
 # jdk_other
 javax/xml/ws/8172297/Main.java	119 generic-all
-javax/xml/bind/xsom/8159240/WhitespacesTest.java	119 macosx-all
+javax/xml/bind/xsom/8159240/WhitespacesTest.java	119 generic-all
 ############################################################################
