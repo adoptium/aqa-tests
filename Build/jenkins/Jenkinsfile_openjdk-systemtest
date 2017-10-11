@@ -40,9 +40,7 @@ pipeline {
                 			}
                 		}
                 	}
-                	withEnv(["IS_SYSTEM_TEST=1"]) {
-                		sh "$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST $PLATFORM ${params.JVM_VERSION} $IS_SYSTEM_TEST"
-					}
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} --systemtest"
 				}
         	}
         }

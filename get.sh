@@ -12,30 +12,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-openjdktest=$(pwd)
-# possible platforms : x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux 
-if [ "$#" -gt 2 ]
-then
-	platform=$3
-	jvm_version=$4
-fi
+SDKDIR=""
+TESTDIR=""
+PLATFORM=""
+JVMVERSION=""
+SYSTEMTEST=false
 
-isSystemTest=0
+usage ()
+{
+	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
+	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux'
+	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
+	echo '                [--sdkdir|-s binarySDKDIR] --testdir|-t openjdktestdir'
+	echo '                [--systemtest|-S ] : indicate need system test materials'
+	exit 1
+}
 
-if [ "$#" -eq 5 ]; then
-	isSystemTest=$5
-fi 
+parseCommandLineArgs()
+{
+	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
+		opt="$1";
+		shift;
+		case "$opt" in
+			"--sdkdir" | "-s" )
+				SDKDIR="$1"; shift;;
 
-if [ "$#" -eq 1 ]
-then
-	openjdktest=$1
-else
-	openjdktest=$2
+			"--testdir" | "-t" )
+				TESTDIR="$1"; shift;;
+	
+			"--platform" | "-p" )
+				PLATFORM="$1"; shift;;
+
+			"--jvmversion" | "-v" )
+				JVMVERSION="$1"; shift;;
+
+			"--systemtest" | "-S" )
+				SYSTEMTEST=true;;
+
+			"--help" | "-h" )
+				usage;;
+
+			*) echo >&2 "Invalid option: ${opt}"; echo "This option was unrecognized."; usage;;
+		esac
+	done
+}
+
+getBinaryOpenjdk()
+{
 	echo 'Get binary openjdk...'
-	cd $1
+	cd $SDKDIR
 	mkdir openjdkbinary
 	cd openjdkbinary
-	download_url="https://api.adoptopenjdk.net/$jvm_version/releases/$platform/latest/binary"
+	download_url="https://api.adoptopenjdk.net/$JVMVERSION/releases/$PLATFORM/latest/binary"
 	wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
 	if [ $? -ne 0 ]; then
 		echo "Failed to retrieve the jdk binary, exiting"
@@ -43,69 +71,81 @@ else
 	fi
 	jar_file_name=`ls`
 	tar -zxf $jar_file_name
-	sdkDir=`ls -d */`
-	sdkDirName=${sdkDir%?}
-	mv $sdkDirName j2sdk-image	
-fi
+	jarDir=`ls -d */`
+	dirName=${jarDir%?}
+	mv $dirName j2sdk-image
+}
 
-cd $openjdktest/TestConfig
-mkdir lib
-cd lib
-echo 'Get third party libs...'
-wget -q http://download.forge.ow2.org/asm/asm-5.0.1.jar
-wget -q https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
-mv asm-5.0.1.jar asm-all-5.0.1.jar
+getTestDependencies()
+{
+	cd $TESTDIR/TestConfig
+	mkdir lib
+	cd lib
+	echo 'Get third party libs...'
+	wget -q --output-document=asm-all-5.0.1.jar http://download.forge.ow2.org/asm/asm-5.0.1.jar
+	wget -q https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
+	
+	echo 'get jtreg...'
+	wget -q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
+	if [ $? -ne 0 ]; then
+		echo "Failed to retrieve the jtreg binary, exiting"
+		exit 1
+	fi
+	tar xf jtreg-4.2.0-tip.tar.gz
+	
+	mkdir TestNG
+	cd TestNG
+	wget -q --output-document=testng.jar http://central.maven.org/maven2/org/testng/testng/6.10/testng-6.10.jar
+	wget -q --output-document=jcommander.jar http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar
+}
 
-mkdir TestNG
-cd TestNG
-wget -q http://central.maven.org/maven2/org/testng/testng/6.10/testng-6.10.jar
-wget -q http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar
-mv testng-6.10.jar testng.jar
-mv jcommander-1.48.jar jcommander.jar
+getOpenjdk()
+{
+	cd $TESTDIR/OpenJDK_Playlist
+	echo 'Get openjdk...'
+	
+	openjdkGit="openjdk-jdk8u"
+	if [[ $JVMVERSION =~ "openjdk9" ]]; then
+		openjdkGit="openjdk-jdk9"
+	fi
+	
+	git clone -b dev -q https://github.com/AdoptOpenJDK/$openjdkGit.git
+	if [ $? -ne 0 ]; then
+		echo "Failed to retrieve the openjdk, exiting"
+		exit 1
+	fi
+	
+	openjdkDir=`ls -d */`
+	openjdkDirName=${openjdkDir%?}
+	mv $openjdkDirName openjdk-jdk
+}
 
-cd $openjdktest/TestConfig/lib
-echo 'get jtreg...'
-wget -q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
-if [ $? -ne 0 ]; then
-	echo "Failed to retrieve the jtreg binary, exiting"
-	exit 1
-fi
-tar xf jtreg-4.2.0-tip.tar.gz
-
-cd $openjdktest/OpenJDK_Playlist
-echo 'Get openjdk...'
-
-openjdkGit="openjdk-jdk8u"
-if [[ $jvm_version =~ "openjdk9" ]]; then
-	openjdkGit="openjdk-jdk9"
-fi
-
-git clone -b dev -q https://github.com/AdoptOpenJDK/$openjdkGit.git
-if [ $? -ne 0 ]; then
-	echo "Failed to retrieve the openjdk, exiting"
-	exit 1
-fi
-
-openjdkDir=`ls -d */`
-openjdkDirName=${openjdkDir%?}
-mv $openjdkDirName openjdk-jdk
-
-if [ "$isSystemTest" -eq 1 ]; then 
+getSystemTests()
+{
 	testrepo="https://github.com/AdoptOpenJDK/openjdk-systemtest"
 	stfrepo="https://github.com/AdoptOpenJDK/stf"
 	
+	cd $TESTDIR
 	echo "Clone systemtest from $testrepo..."
-	
-	cd $openjdktest
 	git clone $testrepo 
 	
 	echo "Clone stf from $stfrepo..."
 	git clone $stfrepo
 	
 	echo 'Get systemtest prereqs...'
-	cd $openjdktest/openjdk-systemtest/openjdk.build && make configure
+	cd $TESTDIR/openjdk-systemtest/openjdk.build && make configure
 	if [ "$?" != "0" ]; then
 	        echo "Error configuring openjdk-systemtest - see build output" 1>&2
 	        exit 1
 	fi
+}
+
+parseCommandLineArgs "$@"
+if [[ "$SDKDIR" != "" ]]; then
+	getBinaryOpenjdk
+fi
+getTestDependencies
+getOpenjdk
+if [[ "$SYSTEMTEST" == "true" ]]; then
+	getSystemTests
 fi
