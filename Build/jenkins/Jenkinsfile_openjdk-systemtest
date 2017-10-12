@@ -14,8 +14,7 @@ pipeline {
 	}
 	environment {
 		PLATFORM='x64_linux'
-		MACHINE_LABEL='linux'
-        JCL_VERSION='current'
+		JCL_VERSION='current'
         OPENJDK_TEST="$WORKSPACE/openjdk-test"
         SPEC='linux_x86-64'
         ANT_PATH="$WORKSPACE/systemtest_prereqs/apache-ant-1.10.1/bin"
@@ -42,7 +41,7 @@ pipeline {
                 		}
                 	}
                 	withEnv(["IS_SYSTEM_TEST=1"]) {
-                		sh "$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST ${params.PLATFORM} ${params.JVM_VERSION} $IS_SYSTEM_TEST"
+                		sh "$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST $PLATFORM ${params.JVM_VERSION} $IS_SYSTEM_TEST"
 					}
 				}
         	}
