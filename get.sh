@@ -16,9 +16,15 @@ openjdktest=$(pwd)
 # possible platforms : x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux 
 if [ "$#" -gt 2 ]
 then
-platform=$3
-jvm_version=$4
+	platform=$3
+	jvm_version=$4
 fi
+
+isSystemTest=0
+
+if [ "$#" -eq 5 ]; then
+	isSystemTest=$5
+fi 
 
 if [ "$#" -eq 1 ]
 then
@@ -39,7 +45,7 @@ else
 	tar -zxf $jar_file_name
 	sdkDir=`ls -d */`
 	sdkDirName=${sdkDir%?}
-	mv $sdkDirName j2sdk-image
+	mv $sdkDirName j2sdk-image	
 fi
 
 cd $openjdktest/TestConfig
@@ -83,3 +89,23 @@ fi
 openjdkDir=`ls -d */`
 openjdkDirName=${openjdkDir%?}
 mv $openjdkDirName openjdk-jdk
+
+if [ "$isSystemTest" -eq 1 ]; then 
+	testrepo="https://github.com/AdoptOpenJDK/openjdk-systemtest"
+	stfrepo="https://github.com/AdoptOpenJDK/stf"
+	
+	echo "Clone systemtest from $testrepo..."
+	
+	cd $openjdktest
+	git clone $testrepo 
+	
+	echo "Clone stf from $stfrepo..."
+	git clone $stfrepo
+	
+	echo 'Get systemtest prereqs...'
+	cd $openjdktest/openjdk-systemtest/openjdk.build && make configure
+	if [ "$?" != "0" ]; then
+	        echo "Error configuring openjdk-systemtest - see build output" 1>&2
+	        exit 1
+	fi
+fi

@@ -1,0 +1,97 @@
+#!groovy
+pipeline {
+    agent {label "linux&&x64&&test"}
+    parameters {
+		choice (choices: 'SE90\nSE80', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
+		choice (choices: 'openjdk9-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
+		string(defaultValue: "", description: '(Optional) To run tests individually, please provide a comma separated list of test targets from the list : {' + 
+			'ClassLoadingTest, ConcurrentLoadTest, DirectByteBufferLoadTest, ' + 
+				'LangLoadTest, LockingLoadTest, MathLoadTest_all, MathLoadTest_autosimd, ' + 
+				'MathLoadTest_bigdecimal, MauveSingleThreadLoadTest, MauveSingleInvocationLoadTest, ' + 
+				'MauveMultiThreadLoadTest, NioLoadTest, UtilLoadTest, LambdaLoadTest, JdiTest}', 
+				name: 'INDIVIDUAL_TESTS_TO_RUN')
+		 string(defaultValue: "0", description: '(Optional) Provide a variation number for the test', name: 'VARIATION_NUMBER')
+	}
+	environment {
+		PLATFORM='x64_linux'
+		MACHINE_LABEL='linux'
+        JCL_VERSION='current'
+        OPENJDK_TEST="$WORKSPACE/openjdk-test"
+        SPEC='linux_x86-64'
+        ANT_PATH="$WORKSPACE/systemtest_prereqs/apache-ant-1.10.1/bin"
+        OPENJDK_SYSTEMTEST_ROOT="$WORKSPACE/openjdk-test/openjdk-systemtest"
+        JAVA_HOME="$WORKSPACE/openjdkbinary/j2sdk-image/"
+    }
+    stages {
+        stage('Setup') {
+            steps {
+				timestamps {
+					sh 'printenv'
+            		sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
+                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
+                	script {
+                		if (fileExists('openjdkbinary')) {
+                			dir('openjdkbinary') {
+                				deleteDir()
+                			}
+                		}
+                		if (fileExists('jvmtest')) {
+                			dir('jvmtest') {
+                				deleteDir()
+                			}
+                		}
+                	}
+                	withEnv(["IS_SYSTEM_TEST=1"]) {
+                		sh "$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST ${params.PLATFORM} ${params.JVM_VERSION} $IS_SYSTEM_TEST"
+					}
+				}
+        	}
+        }
+        stage('Build') {
+            steps {
+				timestamps {
+                	echo 'Building tests...'
+                	withEnv(["JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
+                	"JAVA_VERSION=${params.JAVA_VERSION}"]) {
+                		sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
+					}
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+				timestamps {
+                	echo 'Running tests...'
+                	script {
+	                	if ("${params.INDIVIDUAL_TESTS_TO_RUN}" != "") { 
+	                		def tests = "${params.INDIVIDUAL_TESTS_TO_RUN}".split(',')
+	                		for (i = 0 ; i < tests.size(); i++) {
+	                			withEnv(["JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
+		                			"JAVA_VERSION=${params.JAVA_VERSION}"]) {
+		                			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${tests[i]}_${JAVA_VERSION}_${params.VARIATION_NUMBER}"
+		               		 	}	
+	                		}
+	                	} else {
+                			withEnv(["JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
+            				"JAVA_VERSION=${params.JAVA_VERSION}"]) {
+            					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST test_openjdk-systemtest"
+							}
+						}
+					}
+				}
+            }
+        }
+    }
+    post {
+    	always {
+	    	script { 
+	       	 	if (fileExists('/tmp/stf')) { 
+			       	sh 'tar -zcvf openjdk-systemtest-results.tar.gz /tmp/stf'
+			       	archive 'openjdk-systemtest-results.tar.gz' 
+			    } else {
+	    			error 'Output not found'
+	    		}     
+	    	}  
+	    }
+ 	}
+}
