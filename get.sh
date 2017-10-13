@@ -23,9 +23,8 @@ usage ()
 	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux'
 	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
-	echo '                [--sdkdir|-s binarySDKDIR] --testdir|-t openjdktestdir'
+	echo '                [--sdkdir|-s binarySDKDIR] : if donot have a local sdk available, specify preferred directory'
 	echo '                [--systemtest|-S ] : indicate need system test materials'
-	exit 1
 }
 
 parseCommandLineArgs()
@@ -50,9 +49,9 @@ parseCommandLineArgs()
 				SYSTEMTEST=true;;
 
 			"--help" | "-h" )
-				usage;;
+				usage; exit 0;;
 
-			*) echo >&2 "Invalid option: ${opt}"; echo "This option was unrecognized."; usage;;
+			*) echo >&2 "Invalid option: ${opt}"; echo "This option was unrecognized."; usage; exit 1;
 		esac
 	done
 }
