@@ -17,12 +17,15 @@ Why the need for other testing?  The OpenJDK regression tests are a great start,
 The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  It is a thin wrapper around a varied set of tests, to allow us to easily run all types of tests via make targets and as stages in our Jenkins CI pipeline builds.  
 
 # Running AdoptOpenJDK Tests
+Different platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
+Different jvmversion: openjdk9-openj9 | openjdk9 | openjdk8
+Different javaversion: SE80 | SE90
 ## 0. Configure environment and get dependencies:
 #### clone the repo and pick up the dependencies
 ``` bash
 git clone https://github.com/AdoptOpenJDK/openjdk-tests
 cd openjdk-tests
-get.sh
+get.sh -t openjdk-testsDIR -p platform -v jvmversion [-s downloadBinarySDKDIR] [--systemtest]
 ```
 #### required environment variables and default values
 ``` bash
@@ -100,6 +103,7 @@ There are 3 ways to add options to your test run.
 
 
 ## 4. Exclude tests:
+### TestNGTest
 #### temporarily on all platforms
 Add a line in the `/test/TestConfig/default_exclude.txt` file. The format of the exclude file includes 3 pieces of information, name of test, defect number, platforms to exclude. To exclude on all platforms, use generic-all.  For example:
 ``` bash
@@ -128,6 +132,10 @@ disabled.arch.<arch> (i.e. disabled.arch.ppc)
 disabled.bits.<bits> (i.e. disabled.bits.64)
 disabled.spec.<spec> (i.e. disabled.spec.linux_x86-64)
 ```
+
+### JTREGTest
+
+Openjdk has a ProblemList.txt to exclude tests on specific platform. Similar to openjdk under openjdk-tests/OpenJDK_Playlist there is a local ProblemList.txt to exclude tests locally.
 
 ## 5. View results:
 #### in the console

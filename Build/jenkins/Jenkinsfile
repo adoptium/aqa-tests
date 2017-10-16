@@ -32,7 +32,7 @@ pipeline {
                 			}
                 		}
                 	}
-                	sh "$OPENJDK_TEST/get.sh $WORKSPACE $OPENJDK_TEST ${params.PLATFORM} ${params.JVM_VERSION}"
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION}"
 					}
                 }
         }
