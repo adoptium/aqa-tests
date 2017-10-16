@@ -29,7 +29,7 @@ ARG IMAGE_VERSION=latest
 
 FROM ${IMAGE_NAME}:${IMAGE_VERSION}
 
-# install test dependent executable files
+# Install test dependent executable files
 RUN apt-get update \
 	&& apt-get -y install \
 	ant \
@@ -43,12 +43,12 @@ RUN apt-get update \
 	vim \
 	wget
 
-#install sbt
+# Install sbt
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 RUN apt-get update && apt-get install -y sbt
 
-VOLUME ["/scala","/java"]
+VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
@@ -56,6 +56,11 @@ ENV JAVA_HOME=/java \
 
 # This is the main script to run scala tests
 COPY ./dockerfile/scala-test.sh /scala-test.sh
+
+# Clone scala src to /scala
+WORKDIR /
+RUN pwd
+RUN git clone https://github.com/scala/scala.git
 
 ENTRYPOINT ["/bin/bash", "/scala-test.sh"]
 CMD ["--version"]
