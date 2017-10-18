@@ -2,19 +2,19 @@
 #### What is our motivation?
 We want:
 - more tests
-- a common way to easily add, edit, group, include, exclude and execute tests on AdoptOpenJDK builds  
+- a common way to easily add, edit, group, include, exclude and execute tests on AdoptOpenJDK builds
 - the latitude to use a variety of tests that use many different test frameworks
 - test results to have a common look & feel for easier viewing and comparison
 
-There are a great number of tests available to test a JVM, starting with the OpenJDK regression tests.  In addition to running the OpenJDK regression tests, we will increase the amount of testing and coverage by pulling in other open tests.  These new tests are not necessarily written using the jtreg format.  
+There are a great number of tests available to test a JVM, starting with the OpenJDK regression tests.  In addition to running the OpenJDK regression tests, we will increase the amount of testing and coverage by pulling in other open tests.  These new tests are not necessarily written using the jtreg format.
 
-Why the need for other testing?  The OpenJDK regression tests are a great start, but eventually you may want to be able to test how performant is your code, and whether some 3rd party applications still work.  We will begin to incorporate more types of testing, including: 
+Why the need for other testing?  The OpenJDK regression tests are a great start, but eventually you may want to be able to test how performant is your code, and whether some 3rd party applications still work.  We will begin to incorporate more types of testing, including:
 - additional API and functional tests
 - stress/load tests
 - system level tests such as 3rd party application tests
 - performance tests
 
-The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  It is a thin wrapper around a varied set of tests, to allow us to easily run all types of tests via make targets and as stages in our Jenkins CI pipeline builds.  
+The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  It is a thin wrapper around a varied set of tests, to allow us to easily run all types of tests via make targets and as stages in our Jenkins CI pipeline builds.
 
 # Running AdoptOpenJDK Tests
 Different platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
@@ -35,12 +35,12 @@ export SPEC=platform_on_which_to_test (linux_x86-64|mac_x86-64|...)
 export JAVA_VERSION=[SE80|SE90] (SE90 default value)
 make -f run_configure.mk
  ```
-            
-## 1. Add tests:
-#### for Java8/Java9 functionality       
-Check out /test/TestExample for the format to use. We prefer to write Java unit and FV tests with TestNG. We leverage TestNG groups to create test make targets. This means that minimally your test source code should  belong to either `level.sanity` or `level.extended` group.
 
-    
+## 1. Add tests:
+#### for Java8/Java9 functionality
+Check out /example for the format to use. We prefer to write Java unit and FV tests with TestNG. We leverage TestNG groups to create test make targets. This means that minimally your test source code should  belong to either `level.sanity` or `level.extended` group.
+
+
 ## 2. Compile tests:
 #### compile and run all tests
 ``` bash
@@ -69,7 +69,7 @@ make sanity
 ``` bash
 make openjdk
 ```
-This target will run all or a subset of the OpenJDK regression tests, you can add or subtract directories of tests by changing the contents of the `OpenJDK_Playlist/playlist.xml` file.  Currently the jdk_lang group are included in the sanity target, which will be triggered off of AdoptOpenJDK merge requests automatically. 
+This target will run all or a subset of the OpenJDK regression tests, you can add or subtract directories of tests by changing the contents of the `openjdk_regression/playlist.xml` file.  Currently the jdk_lang group are included in the sanity target, which will be triggered off of AdoptOpenJDK merge requests automatically.
 
 #### extended tests
 ``` bash
@@ -95,11 +95,11 @@ make failed
 ```
 
 #### with a different set of JVM options
-There are 3 ways to add options to your test run.  
+There are 3 ways to add options to your test run.
 
-1) One-time override: If you simply want to add an option for a one-time run, you can override the original options by using `JVM_OPTIONS="your options"`.  
+1) One-time override: If you simply want to add an option for a one-time run, you can override the original options by using `JVM_OPTIONS="your options"`.
 2) One-time append: If you want to append options to the set that are already there, use `EXTRA_OPTIONS="your extra options"`.  For example, `make _testExampleExtended_SE80_0 EXTRA_OPTIONS=-Xint` will append to those options already in the make target.
-3) New options for future test runs:  If you wish to add a particular set of options for a tests to be included in future builds, you can add a variant in the playlist.xml file for that test.  
+3) New options for future test runs:  If you wish to add a particular set of options for a tests to be included in future builds, you can add a variant in the playlist.xml file for that test.
 
 
 ## 4. Exclude tests:
@@ -135,7 +135,7 @@ disabled.spec.<spec> (i.e. disabled.spec.linux_x86-64)
 
 ### JTREGTest
 
-Openjdk has a ProblemList.txt to exclude tests on specific platform. Similar to openjdk under openjdk-tests/OpenJDK_Playlist there is a local ProblemList.txt to exclude tests locally.
+Openjdk has a ProblemList.txt to exclude tests on specific platform. Similar to openjdk under openjdk-tests/openjdk_regression there is a local ProblemList.txt to exclude tests locally.
 
 ## 5. View results:
 #### in the console
@@ -144,7 +144,7 @@ Java tests take advantage of the testNG logger.  If you want your test to print 
 #### in html files
 Html (and xml) output from the tests are created and stored in a test_output_xxxtimestamp folder in the TestConfig directory (or from where you ran "make test").  The output is organized by tests, each test having its own set of output.  If you open the index.html file in a web browser, you will be able to see which tests passed, failed or were skipped, along with other information like execution time and error messages, exceptions and logs from the individual test methods.
 
-#### Jenkins CI tool 
+#### Jenkins CI tool
 The summarized results are also captured in *.tap files so that they can be viewed in Jenkins using the TAP (Test Anything Protocol) plugin.
 
 ## 6. Attach a debugger:
@@ -154,4 +154,4 @@ The command line that is run for each particular test is echo-ed to the console,
 ## 7. Move test into different make targets (layers):
 #### from extended to sanity (or vice versa)
 Change the group annotated at the top of the test class from `level.extended` to `level.sanity` and the test will be automatically switched from the extended target to the sanity target.
-            
+
