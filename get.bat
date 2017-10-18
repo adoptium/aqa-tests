@@ -46,6 +46,6 @@ echo Get jtreg...
 wget https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
 tar xf jtreg-4.2.0-tip.tar.gz
 
-cd %openjdktest%\openjdk_regression
+cd %openjdktest%\OpenJDK_Playlist
 echo Get openjdk...
 git clone -b dev https://github.com/AdoptOpenJDK/openjdk-jdk8u.git
