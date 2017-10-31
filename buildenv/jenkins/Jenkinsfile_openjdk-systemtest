@@ -10,7 +10,9 @@ pipeline {
 				'MathLoadTest_bigdecimal, MauveSingleThreadLoadTest, MauveSingleInvocationLoadTest, ' + 
 				'MauveMultiThreadLoadTest, NioLoadTest, UtilLoadTest, LambdaLoadTest, JdiTest}', 
 				name: 'INDIVIDUAL_TESTS_TO_RUN')
-		 string(defaultValue: "0", description: '(Optional) Provide a variation number for the test', name: 'VARIATION_NUMBER')
+		string(defaultValue: "0", description: '(Optional) Provide a variation number for the test', name: 'VARIATION_NUMBER')
+	 	string(defaultValue: "1", description: '(Optional) Provide how many times the test should be repeated (ideally to be used when a single test is being debugged)', name: 'REPEAT_ARG')
+		string(defaultValue: "", description: '(Optional) Provide any extra debugging JVM options you want to run the test with', name: 'EXTRA_OPTIONS')
 	}
 	environment {
 		PLATFORM='x64_linux'
@@ -40,7 +42,7 @@ pipeline {
                 			}
                 		}
                 	}
-                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} --systemtest"
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v ${params.JVM_VERSION} --systemtest"
 				}
         	}
         }
@@ -64,7 +66,7 @@ pipeline {
 	                		def tests = "${params.INDIVIDUAL_TESTS_TO_RUN}".split(',')
 	                		for (i = 0 ; i < tests.size(); i++) {
 	                			withEnv(["JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
-		                			"JAVA_VERSION=${params.JAVA_VERSION}"]) {
+		                			"JAVA_VERSION=${params.JAVA_VERSION}","REPEAT_ARG=${params.REPEAT_ARG}", "EXTRA_OPTIONS=$EXTRA_OPTIONS"]) {
 		                			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${tests[i]}_${JAVA_VERSION}_${params.VARIATION_NUMBER}"
 		               		 	}	
 	                		}
