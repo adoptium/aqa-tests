@@ -83,6 +83,7 @@ pipeline {
     }
     post {
     	always {
+    		step([$class: "TapPublisher", testResults: "**/*.tap"])
 	    	script { 
 	       	 	if (fileExists('/tmp/stf')) { 
 			       	sh 'tar -zcvf openjdk-systemtest-results.tar.gz /tmp/stf'
