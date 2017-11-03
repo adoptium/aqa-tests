@@ -7,6 +7,9 @@ pipeline {
 		choice (choices: 'openjdk9-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		choice (choices: 'openjdk\nsanity\nextended\nruntest', description: 'What is test level?', name: 'TARGET')
 		choice (choices: 'linux\nmac', description: 'What is machine label?', name: 'MACHINE_LABEL')
+		choice (choices: 'releases\nnightly\nupstream', description: 'Where is sdk?', name: 'SDK_RESOURCE')
+		string (defaultValue: "NULL", description: 'Upstream build name, only set when choose SDK_RESOURCE as upstream', name: 'UPSTREAM_JOB_NAME')
+		string (defaultValue: "NULL", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when choose SDK_RESOURCE as upstream', name: 'UPSTREAM_JOB_NUMBER')
 		}
 	environment {
                 JCL_VERSION='current'
@@ -31,8 +34,17 @@ pipeline {
                 				deleteDir()
                 			}
                 		}
+                		if (params.SDK_RESOURCE == 'upstream') {
+                			dir('openjdkbinary') {
+	                			step([$class: 'CopyArtifact',
+	                        		fingerprintArtifacts: true,
+	                        		projectName: "${params.UPSTREAM_JOB_NAME}",
+	                        		selector: [$class: 'SpecificBuildSelector',
+	                                buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
+                            }
+            			}
                 	}
-                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION}"
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} -r ${params.SDK_RESOURCE} "
 					}
                 }
         }

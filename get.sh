@@ -16,6 +16,7 @@ SDKDIR=""
 TESTDIR=""
 PLATFORM=""
 JVMVERSION=""
+SDK_RESOURCE="nightly"
 SYSTEMTEST=false
 
 usage ()
@@ -23,8 +24,9 @@ usage ()
 	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux'
 	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
-	echo '                [--sdkdir|-s binarySDKDIR] : if donot have a local sdk available, specify preferred directory'
+	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--systemtest|-S ] : indicate need system test materials'
+	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly or upstream'
 }
 
 parseCommandLineArgs()
@@ -45,6 +47,9 @@ parseCommandLineArgs()
 			"--jvmversion" | "-v" )
 				JVMVERSION="$1"; shift;;
 
+			"--sdk_resource" | "-r" )
+				SDK_RESOURCE="$1"; shift;;
+
 			"--systemtest" | "-S" )
 				SYSTEMTEST=true;;
 
@@ -58,15 +63,17 @@ parseCommandLineArgs()
 
 getBinaryOpenjdk()
 {
-	echo 'Get binary openjdk...'
 	cd $SDKDIR
-	mkdir openjdkbinary
-	cd openjdkbinary
-	download_url="https://api.adoptopenjdk.net/$JVMVERSION/releases/$PLATFORM/latest/binary"
-	wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
-	if [ $? -ne 0 ]; then
-		echo "Failed to retrieve the jdk binary, exiting"
-		exit 1
+	if [ "$SDK_RESOURCE" != "upstreambuild" ]; then
+		echo 'Get binary openjdk...'
+		mkdir openjdkbinary
+		cd openjdkbinary
+		download_url="https://api.adoptopenjdk.net/$JVMVERSION/$BUILDTYPE/$PLATFORM/latest/binary"
+		wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
+		if [ $? -ne 0 ]; then
+			echo "Failed to retrieve the jdk binary, exiting"
+			exit 1
+		fi
 	fi
 	jar_file_name=`ls`
 	tar -zxf $jar_file_name
