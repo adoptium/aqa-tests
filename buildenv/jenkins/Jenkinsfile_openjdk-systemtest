@@ -3,7 +3,7 @@ pipeline {
     agent {label "linux&&x64&&test"}
     parameters {
 		choice (choices: 'SE90\nSE80', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
-		choice (choices: 'openjdk9-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
+		choice (choices: 'openjdk9-openj9\nopenjdk8-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		string(defaultValue: "", description: '(Optional) To run tests individually, please provide a comma separated list of test targets from the list : {' + 
 			'ClassLoadingTest, ConcurrentLoadTest, DirectByteBufferLoadTest, ' + 
 				'LangLoadTest, LockingLoadTest, MathLoadTest_all, MathLoadTest_autosimd, ' + 
