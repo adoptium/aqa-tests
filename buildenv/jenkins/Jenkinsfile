@@ -4,7 +4,7 @@ pipeline {
     parameters {
 		choice (choices: 'x64_linux\nx64_mac\ns390x_linux\nppc64le_linux\naarch64_linux', description: 'PLATFORM?', name: 'PLATFORM')
 		choice (choices: 'SE90\nSE80', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
-		choice (choices: 'openjdk9-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
+		choice (choices: 'openjdk9-openj9\nopenjdk8-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		choice (choices: 'openjdk\nsanity\nextended\nruntest', description: 'What is test level?', name: 'TARGET')
 		choice (choices: 'linux\nmac', description: 'What is machine label?', name: 'MACHINE_LABEL')
 		choice (choices: 'releases\nnightly\nupstream', description: 'Where is sdk?', name: 'SDK_RESOURCE')
