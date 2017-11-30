@@ -7,9 +7,10 @@ pipeline {
 		choice (choices: 'openjdk9-openj9\nopenjdk8-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		choice (choices: 'openjdk\nsanity\nextended\nruntest', description: 'What is test level?', name: 'TARGET')
 		choice (choices: 'linux\nmac', description: 'What is machine label?', name: 'MACHINE_LABEL')
-		choice (choices: 'releases\nnightly\nupstream', description: 'Where is sdk?', name: 'SDK_RESOURCE')
-		string (defaultValue: "N/A", description: 'Upstream build name, only set when choose SDK_RESOURCE as upstream', name: 'UPSTREAM_JOB_NAME')
-		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when choose SDK_RESOURCE as upstream', name: 'UPSTREAM_JOB_NUMBER')
+		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
+		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
+		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
+		string (defaultValue: "N/A", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
 		}
 	environment {
                 JCL_VERSION='current'
@@ -44,7 +45,7 @@ pipeline {
                             }
             			}
                 	}
-                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} -r ${params.SDK_RESOURCE} "
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
 					}
                 }
         }
