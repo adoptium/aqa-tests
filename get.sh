@@ -18,6 +18,7 @@ PLATFORM=""
 JVMVERSION=""
 SDK_RESOURCE="nightly"
 SYSTEMTEST=false
+CUSTOMIZED_SDK_URL=""
 
 usage ()
 {
@@ -26,7 +27,8 @@ usage ()
 	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--systemtest|-S ] : indicate need system test materials'
-	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly or upstream'
+	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
+	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
 }
 
 parseCommandLineArgs()
@@ -52,7 +54,10 @@ parseCommandLineArgs()
 
 			"--systemtest" | "-S" )
 				SYSTEMTEST=true;;
-
+			
+			"--customizedURL" | "-c" )
+				CUSTOMIZED_SDK_URL="$1"; shift;;
+			
 			"--help" | "-h" )
 				usage; exit 0;;
 
@@ -68,6 +73,9 @@ getBinaryOpenjdk()
 		echo 'Get binary openjdk...'
 		mkdir openjdkbinary
 		download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
+		if [ "$SDK_RESOURCE" == "customized" ]; then
+			download_url=$CUSTOMIZED_SDK_URL
+		fi
 		wget --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
 		if [ $? -ne 0 ]; then
 			echo "Failed to retrieve the jdk binary, exiting"
