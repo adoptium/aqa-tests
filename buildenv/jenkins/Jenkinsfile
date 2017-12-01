@@ -72,12 +72,19 @@ pipeline {
         }
     }
     post {
+    	failure {
+    		slackSend channel: '#testing', color: '#FFFF00', message: "Jenkins test job failed: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    	}
+    	unstable {
+    		slackSend channel: '#testing', color: '#FFFF00', message: "Test job unstable. Some tests failed: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    	}
+    	
     	always {
  			step([$class: "TapPublisher", testResults: "**/*.tap"])
             archiveArtifacts artifacts: '**/*.tap', fingerprint: true
             junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true 
- 		}
+            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true
+		}
  	}
     
 }
