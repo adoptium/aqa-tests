@@ -134,32 +134,9 @@ getOpenjdk()
 	mv $openjdkDirName openjdk-jdk
 }
 
-getSystemTests()
-{
-	testrepo="https://github.com/AdoptOpenJDK/openjdk-systemtest"
-	stfrepo="https://github.com/AdoptOpenJDK/stf"
-
-	cd $TESTDIR
-	echo "Clone systemtest from $testrepo..."
-	git clone $testrepo
-
-	echo "Clone stf from $stfrepo..."
-	git clone $stfrepo
-
-	echo 'Get systemtest prereqs...'
-	cd $TESTDIR/openjdk-systemtest/openjdk.build && make configure
-	if [ "$?" != "0" ]; then
-	        echo "Error configuring openjdk-systemtest - see build output" 1>&2
-	        exit 1
-	fi
-}
-
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 fi
 getTestDependencies
 getOpenjdk
-if [[ "$SYSTEMTEST" == "true" ]]; then
-	getSystemTests
-fi

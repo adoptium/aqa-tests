@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<project name="systemtest" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>Build STF based System Tests </description>
+
+	<!-- set global properties for this build -->
+	<property name="SYSTEMTEST_ROOT" value="${basedir}" />
+	<property name="DEST" value="${BUILD_ROOT}/systemtest/${JAVA_VERSION}" />
+	<property environment="env" />
+
+	<target name="init">
+		<if>
+			<not>
+				<available file="${DEST}" type="dir" />
+			</not>
+			<then>
+				<mkdir dir="${DEST}" />
+			</then>
+		</if>
+	</target>
+
+	<target name="clone_stf">
+		<exec executable="git" failonerror="false">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="https://github.com/AdoptOpenJDK/stf.git" />
+			<arg value="${SYSTEMTEST_ROOT}/stf" />
+		</exec>
+	</target>
+
+	<target name="clone_systemtest">
+		<exec executable="git" failonerror="false">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="https://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
+			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
+		</exec>
+	</target>
+
+	<target name="check_systemtest" depends="init">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
+				<antcall target="clone_stf" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
+			</else>
+		</if>
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<antcall target="clone_systemtest" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+			</else>
+		</if>
+	</target>
+
+	<target name="configure_stf" depends="check_systemtest">
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" />
+	</target>
+
+	<target name="compile_stf" depends="configure_stf">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" inheritAll="false" />
+	</target>
+	
+	<target name="dist" description="generate the distribution">
+		<if>
+			<not>
+				<available file="${DEST}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<copy todir="${DEST}/stf">
+					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
+				</copy>
+				<copy todir="${DEST}/openjdk-systemtest">
+					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+				</copy>
+			</then>
+		</if>
+		<copy todir="${DEST}">
+			<fileset dir="${basedir}" includes="**" />
+		</copy>
+		<copy todir="${DEST}/systemtest_prereqs/">
+			<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
+		</copy>
+	</target>
+
+	<!-- target to build all projects in the repository.  -->
+	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
+	<!-- Also make sure stf is built -->
+	<target name="build-dependencies" depends="compile_stf">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"/>
+		<antcall target="dist" inheritall="true" />
+	</target>
+	
+	<target name="build" depends="build-dependencies">
+	</target>
+		
+	<target name="clean">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean" />
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean" />
+	</target>
+</project>
