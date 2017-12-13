@@ -97,6 +97,11 @@ ifeq ($(JAVA_VERSION),SE80)
 JDK_HOME := $(JAVA_BIN_TMP)$(D)..$(D)..
 endif
 
+ifndef JVM_VERSION
+JVM_VERSION := openjdk8
+endif
+$(info set JVM_VERSION to $(JVM_VERSION))
+
 NPROCS:=1
 OS:=$(shell uname -s)
 
