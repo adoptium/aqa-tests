@@ -14,12 +14,20 @@
 	<property name="build" location="./bin" />
 	<property name="transformerListener" location="../utils/src"/>
 
+	<target name="getTestNG" depends="init">
+		<exec executable="wget" failonerror="false">
+			<arg line="wget -q --output-document=testng.jar http://central.maven.org/maven2/org/testng/testng/6.10/testng-6.10.jar" />
+		</exec>
+		<exec executable="wget" failonerror="false">
+			<arg line="wget -q --output-document=jcommander.jar http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar" />
+		</exec>
+	</target>
 	<target name="init">
 		<mkdir dir="${dist}" />
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init" description="Using ${JAVA_VERSION} java compile the source  ">
+	<target name="compile" depends="getTestNG" description="Using ${JAVA_VERSION} java compile the source  ">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
 		<echo>===fork:				yes</echo>
@@ -30,8 +38,8 @@
 			<src path="${src}" />
 			<src path="${transformerListener}" />
 			<classpath>
-				<pathelement location="../TestConfig/lib/TestNG/testng.jar" />
-				<pathelement location="../TestConfig/lib/TestNG/jcommander.jar" />
+				<pathelement location="testng.jar" />
+				<pathelement location="jcommander.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -42,7 +50,7 @@
 			<fileset dir="${src}/../" includes="*.properties,*.xml" />
 		</jar>
 		<copy todir="${dist}">
-			<fileset dir="${src}/../" includes="*.xml" />
+			<fileset dir="${src}/../" includes="*.xml,*.jar" />
 		</copy>
 		<copy todir="${DEST}">
 			<fileset dir="${src}/../" includes="*.mk" />

@@ -9,12 +9,31 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk_regression" />
 	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
 	<property name="src" location="." />
-
-	<target name="init">
+	<condition property="openjdkGit" value="openjdk-jdk8u" else="openjdk-jdk9">
+		<equals arg1="${JAVA_VERSION}" arg2="SE80"/>
+	</condition>
+	<condition property="openjdkDir" value="openjdk-jdk8u" else="openjdk-jdk9">
+		<equals arg1="${JAVA_VERSION}" arg2="SE80"/>
+	</condition>
+	
+	<target name="getJtreg">
 		<mkdir dir="${dist}"/>
+		<exec executable="wget" failonerror="false">
+			<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+		</exec>
+		<exec executable="tar" failonerror="false">
+			<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${dist}" />
+		</exec>
 	</target>
-
-	<target name="dist" depends="init" description="generate the distribution">
+	
+	<target name="getOpenjdk">
+		<exec executable="git" failonerror="false">
+			<arg line="clone -b dev -q https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
+		</exec>
+		<move file="${openjdkDir}" tofile="openjdk-jdk"/>
+	</target>
+	
+	<target name="dist" depends="getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${dist}">
 			<fileset dir="${src}" includes="*.xml, ProblemList*.txt"/>
 		</copy>
