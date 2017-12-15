@@ -207,7 +207,6 @@ endif
 # common dir and jars
 #######################################
 LIB_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)lib
-TESTNG=$(LIB_DIR)$(D)TestNG$(D)testng.jar$(P)$(LIB_DIR)$(D)TestNG$(D)jcommander.jar
 JUNIT=$(LIB_DIR)$(D)junit-4.10.jar
 RESOURCES_DIR=$(JVM_TEST_ROOT)$(D)TestConfig$(D)resources
 

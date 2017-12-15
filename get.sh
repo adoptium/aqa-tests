@@ -96,42 +96,7 @@ getTestDependencies()
 	mkdir lib
 	cd lib
 	echo 'Get third party libs...'
-	wget -q --output-document=asm-all-5.0.1.jar http://download.forge.ow2.org/asm/asm-5.0.1.jar
 	wget -q https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
-
-	echo 'get jtreg...'
-	wget -q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz
-	if [ $? -ne 0 ]; then
-		echo "Failed to retrieve the jtreg binary, exiting"
-		exit 1
-	fi
-	tar xf jtreg-4.2.0-tip.tar.gz
-
-	mkdir TestNG
-	cd TestNG
-	wget -q --output-document=testng.jar http://central.maven.org/maven2/org/testng/testng/6.10/testng-6.10.jar
-	wget -q --output-document=jcommander.jar http://central.maven.org/maven2/com/beust/jcommander/1.48/jcommander-1.48.jar
-}
-
-getOpenjdk()
-{
-	cd $TESTDIR/openjdk_regression
-	echo 'Get openjdk...'
-
-	openjdkGit="openjdk-jdk8u"
-	if [[ $JVMVERSION =~ "openjdk9" ]]; then
-		openjdkGit="openjdk-jdk9"
-	fi
-
-	git clone -b dev -q https://github.com/AdoptOpenJDK/$openjdkGit.git
-	if [ $? -ne 0 ]; then
-		echo "Failed to retrieve the openjdk, exiting"
-		exit 1
-	fi
-
-	openjdkDir=`ls -d */`
-	openjdkDirName=${openjdkDir%?}
-	mv $openjdkDirName openjdk-jdk
 }
 
 parseCommandLineArgs "$@"
@@ -139,4 +104,3 @@ if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 fi
 getTestDependencies
-getOpenjdk
