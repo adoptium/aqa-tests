@@ -68,12 +68,11 @@
 		</if>
 	</target>
 
-	<target name="configure_stf" depends="check_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false" />
+	<target name="configure_systemtest" depends="check_systemtest">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" />
 	</target>
 
-	<target name="compile_stf" depends="configure_stf">
+	<target name="compile_systemtest" depends="configure_systemtest">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" inheritAll="false" />
 	</target>
 	
@@ -102,9 +101,9 @@
 	<!-- target to build all projects in the repository.  -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
-	<target name="build-dependencies" depends="compile_stf">
+	<target name="build-dependencies" depends="compile_systemtest">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"/>
-		<antcall target="dist" inheritall="true" />
+		<antcall target="dist" inheritall="false" />
 	</target>
 	
 	<target name="build" depends="build-dependencies">
