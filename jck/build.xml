@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<project name="jck" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>Build STF based JCK Tests </description>
+
+	<!-- set global properties for this build -->
+	<property name="SYSTEMTEST_ROOT" value="${basedir}/../systemtest" />
+	<property name="DEST" value="${BUILD_ROOT}/jck" />
+	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
+	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest/${JAVA_VERSION}" />
+	<property environment="env" />
+
+	<target name="init">
+		<mkdir dir="${dist}" />
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_BUILD_ROOT}" type="dir" />
+			</not>
+			<then>
+				<mkdir dir="${SYSTEMTEST_BUILD_ROOT}" />
+			</then>
+		</if>
+	</target>
+
+	<target name="clone_stf">
+		<exec executable="git" failonerror="false">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="https://github.com/AdoptOpenJDK/stf.git" />
+			<arg value="${SYSTEMTEST_ROOT}/stf" />
+		</exec>
+	</target>
+
+	<target name="clone_systemtest">
+		<exec executable="git" failonerror="false">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="https://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
+			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
+		</exec>
+	</target>
+
+	<target name="check_systemtest" depends="init">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
+				<antcall target="clone_stf" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
+			</else>
+		</if>
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<antcall target="clone_systemtest" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+			</else>
+		</if>
+	</target>
+
+	<target name="configure_stf" depends="check_systemtest">
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" />
+	</target>
+
+	<target name="compile_stf" depends="configure_stf">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" />
+	</target>
+
+	<target name="dist" depends="compile_stf" description="generate the distribution">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/stf">
+					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
+				</copy>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest">
+					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+				</copy>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/systemtest_prereqs/">
+					<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
+				</copy>
+			</then>
+		</if>
+		<copy todir="${DEST}">
+			<fileset dir="${basedir}" includes="*.mk" />
+		</copy>
+		<copy todir="${dist}">
+			<fileset dir="${basedir}" includes="*.xml"/>
+		</copy>
+		<copy todir="${JCK_ROOT}/">
+			<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
+		</copy>
+	</target>
+
+	<target name="build">
+		<echo>JCK_ROOT is set to: ${JCK_ROOT}</echo>
+		<if>
+			<isset property="JCK_ROOT" />
+			<then>
+				<if>
+					<not>
+						<equals arg1="${JCK_ROOT}" arg2="" />
+					</not>
+					<then>
+						<echo>=== JCK_ROOT is set to ${JCK_ROOT} ===</echo>
+						<echo>start building jck project</echo>
+						<antcall target="dist" inheritall="true" />
+					</then>
+				</if>
+			</then>
+		</if>
+	</target>
+
+	<target name="clean">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean" />
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean" />
+	</target>
+</project>

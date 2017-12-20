@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+
+	<test>
+		<testCaseName>jck_runtime-api-java_math_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)$(JAVA_VERSION)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=api/java_math,jckversion=jck8b,testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<tags>
+			<tag>jck</tag>
+		</tags>
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck_runtime-api-java_math_SE90</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)$(JAVA_VERSION)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=api/java_math,jckversion=jck9,testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<tags>
+			<tag>jck</tag>
+		</tags>
+		<subsets>
+			<subset>SE90</subset>
+		</subsets>
+	</test>
+	
+</playlist>
