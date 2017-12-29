@@ -315,7 +315,10 @@ extended: rmResultFile extended_$(JAVA_VERSION) resultsSummary
 openjdk: JVM_TEST_ROOT := $(BUILD_ROOT)
 openjdk: rmResultFile openjdk_$(JAVA_VERSION) resultsSummary
 
-runtest: rmResultFile sanity_$(JAVA_VERSION) extended_$(JAVA_VERSION) openjdk_$(JAVA_VERSION) resultsSummary
+perf: JVM_TEST_ROOT := $(BUILD_ROOT)
+perf: rmResultFile perf_$(JAVA_VERSION) resultsSummary
+
+runtest: rmResultFile sanity_$(JAVA_VERSION) extended_$(JAVA_VERSION) openjdk_$(JAVA_VERSION) perf_$(JAVA_VERSION) resultsSummary
 .NOTPARALLEL: extended sanity openjdk runtest rmResultFile resultsSummary
 
 # cleanup
