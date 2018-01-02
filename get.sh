@@ -92,7 +92,7 @@ getTestDependencies()
 	cd lib
 	echo 'Get third party libs...'
 	wget -q --output-document=asm-all-5.0.1.jar http://download.forge.ow2.org/asm/asm-5.0.1.jar
-	wget -q https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
+	wget -q --no-check-certificate https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
 }
 
 parseCommandLineArgs "$@"
