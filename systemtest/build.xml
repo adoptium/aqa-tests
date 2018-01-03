@@ -7,7 +7,8 @@
 	<property name="SYSTEMTEST_ROOT" value="${basedir}" />
 	<property name="DEST" value="${BUILD_ROOT}/systemtest/${JAVA_VERSION}" />
 	<property environment="env" />
-
+	<property name="env.JAVA_HOME" value="${JAVA_BIN}/.." />
+	
 	<target name="init">
 		<if>
 			<not>
@@ -69,11 +70,15 @@
 	</target>
 
 	<target name="configure_systemtest" depends="check_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>	
 	</target>
 
 	<target name="compile_systemtest" depends="configure_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" inheritAll="false">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
 	</target>
 	
 	<target name="dist" description="generate the distribution">
@@ -102,7 +107,9 @@
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
 	<target name="build-dependencies" depends="compile_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"/>
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
 		<antcall target="dist" inheritall="false" />
 	</target>
 	
@@ -110,7 +117,11 @@
 	</target>
 		
 	<target name="clean">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean" />
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
 	</target>
 </project>
