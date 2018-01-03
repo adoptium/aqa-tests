@@ -2,9 +2,9 @@
 # How-to Run JCK Tests
 
 * Prerequisites:
-  * JCK test materials (JCK test source): jck8b or jck9
+  * OpenJDK Community TCK License Agreement (OCTLA)
+  * your own set of JCK test materials (JCK test source under OCTLA License): jck8b or jck9
   * ant 1.10.1 or above with ant-contrib.jar
-
 
 
 1. Put unarchived jck test materials (jck8b or jck9) into an empty folder, for example:
