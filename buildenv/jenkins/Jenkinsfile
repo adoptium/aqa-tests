@@ -84,8 +84,8 @@ pipeline {
     	always {
  			step([$class: "TapPublisher", testResults: "**/*.tap"])
             archiveArtifacts artifacts: '**/*.tap', fingerprint: true
-            junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true
+            junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
+            archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true
              script {
             	if (params.TARGET == 'test_systemtest') {  
 	       	 		sh 'tar -zcvf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
