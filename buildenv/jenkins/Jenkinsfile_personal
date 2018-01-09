@@ -8,10 +8,7 @@ pipeline {
 		choice (choices: 'SE90\nSE80', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		choice (choices: 'openjdk9-openj9\nopenjdk8-openj9\nopenjdk9\nopenjdk8', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		string (defaultValue: '', description: 'Specific test project, leave blank by default for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
-		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:
-\ntop level: openjdk, sanity, extended, perf, etc
-\ndirectory level: prefix a directory with test (eg test_systemtest)
-\nindividual test: jdk_bean_SE80_0, etc', name: 'TARGET')
+		string (defaultValue: 'runtest', description: 'Test Target, default is all target(runtest), e.g.openjdk sanity extended test_systemtest test_DirectoryName, jdk_bean_SE80_0, etc', name: 'TARGET')
 		choice (choices: 'linux&&x64&&test\nmac&&x64&&test\nwindows&&x64&&test', description: 'What is machine label?', name: 'MACHINE_LABEL')
 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
