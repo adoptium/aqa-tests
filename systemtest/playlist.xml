@@ -116,7 +116,7 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
-	-test=MathLoadTest_all; \
+	-test=MathLoadTest; \
 	$(TEST_STATUS)</command> 
 		<tags>
 			<tag>system</tag>
@@ -137,7 +137,8 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
-	-test=MathLoadTest_autosimd; \
+	-test=MathLoadTest \
+	-test-args=$(Q)workload=autoSimd$(Q) ; \ 
 	$(TEST_STATUS)</command> 
 		<tags>
 			<tag>system</tag>
@@ -158,7 +159,8 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
-	-test=MathLoadTest_bigdecimal; \
+	-test=MathLoadTest \
+	-test-args=$(Q)workload=bigdecimal$(Q) ; \ 
 	$(TEST_STATUS)</command> 
 		<tags>
 			<tag>system</tag>
