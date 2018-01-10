@@ -22,7 +22,7 @@ CUSTOMIZED_SDK_URL=""
 usage ()
 {
 	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
-	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux'
+	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
 	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
