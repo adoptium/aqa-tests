@@ -53,9 +53,9 @@ pipeline {
     post {
     	always {
  			step([$class: "TapPublisher", testResults: "**/*.tap"])
-            archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+            archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
             junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-            archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true 
+            archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true 
  		}
  	}
     
