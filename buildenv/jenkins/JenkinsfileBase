@@ -1,0 +1,73 @@
+#!groovy
+/* template jenkinsfile for adoptopenjdk test builds*/
+JCL_VERSION='current'
+OPENJDK_TEST="$WORKSPACE/openjdk-tests"
+def test() {
+	stage('Setup') {
+		timestamps{
+			sh 'printenv'
+			sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
+			sh "chmod 755 ${OPENJDK_TEST}/get.sh"
+			script {
+				if (fileExists('openjdkbinary')) {
+					dir('openjdkbinary') {
+						deleteDir()
+					}
+				}
+				if (fileExists('jvmtest')) {
+					dir('jvmtest') {
+						deleteDir()
+					}
+				}
+				if (SDK_RESOURCE == 'upstream') {
+					dir('openjdkbinary') {
+						step([$class: 'CopyArtifact',
+							fingerprintArtifacts: true,
+							projectName: "$UPSTREAM_JOB_NAME",
+							selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
+					}
+				}
+			}
+			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
+		}
+	}
+	
+	stage('Build') {
+		timestamps{
+			echo 'Building tests...'
+			withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
+			"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
+			"JAVA_VERSION=${JAVA_VERSION}",
+			"SPEC=${SPEC}",
+			"JCL_VERSION=${JCL_VERSION}"]) {
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+			}
+		}
+	}
+	stage('Test') {
+		timestamps{
+			echo 'Running tests...'
+			withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
+			"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
+			"JAVA_VERSION=${JAVA_VERSION}",
+			"SPEC=${SPEC}",
+			"JCL_VERSION=${JCL_VERSION}"]) {
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST $TARGET"
+			}
+		}
+	}
+	stage('Post') {
+		timestamps{
+			step([$class: "TapPublisher", testResults: "**/*.tap"])
+			archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
+			archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true
+			script {
+				if (TARGET == 'test_systemtest') {  
+					sh 'tar -zcvf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
+				}
+			}
+		}
+	}
+}
+return this

@@ -1,0 +1,16 @@
+#!groovy
+/* Template for test jobs on openjdk8 linux. Configure test job as parameterized.
+	Set parameter TARGET(openjdk, system, external, perf, jck etc.).
+	Set UPSTREAM_JOB_NAME(version_impl_jobtype_arch_os, for example: openjdk8_hs_openjdktest_x86-64_linux)*/
+/* TODO: Relate TARGET with BUILD_LIST to generate makefile and compile correspondingly */
+node('linux&&x64&&test') {
+    PLATFORM = 'x64_linux'
+    JAVA_VERSION = 'SE80'
+    JVM_VERSION = 'openjdk8'
+    SDK_RESOURCE = 'upstream'
+    CUSTOMIZED_SDK_URL = ''
+    SPEC='linux_x86-64'
+    checkout scm
+    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+    jenkinsfile.test()
+}
