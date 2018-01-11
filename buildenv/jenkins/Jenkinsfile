@@ -83,14 +83,15 @@ pipeline {
     	}
     	always {
  			step([$class: "TapPublisher", testResults: "**/*.tap"])
-            archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+            archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
             junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
-            archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true
-             script {
+            archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
+            script {
             	if (params.TARGET == 'test_systemtest') {  
-	       	 		sh 'tar -zcvf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
+	       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
+	       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
 		    	}    
-	    	}  
+	    	}   
 		}
  	}
     

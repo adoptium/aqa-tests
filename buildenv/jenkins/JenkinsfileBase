@@ -59,14 +59,13 @@ def test() {
 	stage('Post') {
 		timestamps{
 			step([$class: "TapPublisher", testResults: "**/*.tap"])
-			archiveArtifacts artifacts: '**/*.tap', fingerprint: true
+			archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-			archiveArtifacts artifacts: '**/work/**/*.xml, **/junitreports/**/*.xml', fingerprint: true
-			script {
-				if (TARGET == 'test_systemtest') {  
-					sh 'tar -zcvf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
-				}
-			}
+			archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
+			if (params.TARGET == 'test_systemtest') {  
+	       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-test/TestConfig/test_output_*'
+	       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
+		    }
 		}
 	}
 }
