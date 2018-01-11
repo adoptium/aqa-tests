@@ -214,27 +214,6 @@
 	</test>
 	
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-		</subsets>
-	</test>
-	
-	<test>
 		<testCaseName>NioLoadTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
@@ -297,25 +276,6 @@
 		</subsets>
 	</test>
 	
-	<test>
-		<testCaseName>JdiTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-results-root=$(REPORTDIR)  \
-	-test=JdiTest; \
-	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-		</subsets>
-	</test>
+	
 	
 </playlist>
