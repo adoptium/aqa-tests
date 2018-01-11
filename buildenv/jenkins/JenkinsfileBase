@@ -39,7 +39,8 @@ def test() {
 			"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
 			"JAVA_VERSION=${JAVA_VERSION}",
 			"SPEC=${SPEC}",
-			"JCL_VERSION=${JCL_VERSION}"]) {
+			"JCL_VERSION=${JCL_VERSION}",
+			"BUILD_LIST=${TESTPROJECT}"]) {
 				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
 			}
 		}
