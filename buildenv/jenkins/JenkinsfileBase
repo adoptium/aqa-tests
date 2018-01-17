@@ -32,6 +32,7 @@ def test() {
 						projectName: "$UPSTREAM_JOB_NAME",
 						selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
 				}
+				CUSTOMIZED_SDK_URL=''
 			}
 			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 		}
