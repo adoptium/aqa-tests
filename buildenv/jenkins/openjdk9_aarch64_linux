@@ -7,7 +7,6 @@ node('linux&&arm64&&test') {
     PLATFORM = 'aarch64_linux'
     JAVA_VERSION = 'SE90'
     SDK_RESOURCE = 'upstream'
-    CUSTOMIZED_SDK_URL = ''
     SPEC='linux_arm'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
