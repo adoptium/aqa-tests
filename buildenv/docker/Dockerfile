@@ -45,6 +45,18 @@ RUN apt-get update \
     wget \
     vim \
     zip \
+    xserver-xorg-core \
+    xserver-xorg \
+    xauth \
+    xorg \
+    openbox \
+    x11vnc \
+    xvfb \
+    ftpd \
+    krb5-kdc \
+    krb5-admin-server \
+    pwgen \
+    tomcat8 \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Perl modules for test framework
