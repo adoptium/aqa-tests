@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>scala_test</testCaseName>
-		<command>docker run -it --rm -v $(JDK_HOME):/java  adoptopenjdk-scala-test:latest "jvm pos neg"</command>
+		<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-scala-test:latest "jvm pos neg"</command>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
