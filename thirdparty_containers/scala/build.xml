@@ -14,14 +14,14 @@
 		<mkdir dir="${dist}"/>
 	</target>
 
-	<target name="clean_image" depends="init" description="build scala test docker image">
+	<target name="clean_image" depends="init" description="clean scala test docker image if there is one">
 		<exec executable="docker">
 			<arg line="rmi -f adoptopenjdk-scala-test" />
 		</exec>
 	</target>
 
 	<target name="build_image" depends="clean_image" description="build scala test docker image">
-		<exec executable="docker">
+		<exec executable="docker"  failonerror="true">
 			<arg line="build -t adoptopenjdk-scala-test -f dockerfile/Dockerfile --pull ." />
 		</exec>
 	</target>
