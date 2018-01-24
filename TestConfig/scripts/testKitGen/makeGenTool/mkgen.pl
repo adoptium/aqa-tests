@@ -99,7 +99,7 @@ sub generateOnDir {
 	while ( my $entry = readdir $dir ) {
 		next if $entry eq '.' or $entry eq '..';
 		# temporarily exclude projects for CCM build (i.e., when JCL_VERSION is latest)
-		my $disabledDir = "thirdparty_containers";
+		my $disabledDir = "";
 		if (($JCL_VERSION ne "latest") or ($disabledDir !~ $entry )) {
 			my $projectDir  = $absolutedir . '/' . $entry;
 			if (( -f $projectDir ) && ( $entry eq 'playlist.xml' )) {
