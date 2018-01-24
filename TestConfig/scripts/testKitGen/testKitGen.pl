@@ -26,7 +26,7 @@ my $modesxml       = "../../resources/modes.xml";
 my $ottawacsv      = "../../resources/ottawa.csv";
 my $graphSpecs     = '';
 my $output         = '';
-my @allSubsets = ( "SE80", "SE90" );
+my @allSubsets = ( "SE80", "SE90", "SE100");
 
 foreach my $argv (@ARGV) {
 	if ( $argv =~ /^\-\-graphSpecs=/ ) {
