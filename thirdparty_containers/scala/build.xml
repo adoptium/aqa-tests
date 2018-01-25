@@ -22,7 +22,7 @@
 
 	<target name="build_image" depends="clean_image" description="build scala test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-scala-test -f dockerfile/Dockerfile --pull ." />
+			<arg line="build -t adoptopenjdk-scala-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
 		</exec>
 	</target>
 

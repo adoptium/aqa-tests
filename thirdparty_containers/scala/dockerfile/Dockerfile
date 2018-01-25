@@ -24,10 +24,11 @@
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-scala-test .`
 
-ARG IMAGE_NAME=adoptopenjdk/openjdk8
+ARG SDK=openjdk8
+ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
-FROM ${IMAGE_NAME}:${IMAGE_VERSION}
+FROM $IMAGE_NAME:$IMAGE_VERSION
 
 # Install test dependent executable files
 RUN apt-get update \
