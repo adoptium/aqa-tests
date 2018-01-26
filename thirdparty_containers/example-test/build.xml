@@ -9,6 +9,7 @@
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/example-test" />
 	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
 	<property name="src" location="." />
+	<property name="jvm_version" location="${JVM_VERSION}" />
 
 	<target name="init">
 		<mkdir dir="${dist}"/>
@@ -22,7 +23,7 @@
 
 	<target name="build_image" depends="clean_image" description="build example test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-example-test -f dockerfile/Dockerfile --pull ." />
+			<arg line="build -t adoptopenjdk-example-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
 		</exec>
 	</target>
 

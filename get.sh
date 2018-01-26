@@ -78,8 +78,16 @@ getBinaryOpenjdk()
 		fi
 	fi
 	cd openjdkbinary
+	
+	
 	jar_file_name=`ls`
-	tar -zxf $jar_file_name
+	if [[ $jar_file_name == *jar ]]; then
+		jar -xf $jar_file_name
+	elif [[ $jar_file_name == *zip ]]; then
+		unzip -q $jar_file_name -d .
+	else 
+		tar -zxf $jar_file_name
+	fi
 	jarDir=`ls -d */`
 	dirName=${jarDir%?}
 	mv $dirName j2sdk-image
