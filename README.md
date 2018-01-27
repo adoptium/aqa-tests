@@ -21,7 +21,7 @@ Note: there are additional changes coming to the testing at AdoptOpenJDK (re: to
 # Running AdoptOpenJDK Tests
 Platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
 
-Javaversion: SE80 | SE90
+Javaversion: SE80 | SE90 | SE100
 
 Prerequisites:
 	
@@ -92,7 +92,7 @@ make test
 
 #### only compile but do not run tests
 ``` bash
-export BUILD_LIST=comma_separated_projects_to_be_compiled (defaults to all projects)
+export BUILD_LIST=comma_separated_projects_to_compile (i.e. openjdk_regression,performance, default behaviour is to compile all directories)
 make compile
 ```
 
