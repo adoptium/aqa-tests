@@ -4,62 +4,64 @@ OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', extended:'openjdk_regression', runtest:'' ]
 TESTPROJECT=TESTPROJECTS["$TARGET"]
 def test() {
-	stage('Setup') {
-		timestamps{
-			env.JCL_VERSION = "current"
-			env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
-			env.JAVA_HOME = "${JAVA_BIN}/.."
-			env.JAVA_VERSION = "${JAVA_VERSION}"
-			env.SPEC = "${SPEC}"
-			env.BUILD_LIST= "${TESTPROJECT}"
-			sh 'printenv'
-			sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
-			sh "chmod 755 ${OPENJDK_TEST}/get.sh"
-			if (fileExists('openjdkbinary')) {
-				dir('openjdkbinary') {
-					deleteDir()
+	timeout(time: 6, unit: 'HOURS') {
+		stage('Setup') {
+			timestamps{
+				env.JCL_VERSION = "current"
+				env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+				env.JAVA_HOME = "${JAVA_BIN}/.."
+				env.JAVA_VERSION = "${JAVA_VERSION}"
+				env.SPEC = "${SPEC}"
+				env.BUILD_LIST= "${TESTPROJECT}"
+				sh 'printenv'
+				sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
+				sh "chmod 755 ${OPENJDK_TEST}/get.sh"
+				if (fileExists('openjdkbinary')) {
+					dir('openjdkbinary') {
+						deleteDir()
+					}
 				}
-			}
-			if (fileExists('jvmtest')) {
-				dir('jvmtest') {
-					deleteDir()
+				if (fileExists('jvmtest')) {
+					dir('jvmtest') {
+						deleteDir()
+					}
 				}
-			}
-			if (SDK_RESOURCE == 'upstream') {
-				dir('openjdkbinary') {
-					step([$class: 'CopyArtifact',
-						fingerprintArtifacts: true,
-						projectName: "$UPSTREAM_JOB_NAME",
-						selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
+				if (SDK_RESOURCE == 'upstream') {
+					dir('openjdkbinary') {
+						step([$class: 'CopyArtifact',
+							fingerprintArtifacts: true,
+							projectName: "$UPSTREAM_JOB_NAME",
+							selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
+					}
+					CUSTOMIZED_SDK_URL=''
 				}
-				CUSTOMIZED_SDK_URL=''
+				sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 			}
-			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 		}
-	}
-	
-	stage('Build') {
-		timestamps{
-			echo 'Building tests...'
-			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+		
+		stage('Build') {
+			timestamps{
+				echo 'Building tests...'
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+			}
 		}
-	}
-	stage('Test') {
-		timestamps{
-			echo 'Running tests...'
-			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST $TARGET"
+		stage('Test') {
+			timestamps{
+				echo 'Running tests...'
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST $TARGET"
+			}
 		}
-	}
-	stage('Post') {
-		timestamps{
-			step([$class: "TapPublisher", testResults: "**/*.tap"])
-			archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
-			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-			archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
-			if (params.TARGET == 'system') {  
-	       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
-	       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
-		    }
+		stage('Post') {
+			timestamps{
+				step([$class: "TapPublisher", testResults: "**/*.tap"])
+				archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
+				junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
+				archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
+				if (params.TARGET == 'system') {  
+		       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
+		       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
+			    }
+			}
 		}
 	}
 }
