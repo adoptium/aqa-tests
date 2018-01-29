@@ -7,7 +7,6 @@
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/openjdk_regression" />
-	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
 	<property name="src" location="." />
 	<condition property="openjdkGit" value="openjdk-jdk8u">
 		<equals arg1="${JAVA_VERSION}" arg2="SE80"/>
@@ -20,28 +19,38 @@
 	</condition>
 	
 	<target name="getJtreg">
-		<mkdir dir="${dist}"/>
-		<exec executable="wget" failonerror="false">
-			<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
-		</exec>
-		<exec executable="tar" failonerror="false">
-			<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${dist}" />
-		</exec>
+		<mkdir dir="${DEST}"/>
+		<if>
+			<not>
+				<available file="jtreg-4.2.0-tip.tar.gz" />
+			</not>
+			<then>
+				<exec executable="wget" failonerror="false">
+					<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+				</exec>
+				<exec executable="tar" failonerror="false">
+					<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
+				</exec>
+			</then>
+		</if>
 	</target>
 	
-	<target name="getOpenjdk">
+	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<exec executable="git" failonerror="false">
 			<arg line="clone -b dev -q https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
 		</exec>
 		<move file="${openjdkGit}" tofile="openjdk-jdk"/>
 	</target>
 	
+	<target name="openjdk-jdk.check">
+		<condition property="jdkdir.exists">
+			<available file="openjdk-jdk" type="dir"/>
+		</condition>
+	</target>
+	
 	<target name="dist" depends="getJtreg, getOpenjdk" description="generate the distribution">
-		<copy todir="${dist}">
-			<fileset dir="${src}" includes="*.xml, ProblemList*.txt"/>
-		</copy>
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.mk"/>
+			<fileset dir="${src}" includes="*.xml,ProblemList*.txt,*.mk"/>
 		</copy>
 	</target>
 

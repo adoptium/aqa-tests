@@ -13,6 +13,7 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+	<include>openjdk_regression.mk</include>
 	<test>
 		<testCaseName>hotspot_all</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
@@ -25,11 +26,38 @@
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
+		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+		<test>
+		<testCaseName>hotspot_all_SE100</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_all$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_jre</testCaseName>
@@ -44,11 +72,39 @@
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
+		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>hotspot_jre_SE100</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR):jre$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_beans</testCaseName>
@@ -66,10 +122,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_io</testCaseName>
@@ -87,10 +149,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_lang</testCaseName>
@@ -108,10 +176,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_math</testCaseName>
@@ -129,10 +203,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_other</testCaseName>
@@ -150,10 +230,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_net</testCaseName>
@@ -171,10 +257,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_nio</testCaseName>
@@ -192,10 +284,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_security1</testCaseName>
@@ -213,10 +311,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_security2</testCaseName>
@@ -234,10 +338,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 		<test>
 		<testCaseName>jdk_security3</testCaseName>
@@ -255,10 +365,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_text</testCaseName>
@@ -276,10 +392,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_util</testCaseName>
@@ -297,10 +419,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_time</testCaseName>
@@ -318,10 +446,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_management</testCaseName>
@@ -339,10 +473,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_jmx</testCaseName>
@@ -360,10 +500,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_rmi</testCaseName>
@@ -381,10 +527,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_sound</testCaseName>
@@ -402,10 +554,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_tools</testCaseName>
@@ -423,10 +581,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_jdi</testCaseName>
@@ -444,10 +608,16 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_jfr</testCaseName>
@@ -465,9 +635,15 @@
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
-		<tags>
-			<tag>openjdk</tag>
-			<tag>extended</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 </playlist>

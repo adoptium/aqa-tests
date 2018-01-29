@@ -1,4 +1,5 @@
 #!groovy
+def JAVA_IMPL='hotspot'
 pipeline {
     agent {label "${params.MACHINE_LABEL}"}
     parameters {
@@ -6,9 +7,9 @@ pipeline {
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
 		choice (choices: 'x64_linux\nx64_mac\ns390x_linux\nppc64le_linux\naarch64_linux', description: 'PLATFORM?', name: 'PLATFORM')
 		choice (choices: 'SE90\nSE80\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
-		choice (choices: 'openjdk9-openj9\nopenjdk8-openj9\nopenjdk9\nopenjdk8\nopenjdk10\nopenjdk10-openj9', description: 'What is JVM Version?', name: 'JVM_VERSION')
+		choice (choices: 'openjdk8\nopenjdk8-openj9\nopenjdk9\nopenjdk9-openj9\nopenjdk10\nopenjdk10-openj9\nopenjdk10-sap', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		string (defaultValue: '', description: 'Specific test project, leave blank by default for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
-		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ntop level: openjdk, sanity, extended, perf, etc\ndirectory level: prefix a directory with test (eg test_systemtest)\nindividual test: jdk_bean_SE80_0, etc', name: 'TARGET')
+		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ntop level: openjdk, sanity, extended, system, jck, functional, perf, etc\ndirectory level: prefix a directory with test (eg test_systemtest)\nindividual test: jdk_beans_SE80_0, etc', name: 'TARGET')
 		choice (choices: 'linux&&x64&&test\nmac&&x64&&test\nwindows&&x64&&test', description: 'What is machine label?', name: 'MACHINE_LABEL')
 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
@@ -25,6 +26,7 @@ pipeline {
                 SPEC='linux_x86-64'
                 BUILD_LIST="$TESTPROJECT"
                 REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
+                JVM_VERSION="${JVM_VERSION}"
     }
     
     stages {
@@ -59,9 +61,17 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Building tests...'
+	                script {
+		                if (JVM_VERSION.contains('openj9')) {
+							JAVA_IMPL = 'openj9'
+						} else if (JVM_VERSION.contains('sap')) {
+							JAVA_IMPL = 'sap'
+						}
+					}
                 	withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
                 	"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
-                	"JAVA_VERSION=${params.JAVA_VERSION}"]) {
+                	"JAVA_VERSION=${params.JAVA_VERSION}",
+                	"JAVA_IMPL=${JAVA_IMPL}"]) {
                 		sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
 					}
                 }
@@ -71,10 +81,16 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Running tests...'
+                	script {
+						if (TARGET.contains('openjdk')) {
+							DIAGNOSTICLEVEL ='noDetails'
+						}
+					}
                 	withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
                 	"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
-                	"JAVA_VERSION=${params.JAVA_VERSION}"]) {
-                		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
+                	"JAVA_VERSION=${params.JAVA_VERSION}",
+                	"DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
+                		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
 					}
 				}
             }
@@ -82,8 +98,8 @@ pipeline {
     }
     post {
     	always {
- 			step([$class: "TapPublisher", testResults: "**/*.tap"])
-            archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
+			step([$class: "TapPublisher", testResults: "**/*.tap"])
+			archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
             junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
             archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
              script {

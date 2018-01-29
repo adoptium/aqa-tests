@@ -27,9 +27,9 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=$(JCK_TEST_TARGET),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>jck</tag>
-		</tags>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -48,9 +48,9 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=$(JCK_TEST_TARGET),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>jck</tag>
-		</tags>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -69,9 +69,9 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=$(JCK_TEST_TARGET),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>jck</tag>
-		</tags>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -90,9 +90,9 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_math,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>jck</tag>
-		</tags>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -110,10 +110,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/instrument,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -132,10 +134,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/invoke,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -153,10 +157,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/reflect,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -174,10 +180,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/Package,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -195,10 +203,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/String,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -216,10 +226,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/StringBuilder,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -237,10 +249,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/StringBuffer,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -258,10 +272,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/ClassLoader,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -279,10 +295,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/constantpool,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -300,10 +318,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/jvmti,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -321,10 +341,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/overview,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -342,10 +364,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/classfmt/clf,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -364,10 +388,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/ModuleLayer,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>
@@ -384,10 +410,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/module,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>
@@ -404,10 +432,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/java_lang/StackWalker,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>
@@ -424,10 +454,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/modulegraph,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>
@@ -444,10 +476,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/module,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>
@@ -464,10 +498,12 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/verifier,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>sanity</tag>
-			<tag>jck</tag>
-		</tags>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
 		<subsets>
 			<subset>SE90</subset>
 		</subsets>

@@ -13,16 +13,18 @@
 	-results-root=$(REPORTDIR)  \
 	-test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>ConcurrentLoadTest</testCaseName>
 		<variations>
@@ -36,13 +38,17 @@
 	-test=ConcurrentLoadTest; \
 	$(TEST_STATUS)</command> 
 		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -57,14 +63,17 @@
 	-results-root=$(REPORTDIR)  \
 	-test=DirectByteBufferLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -79,14 +88,17 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LangLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -101,14 +113,17 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LockingLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -123,14 +138,17 @@
 	-results-root=$(REPORTDIR) \
 	-test=MathLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -146,14 +164,17 @@
 	-test-args=$(Q)workload=autoSimd$(Q) \
 	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -169,14 +190,17 @@
 	-test=MathLoadTest \
 	-test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -191,14 +215,17 @@
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleThreadLoadTest; \
 	$(TEST_STATUS)</command> 
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -213,14 +240,17 @@
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleInvocationLoadTest; \
 	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -234,15 +264,18 @@
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
 	-test=NioLoadTest; \
-	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -256,15 +289,18 @@
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
 	-test=UtilLoadTest; \
-	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 	
 	<test>
@@ -278,17 +314,18 @@
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>	
-		<tags>
-			<tag>system</tag>
-		</tags>
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
-	
-	
-	
 </playlist>
+
