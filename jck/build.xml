@@ -1,4 +1,19 @@
 <?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
 <project name="jck" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>Build STF based JCK Tests </description>
@@ -72,12 +87,18 @@
 	</target>
 
 	<target name="configure_stf" depends="check_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false" />
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false" >
+			<property name="java.home" value="${JAVA_BIN}/.."/>
+		</ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false" >
+			<property name="java.home" value="${JAVA_BIN}/.."/>
+		</ant>
 	</target>
 
 	<target name="compile_stf" depends="configure_stf">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" >
+			<property name="java.home" value="${JAVA_BIN}/.."/>
+		</ant>
 	</target>
 
 	<target name="dist" depends="compile_stf" description="generate the distribution">
@@ -124,11 +145,18 @@
 					</then>
 				</if>
 			</then>
+			<else>
+				<echo message="JCK_ROOT is not set, skip building jck" />
+			</else>
 		</if>
 	</target>
 
 	<target name="clean">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean" />
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean" >
+			<property name="java.home" value="${JAVA_BIN}/.."/>
+		</ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean" >
+			<property name="java.home" value="${JAVA_BIN}/.."/>
+		</ant>
 	</target>
 </project>
