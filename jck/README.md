@@ -23,9 +23,9 @@
 1. Put unarchived jck test materials (jck8b or jck9) into an empty folder, for example:
 * `/jck/jck8b/` and `/jck/jck9`
 
-2. Export `JCK_ROOT=/jck` as an environment variable or pass it in makefile when run make commands
+2. Export `JCK_ROOT=/jck` as an environment variable or pass it in when run as a make command
 
-3. Export `JCK_VERSION=<your_jck_version>` as an environment variable or pass it in makefile when run make commands. For example `export JCK_VERSION=jck8b` 
+3. Export `JCK_VERSION=<your_jck_version>` as an environment variable or pass it in when run as a make command. For example `export JCK_VERSION=jck8b` 
 
 4. Export `JAVA_HOME=<your_JDK_root>` as an environment variable
 
@@ -43,8 +43,10 @@ There are three custom JCK test targets `jck-runtime-custom`, `jck-compiler-cust
 
 1. Follow the Steps 1 - 4 mentioned above. 
 
-2. Export `JCK_TEST_TARGET=<jck_test_subset>` as an environment variable or pass it in makefile when run make commands. For example `export JCK_TEST_TARGET=api/java_math`
+2. Export `JCK_TEST_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_TEST_TARGET=api/java_math`
 
 3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)/$(JCK_VERSION)/`.
 
-4. Follow the steps remaining in `openjdk-tests/README.md`
+4. If you need to add extra Java options to JCK tests, you could export `JCK_JAVA_ARGS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
+
+5. Follow the steps remaining in `openjdk-tests/README.md`
