@@ -14,6 +14,7 @@ pipeline {
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
 		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
 		string (defaultValue: "N/A", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
+		string (defaultValue: "linux_x86-64", description: 'SPEC to run with', name: 'PROVIDED_SPEC')
 		}
 	options {
     	skipDefaultCheckout true
@@ -22,14 +23,7 @@ pipeline {
 	environment {
                 JCL_VERSION='current'
                 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
-                SPEC='linux_x86-64'
-				if (params.PLATFORM == 'x64_mac') {
-					SPEC='mac_x86-64'
-				} else if (params.PLATFORM == 's390x_linux') {
-					SPEC='linux_390-64'
-				} else if (params.PLATFORM == 'ppc64le_linux') {
-					SPEC='linux_ppcle-64'
-				} 
+                SPEC="${params.PROVIDED_SPEC}"
                 BUILD_LIST="$TESTPROJECT"
                 REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
     }
