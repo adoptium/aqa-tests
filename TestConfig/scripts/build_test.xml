@@ -24,12 +24,12 @@
 	<property name="JAVA_BIN" value="${JAVA_BIN}" />
 	<echo> JAVA_BIN is ${JAVA_BIN} </echo>
 	<if>
-		<equals arg1="${JAVA_VERSION}" arg2="SE90"/>
+		<equals arg1="${JAVA_VERSION}" arg2="SE80"/>
 		<then>
-			<property name="JAVAC" value="${JAVA_BIN}/javac" />
+			<property name="JAVAC" value="${JAVA_BIN}/../../bin/javac" />
 		</then>
 		<else>
-			<property name="JAVAC" value="${JAVA_BIN}/../../bin/javac" />
+			<property name="JAVAC" value="${JAVA_BIN}/javac" />	
 		</else>
 	</if>
 
