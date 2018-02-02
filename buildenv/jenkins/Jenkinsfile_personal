@@ -23,6 +23,13 @@ pipeline {
                 JCL_VERSION='current'
                 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
                 SPEC='linux_x86-64'
+				if (params.PLATFORM == 'x64_mac') {
+					SPEC='mac_x86-64'
+				} else if (params.PLATFORM == 's390x_linux') {
+					SPEC='linux_390-64'
+				} else if (params.PLATFORM == 'ppc64le_linux') {
+					SPEC='linux_ppcle-64'
+				} 
                 BUILD_LIST="$TESTPROJECT"
                 REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
     }
