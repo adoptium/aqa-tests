@@ -21,7 +21,7 @@
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)$(JAVA_VERSION)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-java-args-setup=$(JCK_JAVA_ARGS) \
+	-java-args-setup=$(EXTRA_OPTIONS) \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-results-root=$(REPORTDIR)  \
@@ -42,7 +42,7 @@
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)$(JAVA_VERSION)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-java-args-setup=$(JCK_JAVA_ARGS) \
+	-java-args-setup=$(EXTRA_OPTIONS) \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-results-root=$(REPORTDIR)  \
@@ -63,7 +63,7 @@
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)$(JAVA_VERSION)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-java-args-setup=$(JCK_JAVA_ARGS) \
+	-java-args-setup=$(EXTRA_OPTIONS) \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)${JAVA_VERSION}$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-results-root=$(REPORTDIR)  \
