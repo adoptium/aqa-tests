@@ -47,6 +47,6 @@ There are three custom JCK test targets `jck-runtime-custom`, `jck-compiler-cust
 
 3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)/$(JCK_VERSION)/`.
 
-4. If you need to add extra Java options to JCK tests, you could export `JCK_JAVA_ARGS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
+4. If you need to add extra Java options to JCK tests, you could export `EXTRA_OPTIONS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
 
 5. Follow the steps remaining in `openjdk-tests/README.md`
