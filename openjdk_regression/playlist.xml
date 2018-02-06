@@ -25,7 +25,6 @@
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
-			<subset>SE100</subset>
 		</subsets>
 		<tags>
 			<tag>extended</tag>
@@ -44,7 +43,6 @@
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
-			<subset>SE100</subset>
 		</subsets>
 		<tags>
 			<tag>extended</tag>
@@ -61,6 +59,30 @@
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_beans$(Q); \
 	$(TEST_STATUS)</command>
+		<platformRequirements>^os.mac</platformRequirements>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<tags>
+			<tag>openjdk</tag>
+			<tag>extended</tag>
+		</tags>
+	</test>
+	<test>
+	<test>
+		<testCaseName>jdk_beans_mac</testCaseName>
+		<command>$(JAVA_COMMAND) -Djava.library.path="/usr/X11/lib" -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_TEST_DIR):jdk_beans$(Q); \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.mac</platformRequirements>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
