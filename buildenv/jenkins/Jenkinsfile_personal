@@ -74,7 +74,7 @@ pipeline {
                 	withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
                 	"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
                 	"JAVA_VERSION=${params.JAVA_VERSION}"]) {
-						wrap([$class: 'Xvfb') {
+						wrap([$class: 'Xvfb']) {
                 			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST ${params.TARGET}"
 						}
 					}
