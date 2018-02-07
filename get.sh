@@ -23,7 +23,7 @@ usage ()
 {
 	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
-	echo '                --jvmversion|-v openjdk9-openj9 | openjdk9 | openjdk8'
+	echo '                --jvmversion|-v openjdk8 | openjdk8-openj9 | openjdk9 | openjdk9-openj9 | openjdk10 | openjdk10-sap'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
@@ -79,7 +79,6 @@ getBinaryOpenjdk()
 	fi
 	cd openjdkbinary
 	
-	
 	jar_file_name=`ls`
 	if [[ $jar_file_name == *jar ]]; then
 		jar -xf $jar_file_name
@@ -93,18 +92,20 @@ getBinaryOpenjdk()
 	mv $dirName j2sdk-image
 }
 
-getTestDependencies()
+getTestKitGen()
 {
-	cd $TESTDIR/TestConfig
-	mkdir lib
-	cd lib
-	echo 'Get third party libs...'
-	wget -q --output-document=asm-all-5.0.1.jar http://download.forge.ow2.org/asm/asm-5.0.1.jar
-	wget -q --no-check-certificate https://downloads.sourceforge.net/project/junit/junit/4.10/junit-4.10.jar
+	cd $TESTDIR
+	git clone https://github.com/eclipse/openj9.git
+	cd openj9
+	git filter-branch --subdirectory-filter test/TestConfig
+
+	rm extraSettings.mk
+	cd $TESTDIR
+	mv openj9 TestConfig
 }
 
 parseCommandLineArgs "$@"
+getTestKitGen
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 fi
-getTestDependencies

@@ -25,10 +25,15 @@
 	--memoryLimit=700 --time=60 --idletime=300 --warmup=1 >$(REPORTDIR)$(D)std.out 2>&1 ; \
 	${TEST_STATUS}</command>
 		<platformRequirements>os.linux,arch.x86,bits.64,^os.win</platformRequirements>
-		<tags>
-			<tag>perf</tag>
-            <tag>hotspot</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>
@@ -48,10 +53,15 @@
 	./runIdleTest.sh $(REPORTDIR); \
 	${TEST_STATUS}</command>
 		<platformRequirements>os.linux,arch.x86,bits.64,^os.win</platformRequirements>
-		<tags>
-			<tag>perf</tag>
-            <tag>openj9</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 		<subsets>
 			<subset>SE80</subset>
 			<subset>SE90</subset>

@@ -1,7 +1,7 @@
 #!groovy
 /* template jenkinsfile for adoptopenjdk test builds*/
 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
-def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', extended:'openjdk_regression', runtest:'' ]
+def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', runtest:'' ]
 TESTPROJECT=TESTPROJECTS["$TARGET"]
 def test() {
 	timeout(time: 6, unit: 'HOURS') {
@@ -13,7 +13,19 @@ def test() {
 				env.JAVA_VERSION = "${JAVA_VERSION}"
 				env.SPEC = "${SPEC}"
 				env.BUILD_LIST= "${TESTPROJECT}"
+				if (JVM_VERSION.contains('openj9')) {
+					JAVA_IMPL = 'openj9'
+				} else if (JVM_VERSION.contains('sap')) {
+					JAVA_IMPL = 'sap'
+				} else {
+					JAVA_IMPL = 'hotspot'
+				}
+				env.JAVA_IMPL= "${JAVA_IMPL}"
+				if (TARGET.contains('openjdk')) {
+					env.DIAGNOSTICLEVEL ='noDetails'
+				}
 				sh 'printenv'
+				
 				sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
 				sh "chmod 755 ${OPENJDK_TEST}/get.sh"
 				if (fileExists('openjdkbinary')) {
@@ -38,7 +50,6 @@ def test() {
 				sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 			}
 		}
-		
 		stage('Build') {
 			timestamps{
 				echo 'Building tests...'
@@ -48,7 +59,7 @@ def test() {
 		stage('Test') {
 			timestamps{
 				echo 'Running tests...'
-				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST $TARGET"
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
 			}
 		}
 		stage('Post') {
@@ -57,7 +68,7 @@ def test() {
 				archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
 				junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
 				archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
-				if (params.TARGET == 'system') {  
+				if (params.TARGET == 'system') {
 		       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
 		       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
 			    }
