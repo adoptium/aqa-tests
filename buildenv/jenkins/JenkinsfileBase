@@ -1,7 +1,7 @@
 #!groovy
 /* template jenkinsfile for adoptopenjdk test builds*/
 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
-def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', runtest:'' ]
+def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', runtest:'', sanity:'', extended:'' ]
 TESTPROJECT=TESTPROJECTS["$TARGET"]
 def test() {
 	timeout(time: 6, unit: 'HOURS') {
