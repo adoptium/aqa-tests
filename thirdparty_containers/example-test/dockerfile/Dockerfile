@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This Dockerfile in thirdpart_containers/scala/dockerfile dir is used to create an image with
+# This Dockerfile in thirdparty_containers/example-test/dockerfile dir is used to create an image with
 # AdoptOpenJDK jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
