@@ -26,9 +26,57 @@
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
-
+	
+	<if>
+		<equals arg1="${JAVA_VERSION}" arg2="SE80" />
+		<then>
+			<property name="JDKVERSION" value="openjdk8" />
+		</then>
+		<elseif>
+			<equals arg1="${JAVA_VERSION}" arg2="SE90" />
+			<then>
+				<property name="JDKVERSION" value="openjdk9" />
+			</then>
+		</elseif>
+		<elseif>	
+			<equals arg1="${JAVA_VERSION}" arg2="SE100" />
+			<then>
+				<property name="JDKVERSION" value="openjdk10" />
+			</then>
+		</elseif>
+		<else>
+			<echo message="Unsupported JAVA_VERSION supplied"/>
+		</else>
+	</if>
+	
+	<echo message="JAVA_VERSION = ${JAVA_VERSION}" />
+	<echo message="JAVA_IMPL = ${JAVA_IMPL}" />
+	
+	<if>
+	    <contains string="${JAVA_IMPL}" substring="openj9" />
+	    <then>
+	    	<property name="JVM_VERSION" value="${JDKVERSION}-openj9" />
+	    </then>
+		<elseif>	
+			<contains string="${JAVA_IMPL}" substring="sap" />
+			<then>
+				<property name="JVM_VERSION" value="${JDKVERSION}-sap" />
+			</then>
+		</elseif>
+		<elseif>	
+			<contains string="${JAVA_IMPL}" substring="hotspot" />
+			<then>
+				<property name="JVM_VERSION" value="${JDKVERSION}" />
+			</then>
+		</elseif>
+	    <else>
+	    	<echo message="Unsupported JAVA_IMPL supplied"/>
+	    </else>
+	</if>
+ 
 	<target name="build" depends="dist">
 		<subant target="">
+			<property name="JVM_VERSION" value="${JVM_VERSION}"/>
 			<fileset dir="." includes="*/build.xml" />
 		</subant>		
 	</target>
