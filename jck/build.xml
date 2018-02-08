@@ -21,12 +21,11 @@
 	<!-- set global properties for this build -->
 	<property name="SYSTEMTEST_ROOT" value="${basedir}/../systemtest" />
 	<property name="DEST" value="${BUILD_ROOT}/jck" />
-	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
-	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest/${JAVA_VERSION}" />
+	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest" />
 	<property environment="env" />
 
 	<target name="init">
-		<mkdir dir="${dist}" />
+		<mkdir dir="${DEST}" />
 		<if>
 			<not>
 				<available file="${SYSTEMTEST_BUILD_ROOT}" type="dir" />
@@ -119,10 +118,7 @@
 			</then>
 		</if>
 		<copy todir="${DEST}">
-			<fileset dir="${basedir}" includes="*.mk" />
-		</copy>
-		<copy todir="${dist}">
-			<fileset dir="${basedir}" includes="*.xml"/>
+			<fileset dir="${basedir}" includes="*.mk, *.xml" />
 		</copy>
 		<copy todir="${JCK_ROOT}/">
 			<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
