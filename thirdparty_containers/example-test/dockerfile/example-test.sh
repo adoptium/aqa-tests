@@ -48,7 +48,7 @@ type -p java
 echo "java -version is: \n"
 java -version
 
-# Replace the following with the initial command lines that triggers execution your test
+# Replace the following with the initial command lines that trigger execution of your test
 # For this example, we will simply compile and run the ExampleTest class
 cd /tpc-example
 ls .
