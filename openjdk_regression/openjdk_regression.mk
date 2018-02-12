@@ -11,26 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
-ifeq ($(JAVA_VERSION), SE80)
-	JDKVERSION = openjdk8
-else
-	ifeq ($(JAVA_VERSION), SE90)
-		JDKVERSION = openjdk9
-	else
-		ifeq ($(JAVA_VERSION), SE100)
-			JDKVERSION = openjdk10
-		endif
-	endif
-endif
-
-ifneq (, $(findstring openj9, $(JAVA_IMPL)))
-	JVM_VERSION = $(JDKVERSION)-openj9
-else
-	JVM_VERSION = $(JDKVERSION)
-endif
-
-$(info set JVM_VERSION to $(JVM_VERSION))
-
 NPROCS:=1
 OS:=$(shell uname -s)
 

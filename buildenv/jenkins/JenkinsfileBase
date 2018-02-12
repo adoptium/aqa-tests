@@ -11,6 +11,7 @@ def test() {
 				env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 				env.JAVA_HOME = "${JAVA_BIN}/.."
 				env.JAVA_VERSION = "${JAVA_VERSION}"
+				env.JVM_VERSION = "${JVM_VERSION}"
 				env.SPEC = "${SPEC}"
 				env.BUILD_LIST= "${TESTPROJECT}"
 				if (JVM_VERSION.contains('openj9')) {
