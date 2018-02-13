@@ -12,6 +12,11 @@ def test() {
 				env.JAVA_HOME = "${JAVA_BIN}/.."
 				env.JAVA_VERSION = "${JAVA_VERSION}"
 				env.JVM_VERSION = "${JVM_VERSION}"
+				try{
+					CUSTOMIZED_SDK_URL = "${CUSTOMIZED_SDK_URL}"
+				} catch (MissingPropertyException e) {
+					CUSTOMIZED_SDK_URL = ''
+				}
 				env.SPEC = "${SPEC}"
 				env.BUILD_LIST= "${TESTPROJECT}"
 				if (JVM_VERSION.contains('openj9')) {
@@ -39,14 +44,13 @@ def test() {
 						deleteDir()
 					}
 				}
-				if (SDK_RESOURCE == 'upstream') {
+				if (SDK_RESOURCE == 'upstream' && CUSTOMIZED_SDK_URL == '') {
 					dir('openjdkbinary') {
 						step([$class: 'CopyArtifact',
 							fingerprintArtifacts: true,
 							projectName: "$UPSTREAM_JOB_NAME",
 							selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
 					}
-					CUSTOMIZED_SDK_URL=''
 				}
 				sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 			}
