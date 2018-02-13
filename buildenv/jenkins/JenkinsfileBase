@@ -67,8 +67,8 @@ def test() {
 			timestamps{
 				step([$class: "TapPublisher", testResults: "**/*.tap"])
 				archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
-				junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.xml, **/junitreports/**/*.xml'
-				archiveArtifacts artifacts: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
+				junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
+				archiveArtifacts artifacts: '**/work/**/*.jtr, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
 				if (params.TARGET == 'system') {
 		       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
 		       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
