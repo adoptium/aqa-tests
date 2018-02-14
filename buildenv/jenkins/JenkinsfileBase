@@ -22,7 +22,7 @@ def test() {
 					JAVA_IMPL = 'hotspot'
 				}
 				env.JAVA_IMPL= "${JAVA_IMPL}"
-				if (TARGET.contains('openjdk')) {
+				if (TARGET.contains('jdk')) {
 					env.DIAGNOSTICLEVEL ='noDetails'
 				}
 				sh 'printenv'
