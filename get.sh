@@ -79,9 +79,7 @@ getBinaryOpenjdk()
 	cd openjdkbinary
 	
 	jar_file_name=`ls`
-	if [[ $jar_file_name == *jar ]]; then
-		jar -xf $jar_file_name
-	elif [[ $jar_file_name == *zip ]]; then
+	if [[ $jar_file_name == *zip || $jar_file_name == *jar ]]; then
 		unzip -q $jar_file_name -d .
 	else
 		echo $jar_file_name 
