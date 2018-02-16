@@ -15,7 +15,7 @@ pipeline {
 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
 		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
-		string (defaultValue: "N/A", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
+		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
 		}
 	options {
     	skipDefaultCheckout true

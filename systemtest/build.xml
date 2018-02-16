@@ -82,19 +82,6 @@
 	</target>
 	
 	<target name="dist" description="generate the distribution">
-		<if>
-			<not>
-				<available file="${DEST}/openjdk-systemtest" type="dir" />
-			</not>
-			<then>
-				<copy todir="${DEST}/stf">
-					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
-				</copy>
-				<copy todir="${DEST}/openjdk-systemtest">
-					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
-				</copy>
-			</then>
-		</if>
 		<copy todir="${DEST}">
 			<fileset dir="${basedir}" includes="**" />
 		</copy>

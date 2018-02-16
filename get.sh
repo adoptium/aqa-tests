@@ -64,19 +64,18 @@ parseCommandLineArgs()
 getBinaryOpenjdk()
 {
 	cd $SDKDIR
-	if [ "$SDK_RESOURCE" != "upstream" ]; then
-		echo 'Get binary openjdk...'
-		mkdir openjdkbinary
-		download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
-		if [ "$SDK_RESOURCE" == "customized" ]; then
-			download_url=$CUSTOMIZED_SDK_URL
+	if [[ "$CUSTOMIZED_SDK_URL" == "" ]]; then
+		if [[ "$SDK_RESOURCE" == "nightly" || "$SDK_RESOURCE" == "release" ]]; then
+			echo 'Get binary openjdk...'
+			mkdir openjdkbinary
+			download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
+			wgetSDK
 		fi
-		wget --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
-		if [ $? -ne 0 ]; then
-			echo "Failed to retrieve the jdk binary, exiting"
-			exit 1
-		fi
+	else 
+		download_url=$CUSTOMIZED_SDK_URL
+		wgetSDK
 	fi
+	
 	cd openjdkbinary
 	
 	jar_file_name=`ls`
@@ -84,7 +83,8 @@ getBinaryOpenjdk()
 		jar -xf $jar_file_name
 	elif [[ $jar_file_name == *zip ]]; then
 		unzip -q $jar_file_name -d .
-	else 
+	else
+		echo $jar_file_name 
 		tar -zxf $jar_file_name
 	fi
 	jarDir=`ls -d */`
@@ -102,6 +102,15 @@ getTestKitGen()
 	rm extraSettings.mk
 	cd $TESTDIR
 	mv openj9 TestConfig
+}
+
+wgetSDK()
+{
+	wget --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
+	if [ $? -ne 0 ]; then
+		echo "Failed to retrieve the jdk binary, exiting"
+		exit 1
+	fi
 }
 
 parseCommandLineArgs "$@"
