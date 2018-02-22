@@ -65,7 +65,7 @@ getBinaryOpenjdk()
 {
 	cd $SDKDIR
 	if [[ "$CUSTOMIZED_SDK_URL" == "" ]]; then
-		if [[ "$SDK_RESOURCE" == "nightly" || "$SDK_RESOURCE" == "release" ]]; then
+		if [[ "$SDK_RESOURCE" == "nightly" || "$SDK_RESOURCE" == "releases" ]]; then
 			echo 'Get binary openjdk...'
 			mkdir openjdkbinary
 			download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
