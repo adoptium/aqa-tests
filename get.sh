@@ -87,13 +87,17 @@ getBinaryOpenjdk()
 	fi
 	jarDir=`ls -d */`
 	dirName=${jarDir%?}
-	mv $dirName j2sdk-image
+	if [ "$dirName" != "j2sdk-image" ]; then
+		mv $dirName j2sdk-image
+	else
+		echo "dirName is equal to j2sdk-image, skip moving"
+	fi
 }
 
 getTestKitGen()
 {
 	cd $TESTDIR
-	git clone https://github.com/eclipse/openj9.git
+	git clone --depth 1 https://github.com/eclipse/openj9.git
 	cd openj9
 	git filter-branch --subdirectory-filter test/TestConfig
 
@@ -112,7 +116,10 @@ wgetSDK()
 }
 
 parseCommandLineArgs "$@"
-getTestKitGen
+if [ ! -d "$TESTDIR/TestConfig" ]; then
+	getTestKitGen
+fi
+
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 fi
