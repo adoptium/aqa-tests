@@ -199,6 +199,30 @@
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=api/signaturetest,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements><!-- Temporarily for linux_x86-64 Jenkins machines only. -->
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+		</subsets>
+	</test>	
+	<test>
 		<testCaseName>jck-runtime-vm-constantpool</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
