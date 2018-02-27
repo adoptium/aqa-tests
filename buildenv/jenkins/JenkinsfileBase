@@ -2,16 +2,16 @@
 /* template jenkinsfile for adoptopenjdk test builds*/
 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def getBuildList() {
-	stage('GetBuildList') {
-		def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
-		String fullTarget="${TARGET}"
-		String[] levelTargets = fullTarget.split('\\.')
-		String simpleTarget = levelTargets[-1]
-		TESTPROJECT = TESTPROJECTS[simpleTarget]
-	}
+	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
+	String fullTarget="${TARGET}"
+	String[] levelTargets = fullTarget.split('\\.')
+	String groupTarget = levelTargets[-1]
+	String[] partsTarget = groupTarget.split('_|-')
+	String simpleTarget = partsTarget[0]
+	def TESTPROJECT = TESTPROJECTS[simpleTarget]
+	return TESTPROJECT
 }
 def test() {
-	getBuildList()
 	timeout(time: 6, unit: 'HOURS') {
 		stage('Setup') {
 			timestamps{
@@ -26,7 +26,6 @@ def test() {
 					CUSTOMIZED_SDK_URL = ''
 				}
 				env.SPEC = "${SPEC}"
-				env.BUILD_LIST= "${TESTPROJECT}"
 				if (JVM_VERSION.contains('openj9')) {
 					JAVA_IMPL = 'openj9'
 				} else if (JVM_VERSION.contains('sap')) {
@@ -65,13 +64,16 @@ def test() {
 		}
 		stage('Build') {
 			timestamps{
-				echo 'Building tests...'
-				if (JAVA_VERSION == 'SE80') {
-					sh "chmod 755 ${JAVA_BIN}/java"
-					sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
-					sh "chmod 755 ${JAVA_BIN}/../../bin/java"
+				withEnv(["BUILD_LIST=${getBuildList()}"]) {
+					sh 'printenv'
+					echo 'Building tests...'
+					if (JAVA_VERSION == 'SE80') {
+						sh "chmod 755 ${JAVA_BIN}/java"
+						sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
+						sh "chmod 755 ${JAVA_BIN}/../../bin/java"
+					}
+					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
 				}
-				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
 			}
 		}
 		stage('Test') {
