@@ -11,6 +11,51 @@ def getBuildList() {
 	def TESTPROJECT = TESTPROJECTS[simpleTarget]
 	return TESTPROJECT
 }
+
+def getJCK(){
+	dir("$WORKSPACE/jck/"){
+		def jck_suite = "runtime"
+		def jck_version = "0"
+		if (env.JCK_VERSION == "jck8b") {
+			jck_version = "8b"
+		} else if (env.JCK_VERSION == "jck9") {
+			jck_version = "9"
+		} else if (env.JCK_VERSION == "jck10") {
+			jck_version = "10"
+		} else {
+			error_message =  "FAILED: JCK version ${env.JCK_VERSION} are not correctly defined \n"
+			echo error_message
+			currentBuild.result = 'FAILURE'
+			error(error_message)
+		}
+		def server = Artifactory.server 'na.artifactory.swg-devops'
+		def downloadSpec_JCK = """{
+		"files": [
+			{
+			"pattern": "${JCK_MATERIAL_SERVER_ID}/jck-test/jck-src/${env.JCK_VERSION}/JCK-${jck_suite}-${jck_version}.zip",
+			"target": "./"
+			},
+			{
+			"pattern": "${JCK_MATERIAL_SERVER_ID}/jck-test/jck-src/${env.JCK_VERSION}/${env.JCK_VERSION}_configs.zip",
+			"target": "./"
+			}
+		]
+		}"""
+		server.download(downloadSpec_JCK)
+		sh """
+			df -h
+			mv ./jck-test/jck-src/${env.JCK_VERSION}/* ./
+			ls ./
+			echo "unzipping jck materials"
+			unzip -o -q ./${env.JCK_VERSION}_configs.zip  -d ./${env.JCK_VERSION}/
+			unzip -o -q ./JCK-${jck_suite}-${jck_version}.zip -d ./${env.JCK_VERSION}/
+			echo "unzipping jck materials successfully"
+			ls ./${env.JCK_VERSION}/JCK-${jck_suite}-${jck_version}/
+			ls ./${env.JCK_VERSION}/
+		"""
+	}
+}
+
 def test() {
 	timeout(time: 6, unit: 'HOURS') {
 		stage('Setup') {
@@ -26,6 +71,29 @@ def test() {
 					CUSTOMIZED_SDK_URL = ''
 				}
 				env.SPEC = "${SPEC}"
+				env.BUILD_LIST = "${getBuildList()}"
+				
+				//download JCK test materials if BUILD_LIST is jck
+				if (env.BUILD_LIST == "jck") {
+					if ( fileExists ("$WORKSPACE/jck/") ) {
+						dir("$WORKSPACE/jck/") {
+							deleteDir()
+						}
+					}
+					
+					if ( JAVA_VERSION == "SE80" ) {
+						env.JCK_VERSION = "jck8b"
+					} else if ( JAVA_VERSION == "SE90" ) {
+						env.JCK_VERSION = "jck9"
+					} else if ( JAVA_VERSION == "SE100" ) {
+						env.JCK_VERSION = "jck10"
+					}
+					echo "env.BUILD_LIST is jck, starting preparing JCK test materials."
+					getJCK()
+					env.JCK_ROOT = "$WORKSPACE/jck/"
+					
+				}
+				
 				if (JVM_VERSION.contains('openj9')) {
 					JAVA_IMPL = 'openj9'
 				} else if (JVM_VERSION.contains('sap')) {
@@ -64,16 +132,14 @@ def test() {
 		}
 		stage('Build') {
 			timestamps{
-				withEnv(["BUILD_LIST=${getBuildList()}"]) {
-					sh 'printenv'
-					echo 'Building tests...'
-					if (JAVA_VERSION == 'SE80') {
-						sh "chmod 755 ${JAVA_BIN}/java"
-						sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
-						sh "chmod 755 ${JAVA_BIN}/../../bin/java"
-					}
-					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+				sh 'printenv'
+				echo 'Building tests...'
+				if (JAVA_VERSION == 'SE80') {
+					sh "chmod 755 ${JAVA_BIN}/java"
+					sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
+					sh "chmod 755 ${JAVA_BIN}/../../bin/java"
 				}
+				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
 			}
 		}
 		stage('Test') {
