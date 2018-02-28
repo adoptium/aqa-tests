@@ -144,8 +144,21 @@ def test() {
 		}
 		stage('Test') {
 			timestamps{
-				echo 'Running tests...'
-				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+				if (env.BUILD_LIST == "jck" && env.SPEC == "linux_x86-64"){
+					wrap([$class: 'Xvfb', autoDisplayName: true]) {
+						def DISPLAY = sh (
+							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						echo 'Running tests...'
+						sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+					}
+				} else {
+					echo 'Running tests...'
+					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+				}
 			}
 		}
 		stage('Post') {
@@ -158,6 +171,10 @@ def test() {
 					if (params.TARGET == 'system') {
 						sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
 						archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
+					}
+					if (env.BUILD_LIST == 'jck') {
+						sh 'tar -zcf jck-test-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
+						archiveArtifacts artifacts: '**/jck-test-results.tar.gz', fingerprint: true, allowEmptyArchive: true
 					}
 				}
 			}
