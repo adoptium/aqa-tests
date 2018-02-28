@@ -47,16 +47,17 @@ JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 # Add any extra options
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
-ifdef JTREG_TEST_DIR
+ifdef OPENJDK_DIR 
 # removing "
-JTREG_TEST_DIR := $(subst ",,$(JTREG_TEST_DIR))
+OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
 else
-JTREG_TEST_DIR := $(TEST_ROOT)$(D)openjdk_regression$(D)openjdk-jdk$(D)jdk$(D)test
+OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk_regression$(D)openjdk-jdk
 endif
 
-ifdef JTREG_HOTSPOT_TEST_DIR
-# removing "
-JTREG_HOTSPOT_TEST_DIR := $(subst ",,$(JTREG_TEST_DIR))
+ifneq (,$(findstring $(JAVA_VERSION),SE80-SE90))
+	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
+	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
 else
-JTREG_HOTSPOT_TEST_DIR := $(TEST_ROOT)$(D)openjdk_regression$(D)openjdk-jdk$(D)hotspot$(D)test
+	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
+	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot
 endif
