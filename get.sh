@@ -101,7 +101,6 @@ getTestKitGen()
 	cd openj9
 	git filter-branch --subdirectory-filter test/TestConfig
 
-	rm extraSettings.mk
 	cd $TESTDIR
 	mv openj9 TestConfig
 }
