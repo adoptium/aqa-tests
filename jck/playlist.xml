@@ -13,6 +13,31 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+	<include>jck.mk</include>
+	<test>
+		<testCaseName>jck-runtime-custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-java-args-setup=$(Q)$(EXTRA_OPTIONS)$(Q) \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=$(JCK_TEST_TARGET),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+		</subsets>
+	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-instrument</testCaseName>
 		<variations>
