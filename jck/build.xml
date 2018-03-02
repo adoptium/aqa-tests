@@ -118,7 +118,10 @@
 			</then>
 		</if>
 		<copy todir="${DEST}">
-			<fileset dir="${basedir}" includes="*.mk, *.xml" />
+			<fileset dir="${basedir}">
+				<exclude name="jck_root/"/>
+				<exclude name="README.md"/>
+			</fileset>
 		</copy>
 		<copy todir="${JCK_ROOT}/">
 			<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
