@@ -5,13 +5,13 @@ pipeline {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
 		choice (choices: 'x64_linux\nx64_mac\ns390x_linux\nppc64le_linux\naarch64_linux', description: 'PLATFORM?', name: 'PLATFORM')
-		choice (choices: 'linux_x86-64\nmac_x86-64\nlinux_390-64\nlinux_ppc-64_le\nlinux_arm', description: 'SPEC?', name: 'SPEC')
+		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\ninux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm', description: 'SPEC?', name: 'SPEC')
 		choice (choices: 'SE80\nSE90\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		choice (choices: 'openjdk8\nopenjdk8-openj9\nopenjdk9\nopenjdk9-openj9\nopenjdk10\nopenjdk10-openj9\nopenjdk10-sap', description: 'What is JVM Version?', name: 'JVM_VERSION')
 		string (defaultValue: '', description: 'Specific test project, leave blank by default for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
-		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ntop level: openjdk, sanity, extended, system, jck, functional, perf, etc\ndirectory level: prefix a directory with test (eg test_systemtest)\nindividual test: jdk_beans_0, etc', name: 'TARGET')
-		choice (choices: 'linux&&x64&&test\nmac&&x64&&test\nwindows&&x64&&test', description: 'What is machine label?', name: 'MACHINE_LABEL')
+		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
+ 		choice (choices: 'linux&&x64&&test\nmac&&x64&&test\nwindows&&x64&&test\nsw.tool.docker', description: 'What is machine label?', name: 'MACHINE_LABEL')
 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
 		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
@@ -22,16 +22,18 @@ pipeline {
     	timeout(time: 6, unit: 'HOURS')
   	}
 	environment {
-                JCL_VERSION='current'
-                OPENJDK_TEST="$WORKSPACE/openjdk-tests"
-                SPEC="${SPEC}"
-                BUILD_LIST="$TESTPROJECT"
-                REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
-                JVM_VERSION="${JVM_VERSION}"
-                JAVA_IMPL="${JAVA_IMPL}"
-				DIAGNOSTICLEVEL ='failure'
+		JCL_VERSION='current'
+		OPENJDK_TEST="$WORKSPACE/openjdk-tests"
+		JAVA_HOME="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}"
+		JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+		SPEC="${SPEC}"
+		JAVA_VERSION="${JAVA_VERSION}"
+		BUILD_LIST="${TESTPROJECT}"
+		REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
+		JVM_VERSION="${JVM_VERSION}"
+		JAVA_IMPL="${JAVA_IMPL}"
+		DIAGNOSTICLEVEL ='failure'
     }
-    
     stages {
         stage('Setup') {
             steps {
@@ -64,11 +66,7 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Building tests...'
-                	withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
-                	"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
-                	"JAVA_VERSION=${params.JAVA_VERSION}"]) {
-                		sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
-					}
+                	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
                 }
             }
         }
@@ -81,10 +79,8 @@ pipeline {
 							DIAGNOSTICLEVEL ='noDetails'
 						}
 					}
-                	withEnv(["JAVA_HOME=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}",
-                	"JAVA_BIN=$WORKSPACE/openjdkbinary/j2sdk-image/${(params.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin",
-                	"JAVA_VERSION=${params.JAVA_VERSION}",
-                	"DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
+					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
+						sh 'printenv'
                 		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
 					}
 				}
