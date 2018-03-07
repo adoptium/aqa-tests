@@ -144,7 +144,7 @@ def test() {
 		}
 		stage('Test') {
 			timestamps{
-				if (env.BUILD_LIST == "jck" && env.SPEC == "linux_x86-64"){
+				if (env.BUILD_LIST == "jck" && env.SPEC.contains('linux_x86-64') ){
 					wrap([$class: 'Xvfb', autoDisplayName: true]) {
 						def DISPLAY = sh (
 							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
