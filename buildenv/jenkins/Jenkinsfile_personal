@@ -98,6 +98,7 @@ pipeline {
     	always {
 			step([$class: "TapPublisher", testResults: "**/*.tap"])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
+			cleanWs cleanWhenFailure: false
 		}
 		unstable {
 			archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
