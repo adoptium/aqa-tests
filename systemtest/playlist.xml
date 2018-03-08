@@ -10,6 +10,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -34,6 +35,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=ConcurrentLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -60,6 +62,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=DirectByteBufferLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -85,6 +88,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=LangLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -110,6 +114,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=LockingLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -135,6 +140,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=MathLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -160,6 +166,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test-args=$(Q)workload=autoSimd$(Q) \
 	-test=MathLoadTest; \
@@ -186,6 +193,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=MathLoadTest \
 	-test-args=$(Q)workload=bigDecimal$(Q); \
@@ -212,6 +220,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleThreadLoadTest; \
 	$(TEST_STATUS)</command> 
@@ -238,6 +247,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleInvocationLoadTest; \
 	$(TEST_STATUS)</command>	
@@ -264,6 +274,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveMultiThreadLoadTest; \
 	$(TEST_STATUS)</command>	
@@ -290,6 +301,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=NioLoadTest; \
 	$(TEST_STATUS)</command>
@@ -315,6 +327,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=UtilLoadTest; \
 	$(TEST_STATUS)</command>
@@ -340,6 +353,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
 	$(TEST_STATUS)</command>
@@ -365,6 +379,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>	
@@ -391,6 +406,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=JdiTest; \
 	$(TEST_STATUS)</command>	
@@ -418,6 +434,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test-args=$(Q)workload=daa1$(Q) \
 	-test=DaaLoadTest; \
@@ -447,6 +464,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test-args=$(Q)workload=daa2$(Q) \
 	-test=DaaLoadTest; \
@@ -476,6 +494,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test-args=$(Q)workload=daa3$(Q) \
 	-test=DaaLoadTest; \
@@ -505,6 +524,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
@@ -533,8 +553,8 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) \
 	-results-root=$(REPORTDIR) \
-	-java-args=$(Q)-Xdisableexcessivegc$(Q) \
 	-test=HeapHogLoadTest; \
 	$(TEST_STATUS)</command>
 		<subsets>
@@ -562,8 +582,8 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) \
 	-results-root=$(REPORTDIR) \
-	-java-args=$(Q)-Xnoclassgc$(Q) \
 	-test=ObjectTreeLoadTest; \
 	$(TEST_STATUS)</command>
 		<subsets>
@@ -591,6 +611,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesAPI; \
 	$(TEST_STATUS)</command>
@@ -620,6 +641,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkload; \
 	$(TEST_STATUS)</command>
@@ -648,6 +670,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase; \
 	$(TEST_STATUS)</command>
@@ -676,6 +699,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_IncreaseDecrease; \
 	$(TEST_STATUS)</command>
@@ -705,6 +729,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
@@ -734,6 +759,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
@@ -763,6 +789,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=SingleCL$(Q); \
@@ -792,6 +819,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiCL$(Q); \
@@ -821,6 +849,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
@@ -850,6 +879,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThreadMultiCL$(Q); \
@@ -879,6 +909,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=SingleCL$(Q); \
@@ -908,6 +939,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiCL$(Q); \
@@ -937,6 +969,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
@@ -966,6 +999,7 @@
 	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL$(Q); \
