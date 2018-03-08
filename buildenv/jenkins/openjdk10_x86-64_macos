@@ -10,5 +10,5 @@ node('mac&&x64&&test') {
     SPEC='mac_x86-64'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }

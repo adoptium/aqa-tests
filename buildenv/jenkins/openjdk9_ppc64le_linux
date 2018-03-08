@@ -10,5 +10,5 @@ node('linux&&ppc64le&&test') { //ppc64le build use "fedora" too, for now leave a
     SPEC='linux_ppc-64_cmprssptrs_le'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }
