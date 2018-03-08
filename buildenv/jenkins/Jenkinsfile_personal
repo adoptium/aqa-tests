@@ -66,6 +66,13 @@ pipeline {
             steps {
 				timestamps{
                 	echo 'Building tests...'
+                	script {
+	                	if (JAVA_VERSION == 'SE80') {
+							sh "chmod 755 ${JAVA_BIN}/java"
+							sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
+							sh "chmod 755 ${JAVA_BIN}/../../bin/java"
+						}
+					}
                 	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
                 }
             }
