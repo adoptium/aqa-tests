@@ -177,6 +177,7 @@ def test() {
 						archiveArtifacts artifacts: '**/jck-test-results.tar.gz', fingerprint: true, allowEmptyArchive: true
 					}
 				}
+				cleanWs cleanWhenFailure: false
 			}
 		}
 	}
