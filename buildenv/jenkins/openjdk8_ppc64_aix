@@ -10,5 +10,5 @@ node('aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1') {
     SPEC='aix_ppc-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }

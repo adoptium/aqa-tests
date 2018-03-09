@@ -10,5 +10,5 @@ node('aix&&ppc64&&test') {
     SPEC='aix_ppc-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }

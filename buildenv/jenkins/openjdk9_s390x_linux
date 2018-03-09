@@ -10,5 +10,5 @@ node('linux&&s390x&&test') {
     SPEC='linux_390-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }
