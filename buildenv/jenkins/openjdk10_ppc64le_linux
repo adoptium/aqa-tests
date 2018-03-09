@@ -4,6 +4,14 @@
 	Set UPSTREAM_JOB_NAME(version_build_arch_os, for example: openjdk8_build_x86-64_linux)
 	Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
 LABEL='linux&&ppc64le&&test'
+
+node ("master") {
+	checkout scm
+	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+	jenkinsfile.setLabelParam()
+	cleanWs()
+}
+
 node("$LABEL") { //ppc64le build use "fedora" too, for now leave as is
     PLATFORM = 'ppc64le_linux'
     JAVA_VERSION = 'SE100'

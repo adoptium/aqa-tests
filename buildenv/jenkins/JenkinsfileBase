@@ -26,7 +26,6 @@ def stageTestBinaries() {
 }
 
 def setupEnv() {
-	env.JCL_VERSION = "current"
 	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JAVA_VERSION = "${JAVA_VERSION}"
@@ -209,6 +208,12 @@ def testBuild() {
 			post("${env.BUILD_LIST}")
 		}
 		
+	}
+}
+
+def setLabelParam() {
+	if( params.LABEL ) {
+		LABEL = params.LABEL
 	}
 }
 return this
