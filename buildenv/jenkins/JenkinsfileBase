@@ -182,6 +182,7 @@ def post() {
 				if (env.BUILD_LIST == 'jck') {
 					sh 'tar -zcf jck-test-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
 					archiveArtifacts artifacts: '**/jck-test-results.tar.gz', fingerprint: true, allowEmptyArchive: true
+					cleanWs()
 				}
 				cleanWs cleanWhenFailure: false
 			}
