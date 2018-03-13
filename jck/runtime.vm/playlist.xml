@@ -23,6 +23,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -46,6 +47,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/constantpool,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -69,6 +71,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/jvmti,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -92,6 +95,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/overview,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -115,6 +119,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/classfmt/clf,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -139,6 +144,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/module,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
@@ -161,6 +167,7 @@
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=vm/verifier,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
