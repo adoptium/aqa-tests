@@ -33,9 +33,9 @@
 
 
 This test directory contains:
-  * build.xml file - that clones AdoptOpenJDK/stf repo to pick up a test framework
-  * playlist.xml - to allow easy inclusion of JCK tests into automated builds
-  * jck.mk - define extra settings for JCK tests.
+  * `build.xml` file - that clones AdoptOpenJDK/stf repo to pick up a test framework
+  * `<test_subset>/playlist.xml` - to allow easy inclusion of JCK tests into automated builds
+  * `jck.mk` - define extra settings for running JCK tests.
 
 
 # How-to Run customized JCK test targets
