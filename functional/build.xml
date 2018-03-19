@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="functionalTests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		stage functionalTests Dependency
+	</description>
+	<property name="src" location="." />
+	<property name="DEST" value="${BUILD_ROOT}/functional" />
+	
+	<target name="getFunctionalTests" >
+		<exec executable="git" failonerror="false">
+			<arg line="clone --depth 1 -q https://github.com/eclipse/openj9.git" />
+		</exec>
+		<exec executable="git" dir='${src}/openj9' failonerror="false">
+			<arg line="filter-branch --subdirectory-filter test" />
+		</exec>
+		<move file="${src}/openj9" tofile="${src}"/>
+		<delete dir="openj9" />
+		<delete dir="TestConfig" />
+	</target>
+	
+	<target name="dist" depends="getFunctionalTests" description="generate the distribution">
+		<mkdir dir="${DEST}"/>
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml,*.mk"/>
+		</copy>
+	</target>
+
+	<target name="build" >
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
