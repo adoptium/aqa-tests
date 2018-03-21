@@ -1,6 +1,5 @@
 #!groovy
 /* template jenkinsfile for adoptopenjdk test builds*/
-OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def getBuildList() {
 	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
@@ -105,8 +104,8 @@ def setup() {
 			}
 			sh 'printenv'
 			
-			sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
-			sh "chmod 755 ${OPENJDK_TEST}/get.sh"
+			sh "chmod 755 ${WORKSPACE}/openjdk-tests/maketest.sh"
+			sh "chmod 755 ${WORKSPACE}/openjdk-tests/get.sh"
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -125,7 +124,7 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
+			sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 			env.JCK_ROOT = "$WORKSPACE/jck/"
 		}
 	}
@@ -141,12 +140,12 @@ def buildTest() {
 				sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
 				sh "chmod 755 ${JAVA_BIN}/../../bin/java"
 			}
-			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+			sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
 		}
 	}
 }
 
-def runTest() {
+def runTest(subDir) {
 	stage('Test') {
 		timestamps{
 			if (env.BUILD_LIST == "jck"){
@@ -158,11 +157,11 @@ def runTest() {
 					env.DISPLAY = "${DISPLAY}"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					echo 'Running tests...'
-					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/$subDir _$TARGET"
 				}
 			} else {
 				echo 'Running tests...'
-				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+				sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/$subDir _$TARGET"
 			}
 		}
 	}
@@ -191,10 +190,60 @@ def post() {
 }
 def testBuild() {
 	timeout(time: 6, unit: 'HOURS') {
-		setup()
-		buildTest()
-		runTest()
-		post()
+		def isParallel = false;
+		try {
+			isParallel = IS_PARALLEL;
+		} catch (MissingPropertyException e) {
+			echo "IS_PARALLEL is not defined, set isParallel to false"
+			isParallel = false
+		}
+		def BUILD_LIST = getBuildList()
+		if ( isParallel == "true" ) {
+			def testSubDirs = []
+			def testSubDirSize = 0
+			dir("$WORKSPACE/openjdk-tests/$BUILD_LIST") {
+				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().split()
+				testSubDirSize = testSubDirs.size()
+			}
+			echo "isParallel is $isParallel, testSubDirSize is $testSubDirSize, testSubDirs is $testSubDirs"
+			def parallel_tests = [:]
+			for (int i = 0; i < testSubDirSize; i++) {
+				def testSubDir = testSubDirs[i].trim();
+				parallel_tests[testSubDir] = {
+					node ("$LABEL") {
+						if ( fileExists ("$WORKSPACE/openjdk-tests") ) {
+							dir("$WORKSPACE/openjdk-tests") {
+								deleteDir()
+							}
+						}
+						def git_url = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+						def git_branch = "master"
+						try {
+							git_url = GIT_URL;
+						} catch (MissingPropertyException e) {
+							echo "GIT_URL is not defined, use default git_url"
+						}
+						try {
+							git_branch = GIT_BRANCH;
+						} catch (MissingPropertyException e) {
+							echo "GIT_BRANCH is not defined, use default git_branch"
+						}
+						sh "git clone -b $git_branch --depth 1 $git_url"
+						setup()
+						buildTest()
+						runTest("$BUILD_LIST/$testSubDir")
+						post()
+					}
+				}
+			}
+			parallel parallel_tests
+		} else {
+			echo "isParallel is $isParallel, running test in default mode"
+			setup()
+			buildTest()
+			runTest("$BUILD_LIST")
+			post()
+		}
 	}
 }
 return this
