@@ -100,7 +100,7 @@ def setup() {
 				JAVA_IMPL = 'hotspot'
 			}
 			env.JAVA_IMPL= "${JAVA_IMPL}"
-			if (TARGET.contains('jdk')) {
+			if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 				env.DIAGNOSTICLEVEL ='noDetails'
 			}
 			sh 'printenv'
