@@ -720,7 +720,7 @@
 		</impls>
 	</test>
 	
-	<!-- Exclude the following test on Linux ppc64le. Reason: AdoptOpenJDK/openjdk-systemtest/issues/79 -->
+	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: AdoptOpenJDK/openjdk-systemtest/issues/79 -->
 	<test>
 		<testCaseName>SharedClassesWorkloadTest_Softmx_Increase_JitAot</testCaseName>
 		<variations>
@@ -778,7 +778,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
+		<platformRequirements>os.linux,^arch.ppc,^arch.390</platformRequirements>
 	</test>
 	
 	<test>
