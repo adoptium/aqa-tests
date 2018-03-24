@@ -82,7 +82,7 @@ pipeline {
 				timestamps{
                 	echo 'Running tests...'
                 	script {
-						if (TARGET.contains('jdk')) {
+						if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 							DIAGNOSTICLEVEL ='noDetails'
 						}
 					}
