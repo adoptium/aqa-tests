@@ -27,17 +27,20 @@
 	<target name="stage_jck_material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
+			<not>
+				<available file="${env.JCK_ROOT}/${env.JCK_VERSION}" type="dir" />
+			</not>
 			<!-- jck materials don't exist, download them -->
 			<then>
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} does not exist, 
 					clone from ${env.JCK_GIT_REPO} to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
-				<exec executable="git" dir="${env.JCK_ROOT}" failonerror="true">
+				<exec executable="git" failonerror="true">
 					<arg value="clone" />
 					<arg value="--depth" />
 					<arg value="1" />
 					<arg value="--single-branch" />
 					<arg value="${env.JCK_GIT_REPO}" />
-					<arg value="${env.JCK_VERSION}" />
+					<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				</exec>
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
@@ -58,28 +61,18 @@
 
 	<target name="compile_jck">
 		<propertyregex property="jck_short_version" input="${env.JCK_VERSION}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
-		<propertyregex property="spec_short_name" defaultValue="${env.SPEC}" input="${env.SPEC}" regexp="([^\.]*)_cmprssptrs" select="\1" casesensitive="false" />
+		<propertyregex property="platform_short_name" defaultValue="${PLATFORM}" input="${PLATFORM}" regexp="([^\.]*)_cr.*$$" select="\1" casesensitive="false" />
 		<echo message="jck_short_version is ${jck_short_version}" />
-		<echo message="spec_short_name is {spec_short_name}" />
-		<if>
-			<not>
-				<available file="${env.JCK_ROOT}/${env.JCK_VERSION}/natives/${spec_short_name}" type="dir" />
-			</not>
-			<!-- jck natives doesn't exist, compile them -->
-			<then>
-				<exec executable="make" failonerror="true">
-					<arg value="-f" />
-					<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.test.jck/src/native/makefile" />
-					<arg value="PLATFORM=${spec_short_name}" />
-					<arg value="SRCDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/JCK-runtime-${jck_short_version}" />
-					<arg value="OUTDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/natives" />
-					<arg value="build" />
-				</exec>
-			</then>
-			<else>
-				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION}/natives/${spec_short_name} exists" />
-			</else>
-		</if>
+		<echo message="platform_short_name is ${platform_short_name}" />
+		<exec executable="make" failonerror="true">
+			<arg value="-f" />
+			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.test.jck/src/native/makefile" />
+			<arg value="PLATFORM=${platform_short_name}" />
+			<arg value="SRCDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/JCK-runtime-${jck_short_version}" />
+			<arg value="OUTDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/natives" />
+			<arg value="JAVA_HOME=${JDK_HOME}" />
+			<arg value="build" />
+		</exec>
 	</target>
 
 	<target name="init">
