@@ -149,7 +149,7 @@ def buildTest() {
 def runTest() {
 	stage('Test') {
 		timestamps{
-			if (env.BUILD_LIST == "jck" && env.SPEC.contains('linux_x86-64') ){
+			if (env.BUILD_LIST == "jck"){
 				wrap([$class: 'Xvfb', autoDisplayName: true]) {
 					def DISPLAY = sh (
 						script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
