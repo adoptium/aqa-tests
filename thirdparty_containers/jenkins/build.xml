@@ -7,11 +7,11 @@
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/jenkins-test" />
-	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
 	<property name="src" location="." />
+	<property name="jvm_version" location="${JVM_VERSION}" />
 
 	<target name="init">
-		<mkdir dir="${dist}"/>
+		<mkdir dir="${DEST}"/>
 	</target>
 
 	<target name="clean_image" depends="init" description="clean jenkins test docker image if there is one">

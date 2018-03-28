@@ -50,11 +50,11 @@ cd /jenkins
 ls .
 pwd
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
-mvn clean install -pl war -am -DskipTests
+mvn clean install -pl war -am -DskipTests -Denforcer.fail=false
 
 echo "Building jenkins completed"
 
 echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
-mvn surefire:test
+mvn surefire:test -Denforcer.fail=false
 
 echo "Executing jenkins tests alone completed"
