@@ -2,7 +2,7 @@
 /* template jenkinsfile for adoptopenjdk test builds*/
 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def getBuildList() {
-	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
+	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
 	String[] levelTargets = fullTarget.split('\\.')
 	String groupTarget = levelTargets[-1]
