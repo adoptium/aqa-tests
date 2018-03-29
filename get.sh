@@ -107,7 +107,7 @@ getTestKitGen()
 
 wgetSDK()
 {
-	wget --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
+	wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
 	if [ $? -ne 0 ]; then
 		echo "Failed to retrieve the jdk binary, exiting"
 		exit 1
