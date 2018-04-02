@@ -121,8 +121,8 @@ def setup() {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
 						fingerprintArtifacts: true,
-						projectName: "$UPSTREAM_JOB_NAME",
-						selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
+						projectName: "${params.UPSTREAM_JOB_NAME}",
+						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
 			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
