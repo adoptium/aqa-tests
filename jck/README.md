@@ -29,7 +29,7 @@
 
 4. Export `JAVA_HOME=<your_JDK_root>` as an environment variable
 
-5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in `openjdk-tests/README.md`.
+5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in [openjdk-tests/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/README.md).
 
 
 This test directory contains:
@@ -50,4 +50,21 @@ There is one custom JCK test targets `jck-runtime-custom`. This test target is u
 
 4. If you need to add extra Java options to JCK tests, you could export `EXTRA_OPTIONS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
 
-5. Follow the steps remaining in `openjdk-tests/README.md`
+5. Follow the steps remaining in [openjdk-tests/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/README.md)
+
+
+# How-to Run JCK test targets within Docker container
+
+With the help of this JCK dockerfile, users can execute JCK tests locally
+without having environment setup problems. To utilize the advantage of 
+docker-based JCK test, users can follow the step below to run JCK tests 
+locally within Docker container.
+
+1. Run the [openjdk-tests/get.sh](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/get.sh) to prepare the test framework and dependencies.
+
+2. Follow the readme in [openjdk-tests/buildenv/docker/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/docker/README.md) to build Docker image.
+
+3. Prepare the JCK materials locally and mount it to the Docker container when you
+   initialize the JCK docker image.
+
+4. Once you are in the Docker container, follow [How-to Run customized JCK test targets](#how-to-run-customized-jck-test-targets) or [How-to Run JCK Tests](#how-to-run-jck-tests) to run JCK tests locally.
