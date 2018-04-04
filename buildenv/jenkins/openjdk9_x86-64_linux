@@ -7,8 +7,8 @@ node('linux&&x64&&test') {
     PLATFORM = 'x64_linux'
     JAVA_VERSION = 'SE90'
     SDK_RESOURCE = 'upstream'
-    SPEC='linux_x86-64'
+    SPEC='linux_x86-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }

@@ -29,17 +29,18 @@
 
 4. Export `JAVA_HOME=<your_JDK_root>` as an environment variable
 
-5. The other steps will stay the same as instructed in `openjdk-tests/README.md`
+5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in `openjdk-tests/README.md`.
 
 
 This test directory contains:
-  * build.xml file - that clones AdoptOpenJDK/stf repo to pick up a test framework
-  * playlist.xml - to allow easy inclusion of JCK tests into automated builds
+  * `build.xml` file - that clones AdoptOpenJDK/stf repo to pick up a test framework
+  * `<test_subset>/playlist.xml` - to allow easy inclusion of JCK tests into automated builds
+  * `jck.mk` - define extra settings for running JCK tests.
 
 
 # How-to Run customized JCK test targets
 
-There are three custom JCK test targets `jck-runtime-custom`, `jck-compiler-custom` and `jck-devtools-custom`. With these three test targets, you can run custom JCK subsets.
+There is one custom JCK test targets `jck-runtime-custom`. This test target is used as an example to run custom JCK test target in JCK runtime suite.
 
 1. Follow the Steps 1 - 4 mentioned above. 
 

@@ -7,8 +7,8 @@ node('linux&&s390x&&test') {
     PLATFORM = 's390x_linux'
     JAVA_VERSION = 'SE90'
     SDK_RESOURCE = 'upstream'
-    SPEC='linux_390-64'
+    SPEC='linux_390-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
+    jenkinsfile.testBuild()
 }

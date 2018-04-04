@@ -10,5 +10,5 @@ node('linux&&arm64&&test') {
     SPEC='linux_arm'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.test()
-}ppc64_aix
+    jenkinsfile.testBuild()
+}
