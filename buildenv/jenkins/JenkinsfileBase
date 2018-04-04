@@ -19,7 +19,7 @@ def archiveTestBinaries() {
 }
 
 def stageTestBinaries() {
-	sh "wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${env.BUILD_URL}artifact/test-binaries.tar.gz " 
+	copyArtifacts filter: 'test-binaries.tar.gz', fingerprintArtifacts: true, projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_ID}")
 	sh "tar -xzf test-binaries.tar.gz"
 	echo pwd()
 	sh "ls"
@@ -189,7 +189,7 @@ def testBuild() {
 			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			def parallel_tests = [:]
 			for (int i = 0; i < testSubDirSize; i++) {
-				def testSubDir = testSubDirs[i].trim();
+				def testSubDir = testSubDirs[i].trim().replace("/","");
 				parallel_tests[testSubDir] = {
 					node ("$LABEL") {
 						setupParallelEnv()
@@ -197,9 +197,8 @@ def testBuild() {
 						if( env.BUILD_LIST == "jck") {
 							buildTest()
 						}
-						def test_name = testSubDir.replace("/","")
 						runTest("${env.BUILD_LIST}/${testSubDir}")
-						post("${env.BUILD_LIST}-${test_name}")
+						post("${env.BUILD_LIST}-${testSubDir}")
 					}
 				}
 			}
