@@ -1,18 +1,15 @@
 #!groovy
 pipeline {
-    agent {label "${params.MACHINE_LABEL}"}
+    agent {label "${getPlatformAndLabel(SPEC)[1]}"}
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
-		choice (choices: 'x64_linux\nx64_mac\ns390x_linux\nppc64le_linux\naarch64_linux', description: 'PLATFORM?', name: 'PLATFORM')
 		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm', description: 'SPEC?', name: 'SPEC')
 		choice (choices: 'SE80\nSE90\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
-		choice (choices: 'openjdk8\nopenjdk8-openj9\nopenjdk9\nopenjdk9-openj9\nopenjdk10\nopenjdk10-openj9\nopenjdk10-sap', description: 'What is JVM Version?', name: 'JVM_VERSION')
-		string (defaultValue: '', description: 'Specific test project, leave blank by default for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
-		string (defaultValue: 'runtest', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
- 		string (defaultValue: 'linux&&x64&&test', description: 'Machine label for jenkins node. Could be any reasonable and workable label For example:\nlinux&&x64&&test\nmac&&x64&&test\nwindows&&x64&&test\nlinux&&ppc64le&&test\nsw.tool.docker\nci.project.openj9&&sw.os.linux&&hw.arch.x86\n etc.', name: 'MACHINE_LABEL')
-		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
+		string (defaultValue: 'openjdk_regression', description: 'Specific test project, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
+		string (defaultValue: 'jdk_math', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
+ 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
 		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
@@ -30,7 +27,7 @@ pipeline {
 		JAVA_VERSION="${JAVA_VERSION}"
 		BUILD_LIST="${TESTPROJECT}"
 		REPO_URL="https://github.com/$personalRepo/openjdk-tests.git"
-		JVM_VERSION="${JVM_VERSION}"
+		JVM_VERSION="${getJVM_VERSION(JAVA_IMPL, JAVA_VERSION)}"
 		JAVA_IMPL="${JAVA_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
     }
@@ -58,7 +55,8 @@ pipeline {
 			        ])
 			        sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
                 	sh 'chmod 755 $OPENJDK_TEST/get.sh'
-                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${params.PLATFORM} -v ${params.JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
+                	
+                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
 					}
                 }
         }
@@ -112,4 +110,46 @@ pipeline {
 		}
  	}
     
+}
+
+def getJVM_VERSION(JAVA_IMPL, JAVA_VERSION) {
+	def jvm_version = "openjdk${JAVA_VERSION[2..-2]}"
+	if (JAVA_IMPL != 'hotspot') {
+		jvm_version = "$jvm_version-$JAVA_IMPL"
+	}
+	return jvm_version
+}
+
+def getPlatformAndLabel(SPEC) {
+	def platformAndLabel = [] 
+	switch (SPEC) {
+		case ~/linux_x86-64.*/:
+			platformAndLabel[0] = 'x64_linux'
+			platformAndLabel[1] = 'linux&&x64&&test||ci.project.openj9&&sw.os.linux&&hw.arch.x86'
+			break
+		case ~/mac_x86-64.*/:
+			platformAndLabel[0] = 'x64_mac'
+			platformAndLabel[1] = 'mac&&x64&&test'
+			break
+		case ~/linux_390-64.*/:
+			platformAndLabel[0] = 's390x_linux'
+			platformAndLabel[1] = 'linux&&s390x&&test||ci.project.openj9&&sw.os.linux&&hw.arch.s390'
+			break
+		case ~/linux_ppc-64.*le/:
+			platformAndLabel[0] = 'ppc64le_linux'
+			platformAndLabel[1] = 'linux&&ppc64le&&test||ci.project.openj9&&sw.os.linux&&hw.arch.ppc'
+			break
+		case ~/aix_ppc-64.*/:
+			platformAndLabel[0] = 'ppc64_aix'
+			platformAndLabel[1] = 'aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1'
+			break
+		case ~/linux_arm.*/:
+			platformAndLabel[0] = 'aarch64_linux'
+			platformAndLabel[1] = 'linux&&arm64&&test'
+			break
+		default:
+			println 'not supported spec or wrong spec'
+			System.exit(-1)
+	}	
+	return platformAndLabel
 }

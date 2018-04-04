@@ -2,7 +2,7 @@
 /* template jenkinsfile for adoptopenjdk test builds*/
 OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def getBuildList() {
-	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
+	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
 	String[] levelTargets = fullTarget.split('\\.')
 	String groupTarget = levelTargets[-1]
@@ -121,8 +121,8 @@ def setup() {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
 						fingerprintArtifacts: true,
-						projectName: "$UPSTREAM_JOB_NAME",
-						selector: upstream(allowUpstreamDependencies: false, fallbackToLastSuccessful: false, upstreamFilterStrategy: 'UseGlobalSetting')])
+						projectName: "${params.UPSTREAM_JOB_NAME}",
+						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
 			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
@@ -149,7 +149,7 @@ def buildTest() {
 def runTest() {
 	stage('Test') {
 		timestamps{
-			if (env.BUILD_LIST == "jck" && env.SPEC.contains('linux_x86-64') ){
+			if (env.BUILD_LIST == "jck"){
 				wrap([$class: 'Xvfb', autoDisplayName: true]) {
 					def DISPLAY = sh (
 						script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
