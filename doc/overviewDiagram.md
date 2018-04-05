@@ -20,6 +20,7 @@ performance-->acmeAir;
 
 thirdparty_containers-->scala;
 thirdparty_containers-->tomcat;
+thirdparty_containers-->jenkins;
 thirdparty_containers-->example;
 thirdparty_containers-->elasticsearch;
 thirdparty_containers-->derby;
