@@ -9,9 +9,7 @@ pipeline {
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		string (defaultValue: 'openjdk_regression', description: 'Specific test project, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
 		string (defaultValue: 'jdk_math', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
- 		choice (choices: 'releases\nnightly\nupstream\ncustomized', description: 'Where is sdk?', name: 'SDK_RESOURCE')
-		string (defaultValue: "N/A", description: 'Upstream build name, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NAME')
-		string (defaultValue: "N/A", description: 'Build number of upstream build, working with UPSTREAM_JOB_NAME, only set when SDK_RESOURCE is upstream', name: 'UPSTREAM_JOB_NUMBER')
+ 		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
 		}
 	options {
@@ -37,17 +35,6 @@ pipeline {
 				timestamps{
 					cleanWs()
 					sh 'printenv'
-                	script {
-                		if (params.SDK_RESOURCE == 'upstream') {
-                			dir('openjdkbinary') {
-	                			step([$class: 'CopyArtifact',
-	                        		fingerprintArtifacts: true,
-	                        		projectName: "${params.UPSTREAM_JOB_NAME}",
-	                        		selector: [$class: 'SpecificBuildSelector',
-	                                buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
-                            }
-            			}
-                	}
                 	checkout([
 				        $class: 'GitSCM', branches: [[name: "*/${params.personalBranch}"]],
 				        extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
