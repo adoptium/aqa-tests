@@ -1,182 +1,88 @@
 # Running AdoptOpenJDK Tests
 
-Note: this document is currently being rewritten, if you have immediate test-related questions, please post them to the [AdoptOpenJDK testing Slack channel](https://adoptopenjdk.slack.com/messages/C5219G28G).
+If you have immediate test-related questions, please post them to the [AdoptOpenJDK testing Slack channel](https://adoptopenjdk.slack.com/messages/C5219G28G).
 
 Platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
 
 Java Version: SE80 | SE90 | SE100
 
-Prerequisites:
-	
-    perl 5.10.1 or above with JSON and Text::CSV, XML::Parser module installed
-    make 3.81 or above (recommend make 4.1 or above on windows)
-    wget 1.14 or above
-    ant 1.7.1 or above with ant-contrib.jar
+Set up your test machine with this [set of prerequisites](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).
 
 ## Jenkins setup and running
-While you can run all the tests manually via the make targets on the command line, you may also run the tests in Jenkins. As part of the AdoptOpenJDK continuous integration (CI), AdoptOpenJDK runs test builds against the release and nightly SDK builds.
+While you can [run all the tests manually](#local-testing-via-make-targets-on-the-commandline) via the make targets on the command line, you may also run the tests in Jenkins. As part of the AdoptOpenJDK continuous integration (CI), AdoptOpenJDK runs test builds against the release and nightly SDK builds.
 
-You can easily set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk-tests Jenkinsfile by:
+You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk-tests Jenkinsfiles by:
 	
-	* Configure machines using playbooks at https://github.com/AdoptOpenJDK/openjdk-infrastructure/tree/master/ansible/playbooks
-	* Set up similar machine labels
-	* Tar sdk as *.tar.gz
+	* Configure a [Jenkins job with a Customized URL](#jenkins-configuration-with-customized-url)
+	* Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/tree/master/ansible/playbooks) for details)
+	* Ensure machines are labeled following the [AdoptOpenJDK labeling scheme]()
 
-### Setting up a test build against SDK with URL :
+### Jenkins Configuration with Customized URL
 
 	* Create Pipeline test build job using Pipeline script from SCM :https://github.com/AdoptOpenJDK/openjdk-tests.git
-	* Build with Parameters
-		* Choose SDK_RESOURCE customized
-		* Setting CUSTOMIZED_SDK_URL to your customized SDK URL
-		* Setting all other parameters such as PLATFORM, JAVA_VERSION, etc.
-### Setting up a test build against user local SDK :
-	
-	* In plan
-### Setting up a test build against a SDK build
-	
-	* Create Pipeline test build job using Pipeline script from SCM :https://github.com/AdoptOpenJDK/openjdk-tests.git
-	* Configure your sdk build to trigger your created test build
-		* If using execute shell use Parameterized Trigger Plugin to passing in parameters including your sdk job name and job number
-		* If using pipeline update pipeline using following code : 
+	* Create the following parameters (see [Jenkins Parameters Diagram](#jenkins-parameters))
+		* TARGET - relates to the test target you wish to run (system, openjdk, perf, external, jck, functional are the top-level targets, but you can also add any of the sub-targets, including those defined in playlist.xml files in test directories)
+		* JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
+		* CUSTOMIZED_SDK_URL - the URL for where to pick up the SDK to test (if you are picking up builds from AdoptOpenJDK, please refer to the [openjdk-api README](https://github.com/AdoptOpenJDK/openjdk-api/blob/master/README.md) for more details) 
 
-```
-build job: 'test_build_name', parameters: [string(name: 'PLATFORM', value: '...'), string(name: 'JAVA_VERSION', value: '...'), ... string(name: 'UPSTREAM_JOB_NAME', value: "your sdk job name"), string(name: 'UPSTREAM_JOB_NUMBER', value: "your sdk job number")]
-```
+#### Jenkins Pipeline from SCM
 
-## Local setup and running (via make targets on the command line)
-### 1. Configure environment and get dependencies:
+Here is a diagram that shows one way to configure Jenkins to use the AdoptOpenJDK Jenkinsfile scripts:
+![pipeline from SCM](doc/pipelineFromSCM.jpg)
 
-#### clone the repo and pick up the dependencies
+#### Jenkins Parameters	Diagram
+
+Here is a diagram that shows what you would set up in Jenkins:
+![jenkins parameters](/doc/jenkinsParameters.jpg)
+
+## Local testing via make targets on the commandline
+
+#### Clone the repo and pick up the dependencies
 ``` bash
-git clone https://github.com/AdoptOpenJDK/openjdk-tests
+git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 cd openjdk-tests
 get.sh -t openjdk-testsDIR -p platform -v jvmversion [-s downloadBinarySDKDIR] [-r SDK_RESOURCE] [-c CUSTOMIZED_SDK_URL]
 ```
-#### required environment variables and default values
-``` bash
-cd openjdk-tests/TestConfig
-export JAVA_BIN=/location_of_JVM_under_test (for SE80 use /<your_jvm>/jre/bin)
-export SPEC=platform_on_which_to_test (linux_x86-64|mac_x86-64|...)
-export JAVA_VERSION=[SE80|SE90] (SE90 default value)
-make -f run_configure.mk
- ```
 
-### 2. Add tests:
-#### For Java8/Java9 functionality
-Check out /example for the format to use. We prefer to write Java unit and FV tests with TestNG. We leverage TestNG groups to create test make targets. This means that minimally your test source code should  belong to either `level.sanity` or `level.extended` group. 
-Note: <WIP> There are additional changes coming to the testing at AdoptOpenJDK (re: top level make targets and possibly even node labels in Jenkins), so we will be in flux for a little while.
+Where possible values of get.sh script are:
+```
+Usage : get.sh  --testdir|-t openjdktestdir
+                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix
 
+                --jvmversion|-v openjdk8 | openjdk8-openj9 | openjdk9 | openjdk9-openj9 | openjdk10 | openjdk10-sap
 
-## 3. Compile tests:
-#### compile and run all tests
-``` bash
-make test
+                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory
+
+                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized
+
+                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized
 ```
 
-#### only compile but do not run tests
-``` bash
-export BUILD_LIST=comma_separated_projects_to_compile (i.e. openjdk_regression,performance, default behaviour is to compile all directories)
-make compile
+#### Set environment variables, configure, build and run tests
+
+You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
+
+#### Top-level test targets:
+	* openjdk 
+	* system
+	* external
+	* perf
+	* jck
+
+#### Sub-targets by level:
+	* _sanity.openjdk, _sanity.system, _sanity.external, _sanity.perf, etc.
+	* _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
+
+#### Sub-targets by directory:
+Refer to these instructions for how to [run tests by directory](https://github.com/eclipse/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
+
+#### Sub-targets by test name:
+In each playlist.xml file in each test directory, there are tests defined.  Test targets are generated from the ```<testCaseName>``` tag, so you can use the test case name as a make target.
+
+For example, for this excerpt from a playlist:
 ```
-
-## 4. Run tests:
-#### all tests
-``` bash
-make test (to compile & run)
-make runtest (to run all tests without recompiling them)
+<test>
+		<testCaseName>scala_test</testCaseName> 
+		...
 ```
-
-#### sanity tests
-``` bash
-make sanity
-```
-
-#### openjdk regression tests
-``` bash
-make openjdk
-```
-This target will run all or a subset of the OpenJDK regression tests, you can add or subtract directories of tests by changing the contents of the `openjdk_regression/playlist.xml` file.  Currently the jdk_lang group are included in the sanity target, which will be triggered off of AdoptOpenJDK merge requests automatically.
-
-#### extended tests
-``` bash
-make extended
-```
-
-#### a specific individual test
-``` bash
-make _testExampleExtended_SE80_0
-```
-
-#### a directory of tests (WIP)
-
-#### against a Java8 SDK
-Same general instructions for Configure environment, and make test, but export `JAVA_VERSION=SE80` explicitly before run_configuration.mk step.
-
-#### against a Java9 SDK
-No special steps to accomplish this, as JAVA_VERSION=SE90 by default, so simply need to Configure environment and run `make test`.
-
-#### rerun the failed tests from the last run
-``` bash
-make failed
-```
-
-#### with a different set of JVM options
-There are 3 ways to add options to your test run.
-
-1) One-time override: If you simply want to add an option for a one-time run, you can override the original options by using `JVM_OPTIONS="your options"`.
-2) One-time append: If you want to append options to the set that are already there, use `EXTRA_OPTIONS="your extra options"`.  For example, `make _testExampleExtended_SE80_0 EXTRA_OPTIONS=-Xint` will append to those options already in the make target.
-3) New options for future test runs:  If you wish to add a particular set of options for a tests to be included in future builds, you can add a variant in the playlist.xml file for that test.
-
-
-## 5. Exclude tests:
-### TestNGTest
-#### temporarily on all platforms
-Add a line in the `/test/TestConfig/default_exclude.txt` file. The format of the exclude file includes 3 pieces of information, name of test, defect number, platforms to exclude. To exclude on all platforms, use generic-all.  For example:
-``` bash
-net.adoptopenjdk.test.example.MyTest:aTestExample		141         generic-all
-```
-Note that we additionally added support to exclude individual methods of a test class, by using `:methodName` behind the class name. In the example, only the aTestExample method from that class will be excluded (on all platforms/specs).
-
-#### temporarily on specific platforms or architectures
-Same as excluding on all platforms, you add a line to the `default_exclude.txt` file, but with specific specs to exclude, for example:
-``` bash
-net.adoptopenjdk.test.example.MyTest:		141         linux_x86-64
-```
-This example would exclude all test methods of the TestOperatingSystemMXBean from running on the linux_x86-64 platform. Note: the defect numbers should be valid git issue numbers, so that when issue is resolved this exclusion can be removed.
-
-#### permanently on all or specific platforms/archs
-For tests that should NEVER run on particular platforms or architectures, we should not use the default_exclude.txt file.  To disable those tests, we annotate the test class to be disabled. To exclude MyTest from running on the aix platform, for example:
-``` bash
-@Test(groups={ "level.sanity", "component.jit", "disabled.os.aix" })
-public class MyTest {
-...
-```
-We currently support the following exclusion groups:
-``` bash
-disabled.os.<os> (i.e. disabled.os.aix)
-disabled.arch.<arch> (i.e. disabled.arch.ppc)
-disabled.bits.<bits> (i.e. disabled.bits.64)
-disabled.spec.<spec> (i.e. disabled.spec.linux_x86-64)
-```
-
-### JTREGTest
-
-Openjdk has a ProblemList.txt to exclude tests on specific platform. Similar to openjdk under openjdk-tests/openjdk_regression there is a local ProblemList.txt to exclude tests locally.
-
-## 6. View results:
-#### in the console
-Java tests take advantage of the testNG logger.  If you want your test to print output, you are required to use the testng logger (and not System.out.print statements). In this way, we can not only direct that output to console, but also to various other output clients. At the end of a test run, the results are summarized to show which tests passed / failed / skipped. This gives you a quick view of the test names and numbers in each category (passed/failed/skipped). If you've piped the output to a file, or if you like scrolling up, you can search for and find the specific output of the tests that failed (exceptions or any other logging that the test produces).
-
-#### in html files
-Html (and xml) output from the tests are created and stored in a test_output_xxxtimestamp folder in the TestConfig directory (or from where you ran "make test").  The output is organized by tests, each test having its own set of output.  If you open the index.html file in a web browser, you will be able to see which tests passed, failed or were skipped, along with other information like execution time and error messages, exceptions and logs from the individual test methods.
-
-#### Jenkins CI tool
-The summarized results are also captured in *.tap files so that they can be viewed in Jenkins using the TAP (Test Anything Protocol) plugin.
-
-## 7. Attach a debugger:
-#### to a particular test
-The command line that is run for each particular test is echo-ed to the console, so you can easily copy the command that is run. You can then run the command directly (which is a direct call to the java executable, adding any additional options, including those to attach a debugger.
-
-## 8. Move test into different make targets (layers):
-#### from extended to sanity (or vice versa)
-Change the group annotated at the top of the test class from `level.extended` to `level.sanity` and the test will be automatically switched from the extended target to the sanity target.
+you will be able to run 'make scala_test' to execute the test.
