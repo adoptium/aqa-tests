@@ -19,16 +19,18 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 
 ### Jenkins Configuration with Customized URL
 
-	* Create Pipeline test build job using Pipeline script from SCM :https://github.com/AdoptOpenJDK/openjdk-tests.git
-	* Create the following parameters (see [Jenkins Parameters Diagram](#jenkins-parameters))
-		* TARGET - relates to the test target you wish to run (system, openjdk, perf, external, jck, functional are the top-level targets, but you can also add any of the sub-targets, including those defined in playlist.xml files in test directories)
-		* JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
-		* CUSTOMIZED_SDK_URL - the URL for where to pick up the SDK to test (if you are picking up builds from AdoptOpenJDK, please refer to the [openjdk-api README](https://github.com/AdoptOpenJDK/openjdk-api/blob/master/README.md) for more details) 
+* Create Pipeline test build job using Pipeline script from SCM :https://github.com/AdoptOpenJDK/openjdk-tests.git
+
+* Create the following parameters (see [Jenkins Parameters Diagram](#jenkins-parameters))
+
+	** TARGET - relates to the test target you wish to run (system, openjdk, perf, external, jck, functional are the top-level targets, but you can also add any of the sub-targets, including those defined in playlist.xml files in test directories)
+	** JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
+	** CUSTOMIZED_SDK_URL - the URL for where to pick up the SDK to test (if you are picking up builds from AdoptOpenJDK, please refer to the [openjdk-api README](https://github.com/AdoptOpenJDK/openjdk-api/blob/master/README.md) for more details) 
 
 #### Jenkins Pipeline from SCM
 
 Here is a diagram that shows one way to configure Jenkins to use the AdoptOpenJDK Jenkinsfile scripts:
-![pipeline from SCM](doc/pipelineFromSCM.jpg)
+![pipeline from SCM](/doc/pipelineFromSCM.jpg)
 
 #### Jenkins Parameters	Diagram
 
@@ -63,15 +65,15 @@ Usage : get.sh  --testdir|-t openjdktestdir
 You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
 
 #### Top-level test targets:
-	* openjdk 
-	* system
-	* external
-	* perf
-	* jck
+	- openjdk 
+	- system
+	- external
+	- perf
+	- jck
 
 #### Sub-targets by level:
-	* _sanity.openjdk, _sanity.system, _sanity.external, _sanity.perf, etc.
-	* _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
+	- _sanity.openjdk, _sanity.system, _sanity.external, _sanity.perf, etc.
+	- _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
 
 #### Sub-targets by directory:
 Refer to these instructions for how to [run tests by directory](https://github.com/eclipse/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
