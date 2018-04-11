@@ -13,9 +13,9 @@ While you can [run all the tests manually](#local-testing-via-make-targets-on-th
 
 You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk-tests Jenkinsfiles by:
 	
-	* Configure a [Jenkins job with a Customized URL](#jenkins-configuration-with-customized-url)
-	* Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/tree/master/ansible/playbooks) for details)
-	* Ensure machines are labeled following the [AdoptOpenJDK labeling scheme]()
+- Configure a [Jenkins job with a Customized URL](#jenkins-configuration-with-customized-url)
+- Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/tree/master/ansible/playbooks) for details)
+- Ensure machines are labeled following the [AdoptOpenJDK labeling scheme](https://github.com/smlambert/openjdk-infrastructure/blob/labels/docs/jenkinslabels.md)
 
 ### Jenkins Configuration with Customized URL
 
@@ -25,7 +25,7 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 - Script path - buildenv/jenkins/fileToMatchVersionAndPlatformToTest, example openjdk8_x86-64_linux
 ![pipeline from SCM](/doc/pipelineFromSCM.jpg)
 
-2. Create the following parameters (see [Jenkins Parameters Diagram](#jenkins-parameters))
+2. Create necessary parameters
 
 * TARGET - relates to the test target you wish to run (system, openjdk, perf, external, jck, functional are the top-level targets, but you can also add any of the sub-targets, including those defined in playlist.xml files in test directories)
 * JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
