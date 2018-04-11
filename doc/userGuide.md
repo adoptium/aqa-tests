@@ -14,8 +14,8 @@ While you can [run all the tests manually](#local-testing-via-make-targets-on-th
 You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk-tests Jenkinsfiles by:
 	
 - Configure a [Jenkins job with a Customized URL](#jenkins-configuration-with-customized-url)
-- Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/tree/master/ansible/playbooks) for details)
-- Ensure machines are labeled following the [AdoptOpenJDK labeling scheme](https://github.com/smlambert/openjdk-infrastructure/blob/labels/docs/jenkinslabels.md)
+- Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/blob/master/ansible/README.md) for details)
+- Ensure machines are labeled following the [AdoptOpenJDK labeling scheme](https://github.com/smlambert/openjdk-infrastructure/blob/labels/docs/jenkinslabels.md).  Minimally, your Jenkins nodes should have hw.arch.xxxx and sw.os.xxxx labels (for example, hw.arch.x86 and sw.os.linux for an x86_linux machine).
 
 ### Jenkins Configuration with Customized URL
 
@@ -60,21 +60,21 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
 You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
 
-#### Top-level test targets:
+##### Top-level test targets:
 - openjdk 
 - system
 - external
 - perf
 - jck
 
-#### Sub-targets by level:
+##### Sub-targets by level:
 - _sanity.openjdk, _sanity.system, _sanity.external, _sanity.perf, etc.
 - _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
 
-#### Sub-targets by directory:
+##### Sub-targets by directory:
 Refer to these instructions for how to [run tests by directory](https://github.com/eclipse/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
 
-#### Sub-targets by test name:
+##### Sub-targets by test name:
 In each playlist.xml file in each test directory, there are tests defined.  Test targets are generated from the ```<testCaseName>``` tag, so you can use the test case name as a make target.
 
 For example, for this excerpt from a playlist:
