@@ -5,6 +5,7 @@ style openliberty fill:#eee,stroke:#cca,stroke-width:2px,stroke-dasharray: 5, 5
 style derby fill:#eee,stroke:#cca,stroke-width:2px,stroke-dasharray: 5, 5
 style solr/lucene fill:#eee,stroke:#cca,stroke-width:2px,stroke-dasharray: 5, 5
 style acmeAir fill:#eee,stroke:#cca,stroke-width:2px,stroke-dasharray: 5, 5
+style libertyDayTrader fill:#eee,stroke:#cca,stroke-width:2px,stroke-dasharray: 5, 5
 
 openjdk-tests--make _openjdk-->openjdk_regression;
 
@@ -16,6 +17,7 @@ openjdk-tests--make _jck-->jck;
 openjdk-tests--make _external-->thirdparty_containers;
 
 performance-->idleMicroBenchmark;
+performance-->libertyDayTrader;
 performance-->acmeAir;
 
 thirdparty_containers-->scala;
