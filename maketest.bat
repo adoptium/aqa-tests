@@ -9,6 +9,7 @@
 :: WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 :: See the License for the specific language governing permissions and
 :: limitations under the License.
+@echo off
 
 cd %1/TestConfig
 set /A args_count=0
@@ -19,7 +20,6 @@ for %%x in (%*) do (
 if %args_count% == 1 (
 	make -f run_configure.mk
 	make compile
-) 
-else (
-	make %2
+) else (
+	make -C %1 -f autoGen.mk %2
 )

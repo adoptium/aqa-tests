@@ -4,7 +4,7 @@ pipeline {
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
-		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm', description: 'SPEC?', name: 'SPEC')
+		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm\nwin_x86-64\nwin_x86-64_cmprssptrs', description: 'SPEC?', name: 'SPEC')
 		choice (choices: 'SE80\nSE90\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		string (defaultValue: 'openjdk_regression', description: 'Specific test project, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
@@ -41,10 +41,15 @@ pipeline {
 			        ])
 			        sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
                 	sh 'chmod 755 $OPENJDK_TEST/get.sh'
-                	
-                	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
+                	script {
+                		if ( SPEC.contains('win') ) {
+                			bat "$OPENJDK_TEST/get.bat -sdkdir $WORKSPACE -testdir $OPENJDK_TEST -platform ${getPlatformAndLabel(SPEC)[0]} -jvmversion ${JVM_VERSION} -sdk_resource ${params.SDK_RESOURCE} -customizedURL ${params.CUSTOMIZED_SDK_URL}"
+                		} else {
+                			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
+						}
 					}
                 }
+            }
         }
         stage('Build') {
             steps {
@@ -52,12 +57,16 @@ pipeline {
                 	echo 'Building tests...'
                 	script {
 	                	if (JAVA_VERSION == 'SE80') {
-							sh "chmod 755 ${JAVA_BIN}/java"
-							sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
-							sh "chmod 755 ${JAVA_BIN}/../../bin/java"
+							sh 'chmod 755 ${JAVA_BIN}/java'
+							sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
+							sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
+						}
+						if ( SPEC.contains('win') ) {
+							bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST"
+						} else {
+							sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
 						}
 					}
-                	sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
                 }
             }
         }
@@ -71,8 +80,13 @@ pipeline {
 						}
 					}
 					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
-						sh 'printenv'
-                		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+						script {
+							if ( SPEC.contains('win') ) {
+								bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST _${params.TARGET}"
+							} else {
+								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+							}
+                		}
 					}
 				}
             }
@@ -82,7 +96,7 @@ pipeline {
     	always {
 			step([$class: "TapPublisher", testResults: "**/*.tap"])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
-			cleanWs cleanWhenFailure: false
+			
 		}
 		unstable {
 			archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
@@ -132,6 +146,10 @@ def getPlatformAndLabel(SPEC) {
 		case ~/linux_arm.*/:
 			platformAndLabel[0] = 'aarch64_linux'
 			platformAndLabel[1] = 'linux&&arm64&&test'
+			break
+		case ~/win_x86-64.*/:
+			platformAndLabel[0] = 'x64_win'
+			platformAndLabel[1] = 'windows&&x64&&test'
 			break
 		default:
 			println 'not supported spec or wrong spec'
