@@ -163,7 +163,6 @@ def post(test_target) {
 				archiveArtifacts artifacts: "**/${test_target}_test_output.tar.gz", fingerprint: true, allowEmptyArchive: true
 			}
 			cleanWs cleanWhenFailure: false
-			
 		}
 	}
 }
