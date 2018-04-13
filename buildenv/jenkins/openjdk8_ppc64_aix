@@ -3,7 +3,8 @@
 	Set parameter TARGET(openjdk, system, external, perf, jck etc.).
 	Set UPSTREAM_JOB_NAME(version_build_arch_os, for example: openjdk8_build_x86-64_linux)
 	Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
-node('aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1') {
+LABEL='aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1'
+node("$LABEL") {
     PLATFORM = 'ppc64_aix'
     JAVA_VERSION = 'SE80'
     SDK_RESOURCE = 'upstream'

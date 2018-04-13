@@ -1,6 +1,5 @@
 #!groovy
 /* template jenkinsfile for adoptopenjdk test builds*/
-OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 def getBuildList() {
 	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
@@ -12,101 +11,82 @@ def getBuildList() {
 	return TESTPROJECT
 }
 
-def getJCK(){
-	dir("$WORKSPACE/jck/"){
-		def jck_suite = "runtime"
-		def jck_version = "0"
-		if (env.JCK_VERSION == "jck8b") {
-			jck_version = "8b"
-		} else if (env.JCK_VERSION == "jck9") {
-			jck_version = "9"
-		} else if (env.JCK_VERSION == "jck10") {
-			jck_version = "10"
-		} else {
-			error_message =  "FAILED: JCK version ${env.JCK_VERSION} are not correctly defined \n"
-			echo error_message
-			currentBuild.result = 'FAILURE'
-			error(error_message)
+def archiveTestBinaries() {
+	dir("$WORKSPACE") {
+		sh "tar -zcf test-binaries.tar.gz ./openjdk-tests ./jvmtest ./openjdkbinary"
+	}
+	archiveArtifacts artifacts: '**/test-binaries.tar.gz', fingerprint: true, allowEmptyArchive: false
+}
+
+def stageTestBinaries() {
+	copyArtifacts filter: 'test-binaries.tar.gz', fingerprintArtifacts: true, projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_ID}")
+	sh "tar -xzf test-binaries.tar.gz"
+	echo pwd()
+	sh "ls"
+}
+
+def setupEnv() {
+	env.JCL_VERSION = "current"
+	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+	env.JAVA_HOME = "${JAVA_BIN}/.."
+	env.JAVA_VERSION = "${JAVA_VERSION}"
+	env.JVM_VERSION = "${JVM_VERSION}"
+	env.SPEC = "${SPEC}"
+	env.BUILD_LIST = "${getBuildList()}"
+	
+	if (env.BUILD_LIST == "jck") {
+		if ( JAVA_VERSION == "SE80" ) {
+			env.JCK_VERSION = "jck8b"
+		} else if ( JAVA_VERSION == "SE90" ) {
+			env.JCK_VERSION = "jck9"
+		} else if ( JAVA_VERSION == "SE100" ) {
+			env.JCK_VERSION = "jck10"
 		}
-		def server = Artifactory.server 'na.artifactory.swg-devops'
-		def downloadSpec_JCK = """{
-		"files": [
-			{
-			"pattern": "${JCK_MATERIAL_SERVER_ID}/jck-test/jck-src/${env.JCK_VERSION}/JCK-${jck_suite}-${jck_version}.zip",
-			"target": "./"
-			},
-			{
-			"pattern": "${JCK_MATERIAL_SERVER_ID}/jck-test/jck-src/${env.JCK_VERSION}/${env.JCK_VERSION}_configs.zip",
-			"target": "./"
-			}
-		]
-		}"""
-		server.download(downloadSpec_JCK)
-		sh """
-			df -h
-			mv ./jck-test/jck-src/${env.JCK_VERSION}/* ./
-			ls ./
-			echo "unzipping jck materials"
-			unzip -o -q ./${env.JCK_VERSION}_configs.zip  -d ./${env.JCK_VERSION}/
-			unzip -o -q ./JCK-${jck_suite}-${jck_version}.zip -d ./${env.JCK_VERSION}/
-			echo "unzipping jck materials successfully"
-			ls ./${env.JCK_VERSION}/JCK-${jck_suite}-${jck_version}/
-			ls ./${env.JCK_VERSION}/
-		"""
+		env.JCK_ROOT = "$WORKSPACE/../jck_root"
+		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
+		if( params.JCK_GIT_REPO ) {
+			env.JCK_GIT_REPO = params.JCK_GIT_REPO
+			echo "env.JCK_GIT_REPO is ${env.JCK_GIT_REPO}"
+		} else {
+			echo "params.JCK_GIT_REPO was not defined"
+		}
+	}
+	
+	if (JVM_VERSION.contains('openj9')) {
+		JAVA_IMPL = 'openj9'
+	} else if (JVM_VERSION.contains('sap')) {
+		JAVA_IMPL = 'sap'
+	} else {
+		JAVA_IMPL = 'hotspot'
+	}
+	env.JAVA_IMPL= "${JAVA_IMPL}"
+	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
+		env.DIAGNOSTICLEVEL ='noDetails'
+	}
+	sh 'printenv'
+}
+
+def setupParallelEnv() {
+	stage('setupParallelEnv') {
+		timestamps{
+			cleanWs()
+			setupEnv()
+		}
 	}
 }
 
 def setup() {
 	stage('Setup') {
 		timestamps{
-			env.JCL_VERSION = "current"
-			env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
-			env.JAVA_HOME = "${JAVA_BIN}/.."
-			env.JAVA_VERSION = "${JAVA_VERSION}"
-			env.JVM_VERSION = "${JVM_VERSION}"
-			env.SPEC = "${SPEC}"
-			env.BUILD_LIST = "${getBuildList()}"
+			setupEnv()
+			// get TestKitGen and test JDK for test
 			try{
 				CUSTOMIZED_SDK_URL = "${CUSTOMIZED_SDK_URL}"
 			} catch (MissingPropertyException e) {
 				CUSTOMIZED_SDK_URL = ''
 			}
-			//download JCK test materials if BUILD_LIST is jck
-			if (env.BUILD_LIST == "jck") {
-				if ( fileExists ("$WORKSPACE/jck/") ) {
-					dir("$WORKSPACE/jck/") {
-						deleteDir()
-					}
-				}
-				
-				if ( JAVA_VERSION == "SE80" ) {
-					env.JCK_VERSION = "jck8b"
-				} else if ( JAVA_VERSION == "SE90" ) {
-					env.JCK_VERSION = "jck9"
-				} else if ( JAVA_VERSION == "SE100" ) {
-					env.JCK_VERSION = "jck10"
-				}
-				echo "env.BUILD_LIST is jck, starting preparing JCK test materials."
-				getJCK()
-				env.JCK_ROOT = "$WORKSPACE/jck/"
-				
-			}
-			
-			if (JVM_VERSION.contains('openj9')) {
-				JAVA_IMPL = 'openj9'
-			} else if (JVM_VERSION.contains('sap')) {
-				JAVA_IMPL = 'sap'
-			} else {
-				JAVA_IMPL = 'hotspot'
-			}
-			env.JAVA_IMPL= "${JAVA_IMPL}"
-			if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
-				env.DIAGNOSTICLEVEL ='noDetails'
-			}
-			sh 'printenv'
-			
-			sh "chmod 755 ${OPENJDK_TEST}/maketest.sh"
-			sh "chmod 755 ${OPENJDK_TEST}/get.sh"
+			sh "chmod 755 $WORKSPACE/openjdk-tests/maketest.sh"
+			sh "chmod 755 $WORKSPACE/openjdk-tests/get.sh"
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -125,8 +105,7 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
-			env.JCK_ROOT = "$WORKSPACE/jck/"
+			sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
 		}
 	}
 }
@@ -134,19 +113,24 @@ def setup() {
 def buildTest() {
 	stage('Build') {
 		timestamps{
-			sh 'printenv'
 			echo 'Building tests...'
 			if (JAVA_VERSION == 'SE80') {
 				sh "chmod 755 ${JAVA_BIN}/java"
 				sh "chmod 755 ${JAVA_BIN}/../../bin/javac"
 				sh "chmod 755 ${JAVA_BIN}/../../bin/java"
 			}
-			sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST"
+			if( params.JCK_GIT_REPO ) {
+				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"]) {
+					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
+				}
+			} else {
+				sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
+			}
 		}
 	}
 }
 
-def runTest() {
+def runTest(subDir) {
 	stage('Test') {
 		timestamps{
 			if (env.BUILD_LIST == "jck"){
@@ -158,43 +142,73 @@ def runTest() {
 					env.DISPLAY = "${DISPLAY}"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					echo 'Running tests...'
-					sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/${subDir} _$TARGET"
 				}
 			} else {
 				echo 'Running tests...'
-				sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _$TARGET"
+				sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/${subDir} _$TARGET"
 			}
 		}
 	}
 }
 
-def post() {
+def post(test_target) {
 	stage('Post') {
 		timestamps{
-			step([$class: "TapPublisher", testResults: "**/*.tap"])
+			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
 			if (currentBuild.result == 'UNSTABLE') {
-				archiveArtifacts artifacts: '**/*.tap', fingerprint: true, allowEmptyArchive: true
 				archiveArtifacts artifacts: '**/work/**/*.jtr, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
-				if (params.TARGET == 'system') {
-					sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
-					archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
-				}
-				if (env.BUILD_LIST == 'jck') {
-					sh 'tar -zcf jck-test-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
-					archiveArtifacts artifacts: '**/jck-test-results.tar.gz', fingerprint: true, allowEmptyArchive: true
-				}
+				sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
+				archiveArtifacts artifacts: "**/${test_target}_test_output.tar.gz", fingerprint: true, allowEmptyArchive: true
 			}
 			cleanWs cleanWhenFailure: false
 		}
 	}
 }
+
 def testBuild() {
-	timeout(time: 6, unit: 'HOURS') {
+	def time_limit = 8
+	if(params.TIME_LIMIT) {
+		time_limit = params.TIME_LIMIT.toInteger()
+	}
+	timeout(time: time_limit, unit: 'HOURS') {
+		// prepare environment and compile test projects
 		setup()
 		buildTest()
-		runTest()
-		post()
+		if( params.IS_PARALLEL ){
+			// archive compiled test binaries for parallel jobs
+			archiveTestBinaries()
+			def testSubDirs = []
+			def testSubDirSize = 0
+			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().split()
+				testSubDirSize = testSubDirs.size()
+			}
+			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			def parallel_tests = [:]
+			for (int i = 0; i < testSubDirSize; i++) {
+				def testSubDir = testSubDirs[i].trim().replace("/","");
+				parallel_tests[testSubDir] = {
+					node ("$LABEL") {
+						setupParallelEnv()
+						stageTestBinaries()
+						if( env.BUILD_LIST == "jck") {
+							buildTest()
+						}
+						runTest("${env.BUILD_LIST}/${testSubDir}")
+						post("${env.BUILD_LIST}-${testSubDir}")
+					}
+				}
+			}
+			parallel parallel_tests
+			cleanWs()
+		} else {
+			echo "running test in default mode"
+			runTest("${env.BUILD_LIST}")
+			post("${env.BUILD_LIST}")
+		}
+		
 	}
 }
 return this

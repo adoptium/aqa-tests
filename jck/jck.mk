@@ -12,13 +12,5 @@
 # limitations under the License.
 ##############################################################################
 ifndef JCK_TEST_TARGET
-JCK_TEST_TARGET=api/math
-endif
-
-ifndef JCK_VERSION
-JCK_VERSION=jck8b
-endif
-
-ifndef JCK_ROOT
-JCK_ROOT=$(TEST_ROOT)/jck/jck_root
+JCK_TEST_TARGET=api/java_math
 endif
