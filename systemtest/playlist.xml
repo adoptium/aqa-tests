@@ -1020,5 +1020,214 @@
 			<impl>openj9</impl>
 		</impls>
 	</test>
-</playlist>
+	
+	<!-- Excluding the following test for Hotspot for eclipse/openj9/issues/1566  -->
+	<test>
+		<testCaseName>TestJlmLocal</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmLocal; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	
+	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
+	<test>
+		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteClassAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteClassNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
 
+	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
+	<test>
+		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+
+	<test>
+		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+
+	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
+	<test>
+		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteNotifierProxyAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+
+	<!-- Excluding the following test for Hotspot for eclipse/openj9/issues/1566  -->
+	<test>
+		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteThreadNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+</playlist>
