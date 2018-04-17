@@ -11,6 +11,8 @@ pipeline {
 		string (defaultValue: 'jdk_math', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
  		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
+		string (defaultValue: "", description: 'Use this to append options to the commandline', name: 'EXTRA_OPTIONS')
+		string (defaultValue: "", description: 'Use this to replace the commandline options', name: 'JVM_OPTIONS')
 		string (defaultValue: "1", description: 'Number of times to repeat execution of make target', name: 'ITERATIONS')
 		}
 	options {
@@ -29,6 +31,8 @@ pipeline {
 		JVM_VERSION="${getJVM_VERSION(JAVA_IMPL, JAVA_VERSION)}"
 		JAVA_IMPL="${JAVA_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
+		EXTRA_OPTIONS="${EXTRA_OPTIONS}"
+		JVM_OPTIONS="${JVM_OPTIONS}"
 		ITERATIONS="${ITERATIONS}"
     }
     stages {
