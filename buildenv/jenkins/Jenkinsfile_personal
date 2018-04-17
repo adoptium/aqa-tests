@@ -75,7 +75,7 @@ pipeline {
 					
 						withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
 							sh 'printenv'
-							Integer iterations = new Integer("${ITERATIONS}");
+							int iterations = "${ITERATIONS}".toInteger()
 							for (i = 0; i < iterations; i++) {
    								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
 							}
