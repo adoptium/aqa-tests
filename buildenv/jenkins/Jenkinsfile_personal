@@ -11,6 +11,7 @@ pipeline {
 		string (defaultValue: 'jdk_math', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
  		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
+		string (defaultValue: "1", description: 'Number of times to repeat execution of make target', name: 'ITERATIONS')
 		}
 	options {
     	skipDefaultCheckout true
@@ -73,7 +74,9 @@ pipeline {
 					}
 					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
 						sh 'printenv'
-                		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+						for (i = 0; i < ${params.ITERATIONS}; i++) {
+   							sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+						}
 					}
 				}
             }
