@@ -74,8 +74,10 @@ pipeline {
 					}
 					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
 						sh 'printenv'
-						for (i = 0; i < ${params.ITERATIONS}; i++) {
-   							sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+						script { 
+							for (i = 0; i < ${params.ITERATIONS}; i++) {
+   								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+							}
 						}
 					}
 				}
