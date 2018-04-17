@@ -29,6 +29,7 @@ pipeline {
 		JVM_VERSION="${getJVM_VERSION(JAVA_IMPL, JAVA_VERSION)}"
 		JAVA_IMPL="${JAVA_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
+		ITERATIONS="${ITERATIONS}"
     }
     stages {
         stage('Setup') {
@@ -74,7 +75,7 @@ pipeline {
 					
 						withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
 							sh 'printenv'
-							for (i = 0; i < ${params.ITERATIONS}; i++) {
+							for (i = 0; i < "${ITERATIONS}"; i++) {
    								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
 							}
 						}
