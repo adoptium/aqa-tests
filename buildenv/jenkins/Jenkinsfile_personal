@@ -78,13 +78,12 @@ pipeline {
 						if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 							DIAGNOSTICLEVEL ='noDetails'
 						}
-					
-						withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
-							sh 'printenv'
-							int iterations = "${ITERATIONS}".toInteger()
-							for (i = 0; i < iterations; i++) {
+					}
+					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
+						sh 'printenv'
+						int iterations = "${ITERATIONS}".toInteger()
+						for (i = 0; i < iterations; i++) {
    								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
-							}
 						}
 					}
 				}
