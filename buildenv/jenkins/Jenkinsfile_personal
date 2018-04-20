@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent {label "${getPlatformAndLabel(SPEC, NODE_LABEL)[1]}"}
+    agent label "${getPlatformAndLabel(SPEC, NODE_LABEL)[1]}"
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
