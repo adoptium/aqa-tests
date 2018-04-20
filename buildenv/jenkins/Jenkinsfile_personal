@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent {label "${getPlatformAndLabel(SPEC, NODE_LABEL)[1]}"}
+    agent {label "${getPlatformAndLabel(SPEC)[1]}"}
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
@@ -121,7 +121,7 @@ def getJVM_VERSION(JAVA_IMPL, JAVA_VERSION) {
 	return jvm_version
 }
 
-def getPlatformAndLabel(SPEC, label) {
+def getPlatformAndLabel(SPEC) {
 	def platformAndLabel = [] 
 	switch (SPEC) {
 		case ~/linux_x86-64.*/:
@@ -156,8 +156,8 @@ def getPlatformAndLabel(SPEC, label) {
 			println 'not supported spec or wrong spec'
 			System.exit(-1)
 	}	
-	if (!label.equals("")) {
-		platformAndLabel[1] = label 
+	if (! ${params.NODE_LABEL}.equals("")) {
+		platformAndLabel[1] = ${params.NODE_LABEL} 
 	}
 	return platformAndLabel
 }
