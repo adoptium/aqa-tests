@@ -15,6 +15,7 @@ pipeline {
 		string (defaultValue: "", description: 'Use this to append options to the commandline', name: 'EXTRA_OPTIONS')
 		string (defaultValue: "", description: 'Use this to replace the commandline options', name: 'JVM_OPTIONS')
 		string (defaultValue: "1", description: 'Number of times to repeat execution of make target', name: 'ITERATIONS')
+		string (defaultValue: "", description: 'Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine', name: 'NODE_LABEL')
 		}
 	options {
     	skipDefaultCheckout true
@@ -36,6 +37,7 @@ pipeline {
 		JVM_OPTIONS="${JVM_OPTIONS}"
 		CUSTOM_TARGET="${CUSTOM_TARGET}"
 		ITERATIONS="${ITERATIONS}"
+		NODE_LABEL="${NODE_LABEL}"
     }
     stages {
         stage('Setup') {
@@ -119,7 +121,7 @@ def getJVM_VERSION(JAVA_IMPL, JAVA_VERSION) {
 	return jvm_version
 }
 
-def getPlatformAndLabel(SPEC) {
+def getPlatformAndLabel(SPEC, ) {
 	def platformAndLabel = [] 
 	switch (SPEC) {
 		case ~/linux_x86-64.*/:
@@ -154,5 +156,8 @@ def getPlatformAndLabel(SPEC) {
 			println 'not supported spec or wrong spec'
 			System.exit(-1)
 	}	
+	if (!NODE_LABEL.equals("")) {
+		platformAndLabel[1] = NODE_LABEL 
+	}
 	return platformAndLabel
 }
