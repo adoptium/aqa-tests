@@ -549,29 +549,6 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jdk_sound</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
-	$(Q)$(JTREG_TEST_DIR):jdk_sound$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>openjdk</group>
-		</groups>
-	</test>
-	<test>
 		<testCaseName>jdk_tools</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
