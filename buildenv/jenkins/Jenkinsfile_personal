@@ -51,7 +51,7 @@ pipeline {
 			        	userRemoteConfigs: [[url: "${REPO_URL}"]]
 			        ])
 			        sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
-                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
+                	sh 'chmod 755 $OPENJDK_TEST/get.sh -oxx'
                 	
                 	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
 					}
