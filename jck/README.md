@@ -68,3 +68,30 @@ locally within Docker container.
    initialize the JCK docker image.
 
 4. Once you are in the Docker container, follow [How-to Run customized JCK test targets](#how-to-run-customized-jck-test-targets) or [How-to Run JCK Tests](#how-to-run-jck-tests) to run JCK tests locally.
+
+A quick start to run JCK test in docker image
+
+```
+// clone this openjdk-tests repo
+git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+
+// build docker image and run it
+cd openjdk-tests/buildenv/docker
+docker build -t openjdk-test .
+docker run -it -v <path_to_openjdk-tests_root>:/test  -v <jck_material_root>:/jck_root openjdk-test /bin/bash
+
+// within docker container
+cd /test
+bash get.sh --testdir /test --customizedURL https://api.adoptopenjdk.net/openjdk8-openj9/nightly/x64_linux/latest/binary --sdkdir /java 
+export JAVA_VERSION=SE80
+export JAVA_BIN=/java/openjdkbinary/j2sdk-image/jre/bin/
+export SPEC=linux_x86-64_cmprssptrs
+export BUILD_LIST=jck
+export JCK_ROOT=/jck_root
+export JCK_VERSION=jck8b
+
+cd TestConfig
+make -f run_configure.mk
+make compile
+make _sanity.jck
+```
