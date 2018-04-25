@@ -17,7 +17,6 @@ pipeline {
     	timeout(time: 6, unit: 'HOURS')
   	}
 	environment {
-		JCL_VERSION='current'
 		OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 		JAVA_HOME="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}"
 		JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"

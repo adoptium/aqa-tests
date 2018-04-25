@@ -98,11 +98,10 @@ getTestKitGen()
 {
 	cd $TESTDIR
 	git clone --depth 1 https://github.com/eclipse/openj9.git
-	cd openj9
-	git filter-branch --subdirectory-filter test/TestConfig
-
-	cd $TESTDIR
-	mv openj9 TestConfig
+	mv openj9/test/TestConfig TestConfig
+	mv openj9/test/Utils Utils
+	mv openj9/test/functional functional
+	rm -rf openj9
 }
 
 wgetSDK()
