@@ -29,6 +29,9 @@ ARG IMAGE_VERSION=latest
 
 FROM ${IMAGE_NAME}:${IMAGE_VERSION}
 
+# Use this when there is a need for input during docker image building process
+ENV DEBIAN_FRONTEND noninteractive
+
 # Install required OS and testing tools
 RUN apt-get update \
   && apt-get install -qq -y --no-install-recommends \
