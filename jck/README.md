@@ -76,6 +76,13 @@ A quick start to run JCK test in docker image
 git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 // build docker image and run it
+// the JCK_ROOT structure should be like
+//root:jck_root root$ tree -L 2 ./
+//./
+//├── jck10
+//├── jck8b
+//└── jck9
+
 cd openjdk-tests/buildenv/docker
 docker build -t openjdk-test .
 docker run -it -v <path_to_openjdk-tests_root>:/test  -v <jck_material_root>:/jck_root openjdk-test /bin/bash
