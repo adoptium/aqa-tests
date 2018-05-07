@@ -18,6 +18,8 @@ PLATFORM=""
 JVMVERSION=""
 SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
+OPENJ9_REPO="https://github.com/eclipse/openj9.git"
+OPENJ9_SHA=""
 
 usage ()
 {
@@ -27,6 +29,8 @@ usage ()
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
+	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
+	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 }
 
 parseCommandLineArgs()
@@ -52,7 +56,13 @@ parseCommandLineArgs()
 			
 			"--customizedURL" | "-c" )
 				CUSTOMIZED_SDK_URL="$1"; shift;;
-			
+
+			"--openj9_repo" )
+				OPENJ9_REPO="$1"; shift;;
+
+			"--openj9_sha" )
+				OPENJ9_SHA="$1"; shift;;
+
 			"--help" | "-h" )
 				usage; exit 0;;
 
@@ -77,7 +87,10 @@ getBinaryOpenjdk()
 	fi
 	
 	cd openjdkbinary
-	
+
+	# temporarily remove *test* until upstream build is updated and not staging test material
+	rm -rf *test*
+
 	jar_file_name=`ls`
 	if [[ $jar_file_name == *zip || $jar_file_name == *jar ]]; then
 		unzip -q $jar_file_name -d .
@@ -94,10 +107,21 @@ getBinaryOpenjdk()
 	fi
 }
 
-getTestKitGen()
+getTestKitGenAndFunctionalTestMaterial()
 {
 	cd $TESTDIR
-	git clone --depth 1 https://github.com/eclipse/openj9.git
+	echo "git clone $OPENJ9_REPO"
+	git clone -q --depth 1 $OPENJ9_REPO
+
+	if [ "$OPENJ9_SHA" != "" ]
+	then
+		echo "update to openj9 sha: $OPENJ9_SHA"
+		cd openj9
+		git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
+		git checkout -q $OPENJ9_SHA
+		cd $TESTDIR
+	fi
+
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	mv openj9/test/functional functional
@@ -115,7 +139,7 @@ wgetSDK()
 
 parseCommandLineArgs "$@"
 if [ ! -d "$TESTDIR/TestConfig" ]; then
-	getTestKitGen
+	getTestKitGenAndFunctionalTestMaterial
 fi
 
 if [[ "$SDKDIR" != "" ]]; then

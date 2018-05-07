@@ -104,7 +104,12 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE -c $CUSTOMIZED_SDK_URL"
+			// Setup variables
+			CUSTOMIZED_SDK_URL_OPTION = (CUSTOMIZED_SDK_URL != "") ? "-c $CUSTOMIZED_SDK_URL" : ""
+			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
+			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+
+			sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_SHA_OPTION}"
 		}
 	}
 }
