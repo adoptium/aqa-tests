@@ -69,7 +69,7 @@ locally within Docker container.
 
 4. Once you are in the Docker container, follow [How-to Run customized JCK test targets](#how-to-run-customized-jck-test-targets) or [How-to Run JCK Tests](#how-to-run-jck-tests) to run JCK tests locally.
 
-A quick start to run JCK test in docker image
+## A quick start to run JCK test in docker image
 
 ```
 // clone this openjdk-tests repo
