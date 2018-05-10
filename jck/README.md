@@ -92,6 +92,7 @@ cd /test
 bash get.sh --testdir /test --customizedURL https://api.adoptopenjdk.net/openjdk8-openj9/nightly/x64_linux/latest/binary --sdkdir /java 
 export JAVA_VERSION=SE80
 export JAVA_BIN=/java/openjdkbinary/j2sdk-image/jre/bin/
+export JAVA_HOME=/java/openjdkbinary/j2sdk-image/
 export SPEC=linux_x86-64_cmprssptrs
 export BUILD_LIST=jck
 export JCK_ROOT=/jck_root
