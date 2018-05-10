@@ -2,7 +2,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	
 	<test>
-		<testCaseName>ClassLoadingTest</testCaseName>
+		<testCaseName>ModTest_CpMP</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -11,11 +11,11 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ClassloadingLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=CpMpTest \
+	-test-args=$(Q)variant=CpMp$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -26,10 +26,8 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
-	<!-- Excluding the following test for OpenJDK10 builds. See AdoptOpenJDK/openjdk-systemtest/issues/87 for details -->
 	<test>
-		<testCaseName>ConcurrentLoadTest</testCaseName>
+		<testCaseName>ModTest_MP</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -38,50 +36,23 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ConcurrentLoadTest; \
-	$(TEST_STATUS)</command> 
-		<tags>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	
-	<test>
-		<testCaseName>DirectByteBufferLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=DirectByteBufferLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=CpMpTest \
+	-test-args=$(Q)variant=Mp$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
-		<testCaseName>LangLoadTest</testCaseName>
+		<testCaseName>AutomaticModulesTest1</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -90,24 +61,23 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LangLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=AutomaticModulesTest \
+	-test-args=$(Q)variant=AutomaticModulesTest1$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
-		<testCaseName>LockingLoadTest</testCaseName>
+		<testCaseName>AutomaticModulesTest2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -116,64 +86,36 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LockingLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=AutomaticModulesTest \
+	-test-args=$(Q)variant=AutomaticModulesTest2$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
-		<testCaseName>MathLoadTest_all</testCaseName>
+		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest1</testCaseName>
 		<variations>
-			<variation>NoOptions</variation> 
+			<variation>NoOptions</variation>
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest; \
+	-test=AutomaticModulesTest \
+	-test-args=$(Q)variant=ImpliedReadabilityTest1$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	
-	<test>
-		<testCaseName>MathLoadTest_autosimd</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=autoSimd$(Q) \
-	-test=MathLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -184,36 +126,8 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
-		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest \
-	-test-args=$(Q)workload=bigDecimal$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	
-	<test>
-		<testCaseName>MauveSingleThreadLoadTest</testCaseName>
+		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -222,92 +136,11 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveSingleThreadLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=AutomaticModulesTest \
+	-test-args=$(Q)variant=ImpliedReadabilityTest2$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/75</disabled>
-	</test>
-	
-	<test>
-		<testCaseName>MauveSingleInvocationLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveSingleInvocationLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/78</disabled>
-	</test>
-	
-	<test>
-		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/64</disabled>
-	</test>
-	
-	<test>
-		<testCaseName>NioLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=NioLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -318,9 +151,8 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
-		<testCaseName>UtilLoadTest</testCaseName>
+		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest3</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -329,715 +161,13 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=UtilLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	
-	<test>
-		<testCaseName>LambdaLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	
-	<test>
-		<testCaseName>HCRLateAttachWorkload</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=HCRLateAttachWorkload; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-			<groups>
-			<group>system</group>
-		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/7</disabled>
-	</test>
-	
-	<test>
-		<testCaseName>JdiTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=JdiTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/63</disabled>
-	</test>
-	
-	<!--  The following tests are specific to openj9 only -->
-	<test>
-		<testCaseName>DaaLoadTest_daa1</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa1$(Q) \
-	-test=DaaLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>DaaLoadTest_daa2</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa2$(Q) \
-	-test=DaaLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>DaaLoadTest_daa3</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa3$(Q) \
-	-test=DaaLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>DaaLoadTest_all</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=DaaLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>HeapHogLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=HeapHogLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>ObjectTreeLoadTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=ObjectTreeLoadTest; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClassesAPI</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesAPI; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<disabled>Ref: openj9-systemtest/issues/17</disabled>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClassesWorkload</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesWorkload; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClassesWorkloadTest_Softmx_Increase</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesWorkloadTest_Softmx_Increase; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClassesWorkloadTest_Softmx_IncreaseDecrease</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesWorkloadTest_Softmx_IncreaseDecrease; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: AdoptOpenJDK/openjdk-systemtest/issues/79 -->
-	<test>
-		<testCaseName>SharedClassesWorkloadTest_Softmx_Increase_JitAot</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClassesWorkloadTest_Softmx_Increase_JitAot_Linux</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>os.linux,^arch.ppc,^arch.390</platformRequirements>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM01.SingleCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=SingleCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM01.MultiCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM01.MultiThread</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM01.MultiThreadMultiCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThreadMultiCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM23.SingleCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=SingleCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM23.MultiCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM23.MultiThread</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>SharedClasses.SCM23.MultiThreadMultiCL</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=SharedClasses \
-	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL$(Q); \
-	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	
-	<!-- Excluding the following test for Hotspot & OpenJDK10-OpenJ9 for eclipse/openj9/issues/1566  -->
-	<test>
-		<testCaseName>TestJlmLocal</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmLocal; \
+	-test=AutomaticModulesTest \
+	-test-args=$(Q)variant=ImpliedReadabilityTest3$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
+			<subset>SE100</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1045,14 +175,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
 	</test>
-	
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
 	<test>
-		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
+		<testCaseName>ExplicitModulesTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1061,11 +186,10 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteClassAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=ExplicitModulesTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1075,13 +199,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 	</test>
-	
 	<test>
-		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
+		<testCaseName>JDKInternalAPIsTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1090,11 +210,10 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteClassNoAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=JDKInternalAPIsTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1104,15 +223,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-			<impl>openj9</impl>
-		</impls>
 	</test>
-
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
 	<test>
-		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
+		<testCaseName>CLTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1121,11 +234,11 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteMemoryAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLTest \
+	-test-args=$(Q)variant=CLTest$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1135,13 +248,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 	</test>
-
 	<test>
-		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
+		<testCaseName>CLTestImage</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1150,11 +259,11 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteMemoryNoAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLTestImage \
+	-test-args=$(Q)variant=CLTest$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1164,15 +273,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-			<impl>openj9</impl>
-		</impls>
 	</test>
-
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
 	<test>
-		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
+		<testCaseName>CLTest_UsingResourceFiles</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1181,11 +284,11 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteNotifierProxyAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLTest \
+	-test-args=$(Q)variant=CLTestUsingResourceFiles$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1195,14 +298,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 	</test>
-
-	<!-- Excluding the following test for Hotspot & OpenJDK10-Openj9 for eclipse/openj9/issues/1566  -->
 	<test>
-		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
+		<testCaseName>CLImageTest_UsingResourceFiles</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1211,12 +309,13 @@
 	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestJlmRemoteThreadNoAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLTestImage \
+	-test-args=$(Q)variant=CLTestUsingResourceFiles$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
+			<subset>SE100</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1224,27 +323,396 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
 	</test>
-	
-	<!-- The following JLM tests are specific to OpenJDK-OpenJ9, they run tests from openj9.test.jlm project -->
 	<test>
-		<testCaseName>TestIBMJlmLocal</testCaseName>
+		<testCaseName>ServiceLoadersTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestIBMJlmLocal; \
+	-results-root=$(REPORTDIR) \
+	-test=ServiceLoadersTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleTest_PlatformModPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleTest \
+	-test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleTest_AppModPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleTest \
+	-test-args=$(Q)variant=AppModPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleTest_UnexportedTypePatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleTest \
+	-test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleTest_AdvancedPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleTest \
+	-test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleImageTest_PlatformModPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleImageTest \
+	-test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleImageTest_AppModPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleImageTest \
+	-test-args=$(Q)variant=AppModPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleImageTest_UnexportedTypePatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleImageTest \
+	-test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>PatchModuleImageTest_AdvancedPatchModule</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=PatchModuleImageTest \
+	-test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>UpgradeModPathTest_ExpDirModUpgrade</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=UpgradeModPathTest \
+	-test-args=$(Q)variant=ExpDirModUpgrade$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>UpgradeModPathTest_ExpDirModUpgradeCRImage</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=UpgradeModPathTest \
+	-test-args=$(Q)variant=ExpDirModUpgradeCRImage$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>UpgradeModPathTest_JarredModUpgrade</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=UpgradeModPathTest \
+	-test-args=$(Q)variant=JarredModUpgrade$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>UpgradeModPathTest_JarredModUpgradeCRImage</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=UpgradeModPathTest \
+	-test-args=$(Q)variant=JarredModUpgradeCRImage$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>JlinkTest_RequiredMod</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=JlinkTest \
+	-test-args=$(Q)variant=RequiredMod$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>JlinkTest_AddModLimitMod</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=JlinkTest \
+	-test-args=$(Q)variant=AddModLimitMod$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>LayersTest</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=LayersTest \
+	-test-args=$(Q)heapsize=10m$(Q); \
+	$(TEST_STATUS)</command> 
+		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1259,20 +727,19 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>TestIBMJlmRemoteClassAuth</testCaseName>
+		<testCaseName>CLLoadTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestIBMJlmRemoteClassAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLLoadTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1282,25 +749,21 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
 	</test>
 	<test>
-		<testCaseName>TestIBMJlmRemoteClassNoAuth</testCaseName>
+		<testCaseName>CLStressWithLayers</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestIBMJlmRemoteClassNoAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLStressWithLayers; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1310,25 +773,21 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
 	</test>
 	<test>
-		<testCaseName>TestIBMJlmRemoteMemoryAuth</testCaseName>
+		<testCaseName>CLStressWithLayersCRI</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestIBMJlmRemoteMemoryAuth; \
+	-results-root=$(REPORTDIR) \
+	-test=CLStressWithLayersCRI; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1338,36 +797,5 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-	</test>
-	<test>
-		<testCaseName>TestIBMJlmRemoteMemoryNoAuth</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
-	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=TestIBMJlmRemoteMemoryNoAuth; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
 	</test>
 </playlist>
