@@ -51,6 +51,17 @@
 	</target>
 	
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
+		<!-- Windows API limitation of file paths having 260 characters or fewer,
+		     run the config command to allow file paths of 4096 characters 
+		-->
+		<if>
+			<contains string="${PLATFORM}" substring="win" />
+			<then>
+				<exec executable="git" failonerror="false">
+					<arg line="config --system core.longpaths true" />
+				</exec>
+			</then>
+		</if>
 		<exec executable="git" failonerror="false">
 			<arg line="clone --depth 1 -q https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
 		</exec>
