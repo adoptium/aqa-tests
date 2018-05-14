@@ -4,13 +4,18 @@ pipeline {
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
-		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm', description: 'SPEC?', name: 'SPEC')
+		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm\nwin_x86-64\nwin_x86-64_cmprssptrs\naix_ppc-64\naix_ppc-64_cmprssptrs', description: 'SPEC?', name: 'SPEC')
 		choice (choices: 'SE80\nSE90\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		string (defaultValue: 'openjdk_regression', description: 'Specific test project, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
-		string (defaultValue: 'jdk_math', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, etc', name: 'TARGET')
- 		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk?', name: 'SDK_RESOURCE')
+		string (defaultValue: 'openjdk-custom', description: 'Test Target to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, openjdk-custom, functional-custom, etc', name: 'TARGET')
+ 		string (defaultValue: "", description: 'Path to the test class to execute', name: 'CUSTOM_TARGET')
+		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk?', name: 'SDK_RESOURCE')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
+		string (defaultValue: "", description: 'Use this to append options to the commandline', name: 'EXTRA_OPTIONS')
+		string (defaultValue: "", description: 'Use this to replace the commandline options', name: 'JVM_OPTIONS')
+		string (defaultValue: "1", description: 'Number of times to repeat execution of make target', name: 'ITERATIONS')
+		string (defaultValue: "", description: 'Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine', name: 'NODE_LABEL')
 		}
 	options {
     	skipDefaultCheckout true
@@ -27,6 +32,11 @@ pipeline {
 		JVM_VERSION="${getJVM_VERSION(JAVA_IMPL, JAVA_VERSION)}"
 		JAVA_IMPL="${JAVA_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
+		EXTRA_OPTIONS="${EXTRA_OPTIONS}"
+		JVM_OPTIONS="${JVM_OPTIONS}"
+		CUSTOM_TARGET="${CUSTOM_TARGET}"
+		ITERATIONS="${ITERATIONS}"
+		NODE_LABEL="${NODE_LABEL}"
     }
     stages {
         stage('Setup') {
@@ -40,7 +50,7 @@ pipeline {
 			        	userRemoteConfigs: [[url: "${REPO_URL}"]]
 			        ])
 			        sh 'chmod 755 $OPENJDK_TEST/maketest.sh'
-                	sh 'chmod 755 $OPENJDK_TEST/get.sh'
+                	sh 'chmod 755 $OPENJDK_TEST/get.sh -oxx'
                 	
                 	sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} -c ${params.CUSTOMIZED_SDK_URL}"
 					}
@@ -69,10 +79,14 @@ pipeline {
 						if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 							DIAGNOSTICLEVEL ='noDetails'
 						}
-					}
-					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
-						sh 'printenv'
-                		sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+					
+						withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
+							sh 'printenv'
+							int iterations = "${ITERATIONS}".toInteger()
+							for (i = 0; i < iterations; i++) {
+   								sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+							}
+						}
 					}
 				}
             }
@@ -106,7 +120,7 @@ def getJVM_VERSION(JAVA_IMPL, JAVA_VERSION) {
 	return jvm_version
 }
 
-def getPlatformAndLabel(SPEC) {
+def getPlatformAndLabel(WORKSPACE) {
 	def platformAndLabel = [] 
 	switch (SPEC) {
 		case ~/linux_x86-64.*/:
@@ -133,9 +147,16 @@ def getPlatformAndLabel(SPEC) {
 			platformAndLabel[0] = 'aarch64_linux'
 			platformAndLabel[1] = 'linux&&arm64&&test'
 			break
+		case ~/win_x86-64.*/:
+			platformAndLabel[0] = 'x64_win'
+			platformAndLabel[1] = 'hw.arch.x86&&sw.os.win'
+			break
 		default:
 			println 'not supported spec or wrong spec'
 			System.exit(-1)
-	}	
+	}
+	if (params.NODE_LABEL != '') {
+		platformAndLabel[1] = params.NODE_LABEL
+	}
 	return platformAndLabel
 }
