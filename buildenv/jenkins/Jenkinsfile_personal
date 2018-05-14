@@ -4,7 +4,7 @@ pipeline {
     parameters {
     	string (defaultValue: "AdoptOpenJDK", description: 'personal repo', name: 'personalRepo')
     	string (defaultValue: "master", description: 'personal branch', name: 'personalBranch')
-		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm\nwin_x86-64\nwin_x86-64_cmprssptrs', description: 'SPEC?', name: 'SPEC')
+		choice (choices: 'linux_x86-64\nlinux_x86-64_cmprssptrs\nmac_x86-64\nlinux_390-64\nlinux_390-64_cmprssptrs\nlinux_ppc-64_le\nlinux_ppc-64_cmprssptrs_le\nlinux_arm\nwin_x86-64\nwin_x86-64_cmprssptrs\naix_ppc-64\naix_ppc-64_cmprssptrs', description: 'SPEC?', name: 'SPEC')
 		choice (choices: 'SE80\nSE90\nSE100', description: 'What is JAVA_VERSION?', name: 'JAVA_VERSION')
 		string (defaultValue: 'hotspot', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		string (defaultValue: 'openjdk_regression', description: 'Specific test project, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers', name: 'TESTPROJECT')
@@ -155,6 +155,9 @@ def getPlatformAndLabel(WORKSPACE) {
 		default:
 			println 'not supported spec or wrong spec'
 			System.exit(-1)
-	}	
+	}
+	if (params.NODE_LABEL != '') {
+		platformAndLabel[1] = params.NODE_LABEL
+	}
 	return platformAndLabel
 }
