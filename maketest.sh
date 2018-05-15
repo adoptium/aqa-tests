@@ -11,14 +11,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ######
+if [ `uname` = AIX ]; then
+  MAKE=gmake
+else
+  MAKE=make
+fi
+
 if [ "$#" -eq 1 ];then
 	cd $1/TestConfig
-	make -f run_configure.mk
+	$MAKE -f run_configure.mk
 	if [ $? -ne 0 ]; then
 		exit 1
 	fi
-	make compile
+	$MAKE compile
 else
-	make -C $1 -f autoGen.mk $2
+	$MAKE -C $1 -f autoGen.mk $2
 fi
 
