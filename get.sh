@@ -96,7 +96,7 @@ getBinaryOpenjdk()
 		unzip -q $jar_file_name -d .
 	else
 		echo $jar_file_name 
-		tar -zxf $jar_file_name
+		gzip -cd $jar_file_name | tar xf -
 	fi
 	jarDir=`ls -d */`
 	dirName=${jarDir%?}
