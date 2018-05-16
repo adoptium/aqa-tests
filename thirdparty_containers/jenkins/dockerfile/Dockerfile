@@ -45,10 +45,10 @@ RUN apt-get update \
 # Install Maven
 RUN mkdir -p /usr/share/maven \
 	&& cd /usr/share/maven \
-	&& wget http://www-us.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.zip \
-	&& unzip apache-maven-3.5.2-bin.zip \
-	&& rm -rf apache-maven-3.5.2-bin.zip \
-	&& ln -s /usr/share/maven/apache-maven-3.5.2/bin/mvn /usr/bin/mvn \
+	&& wget http://www-us.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.zip \
+	&& unzip apache-maven-3.5.3-bin.zip \
+	&& rm -rf apache-maven-3.5.3-bin.zip \
+	&& ln -s /usr/share/maven/apache-maven-3.5.3/bin/mvn /usr/bin/mvn \
 	&& cd /
 
 VOLUME ["/java"]
