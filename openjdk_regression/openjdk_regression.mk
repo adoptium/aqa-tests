@@ -61,3 +61,7 @@ else
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot
 endif
+
+ifndef CUSTOM_TARGET
+	CUSTOM_TARGET := java/math/BigInteger/BigIntegerTest.java
+endif
