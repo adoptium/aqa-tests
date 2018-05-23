@@ -31,8 +31,19 @@ def setupEnv() {
 	env.JAVA_VERSION = "${JAVA_VERSION}"
 	env.JVM_VERSION = "${JVM_VERSION}"
 	env.SPEC = "${SPEC}"
-	env.BUILD_LIST = "${getBuildList()}"
+
+	if( params.BUILD_LIST ) {
+		env.BUILD_LIST = params.BUILD_LIST
+	} else {
+		env.BUILD_LIST = "${getBuildList()}"
+	}
 	
+	if( params.PERF_ROOT ) {
+		env.PERF_ROOT = params.PERF_ROOT
+	} else {
+		env.PERF_ROOT = "$WORKSPACE/../benchmarks"
+	}
+
 	if (env.BUILD_LIST == "jck") {
 		if ( JAVA_VERSION == "SE80" ) {
 			env.JCK_VERSION = "jck8b"
@@ -126,6 +137,15 @@ def buildTest() {
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
 			}
+		
+			if ( params.PERF_CREDENTIALS_ID ) {
+				withCredentials([usernamePassword(credentialsId: "$params.PERF_CREDENTIALS_ID",
+					passwordVariable: "PASSWORD_VAR", usernameVariable: "USERNAME_VAR")]) {
+						env.PERF_USERNAME = USERNAME_VAR
+						env.PERF_PASSWORD = PASSWORD_VAR
+				}
+			}
+		
 			if( params.JCK_GIT_REPO ) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"]) {
 					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
@@ -180,6 +200,12 @@ def post(test_target) {
 					sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
 				}
 				archiveArtifacts artifacts: "**/${test_target}_test_output.tar.gz", fingerprint: true, allowEmptyArchive: true
+			}
+			//for performance test, achive regardless the build result
+			def benchmark_test_output_dir = 'jvmtest/performance/odm/ilog_wodm881/leftoverResults';
+			if (fileExists(benchmark_test_output_dir)) {
+				sh "tar -zcf benchmark_test_output.tar.gz ${benchmark_test_output_dir}"
+				archiveArtifacts artifacts: '**/benchmark_test_output.tar.gz', fingerprint: true, allowEmptyArchive: true
 			}
 			cleanWs cleanWhenFailure: false
 		}
