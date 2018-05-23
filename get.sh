@@ -20,6 +20,7 @@ SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
 OPENJ9_REPO="https://github.com/eclipse/openj9.git"
 OPENJ9_SHA=""
+OPENJ9_BRANCH=""
 
 usage ()
 {
@@ -31,6 +32,7 @@ usage ()
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
+	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
 }
 
 parseCommandLineArgs()
@@ -62,6 +64,9 @@ parseCommandLineArgs()
 
 			"--openj9_sha" )
 				OPENJ9_SHA="$1"; shift;;
+
+			"--openj9_branch" )
+				OPENJ9_BRANCH="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -110,8 +115,14 @@ getBinaryOpenjdk()
 getTestKitGenAndFunctionalTestMaterial()
 {
 	cd $TESTDIR
-	echo "git clone $OPENJ9_REPO"
-	git clone -q --depth 1 $OPENJ9_REPO
+
+	if [ "$OPENJ9_BRANCH" != "" ]
+	then
+		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
+	fi
+
+	echo "git clone $OPENJ9_BRANCH $OPENJ9_REPO"
+	git clone -q --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO
 
 	if [ "$OPENJ9_SHA" != "" ]
 	then
