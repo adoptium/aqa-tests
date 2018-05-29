@@ -9,6 +9,14 @@
 	<property environment="env" />
 	<property name="env.JAVA_HOME" value="${JAVA_BIN}/.." />
 	
+	<condition property="isZOS" value="true">
+		<equals arg1="${os.name}" arg2="z/OS"/>
+	</condition>
+	
+	<condition property="git-prefix" value="git" else="https">
+		<isset property="isZOS"/>
+	</condition>
+	
 	<target name="init">
 		<if>
 			<not>
@@ -26,9 +34,30 @@
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="https://github.com/AdoptOpenJDK/stf.git" />
+			<arg value="${git-prefix}://github.com/AdoptOpenJDK/stf.git" />
 			<arg value="${SYSTEMTEST_ROOT}/stf" />
 		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
 	</target>
 
 	<target name="clone_systemtest">
@@ -37,9 +66,30 @@
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="https://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
+			<arg value="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
 			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
 		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
@@ -54,9 +104,30 @@
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="https://github.com/eclipse/openj9-systemtest.git" />
+			<arg value="${git-prefix}://github.com/eclipse/openj9-systemtest.git" />
 			<arg value="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
 	</target>
 
 	<target name="check_systemtest" depends="init">
