@@ -143,19 +143,19 @@ def getPlatformAndLabel(SPEC) {
 	switch (SPEC) {
 		case ~/linux_x86-64.*/:
 			platformAndLabel[0] = 'x64_linux'
-			platformAndLabel[1] = 'linux&&x64&&test||ci.project.openj9&&sw.os.linux&&hw.arch.x86'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.x86'
 			break
 		case ~/mac_x86-64.*/:
 			platformAndLabel[0] = 'x64_mac'
-			platformAndLabel[1] = 'mac&&x64&&test'
+			platformAndLabel[1] = 'sw.os.osx&&hw.arch.x86'
 			break
 		case ~/linux_390-64.*/:
 			platformAndLabel[0] = 's390x_linux'
-			platformAndLabel[1] = 'linux&&s390x&&test||ci.project.openj9&&sw.os.linux&&hw.arch.s390'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.s390'
 			break
 		case ~/linux_ppc-64.*le/:
 			platformAndLabel[0] = 'ppc64le_linux'
-			platformAndLabel[1] = 'linux&&ppc64le&&test||ci.project.openj9&&sw.os.linux&&hw.arch.ppc'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.ppcle'
 			break
 		case ~/aix_ppc-64.*/:
 			platformAndLabel[0] = 'ppc64_aix'
@@ -167,7 +167,7 @@ def getPlatformAndLabel(SPEC) {
 			break
 		case ~/win_x86-64.*/:
 			platformAndLabel[0] = 'x64_win'
-			platformAndLabel[1] = 'windows&&x64&&test||hw.arch.x86&&sw.os.win'
+			platformAndLabel[1] = 'hw.arch.x86&&sw.os.win'
 			break
 		default:
 			println 'not supported spec or wrong spec'
