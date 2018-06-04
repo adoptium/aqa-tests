@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="ODM test" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>ODM test</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/performance/odm" />
+
+	<!--Properties for this particular build-->
+	<property name="src" location="." />
+	<property name="BM_DIR_NAME" value="ilog_wodm881" />
+	<property name="BM_PACKAGE_ZIP" value="${BM_DIR_NAME}_Package.zip" />
+	<property environment="env" />
+
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+
+	<target name="getBenchmarkPackage" depends="init">
+		<if>
+			<not>
+				<available file="${DEST}/${BM_DIR_NAME}" />
+			</not>
+			<then>
+				<echo message="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" />
+				<if>
+					<available file="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" type="file" />
+					<then>
+						<unzip src="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" dest="${DEST}" />
+					</then>
+					<else>
+						<echo message="wget -q --http-user=${env.PERF_USERNAME} --http-password=XXX --no-check-certificate http://perffarm.hursley.ibm.com/packages/${BM_PACKAGE_ZIP}" />
+						<exec executable="wget" failonerror="true">
+							<arg line="-q --http-user=${env.PERF_USERNAME} --http-password=${env.PERF_PASSWORD} --no-check-certificate http://perffarm.hursley.ibm.com/packages/${BM_PACKAGE_ZIP}" />
+						</exec>
+						<unzip src="${BM_PACKAGE_ZIP}" dest="${DEST}" />
+					</else>
+				</if>
+			</then>
+		</if>
+	</target>
+
+	<target name="dist" depends="getBenchmarkPackage" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}"/>
+		</copy>
+		<copy file="${src}/scripts/run_ilog_with_gcmv.sh" todir="${DEST}/${BM_DIR_NAME}"/>
+		<chmod file="${DEST}/**" perm="a+x"/>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<delete dir="${BM_PACKAGE_ZIP}" />
+	</target>
+
+	<target name="build">
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
