@@ -218,6 +218,8 @@ def testBuild() {
 		time_limit = params.TIME_LIMIT.toInteger()
 	}
 	timeout(time: time_limit, unit: 'HOURS') {
+		addNodeToDescription()
+
 		// prepare environment and compile test projects
 		setup()
 		buildTest()
@@ -236,6 +238,7 @@ def testBuild() {
 				def testSubDir = testSubDirs[i].trim().replace("/","");
 				parallel_tests[testSubDir] = {
 					node ("$LABEL") {
+						addNodeToDescription()
 						setupParallelEnv()
 						stageTestBinaries()
 						if( env.BUILD_LIST == "jck") {
@@ -261,5 +264,10 @@ def setLabelParam() {
 	if( params.LABEL ) {
 		LABEL = params.LABEL
 	}
+}
+
+def addNodeToDescription() {
+	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
+	currentBuild.description = description + "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
 }
 return this
