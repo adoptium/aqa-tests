@@ -125,20 +125,33 @@ getBinaryOpenjdk()
 	# temporarily remove *test* until upstream build is updated and not staging test material
 	rm -rf *test*
 	
-	jar_file_name=`ls`
-	if [[ $jar_file_name == *zip || $jar_file_name == *jar ]]; then
-		unzip -q $jar_file_name -d .
-	else
-		echo $jar_file_name 
-		gzip -cd $jar_file_name | tar xf -
-	fi
-	jarDir=`ls -d */`
-	dirName=${jarDir%?}
-	if [ "$dirName" != "j2sdk-image" ]; then
-		mv $dirName j2sdk-image
-	else
-		echo "dirName is equal to j2sdk-image, skip moving"
-	fi
+	jar_files=`ls`
+	jar_file_array=(${jar_files//\\n/ })
+	for jar_name in "${jar_file_array[@]}"
+		do
+			if [[ $jar_name == *zip || $jar_file_name == *jar ]]; then
+				unzip -q $jar_file_name -d .
+			else
+				echo $jar_name 
+				gzip -cd $jar_name | tar xf -
+			fi
+			#rm jar_name
+		done
+	
+	jar_dirs=`ls -d */`
+	jar_dir_array=(${jar_dirs//\\n/ })
+	for jar_dir in "${jar_dir_array[@]}"
+		do
+			jar_dir_name=${jar_dir%?}
+			if [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
+				mv $jar_dir_name j2sdk-image
+			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
+				mv $jar_dir_name j2jre-image
+			#The following only needed if openj9 has a different image name convention
+			elif [[ "$jar_dir_name" != "j2sdk-image" ]]; then
+				mv $jar_dir_name j2sdk-image
+			fi
+		done
 }
 
 getTestKitGenAndFunctionalTestMaterial()
