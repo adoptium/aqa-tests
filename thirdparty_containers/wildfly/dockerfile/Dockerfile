@@ -22,7 +22,6 @@
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-wildfly-test .`
 
-# This Dockerfile can be used as an example for external docker based tests. 
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
@@ -55,8 +54,7 @@ ENV JAVA_HOME=/java \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 
-# This is the main script to run example tests. Replace this with the script for your own third party test 
-#COPY ./dockerfile/example-test.sh /example-test.sh
+# This is the main script to run wildfly tests. 
 
 COPY ./dockerfile/wildfly-test.sh /wildfly-test.sh
 
@@ -65,8 +63,6 @@ COPY ./dockerfile/wildfly-test.sh /wildfly-test.sh
 WORKDIR /
 RUN pwd
 
-
-#RUN git clone https://github.com/smlambert/tpc-example.git
 
 RUN git clone https://github.com/wildfly/wildfly.git
 

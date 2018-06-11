@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 
-#Set up Java to be used by the the example-test
+#Set up Java to be used by the wildfly-test
 
 if [ -d /java/jre/bin ];then
 	echo "Using mounted Java8"
@@ -46,15 +46,9 @@ echo "java -version is: \n"
 java -version
 
 # Replace the following with the initial command lines that trigger execution of your test
-# For this example, we will simply compile and run the ExampleTest class
-#cd /tpc-example
 cd /wildfly
 ls .
 pwd
-
-#echo "Compile and execute example-test" && \
-#javac src/net/adoptopenjdk/example/test/ExampleTest.java && \
-#java -cp ./src net.adoptopenjdk.example.test.ExampleTest
 
 
 echo "Building wildfly  using maven , by invoking build.sh" && \
