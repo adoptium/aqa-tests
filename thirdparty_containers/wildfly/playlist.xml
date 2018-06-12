@@ -13,9 +13,6 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
-	<!--Add entries corresponding to your test similar to the example below so that
-		TestKitGen can produce the equivalent make command lines to be executed in the build 
-	-->
 	<test>
 		<testCaseName>wildfly_test</testCaseName>
 	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-wildfly-test:latest "jvm pos neg"; \

@@ -67,7 +67,6 @@ RUN pwd
 RUN git clone https://github.com/wildfly/wildfly.git
 
 
-#ENTRYPOINT ["/bin/bash", "/example-test.sh"]
 ENTRYPOINT ["/bin/bash", "/wildfly-test.sh"]
 CMD ["--version"]
 
