@@ -44,12 +44,10 @@ RUN apt-get update \
 	vim \
 	wget
 
-
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
 
 # This is the main script to run example tests. Replace this with the script for your own third party test 
 COPY ./dockerfile/example-test.sh /example-test.sh

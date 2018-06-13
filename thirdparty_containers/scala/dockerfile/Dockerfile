@@ -52,7 +52,6 @@ ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
 # This is the main script to run scala tests
 COPY ./dockerfile/scala-test.sh /scala-test.sh
 

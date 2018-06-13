@@ -56,7 +56,6 @@ ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
 # This is the main script to run jenkins tests
 COPY ./dockerfile/jenkins-test.sh /jenkins-test.sh
 

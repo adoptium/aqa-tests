@@ -68,11 +68,9 @@ ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
 COPY ./dockerfile/lucene-solr-test.sh /lucene-solr-test.sh
 
 # Clone the repo where the Lucen-Solr code and tests reside.
-
 RUN pwd
 RUN git clone https://github.com/apache/lucene-solr.git
 

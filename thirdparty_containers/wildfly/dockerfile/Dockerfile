@@ -21,14 +21,12 @@
 # `--build-arg list` to specify your base image
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-wildfly-test .`
-
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
-
 
 # Install test dependent executable files
 RUN apt-get update \
@@ -44,29 +42,21 @@ RUN apt-get update \
 	vim \
 	wget
 
-
 RUN cd .
-
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
 # This is the main script to run wildfly tests. 
-
 COPY ./dockerfile/wildfly-test.sh /wildfly-test.sh
 
-
-# Clone the repo where the 3rd party application code and tests reside.
+# Clone the repo where wildfly tests reside.
 WORKDIR /
 RUN pwd
 
-
 RUN git clone https://github.com/wildfly/wildfly.git
-
 
 ENTRYPOINT ["/bin/bash", "/wildfly-test.sh"]
 CMD ["--version"]
-
