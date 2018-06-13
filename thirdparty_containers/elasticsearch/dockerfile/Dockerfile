@@ -21,8 +21,6 @@
 # `--build-arg list` to specify your base image
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-elasticsearch-test .`
-
-# This Dockerfile can be used as an example for external docker based tests. 
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
@@ -46,7 +44,6 @@ RUN apt-get update \
 	vim \
 	wget
 
-
 #Install Gradle
 RUN mkdir -p /usr/share/gradle \
          && cd /usr/share/gradle \
@@ -56,30 +53,22 @@ RUN mkdir -p /usr/share/gradle \
          && ln -s /usr/share/gradle/gradle-4.5/bin/gradle /usr/bin/gradle \
          && cd /
 
-
-
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
-# This is the main script to run example tests. Replace this with the script for your own third party test 
-#COPY ./dockerfile/example-test.sh /example-test.sh
-
+# This is the main script to run Elasticsarch tests.
 COPY ./dockerfile/elasticsearch-test.sh /elasticsearch-test.sh
 
-
-# Clone the repo where the 3rd party application code and tests reside.
+# Clone the Elasticsearch test repo
 WORKDIR /
 RUN pwd
-#RUN git clone https://github.com/smlambert/tpc-example.git
 
 RUN git clone https://github.com/elastic/elasticsearch.git
 
 RUN cd elasticsearch \
 && git checkout v6.1.3
-
 
 RUN chown -R elasticsearch /elasticsearch
 RUN chown -R elasticsearch /elasticsearch-test.sh
@@ -92,10 +81,6 @@ USER elasticsearch
 WORKDIR /
 ENV PATH="/usr/share/gradle/gradle-4.5/bin:${PATH}"
 
-
-
-
 #ENTRYPOINT ["/bin/bash", "/example-test.sh"]
 ENTRYPOINT ["/bin/bash", "/elasticsearch-test.sh"]
 CMD ["--version"]
-

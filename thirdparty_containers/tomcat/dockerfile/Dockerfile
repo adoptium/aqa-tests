@@ -20,8 +20,7 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build tomcat: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-tomcat-test .`
-
+# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-tomcat-test .`
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
@@ -44,7 +43,6 @@ RUN apt-get update \
 	wget \
 	gcc
 
-
 # Install OpenSSL
 RUN git clone https://github.com/openssl/openssl.git && cd /openssl && git checkout OpenSSL_1_0_2k \ 
 	&& ./config --prefix=/usr --openssldir=/usr/local/openssl shared \
@@ -55,7 +53,6 @@ VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
     JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
 
 # This is the main script to run tomcat tests.  
 COPY ./dockerfile/tomcat-test.sh /tomcat-test.sh
