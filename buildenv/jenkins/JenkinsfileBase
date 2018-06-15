@@ -145,7 +145,14 @@ def buildTest() {
 						env.PERF_PASSWORD = PASSWORD_VAR
 				}
 			}
-		
+
+			try {
+				//get pre-staged jars from test.getDependency build before test compilation
+				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TestConfig/lib'
+			} catch (Exception e) {
+				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
+			}
+
 			if( params.JCK_GIT_REPO ) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"]) {
 					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
