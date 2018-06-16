@@ -24,7 +24,6 @@ pipeline {
     	timeout(time: 8, unit: 'HOURS')
   	}
 	environment {
-		OPENJDK_TEST="$WORKSPACE/openjdk-tests"
 		JAVA_HOME="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}"
 		JAVA_BIN="$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 		SPEC="${SPEC}"
@@ -54,11 +53,7 @@ pipeline {
 						CUSTOMIZED_SDK_URL_OPTION = (params.CUSTOMIZED_SDK_URL != "") ? "-c '$CUSTOMIZED_SDK_URL'" : ""
 						OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 						OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
-                		if ( SPEC.contains('win') ) {
-                			bat "$OPENJDK_TEST/get.bat -sdkdir $WORKSPACE -testdir $OPENJDK_TEST -platform ${getPlatformAndLabel(SPEC)[0]} -jvmversion ${JVM_VERSION} -sdk_resource ${params.SDK_RESOURCE} -customizedURL ${params.CUSTOMIZED_SDK_URL}"
-                		} else {
-							sh "$OPENJDK_TEST/get.sh -s $WORKSPACE -t $OPENJDK_TEST -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
-						}
+						sh "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
 					}
                 }
             }
@@ -68,11 +63,7 @@ pipeline {
 				timestamps{
                 	echo 'Building tests...'
                 	script {
-						if ( SPEC.contains('win') ) {
-							bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST"
-						} else {
-							sh '$OPENJDK_TEST/maketest.sh $OPENJDK_TEST'
-						}
+						sh './openjdk-tests/maketest.sh ./openjdk-tests'
 					}
                 }
             }
@@ -94,11 +85,7 @@ pipeline {
 								CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 							}
 							for (i = 0; i < iterations; i++) {
-								if ( SPEC.contains('win') ) {
-									bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST _${params.TARGET}"
-								} else {
-									sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET} ${CUSTOM_OPTION}"
-								}
+								sh "./openjdk-tests/maketest.sh ./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
 							}
                 		}
 					}
@@ -117,7 +104,7 @@ pipeline {
 			archiveArtifacts artifacts: '**/work/**/*.jtr, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
 			 script {
             	if (params.TARGET == 'systemtest') {  
-	       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*'
+	       	 		sh 'tar -zcf openjdk-systemtest-results.tar.gz ./openjdk-tests/TestConfig/test_output_*'
 	       	 		archiveArtifacts artifacts: '**/openjdk-systemtest-results.tar.gz', fingerprint: true, allowEmptyArchive: true
 		    	}
 	    	}

@@ -137,18 +137,13 @@ def setup() {
 			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
+			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
 
-            if (params.USER_CREDENTIALS_ID) {
-                sshagent(credentials:["${params.USER_CREDENTIALS_ID}"]) {
-                    sh "bash $WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-                }
-            } else {
-                if ( SPEC.contains('win') ) {
-                    bat "$WORKSPACE/openjdk-tests/get.bat -sdkdir $WORKSPACE -testdir $WORKSPACE/openjdk-tests -platform $PLATFORM -jvmversion $JVM_VERSION -sdk_resource $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION}"
-                } else {
-                    sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-                }
-            }
+			dir( WORKSPACE) {
+				sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
+					sh "$GET_SH_CMD"
+				}
+			}
 		}
 	}
 }
@@ -173,16 +168,8 @@ def buildTest() {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
 
-			if( params.JCK_GIT_REPO ) {
-				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"]) {
-					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests"
-				}
-			} else {
-				if ( SPEC.contains('win') ) {
-					bat "$WORKSPACE/openjdk-tests/maketest.bat $WORKSPACE/openjdk-tests"
-				} else {
-					sh '$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests'
-				}
+			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+				sh "./openjdk-tests/maketest.sh ./openjdk-tests"
 			}
 		}
 	}
@@ -204,11 +191,7 @@ def runTest(subDir) {
 				}
 			} else {
 				echo 'Running tests...'
-				if ( SPEC.contains('win') ) {
-					bat "$WORKSPACE/openjdk-tests/maketest.bat $WORKSPACE/openjdk-tests/${subDir} _$TARGET"
-				} else {
-					sh '$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/${subDir} _$TARGET'
-				}
+				sh './openjdk-tests/maketest.sh ./openjdk-tests/${subDir} _$TARGET'
 			}
 		}
 	}
@@ -221,11 +204,9 @@ def post(test_target) {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
 			if (currentBuild.result == 'UNSTABLE') {
 				archiveArtifacts artifacts: '**/work/**/*.jtr, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
-				if ( SPEC.contains('win') ) {
-					bat "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
-				} else {
-					sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
-				}
+
+				sh "tar -zcf ${test_target}_test_output.tar.gz ./openjdk-tests/TestConfig/test_output_*"
+
 				archiveArtifacts artifacts: "**/${test_target}_test_output.tar.gz", fingerprint: true, allowEmptyArchive: true
 			}
 			//for performance test, achive regardless the build result
