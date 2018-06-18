@@ -345,8 +345,10 @@
 		</groups>
 	</test>
 	
+	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
+		Reason: https://github.com/eclipse/openj9/issues/2209)-->
 	<test>
-		<testCaseName>LambdaLoadTest</testCaseName>
+		<testCaseName>LambdaLoadTest_Hotspot</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -369,6 +371,69 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=LambdaLoadTest; \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements> 
+	</test>
+	
+	<test>
+		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=LambdaLoadTest; \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
 	</test>
 	
 	<test>
