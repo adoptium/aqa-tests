@@ -111,6 +111,8 @@ def setup() {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
 						fingerprintArtifacts: true,
+						flatten: true,
+						filter: "**/*.tar.gz,**/*.zip",
 						projectName: "${params.UPSTREAM_JOB_NAME}",
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
