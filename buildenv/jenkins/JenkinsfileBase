@@ -119,13 +119,27 @@ def setup() {
 			}
 			CUSTOMIZED_SDK_URL_OPTION = (CUSTOMIZED_SDK_URL != "") ? "-c $CUSTOMIZED_SDK_URL" : ""
 			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
+			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+			
+			// vendor test
+			// expect VENDOR_TEST_* to be comma separated string parameters
+			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
+			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
+			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
+			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 
-			if ( SPEC.contains('win') ) {
-				bat "$WORKSPACE/openjdk-tests/get.bat -sdkdir $WORKSPACE -testdir $WORKSPACE/openjdk-tests -platform $PLATFORM -jvmversion $JVM_VERSION -sdk_resource $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_SHA_OPTION}"
-			} else {
-				sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_SHA_OPTION}"
-			}
+            if (params.USER_CREDENTIALS_ID) {
+                sshagent(credentials:["${params.USER_CREDENTIALS_ID}"]) {
+                    sh "bash $WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+                }
+            } else {
+                if ( SPEC.contains('win') ) {
+                    bat "$WORKSPACE/openjdk-tests/get.bat -sdkdir $WORKSPACE -testdir $WORKSPACE/openjdk-tests -platform $PLATFORM -jvmversion $JVM_VERSION -sdk_resource $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION}"
+                } else {
+                    sh "$WORKSPACE/openjdk-tests/get.sh -s $WORKSPACE -t $WORKSPACE/openjdk-tests -p $PLATFORM -v $JVM_VERSION -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+                }
+            }
 		}
 	}
 }
