@@ -51,13 +51,13 @@ ENV LUCENE_SOLR_HOME ${WORKDIR}
 
 #apache ant setup 
 ENV ANT_VERSION 1.10.3
-RUN wget --no-check-certificate https://www.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
+RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
     gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
     tar -xvf apache-ant-${ANT_VERSION}-bin.tar
 	
 #apache ivy setup 
 ENV IVY_VERSION 2.4.0
-RUN wget http://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
+RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     gunzip apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     tar -xvf apache-ivy-${IVY_VERSION}-bin.tar && \
     cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar $WORKDIR/apache-ant-${ANT_VERSION}/lib/

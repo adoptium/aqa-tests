@@ -54,6 +54,13 @@ Usage : get.sh  --testdir|-t openjdktestdir
                 [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized
 
                 [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized
+                [--openj9_repo ] : optional. OpenJ9 git repo. Default value: https://github.com/eclipse/openj9.git is used if not provided
+                [--openj9_sha ] : optional. OpenJ9 pull request sha.
+                [--openj9_branch ] : optional. OpenJ9 branch.
+                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories
+                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories
+                [--vendor_branches ] : optional. Comma separated vendor branches
+                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources
 ```
 
 #### Set environment variables, configure, build and run tests

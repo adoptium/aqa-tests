@@ -21,6 +21,10 @@ CUSTOMIZED_SDK_URL=""
 OPENJ9_REPO="https://github.com/eclipse/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
+VENDOR_REPOS=""
+VENDOR_SHAS=""
+VENDOR_BRANCHES=""
+VENDOR_DIRS=""
 
 usage ()
 {
@@ -33,6 +37,10 @@ usage ()
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
+	echo '                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories'
+	echo '                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories'
+	echo '                [--vendor_branches ] : optional. Comma separated vendor branches'
+	echo '                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources'
 }
 
 parseCommandLineArgs()
@@ -67,6 +75,18 @@ parseCommandLineArgs()
 
 			"--openj9_branch" )
 				OPENJ9_BRANCH="$1"; shift;;
+
+			"--vendor_repos" )
+				VENDOR_REPOS="$1"; shift;;
+
+			"--vendor_shas" )
+				VENDOR_SHAS="$1"; shift;;
+
+			"--vendor_branches" )
+				VENDOR_BRANCHES="$1"; shift;;
+
+			"--vendor_dirs" )
+				VENDOR_DIRS="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -137,6 +157,69 @@ getTestKitGenAndFunctionalTestMaterial()
 	mv openj9/test/Utils Utils
 	mv openj9/test/functional functional
 	rm -rf openj9
+
+	if [ "$VENDOR_REPOS" != "" ]; then
+		declare -a vendor_repos_array
+		declare -a vendor_branches_array
+		declare -a vendor_shas_array
+		declare -a vendor_dirs_array
+
+		# convert VENDOR_REPOS to array
+		vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
+
+		if [ "$VENDOR_BRANCHES" != "" ]; then
+			# convert VENDOR_BRANCHES to array
+			vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
+		fi
+	
+		if [ "$VENDOR_SHAS" != "" ]; then
+			#convert VENDOR_SHAS to array
+			vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
+		fi
+	
+		if [ "$VENDOR_DIRS" != "" ]; then
+			#convert VENDOR_DIRS to array
+			vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
+		fi
+
+		for i in "${!vendor_repos_array[@]}"; do
+			# clone vendor source
+			repoURL=${vendor_repos_array[$i]}
+			branch=${vendor_branches_array[$i]}
+			sha=${vendor_shas_array[$i]}
+			dir=${vendor_dirs_array[$i]}
+			dest="vendor_${i}"
+
+			branchOption=""
+			if [ "$branch" != "" ]; then
+				branchOption="-b $branch"
+			fi
+
+			echo "git clone ${branchOption} $repoURL $dest"
+			git clone -q --depth 1 $branchOption $repoURL $dest
+
+			if [ "$sha" != "" ]; then
+				cd $dest
+				echo "update to $sha"
+				git checkout $sha
+				cd $TESTDIR
+			fi
+
+			# move resources
+			if [[ "$dir" != "" ]] && [[ -d $dest/$dir ]]; then
+				echo "Stage $dest/$dir to $TESTDIR/$dir"
+				# already in TESTDIR, thus copy $dir to current directory
+				cp -r $dest/$dir ./
+			else
+				echo "Stage $dest to $TESTDIR"
+				# already in TESTDIR, thus copy the entire vendor repo content to current directory
+				cp -r $dest/* ./
+			fi
+
+			# clean up
+			rm -rf $dest
+		done
+	fi
 }
 
 wgetSDK()
