@@ -46,22 +46,27 @@ RUN apt-get update \
 	&& ln -s /usr/bin/python3 python \
 	&& pip3 install --upgrade pip 
 
-WORKDIR /
-ENV LUCENE_SOLR_HOME ${WORKDIR}
+RUN useradd --create-home --shell /bin/bash --no-log-init -u 1000 jenkins | chpasswd && adduser jenkins sudo
+USER jenkins
+
+ENV USER_HOME=/home/jenkins
+ENV ANT_VERSION 1.10.3
+ENV IVY_VERSION 2.4.0
+ENV ANT_HOME ${USER_HOME}/apache-ant-${ANT_VERSION}
+ENV LUCENE_SOLR_HOME ${USER_HOME}
+
+WORKDIR ${USER_HOME}
 
 #apache ant setup 
-ENV ANT_VERSION 1.10.3
 RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
     gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
     tar -xvf apache-ant-${ANT_VERSION}-bin.tar
-	
+
 #apache ivy setup 
-ENV IVY_VERSION 2.4.0
 RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     gunzip apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     tar -xvf apache-ivy-${IVY_VERSION}-bin.tar && \
-    cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar $WORKDIR/apache-ant-${ANT_VERSION}/lib/
-ENV ANT_HOME ${WORKDIR}/apache-ant-${ANT_VERSION}
+    cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar apache-ant-${ANT_VERSION}/lib/
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
@@ -73,6 +78,8 @@ COPY ./dockerfile/lucene-solr-test.sh /lucene-solr-test.sh
 # Clone the repo where the Lucen-Solr code and tests reside.
 RUN pwd
 RUN git clone https://github.com/apache/lucene-solr.git
+
+RUN chown jenkins * 
 
 ENTRYPOINT ["/bin/bash", "/lucene-solr-test.sh"]
 CMD ["--version"]
