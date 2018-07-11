@@ -99,23 +99,32 @@ parseCommandLineArgs()
 getBinaryOpenjdk()
 {
 	cd $SDKDIR
+	mkdir openjdkbinary
+	cd openjdkbinary
+	jar_file_name=""
 	if [[ "$CUSTOMIZED_SDK_URL" == "" ]]; then
 		if [[ "$SDK_RESOURCE" == "nightly" || "$SDK_RESOURCE" == "releases" ]]; then
 			echo 'Get binary openjdk...'
-			mkdir openjdkbinary
 			download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
-			wgetSDK
+			curl -OLJ $download_url
+			jar_file_name=`ls`
+			if [ "$jar_file_name" = "binary" ]; then
+				echo "No available jdk binary, exiting"
+				exit 1
+			fi
 		fi
 	else 
 		download_url=$CUSTOMIZED_SDK_URL
-		wgetSDK
+		wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
+		if [ $? -ne 0 ]; then
+			echo "Failed to retrieve the jdk binary, exiting"
+			exit 1
+		fi
 	fi
 	
-	cd openjdkbinary
-
 	# temporarily remove *test* until upstream build is updated and not staging test material
 	rm -rf *test*
-
+	
 	jar_file_name=`ls`
 	if [[ $jar_file_name == *zip || $jar_file_name == *jar ]]; then
 		unzip -q $jar_file_name -d .
@@ -219,15 +228,6 @@ getTestKitGenAndFunctionalTestMaterial()
 			# clean up
 			rm -rf $dest
 		done
-	fi
-}
-
-wgetSDK()
-{
-	wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url} --directory-prefix=${SDKDIR}/openjdkbinary
-	if [ $? -ne 0 ]; then
-		echo "Failed to retrieve the jdk binary, exiting"
-		exit 1
 	fi
 }
 
