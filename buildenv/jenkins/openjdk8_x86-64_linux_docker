@@ -8,6 +8,7 @@ node('linux&&x64&&test&&sw.tool.docker') {
     JAVA_VERSION = 'SE80'
     SDK_RESOURCE = 'upstream'
     SPEC='linux_x86-64_cmprssptrs'
+    BUILD_LIST='thirdparty_containers/lucene-solr'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
     jenkinsfile.testBuild()

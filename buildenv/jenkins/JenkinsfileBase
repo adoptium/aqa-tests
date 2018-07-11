@@ -215,12 +215,21 @@ def post(test_target) {
 		timestamps{
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml'
+			
 			if (currentBuild.result == 'UNSTABLE') {
 				archiveArtifacts artifacts: '**/work/**/*.jtr, **/junitreports/**/*.xml', fingerprint: true, allowEmptyArchive: true
 				if ( SPEC.contains('win') ) {
-					bat "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
+					if (env.BUILD_LIST == 'external') {  
+						bat "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*/*/junitreports/*.xml"
+					} else {
+						bat "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
+					}
 				} else {
-					sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
+					if (env.BUILD_LIST == 'external') {
+						sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*/*/junitreports/*.xml"
+					} else {
+						sh "tar -zcf ${test_target}_test_output.tar.gz $WORKSPACE/openjdk-tests/TestConfig/test_output_*"
+					}
 				}
 				archiveArtifacts artifacts: "**/${test_target}_test_output.tar.gz", fingerprint: true, allowEmptyArchive: true
 			}
