@@ -42,7 +42,6 @@ RUN apt-get update \
 	vim \
 	wget
 
-
 #Install Gradle
 RUN mkdir -p /usr/share/gradle \
          && cd /usr/share/gradle \
@@ -51,7 +50,6 @@ RUN mkdir -p /usr/share/gradle \
          && rm -rf gradle-4.5-bin.zip \
          && ln -s /usr/share/gradle/gradle-4.5/bin/gradle /usr/bin/gradle \
          && cd /
-
 
 RUN cd .
 

@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>kafka_test</testCaseName>
-	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-kafka-test:latest "jvm pos neg"; \
+	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-kafka-test:latest ; \
 		$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>

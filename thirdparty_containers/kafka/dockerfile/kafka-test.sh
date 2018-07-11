@@ -45,17 +45,14 @@ type -p java
 echo "java -version is: \n"
 java -version
 
-# Replace the following with the initial command lines that trigger execution of your test
+# Initial command to trigger the execution of kafka test
 cd /kafka
 ls .
 pwd
 
-
 echo "Building kafka  using gradle" && \
 gradle -q
 ./gradlew jar
-
-
 
 echo "Kafka Build - Completed"
 
