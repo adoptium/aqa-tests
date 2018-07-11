@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 
-#Set up Java to be used by the the example-test
+#Set up Java to be used by the elasticsearch-test
 
 if [ -d /java/jre/bin ];then
 	echo "Using mounted Java8"
@@ -45,25 +45,26 @@ type -p java
 echo "java -version is: \n"
 java -version
 
-# Replace the following with the initial command lines that trigger execution of your test
-# For this example, we will simply compile and run the ExampleTest class
-#cd /tpc-example
+# Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
 ls .
 pwd
 
-#echo "Compile and execute example-test" && \
-#javac src/net/adoptopenjdk/example/test/ExampleTest.java && \
-#java -cp ./src net.adoptopenjdk.example.test.ExampleTest
+# $JAVA_HOME/bin/jps is not available in OpenJ9.Hence creating a dummy jps file incase of OpenJ9
 
+ver=`"$JAVA_HOME"/bin/java -version`
+
+if [[ "Eclipse OpenJ9 VM" =~ "$ver" ]]
+then
+ echo " " > "$JAVA_HOME"/bin/jps;
+ `chmod +x "$JAVA_HOME"/bin/jps;`
+fi
 
 echo "Building elasticsearch  using gradle \"gradle assemble\"" && \
 gradle -g /tmp assemble
-
 
 echo "Elasticsearch Build - Completed"
 
 echo "Running elasticsearch tests :"
 ./gradlew -g /tmp test
-
 
