@@ -1144,6 +1144,7 @@
 		</impls>
 	</test>
 	
+	<!--Exclude TestJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
 		<variations>
@@ -1158,7 +1159,6 @@
 	-test=TestJlmRemoteClassNoAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1174,9 +1174,122 @@
 		</impls>
 	</test>
 
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
+	<test>
+		<testCaseName>TestJlmRemoteClassNoAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteClassNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements> 
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteClassNoAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteClassNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
+	</test>
+	
+	<!--Exclude TestJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteMemoryAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteMemoryAuth_SE80_Linux</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1203,8 +1316,10 @@
 			<impl>hotspot</impl>
 			<impl>openj9</impl>
 		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 
+	<!--Exclude TestJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
 		<variations>
@@ -1219,7 +1334,6 @@
 	-test=TestJlmRemoteMemoryNoAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1233,6 +1347,62 @@
 			<impl>hotspot</impl>
 			<impl>openj9</impl>
 		</impls>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteMemoryNoAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteMemoryNoAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteMemoryNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 
 	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
@@ -1266,6 +1436,7 @@
 	</test>
 
 	<!-- Excluding the following test for Hotspot & OpenJDK10-Openj9 for eclipse/openj9/issues/1566  -->
+	<!--Exclude TestJlmRemoteThreadNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
 		<variations>
@@ -1280,7 +1451,6 @@
 	-test=TestJlmRemoteThreadNoAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 		</subsets>
 		<levels>
@@ -1292,6 +1462,60 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteThreadNoAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteThreadNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestJlmRemoteThreadNoAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestJlmRemoteThreadNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 	
 	<!-- The following JLM tests are specific to OpenJDK-OpenJ9, they run tests from openj9.test.jlm project -->
@@ -1323,8 +1547,64 @@
 			<impl>openj9</impl>
 		</impls>
 	</test>
+	
+	<!--Exclude TestIBMJlmRemoteClassAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteClassAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteClassAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteClassAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteClassAuth_SE80_Linux</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1350,7 +1630,10 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
+	
+	<!--Exclude TestIBMJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassNoAuth</testCaseName>
 		<variations>
@@ -1365,7 +1648,6 @@
 	-test=TestIBMJlmRemoteClassNoAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1379,6 +1661,62 @@
 			<impl>openj9</impl>
 		</impls>
 	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteClassNoAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteClassNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteClassNoAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteClassNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
+	</test>
+	
+	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth</testCaseName>
 		<variations>
@@ -1393,7 +1731,6 @@
 	-test=TestIBMJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1408,6 +1745,62 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteMemoryAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteMemoryAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
+	</test>
+	
+	<!--Exclude TestIBMJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
+	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryNoAuth</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
@@ -1421,7 +1814,6 @@
 	-test=TestIBMJlmRemoteMemoryNoAuth; \
 	$(TEST_STATUS)</command> 
 		<subsets>
-			<subset>SE80</subset>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
 		</subsets>
@@ -1434,6 +1826,60 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteMemoryNoAuth_SE80</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteMemoryNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>TestIBMJlmRemoteMemoryNoAuth_SE80_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest;$(TEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=TestIBMJlmRemoteMemoryNoAuth; \
+	$(TEST_STATUS)</command> 
+		<subsets>
+			<subset>SE80</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 	
 	<!-- Tests below pertain to Java 9 Modularity -->
