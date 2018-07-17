@@ -27,6 +27,7 @@ def stageTestBinaries() {
 
 def setupEnv() {
 	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JAVA_VERSION = "${JAVA_VERSION}"
 	env.JVM_VERSION = "${JVM_VERSION}"

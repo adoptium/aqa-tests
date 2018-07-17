@@ -47,6 +47,15 @@ JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 # Add any extra options
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
+ifndef JRE_IMAGE
+	ifeq ($(JAVA_VERSION),SE80)
+		JRE_ROOT := $(JAVA_BIN)$(D)..$(D)..
+	else
+		JRE_ROOT := $(JAVA_BIN)$(D)..
+	endif
+	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2jre-image
+endif
+
 ifdef OPENJDK_DIR 
 # removing "
 OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
