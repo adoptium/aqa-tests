@@ -48,11 +48,10 @@
 				<if>
  					<equals arg1="JCK10" arg2="${env.JCK_VERSION}" />
  				<then>
-   					<echo message="git reset --hard origin/master in ${env.JCK_ROOT}/${env.JCK_VERSION}" />
 					<exec executable="git" failonerror="true">
-					<arg value="reset" />
-					<arg value="origin/master" />
-				</exec>   
+						<arg value="reset" />
+						<arg value="origin/master" />
+					</exec>   
  				</then>
 
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} exists, try to update jck materials" />
