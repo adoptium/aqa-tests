@@ -51,10 +51,38 @@
 					<arg value="fetch" />
 				</exec>
 				<echo message="git rebase origin/master" />
-				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
+				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="false" resultproperty="return.code">
 					<arg value="rebase" />
 					<arg value="origin/master" />
 				</exec>
+				<if>
+					<condition>
+						<and>
+            			<not>
+                			<equals arg1="0" arg2="${return.code}"/>
+            			</not>
+						<equals arg1="JCK10" arg2="${env.JCK_VERSION}"/>
+						</and>
+        			</condition>
+				<then>
+					<echo message="git rebase origin/master failed, git reset --hard origin/master
+						clone from ${env.JCK_GIT_REPO} to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
+					<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
+						<arg value="reset" />
+						<arg value="--hard" />
+						<arg value="origin/master" />
+					</exec>
+					<exec executable="git" failonerror="true">
+						<arg value="clone" />
+						<arg value="--depth" />
+						<arg value="1" />
+						<arg value="--single-branch" />
+						<arg value="${env.JCK_GIT_REPO}" />
+						<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
+					</exec>
+				</then>
+				</if>
+			</then>
 			</else>
 		</if>
 	</target>
