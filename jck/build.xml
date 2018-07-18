@@ -45,16 +45,17 @@
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
+				<if>
+ 					<equals arg1="JCK10" arg2="${env.JCK_VERSION}" />
+ 				<then>
+   					<echo message="git reset --hard origin/master in ${env.JCK_ROOT}/${env.JCK_VERSION}" />
+					<exec executable="git" failonerror="true">
+					<arg value="reset" />
+					<arg value="origin/master" />
+				</exec>   
+ 				</then>
+
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} exists, try to update jck materials" />
-				<echo message="git clean ${env.JCK_ROOT}/${env.JCK_VERSION}" />
-				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
-					<arg value="clean" />
-					<arg value="-fd" />
-				</exec>
-				<echo message="git stash ${env.JCK_ROOT}/${env.JCK_VERSION}" />
-				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
-					<arg value="stash" />
-				</exec>
 				<echo message="git fetch ${env.JCK_GIT_REPO}" />
 				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
 					<arg value="fetch" />
@@ -64,6 +65,7 @@
 					<arg value="rebase" />
 					<arg value="origin/master" />
 				</exec>
+				</if>
 			</else>
 		</if>
 	</target>
