@@ -51,6 +51,10 @@
 					<arg value="clean" />
 					<arg value="-fd" />
 				</exec>
+				<echo message="git stash ${env.JCK_ROOT}/${env.JCK_VERSION}" />
+				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
+					<arg value="stash" />
+				</exec>
 				<echo message="git fetch ${env.JCK_GIT_REPO}" />
 				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
 					<arg value="fetch" />
