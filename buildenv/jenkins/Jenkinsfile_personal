@@ -151,15 +151,15 @@ def getPlatformAndLabel(SPEC) {
 			break
 		case ~/linux_390-64.*/:
 			platformAndLabel[0] = 's390x_linux'
-			platformAndLabel[1] = 'sw.os.linux&&hw.arch.s390'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.s390x'
 			break
 		case ~/linux_ppc-64.*le/:
 			platformAndLabel[0] = 'ppc64le_linux'
-			platformAndLabel[1] = 'sw.os.linux&&hw.arch.ppcle'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.ppc64le'
 			break
 		case ~/aix_ppc-64.*/:
 			platformAndLabel[0] = 'ppc64_aix'
-			platformAndLabel[1] = 'aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1'
+			platformAndLabel[1] = 'hw.arch.ppc&&sw.os.aix'
 			break
 		case ~/linux_arm.*/:
 			platformAndLabel[0] = 'aarch64_linux'
