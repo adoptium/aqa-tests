@@ -34,7 +34,7 @@ def stageTestBinaries() {
 }
 
 def setupEnv() {
-	env.JAVA_VERSION = getJavaVersionFromJvmVersion()
+	env.JAVA_VERSION = ${getJavaVersionFromJvmVersion()}
 	/* Optional parameter JAVA_VERSION to use for Panama/Valhalla/Amber cases, otherwise its calculated from JVM_VERSION */ 
 	if( params.JAVA_VERSION ) {
 		env.JAVA_VERSION = params.JAVA_VERSION
