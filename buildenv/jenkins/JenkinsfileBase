@@ -298,7 +298,7 @@ def testBuild() {
 
 def getJavaVersionFromJvmVersion() {
 	String regex = ${JVM_VERSION}
-	def m = regex =~ /^openjdk(\d+)(-openj9)?$/
+	def m = regex =~ /^openjdk(\d+)(-openj9|-sap)?$/
 	def match = m[0][1]
 	def java_version = "SE$match0"
 	return java_version
