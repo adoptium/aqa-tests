@@ -1,13 +1,4 @@
 #!groovy
-/*  Template jenkinsfile for AdoptOpenJDK test builds 
-    Parameters for jobs using this Jenkinsfile:
-	Required:
-	TARGET(openjdk, system, external, perf, jck etc.)
- 	JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, etc.) 
-	Optional:
-	JAVA_VERSION(SE[80|90|100|110|Amber|Panama|Valhalla])
-	CUSTOMIZED_SDK_URL (URL to an SDK build) - used for weekly tests
-*/
 def getBuildList() {
 	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
@@ -34,12 +25,13 @@ def stageTestBinaries() {
 }
 
 def setupEnv() {
-	env.JAVA_VERSION = "${getJavaVersionFromJvmVersion()}"
+	// env.JAVA_VERSION = "${getJavaVersionFromJvmVersion()}"
+	env.JAVA_VERSION = "${JAVA_VERSION}"
 	/* Optional parameter JAVA_VERSION to use for Panama/Valhalla/Amber cases, otherwise its calculated from JVM_VERSION */ 
 	if( params.JAVA_VERSION ) {
 		env.JAVA_VERSION = params.JAVA_VERSION
 	} 
-	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(env.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JVM_VERSION = "${JVM_VERSION}"
@@ -58,11 +50,11 @@ def setupEnv() {
 	}
 
 	if (env.BUILD_LIST == "jck") {
-		if ( ${JAVA_VERSION} == "SE80" ) {
+		if ( JAVA_VERSION == "SE80" ) {
 			env.JCK_VERSION = "jck8b"
-		} else if ( ${JAVA_VERSION} == "SE90" ) {
+		} else if ( JAVA_VERSION == "SE90" ) {
 			env.JCK_VERSION = "jck9"
-		} else if ( ${JAVA_VERSION} == "SE100" ) {
+		} else if ( JAVA_VERSION == "SE100" ) {
 			env.JCK_VERSION = "jck10"
 		}
 		env.JCK_ROOT = "$WORKSPACE/../jck_root"
@@ -161,7 +153,7 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-			if (${JAVA_VERSION} == 'SE80') {
+			if (JAVA_VERSION == 'SE80') {
 				sh 'chmod 755 ${JAVA_BIN}/java'
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
