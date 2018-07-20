@@ -301,6 +301,7 @@ def getJavaVersionFromJvmVersion() {
 	def m = regex =~ /^openjdk(\d+)(-openj9|-sap)?$/
 	def match = m[0][1]
 	def java_version = "SE$match0"
+	echo "java_version=$java_version"
 	return java_version
 }
 
