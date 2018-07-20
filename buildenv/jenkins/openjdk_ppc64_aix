@@ -1,5 +1,5 @@
 #!groovy
-LABEL='sw.os.linux&&hw.arch.x86'
+LABEL='hw.arch.ppc&&sw.os.aix'
 
 node ("master") {
 	checkout scm
@@ -9,9 +9,9 @@ node ("master") {
 }
 
 node("$LABEL") {
-    PLATFORM = 'x64_linux'
+    PLATFORM = 'ppc64_aix'
     SDK_RESOURCE = 'upstream'
-    SPEC='linux_x86-64_cmprssptrs'
+    SPEC='aix_ppc-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
     jenkinsfile.testBuild()
