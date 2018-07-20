@@ -39,7 +39,7 @@ def setupEnv() {
 	if( params.JAVA_VERSION ) {
 		env.JAVA_VERSION = params.JAVA_VERSION
 	} 
-	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(env.JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JVM_VERSION = "${JVM_VERSION}"
@@ -58,11 +58,11 @@ def setupEnv() {
 	}
 
 	if (env.BUILD_LIST == "jck") {
-		if ( JAVA_VERSION == "SE80" ) {
+		if ( ${JAVA_VERSION} == "SE80" ) {
 			env.JCK_VERSION = "jck8b"
-		} else if ( JAVA_VERSION == "SE90" ) {
+		} else if ( ${JAVA_VERSION} == "SE90" ) {
 			env.JCK_VERSION = "jck9"
-		} else if ( JAVA_VERSION == "SE100" ) {
+		} else if ( ${JAVA_VERSION} == "SE100" ) {
 			env.JCK_VERSION = "jck10"
 		}
 		env.JCK_ROOT = "$WORKSPACE/../jck_root"
@@ -161,7 +161,7 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-			if (JAVA_VERSION == 'SE80') {
+			if (${JAVA_VERSION} == 'SE80') {
 				sh 'chmod 755 ${JAVA_BIN}/java'
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
 				sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
