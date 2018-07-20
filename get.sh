@@ -129,10 +129,10 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
-			if [[ $jar_name == *zip || $jar_file_name == *jar ]]; then
-				unzip -q $jar_file_name -d .
+			echo $jar_name
+			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
+				unzip -q $jar_name -d .
 			else
-				echo $jar_name 
 				gzip -cd $jar_name | tar xf -
 			fi
 			#rm jar_name
