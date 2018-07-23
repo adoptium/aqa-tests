@@ -32,6 +32,9 @@
 	<condition property="openjdkGit" value="openjdk-jdk10u">
 		<equals arg1="${JAVA_VERSION}" arg2="SE100"/>
 	</condition>
+	<condition property="openjdkGit" value="openjdk-jdk11">
+        <equals arg1="${JAVA_VERSION}" arg2="SE110"/>
+    </condition>
 	
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>

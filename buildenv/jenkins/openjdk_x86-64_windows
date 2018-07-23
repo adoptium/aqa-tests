@@ -1,0 +1,18 @@
+#!groovy
+LABEL='hw.arch.x86&&sw.os.windows'
+
+node ("master") {
+	checkout scm
+	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+	jenkinsfile.setLabelParam()
+	cleanWs()
+}
+
+node("$LABEL") {
+    PLATFORM = 'x64_win'
+    SDK_RESOURCE = 'upstream'
+    SPEC='win_x86-64_cmprssptrs'
+    checkout scm
+    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+    jenkinsfile.testBuild()
+}

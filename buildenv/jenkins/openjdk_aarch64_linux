@@ -1,0 +1,18 @@
+#!groovy
+LABEL='sw.os.linux&&hw.arch.aarch64'
+
+node ("master") {
+	checkout scm
+	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+	jenkinsfile.setLabelParam()
+	cleanWs()
+}
+
+node("$LABEL") {
+    PLATFORM = 'aarch64_linux'
+    SDK_RESOURCE = 'upstream'
+    SPEC='linux_arm'
+    checkout scm
+    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+    jenkinsfile.testBuild()
+}

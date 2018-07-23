@@ -1,5 +1,4 @@
 #!groovy
-/* template jenkinsfile for adoptopenjdk test builds*/
 def getBuildList() {
 	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
@@ -26,10 +25,15 @@ def stageTestBinaries() {
 }
 
 def setupEnv() {
+	// env.JAVA_VERSION = "${getJavaVersionFromJvmVersion()}"
+	env.JAVA_VERSION = "${JAVA_VERSION}"
+	/* Optional parameter JAVA_VERSION to use for Panama/Valhalla/Amber cases, otherwise its calculated from JVM_VERSION */ 
+	if( params.JAVA_VERSION ) {
+		env.JAVA_VERSION = params.JAVA_VERSION
+	} 
 	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
-	env.JAVA_VERSION = "${JAVA_VERSION}"
 	env.JVM_VERSION = "${JVM_VERSION}"
 	env.SPEC = "${SPEC}"
 
@@ -282,6 +286,15 @@ def testBuild() {
 		}
 		
 	}
+}
+
+def getJavaVersionFromJvmVersion() {
+	String regex = ${JVM_VERSION}
+	def m = regex =~ /^openjdk(\d+)(-openj9|-sap)?$/
+	def match = m[0][1]
+	def java_version = "SE$match0"
+	echo "java_version=$java_version"
+	return java_version
 }
 
 def setLabelParam() {
