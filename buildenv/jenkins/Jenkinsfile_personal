@@ -71,11 +71,6 @@ pipeline {
 				timestamps{
                 	echo 'Building tests...'
                 	script {
-	                	if (JAVA_VERSION == 'SE80') {
-							sh 'chmod 755 ${JAVA_BIN}/java'
-							sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
-							sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
-						}
 						if ( SPEC.contains('win') ) {
 							bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST"
 						} else {
@@ -151,19 +146,19 @@ def getPlatformAndLabel(SPEC) {
 			break
 		case ~/linux_390-64.*/:
 			platformAndLabel[0] = 's390x_linux'
-			platformAndLabel[1] = 'sw.os.linux&&hw.arch.s390'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.s390x'
 			break
 		case ~/linux_ppc-64.*le/:
 			platformAndLabel[0] = 'ppc64le_linux'
-			platformAndLabel[1] = 'sw.os.linux&&hw.arch.ppcle'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.ppc64le'
 			break
 		case ~/aix_ppc-64.*/:
 			platformAndLabel[0] = 'ppc64_aix'
-			platformAndLabel[1] = 'aix&&ppc64&&test||ci.project.openj9&&hw.arch.ppc&&sw.os.aix7.1'
+			platformAndLabel[1] = 'hw.arch.ppc&&sw.os.aix'
 			break
 		case ~/linux_arm.*/:
 			platformAndLabel[0] = 'aarch64_linux'
-			platformAndLabel[1] = 'linux&&arm64&&test'
+			platformAndLabel[1] = 'sw.os.linux&&hw.arch.aarch64'
 			break
 		case ~/win_x86-64.*/:
 			platformAndLabel[0] = 'x64_win'

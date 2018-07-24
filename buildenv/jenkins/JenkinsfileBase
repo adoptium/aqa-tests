@@ -153,12 +153,7 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-			if (JAVA_VERSION == 'SE80') {
-				sh 'chmod 755 ${JAVA_BIN}/java'
-				sh 'chmod 755 ${JAVA_BIN}/../../bin/javac'
-				sh 'chmod 755 ${JAVA_BIN}/../../bin/java'
-			}
-		
+					
 			if ( params.PERF_CREDENTIALS_ID ) {
 				withCredentials([usernamePassword(credentialsId: "$params.PERF_CREDENTIALS_ID",
 					passwordVariable: "PASSWORD_VAR", usernameVariable: "USERNAME_VAR")]) {

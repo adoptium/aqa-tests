@@ -115,7 +115,12 @@ getBinaryOpenjdk()
 		fi
 	else 
 		download_url=$CUSTOMIZED_SDK_URL
-		wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
+		if [[ "$PLATFORM" == "s390x_zos" ]];
+		then
+			curl -O ${download_url} 
+		else
+			wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
+		fi
 		if [ $? -ne 0 ]; then
 			echo "Failed to retrieve the jdk binary, exiting"
 			exit 1
@@ -129,10 +134,10 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
-			if [[ $jar_name == *zip || $jar_file_name == *jar ]]; then
-				unzip -q $jar_file_name -d .
+			echo $jar_name
+			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
+				unzip -q $jar_name -d .
 			else
-				echo $jar_name 
 				gzip -cd $jar_name | tar xf -
 			fi
 			#rm jar_name
@@ -152,6 +157,8 @@ getBinaryOpenjdk()
 				mv $jar_dir_name j2sdk-image
 			fi
 		done
+		
+	chmod -R 755 j2sdk-image
 }
 
 getTestKitGenAndFunctionalTestMaterial()
