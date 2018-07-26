@@ -100,8 +100,6 @@ def setup() {
 			} catch (MissingPropertyException e) {
 				CUSTOMIZED_SDK_URL = ''
 			}
-			sh 'chmod 755 $WORKSPACE/openjdk-tests/maketest.sh'
-			sh 'chmod 755 $WORKSPACE/openjdk-tests/get.sh'
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -122,11 +120,17 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			CUSTOMIZED_SDK_URL_OPTION = (CUSTOMIZED_SDK_URL != "") ? "-c $CUSTOMIZED_SDK_URL" : ""
+			if (CUSTOMIZED_SDK_URL != "") {
+				SDK_RESOURCE = "customized"
+				CUSTOMIZED_SDK_URL_OPTION = "-c '$CUSTOMIZED_SDK_URL'"
+			} else {
+				CUSTOMIZED_SDK_URL_OPTION = ""
+			}
+
 			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
-			
+
 			// vendor test
 			// expect VENDOR_TEST_* to be comma separated string parameters
 			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
@@ -302,4 +306,5 @@ def addNodeToDescription() {
 	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
 	currentBuild.description = description + "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
 }
+
 return this

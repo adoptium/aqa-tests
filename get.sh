@@ -98,49 +98,47 @@ parseCommandLineArgs()
 
 getBinaryOpenjdk()
 {
+	echo "get jdk binary..."
 	cd $SDKDIR
 	mkdir openjdkbinary
 	cd openjdkbinary
-	jar_file_name=""
-	if [[ "$CUSTOMIZED_SDK_URL" == "" ]]; then
-		if [[ "$SDK_RESOURCE" == "nightly" || "$SDK_RESOURCE" == "releases" ]]; then
-			echo 'Get binary openjdk...'
-			download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
-			curl -OLJ $download_url
-			jar_file_name=`ls`
-			if [ "$jar_file_name" = "binary" ]; then
-				echo "No available jdk binary, exiting"
-				exit 1
-			fi
-		fi
-	else 
+	
+	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
-		if [[ "$PLATFORM" == "s390x_zos" ]];
-		then
-			curl -O ${download_url} 
-		else
-			wget -q --no-check-certificate --header 'Cookie: allow-download=1' ${download_url}
-		fi
+	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
+		download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
+	else
+		download_url=""
+		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
+	fi
+	
+	if  [ "${download_url}" != "" ]; then
+		echo "curl -OLJks "${download_url}""
+		curl -OLJks "${download_url}"
 		if [ $? -ne 0 ]; then
 			echo "Failed to retrieve the jdk binary, exiting"
 			exit 1
 		fi
+		jar_files=`ls`
+		if [ "$jar_files" == "binary" ]; then
+			echo "Downloaded file should not be binary, exiting"
+			exit 1	
+		fi
 	fi
-	
+
 	# temporarily remove *test* until upstream build is updated and not staging test material
 	rm -rf *test*
-	
+
 	jar_files=`ls`
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
-			echo $jar_name
+			echo "unzip file: $jar_name ..."
 			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
 				unzip -q $jar_name -d .
 			else
 				gzip -cd $jar_name | tar xf -
 			fi
-			#rm jar_name
 		done
 	
 	jar_dirs=`ls -d */`
@@ -163,6 +161,7 @@ getBinaryOpenjdk()
 
 getTestKitGenAndFunctionalTestMaterial()
 {
+	echo "get testKitGen and functional test material..."
 	cd $TESTDIR
 
 	if [ "$OPENJ9_BRANCH" != "" ]
