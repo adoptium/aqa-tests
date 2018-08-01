@@ -24,7 +24,26 @@
 	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(JDK_HOME)$(Q) \
-	$(Q)$(JTREG_TEST_DIR)$(D)$(CUSTOM_TARGET)$(Q); \
+	$(Q)$(JTREG_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>langtools_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx768m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	$(Q)$(JTREG_LANGTOOLS_TEST_DIR)$(D)$(LANGTOOLS_CUSTOM_TARGET)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

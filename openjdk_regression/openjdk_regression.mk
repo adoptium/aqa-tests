@@ -66,11 +66,12 @@ endif
 ifneq (,$(findstring $(JAVA_VERSION),SE80-SE90))
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
+	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)langtools$(D)test
 else
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot
+	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
 endif
 
-ifndef CUSTOM_TARGET
-	CUSTOM_TARGET := java/math/BigInteger/BigIntegerTest.java
-endif
+JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
+LANGTOOLS_CUSTOM_TARGET ?= tools/javac/declaration/method/MethodVoidParameter.java
