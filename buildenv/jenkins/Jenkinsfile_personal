@@ -9,7 +9,7 @@ pipeline {
 		string (defaultValue: 'openj9', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
 		string (defaultValue: 'functional', description: 'Specific test directory to compile, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers functional', name: 'BUILD_LIST')
 		string (defaultValue: 'sanity', description: 'Test TARGET to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, jdk_custom, etc', name: 'TARGET')
-		string (defaultValue: "", description: 'Used when jdk_custom or jck-custom test targets are selected, path to the test class to execute', name: 'CUSTOM_TARGET')
+		string (defaultValue: "", description: 'Used when any custom target is selected, e.g. jdk_custom, langtools_custom, etc. , path to the test class to execute', name: 'CUSTOM_TARGET')
 		choice (choices: 'customized\nnightly\nreleases', description: 'Where is sdk? nightly & releases pull the lastest from AdoptOpenJDK', name: 'SDK_RESOURCE')
 		string (defaultValue: "", description: 'Customized SDK URL, only set when SDK_RESOURCE customized', name: 'CUSTOMIZED_SDK_URL')
 		string (defaultValue: "", description: 'Use this to append options to the commandline', name: 'EXTRA_OPTIONS')
@@ -35,7 +35,6 @@ pipeline {
 		DIAGNOSTICLEVEL ='failure'
 		EXTRA_OPTIONS="${EXTRA_OPTIONS}"
 		JVM_OPTIONS="${JVM_OPTIONS}"
-		CUSTOM_TARGET="${CUSTOM_TARGET}"
 		ITERATIONS="${ITERATIONS}"
 		NODE_LABEL="${NODE_LABEL}"
     }
@@ -90,11 +89,15 @@ pipeline {
 					withEnv(["DIAGNOSTICLEVEL=${DIAGNOSTICLEVEL}"]) {
 						script {
 							int iterations = "${ITERATIONS}".toInteger()
+							def CUSTOM_OPTION = ''
+							if (TARGET.contains('custom')) {
+								CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+							}
 							for (i = 0; i < iterations; i++) {
 								if ( SPEC.contains('win') ) {
 									bat "$OPENJDK_TEST/maketest.bat $OPENJDK_TEST _${params.TARGET}"
 								} else {
-									sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET}"
+									sh "$OPENJDK_TEST/maketest.sh $OPENJDK_TEST _${params.TARGET} ${CUSTOM_OPTION}"
 								}
 							}
                 		}
