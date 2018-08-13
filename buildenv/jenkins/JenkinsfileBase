@@ -52,10 +52,8 @@ def setupEnv() {
 	if (env.BUILD_LIST == "jck") {
 		if ( JAVA_VERSION == "SE80" ) {
 			env.JCK_VERSION = "jck8b"
-		} else if ( JAVA_VERSION == "SE90" ) {
-			env.JCK_VERSION = "jck9"
-		} else if ( JAVA_VERSION == "SE100" ) {
-			env.JCK_VERSION = "jck10"
+		} else {
+			env.JCK_VERSION = "jck${JAVA_VERSION[2..-2]}"
 		}
 		env.JCK_ROOT = "$WORKSPACE/../jck_root"
 		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
