@@ -25,12 +25,20 @@ VENDOR_REPOS=""
 VENDOR_SHAS=""
 VENDOR_BRANCHES=""
 VENDOR_DIRS=""
+JDK_VERSION="SE80"
+JDK_IMPL="openj9"
+RELEASES="latest"
+TYPE="jdk"
+
 
 usage ()
 {
 	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
-	echo '                --jvmversion|-v openjdk8 | openjdk8-openj9 | openjdk9 | openjdk9-openj9 | openjdk10 | openjdk10-sap'
+	echo '                [--jdk_version|-j ]: optional. JDK version'
+	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
+	echo '                [--releases|-R ]: optional. Example: latest, jdk8u172-b00-201807161800'
+	echo '                [--type|-t ]: optional. jdk or jre'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
@@ -58,8 +66,17 @@ parseCommandLineArgs()
 			"--platform" | "-p" )
 				PLATFORM="$1"; shift;;
 
-			"--jvmversion" | "-v" )
-				JVMVERSION="$1"; shift;;
+			"--jdk_version" | "-j" )
+				JDK_VERSION="$1"; shift;;
+
+			"--jdk_impl" | "-i" )
+				JDK_IMPL="$1"; shift;;
+			
+			"--releases" | "-R" )
+				RELEASES="$1"; shift;;
+
+			"--type" | "-t" )
+				TYPE="$1"; shift;;
 
 			"--sdk_resource" | "-r" )
 				SDK_RESOURCE="$1"; shift;;
@@ -106,7 +123,13 @@ getBinaryOpenjdk()
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
-		download_url="https://api.adoptopenjdk.net/$JVMVERSION/$SDK_RESOURCE/$PLATFORM/latest/binary"
+		os=${PLATFORM#*_}
+		arch=${PLATFORM%_*}
+		tempJDK_VERSION="${JDK_VERSION%?}"
+		OPENJDK_VERSION="openjdk${tempJDK_VERSION:2}"
+		# older bash doesn't support negative offset
+		# OPENJDK_VERSION="openjdk${JDK_VERSION:2:-1}"
+		download_url="https://api.adoptopenjdk.net/v2/binary/${SDK_RESOURCE}/${OPENJDK_VERSION}?openjdk_impl=${JDK_IMPL}&os=${os}&arch=${arch}&release=${RELEASES}&type=${TYPE}"
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
@@ -118,11 +141,6 @@ getBinaryOpenjdk()
 		if [ $? -ne 0 ]; then
 			echo "Failed to retrieve the jdk binary, exiting"
 			exit 1
-		fi
-		jar_files=`ls`
-		if [ "$jar_files" == "binary" ]; then
-			echo "Downloaded file should not be binary, exiting"
-			exit 1	
 		fi
 	fi
 
