@@ -47,9 +47,14 @@
 			<else>
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} exists, try to update jck materials" />
 				<if>
- 					<equals arg1="jck10" arg2="${env.JCK_VERSION}" />
+					<or>
+ 						<equals arg1="jck10" arg2="${env.JCK_VERSION}" />
+						<equals arg1="jck11" arg2="${env.JCK_VERSION}" />
+					</or>
  				<then>
 					<exec executable="git" failonerror="true">
+						<arg value="-C" />
+						<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
 						<arg value="reset" />
 						<arg value="--hard" />
 						<arg value="origin/master" />

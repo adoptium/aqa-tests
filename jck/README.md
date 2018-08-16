@@ -79,6 +79,7 @@ git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 // the JCK_ROOT structure should be like
 //root:jck_root root$ tree -L 2 ./
 //./
+//├── jck11
 //├── jck10
 //├── jck8b
 //└── jck9
