@@ -15,7 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>lucene_solr_nightly_smoketest</testCaseName>
-	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-lucene-solr-test:latest ; \
+		<command>docker run -v $(JDK_HOME):/java --name lucene-solr-test adoptopenjdk-lucene-solr-test:latest; \
+			 docker cp lucene-solr-test:/lucene-solr/lucene/build/core/test $(REPORTDIR)/external_test_reports; \
+			 docker rm lucene-solr-test; \
 		$(TEST_STATUS)</command>
 		<subsets>
 			<subset>SE80</subset>
