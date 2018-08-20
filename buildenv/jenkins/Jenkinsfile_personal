@@ -29,7 +29,6 @@ pipeline {
 		SPEC="${SPEC}"
 		JAVA_VERSION="${JAVA_VERSION}"
 		BUILD_LIST="${BUILD_LIST}"
-		JVM_VERSION="${getJVM_VERSION(JAVA_IMPL, JAVA_VERSION)}"
 		JAVA_IMPL="${JAVA_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
 		EXTRA_OPTIONS="${EXTRA_OPTIONS}"
@@ -110,15 +109,6 @@ pipeline {
 	    	}
 		}
  	}
-    
-}
-
-def getJVM_VERSION(JAVA_IMPL, JAVA_VERSION) {
-	def jvm_version = "openjdk${JAVA_VERSION[2..-2]}"
-	if (JAVA_IMPL != 'hotspot') {
-		jvm_version = "$jvm_version-$JAVA_IMPL"
-	}
-	return jvm_version
 }
 
 def getPlatformAndLabel(SPEC) {
