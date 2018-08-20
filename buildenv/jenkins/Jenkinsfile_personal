@@ -53,7 +53,7 @@ pipeline {
 						CUSTOMIZED_SDK_URL_OPTION = (params.CUSTOMIZED_SDK_URL != "") ? "-c '$CUSTOMIZED_SDK_URL'" : ""
 						OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 						OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
-						sh "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p ${getPlatformAndLabel(SPEC)[0]} -v ${JVM_VERSION} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
+						sh "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p ${getPlatformAndLabel(SPEC)[0]} -j ${JAVA_VERSION} -i ${JAVA_IMPL} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
 					}
                 }
             }
@@ -149,11 +149,11 @@ def getPlatformAndLabel(SPEC) {
 			platformAndLabel[1] = 'sw.os.linux&&hw.arch.aarch64'
 			break
 		case ~/win_x86-64.*/:
-			platformAndLabel[0] = 'x64_win'
+			platformAndLabel[0] = 'x64_windows'
 			platformAndLabel[1] = 'hw.arch.x86&&sw.os.windows'
 			break
 		case ~/win_x86/:
-			platformAndLabel[0] = 'x64_win'
+			platformAndLabel[0] = 'x64_windows'
 			platformAndLabel[1] = 'hw.arch.x86&&sw.os.windows'
 			break
 		case ~/zos_390-64.*/:
