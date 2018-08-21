@@ -29,13 +29,12 @@
 	</target>
 
 	<target name="clone_stf">
-		<exec executable="git" failonerror="false">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
 			<arg value="${git-prefix}://github.com/AdoptOpenJDK/stf.git" />
-			<arg value="${SYSTEMTEST_ROOT}/stf" />
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -61,13 +60,12 @@
 	</target>
 
 	<target name="clone_systemtest">
-		<exec executable="git" failonerror="false">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
 			<arg value="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
-			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -90,22 +88,15 @@
 				</exec>
 			</then>
 		</if>
-		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
-			<then>
-				<antcall target="clone_openj9-systemtest" inheritall="true" />
-			</then>
-		</if>
 	</target>
 	
 	<target name="clone_openj9-systemtest">
-		<exec executable="git" failonerror="false">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
 			<arg value="${git-prefix}://github.com/eclipse/openj9-systemtest.git" />
-			<arg value="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 		</exec>
 		<if>
 			<isset property="isZOS" />
