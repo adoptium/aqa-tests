@@ -139,7 +139,13 @@ def setup() {
 
 			dir( WORKSPACE) {
 				sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
-					sh "$GET_SH_CMD"
+					if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+						withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+					           sh "$GET_SH_CMD"
+					      }
+				        } else {
+					      sh "$GET_SH_CMD"
+                                        }
 				}
 			}
 		}

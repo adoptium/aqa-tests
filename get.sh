@@ -122,6 +122,9 @@ getBinaryOpenjdk()
 	
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
+		if [ "$CUSTOMIZED_SDK_URL_CREDENTIAL_ID" != "" ]; then
+			curl_options="--user $USERNAME:$PASSWORD"
+		fi
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
 		os=${PLATFORM#*_}
 		arch=${PLATFORM%_*}
@@ -136,8 +139,8 @@ getBinaryOpenjdk()
 	fi
 	
 	if  [ "${download_url}" != "" ]; then
-		echo "curl -OLJks "${download_url}""
-		curl -OLJks "${download_url}"
+		echo "curl -OLJks ${curl_options} "${download_url}""
+		curl -OLJks ${curl_options} "${download_url}"
 		if [ $? -ne 0 ]; then
 			echo "Failed to retrieve the jdk binary, exiting"
 			exit 1
