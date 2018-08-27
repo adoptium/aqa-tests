@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="payara-mp-tck" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build payara-mp-tck Docker image
+	</description>
+
+	<!-- set properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/payara-mp-tck" />
+	<property name="src" location="." />
+	<property name="jvm_version" location="${JVM_VERSION}" />
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="clean_image" depends="init" description="clean payara-mp-tck tck docker image if there is one">
+		<exec executable="docker">
+			<arg line="rmi -f adoptopenjdk-payara-mp-tck" />
+		</exec>
+	</target>
+
+	<target name="build_image" depends="clean_image" description="build payara-mp-tck tck docker image">
+		<exec executable="docker"  failonerror="true">
+			<arg line="build -t adoptopenjdk-payara-mp-tck -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+		</exec>
+	</target>
+
+	<target name="dist" depends="build_image" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
