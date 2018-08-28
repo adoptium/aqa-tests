@@ -70,7 +70,10 @@
 		</exec>
 		<move file="${openjdkGit}" tofile="openjdk-jdk"/>
 		<if>
-			<equals arg1="${JVM_VERSION}" arg2="openjdk1?-openj9"/>
+                        <or>
+			  <equals arg1="${JVM_VERSION}" arg2="openjdk10-openj9"/>
+			  <equals arg1="${JVM_VERSION}" arg2="openjdk11-openj9"/>
+                        </or>
 			<then>
 				<copy file="${src}/${JVM_VERSION}/TEST.ROOT" todir="${src}/openjdk-jdk/test/jdk" overwrite="true"/>
 			</then>
