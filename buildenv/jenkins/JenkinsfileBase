@@ -140,6 +140,7 @@ def setup() {
 			dir( WORKSPACE) {
 				sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
 					if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+						// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
 						withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 					           sh "$GET_SH_CMD"
 					      }

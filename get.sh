@@ -42,6 +42,8 @@ usage ()
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
+	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
+	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
@@ -84,6 +86,12 @@ parseCommandLineArgs()
 			"--customizedURL" | "-c" )
 				CUSTOMIZED_SDK_URL="$1"; shift;;
 
+			"--username" )
+				USERNAME="$1"; shift;;
+
+			"--password" )
+				PASSWORD="$1"; shift;;
+
 			"--openj9_repo" )
 				OPENJ9_REPO="$1"; shift;;
 
@@ -122,7 +130,9 @@ getBinaryOpenjdk()
 	
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
-		if [ "$CUSTOMIZED_SDK_URL_CREDENTIAL_ID" != "" ]; then
+                # if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
+                # if supplied when run manually with --username and --password these will be seen in plaintext within job output
+		if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
 			curl_options="--user $USERNAME:$PASSWORD"
 		fi
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
