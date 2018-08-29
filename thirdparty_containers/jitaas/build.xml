@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="jitaas" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build JITaaS OpenJ9 Sanity Test Docker image
+	</description>
+
+	<!-- set properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/jitaas" />
+	<property name="dist" location="${DEST}/${JAVA_VERSION}" />
+	<property name="src" location="." />
+	<property name="jvm_version" location="${JVM_VERSION}" />
+
+	<target name="init">
+		<mkdir dir="${dist}"/>
+	</target>
+
+	<target name="clean_image" depends="init" description="clean jitaas openj9 test docker image if there is one">
+		<exec executable="docker">
+			<arg line="rmi -f jitaas-openj9-test" />
+		</exec>
+	</target>
+
+	<target name="build_image" depends="clean_image" description="build jitaas openj9 test docker image">
+		<exec executable="docker"  failonerror="true">
+			<arg line="build -t jitaas-openj9-test -f dockerfile/Dockerfile --pull . --build-arg openj9-repo=git@github.ibm.com:Harry-A-Yu/Jaas_tr.open-1.git --build-arg openj9-branch=milestone_8 --build-arg omr-repo=git@github.ibm.com:Harry-A-Yu/Jaas_omr-1.git --build-arg omr-branch=m8_javac_fix" />
+		</exec>
+	</target>
+
+	<target name="dist" depends="build_image" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
