@@ -14,11 +14,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -27,7 +22,7 @@
 		</groups>
 	</test>
 	
-	<!-- Excluding the following test for OpenJDK10 builds. See AdoptOpenJDK/openjdk-systemtest/issues/87 for details -->
+	<!-- Excluding the following test for OpenJDK10 and 11 builds. See AdoptOpenJDK/openjdk-systemtest/issues/87 for details -->
 	<test>
 		<testCaseName>ConcurrentLoadTest</testCaseName>
 		<variations>
@@ -66,12 +61,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=DirectByteBufferLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -92,12 +82,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=LangLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -118,12 +103,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=LockingLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -144,12 +124,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=MathLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -172,11 +147,6 @@
 	-test-args=$(Q)workload=autoSimd$(Q) \
 	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -199,11 +169,6 @@
 	-test=MathLoadTest \
 	-test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -224,12 +189,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleThreadLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -251,12 +211,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleInvocationLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -278,12 +233,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -306,11 +256,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=NioLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -332,11 +277,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=UtilLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -360,11 +300,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -389,11 +324,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -419,11 +349,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -448,12 +373,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=HCRLateAttachWorkload; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -475,12 +395,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=JdiTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -505,11 +420,6 @@
 	-test-args=$(Q)workload=daa1$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -535,11 +445,6 @@
 	-test-args=$(Q)workload=daa2$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -565,11 +470,6 @@
 	-test-args=$(Q)workload=daa3$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -594,11 +494,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -623,11 +518,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=HeapHogLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -652,11 +542,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=ObjectTreeLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -681,11 +566,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesAPI; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -710,11 +590,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkload; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -739,11 +614,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -768,11 +638,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_IncreaseDecrease; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -798,11 +663,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -828,11 +688,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -859,11 +714,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=SingleCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -889,11 +739,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -919,11 +764,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -949,11 +789,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThreadMultiCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -979,11 +814,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=SingleCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1009,11 +839,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1039,11 +864,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1069,11 +889,6 @@
 	-test=SharedClasses \
 	-test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1085,7 +900,7 @@
 		</impls>
 	</test>
 	
-	<!-- Excluding the following test for Hotspot & OpenJDK10-OpenJ9 for eclipse/openj9/issues/1566  -->
+	<!-- Excluding the following test for Hotspot & OpenJDK10-OpenJ9 and JDK11 for eclipse/openj9/issues/1566  -->
 	<test>
 		<testCaseName>TestJlmLocal</testCaseName>
 		<variations>
@@ -1127,12 +942,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=TestJlmRemoteClassAuth; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -1161,6 +971,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1248,6 +1059,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1303,8 +1115,6 @@
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1336,6 +1146,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1405,7 +1216,6 @@
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
 	<test>
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
 		<variations>
@@ -1418,12 +1228,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=TestJlmRemoteNotifierProxyAuth; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -1435,7 +1240,7 @@
 		</impls>
 	</test>
 
-	<!-- Excluding the following test for Hotspot & OpenJDK10-Openj9 for eclipse/openj9/issues/1566  -->
+	<!-- Excluding the following test for Hotspot & OpenJDK10-Openj9 and JDK11 for eclipse/openj9/issues/1566  -->
 	<!--Exclude TestJlmRemoteThreadNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
@@ -1531,12 +1336,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=TestIBMJlmLocal; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -1565,6 +1365,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1618,8 +1419,6 @@
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1650,6 +1449,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1733,6 +1533,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1816,6 +1617,7 @@
 		<subsets>
 			<subset>SE90</subset>
 			<subset>SE100</subset>
+			<subset>SE110</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
@@ -1883,6 +1685,7 @@
 	</test>
 	
 	<!-- Tests below pertain to Java 9 Modularity -->
+	<!-- All modularity tests will not be included for testing JDK11 due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/150 -->
 	<test>
 		<testCaseName>CpMpTest_CpMp</testCaseName>
 		<variations>
@@ -2838,12 +2641,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=ClassloadingLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -2869,11 +2667,6 @@
 	-results-root=$(REPORTDIR)  \
 	-test=LambdaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -2898,12 +2691,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=MathLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -2930,11 +2718,6 @@
 	-test-args=$(Q)workload=autoSimd$(Q) \
 	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -2961,11 +2744,6 @@
 	-test=MathLoadTest \
 	-test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -2991,11 +2769,6 @@
 	-test-args=$(Q)workload=daa1$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -3022,11 +2795,6 @@
 	-test-args=$(Q)workload=daa2$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -3053,11 +2821,6 @@
 	-test-args=$(Q)workload=daa3$(Q) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -3083,11 +2846,6 @@
 	-results-root=$(REPORTDIR) \
 	-test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -3112,12 +2870,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleThreadLoadTest; \
-	$(TEST_STATUS)</command> 
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -3143,12 +2896,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveSingleInvocationLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -3174,12 +2922,7 @@
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
 	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-			<subset>SE100</subset>
-		</subsets>
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
