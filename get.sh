@@ -160,9 +160,6 @@ getBinaryOpenjdk()
 		done
 	fi
 
-	# temporarily remove *test* until upstream build is updated and not staging test material
-	rm -rf *test*
-
 	jar_files=`ls`
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
@@ -184,12 +181,14 @@ getBinaryOpenjdk()
 				mv $jar_dir_name j2sdk-image
 			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
 				mv $jar_dir_name j2jre-image
+			# if native test libs folder is available, mv it under native-test-libs
+			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+				mv $jar_dir_name native-test-libs
 			#The following only needed if openj9 has a different image name convention
-			elif [[ "$jar_dir_name" != "j2sdk-image" ]]; then
+			elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
 				mv $jar_dir_name j2sdk-image
 			fi
 		done
-		
 	chmod -R 755 j2sdk-image
 }
 
