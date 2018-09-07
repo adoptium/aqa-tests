@@ -41,7 +41,7 @@ usage ()
 	echo '                [--type|-t ]: optional. jdk or jre'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
-	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized'
+	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized.  Multiple urls can be passed with space as separator'
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
@@ -149,12 +149,15 @@ getBinaryOpenjdk()
 	fi
 	
 	if  [ "${download_url}" != "" ]; then
-		echo "curl -OLJks ${curl_options} "${download_url}""
-		curl -OLJks ${curl_options} "${download_url}"
-		if [ $? -ne 0 ]; then
-			echo "Failed to retrieve the jdk binary, exiting"
-			exit 1
-		fi
+		for file in $download_url
+		do
+			echo "curl -OLJks ${curl_options} $file"
+			curl -OLJks ${curl_options} $file
+			if [ $? -ne 0 ]; then
+				echo "Failed to retrieve $file, exiting"
+				exit 1
+			fi
+		done
 	fi
 
 	# temporarily remove *test* until upstream build is updated and not staging test material
