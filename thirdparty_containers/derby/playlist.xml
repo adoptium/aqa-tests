@@ -17,9 +17,6 @@
 		<testCaseName>derby_test_junit_all</testCaseName>
 	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-derby-test:latest ; \
 		$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE90</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>

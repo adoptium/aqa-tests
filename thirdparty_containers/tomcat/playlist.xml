@@ -17,10 +17,6 @@
 		<testCaseName>tomcat_test</testCaseName>
 	<command>docker run --rm -v $(JDK_HOME):/java  adoptopenjdk-tomcat-test:latest ; \
 		$(TEST_STATUS)</command>
-		<subsets>
-			<subset>SE80</subset>
-			<subset>SE90</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
