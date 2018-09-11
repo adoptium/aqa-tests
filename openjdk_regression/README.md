@@ -17,10 +17,10 @@ This group of tests are the set that comes from the openjdk project, often refer
 For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
 
 ## Add a sub group test
-Adding a <test></test> in playlist.xml specify:
+We already have a large set of tests defined in the playlist.xml file, but not all of the openjdk regression test groups are presented there.  If you wish to define more, add a `<test></test>` in playlist.xml and specify:
 
 * testCaseName
-* command (how to run the test)
+* command (how to run the test) - essentially the command that invokes the underlying jtreg harness
 * subset: sdk version
 * levels: sanity, extended
 * groups: openjdk
