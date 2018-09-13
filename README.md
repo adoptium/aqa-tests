@@ -21,15 +21,15 @@ For nightly and release builds, there are test jobs running as part of the Adopt
 
 See the different test jobs here:
 
-- [openjdk](https://ci.adoptopenjdk.net/view/OpenJDK%20tests/) - OpenJDK regression tests (from OpenJDK)
+- [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) - OpenJDK regression tests (from OpenJDK)
 
-- [system](https://ci.adoptopenjdk.net/view/System%20tests/) - System and load tests (from the AdoptOpenJDK/openjdk-systemtest repo)
+- [system](https://ci.adoptopenjdk.net/view/Test_system/) - System and load tests (from the AdoptOpenJDK/openjdk-systemtest repo)
 
-- [external](https://ci.adoptopenjdk.net/view/External%20tests/) - 3rd party application tests run in Docker containers (from different application projects such as scala, tomcat, etc)
+- [external](https://ci.adoptopenjdk.net/view/Test_external/) - 3rd party application tests run in Docker containers (from different application projects such as scala, tomcat, etc)
 
-- [perf](https://ci.adoptopenjdk.net/view/Perf%20tests/) - Open-source benchmark suites (from different open-source projects such as Acme-Air)
+- [perf](https://ci.adoptopenjdk.net/view/Test_perf/) - Open-source benchmark suites (from different open-source projects such as Acme-Air)
 
-- [jck](https://ci.adoptopenjdk.net/view/JCK%20tests/) - TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server (jobs linked here are merely remote triggers to the private server)
+- [jck](https://ci.adoptopenjdk.net/view/Test_jck/) - TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server (jobs linked here are merely remote triggers to the private server)
 
 
 #### Test 'Inventory'
