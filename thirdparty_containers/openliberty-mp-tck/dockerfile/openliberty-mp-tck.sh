@@ -47,21 +47,28 @@ java -version
 ls .
 pwd
 
-#Build openliberty 
+#Build all projects and create the open-liberty image
 ./gradlew cnf:initialize
-./gradlew assemble :com.ibm.websphere.appserver.features:releaseNeeded
+./gradlew releaseNeeded
 
+
+#Exclude Metrics TCK
 #Start MicroProfile Metrics TCK
-./gradlew com.ibm.ws.microprofile.metrics_fat_tck:buildandrun
+#./gradlew com.ibm.ws.microprofile.metrics.1.1_fat_tck:clean
+./gradlew com.ibm.ws.microprofile.metrics.1.1_fat_tck:buildandrun
 
 #Start MicroProfile Config TCK
+./gradlew com.ibm.ws.microprofile.config_fat_tck:clean
 ./gradlew com.ibm.ws.microprofile.config_fat_tck:buildandrun
 
 #Start MicroProfile FaultTolerance TCK
+./gradlew com.ibm.ws.microprofile.faulttolerance_fat_tck:clean
 ./gradlew com.ibm.ws.microprofile.faulttolerance_fat_tck:buildandrun
 
 #Start MicroProfile Rest Client TCK
+./gradlew com.ibm.ws.microprofile.rest.client_fat_tck:clean
 ./gradlew com.ibm.ws.microprofile.rest.client_fat_tck:buildandrun
 
 #Start MicroProfile OpenAPI TCK
+./gradlew com.ibm.ws.microprofile.openapi_fat_tck:clean
 ./gradlew com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
