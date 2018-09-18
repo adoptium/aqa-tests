@@ -154,7 +154,9 @@ getBinaryOpenjdk()
 			echo "curl -OLJks ${curl_options} $file"
 			curl -OLJks ${curl_options} $file
 			if [ $? -ne 0 ]; then
-				echo "Failed to retrieve $file, exiting"
+				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
+				ls -ld $file
+				md5sum $file
 				exit 1
 			fi
 		done
