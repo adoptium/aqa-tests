@@ -2005,6 +2005,8 @@
 			<group>system</group>
 		</groups>
 	</test>
+	
+	<!-- Exclude this test from JDK10 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/176 -->
 	<test>
 		<testCaseName>ExplicitModulesTest</testCaseName>
 		<variations>
@@ -2020,7 +2022,6 @@
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>SE90</subset>
-			<subset>SE100</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
