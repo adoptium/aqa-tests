@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+	 <test>
+                <testCaseName>MauveSingleThreadLoadTest</testCaseName>
+                <command>docker run --name mauve-system-test adoptopenjdk-system-test:latest MauveSingleThreadLoadTest; \
+                 docker rm mauve-system-test; \
+                $(TEST_STATUS)</command>
+                <subsets>
+                        <subset>8</subset>
+                        <subset>9</subset>
+                </subsets>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+        </test>
+
+	 <test>
+                <testCaseName>MauveSingleInvocationLoadTest</testCaseName>
+                <command>docker run --name mauve-system-test adoptopenjdk-system-test:latest MauveSingleInvocationLoadTest; \
+                 docker rm mauve-system-test; \
+                $(TEST_STATUS)</command>
+                <subsets>
+                        <subset>8</subset>
+                        <subset>9</subset>
+                </subsets>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+        </test>
+
+	<test>
+		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
+		<command>docker run --name mauve-system-test adoptopenjdk-system-test:latest MauveMultiThreadLoadTest; \
+		 docker rm mauve-system-test; \
+		$(TEST_STATUS)</command>
+		<subsets>
+			<subset>8</subset>
+			<subset>9</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+                <testCaseName>SharedClassesAPI</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClassesAPI; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClassesWorkload</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClassesWorkload; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClassesWorkloadTest_Softmx_Increase</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClassesWorkloadTest_Softmx_Increase; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClassesWorkloadTest_Softmx_IncreaseDecrease</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClassesWorkloadTest_Softmx_IncreaseDecrease; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClassesWorkloadTest_Softmx_Increase_JitAot_Linux</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClassesWorkloadTest_Softmx_Increase_JitAot_Linux; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClasses.SCM01.SingleCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM01.SingleCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClasses.SCM01.MultiCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM01.MultiCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClasses.SCM01.MultiThread</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM01.MultiThread; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClasses.SCM01.MultiThreadMultiCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM01.MultiThreadMultiCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+	<test>
+                <testCaseName>SharedClasses.SCM23.SingleCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM23.SingleCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+        <test>
+                <testCaseName>SharedClasses.SCM23.MultiCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM23.MultiCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+
+        <test>
+                <testCaseName>SharedClasses.SCM23.MultiThread</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM23.MultiThread; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+	 </test>
+
+        <test>
+                <testCaseName>SharedClasses.SCM23.MultiThreadMultiCL</testCaseName>
+                <command>docker run --name sharedclasses-system-test adoptopenjdk-system-test:latest SharedClasses.SCM23.MultiThreadMultiCL; \
+                 docker rm sharedclasses-system-test; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>system</group>
+                </groups>
+                <impls>
+                        <impl>openj9</impl>
+                </impls>
+        </test>
+</playlist>
