@@ -66,13 +66,13 @@ def setupEnv() {
 	}
 	
 	if (JVM_VERSION.contains('openj9')) {
-		JAVA_IMPL = 'openj9'
+		JDK_IMPL = 'openj9'
 	} else if (JVM_VERSION.contains('sap')) {
-		JAVA_IMPL = 'sap'
+		JDK_IMPL = 'sap'
 	} else {
-		JAVA_IMPL = 'hotspot'
+		JDK_IMPL = 'hotspot'
 	}
-	env.JAVA_IMPL= "${JAVA_IMPL}"
+	env.JDK_IMPL= "${JDK_IMPL}"
 	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}

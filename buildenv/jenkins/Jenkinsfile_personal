@@ -6,7 +6,7 @@ pipeline {
 		string (defaultValue: "master", description: 'personal AdoptOpenJDK branch', name: 'ADOPTOPENJDK_BRANCH')
 		string (defaultValue: "linux_x86-64_cmprssptrs", description: 'Set SPEC to match SDK. e.g., <br/>linux_x86-64<br/>linux_x86-64_cmprssptrs<br/>mac_x86-64<br/>linux_390-64<br/>linux_390-64_cmprssptrs<br/>linux_ppc-64_le<br/>linux_ppc-64_cmprssptrs_le<br/>linux_arm<br/>win_x86<br/>win_x86-64<br/>win_x86-64_cmprssptrs<br/>aix_ppc-64<br/>aix_ppc-64_cmprssptrs<br/>zos_390-64_cmprssptrs', name: 'SPEC')
 		string (defaultValue: "SE80", description: 'Set JAVA_VERSION to match SDK. Format SEXXX. e.g., SE80 SE90 SE100 SE110', name: 'JAVA_VERSION')
-		string (defaultValue: 'openj9', description: 'JAVA_IMPL, e.g. hotspot, openj9, sap', name: 'JAVA_IMPL')
+		string (defaultValue: 'openj9', description: 'JDK_IMPL, e.g. hotspot, openj9, sap', name: 'JDK_IMPL')
 		string (defaultValue: 'functional', description: 'Specific test directory to compile, set blank for all projects to be compiled, e.g. openjdk_regression systemtest performance jck thirdparty_containers functional', name: 'BUILD_LIST')
 		string (defaultValue: 'sanity', description: 'Test TARGET to execute, default is runtest which will run all tests. You can also select sub-targets such as:\ndifferent group: openjdk, system, jck, functional, perf, etc\ndifferent level: sanity, extended\nindividual test: jdk_beans_0, jdk_custom, etc', name: 'TARGET')
 		string (defaultValue: "", description: 'Used when any custom target is selected, e.g. jdk_custom, langtools_custom, etc. , path to the test class to execute', name: 'CUSTOM_TARGET')
@@ -29,7 +29,7 @@ pipeline {
 		SPEC="${SPEC}"
 		JAVA_VERSION="${JAVA_VERSION}"
 		BUILD_LIST="${BUILD_LIST}"
-		JAVA_IMPL="${JAVA_IMPL}"
+		JDK_IMPL="${JDK_IMPL}"
 		DIAGNOSTICLEVEL ='failure'
 		EXTRA_OPTIONS="${EXTRA_OPTIONS}"
 		JVM_OPTIONS="${JVM_OPTIONS}"
@@ -52,7 +52,7 @@ pipeline {
 						CUSTOMIZED_SDK_URL_OPTION = (params.CUSTOMIZED_SDK_URL != "") ? "-c '$CUSTOMIZED_SDK_URL'" : ""
 						OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 						OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
-						sh "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p ${getPlatformAndLabel(SPEC)[0]} -j ${JAVA_VERSION} -i ${JAVA_IMPL} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
+						sh "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p ${getPlatformAndLabel(SPEC)[0]} -j ${JAVA_VERSION} -i ${JDK_IMPL} -r ${params.SDK_RESOURCE} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION}"
 					}
                 }
             }
