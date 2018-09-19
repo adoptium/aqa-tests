@@ -179,10 +179,10 @@ getBinaryOpenjdk()
 	for jar_dir in "${jar_dir_array[@]}"
 		do
 			jar_dir_name=${jar_dir%?}
-			if [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
-				mv $jar_dir_name j2sdk-image
-			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
+			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
 				mv $jar_dir_name j2jre-image
+			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
+				mv $jar_dir_name j2sdk-image
 			# if native test libs folder is available, mv it under native-test-libs
 			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
 				mv $jar_dir_name native-test-libs
