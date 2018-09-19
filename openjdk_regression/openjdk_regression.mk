@@ -69,7 +69,7 @@ ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)langtools$(D)test
 else
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
-	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot
+	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
 endif
 
