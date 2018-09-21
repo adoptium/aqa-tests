@@ -137,18 +137,23 @@ getBinaryOpenjdk()
 		fi
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
 		os=${PLATFORM#*_}
-		arch=${PLATFORM%_*}
+		os=${os%_largeHeap}
+		arch=${PLATFORM%%_*}
 		tempJDK_VERSION="${JDK_VERSION%?}"
 		OPENJDK_VERSION="openjdk${tempJDK_VERSION:2}"
 		# older bash doesn't support negative offset
 		# OPENJDK_VERSION="openjdk${JDK_VERSION:2:-1}"
-		download_url="https://api.adoptopenjdk.net/v2/binary/${SDK_RESOURCE}/${OPENJDK_VERSION}?openjdk_impl=${JDK_IMPL}&os=${os}&arch=${arch}&release=${RELEASES}&type=${TYPE}"
+		heap_size="normal"
+		if [[ $PLATFORM = *"largeHeap"* ]]; then
+			heap_size="large"
+		fi
+		download_url="https://api.adoptopenjdk.net/v2/binary/${SDK_RESOURCE}/${OPENJDK_VERSION}?openjdk_impl=${JDK_IMPL}&os=${os}&arch=${arch}&release=${RELEASES}&type=${TYPE}&heap_size=${heap_size}"
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
 	fi
 	
-	if  [ "${download_url}" != "" ]; then
+	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
 			echo "curl -OLJks ${curl_options} $file"
