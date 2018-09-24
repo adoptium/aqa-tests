@@ -24,6 +24,15 @@ def stageTestBinaries() {
 	sh "ls"
 }
 
+def makeTest(testParam) {
+	try {
+		sh "make -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+		sh "./openjdk-tests/maketest.sh $testParam" 
+	} finally {
+		sh "make -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	}
+}
+
 def setupEnv() {
 	// if ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH are provided, clean the workpsace and re-download it
 	if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_BRANCH) {
@@ -49,6 +58,7 @@ def setupEnv() {
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.SPEC = "${SPEC}"
+	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
@@ -182,7 +192,8 @@ def buildTest() {
 			}
 
 			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-				sh "./openjdk-tests/maketest.sh ./openjdk-tests"
+				echo 'Running tests...'
+				makeTest("./openjdk-tests");
 			}
 		}
 	}
@@ -200,7 +211,7 @@ def runTest(subDir) {
 					env.DISPLAY = "${DISPLAY}"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					echo 'Running tests...'
-					sh "$WORKSPACE/openjdk-tests/maketest.sh $WORKSPACE/openjdk-tests/${subDir} _$TARGET"
+					makeTest("./openjdk-tests/${subDir} _$TARGET")
 				}
 			} else {
 				echo 'Running tests...'
@@ -213,7 +224,8 @@ def runTest(subDir) {
 					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 				}
 				for (i = 0; i < iterations; i++) {
-					sh "./openjdk-tests/maketest.sh ./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
+					echo 'Running tests...'
+					makeTest("./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}")
 				}
 			}
 		}
