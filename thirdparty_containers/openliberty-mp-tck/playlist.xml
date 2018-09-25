@@ -16,11 +16,11 @@
 	<test>
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
 		<command>docker run -v $(JDK_HOME):/java --name openliberty-mp-tck adoptopenjdk-openliberty-mp-tck:latest; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.metrics_fat_tck/build/libs/autoFVT/results/junit $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT/results/junit $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.faulttolerance_fat_tck/build/libs/autoFVT/results/junit $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.rest.client_fat_tck/build/libs/autoFVT/results/junit $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.openapi_fat_tck/build/libs/autoFVT/results/junit $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.metrics.1.1_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.faulttolerance_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.rest.client_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.openapi_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
 			docker rm openliberty-mp-tck; \
 		$(TEST_STATUS)</command>
 		<subsets>

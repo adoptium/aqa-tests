@@ -24,16 +24,16 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk_regression" />
 	<property name="src" location="." />
 	<condition property="openjdkGit" value="openjdk-jdk8u">
-		<equals arg1="${JAVA_VERSION}" arg2="SE80"/>
+		<equals arg1="${JDK_VERSION}" arg2="8"/>
 	</condition>
 	<condition property="openjdkGit" value="openjdk-jdk9">
-		<equals arg1="${JAVA_VERSION}" arg2="SE90"/>
+		<equals arg1="${JDK_VERSION}" arg2="9"/>
 	</condition>
 	<condition property="openjdkGit" value="openjdk-jdk10u">
-		<equals arg1="${JAVA_VERSION}" arg2="SE100"/>
+		<equals arg1="${JDK_VERSION}" arg2="10"/>
 	</condition>
 	<condition property="openjdkGit" value="openjdk-jdk11">
-        <equals arg1="${JAVA_VERSION}" arg2="SE110"/>
+        <equals arg1="${JDK_VERSION}" arg2="11"/>
     </condition>
 	
 	<target name="getJtreg">

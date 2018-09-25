@@ -48,7 +48,7 @@ JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
 ifndef JRE_IMAGE
-	ifeq ($(JAVA_VERSION),SE80)
+	ifeq ($(JDK_VERSION),8)
 		JRE_ROOT := $(JAVA_BIN)$(D)..$(D)..
 	else
 		JRE_ROOT := $(JAVA_BIN)$(D)..
@@ -63,13 +63,13 @@ else
 OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk_regression$(D)openjdk-jdk
 endif
 
-ifneq (,$(findstring $(JAVA_VERSION),SE80-SE90))
+ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)langtools$(D)test
 else
 	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
-	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot
+	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
 endif
 
