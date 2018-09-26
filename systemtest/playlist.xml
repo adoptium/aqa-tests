@@ -112,6 +112,7 @@
 		</groups>
 	</test>
 	
+	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
 	<test>
 		<testCaseName>MathLoadTest_all</testCaseName>
 		<variations>
@@ -131,6 +132,11 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
 	</test>
 	
 	<test>
@@ -155,6 +161,7 @@
 		</groups>
 	</test>
 	
+	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
 		<variations>
@@ -175,6 +182,11 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE90</subset>
+			<subset>SE100</subset>
+		</subsets>
 	</test>
 	
 	<test>
