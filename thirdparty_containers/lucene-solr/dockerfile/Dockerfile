@@ -2,7 +2,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#      https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,7 +57,7 @@ RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant
 	
 #apache ivy setup 
 ENV IVY_VERSION 2.4.0
-RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
+RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     gunzip apache-ivy-${IVY_VERSION}-bin.tar.gz && \
     tar -xvf apache-ivy-${IVY_VERSION}-bin.tar && \
     cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar $WORKDIR/apache-ant-${ANT_VERSION}/lib/
