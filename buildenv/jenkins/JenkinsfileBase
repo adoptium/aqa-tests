@@ -25,18 +25,36 @@ def stageTestBinaries() {
 }
 
 def setupEnv() {
+	// if ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH are provided, clean the workpsace and re-download it
+	if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_BRANCH) {
+		cleanWs()
+		checkout([
+			$class: 'GitSCM', branches: [[name: "*/${params.ADOPTOPENJDK_BRANCH}"]],
+			extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+			userRemoteConfigs: [[url: "${params.ADOPTOPENJDK_REPO}"]]
+		])
+	}
+
 	// env.JAVA_VERSION = "${getJavaVersionFromJvmVersion()}"
 	env.JAVA_VERSION = "${JAVA_VERSION}"
 	/* Optional parameter JAVA_VERSION to use for Panama/Valhalla/Amber cases, otherwise its calculated from JVM_VERSION */ 
 	if( params.JAVA_VERSION ) {
 		env.JAVA_VERSION = params.JAVA_VERSION
-	} 
+	}
+
 	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
-	env.JVM_VERSION = "${JVM_VERSION}"
+	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
+	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
+	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.SPEC = "${SPEC}"
 
+	if (params.JDK_IMPL) {
+		env.JDK_IMPL = params.JDK_IMPL
+	} else if (params.JVM_VERSION) {
+		env.JDK_IMPL = getJDKImpl(params.JVM_VERSION)
+	}
 	if( params.BUILD_LIST ) {
 		env.BUILD_LIST = params.BUILD_LIST
 	} else {
@@ -65,14 +83,6 @@ def setupEnv() {
 		}
 	}
 	
-	if (JVM_VERSION.contains('openj9')) {
-		JDK_IMPL = 'openj9'
-	} else if (JVM_VERSION.contains('sap')) {
-		JDK_IMPL = 'sap'
-	} else {
-		JDK_IMPL = 'hotspot'
-	}
-	env.JDK_IMPL= "${JDK_IMPL}"
 	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
@@ -92,12 +102,7 @@ def setup() {
 	stage('Setup') {
 		timestamps{
 			setupEnv()
-			// get TestKitGen and test JDK for test
-			try{
-				CUSTOMIZED_SDK_URL = "${CUSTOMIZED_SDK_URL}"
-			} catch (MissingPropertyException e) {
-				CUSTOMIZED_SDK_URL = ''
-			}
+
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -108,7 +113,17 @@ def setup() {
 					deleteDir()
 				}
 			}
-			if (SDK_RESOURCE == 'upstream' && CUSTOMIZED_SDK_URL == '') {
+			
+			SDK_RESOURCE = params.SDK_RESOURCE
+
+			if (params.CUSTOMIZED_SDK_URL) {
+				SDK_RESOURCE = "customized"
+				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+			} else {
+				CUSTOMIZED_SDK_URL_OPTION = ""
+			}
+			
+			if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
 						fingerprintArtifacts: true,
@@ -118,13 +133,6 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			if (CUSTOMIZED_SDK_URL != "") {
-				SDK_RESOURCE = "customized"
-				CUSTOMIZED_SDK_URL_OPTION = "-c '$CUSTOMIZED_SDK_URL'"
-			} else {
-				CUSTOMIZED_SDK_URL_OPTION = ""
-			}
-
 			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
@@ -135,17 +143,17 @@ def setup() {
 			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
-			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r $SDK_RESOURCE ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} -j ${JAVA_VERSION} -i ${JDK_IMPL} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
 
 			dir( WORKSPACE) {
 				sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
 					if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
 						// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
 						withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					           sh "$GET_SH_CMD"
-					      }
-				        } else {
-					      sh "$GET_SH_CMD"
+							sh "$GET_SH_CMD"
+						}
+					} else {
+						sh "$GET_SH_CMD"
 					}
 				}
 			}
@@ -196,7 +204,17 @@ def runTest(subDir) {
 				}
 			} else {
 				echo 'Running tests...'
-				sh './openjdk-tests/maketest.sh ./openjdk-tests/${subDir} _$TARGET'
+				int iterations = 1;
+				if (params.ITERATIONS) {
+					iterations = "${params.ITERATIONS}".toInteger()
+				}
+				def CUSTOM_OPTION = ''
+				if (TARGET.contains('custom')) {
+					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				}
+				for (i = 0; i < iterations; i++) {
+					sh "./openjdk-tests/maketest.sh ./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
+				}
 			}
 		}
 	}
@@ -292,6 +310,16 @@ def getJavaVersionFromJvmVersion() {
 	def java_version = "SE$match0"
 	echo "java_version=$java_version"
 	return java_version
+}
+
+def getJDKImpl(jvm_version) {
+	def jdk_impl = 'hotspot'
+	if (jvm_version.contains('openj9')) {
+		jdk_impl = 'openj9'
+	} else if (JVM_VERSION.contains('sap')) {
+		jdk_impl = 'sap'
+	}
+	return jdk_impl
 }
 
 def setLabelParam() {
