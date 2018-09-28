@@ -114,7 +114,7 @@ def setup() {
 				}
 			}
 			
-			SDK_RESOURCE = params.SDK_RESOURCE
+			SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 
 			if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
