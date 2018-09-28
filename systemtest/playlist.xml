@@ -49,6 +49,7 @@
 		</groups>
 	</test>
 	
+	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
@@ -68,6 +69,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^arch.arm</platformRequirements>
 	</test>
 	
 	<test>
@@ -91,6 +93,7 @@
 		</groups>
 	</test>
 	
+	<!-- Temporarily exclude from aarch64 linux for: https://github.com/eclipse/openj9/issues/3066 -->
 	<test>
 		<testCaseName>LockingLoadTest</testCaseName>
 		<variations>
@@ -110,6 +113,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^arch.arm</platformRequirements>
 	</test>
 	
 	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
@@ -255,6 +259,7 @@
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/64</disabled>
 	</test>
 	
+	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
 	<test>
 		<testCaseName>NioLoadTest</testCaseName>
 		<variations>
@@ -274,6 +279,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^arch.arm</platformRequirements>
 	</test>
 	
 	<test>
