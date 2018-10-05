@@ -73,7 +73,7 @@ parseCommandLineArgs()
 
 			"--jdk_impl" | "-i" )
 				JDK_IMPL="$1"; shift;;
-			
+
 			"--releases" | "-R" )
 				RELEASES="$1"; shift;;
 
@@ -82,7 +82,7 @@ parseCommandLineArgs()
 
 			"--sdk_resource" | "-r" )
 				SDK_RESOURCE="$1"; shift;;
-			
+
 			"--customizedURL" | "-c" )
 				CUSTOMIZED_SDK_URL="$1"; shift;;
 
@@ -127,7 +127,7 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir openjdkbinary
 	cd openjdkbinary
-	
+
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
                 # if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
@@ -152,7 +152,7 @@ getBinaryOpenjdk()
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
 	fi
-	
+
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
@@ -178,16 +178,24 @@ getBinaryOpenjdk()
 				gzip -cd $jar_name | tar xf -
 			fi
 		done
-	
+
 	jar_dirs=`ls -d */`
 	jar_dir_array=(${jar_dirs//\\n/ })
 	for jar_dir in "${jar_dir_array[@]}"
 		do
 			jar_dir_name=${jar_dir%?}
 			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
-				mv $jar_dir_name j2jre-image
+				if [[ "$PLATFORM" == "x64_mac" ]]; then
+					mv "$jar_dir_name/Contents/Home" j2jre-image
+				else
+					mv $jar_dir_name j2jre-image
+				fi
 			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
-				mv $jar_dir_name j2sdk-image
+				if [[ "$PLATFORM" == "x64_mac" ]]; then
+					mv "$jar_dir_name/Contents/Home" j2sdk-image
+				else
+					mv $jar_dir_name j2sdk-image
+				fi
 			# if native test libs folder is available, mv it under native-test-libs
 			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
 				mv $jar_dir_name native-test-libs
@@ -239,12 +247,12 @@ getTestKitGenAndFunctionalTestMaterial()
 			# convert VENDOR_BRANCHES to array
 			vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
 		fi
-	
+
 		if [ "$VENDOR_SHAS" != "" ]; then
 			#convert VENDOR_SHAS to array
 			vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
 		fi
-	
+
 		if [ "$VENDOR_DIRS" != "" ]; then
 			#convert VENDOR_DIRS to array
 			vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
