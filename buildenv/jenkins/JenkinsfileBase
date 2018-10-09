@@ -25,11 +25,12 @@ def stageTestBinaries() {
 }
 
 def makeTest(testParam) {
+	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
-		sh "make -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam" 
 	} finally {
-		sh "make -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+		sh "$tearDownCmd"
 	}
 }
 
