@@ -15,11 +15,12 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>jenkins_test</testCaseName>
-	<command>docker run -v $(JDK_HOME):/java --name jenkins-test adoptopenjdk-jenkins-test:latest; \
+		<command>docker run -v $(JDK_HOME):/java --name jenkins-test adoptopenjdk-jenkins-test:latest; \
+			 $(TEST_STATUS); \
 			 docker cp jenkins-test:/jenkins/cli/target/surefire-reports $(REPORTDIR)/external_test_reports; \
 			 docker cp jenkins-test:/jenkins/core/target/surefire-reports $(REPORTDIR)/external_test_reports; \
-			 docker rm jenkins-test; \
-		$(TEST_STATUS)</command>
+			 docker rm jenkins-test
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>

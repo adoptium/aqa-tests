@@ -16,6 +16,7 @@
 	<test>
 		<testCaseName>elasticsearch_test</testCaseName>
 		<command>docker run -v $(JDK_HOME):/java --name elasticsearch-test adoptopenjdk-elasticsearch-test:latest; \
+			$(TEST_STATUS); \
 			docker cp elasticsearch-test:/elasticsearch/core/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
 			docker cp elasticsearch-test:/elasticsearch/modules/transport-netty4/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
 			docker cp elasticsearch-test:/elasticsearch/modules/lang-mustache/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
@@ -25,8 +26,7 @@
 			docker cp elasticsearch-test:/elasticsearch/test/framework/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
 			docker cp elasticsearch-test:/elasticsearch/test/logger-usage/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
 			docker cp elasticsearch-test:/elasticsearch/client/rest/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker rm elasticsearch-test; \
-			$(TEST_STATUS)
+			docker rm elasticsearch-test
 		</command>
 		<levels>
 			<level>sanity</level>
