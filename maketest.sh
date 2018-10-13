@@ -18,6 +18,7 @@ else
 fi
 
 if [ "$#" -eq 1 ];then
+	# temporarily removing DDR_Test for macos run
 	rm -rf $1/functional/DDR_Test
 	cd $1/TestConfig
 	$MAKE -f run_configure.mk
@@ -28,6 +29,20 @@ if [ "$#" -eq 1 ];then
 else
 	testDir=$1
 	shift
-	$MAKE -C $testDir -f autoGen.mk $@
+	# check if TARGET is comma-separated list of targets
+	# if so, parse and run each target, CUSTOMIZED_TEST_TARGET will be ignored
+	if [[ $1 == *[,]* ]]
+	then
+  	echo "TARGET is list of sub_targets\n"
+		subtargets=$(echo $1 | tr "," "\n")
+		for sub_target in $subtargets
+		do
+    	echo "> [$sub_target]"
+			$MAKE -C $testDir -f autoGen.mk $sub_target
+		done
+	fi
+	else
+		$MAKE -C $testDir -f autoGen.mk $@
+	fi
 fi
 
