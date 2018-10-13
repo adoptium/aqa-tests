@@ -18,6 +18,7 @@ else
 fi
 
 if [ "$#" -eq 1 ];then
+	rm -rf $1/functional/DDR_Test
 	cd $1/TestConfig
 	$MAKE -f run_configure.mk
 	if [ $? -ne 0 ]; then
