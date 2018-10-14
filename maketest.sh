@@ -40,7 +40,6 @@ else
     	echo "> [$sub_target]"
 			$MAKE -C $testDir -f autoGen.mk $sub_target
 		done
-	fi
 	else
 	  echo "Normal setup, no multiple targets passed"
 		$MAKE -C $testDir -f autoGen.mk $@
