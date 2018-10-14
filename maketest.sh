@@ -42,6 +42,7 @@ else
 		done
 	fi
 	else
+	  echo "Normal setup, no multiple targets passed"
 		$MAKE -C $testDir -f autoGen.mk $@
 	fi
 fi
