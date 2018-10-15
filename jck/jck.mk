@@ -11,6 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
-ifndef JCK_TEST_TARGET
-JCK_TEST_TARGET=api/java_math
+ifndef JCK_CUSTOM_TARGET
+JCK_CUSTOM_TARGET ?=api/java_math
 endif

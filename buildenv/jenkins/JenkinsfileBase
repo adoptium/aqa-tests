@@ -203,29 +203,27 @@ def buildTest() {
 def runTest(subDir) {
 	stage('Test') {
 		timestamps{
-			if (env.BUILD_LIST == "jck"){
-				wrap([$class: 'Xvfb', autoDisplayName: true]) {
-					def DISPLAY = sh (
-						script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-						returnStdout: true
-					).trim()
-					env.DISPLAY = "${DISPLAY}"
-					echo "env.DISPLAY is ${env.DISPLAY}"
-					echo 'Running tests...'
-					makeTest("./openjdk-tests/${subDir} _$TARGET")
-				}
-			} else {
-				echo 'Running tests...'
-				int iterations = 1;
-				if (params.ITERATIONS) {
-					iterations = "${params.ITERATIONS}".toInteger()
-				}
-				def CUSTOM_OPTION = ''
-				if (TARGET.contains('custom')) {
-					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
-				}
-				for (i = 0; i < iterations; i++) {
-					echo 'Running tests...'
+			echo 'Running tests...'
+			int iterations = 1;
+			if (params.ITERATIONS) {
+				iterations = "${params.ITERATIONS}".toInteger()
+			}
+			def CUSTOM_OPTION = ''
+			if (TARGET.contains('custom')) {
+				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+			}
+			for (i = 0; i < iterations; i++) {
+				if (env.BUILD_LIST == "jck"){
+					wrap([$class: 'Xvfb', autoDisplayName: true]) {
+						def DISPLAY = sh (
+							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}")
+					}
+				} else {
 					makeTest("./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}")
 				}
 			}

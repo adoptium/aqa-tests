@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck-runtime-custom</testCaseName>
+		<testCaseName>jck_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -25,7 +25,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=$(JCK_TEST_TARGET),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=$(JCK_CUSTOM_TARGET),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

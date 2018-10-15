@@ -44,7 +44,7 @@ There is one custom JCK test targets `jck-runtime-custom`. This test target is u
 
 1. Follow the Steps 1 - 4 mentioned above. 
 
-2. Export `JCK_TEST_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_TEST_TARGET=api/java_math`
+2. Export `JCK_CUSTOM_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_CUSTOM_TARGET=api/java_math`
 
 3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)/$(JCK_VERSION)/`.
 
