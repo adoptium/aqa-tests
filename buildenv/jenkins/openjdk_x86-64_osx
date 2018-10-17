@@ -1,0 +1,18 @@
+#!groovy
+LABEL='sw.os.osx&&hw.arch.x86'
+
+node ("master") {
+	checkout scm
+	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+	jenkinsfile.setLabelParam()
+	cleanWs()
+}
+
+node("$LABEL") {
+    PLATFORM = 'x64_mac'
+    SDK_RESOURCE = 'upstream'
+    SPEC='mac_x86-64_cmprssptrs'
+    checkout scm
+    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+    jenkinsfile.testBuild()
+}
