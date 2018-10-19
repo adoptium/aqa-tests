@@ -186,13 +186,13 @@ getBinaryOpenjdk()
 			jar_dir_name=${jar_dir%?}
 			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
 				if [[ "$PLATFORM" == "x64_mac" ]]; then
-					mv "$jar_dir_name" j2jre-image
+					mv "$jar_dir_name/Contents/Home" j2jre-image
 				else
 					mv $jar_dir_name j2jre-image
 				fi
 			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
 				if [[ "$PLATFORM" == "x64_mac" ]]; then
-					mv "$jar_dir_name" j2sdk-image
+					mv "$jar_dir_name/Contents/Home" j2sdk-image
 				else
 					mv $jar_dir_name j2sdk-image
 				fi

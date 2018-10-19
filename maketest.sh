@@ -29,20 +29,6 @@ if [ "$#" -eq 1 ];then
 else
 	testDir=$1
 	shift
-	# check if TARGET is comma-separated list of targets
-	# if so, parse and run each target, CUSTOMIZED_TEST_TARGET will be ignored
-	if [[ $1 == *[,]* ]]
-	then
-  	echo "TARGET is list of sub_targets\n"
-		subtargets=$(echo $1 | tr "," "\n")
-		for sub_target in $subtargets
-		do
-    	echo "> [$sub_target]"
-			$MAKE -C $testDir -f autoGen.mk $sub_target
-		done
-	else
-	  echo "Normal setup, no multiple targets passed"
-		$MAKE -C $testDir -f autoGen.mk $@
-	fi
+	$MAKE -C $testDir -f autoGen.mk $@
 fi
 
