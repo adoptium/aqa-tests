@@ -11,7 +11,7 @@ node ("master") {
 node("$LABEL") {
     PLATFORM = 'x64_mac'
     SDK_RESOURCE = 'upstream'
-    SPEC='mac_x86-64_cmprssptrs'
+    SPEC='osx_x86-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
     jenkinsfile.testBuild()
