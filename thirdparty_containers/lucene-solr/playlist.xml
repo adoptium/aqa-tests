@@ -26,5 +26,31 @@
 		<groups>
 			<group>external</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	
+	<!-- Temporarily exclude lucene-solr tests from running on OpenJ9 JDK11 until fixed: https://github.com/eclipse/openj9/issues/3213 -->
+	<test>
+		<testCaseName>lucene_solr_nightly_smoketest_OpenJ9</testCaseName>
+		<command>docker run -v $(JDK_HOME):/java --name lucene-solr-test adoptopenjdk-lucene-solr-test:latest; \
+			 $(TEST_STATUS); \
+			 docker cp lucene-solr-test:/lucene-solr/lucene/build/core/test $(REPORTDIR)/external_test_reports; \
+			 docker rm lucene-solr-test
+		</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+		<subsets>
+			<subset>SE80</subset>
+			<subset>SE100</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 </playlist>
