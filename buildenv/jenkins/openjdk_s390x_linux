@@ -2,17 +2,19 @@
 LABEL='sw.os.linux&&hw.arch.s390x'
 
 node ("master") {
-	checkout scm
-	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-	jenkinsfile.setLabelParam()
-	cleanWs()
-}
-
-node("$LABEL") {
-    PLATFORM = 's390x_linux'
-    SDK_RESOURCE = 'upstream'
-    SPEC='linux_390-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.testBuild()
+    jenkinsfile.setLabelParam()
+    cleanWs()
+}
+
+stage('Queue') {
+    node("$LABEL") {
+        PLATFORM = 's390x_linux'
+        SDK_RESOURCE = 'upstream'
+        SPEC='linux_390-64_cmprssptrs'
+        checkout scm
+        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
 }

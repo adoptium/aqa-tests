@@ -2,17 +2,19 @@
 LABEL='hw.arch.ppc&&sw.os.aix'
 
 node ("master") {
-	checkout scm
-	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-	jenkinsfile.setLabelParam()
-	cleanWs()
-}
-
-node("$LABEL") {
-    PLATFORM = 'ppc64_aix'
-    SDK_RESOURCE = 'upstream'
-    SPEC='aix_ppc-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.testBuild()
+    jenkinsfile.setLabelParam()
+    cleanWs()
+}
+
+stage('Queue') {
+    node("$LABEL") {
+        PLATFORM = 'ppc64_aix'
+        SDK_RESOURCE = 'upstream'
+        SPEC='aix_ppc-64_cmprssptrs'
+        checkout scm
+        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
 }
