@@ -2,17 +2,19 @@
 LABEL='sw.os.linux&&hw.arch.x86'
 
 node ("master") {
-	checkout scm
-	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-	jenkinsfile.setLabelParam()
-	cleanWs()
-}
-
-node("$LABEL") {
-    PLATFORM = 'x64_linux'
-    SDK_RESOURCE = 'upstream'
-    SPEC='linux_x86-64_cmprssptrs'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.testBuild()
+    jenkinsfile.setLabelParam()
+    cleanWs()
+}
+
+stage('Queue') {
+    node("$LABEL") {
+        PLATFORM = 'x64_linux'
+        SDK_RESOURCE = 'upstream'
+        SPEC='linux_x86-64_cmprssptrs'
+        checkout scm
+        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
 }

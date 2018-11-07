@@ -2,17 +2,19 @@
 LABEL='sw.os.linux&&hw.arch.ppc64le'
 
 node ("master") {
-	checkout scm
-	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-	jenkinsfile.setLabelParam()
-	cleanWs()
-}
-
-node("$LABEL") { //ppc64le build use "fedora" too, for now leave as is
-    PLATFORM = 'ppc64le_linux'
-    SDK_RESOURCE = 'upstream'
-    SPEC='linux_ppc-64_cmprssptrs_le'
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.testBuild()
+    jenkinsfile.setLabelParam()
+    cleanWs()
+}
+
+stage('Queue') {
+    node("$LABEL") { //ppc64le build use "fedora" too, for now leave as is
+        PLATFORM = 'ppc64le_linux'
+        SDK_RESOURCE = 'upstream'
+        SPEC='linux_ppc-64_cmprssptrs_le'
+        checkout scm
+        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
 }
