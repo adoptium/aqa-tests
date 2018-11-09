@@ -1,7 +1,7 @@
 #!groovy
 
 stage('Queue') {
-    node('linux&&x64&&test&&sw.tool.docker') {
+    node('ci.role.test&&hw.arch.x64&&sw.os.linux&&sw.tool.docker') {
         PLATFORM = 'x64_linux'
         SDK_RESOURCE = 'upstream'
         SPEC='linux_x86-64_cmprssptrs'
