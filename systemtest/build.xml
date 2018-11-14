@@ -176,6 +176,7 @@
 			<else>
 				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false">
 					<property name="java.home" value="${env.JAVA_HOME}"/>
+					<property name="isAutomatedBuild" value="true"/>
 				</ant>
 			</else>
 		</if>
