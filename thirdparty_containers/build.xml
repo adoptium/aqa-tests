@@ -23,7 +23,7 @@
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers" />
 
-	<target name="init">
+	<target name="init" depends="docker_prune">
 		<mkdir dir="${DEST}" />
 	</target>
 
@@ -37,5 +37,11 @@
 		<copy todir="${DEST}">
 			<fileset dir="." includes="*.mk"/>
 		</copy>
+	</target>
+	
+	<target name="docker_prune" description="Remove all unused images from the machine before running new builds">
+		<exec executable="docker">
+			<arg line="system prune --all --force" />
+		</exec>
 	</target>
 </project>
