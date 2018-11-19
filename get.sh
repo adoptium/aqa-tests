@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -e
+
 SDKDIR=""
 TESTDIR=""
 PLATFORM=""
@@ -38,7 +40,7 @@ usage ()
 	echo '                [--jdk_version|-j ]: optional. JDK version'
 	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
 	echo '                [--releases|-R ]: optional. Example: latest, jdk8u172-b00-201807161800'
-	echo '                [--type|-t ]: optional. jdk or jre'
+	echo '                [--type|-T ]: optional. jdk or jre'
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized.  Multiple urls can be passed with space as separator'
@@ -77,7 +79,7 @@ parseCommandLineArgs()
 			"--releases" | "-R" )
 				RELEASES="$1"; shift;;
 
-			"--type" | "-t" )
+			"--type" | "-T" )
 				TYPE="$1"; shift;;
 
 			"--sdk_resource" | "-r" )
@@ -298,11 +300,26 @@ getTestKitGenAndFunctionalTestMaterial()
 	fi
 }
 
-parseCommandLineArgs "$@"
-if [ ! -d "$TESTDIR/TestConfig" ]; then
-	getTestKitGenAndFunctionalTestMaterial
+testJavaVersion()
+{
+# use environment variable JAVA_BIN to run java -version
+_java=${JAVA_BIN}/java
+if [ -x ${_java} ]; then
+	echo "Run ${_java} -version"
+	${_java} -version
+else
+	echo "Cannot find java executable in JAVA_BIN: ${JAVA_BIN}!"
+	exit 1
 fi
+}
 
+parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
+fi
+
+testJavaVersion
+
+if [ ! -d "$TESTDIR/TestConfig" ]; then
+	getTestKitGenAndFunctionalTestMaterial
 fi
