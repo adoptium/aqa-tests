@@ -17,17 +17,17 @@ def testBuild() {
 	timeout(time: time_limit, unit: 'HOURS') {
 		try {
 			if( params.BUILD_TYPE == "systemtest" ){
-			    sh 'curl -OLJks "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=latest&type=jdk"'
-                sh 'mkdir ${WORKSPACE}/j2sdk-image'
-                sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 2'
-                sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
-                sh 'git clone git://github.com/AdoptOpenJDK/openjdk-systemtest'
-                sh 'ant -f ./openjdk-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs'
-                archiveArtifacts '**/systemtest_prereqs/mauve/mauve.jar'
+				sh 'curl -OLJks "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=latest&type=jdk"'
+				sh 'mkdir ${WORKSPACE}/j2sdk-image'
+				sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 2'
+				sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
+				sh 'git clone https://github.com/AdoptOpenJDK/openjdk-systemtest'
+				sh 'ant -f ./openjdk-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs'
+				archiveArtifacts '**/systemtest_prereqs/mauve/mauve.jar'
 			} else {
 				sh 'wget https://raw.githubusercontent.com/eclipse/openj9/master/test/TestConfig/scripts/tools/getDependencies.pl'
-                sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
-                archiveArtifacts '*.jar, *.zip'
+				sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
+				archiveArtifacts '*.jar, *.zip'
 			}
 		} finally {
 			cleanWs()
