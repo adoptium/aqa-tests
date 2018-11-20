@@ -97,6 +97,11 @@ def setupEnv() {
 	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
+	
+	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
+	if( params.RELEASE_TAG ) {
+		env.RELEASE_TAG = params.RELEASE_TAG
+	}
 	sh 'printenv'
 }
 

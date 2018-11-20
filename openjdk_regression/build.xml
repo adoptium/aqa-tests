@@ -36,6 +36,17 @@
         <equals arg1="${JDK_VERSION}" arg2="11"/>
     </condition>
 	
+	<property environment="env" />
+	<if>
+		<isset property="env.RELEASE_TAG"/>
+		<then>
+			<property name="gitReleaseTag" value="--branch ${env.RELEASE_TAG}"/>
+		</then>
+		<else>
+			<property name="gitReleaseTag" value=""/>
+		</else>
+	</if>
+	
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>
 		<if>
@@ -65,8 +76,10 @@
 				</exec>
 			</then>
 		</if>
+		<property name="gitCmd" value="clone --depth 1 -q ${gitReleaseTag} https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
+		<echo>Run git cmd: ${gitCmd}</echo>
 		<exec executable="git" failonerror="false">
-			<arg line="clone --depth 1 -q https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
+			<arg line="${gitCmd}" />
 		</exec>
 		<move file="${openjdkGit}" tofile="openjdk-jdk"/>
 		<if>
