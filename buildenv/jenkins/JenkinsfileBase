@@ -193,11 +193,17 @@ def buildTest() {
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
 				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TestConfig/lib'
-				
-				//get pre-staged test jars from systemtest.getDependency build before system test compilation
-				copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TestConfig/lib'
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
+			}
+			
+			try { 
+				if (env.BUILD_LIST == 'systemtest') { 	
+					//get pre-staged test jars from systemtest.getDependency build before system test compilation
+					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+				}
+			} catch (Exception e) {
+				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
 
 			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
