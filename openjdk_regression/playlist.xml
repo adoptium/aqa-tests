@@ -244,7 +244,6 @@
 		</groups>
 	</test>
 		<test>
-		<!-- this is only for jre jdk test, jdk11 build do not have jre jdk yet, disalbe for jdk11 -->
 		<testCaseName>jdk_math_jre</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -260,6 +259,7 @@
 			<subset>8</subset>
 			<subset>9</subset>
 			<subset>10</subset>
+			<subset>11</subset>
 		</subsets>
 		<levels>
 			<level>sanity</level>
