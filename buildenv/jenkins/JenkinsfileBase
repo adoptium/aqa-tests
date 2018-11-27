@@ -162,18 +162,32 @@ def setup() {
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} -j ${JAVA_VERSION} -i ${JDK_IMPL} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
 
 			dir( WORKSPACE) {
-				sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
-					if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-						// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
-						withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-							sh "$GET_SH_CMD"
-						}
-					} else {
-						sh "$GET_SH_CMD"
-					}
+				// use sshagent with Jenkins credentials ID for all platforms except zOS
+				// on zOS use the user's ssh key
+				if (!env.SPEC.startsWith('zos')) {
+					get_sources_with_authentication()
+				} else {
+					get_sources()
 				}
 			}
 		}
+	}
+}
+
+def get_sources_with_authentication() {
+	sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
+		get_sources()
+	}
+}
+
+def get_sources() {
+	if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+		// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
+		withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+			sh "$GET_SH_CMD"
+		}
+	} else {
+		sh "$GET_SH_CMD"
 	}
 }
 
@@ -206,10 +220,16 @@ def buildTest() {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
 
-			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-				echo 'Running tests...'
+			echo 'Running tests...'
+			// use sshagent with Jenkins credentials ID for all platforms except zOS
+			if (!env.SPEC.startsWith('zos')) {
+				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+					makeTest("./openjdk-tests");
+				}
+			} else {
 				makeTest("./openjdk-tests");
-			}
+			}	
+			
 		}
 	}
 }
