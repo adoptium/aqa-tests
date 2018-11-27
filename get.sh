@@ -127,7 +127,7 @@ getBinaryOpenjdk()
 {
 	echo "get jdk binary..."
 	cd $SDKDIR
-	mkdir openjdkbinary
+	mkdir -p openjdkbinary
 	cd openjdkbinary
 
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
