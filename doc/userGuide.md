@@ -39,7 +39,7 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 ``` bash
 git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 cd openjdk-tests
-get.sh -t openjdk-testsDIR -p platform [-j SE80] [-i hotspot] [-R latest] [-t jdk] [-s downloadBinarySDKDIR] [-r SDK_RESOURCE] [-c CUSTOMIZED_SDK_URL]
+get.sh -t openjdk-testsDIR -p platform [-j SE80] [-i hotspot] [-R latest] [-T jdk] [-s downloadBinarySDKDIR] [-r SDK_RESOURCE] [-c CUSTOMIZED_SDK_URL]
 ```
 
 Where possible values of get.sh script are:
@@ -53,7 +53,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
                 [--releases|-R ] : optional. Example: latest, jdk8u172-b00-201807161800
 
-                [--type|-t ] : optional. jdk or jre
+                [--type|-T ] : optional. jdk or jre
 
                 [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory
 
