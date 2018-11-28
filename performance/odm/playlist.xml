@@ -16,8 +16,10 @@
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>ODM</testCaseName>
-		<command>chmod a+x ./scripts/benchmark.sh; \
-		./scripts/benchmark.sh $(TEST_RESROOT); \
+		<command>cd $(TEST_RESROOT)/ilog_wodm881; \
+		cp $(TEST_RESROOT)/../../../openjdk-tests/performance/odm/scripts/benchmark.sh .; \
+		chmod a+x benchmark.sh; \
+		bash benchmark.sh; \
 		${TEST_STATUS}
 		</command>
 		<!-- scripts are only tested on linux -->
@@ -28,6 +30,5 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/457</disabled>
 	</test>
 </playlist>

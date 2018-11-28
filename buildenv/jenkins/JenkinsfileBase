@@ -76,7 +76,7 @@ def setupEnv() {
 	if( params.PERF_ROOT ) {
 		env.PERF_ROOT = params.PERF_ROOT
 	} else {
-		env.PERF_ROOT = "$WORKSPACE/../benchmarks"
+		env.PERF_ROOT = "$WORKSPACE/../../benchmarks"
 	}
 
 	if (env.BUILD_LIST == "jck") {
@@ -293,9 +293,10 @@ def post(test_target) {
 				}
 			}
 			//for performance test, achive regardless the build result
+			//TODO: Need to soft-code the output dir path
 			def benchmark_test_output_dir = 'jvmtest/performance/odm/ilog_wodm881/leftoverResults';
 			if (fileExists(benchmark_test_output_dir)) {
-				sh "tar -zcf ${testTarName} benchmark_test_output.tar.gz"
+				sh "tar -zcf benchmark_test_output.tar.gz ${benchmark_test_output_dir}"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: 'benchmark_test_output.tar.gz', fingerprint: true, allowEmptyArchive: true
