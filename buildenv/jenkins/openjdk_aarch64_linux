@@ -16,4 +16,5 @@ stage('Queue') {
         checkout scm
         def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()
+    }
 }
