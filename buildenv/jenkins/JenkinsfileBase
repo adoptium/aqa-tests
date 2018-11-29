@@ -268,6 +268,14 @@ def runTest(subDir) {
 def post(test_target) {
 	stage('Post') {
 		timestamps{
+			if (SPEC.startsWith('zos')) {
+				echo 'Converting tap file from ebcdic to ascii...'
+				sh 'cd ./openjdk-tests/TestConfig'
+				def tapFiles = findFiles(glob: "**/*.tap")
+				for (String tapFile : tapFiles) {
+					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
+				}
+			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			if (currentBuild.result == 'UNSTABLE') {
