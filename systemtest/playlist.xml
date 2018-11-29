@@ -2136,6 +2136,8 @@
 			<group>system</group>
 		</groups>
 	</test>
+	
+	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
 	<test>
 		<testCaseName>PatchModuleTest_PlatformModPatchModule</testCaseName>
 		<variations>
@@ -2161,6 +2163,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleTest_AppModPatchModule</testCaseName>
@@ -2240,6 +2243,8 @@
 			<group>system</group>
 		</groups>
 	</test>
+	
+	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
 	<test>
 		<testCaseName>PatchModuleImageTest_PlatformModPatchModule</testCaseName>
 		<variations>
@@ -2265,6 +2270,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleImageTest_AppModPatchModule</testCaseName>
@@ -2448,6 +2454,8 @@
 			<group>system</group>
 		</groups>
 	</test>	
+	
+	<!-- Temporarily excluded from osx due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/203 -->
 	<test>
 		<testCaseName>JlinkTest_RequiredMod</testCaseName>
 		<variations>
@@ -2473,6 +2481,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>JlinkTest_AddModLimitMod</testCaseName>
