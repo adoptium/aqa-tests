@@ -36,7 +36,7 @@ See the different test jobs here:
 
 The directory structure in this openjdk-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagram below shows the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes).
 
-![Overview of Tests](doc/overviewOfAdoptTests.svg)
+![Overview of Tests](doc/TDoverviewOfAdoptTests.svg)
 
 #### Guide to Running the Tests Yourself
 For more details on how to run the same tests that we run at AdoptOpenJDK on your laptop or in your build farm, please consult our [User Guide](doc/userGuide.md) (work in progress).
