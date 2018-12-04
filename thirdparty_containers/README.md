@@ -23,7 +23,7 @@ Our next steps to improve and expand this set of external tests is divided into 
 
 ### Triage Rules
 There are 4 common triage scenarios, with associated appropriate actions to take:
-![3rd Party App Test Triage Scenarios](../doc/appTestTriageScenarios.png)
+![3rd Party App Test Triage Scenarios](../doc/diagrams/appTestTriageScenarios.png)
 
 ### How to Add New Tests
 - Learn how to run the application tests that you intend to automate in the build manually first, and find out any special dependencies the application testing may have.

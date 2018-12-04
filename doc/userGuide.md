@@ -23,7 +23,7 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 - Repository url - :https://github.com/AdoptOpenJDK/openjdk-tests.git
 - Branches to build - */master
 - Script path - buildenv/jenkins/fileToMatchVersionAndPlatformToTest, example openjdk8_x86-64_linux
-![pipeline from SCM](/doc/pipelineFromSCM.jpg)
+![pipeline from SCM](/doc/diagrams/pipelineFromSCM.jpg)
 
 2. Create necessary parameters
 
@@ -31,7 +31,7 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 * JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
 * CUSTOMIZED_SDK_URL - the URL for where to pick up the SDK to test (if you are picking up builds from AdoptOpenJDK, please refer to the [openjdk-api README](https://github.com/AdoptOpenJDK/openjdk-api/blob/master/README.md) for more details) 
 
-![jenkins parameters](/doc/jenkinsParameters.jpg)
+![jenkins parameters](/doc/diagrams/jenkinsParameters.jpg)
 
 ## Local testing via make targets on the commandline
 
