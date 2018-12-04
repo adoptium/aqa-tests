@@ -21,7 +21,7 @@ For nightly and release builds, there are test jobs running as part of the Adopt
 
 #### Test 'Inventory'
 
-The directory structure in this openjdk-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The links in the header jump to the test jobs in Jenkings (ci.adoptopenjdk.net).
+The directory structure in this openjdk-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The provided links jump to test jobs in Jenkins (ci.adoptopenjdk.net).
 
 ![overview of tests](doc/diagrams/overviewOfAdoptTests.svg)
 
