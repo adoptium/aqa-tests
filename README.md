@@ -25,25 +25,39 @@ The directory structure in this openjdk-tests repository is meant to reflect the
 
 ![overview of tests](doc/diagrams/overviewOfAdoptTests.svg)
 
+--- 
+
 ##### [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) tests - OpenJDK regression tests 
 Tests from OpenJDK
+
+--- 
 
 ##### [system](https://ci.adoptopenjdk.net/view/Test_system/) tests - System and load tests 
 Tests from the AdoptOpenJDK/openjdk-systemtest repo
 
+--- 
+
 ##### [external](https://ci.adoptopenjdk.net/view/Test_external/) tests - 3rd party application tests
-Functional test suites from a variety of applications, along with microprofile TCKs, run in Docker containers
+Test suites from a variety of applications, along with microprofile TCKs, run in Docker containers
 ![external tests](doc/diagrams/externaltests.svg)
+
+--- 
 
 ##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests - Performance benchmark suites 
 Performance benchmark tests (both full suites and microbenches) from different open-source projects such as Acme-Air and AdoptOpenJDK/bumblebench
 ![perf tests](doc/diagrams/perftests.svg)
 
+--- 
+
 ##### [functional](https://ci.adoptopenjdk.net/view/Test_functional/) tests - Unit and functional tests
 Functional tests not originating from the openjdk regression suite, that include locale/language tests and a subset of implementation agnostic tests from the openj9 project.
 
+--- 
+
 ##### jck tests - Compliance tests
 TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server
+
+--- 
 
 #### Guide to Running the Tests Yourself
 For more details on how to run the same tests that we run at AdoptOpenJDK on your laptop or in your build farm, please consult our [User Guide](doc/userGuide.md) (work in progress).
