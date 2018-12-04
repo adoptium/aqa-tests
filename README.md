@@ -17,26 +17,35 @@ See the License for the specific language governing permissions and
 
 For nightly and release builds, there are test jobs running as part of the AdoptOpenJDK continuous delivery pipelines.  There is a [blog post and brief presentation](https://blog.adoptopenjdk.net/2017/12/testing-java-help-count-ways) that explains what testing we run and how they fit into the overall delivery pipeline.  As the world of testing at AdoptOpenJDK is evolving and improving quickly, some documentation may fall behind the march of progress.  Please let us know and help us keep it up-to-date, and ask questions at the [AdoptOpenJDK testing Slack channel](https://adoptopenjdk.slack.com/messages/C5219G28G)!
 
-![CI pipeline view](doc/ciPipeline.jpg)
-
-See the different test jobs here:
-
-- [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) - OpenJDK regression tests (from OpenJDK)
-
-- [system](https://ci.adoptopenjdk.net/view/Test_system/) - System and load tests (from the AdoptOpenJDK/openjdk-systemtest repo)
-
-- [external](https://ci.adoptopenjdk.net/view/Test_external/) - 3rd party application tests run in Docker containers (from different application projects such as scala, tomcat, etc)
-
-- [perf](https://ci.adoptopenjdk.net/view/Test_perf/) - Open-source benchmark suites (from different open-source projects such as Acme-Air)
-
-- [jck](https://ci.adoptopenjdk.net/view/Test_jck/) - TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server (jobs linked here are merely remote triggers to the private server)
-
+![CI pipeline view](doc/diagrams/ciPipeline.jpg)
 
 #### Test 'Inventory'
 
-The directory structure in this openjdk-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagram below shows the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes).
+The directory structure in this openjdk-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The links in the header jump to the test jobs in Jenkings (ci.adoptopenjdk.net).
 
-![Overview of Tests](doc/TDoverviewOfAdoptTests.svg)
+![overview of tests](doc/diagrams/overviewOfAdoptTests.svg)
+
+##### [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) tests
+OpenJDK regression tests (from OpenJDK)
+
+![openjdk tests](doc/diagrams/openjdktests.svg)
+
+##### [system](https://ci.adoptopenjdk.net/view/Test_system/) tests
+System and load tests (from the AdoptOpenJDK/openjdk-systemtest repo)
+
+##### [external](https://ci.adoptopenjdk.net/view/Test_external/) tests
+3rd party application tests run in Docker containers (from different application projects such as scala, tomcat, etc)
+![external tests](doc/diagrams/externaltests.svg)
+
+##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests 
+Open-source benchmark suites (from different open-source projects such as Acme-Air)
+![perf tests](doc/diagrams/perftests.svg)
+
+##### [functional](https://ci.adoptopenjdk.net/view/Test_functional/) tests 
+Functional tests not originating from the openjdk regression suite, that include locale/language tests and a subset of implementation agnostic tests from the openj9 project.
+
+##### jck tests 
+TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server
 
 #### Guide to Running the Tests Yourself
 For more details on how to run the same tests that we run at AdoptOpenJDK on your laptop or in your build farm, please consult our [User Guide](doc/userGuide.md) (work in progress).
