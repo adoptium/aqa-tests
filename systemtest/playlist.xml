@@ -50,6 +50,7 @@
 	</test>
 	
 	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
+	<!-- Temporarily exclude from AIX due to : https://github.com/eclipse/openj9/issues/3933 -->
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
@@ -69,7 +70,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^arch.arm</platformRequirements>
+		<platformRequirements>^arch.arm,^os.aix</platformRequirements>
 	</test>
 	
 	<test>
@@ -305,6 +306,27 @@
 		<groups>
 			<group>system</group>
 		</groups>
+	</test>
+
+	<!-- Temporarily exclude from jdk11 for: https://github.com/adoptopenjdk/openjdk-systemtest/issues/7 -->
+	<test>
+		<testCaseName>HCRLateAttachWorkload</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(TEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)stf;$(TEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(TEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-results-root=$(REPORTDIR)  \
+	-test=HCRLateAttachWorkload; \
+	$(TEST_STATUS)</command>	
+		<subsets>
+			<subset>8</subset>
+		</subsets>
+		<tags>
+			<tag>system</tag>
+		</tags>
 	</test>
 	
 	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
