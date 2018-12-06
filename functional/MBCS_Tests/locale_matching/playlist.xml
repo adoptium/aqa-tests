@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TestConfig/playlist.xsd">
+<!-- Linux -->
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ja_JP_linux</testCaseName>
+		<command>LANG=ja_JP.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ko_KR_linux</testCaseName>
+		<command>LANG=ko_KR.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+<!-- AIX -->
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ja_JP_aix</testCaseName>
+		<command>LANG=ja_JP perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_Ja_JP_aix</testCaseName>
+		<command>LANG=Ja_JP perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_JA_JP_aix</testCaseName>
+		<command>LANG=JA_JP perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ko_KR_aix</testCaseName>
+		<command>LANG=ko_KR perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_KO_KR_aix</testCaseName>
+		<command>LANG=KO_KR perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_locale_matching_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+</playlist>

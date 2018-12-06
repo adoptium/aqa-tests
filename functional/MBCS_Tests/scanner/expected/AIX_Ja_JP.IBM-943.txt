@@ -1,0 +1,39 @@
+
+Tokenizing Test:
+
+test string: 漢字表示能力 漢 カナｶﾅＫａｎａKana 漢 記号:\~￣―＼～∥…－￥￠￡￢ 漢 外字:￤丨昻㈱№℡ 漢 外字:ⅠⅡ①②
+delimiter: (space)
+item 1: 漢字表示能力
+item 2: 漢
+item 3: カナｶﾅＫａｎａKana
+item 4: 漢
+item 5: 記号:\~￣―＼～∥…－￥￠￡￢
+item 6: 漢
+item 7: 外字:￤丨昻㈱№℡
+item 8: 漢
+item 9: 外字:ⅠⅡ①②
+
+test string: 漢字表示能力 漢 カナｶﾅＫａｎａKana 漢 記号:\~￣―＼～∥…－￥￠￡￢ 漢 外字:￤丨昻㈱№℡ 漢 外字:ⅠⅡ①②
+delimiter: 漢
+item 1: 字表示能力
+item 2: カナｶﾅＫａｎａKana
+item 3: 記号:\~￣―＼～∥…－￥￠￡￢
+item 4: 外字:￤丨昻㈱№℡
+item 5: 外字:ⅠⅡ①②
+
+Pattern Matching Test:
+
+test string: 漢字表示能力 漢 カナｶﾅＫａｎａKana 漢 記号:\~￣―＼～∥…－￥￠￡￢ 漢 外字:￤丨昻㈱№℡ 漢 外字:ⅠⅡ①②
+pattern: 漢[^ ]*
+item 1: 漢字表示能力
+item 2: 漢
+item 3: 漢
+item 4: 漢
+item 5: 漢
+
+test string: 漢字表示能力 漢 カナｶﾅＫａｎａKana 漢 記号:\~￣―＼～∥…－￥￠￡￢ 漢 外字:￤丨昻㈱№℡ 漢 外字:ⅠⅡ①②
+pattern: 漢 [^ ]*
+item 1: 漢 カナｶﾅＫａｎａKana
+item 2: 漢 記号:\~￣―＼～∥…－￥￠￡￢
+item 3: 漢 外字:￤丨昻㈱№℡
+item 4: 漢 外字:ⅠⅡ①②

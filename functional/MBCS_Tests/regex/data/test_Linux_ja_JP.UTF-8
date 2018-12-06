@@ -1,0 +1,97 @@
+################################################################################
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# javac *.java
+
+SOURCE=$1
+
+echo "------------ Pattern matching test ------------"
+
+java SimpleGrep あいうえお ${SOURCE}
+echo "--- Confirm that the line(s) includes "あいうえお". "
+echo "--- Did you get the line(s) 11,12 and 49 ?"
+read word1
+
+java SimpleGrep "あ.*お" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "あ*お". "
+echo "--- Did you get the line(s) 11,12,49,50,52 and 54 ?"
+read word1
+
+java SimpleGrep "^漢" ${SOURCE}
+echo "--- Confirm that the line(s) starts with "漢"."
+echo "--- Did you get the line(s) 55,56 and 57 ?"
+read word1
+
+java SimpleGrep ｶﾅ ${SOURCE}
+echo "--- Confirm that the line(s) includes half-width Katakana "ｶﾅ". "
+echo "--- Did you get the line(s) 19,20 and 41 ?"
+read word1
+
+java SimpleGrep "＃" ${SOURCE}
+echo "--- Confirm that the line(s) includes "＃". "
+echo "--- Did you get the line(s) 24 and 64 ?"
+read word1
+
+java SimpleGrep "#" ${SOURCE}
+echo "--- Confirm that the line(s) includes "#". "
+echo "--- Did you get the line(s) 11,16,20,24,26 and 37 ?"
+read word1
+
+java SimpleGrep "鼻.*ソ" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "鼻.*ソ". "
+echo "--- Did you get the line 74 ?"
+read word1
+
+java SimpleGrep "\u3042\u304b\u3055" ${SOURCE}
+echo "--- Confirm that the line(s) includes "あかさ". "
+echo "--- Did you get the line 33 ?"
+read word1
+
+java SimpleGrep [仝☆Ж] ${SOURCE}
+echo "--- Confirm that the line(s) includes any of 仝,☆ or Ж. "
+echo "--- Did you get the line(s) 62,64 and 72 ?"
+read word1
+
+read word1
+echo ------------ Pattern replacement test ------------
+
+java RegexReplaceTest あいうえお aiueo ${SOURCE} -v
+echo "--- Confirm that "あいうえお" was replaced by "aiueo". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest ｶﾅ カタカナ ${SOURCE} -v
+echo "--- Confirm that "ｶﾅ" was replaced by "カタカナ". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "＃" "#" ${SOURCE} -v
+echo "--- Confirm that "＃" was replaced by "#". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "鼻.*ソ" "５ｃ文字列" ${SOURCE} -v
+echo "--- Confirm that "鼻.*ソ" was replaced by "５ｃ文字列". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "\u3042\u304b\u3055" "ソ躾" ${SOURCE} -v
+echo "--- Confirm that "あかさ" was replaced by "ソ躾". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest [仝☆Ж] 記号 ${SOURCE} -v
+echo "--- Confirm that any of "仝☆Ж" were replaced by "記号". "
+echo "--- OK ?"
+read word1
