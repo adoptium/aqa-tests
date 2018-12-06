@@ -50,6 +50,7 @@
 	</test>
 	
 	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
+	<!-- Temporarily exclude from AIX due to : https://github.com/eclipse/openj9/issues/3933 -->
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
@@ -69,7 +70,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^arch.arm</platformRequirements>
+		<platformRequirements>^arch.arm,^os.aix</platformRequirements>
 	</test>
 	
 	<test>
