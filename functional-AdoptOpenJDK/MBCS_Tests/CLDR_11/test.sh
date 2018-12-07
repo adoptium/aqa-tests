@@ -16,12 +16,12 @@
 BASE=`dirname $0`
 export BASE
 
-LANGTAG=`java -cp ${BASE}/CLDR_11.jar PrintLanguageTag`
+LANGTAG=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar PrintLanguageTag`
 export LANGTAG
 echo "Running ..."
-java -cp ${BASE}/CLDR_11.jar MainStarter
+${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar MainStarter
 
-java -cp ${BASE}/CLDR_11.jar CLDR11
+${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar CLDR11
 
 perl $BASE/tap_compare.pl
 RESULT=$?

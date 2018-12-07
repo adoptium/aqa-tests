@@ -17,8 +17,8 @@ BASE=`dirname $0`
 
 CP="-cp ${BASE}/codepoint.jar"
 
-java ${CP} UnicodeDataTest ${BASE}/data/UnicodeData-10.0.0.txt 2> err.txt
-java ${CP} UnihanCodePoint ${BASE}/data/UnicodeData-10.0.0.txt ${BASE}/data/Unihan_IRGSources-10.0.0.txt 2>>err.txt
+${JAVA_BIN}/java ${CP} UnicodeDataTest ${BASE}/data/UnicodeData-10.0.0.txt 2> err.txt
+${JAVA_BIN}/java ${CP} UnihanCodePoint ${BASE}/data/UnicodeData-10.0.0.txt ${BASE}/data/Unihan_IRGSources-10.0.0.txt 2>>err.txt
 
 if [ -s err.txt ]; then
   echo Test Failed

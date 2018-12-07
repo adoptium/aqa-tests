@@ -24,7 +24,7 @@ export CLASSPATH=${BASE}/env.jar
 
 . ${BASE}/../data/test_${FULLLANG}
 echo "invoking EnvTest" > ${OUTPUT}
-java EnvTest >> ${OUTPUT}
+${JAVA_BIN}/java EnvTest >> ${OUTPUT}
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

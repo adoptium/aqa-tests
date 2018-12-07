@@ -26,11 +26,10 @@ LOGFILE="test_log.txt"
 gzip -dc ${BASE}/data/${FULLLANG}.tar.gz | tar xf - 
 mkdir  work
 
-yes | java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} C > ${LOGFILE} 2>&1
-yes | java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} R >> ${LOGFILE} 2>&1
-yes | java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} D >> ${LOGFILE} 2>&1
+yes | ${JAVA_BIN}/java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} C > ${LOGFILE} 2>&1
+yes | ${JAVA_BIN}/java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} R >> ${LOGFILE} 2>&1
+yes | ${JAVA_BIN}/java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} D >> ${LOGFILE} 2>&1
 
 diff ${LOGFILE} ${BASE}/expected/${FULLLANG}.txt > diff.txt
 RESULT=$?
 exit ${RESULT}
-

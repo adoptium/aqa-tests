@@ -22,20 +22,19 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 . ${BASE}/../data/test_${FULLLANG}
 CP="-cp ${BASE}/coin.jar"
 
-java ${CP} SwitchTest > SwitchTest.code
-java SwitchTestCode > SwitchTest.log 2>&1
+${JAVA_BIN}/java ${CP} SwitchTest > SwitchTest.code
+${JAVA_BIN}/java SwitchTestCode > SwitchTest.log 2>&1
 
-java ${CP} BinaryIntegralTest > BinaryIntegralTest.log
+${JAVA_BIN}/java ${CP} BinaryIntegralTest > BinaryIntegralTest.log
 
-java ${CP} ExceptionTest > ExceptionTest.code
-java ExceptionTestCode > ExceptionTest.log 2>&1
+${JAVA_BIN}/java ${CP} ExceptionTest > ExceptionTest.code
+${JAVA_BIN}/java ExceptionTestCode > ExceptionTest.log 2>&1
 
-java ${CP} DiamondTest > DiamondTest.code
-java DiamondTestCode > DiamondTest.log 2>&1
+${JAVA_BIN}/java ${CP} DiamondTest > DiamondTest.code
+${JAVA_BIN}/java DiamondTestCode > DiamondTest.log 2>&1
 
-java ${CP} TryWithResourcesTest > TryWithResourcesTest.code
-java TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
+${JAVA_BIN}/java ${CP} TryWithResourcesTest > TryWithResourcesTest.code
+${JAVA_BIN}/java TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
 
-java ${CP} SimplifiedVarargsTest > SimplifiedVarargsTest.code
-java SimplifiedVarargsTestCode > SimplifiedVarargsTest.log 2>&1
-
+${JAVA_BIN}/java ${CP} SimplifiedVarargsTest > SimplifiedVarargsTest.code
+${JAVA_BIN}/java SimplifiedVarargsTestCode > SimplifiedVarargsTest.log 2>&1

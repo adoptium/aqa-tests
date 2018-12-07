@@ -42,10 +42,10 @@ $base = $FindBin::Bin."/";
 print "base ".$base."\n";
 $jar = "-cp ".$base."i18n.jar";
 
-system("java ".$jar." showlocale > result/showlocale.out");
-system("java ".$jar." DateFormatTest > result/DateFormatTest.out");
+system($ENV{'JAVA_BIN'}."/java ".$jar." showlocale > result/showlocale.out");
+system($ENV{'JAVA_BIN'}."/java ".$jar." DateFormatTest > result/DateFormatTest.out");
 
-system("java ".$jar." BreakIteratorTest ".$base.$FULLLANG.".txt > result/BreakIteratorTest.out");
+system($ENV{'JAVA_BIN'}."/java ".$jar." BreakIteratorTest ".$base.$FULLLANG.".txt > result/BreakIteratorTest.out");
 
 #
 # checking the results

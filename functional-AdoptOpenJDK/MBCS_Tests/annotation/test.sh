@@ -22,29 +22,28 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 cp ${BASE}/*.java .
 
-javac CheckValidData.java
+${JAVA_BIN}/javac CheckValidData.java
 
-TS=`java CheckValidData "${TEST_STRING}"`
+TS=`${JAVA_BIN}/java CheckValidData "${TEST_STRING}"`
 
 echo "creating source file..."
 sed "s/TEST_STRING/${TS}/g" DefineAnnotation_org.java > DefineAnnotation.java
 sed "s/TEST_STRING/${TS}/g"  AnnotatedTest_org.java >  AnnotatedTest.java
 
 echo "compiling..."
-javac DefineAnnotation.java AnnotationProcessor.java AnnotatedTest.java AnnotationProcessor7.java AnnotationProcessor8.java AnnotationProcessor11.java
+${JAVA_BIN}/javac DefineAnnotation.java AnnotationProcessor.java AnnotatedTest.java AnnotationProcessor7.java AnnotationProcessor8.java AnnotationProcessor11.java
 
 echo "execute javap"
-javap AnnotatedTest
+${JAVA_BIN}/javap AnnotatedTest
 
 echo "execute javac with processor option with RELEASE_6"
-javac -processor AnnotationProcessor AnnotatedTest.java
+${JAVA_BIN}/javac -processor AnnotationProcessor AnnotatedTest.java
 
 echo "execute javac with processor option with RELEASE_7"
-javac -processor AnnotationProcessor7 AnnotatedTest.java
+${JAVA_BIN}/javac -processor AnnotationProcessor7 AnnotatedTest.java
 
 echo "execute javac with processor option with RELEASE_8"
-javac -processor AnnotationProcessor8 AnnotatedTest.java
+${JAVA_BIN}/javac -processor AnnotationProcessor8 AnnotatedTest.java
 
 echo "execute javac with processor option with RELEASE_11"
-javac -processor AnnotationProcessor11 AnnotatedTest.java
-
+${JAVA_BIN}/javac -processor AnnotationProcessor11 AnnotatedTest.java

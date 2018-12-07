@@ -19,13 +19,13 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
 export CLASSPATH=${BASE}/codepage.jar
-ENCODING=`java showcode`
+ENCODING=`${JAVA_BIN}/java showcode`
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 
 
 . ${BASE}/../data/test_${FULLLANG}
-java conv ${BASE}/expected_${SOURCE} ${ENCODING} ./converted.txt ${ENCODING} 2>&1
+${JAVA_BIN}/java conv ${BASE}/expected_${SOURCE} ${ENCODING} ./converted.txt ${ENCODING} 2>&1
 diff ${BASE}/expected_${SOURCE} ./converted.txt > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

@@ -28,14 +28,14 @@ OUTPUT=${PWD}/result_${FULLLANG}.txt
 rm -f $OUTPUT
 
 echo "registering $TEST_STRING ..." >> $OUTPUT
-java PrefTest $TEST_STRING >> $OUTPUT
+${JAVA_BIN}/java PrefTest $TEST_STRING >> $OUTPUT
 
 echo "registered string" >> $OUTPUT
-java PrefTest -q >> $OUTPUT
+${JAVA_BIN}/java PrefTest -q >> $OUTPUT
 
 echo "removing ..." >> $OUTPUT
-java PrefTest -r >> $OUTPUT
-java PrefTest -q >> $OUTPUT
+${JAVA_BIN}/java PrefTest -r >> $OUTPUT
+${JAVA_BIN}/java PrefTest -q >> $OUTPUT
 
 perl $BASE/tap_compare.pl $OUTPUT ${BASE}/expected_${FULLLANG}.txt
 RESULT=$?

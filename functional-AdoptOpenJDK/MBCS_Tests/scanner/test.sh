@@ -21,7 +21,7 @@ echo $FULLLANG
 BASE=`dirname $0`
 
 . ${BASE}/../data/test_${FULLLANG}
-java -cp ${BASE}/scanner.jar ScannerTest ${TEST_STRINGS} > result 2>&1
+${JAVA_BIN}/java -cp ${BASE}/scanner.jar ScannerTest ${TEST_STRINGS} > result 2>&1
 
 diff result ${BASE}/expected/${FULLLANG}.txt
 RESULT=$?

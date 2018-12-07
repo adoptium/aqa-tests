@@ -27,12 +27,7 @@ OUTPUT=output.txt
 
 . ${BASE}/../data/test_${FULLLANG}
 echo "invoking FormatterTest2" > ${OUTPUT}
-java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
+${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}
-
-
-
-
-

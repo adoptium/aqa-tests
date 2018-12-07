@@ -28,8 +28,7 @@ OUTPUT=output.html
 
 
 . ${BASE}/../data/test_${FULLLANG}
-java XSLTTest ${BASE}/drinks_${LOC2}.xml ${BASE}/drinks_${LOC2}.xsl > ${OUTPUT}
+${JAVA_BIN}/java XSLTTest ${BASE}/drinks_${LOC2}.xml ${BASE}/drinks_${LOC2}.xsl > ${OUTPUT}
 diff ${BASE}/expected_${LOC2}.html ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}
-

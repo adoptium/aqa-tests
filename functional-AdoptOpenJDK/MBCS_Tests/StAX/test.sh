@@ -41,7 +41,7 @@ if [ -f write_event.xml ] ; then
 	rm -f write_event.xml
 fi
 
-java ${CP} StAXReadCursor ${BASE}/data/drinks_${COUNTRY}.xml >read_cursor.html 2>&1
-java ${CP} StAXReadEveIter ${BASE}/data/drinks_${COUNTRY}.xml >read_event.html 2>&1
-java ${CP} StAXWriteCursor $TEST_STRINGS
-java ${CP} StAXWriteEveIter $TEST_STRINGS
+${JAVA_BIN}/java ${CP} StAXReadCursor ${BASE}/data/drinks_${COUNTRY}.xml >read_cursor.html 2>&1
+${JAVA_BIN}/java ${CP} StAXReadEveIter ${BASE}/data/drinks_${COUNTRY}.xml >read_event.html 2>&1
+${JAVA_BIN}/java ${CP} StAXWriteCursor $TEST_STRINGS
+${JAVA_BIN}/java ${CP} StAXWriteEveIter $TEST_STRINGS

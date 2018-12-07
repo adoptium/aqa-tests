@@ -28,14 +28,13 @@ rm -rf tmp
 mkdir tmp
 cd tmp
 . ${BASE}/../data/test_${FULLLANG}
-TS=`java CheckValidData "${TEST_STRING}"`
+TS=`${JAVA_BIN}/java CheckValidData "${TEST_STRING}"`
 JAVAFILE=${TS}.java
 sed "s/TEST_STRING/${TS}/g" ${BASE}/class_org.java > ${JAVAFILE}
 echo "lauching CompilerTest1..." > ${OUTPUT}
-java CompilerTest1 ${JAVAFILE} >> ${OUTPUT}
+${JAVA_BIN}/java CompilerTest1 ${JAVAFILE} >> ${OUTPUT}
 cd ..
 
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}
-

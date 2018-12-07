@@ -31,7 +31,7 @@ do
 	echo >> ${OUTPUT}
 	echo ${j} >> ${OUTPUT}
 	
-	java IDNFromFile $i
+	${JAVA_BIN}/java IDNFromFile $i
 	
 	mv toAscii.txt ${i}_toAscii
         cat ${i}_toAscii >> ${OUTPUT}
@@ -47,10 +47,10 @@ done
 . ${BASE}/setup_${FULLLANG}
 echo "URL=http://${TEST_HOSTNAME}" >> ${OUTPUT}
 echo "converting URL from UNICODE to ACE..." >> ${OUTPUT}
-TOASCII=`java IDNtoASCII ${TEST_HOSTNAME}`
+TOASCII=`${JAVA_BIN}/java IDNtoASCII ${TEST_HOSTNAME}`
 echo "ACE=http://${TOASCII}"  >> ${OUTPUT}
 echo "converting URL from ACE to UNICODE..."  >> ${OUTPUT}
-TOUNICODE=`java IDNtoUNICODE ${TOASCII}`
+TOUNICODE=`${JAVA_BIN}/java IDNtoUNICODE ${TOASCII}`
 echo "UNICODE=http://${TOUNICODE}"  >> ${OUTPUT}
 
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1

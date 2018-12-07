@@ -30,7 +30,7 @@ my @list=(
 
 foreach my $target(@list){
     my $flag = false;
-    system("java ".$jar." ".$target." > ".$target.".log 2>&1");
+    system($ENV{'JAVA_BIN'}."/java ".$jar." ".$target." > ".$target.".log 2>&1");
     open(DATA, "< ".$target.".log");
     while (my $line = <DATA>) {
         chomp($line);

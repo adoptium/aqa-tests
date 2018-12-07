@@ -38,11 +38,11 @@ CP="-cp ${BASE}/jdbc41.jar:${DERBY_JAR}"
 TEST_STRING=`echo "$TEST_STRING" | sed -e 's/://g'`
 TEST_STRINGS=`echo "$TEST_STRINGS" | sed -e 's/://g'`
 
-java ${CP} jdbc41autoclose ${TEST_STRINGS} > out_auto.txt 2>&1
+${JAVA_BIN}/java ${CP} jdbc41autoclose ${TEST_STRINGS} > out_auto.txt 2>&1
 
-#java ${CP} jdbc41RowSetProvider > out_row.txt 2>&1
+#${JAVA_BIN}/java ${CP} jdbc41RowSetProvider > out_row.txt 2>&1
 
-java ${CP} jdbc41droptb > out_drop.txt 2>&1
+${JAVA_BIN}/java ${CP} jdbc41droptb > out_drop.txt 2>&1
 
 RESULT=0
 diff out_auto.txt ${BASE}/expected/${FULLLANG}_auto.txt > diff.txt
