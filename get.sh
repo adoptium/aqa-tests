@@ -235,6 +235,9 @@ getTestKitGenAndFunctionalTestMaterial()
 	mv openj9/test/Utils Utils
 	mv openj9/test/functional functional
 	rm -rf openj9
+    if [ -d functional-AdoptOpenJDK ]; then
+        mv functional-AdoptOpenJDK/* functional
+    fi
 
 	if [ "$VENDOR_REPOS" != "" ]; then
 		declare -a vendor_repos_array
