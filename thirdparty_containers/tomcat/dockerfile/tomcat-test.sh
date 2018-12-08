@@ -49,7 +49,7 @@ cd /tomcat85
 ls .
 pwd
 echo "Building tomcat" && \
-git checkout TOMCAT_8_5_24 && \
+git checkout TOMCAT_8_5_30 && \
 cp build.properties.default build.properties && \
 ant && \
 
