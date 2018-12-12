@@ -76,21 +76,22 @@
 				</exec>
 			</then>
 		</if>
-		<property name="gitCmd" value="clone --depth 1 -q ${gitReleaseTag} https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
-		<echo>Run git cmd: ${gitCmd}</echo>
-		<exec executable="git" failonerror="false">
-			<arg line="${gitCmd}" />
-		</exec>
-		<move file="${openjdkGit}" tofile="openjdk-jdk"/>
 		<if>
-                        <or>
-			  <equals arg1="${JVM_VERSION}" arg2="openjdk10-openj9"/>
-			  <equals arg1="${JVM_VERSION}" arg2="openjdk11-openj9"/>
-                        </or>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<copy file="${src}/${JVM_VERSION}/TEST.ROOT" todir="${src}/openjdk-jdk/test/jdk" overwrite="true"/>
+				<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+				<property name="regressionRepo" value="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git" />
 			</then>
+			<else>
+				<property name="jdkName" value="${openjdkGit}" />
+				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
+			</else>
 		</if>
+		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
+		<exec executable="git" failonerror="false">
+			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
+		</exec>
+		<move file="${jdkName}" tofile="openjdk-jdk"/>
 	</target>
 	
 	<target name="openjdk-jdk.check">
