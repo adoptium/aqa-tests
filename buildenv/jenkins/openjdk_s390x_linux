@@ -1,5 +1,11 @@
 #!groovy
-LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux'
+
+
+if (params.DOCKER_REQUIRED) {
+    LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux&&sw.tool.docker'
+} else {
+    LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux'
+}
 
 node ("master") {
     checkout scm
