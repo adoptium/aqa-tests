@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>payara_microprofile_tck</testCaseName>
-		<command>docker run -v $(JDK_HOME):/java --name payara-mp-tck adoptopenjdk-payara-mp-tck:latest; \
+		<command>docker run --name payara-mp-tck adoptopenjdk-payara-mp-tck:latest; \
 			 $(TEST_STATUS); \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-Metrics/tck-runner/target/surefire-reports $(REPORTDIR)/external_test_reports; \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-Fault-Tolerance/tck-runner/target/surefire-reports/junitreports $(REPORTDIR)/external_test_reports; \
