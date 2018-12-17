@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
-		<command>docker run -v $(JDK_HOME):/java --name openliberty-mp-tck adoptopenjdk-openliberty-mp-tck:latest; \
+		<command>docker run --name openliberty-mp-tck adoptopenjdk-openliberty-mp-tck:latest; \
 			$(TEST_STATUS); \
 			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.metrics.1.1_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
 			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
