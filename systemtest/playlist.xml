@@ -2793,7 +2793,8 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<!-- Temporarily exclude from Linux for: https://github.com/eclipse/openj9/issues/3491 -->
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx,^arch.x86</platformRequirements>
 	</test>
 	
 	<test>
