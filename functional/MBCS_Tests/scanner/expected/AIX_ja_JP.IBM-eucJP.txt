@@ -1,0 +1,39 @@
+
+Tokenizing Test:
+
+test string: 戳机山绩墙蜗 戳 カナ幎幣ＫａｎａKana 戳 淡规:\~”〗±×÷∧≥★●◎⑻ 戳 嘲机:彚脧癌忯稄蠓忬笍蠊 戳 嘲机:忬珡蟋忬瓘螽
+delimiter: (space)
+item 1: 戳机山绩墙蜗
+item 2: 戳
+item 3: カナ幎幣ＫａｎａKana
+item 4: 戳
+item 5: 淡规:\~”〗±×÷∧≥★●◎⑻
+item 6: 戳
+item 7: 嘲机:彚脧癌忯稄蠓忬笍蠊
+item 8: 戳
+item 9: 嘲机:忬珡蟋忬瓘螽
+
+test string: 戳机山绩墙蜗 戳 カナ幎幣ＫａｎａKana 戳 淡规:\~”〗±×÷∧≥★●◎⑻ 戳 嘲机:彚脧癌忯稄蠓忬笍蠊 戳 嘲机:忬珡蟋忬瓘螽
+delimiter: 戳
+item 1: 机山绩墙蜗
+item 2: カナ幎幣ＫａｎａKana
+item 3: 淡规:\~”〗±×÷∧≥★●◎⑻
+item 4: 嘲机:彚脧癌忯稄蠓忬笍蠊
+item 5: 嘲机:忬珡蟋忬瓘螽
+
+Pattern Matching Test:
+
+test string: 戳机山绩墙蜗 戳 カナ幎幣ＫａｎａKana 戳 淡规:\~”〗±×÷∧≥★●◎⑻ 戳 嘲机:彚脧癌忯稄蠓忬笍蠊 戳 嘲机:忬珡蟋忬瓘螽
+pattern: 戳[^ ]*
+item 1: 戳机山绩墙蜗
+item 2: 戳
+item 3: 戳
+item 4: 戳
+item 5: 戳
+
+test string: 戳机山绩墙蜗 戳 カナ幎幣ＫａｎａKana 戳 淡规:\~”〗±×÷∧≥★●◎⑻ 戳 嘲机:彚脧癌忯稄蠓忬笍蠊 戳 嘲机:忬珡蟋忬瓘螽
+pattern: 戳 [^ ]*
+item 1: 戳 カナ幎幣ＫａｎａKana
+item 2: 戳 淡规:\~”〗±×÷∧≥★●◎⑻
+item 3: 戳 嘲机:彚脧癌忯稄蠓忬笍蠊
+item 4: 戳 嘲机:忬珡蟋忬瓘螽

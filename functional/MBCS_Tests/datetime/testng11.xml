@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="DateTime" parallel="none" verbose="2">
+	<test name="dateTest">
+		<classes>
+			<class name="LocalDateTest"/>
+			<class name="LocalTimeTest"/>
+			<class name="LocalDateTimeTest"/>
+			<class name="ChronoTest"/>
+			<class name="ZonedDateTimeTest"/>
+			<class name="FormatTest"/>
+			<class name="FormatterBuilderTest"/>
+			<class name="FileTest"/>
+			<class name="JapaneseDateTest"/>
+			<class name="MinguoChronoTest"/>
+			<class name="MinguoDateTest"/>
+		</classes>
+	</test>
+	<test name="dateTest11">
+		<classes>
+                        <class name="JapaneseChronoTest"/>
+			<class name="FormatTest_ja_jp"/>
+			<class name="FormatTest_ko_kr"/>
+			<class name="FormatTest_zh_tw"/>
+			<class name="FormatTest_zh_cn"/>
+			<class name="FormatterBuilderTest_ja_jp"/>
+		</classes>
+	</test>
+</suite>

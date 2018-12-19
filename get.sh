@@ -233,7 +233,13 @@ getTestKitGenAndFunctionalTestMaterial()
 
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
-	mv openj9/test/functional functional
+    if [ -d functional ]; then
+        cd openj9/test/functional
+        find . -print | cpio -pdm ../../../functional
+        cd ../../..
+    else
+	    mv openj9/test/functional functional
+    fi
 	rm -rf openj9
 
 	if [ "$VENDOR_REPOS" != "" ]; then

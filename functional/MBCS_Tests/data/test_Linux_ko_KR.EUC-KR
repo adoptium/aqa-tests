@@ -1,0 +1,31 @@
+#!/bin/ksh
+# (1) Hangul Compatibility Jamo
+#    
+#    ¤¡¤¤¤§¤©¤±¤²¤µ¤·¤¸¤º¤»¤¼¤½¤¾¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð¤Ñ¤Ó¤þ
+#    ¤¡¤¤¤§¤©¤±¤²¤µ¤·¤¸¤º¤»¤¼¤½¤¾¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð¤Ñ¤Ó¤þ
+export TEST_STRING1=¤¡¤¤¤§¤©¤±¤²¤µ¤·¤¸¤º¤»¤¼¤½¤¾¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð¤Ñ¤Ó¤þ
+
+# (2) Enclosed CJK Letters and Months
+#    
+#    ©±©²©³©´©µ©¶©·©¿©À©Á©Â©Ã©Ä©Å¢ß¨±¨²¨³¨´¨µ¨¶¨·¢Þ
+#    ©±©²©³©´©µ©¶©·©¿©À©Á©Â©Ã©Ä©Å¢ß¨±¨²¨³¨´¨µ¨¶¨·¢Þ
+export TEST_STRING2=©±©²©³©´©µ©¶©·©¿©À©Á©Â©Ã©Ä©Å¢ß¨±¨²¨³¨´¨µ¨¶¨·¢Þ
+
+# (3) Hangul Syllables
+#    
+#    ÇÑ±¹ÀÏº»°¡´ëº£¾ÖÄÉÈÌ
+#    ÇÑ±¹ÀÏº»°¡´ëº£¾ÖÄÉÈÌ
+export TEST_STRING3=ÇÑ±¹ÀÏº»°¡´ëº£¾ÖÄÉÈÌ
+
+# (4) ùÓí®
+#    
+#    ùÛÏÐìíÜâÊ¡Ê¢Ê£Ê¤ýûýüýýýþ
+#    ùÛÏÐìíÜâÊ¡Ê¢Ê£Ê¤ýûýüýýýþ
+export TEST_STRING4=ùÛÏÐìíÜâÊ¡Ê¢Ê£Ê¤ýûýüýýýþ
+
+export HTML_CHARSET=EUC-KR
+export TEST_STRING=¤¡¤¤¤§¤¿¤Á¤Ã©±©²©³ÇÑ±¹ÀÏº»ùÛÏÐìíÜâ
+export TEST_STRING_SED=$TEST_STRING
+export TEST_STRINGS=$TEST_STRING1" "$TEST_STRING2" "$TEST_STRING3" "$TEST_STRING4
+export TEST_STRINGS_SED=$TEST_STRINGS
+

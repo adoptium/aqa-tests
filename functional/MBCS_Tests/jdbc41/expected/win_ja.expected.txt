@@ -1,0 +1,26 @@
+LOCALE = ja
+JDBC41_TABLE_NAME = テーブル
+JDBC41_CNAME = 名前
+"Compiling ..."
+--- Create Table and Insert test data in JavaDB.
+Execute CREATE TABLE.
+INSERT INTO テーブル (名前) VALUES ('漢字表示能力')
+INSERT INTO テーブル (名前) VALUES ('カナｶﾅＫａｎａKana')
+INSERT INTO テーブル (名前) VALUES ('記号:\~￣―＼～∥…－￥￠￡￢')
+INSERT INTO テーブル (名前) VALUES ('外字:￤丨昂㈱№℡')
+INSERT INTO テーブル (名前) VALUES ('外字:ⅠⅡ①②⑩⑳')
+=== AutoClose is called. ===
+Execute SELECT by jdbc41autoclose.
+1,漢字表示能力
+2,カナｶﾅＫａｎａKana
+3,記号:\~￣―＼～∥…－￥￠￡￢
+4,外字:￤丨昂㈱№℡
+5,外字:ⅠⅡ①②⑩⑳
+Execute SELECT by jdbc41RowSetProvider.
+1,漢字表示能力
+2,カナｶﾅＫａｎａKana
+3,記号:\~￣―＼～∥…－￥￠￡￢
+4,外字:￤丨昂㈱№℡
+5,外字:ⅠⅡ①②⑩⑳
+--- Drop table in JavaDB.
+Execute DROP TABLE.

@@ -1,0 +1,86 @@
+------------ Pattern matching test ------------
+11:    #java SimpleGrep あいうえお EUC-JP.txt
+12: ひらがな文字列「あいうえお」を含む行が、正しく抽出されましたか？
+49: あいうえお
+--- Confirm that the line(s) includes あいうえお. 
+--- Did you get the line(s) 11,12 and 49 ?
+11:    #java SimpleGrep あいうえお EUC-JP.txt
+12: ひらがな文字列「あいうえお」を含む行が、正しく抽出されましたか？
+49: あいうえお
+50: あいうぇお
+52: あイウえお
+54: 新年あけましておめでとうございます
+--- Confirm that the line(s) includes the pattern あ*お. 
+--- Did you get the line(s) 11,12,49,50,52 and 54 ?
+55: 漢字文字列表示試験
+56: 漢方薬
+57: 漢和辞典
+--- Confirm that the line(s) starts with 漢.
+--- Did you get the line(s) 55,56 and 57 ?
+19: 半角ｶﾀｶﾅを見てみましょう。
+20:    #java SimpleGrep ｶﾅ EUC-JP.txt
+41: 字表示能力試験文字列」のような漢字の文字列や、「かなカナｶﾅKan
+--- Confirm that the line(s) includes half-width Katakana ｶﾅ. 
+--- Did you get the line(s) 19,20 and 41 ?
+24:    #java SimpleGrep "＃" EUC-JP.txt
+64: ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+--- Confirm that the line(s) includes ＃. 
+--- Did you get the line(s) 24 and 64 ?
+11:    #java SimpleGrep あいうえお EUC-JP.txt
+16:    #java SimpleGrep "^漢字" EUC-JP.txt
+20:    #java SimpleGrep ｶﾅ EUC-JP.txt
+24:    #java SimpleGrep "＃" EUC-JP.txt
+26:    #java SimpleGrep "#" EUC-JP.txt
+37:      #java SimpleGrep "\u3042\u304b\u3055\u305f\u306a" EUC-JP.txt
+--- Confirm that the line(s) includes #. 
+--- Did you get the line(s) 11,16,20,24,26 and 37 ?
+74: 機鼻隋ァ充房畆Ъ噂能臀ソ云脳訃ゾ運真躾／神点臉Ю
+--- Confirm that the line(s) includes the pattern 鼻.*ソ. 
+--- Did you get the line 74 ?
+33: なっています。たとえば、ひらがな「あかさたな」を Unicode シー
+--- Confirm that the line(s) includes あかさ. 
+--- Did you get the line 33 ?
+62: 　、。，．・：；？！゛゜´｀¨＾￣＿ヽヾゝゞ〃仝々〆〇ー—‐／＼
+64: ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that the line(s) includes any of 仝,☆ or Ж. 
+--- Did you get the line(s) 62,64 and 72 ?
+------------ Pattern replacement test ------------
+11:    #java SimpleGrep あいうえお EUC-JP.txt
+==>    #java SimpleGrep aiueo EUC-JP.txt
+12: ひらがな文字列「あいうえお」を含む行が、正しく抽出されましたか？
+==> ひらがな文字列「aiueo」を含む行が、正しく抽出されましたか？
+49: あいうえお
+==> aiueo
+--- Confirm that あいうえお was replaced by aiueo. 
+--- OK ?
+19: 半角ｶﾀｶﾅを見てみましょう。
+==> 半角ｶﾀカタカナを見てみましょう。
+20:    #java SimpleGrep ｶﾅ EUC-JP.txt
+==>    #java SimpleGrep カタカナ EUC-JP.txt
+41: 字表示能力試験文字列」のような漢字の文字列や、「かなカナｶﾅKan
+==> 字表示能力試験文字列」のような漢字の文字列や、「かなカナカタカナKan
+--- Confirm that ｶﾅ was replaced by カタカナ. 
+--- OK ?
+24:    #java SimpleGrep "＃" EUC-JP.txt
+==>    #java SimpleGrep "#" EUC-JP.txt
+64: ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％#＆＊＠§☆★○●◎◇◆□■
+--- Confirm that ＃ was replaced by #. 
+--- OK ?
+74: 機鼻隋ァ充房畆Ъ噂能臀ソ云脳訃ゾ運真躾／神点臉Ю
+==> 機５ｃ文字列云脳訃ゾ運真躾／神点臉Ю
+--- Confirm that 鼻.*ソ was replaced by ５ｃ文字列. 
+--- OK ?
+33: なっています。たとえば、ひらがな「あかさたな」を Unicode シー
+==> なっています。たとえば、ひらがな「ソ躾たな」を Unicode シー
+--- Confirm that あかさ was replaced by ソ躾. 
+--- OK ?
+62: 　、。，．・：；？！゛゜´｀¨＾￣＿ヽヾゝゞ〃仝々〆〇ー—‐／＼
+==> 　、。，．・：；？！゛゜´｀¨＾￣＿ヽヾゝゞ〃記号々〆〇ー—‐／＼
+64: ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§記号★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+==> АБВГДЕЁ記号ЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that any of 仝☆Ж were replaced by 記号. 
+--- OK ?

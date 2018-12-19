@@ -1,0 +1,98 @@
+#!/bin/ksh
+################################################################################
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# javac *.java
+
+SOURCE=$1
+
+echo "------------ Pattern matching test ------------"
+
+java SimpleGrep Ç†Ç¢Ç§Ç¶Ç® ${SOURCE}
+echo "--- Confirm that the line(s) includes "Ç†Ç¢Ç§Ç¶Ç®". "
+echo "--- Did you get the line(s) 11,12 and 49 ?"
+read word1
+
+java SimpleGrep "Ç†.*Ç®" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "Ç†*Ç®". "
+echo "--- Did you get the line(s) 11,12,49,50,52 and 54 ?"
+read word1
+
+java SimpleGrep "^äø" ${SOURCE}
+echo "--- Confirm that the line(s) starts with "äø"."
+echo "--- Did you get the line(s) 55,56 and 57 ?"
+read word1
+
+java SimpleGrep ∂≈ ${SOURCE}
+echo "--- Confirm that the line(s) includes half-width Katakana "∂≈". "
+echo "--- Did you get the line(s) 19,20 and 41 ?"
+read word1
+
+java SimpleGrep "Åî" ${SOURCE}
+echo "--- Confirm that the line(s) includes "Åî". "
+echo "--- Did you get the line(s) 24 and 64 ?"
+read word1
+
+java SimpleGrep "#" ${SOURCE}
+echo "--- Confirm that the line(s) includes "#". "
+echo "--- Did you get the line(s) 11,16,20,24,26 and 37 ?"
+read word1
+
+java SimpleGrep "ï@.*É\" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "ï@.*É\". "
+echo "--- Did you get the line 74 ?"
+read word1
+
+java SimpleGrep "\u3042\u304b\u3055" ${SOURCE}
+echo "--- Confirm that the line(s) includes "Ç†Ç©Ç≥". "
+echo "--- Did you get the line 33 ?"
+read word1
+
+java SimpleGrep [ÅWÅôÑG] ${SOURCE}
+echo "--- Confirm that the line(s) includes any of ÅW,Åô or ÑG. "
+echo "--- Did you get the line(s) 62,64 and 72 ?"
+read word1
+
+read word1
+echo ------------ Pattern replacement test ------------
+
+java RegexReplaceTest Ç†Ç¢Ç§Ç¶Ç® aiueo ${SOURCE} -v
+echo "--- Confirm that "Ç†Ç¢Ç§Ç¶Ç®" was replaced by "aiueo". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest ∂≈ ÉJÉ^ÉJÉi ${SOURCE} -v
+echo "--- Confirm that "∂≈" was replaced by "ÉJÉ^ÉJÉi". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "Åî" "#" ${SOURCE} -v
+echo "--- Confirm that "Åî" was replaced by "#". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "ï@.*É\" "ÇTÇÉï∂éöóÒ" ${SOURCE} -v
+echo "--- Confirm that "ï@.*É\" was replaced by "ÇTÇÉï∂éöóÒ". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "\u3042\u304b\u3055" "É\Á^" ${SOURCE} -v
+echo "--- Confirm that "Ç†Ç©Ç≥" was replaced by "É\Á^". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest [ÅWÅôÑG] ãLçÜ ${SOURCE} -v
+echo "--- Confirm that any of "ÅWÅôÑG" were replaced by "ãLçÜ". "
+echo "--- OK ?"
+read word1
