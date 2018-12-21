@@ -12,12 +12,14 @@ node ("master") {
 	cleanWs()
 }
 
-node("$LABEL") {
-    PLATFORM = 'x64_windows'
-    JAVA_VERSION = 'SE80'
-    SDK_RESOURCE = 'upstream'
-    SPEC='win_x86'
-    checkout scm
-    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.testBuild()
+stage('Queue') {
+    node("$LABEL") {
+        PLATFORM = 'x64_windows'
+        JAVA_VERSION = 'SE80'
+        SDK_RESOURCE = 'upstream'
+        SPEC='win_x86'
+        checkout scm
+        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
 }
