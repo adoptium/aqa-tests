@@ -2745,7 +2745,7 @@
 	</test>
 	<!-- Tests above pertain to Java 9 Modularity -->
 
-	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux and x/Linux using 64-bit OpenJ9 SDK -->	
+	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
 		<testCaseName>ClassLoadingTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -2768,7 +2768,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2794,7 +2794,7 @@
 			<impl>openj9</impl>
 		</impls>
 		<!-- Temporarily exclude from Linux for: https://github.com/eclipse/openj9/issues/3491 -->
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx,^arch.x86</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx,^arch.x86</platformRequirements>
 	</test>
 	
 	<test>
@@ -2819,7 +2819,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2845,7 +2845,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2871,7 +2871,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>DaaLoadTest_daa1_ConcurrentScavenge</testCaseName>
@@ -2896,7 +2896,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2922,7 +2922,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2948,7 +2948,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2973,7 +2973,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 	</test>
 	
 	<test>
@@ -2998,7 +2998,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/75</disabled>
 	</test>
 	
@@ -3024,7 +3024,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/78</disabled>
 	</test>
 	
@@ -3050,8 +3050,8 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.win,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/64</disabled>
 	</test>
-	<!-- The above tests are to be run using concurrentScavenge on z/OS and z/Linux using OpenJ9 SDK -->
+	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 </playlist>
