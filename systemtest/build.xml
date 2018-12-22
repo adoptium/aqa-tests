@@ -64,9 +64,8 @@
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
-			<arg value="-b" />
-			<arg value="temporarilyExcludeModTestFromWindows"/>
-			<arg value="${git-prefix}://github.com/Mesbah-Alam/openjdk-systemtest.git" />
+			<arg value="--single-branch" />
+			<arg value="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
 		</exec>
 		<if>
 			<isset property="isZOS" />
