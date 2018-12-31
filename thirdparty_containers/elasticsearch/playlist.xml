@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>elasticsearch_test</testCaseName>
-		<command>docker run --name elasticsearch-test adoptopenjdk-elasticsearch-test:latest; \
+		<command>docker run --name elasticsearch-test--rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest; \
 			$(TEST_STATUS); \
 			docker cp elasticsearch-test:/elasticsearch/core/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
 			docker cp elasticsearch-test:/elasticsearch/modules/transport-netty4/build/reports/testJunit $(REPORTDIR)/external_test_reports; \

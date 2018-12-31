@@ -18,7 +18,7 @@
 	-->
 	<test>
 		<testCaseName>example_test</testCaseName>
-	<command>docker run --rm adoptopenjdk-example-test:latest ; \
+	<command>docker run --rm --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-example-test:latest ; \
 		$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
