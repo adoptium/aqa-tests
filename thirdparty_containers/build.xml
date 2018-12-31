@@ -22,6 +22,8 @@
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers" />
+	<property name="MOUNT_JDK" value="-v ${JDK_HOME}:/java" />
+	<property name="EXTRA_DOCKER_ARGS" value="${MOUNT_JDK}" />
 
 	<target name="init" depends="docker_prune">
 		<mkdir dir="${DEST}" />
