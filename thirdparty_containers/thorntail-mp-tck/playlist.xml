@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>thorntail_microprofile_tck</testCaseName>
-		<command>docker run --name thorntail-mp-tck adoptopenjdk-thorntail-mp-tck:latest; \
+		<command>docker run --name thorntail-mp-tck --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-thorntail-mp-tck:latest; \
 			 $(TEST_STATUS); \
 			 docker cp thorntail-mp-tck:/thorntail/testsuite/testsuite-microprofile-metrics/target/surefire-reports $(REPORTDIR)/external_test_reports; \
 			 docker cp thorntail-mp-tck:/thorntail/testsuite/testsuite-microprofile-fault-tolerance/target/surefire-reports $(REPORTDIR)/external_test_reports; \
