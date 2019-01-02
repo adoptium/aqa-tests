@@ -26,6 +26,9 @@ ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
+## Kafka 2.1 branch, 2.1.0 release
+ARG KAFKA_VERSION="809be928f1ae004e11d65c307ea322bef126c834"
+
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 # Install test dependent executable files
@@ -45,10 +48,10 @@ RUN apt-get update \
 #Install Gradle
 RUN mkdir -p /usr/share/gradle \
          && cd /usr/share/gradle \
-         && wget -q https://services.gradle.org/distributions/gradle-4.5-bin.zip \
-         && unzip -qq gradle-4.5-bin.zip \
-         && rm -rf gradle-4.5-bin.zip \
-         && ln -s /usr/share/gradle/gradle-4.5/bin/gradle /usr/bin/gradle \
+         && wget -q https://services.gradle.org/distributions/gradle-5.0-bin.zip \
+         && unzip -qq gradle-5.0-bin.zip \
+         && rm -rf gradle-5.0-bin.zip \
+         && ln -s /usr/share/gradle/gradle-5.0/bin/gradle /usr/bin/gradle \
          && cd /
 
 RUN cd .
@@ -66,6 +69,9 @@ WORKDIR /
 RUN pwd
 
 RUN git clone https://github.com/apache/kafka.git
+WORKDIR kafka
+RUN git checkout $KAFKA_VERSION
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/kafka-test.sh"]
 CMD ["--version"]
