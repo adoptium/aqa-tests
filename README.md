@@ -55,7 +55,7 @@ Functional tests not originating from the openjdk regression suite, that include
 --- 
 
 ##### jck tests - Compliance tests
-TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement, are run on a private Jenkins server
+TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement.  While this test material is currently not run at the AdoptOpenJDK project (see the [support statement](https://adoptopenjdk.net/support.html#jck) for details), those with their own OCTLA agreements may use the AdoptOpenJDK test automation infrastructure to execute their TCK test material in their own private Jenkins servers.
 
 --- 
 
