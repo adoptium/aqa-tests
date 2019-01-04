@@ -97,3 +97,73 @@ For example, for this excerpt from a playlist:
 		...
 ```
 you will be able to run 'make scala_test' to execute the test.
+
+### Examples
+
+#### Sanity check an upstream JDK 8u patch
+
+Consider you are an upstream OpenJDK developer on Linux x86_64, and you'd like to run OpenJDK sanity tests locally on a patch for OpenJDK 8. Let the OpenJDK checkout be at `openjdk-jdk8u`, you've produced
+a *fastdebug* build and would like to run the regression test suite, `_sanity.openjdk` on it.
+
+```
+$ OPENJDK_SOURCES="$(pwd)/openjdk-jdk8u"
+$ OPENJDK_BUILD=$OPENJDK_SOURCES/build/linux-x86_64-normal-server-fastdebug/images/j2sdk-image
+$ tmpdir=$(mktemp -d)
+$ pushd $tmpdir
+$ git clone https://github.com/AdoptOpenJDK/openjdk-tests
+$ cd openjdk-tests
+$ TOP_DIR=$(pwd)
+$ TEST_DIR="$TOP_DIR"
+$ pushd openjdk_regression
+$ ln -s $OPENJDK_SOURCES openjdk-jdk
+$ popd
+$ export JAVA_BIN=$OPENJDK_BUILD/jre/bin
+$ export SPEC=linux_x86-64
+$ export JDK_IMPL=hotspot
+$ export BUILD_LIST=openjdk_regression
+$ export BUILD_ROOT=$TOP_DIR/test-results
+$ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
+$ ./get.sh -t $TEST_DIR
+$ ./maketest.sh $TEST_DIR
+$ OPENJDK_DIR=$OPENJDK_SOURCES ./maketest.sh $TEST_DIR _sanity.openjdk
+$ popd
+$ echo "openjdk-tests located at $tmpdir/openjdk-tests"
+
+```
+
+If all goes well, this should run sanity JTREG OpenJDK tests on your hotspot JDK 8 build and all of them should be passing. Output will then look like this:
+
+```
+[...]
+
+TEST TARGETS SUMMARY
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PASSED test targets:
+	jdk_io_0
+	jdk_lang_0
+	jdk_math_0
+	jdk_math_jre_0
+	jdk_net_0
+	jdk_nio_0
+	jdk_security1_0
+	jdk_util_0
+	jdk_rmi_0
+
+TOTAL: 9   EXECUTED: 9   PASSED: 9   FAILED: 0   SKIPPED: 0
+ALL TESTS PASSED
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+_sanity.openjdk done
+
+[...]
+```
+
+Additional test output can be found in the following folders:
+
+```
+openjdk-tests/test-results/openjdk_regression/TestConfig/test_output_<timestamp>`
+openjdk-tests/test-results/openjdk_regression/work
+openjdk-tests/test-results/openjdk_regression/report
+```
+
+The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk_regression/report/html/index.html`
