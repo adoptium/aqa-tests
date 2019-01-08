@@ -23,6 +23,62 @@
 		</groups>
 	</test>
 	
+	<test>
+		<testCaseName>ClassLoadingTest_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode108</variation>
+			<variation>Mode109</variation>
+			<variation>Mode109-CS</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode159</variation>
+			<variation>Mode159-CS</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode550</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=ClassloadingLoadTest; \
+	$(TEST_STATUS)</command> 
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	
 	<!-- Excluding the following test for OpenJDK10 and 11 builds. See AdoptOpenJDK/openjdk-systemtest/issues/87 for details -->
 	<test>
 		<testCaseName>ConcurrentLoadTest</testCaseName>
@@ -132,6 +188,28 @@
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<platformRequirements>^arch.arm</platformRequirements>
+	</test>
+
+	<test>
+		<testCaseName>NioLoadTest_special</testCaseName>
+		<variations>
+			<variation>Mode110</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  && \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=NioLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>system</group>
