@@ -221,16 +221,14 @@ def buildTest() {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
 
-			echo 'Running tests...'
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-					makeTest("./openjdk-tests");
+					sh "./openjdk-tests/maketest.sh ./openjdk-tests";
 				}
 			} else {
-				makeTest("./openjdk-tests");
-			}	
-			
+				sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+			}
 		}
 	}
 }
