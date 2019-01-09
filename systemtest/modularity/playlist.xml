@@ -3,8 +3,6 @@
 	<include>../systemtest.mk</include>
 
 	<!-- Tests below pertain to Java 9 Modularity -->
-	<!-- All modularity tests will not be included for testing JDK11 due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/150 -->
-	<!-- Temporarily exclude all modularity tests on Windows due to test compile issue on Windows : https://github.com/eclipse/openj9-systemtest/issues/61 -->
 	<test>
 		<testCaseName>CpMpTest_CpMp</testCaseName>
 		<variations>
@@ -30,7 +28,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpTest_MP</testCaseName>
@@ -57,7 +54,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpTest2</testCaseName>
@@ -83,7 +79,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpTest3</testCaseName>
@@ -109,7 +104,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpModularJarTest</testCaseName>
@@ -135,7 +129,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpModularJarTest2</testCaseName>
@@ -161,7 +154,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpModularJarTest3</testCaseName>
@@ -187,7 +179,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>JDKInternalAPIsTest</testCaseName>
@@ -213,7 +204,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>AutomaticModulesTest1</testCaseName>
@@ -240,7 +230,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>AutomaticModulesTest2</testCaseName>
@@ -267,7 +256,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest1</testCaseName>
@@ -294,7 +282,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest2</testCaseName>
@@ -321,7 +308,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest3</testCaseName>
@@ -348,7 +334,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	
 	<!-- Temporarily excluded due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/200 -->
@@ -401,7 +386,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>ServiceLoadersTest</testCaseName>
@@ -427,7 +411,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
@@ -456,7 +439,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.aix,^os.win</platformRequirements>
+		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleTest_AppModPatchModule</testCaseName>
@@ -483,7 +466,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleTest_UnexportedTypePatchModule</testCaseName>
@@ -510,7 +492,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleTest_AdvancedPatchModule</testCaseName>
@@ -537,7 +518,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
@@ -566,7 +546,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.aix,^os.win</platformRequirements>
+		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleImageTest_AppModPatchModule</testCaseName>
@@ -593,7 +573,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleImageTest_UnexportedTypePatchModule</testCaseName>
@@ -620,7 +599,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>PatchModuleImageTest_AdvancedPatchModule</testCaseName>
@@ -647,7 +625,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgradeModPathTest_ExpDirModUpgrade</testCaseName>
@@ -674,7 +651,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgradeModPathTest_ExpDirModUpgradeCRImage</testCaseName>
@@ -701,7 +677,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgradeModPathTest_JarredModUpgrade</testCaseName>
@@ -728,7 +703,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgradeModPathTest_JarredModUpgradeCRImage</testCaseName>
@@ -755,7 +729,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>	
 	
 	<!-- Temporarily excluded from osx due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/203 -->
@@ -784,7 +757,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.osx,^os.win</platformRequirements>
+		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>JlinkTest_AddModLimitMod</testCaseName>
@@ -811,7 +784,6 @@
 		<groups>
 			<group>system</group>
 		</groups>	
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpJlinkTest</testCaseName>
@@ -837,7 +809,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>JlinkPluginOptionsTest_GeneralOptionsTest</testCaseName>
@@ -864,7 +835,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>LayersTest</testCaseName>
@@ -894,7 +864,6 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CLTest</testCaseName>
@@ -921,7 +890,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CLTestImage</testCaseName>
@@ -948,7 +916,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CLLoadTest</testCaseName>
@@ -974,7 +941,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CLStressWithLayers</testCaseName>
@@ -1028,6 +994,4 @@
 		</groups>
 		<disabled>https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/197</disabled>
 	</test>
-	<!-- Tests above pertain to Java 9 Modularity -->
-	
 </playlist>
