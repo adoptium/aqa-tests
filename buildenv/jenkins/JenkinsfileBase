@@ -247,14 +247,18 @@ def runTest(subDir) {
 			}
 			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
-				if (env.SPEC.startsWith('linux')) { 
-					wrap([$class: 'Xvfb', autoDisplayName: true]) {
-						def DISPLAY = sh (
-							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-							returnStdout: true
-						).trim()
-						env.DISPLAY = "${DISPLAY}"
-						echo "env.DISPLAY is ${env.DISPLAY}"
+				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST == 'jck') {
+					if (env.SPEC.startsWith('linux_x86-64')) { 
+						wrap([$class: 'Xvfb', autoDisplayName: true]) {
+							def DISPLAY = sh (
+								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+								returnStdout: true
+							).trim()
+							env.DISPLAY = "${DISPLAY}"
+							echo "env.DISPLAY is ${env.DISPLAY}"
+							makeTest("${RUNTEST_CMD}")
+						}
+					} else {
 						makeTest("${RUNTEST_CMD}")
 					}
 				} else {
