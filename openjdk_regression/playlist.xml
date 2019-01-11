@@ -124,7 +124,7 @@
 	</test>
 	<test>
 		<testCaseName>jdk_awt</testCaseName>
-		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(TEST_RESROOT)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
@@ -136,10 +136,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<platformRequirements>^os.osx,^os.zos,^os.aix</platformRequirements>
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</disabled>
 	</test>
 	<test>
 		<testCaseName>jdk_beans</testCaseName>

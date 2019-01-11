@@ -245,8 +245,9 @@ def runTest(subDir) {
 			if (TARGET.contains('custom')) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
+			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
-				if (env.BUILD_LIST == "jck"){
+				if (env.SPEC.startsWith('linux')) { 
 					wrap([$class: 'Xvfb', autoDisplayName: true]) {
 						def DISPLAY = sh (
 							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -254,10 +255,10 @@ def runTest(subDir) {
 						).trim()
 						env.DISPLAY = "${DISPLAY}"
 						echo "env.DISPLAY is ${env.DISPLAY}"
-						makeTest("./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}")
+						makeTest("${RUNTEST_CMD}")
 					}
 				} else {
-					makeTest("./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}")
+					makeTest("${RUNTEST_CMD}")
 				}
 			}
 		}
