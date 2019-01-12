@@ -234,9 +234,7 @@ getTestKitGenAndFunctionalTestMaterial()
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
     if [ -d functional ]; then
-        cd openj9/test/functional
-        find . -print | cpio -pdm ../../../functional
-        cd ../../..
+        mv openj9/test/functional/* functional/
     else
 	    mv openj9/test/functional functional
     fi
