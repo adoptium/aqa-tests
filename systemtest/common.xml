@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<project name="systemtest_common" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>Build STF based System Tests </description>
+
+	<!-- set global properties for this build -->
+	<property name="SYSTEMTEST_ROOT" value="${TEST_ROOT}/systemtest" />
+	<property name="SYSTEMTEST_DEST" value="${BUILD_ROOT}/systemtest" />
+	<property environment="env" />
+	<property name="env.JAVA_HOME" value="${JAVA_BIN}/.." />
+	
+	<condition property="isZOS" value="true">
+		<equals arg1="${os.name}" arg2="z/OS"/>
+	</condition>
+	
+	<condition property="git-prefix" value="git" else="https">
+		<isset property="isZOS"/>
+	</condition>
+	
+	<target name="common_init">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_DEST}" type="dir" />
+			</not>
+			<then>
+				<mkdir dir="${SYSTEMTEST_DEST}" />
+			</then>
+		</if>
+	</target>
+
+	<target name="clone_stf">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="${git-prefix}://github.com/AdoptOpenJDK/stf.git" />
+		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
+	</target>
+
+	<target name="clone_systemtest">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
+		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
+	</target>
+	
+	<target name="clone_openj9-systemtest">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="${git-prefix}://github.com/eclipse/openj9-systemtest.git" />
+		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+				   <fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
+				</delete>  
+				<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
+	</target>
+
+	<target name="check_systemtest" depends="common_init">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
+				<antcall target="clone_stf" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
+			</else>
+		</if>
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<antcall target="clone_systemtest" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+			</else>
+		</if>
+		<if>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<if>
+					<not>
+						<available file="${SYSTEMTEST_ROOT}/openj9-systemtest" type="dir" />
+					</not>
+					<then>
+						<echo message="${SYSTEMTEST_ROOT}/openj9-systemtest does not exist, clone from GitHub" />
+						<antcall target="clone_openj9-systemtest" inheritall="true" />
+					</then>
+					<else>
+						<echo message="${SYSTEMTEST_ROOT}/openj9-systemtest exists, skip cloning" />
+					</else>
+				</if>
+			</then>
+		</if>
+	</target>
+	
+	<target name="configure_systemtest" depends="check_systemtest">
+		<if>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false">
+					<property name="java.home" value="${env.JAVA_HOME}"/>
+				</ant>
+			</then>
+			<else>
+				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false">
+					<property name="java.home" value="${env.JAVA_HOME}"/>
+				</ant>
+			</else>
+		</if>
+	</target>
+					
+	<target name="common_dist" description="generate the distribution">
+		<copy todir="${SYSTEMTEST_DEST}/stf">
+			<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
+		</copy>
+		<copy todir="${SYSTEMTEST_DEST}/openjdk-systemtest" failonerror="false">
+			<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+		</copy>
+		<copy todir="${SYSTEMTEST_DEST}/openj9-systemtest" failonerror="false">
+			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest" includes="**" />
+		</copy>
+		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
+			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**" />
+		</copy>
+	</target>
+
+	<!-- target to build all projects in the repository.  -->
+	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
+	<!-- Also make sure stf is built -->
+	<target name="build-dependencies" depends="configure_systemtest">
+		<if>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false">
+					<property name="java.home" value="${env.JAVA_HOME}"/>
+				</ant>
+			</then>
+			<else>
+				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false">
+					<property name="java.home" value="${env.JAVA_HOME}"/>
+				</ant>
+			</else>
+		</if>
+		<antcall target="common_dist" inheritall="false" />
+	</target>
+	
+	<!-- To make sure common_build target only excute once, the common_build target runs only if common_build.executed value is not set -->
+	<target name="common_build" depends="build-dependencies" unless="common_build.executed">
+		<echo message="target common_build is called....." />
+	</target>
+		
+	<target name="clean">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
+		<if>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean">
+					<property name="java.home" value="${env.JAVA_HOME}"/>
+				</ant>
+			</then>
+		</if>		
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean">
+			<property name="java.home" value="${env.JAVA_HOME}"/>
+		</ant>
+	</target>
+</project>
