@@ -14,28 +14,21 @@
 # limitations under the License.
 -->
 
-<project name="systemtest" default="build" basedir=".">
+<project name="mauveLoadTest" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<description>Build systemtest</description>
+	<description>mauveLoadTest</description>
 
-	<import file="./common.xml"/>
-	<!-- set properties for this build -->
-	<property name="SYSTEMTEST_DEST" value="${BUILD_ROOT}/systemtest" />
+	<import file="../common.xml" />
+
+	<property name="DEST" value="${BUILD_ROOT}/systemtest/mauveLoadTest" />
 
 	<target name="init">
-		<mkdir dir="${SYSTEMTEST_DEST}" />
+		<mkdir dir="${DEST}" />
 	</target>
 
-	<target name="build" depends="dist,common_build">
-		<property name="common_build.executed" value="true" />
-		<subant target="" inheritall="true">
-			<fileset dir="." includes="*/build.xml" />
-		</subant>
-	</target>
-	
-	<target name="dist" depends="init">
-		<copy todir="${SYSTEMTEST_DEST}">
-			<fileset dir="." includes="*.mk"/>
+	<target name="build" depends="init, common_build">
+		<copy todir="${DEST}">
+			<fileset dir="." includes="*.mk,*.xml" />
 		</copy>
 	</target>
 </project>

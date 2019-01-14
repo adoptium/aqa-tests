@@ -10,20 +10,6 @@ def getBuildList() {
 	return TESTPROJECT
 }
 
-def archiveTestBinaries() {
-	dir("$WORKSPACE") {
-		sh "tar -zcf test-binaries.tar.gz ./openjdk-tests ./jvmtest ./openjdkbinary"
-	}
-	archiveArtifacts artifacts: '**/test-binaries.tar.gz', fingerprint: true, allowEmptyArchive: false
-}
-
-def stageTestBinaries() {
-	copyArtifacts filter: 'test-binaries.tar.gz', fingerprintArtifacts: true, projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_ID}")
-	sh "tar -xzf test-binaries.tar.gz"
-	echo pwd()
-	sh "ls"
-}
-
 def makeTest(testParam) {
 	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
@@ -61,6 +47,7 @@ def setupEnv() {
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.SPEC = "${SPEC}"
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
+	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
@@ -79,7 +66,7 @@ def setupEnv() {
 		env.PERF_ROOT = "$WORKSPACE/../../benchmarks"
 	}
 
-	if (env.BUILD_LIST == "jck") {
+	if (env.BUILD_LIST.startsWith("jck")) {
 		if ( JAVA_VERSION == "SE80" ) {
 			env.JCK_VERSION = "jck8b"
 		} else {
@@ -109,8 +96,54 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			cleanWs()
 			setupEnv()
+			def testSubDirs = []
+			def testSubDirSize = 0
+			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
+				testSubDirSize = testSubDirs.size()
+			}
+			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			def parallel_tests = [:]
+			
+			for (int i = 0; i < testSubDirSize; i++) {
+				def testSubDir = testSubDirs[i].trim().replace("/","");
+				def TEST_JOB_NAME = "${JOB_NAME}"
+
+				//ToDo: need to find a better way to pass parameters to downstream builds. 
+				//Ideally, we should only need to pass in modified parameters (i.e., 
+				//BUILD_LIST, IS_PARALLEL)
+				parallel_tests[testSubDir] = {
+					build job: TEST_JOB_NAME, parameters: [
+						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
+						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
+						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
+						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
+						string(name: 'JAVA_VERSION', value: JAVA_VERSION),
+						string(name: 'JDK_IMPL', value: JDK_IMPL),
+						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
+						string(name: 'TARGET', value: TARGET),
+						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
+						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
+						string(name: 'CUSTOMIZED_SDK_URL', value: CUSTOMIZED_SDK_URL),
+						string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID', value: CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
+						string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
+						string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
+						string(name: 'TEST_FLAG', value: TEST_FLAG),
+						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
+						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
+						string(name: 'ITERATIONS', value: ITERATIONS),
+						string(name: 'LABEL', value: LABEL),
+						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
+						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
+						booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
+						string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
+						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
+						booleanParam(name: 'IS_PARALLEL', value: false),
+					]
+				}
+			}
+			parallel parallel_tests
 		}
 	}
 }
@@ -130,8 +163,6 @@ def setup() {
 					deleteDir()
 				}
 			}
-			
-			SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 
 			if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
@@ -212,8 +243,8 @@ def buildTest() {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
 			
-			try { 
-				if (env.BUILD_LIST == 'systemtest') { 	
+			try {
+				if (env.BUILD_LIST.startsWith('systemtest') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
 					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
 				}
@@ -247,7 +278,7 @@ def runTest(subDir) {
 			}
 			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
-				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST == 'jck') {
+				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST.startsWith('jck')) {
 					if (env.SPEC.startsWith('linux_x86-64')) { 
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
 							def DISPLAY = sh (
@@ -331,37 +362,20 @@ def testBuild() {
 			addJobDescription()
 
 			// prepare environment and compile test projects
-			setup()
-			buildTest()
-			if( params.IS_PARALLEL ){
-				// archive compiled test binaries for parallel jobs
-				archiveTestBinaries()
-				def testSubDirs = []
-				def testSubDirSize = 0
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
-					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().split()
-					testSubDirSize = testSubDirs.size()
-				}
-				echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
-				def parallel_tests = [:]
-				for (int i = 0; i < testSubDirSize; i++) {
-					def testSubDir = testSubDirs[i].trim().replace("/","");
-					parallel_tests[testSubDir] = {
-						node ("$LABEL") {
-							addJobDescription()
-							setupParallelEnv()
-							stageTestBinaries()
-							if( env.BUILD_LIST == "jck") {
-								buildTest()
-							}
-							runTest("${env.BUILD_LIST}/${testSubDir}")
-							post("${env.BUILD_LIST}-${testSubDir}")
-						}
-					}
-				}
-				parallel parallel_tests
+			if( params.IS_PARALLEL == true ){
+				setupParallelEnv()
 			} else {
-				echo "running test in default mode"
+				setup()
+				//ToDo: temporary workaround for jck test parallel runs
+				// until build.xml is added into each subfolder
+				if( env.BUILD_LIST.startsWith('jck/')) {
+					def temp = env.BUILD_LIST
+					env.BUILD_LIST = "jck"
+					buildTest()
+					env.BUILD_LIST = temp
+				} else {
+					buildTest()
+				}
 				runTest("${env.BUILD_LIST}")
 				post("${env.BUILD_LIST}")
 			}
