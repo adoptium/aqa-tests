@@ -732,6 +732,7 @@
 	</test>	
 	
 	<!-- Temporarily excluded from osx due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/203 -->
+	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
 		<testCaseName>JlinkTest_RequiredMod</testCaseName>
 		<variations>
@@ -757,8 +758,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.osx</platformRequirements>
+		<platformRequirements>^os.osx,^os.win</platformRequirements>
 	</test>
+	
+	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
 		<testCaseName>JlinkTest_AddModLimitMod</testCaseName>
 		<variations>
@@ -783,7 +786,8 @@
 		</levels>
 		<groups>
 			<group>system</group>
-		</groups>	
+		</groups>
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CpMpJlinkTest</testCaseName>
@@ -810,6 +814,8 @@
 			<group>system</group>
 		</groups>
 	</test>
+	
+	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
 		<testCaseName>JlinkPluginOpt_GenOptTest</testCaseName>
 		<variations>
@@ -835,6 +841,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>LayersTest</testCaseName>
