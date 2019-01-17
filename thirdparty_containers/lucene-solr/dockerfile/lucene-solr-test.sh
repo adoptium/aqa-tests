@@ -32,6 +32,7 @@ else
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
 	$JAVA_BIN/java -version
+	export JAVA_HOME="${java_root%/bin}"
 fi
 
 TEST_SUITE=$1
