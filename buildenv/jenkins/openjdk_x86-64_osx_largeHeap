@@ -10,7 +10,7 @@ node ("master") {
 
 stage('Queue') {
     node("$LABEL") {
-        PLATFORM = 'x64_mac'
+        PLATFORM = 'x64_mac_largeHeap'
         SDK_RESOURCE = 'upstream'
         SPEC='osx_x86-64'
         checkout scm
