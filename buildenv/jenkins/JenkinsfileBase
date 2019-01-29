@@ -282,7 +282,7 @@ def post(test_target) {
 			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false])
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
-			if (currentBuild.result == 'UNSTABLE') {
+			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				sh "tar -zcf ${test_target}_test_output.tar.gz ./openjdk-tests/TestConfig/test_output_*"
 				sh "find ./jvmtest/${env.BUILD_LIST}/work -name '*.jtr' | tar -zcf jtr_test_output.tar.gz -T -"
 
