@@ -27,7 +27,7 @@ VENDOR_REPOS=""
 VENDOR_SHAS=""
 VENDOR_BRANCHES=""
 VENDOR_DIRS=""
-JDK_VERSION="SE80"
+JDK_VERSION="8"
 JDK_IMPL="openj9"
 RELEASES="latest"
 TYPE="jdk"
@@ -141,10 +141,7 @@ getBinaryOpenjdk()
 		os=${PLATFORM#*_}
 		os=${os%_largeHeap}
 		arch=${PLATFORM%%_*}
-		tempJDK_VERSION="${JDK_VERSION%?}"
-		OPENJDK_VERSION="openjdk${tempJDK_VERSION:2}"
-		# older bash doesn't support negative offset
-		# OPENJDK_VERSION="openjdk${JDK_VERSION:2:-1}"
+		OPENJDK_VERSION="openjdk${JDK_VERSION}"
 		heap_size="normal"
 		if [[ $PLATFORM = *"largeHeap"* ]]; then
 			heap_size="large"

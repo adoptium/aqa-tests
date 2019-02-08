@@ -31,14 +31,13 @@ def setupEnv() {
 		])
 	}
 
-	// env.JAVA_VERSION = "${getJavaVersionFromJvmVersion()}"
-	env.JAVA_VERSION = "${JAVA_VERSION}"
-	/* Optional parameter JAVA_VERSION to use for Panama/Valhalla/Amber cases, otherwise its calculated from JVM_VERSION */ 
-	if( params.JAVA_VERSION ) {
-		env.JAVA_VERSION = params.JAVA_VERSION
+	if ( params.JDK_VERSION ) {
+		env.JDK_VERSION = params.JDK_VERSION
+	} else if ( params.JAVA_VERSION ) { // temporarily support JAVA_VERSION
+		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
-	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JAVA_VERSION == 'SE80') ? 'jre/' : ''}bin"
+	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JDK_VERSION == '8') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
@@ -67,10 +66,10 @@ def setupEnv() {
 	}
 
 	if (env.BUILD_LIST.startsWith("jck")) {
-		if ( JAVA_VERSION == "SE80" ) {
+		if ( JDK_VERSION == "8" ) {
 			env.JCK_VERSION = "jck8b"
 		} else {
-			env.JCK_VERSION = "jck${JAVA_VERSION[2..-2]}"
+			env.JCK_VERSION = "jck${JDK_VERSION}"
 		}
 		env.JCK_ROOT = "$WORKSPACE/../jck_root"
 		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
@@ -119,7 +118,7 @@ def setupParallelEnv() {
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
 						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
-						string(name: 'JAVA_VERSION', value: JAVA_VERSION),
+						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
 						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
 						string(name: 'TARGET', value: TARGET),
@@ -191,7 +190,7 @@ def setup() {
 			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
-			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} -j ${JAVA_VERSION} -i ${JDK_IMPL} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} -j ${JDK_VERSION} -i ${JDK_IMPL} ${CUSTOMIZED_SDK_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
 
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -386,15 +385,6 @@ def testBuild() {
 		}
 		
 	}
-}
-
-def getJavaVersionFromJvmVersion() {
-	String regex = ${JVM_VERSION}
-	def m = regex =~ /^openjdk(\d+)(-openj9|-sap)?$/
-	def match = m[0][1]
-	def java_version = "SE$match0"
-	echo "java_version=$java_version"
-	return java_version
 }
 
 def getJDKImpl(jvm_version) {
