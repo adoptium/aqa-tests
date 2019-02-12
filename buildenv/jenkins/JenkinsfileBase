@@ -66,7 +66,7 @@ def setupEnv() {
 	} else {
 		env.BUILD_LIST = "${getBuildList()}"
 	}
-	
+
 	if( params.PERF_ROOT ) {
 		env.PERF_ROOT = params.PERF_ROOT
 	} else {
@@ -88,11 +88,11 @@ def setupEnv() {
 			echo "params.JCK_GIT_REPO was not defined"
 		}
 	}
-	
+
 	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
-	
+
 	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
@@ -112,13 +112,13 @@ def setupParallelEnv() {
 			}
 			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			def parallel_tests = [:]
-			
+
 			for (int i = 0; i < testSubDirSize; i++) {
 				def testSubDir = testSubDirs[i].trim().replace("/","");
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
-				//ToDo: need to find a better way to pass parameters to downstream builds. 
-				//Ideally, we should only need to pass in modified parameters (i.e., 
+				//ToDo: need to find a better way to pass parameters to downstream builds.
+				//Ideally, we should only need to pass in modified parameters (i.e.,
 				//BUILD_LIST, IS_PARALLEL)
 				parallel_tests[testSubDir] = {
 					build job: TEST_JOB_NAME, parameters: [
@@ -179,7 +179,7 @@ def setup() {
 			} else {
 				CUSTOMIZED_SDK_URL_OPTION = ""
 			}
-			
+
 			if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
@@ -236,7 +236,7 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-					
+
 			if ( params.PERF_CREDENTIALS_ID ) {
 				withCredentials([usernamePassword(credentialsId: "$params.PERF_CREDENTIALS_ID",
 					passwordVariable: "PASSWORD_VAR", usernameVariable: "USERNAME_VAR")]) {
@@ -251,7 +251,7 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			try {
 				if (env.BUILD_LIST.startsWith('systemtest') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
@@ -288,7 +288,7 @@ def runTest(subDir) {
 			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST.startsWith('jck')) {
-					if (env.SPEC.startsWith('linux_x86-64')) { 
+					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
 							def DISPLAY = sh (
 								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -324,7 +324,7 @@ def post(output_name) {
 				for (String tapFile : tapFiles) {
 					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
 				}
-			
+
 				tar_cmd = "pax -wf"
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
@@ -399,7 +399,7 @@ def testBuild() {
 				cleanWs()
 			}
 		}
-		
+
 	}
 }
 
@@ -426,7 +426,7 @@ def addJobDescription() {
 			currentBuild.displayName = "#${BUILD_NUMBER} - ${BUILD_USER_EMAIL}"
 		}
 	}
-	
+
 	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
 	currentBuild.description = description \
 		+ "TARGET: ${params.TARGET}<br/>" \
@@ -461,13 +461,18 @@ def uploadToArtifactory() {
 				]
 			}"""
 
-		def buildInfo = Artifactory.newBuildInfo()
-		// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
-		def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
-
-		buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
-		server.upload spec: uploadSpec, buildInfo: buildInfo
-		server.publishBuildInfo buildInfo
+		if (params.ARTIFACTORY_VERSION == 'ent') {
+			def buildInfo = Artifactory.newBuildInfo()
+			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
+			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
+			buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
+			server.upload spec: uploadSpec, buildInfo: buildInfo
+			server.publishBuildInfo buildInfo
+		} else if (params.ARTIFACTORY_VERSION == 'oss') {
+			server.upload spec: uploadSpec
+		} else {
+			error "Unknown ARTIFACTORY_VERSION:${ARTIFACTORY_VERSION}"
+		}
 
 		def artifactoryUrl = server.getUrl()
 		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
