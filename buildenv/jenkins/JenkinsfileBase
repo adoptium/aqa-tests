@@ -24,10 +24,16 @@ def setupEnv() {
 	// if ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH are provided, clean the workpsace and re-download it
 	if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_BRANCH) {
 		cleanWs()
+
+		def remoteConfigParameters = [url: "${params.ADOPTOPENJDK_REPO}"]
+		if (params.ADOPTOPENJDK_REPO.startsWith('git') && params.USER_CREDENTIALS_ID && !SPEC.startsWith('zos')) {
+			remoteConfigParameters.put('credentialsId', "${params.USER_CREDENTIALS_ID}")
+		}
+		
 		checkout([
 			$class: 'GitSCM', branches: [[name: "*/${params.ADOPTOPENJDK_BRANCH}"]],
 			extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
-			userRemoteConfigs: [[url: "${params.ADOPTOPENJDK_REPO}"]]
+			userRemoteConfigs: [remoteConfigParameters]
 		])
 	}
 
