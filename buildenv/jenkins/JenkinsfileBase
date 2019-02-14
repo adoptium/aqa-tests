@@ -52,6 +52,7 @@ def setupEnv() {
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.SPEC = "${SPEC}"
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
+	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 
 	if (params.JDK_IMPL) {
@@ -135,6 +136,7 @@ def setupParallelEnv() {
 						string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
 						string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
 						string(name: 'TEST_FLAG', value: TEST_FLAG),
+						string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
 						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
 						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
 						string(name: 'ITERATIONS', value: ITERATIONS),
