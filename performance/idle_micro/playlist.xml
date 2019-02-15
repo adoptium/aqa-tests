@@ -22,7 +22,7 @@
 	cd $(TEST_RESROOT); \
 	$(JAVA_COMMAND) ${JVM_OPTIONS} \
 	-cp $(Q)$(P)$(TEST_RESROOT)$(D)IdleMicrobenchmark.jar$(Q) net.adoptopenjdk.test.gc.idlemicrobenchmark.IdleMicroBenchmark \
-	--memoryLimit=700 --time=60 --idletime=300 --warmup=1 >$(REPORTDIR)$(D)std.out 2>&1 ; \
+	--memoryLimit=700 --time=60 --idletime=300 --warmup=1 &gt;$(REPORTDIR)$(D)std.out 2&gt;&amp;1 ; \
 	${TEST_STATUS}</command>
 		<platformRequirements>os.linux,arch.x86,bits.64,^os.win</platformRequirements>
 		<levels>
@@ -49,7 +49,7 @@
 	cd $(TEST_RESROOT); \
 	$(JAVA_COMMAND) ${JVM_OPTIONS} \
 	-cp $(Q)$(P)$(TEST_RESROOT)$(D)IdleMicrobenchmark.jar$(Q) net.adoptopenjdk.test.gc.idlemicrobenchmark.IdleMicroBenchmark \
-	--memoryLimit=700 --time=60 --idletime=300 --warmup=1 2>&1 >$(REPORTDIR)$(D)std.out & \
+	--memoryLimit=700 --time=60 --idletime=300 --warmup=1 2&gt;&amp;1 &gt;$(REPORTDIR)$(D)std.out &amp; \
 	chmod a+x runIdleTest.sh; \
 	./runIdleTest.sh $(REPORTDIR); \
 	${TEST_STATUS}</command>
