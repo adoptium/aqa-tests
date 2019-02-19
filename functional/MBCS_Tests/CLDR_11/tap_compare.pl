@@ -13,10 +13,10 @@
 # limitations under the License.
 ################################################################################
 
-use Test::Simple tests => 42;
+use Test::Simple tests => 35;
 use File::Compare;
 
-@a = ('DEFAULT','CLDR','JRE','HOST','SPI');
+@a = ('DEFAULT','CLDR','JRE','SPI');
 $langtag = $ENV{'LANGTAG'};
 
 $prefix = 'expected_';
@@ -70,7 +70,7 @@ $t1 = 'TimeZoneTestA-';
 $f1 = $t1.$langtag.'-DEFAULT.log';
 $f2 = $t1.$langtag.'-CLDR,JRE.log';
 ok(compare($f1, $f2) == 0, $f2);
-foreach $s (('DEFAULT','JRE','HOST','SPI')) {
+foreach $s (('DEFAULT','JRE','SPI')) {
   $f = $t1.$langtag.'-'.$s.'.log';
   ok(compare($f, $f2) == 0, 'diff '.$f.' '.$f2);
 }

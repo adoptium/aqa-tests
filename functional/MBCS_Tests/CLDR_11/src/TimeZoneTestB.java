@@ -18,6 +18,7 @@ import java.nio.charset.*;
 public class TimeZoneTestB {
   static CharsetEncoder ce1 = null;
   static CharsetEncoder ce2 = null;
+  static CharsetEncoder ce0 = Charset.defaultCharset().newEncoder();
 
   static {
     Locale loc = Locale.getDefault();
@@ -44,7 +45,7 @@ public class TimeZoneTestB {
   static String printable(String s) {
     StringBuilder sb = new StringBuilder();
     for(char c : s.toCharArray()) {
-      if (ce1.canEncode(c) && ce2.canEncode(c)) {
+      if (ce0.canEncode(c) && ce1.canEncode(c) && ce2.canEncode(c)) {
         sb.append(c);
       } else {
         sb.append(String.format("\\u%04X",(int)c));
@@ -71,7 +72,7 @@ public class TimeZoneTestB {
       map.put(id, sb.toString());
     }
     for(String id : map.keySet()) {
-      System.out.println(id+"\t"+map.get(id));
+      System.out.println(printable(id+"\t"+map.get(id)));
     }
   }
 }

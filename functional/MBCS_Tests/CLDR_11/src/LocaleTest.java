@@ -18,6 +18,7 @@ import java.nio.charset.*;
 public class LocaleTest {
   static CharsetEncoder ce1 = null;
   static CharsetEncoder ce2 = null;
+  static CharsetEncoder ce0 = Charset.defaultCharset().newEncoder();
 
   static {
     Locale loc = Locale.getDefault();
@@ -44,7 +45,7 @@ public class LocaleTest {
   static String printable(String s) {
     StringBuilder sb = new StringBuilder();
     for(char c : s.toCharArray()) {
-      if (ce1.canEncode(c) && ce2.canEncode(c)) {
+      if (ce0.canEncode(c) && ce1.canEncode(c) && ce2.canEncode(c)) {
         sb.append(c);
       } else {
         sb.append(String.format("\\u%04X",(int)c));

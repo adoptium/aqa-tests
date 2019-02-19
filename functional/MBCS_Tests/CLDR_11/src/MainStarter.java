@@ -58,6 +58,7 @@ public class MainStarter {
         }
         System.out.println(0 == p.waitFor() ? "Done" : "Error");
 
+        /*
         System.out.println("HOST ...");
         pb = new ProcessBuilder(javaExec, "-classpath", classPath, "-Djava.locale.providers=HOST", classExec);
         p = pb.start();
@@ -71,6 +72,7 @@ public class MainStarter {
             System.out.print((char)c);
         }
         System.out.println(0 == p.waitFor() ? "Done" : "Error");
+        */
 
         System.out.println("CLDR ...");
         pb = new ProcessBuilder(javaExec, "-classpath", classPath, "-Djava.locale.providers=CLDR", classExec);
