@@ -16,6 +16,7 @@
 	<test>
 		<testCaseName>derby_test_junit_all</testCaseName>
 	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:latest ; \
+		docker rmi -f adoptopenjdk-derby-test; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
