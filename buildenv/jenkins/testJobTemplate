@@ -1,0 +1,165 @@
+#!groovy
+
+/*
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+/**
+ * A template that defines a test job.
+ */
+
+if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
+if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
+
+if (binding.hasVariable('LEVELS')) {
+	LEVELS = LEVELS.split(',')
+} else {
+	LEVELS = ['sanity','extended','special']
+}
+
+if (binding.hasVariable('JDK_VERSIONS')) {
+	JDK_VERSIONS = JDK_VERSIONS.split(',')
+} else {
+	JDK_VERSIONS = [8,11,12]
+}
+
+if (binding.hasVariable('GROUPS')) {
+	GROUPS = GROUPS.split(',')
+} else {
+	GROUPS = ['functional','system','openjdk', 'perf', 'external']
+}
+
+
+if (binding.hasVariable('SPECS')) {
+	SPECS = SPECS.split(',')
+} else {
+	SPECS = ['aix_ppc-64_cmprssptrs','linux_ppc-64_cmprssptrs_le','linux_390-64_cmprssptrs','zos_390-64_cmprssptrs','linux_x86-64_cmprssptrs','linux_x86-64','osx_x86-64_cmprssptrs','win_x86-64_cmprssptrs', 'win_x86']
+}
+
+
+println "LEVELS: ${LEVELS}"
+println "JDK_VERSIONS: ${JDK_VERSIONS}"
+println "GROUPS: ${GROUPS}"
+println "SPECS: ${SPECS}"
+
+def SPEC_JENKINS_FILE_MAP = [ 
+	'aix_ppc-64_cmprssptrs' : 'openjdk_ppc64_aix',
+	'linux_ppc-64_cmprssptrs_le' : 'openjdk_ppc64le_linux',
+	'linux_390-64_cmprssptrs' : 'openjdk_s390x_linux',
+	'zos_390-64_cmprssptrs' : 'openjdk_s390x_zos',
+	'linux_x86-64_cmprssptrs' : 'openjdk_x86-64_linux',
+	'linux_x86-64' : 'openjdk_x86-64_linux_largeHeap',
+	'osx_x86-64_cmprssptrs' : 'openjdk_x86-64_osx',
+	'osx_x86-64' : 'openjdk_x86-64_osx_largeHeap',
+	'win_x86-64_cmprssptrs' : 'openjdk_x86-64_windows',
+	'win_x86' : 'openjdk_x86-32_windows'
+]
+
+// add into the map only if GROUP and BUILD_LIST do not match
+def GROUP_BUILD_LIST_MAP = [
+	'openjdk' : 'openjdk_regression',
+	'perf' : 'performance',
+	'system' : 'systemtest',
+	'external' : 'thirdparty_containers'
+]
+
+SPECS.each { SPEC ->
+ 	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
+	
+	// zos has to use ssh
+	if (SPEC.startsWith("zos")) {
+		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
+		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/", "git@github.com:")
+	}
+	def JENKINS_FILE = "" 
+	if (SPEC_JENKINS_FILE_MAP.containsKey(SPEC)) {
+		JENKINS_FILE = SPEC_JENKINS_FILE_MAP[SPEC]
+	} else {
+		println "Cannot find key ${SPEC} in ${SPEC_JENKINS_FILE_MAP}."
+	}
+	JDK_VERSIONS.each { JDK_VERSION ->
+		LEVELS.each { LEVEL ->
+			GROUPS.each { GROUP ->
+				def TEST_JOB_NAME = "Test-${LEVEL}.${GROUP}-JDK${JDK_VERSION}-${SPEC}" 
+				if (!JENKINS_FILE) {
+					println "WARNING: ${TEST_JOB_NAME} job may have invalid scriptPath=buildenv/jenkins/${JENKINS_FILE}"
+				}
+				def BUILD_LIST = GROUP
+				if (GROUP_BUILD_LIST_MAP.containsKey(GROUP)) {
+					BUILD_LIST = GROUP_BUILD_LIST_MAP[GROUP]
+				}
+				pipelineJob("$TEST_JOB_NAME") {
+ 					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
+					definition {
+						parameters {
+							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
+							stringParam('ADOPTOPENJDK_BRANCH', "master", "AdoptOpenJDK branch")
+							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
+							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
+							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
+							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11, 12")
+							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
+							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
+							stringParam('TARGET', "${LEVEL}.${GROUP}", "Test TARGET to execute")
+							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
+							choiceParam('SDK_RESOURCE', ['upstream', 'nightly', 'customized', 'releases'], "Where to get sdk?")
+							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
+							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
+							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
+							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
+							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
+							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
+							stringParam('LABEL', "", "Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine")
+							stringParam('JCK_GIT_REPO', "", "For JCK test only")
+							stringParam('SSH_AGENT_CREDENTIAL', "", "Optional. Only use when ssh credentials are needed")
+							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
+							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
+							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
+							booleanParam('IS_PARALLEL', false, "Should tests run in parallel?")
+							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
+							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
+							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
+							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
+							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
+							stringParam('KEEP_REPORTDIR', "false", "Keep the test report dir if the test passes?")
+							stringParam('BUILD_IDENTIFIER', "", "build identifier")
+						}
+						cpsScm {
+							scm {
+								git {
+									remote {
+										name('AdoptOpenJDK')
+										url(ADOPTOPENJDK_REPO)
+									}
+									branch('master')
+									extensions {
+										relativeTargetDirectory('openjdk-tests')
+									}
+								}
+								scriptPath("buildenv/jenkins/${JENKINS_FILE}")
+								lightweight(true)
+							}
+						}
+						logRotator {
+							numToKeep(10)
+							artifactNumToKeep(10)
+						}
+					}
+				}
+			}
+		}
+	}
+}
