@@ -18,8 +18,8 @@
 		<variations>
 			<variation>-XX:+UseContainerSupport</variation>
 		</variations>
-		<command>docker run --name functional-test adoptopenjdk-functional-test:latest ; \
-		 docker rm functional-test; \
+		<command>docker run --name functional-test --rm adoptopenjdk-functional-test:latest ; \
+		 docker rmi -f adoptopenjdk-functional-test; \
 		$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>

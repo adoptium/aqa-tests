@@ -15,13 +15,14 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>payara_microprofile_tck</testCaseName>
-		<command>docker run --name payara-mp-tck --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-payara-mp-tck:latest; \
+		<command>docker run --name payara-mp-tck $(EXTRA_DOCKER_ARGS) adoptopenjdk-payara-mp-tck:latest; \
 			 $(TEST_STATUS); \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-Metrics/tck-runner/target/surefire-reports $(REPORTDIR)/external_test_reports; \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-Fault-Tolerance/tck-runner/target/surefire-reports/junitreports $(REPORTDIR)/external_test_reports; \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-Config/tck-runner/target/surefire-reports/junitreports $(REPORTDIR)/external_test_reports; \
 			 docker cp payara-mp-tck:/MicroProfile-TCK-Runners/MicroProfile-OpenAPI/tck-runner/target/surefire-reports/junitreports $(REPORTDIR)/external_test_reports; \
-			 docker rm payara-mp-tck
+			 docker rm -f payara-mp-tck; \
+			 docker rmi -f adoptopenjdk-payara-mp-tck
 		</command>
 		<subsets>
 			<subset>8</subset>

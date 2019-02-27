@@ -16,7 +16,9 @@
 	<test>
 		<testCaseName>tomcat_test</testCaseName>
 	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-tomcat-test:latest ; \
-		$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		docker rmi -adoptopenjdk-tomcat-test
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>

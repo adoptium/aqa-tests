@@ -16,7 +16,9 @@
 	<test>
 		<testCaseName>scala_test</testCaseName>
 	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-scala-test:latest; \
-		$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		docker rmi -f adoptopenjdk-scala-test
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
