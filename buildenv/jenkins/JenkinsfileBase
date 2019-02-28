@@ -328,7 +328,13 @@ def post(output_name) {
 				pax_opt = "-x pax"
 				tar_opt = ""
 			}
-			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false])
+
+			boolean failIfNoResultsValue = true
+			if (params.IS_PARALLEL == true) {
+				failIfNoResultsValue = false
+			}
+			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
+
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
