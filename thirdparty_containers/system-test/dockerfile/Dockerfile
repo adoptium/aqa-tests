@@ -62,6 +62,8 @@ VOLUME ["/java"]
 #    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
+# Install Docker module to run test framework
+RUN echo yes | cpan install JSON Text::CSV XML::Parser
 
 # This is the main script to run system tests.  
 COPY ./dockerfile/system-test.sh /system-test.sh

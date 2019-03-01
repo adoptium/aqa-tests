@@ -62,8 +62,8 @@ RUN apt-get update \
     tomcat8 \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Perl modules for test framework
-RUN echo yes | cpan install JSON Text::CSV
+# Install Docker module to run test framework
+RUN echo yes | cpan install JSON Text::CSV XML::Parser
 
 # These two folders are used testing purpose.
 # In the `docker run` command, user also need mount <JDK_ROOT>
