@@ -48,6 +48,8 @@ RUN apt-get -y install \
 	libtext-csv-perl \
 	libjson-perl
 
+# Install Docker module to run test framework
+RUN echo yes | cpan install JSON Text::CSV XML::Parser
 
 # Install ant
 ENV ANT_VERSION 1.10.5
