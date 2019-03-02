@@ -63,7 +63,10 @@ VOLUME ["/java"]
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # Install Docker module to run test framework
-RUN echo yes | cpan install JSON Text::CSV XML::Parser
+RUN apt-get -y install \
+	libtext-csv-perl \
+	libjson-perl \
+	libxml-parser-perl
 
 # This is the main script to run system tests.  
 COPY ./dockerfile/system-test.sh /system-test.sh
