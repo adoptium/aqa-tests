@@ -62,7 +62,7 @@ WORKDIR /
 RUN pwd
 
 # Clone tomcat to /tomcat 
-RUN git clone https://github.com/apache/tomcat85.git
+RUN git clone https://github.com/apache/tomcat.git
 
 ENTRYPOINT ["/bin/bash", "/tomcat-test.sh"]
 CMD ["--version"]

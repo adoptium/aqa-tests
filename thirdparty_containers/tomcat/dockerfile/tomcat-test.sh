@@ -46,11 +46,10 @@ type -p java
 echo "java -version is: \n"
 java -version
 
-cd /tomcat85
+cd /tomcat
 ls .
 pwd
 echo "Building tomcat" && \
-git checkout TOMCAT_8_5_30 && \
 cp build.properties.default build.properties && \
 ant && \
 
