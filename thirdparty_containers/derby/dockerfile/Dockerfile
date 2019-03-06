@@ -40,20 +40,8 @@ RUN apt-get update \
 	unzip \
 	vim \
 	tar \
-	wget
-
-# Installs Ant 1.10.2 as required by Derby 
-ENV ANT_VERSION 1.10.2 
-ENV ANT_HOME=/opt/ant
-RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
-    && wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz.md5 \
-    && echo "$(cat apache-ant-${ANT_VERSION}-bin.tar.gz.md5) apache-ant-${ANT_VERSION}-bin.tar.gz" | md5sum -c \
-    && tar -zvxf apache-ant-${ANT_VERSION}-bin.tar.gz -C /opt/ \
-    && ln -s /opt/apache-ant-${ANT_VERSION} /opt/ant \
-    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz \
-    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz.md5
-RUN update-alternatives --install "/usr/bin/ant" "ant" "/opt/ant/bin/ant" 1 && \
-    update-alternatives --set "ant" "/opt/ant/bin/ant" 
+	wget \
+	ant
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
