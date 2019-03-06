@@ -20,6 +20,14 @@
 
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
+if (!binding.hasVariable('TIME_LIMIT')) TIME_LIMIT = "10"
+if (!binding.hasVariable('SUFFIX')) SUFFIX = ""
+if (!binding.hasVariable('BUILDS_TO_KEEP')) {
+	BUILD_TO_KEEP = 10
+} else {
+	BUILDS_TO_KEEP = BUILDS_TO_KEEP.toInteger()
+}
+
 
 if (binding.hasVariable('LEVELS')) {
 	LEVELS = LEVELS.split(',')
@@ -91,7 +99,7 @@ SPECS.each { SPEC ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
-				def TEST_JOB_NAME = "Test-${LEVEL}.${GROUP}-JDK${JDK_VERSION}-${SPEC}" 
+				def TEST_JOB_NAME = "Test-${LEVEL}.${GROUP}-JDK${JDK_VERSION}-${SPEC}${SUFFIX}" 
 				if (!JENKINS_FILE) {
 					println "WARNING: ${TEST_JOB_NAME} job may have invalid scriptPath=buildenv/jenkins/${JENKINS_FILE}"
 				}
@@ -136,6 +144,8 @@ SPECS.each { SPEC ->
 							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
 							stringParam('KEEP_REPORTDIR', "false", "Keep the test report dir if the test passes?")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
+							booleanParam('AUTO_DETECT', true, "Optional. Default is to enable AUTO_DETECT")
+							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 						}
 						cpsScm {
 							scm {
@@ -154,8 +164,8 @@ SPECS.each { SPEC ->
 							}
 						}
 						logRotator {
-							numToKeep(10)
-							artifactNumToKeep(10)
+							numToKeep(BUILDS_TO_KEEP)
+							artifactNumToKeep(BUILDS_TO_KEEP)
 						}
 					}
 				}
