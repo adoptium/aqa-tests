@@ -21,7 +21,7 @@ if [ -d /java/jre/bin ];then
 	export PATH=$JAVA_BIN:$PATH
 	java -version
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH

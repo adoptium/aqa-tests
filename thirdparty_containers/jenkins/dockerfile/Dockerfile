@@ -42,15 +42,11 @@ RUN apt-get update \
 	vim \
 	wget
 
-# Install Maven
-RUN mkdir -p /usr/share/maven \
-	&& cd /usr/share/maven \
-	&& wget --no-check-certificate --no-cookies https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.zip \
-	&& unzip apache-maven-3.5.3-bin.zip \
-	&& rm -rf apache-maven-3.5.3-bin.zip \
-	&& ln -s /usr/share/maven/apache-maven-3.5.3/bin/mvn /usr/bin/mvn \
-	&& cd /
-
+# Install jenkins tests dependent
+RUN apt-get update \
+	&& apt-get -y install \
+	maven
+	
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
