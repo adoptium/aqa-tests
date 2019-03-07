@@ -40,23 +40,15 @@ RUN apt-get update \
 	make \
 	unzip \
 	vim \
-	wget \
-	python3-pip python3-dev \
-	&& cd /usr/local/bin \
-	&& ln -s /usr/bin/python3 python \
-	&& pip3 install --upgrade pip 
+	wget
+
+# Install thorntail tck tests dependent
+RUN apt-get update \
+	&& apt-get -y install \
+	maven
 
 WORKDIR /
 ENV THORNTAIL_HOME $WORKDIR
-	
-# Install Maven
-RUN mkdir -p /usr/share/maven \
-	&& cd /usr/share/maven \
-	&& wget --no-check-certificate --no-cookies https://archive.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.zip \
-	&& unzip apache-maven-3.5.3-bin.zip \
-	&& rm -rf apache-maven-3.5.3-bin.zip \
-	&& ln -s /usr/share/maven/apache-maven-3.5.3/bin/mvn /usr/bin/mvn \
-	&& cd /
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
