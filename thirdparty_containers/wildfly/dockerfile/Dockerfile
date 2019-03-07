@@ -42,7 +42,10 @@ RUN apt-get update \
 	vim \
 	wget
 
-RUN cd .
+# Install wildfly tests dependent
+RUN apt-get update \
+	&& apt-get -y install \
+	maven
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
