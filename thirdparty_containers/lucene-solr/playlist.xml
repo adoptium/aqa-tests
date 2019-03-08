@@ -38,7 +38,7 @@
 		<command>docker run --name lucene-solr-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-lucene-solr-test:latest; \
 			 $(TEST_STATUS); \
 			 docker cp lucene-solr-test:/lucene-solr/lucene/build/core/test $(REPORTDIR)/external_test_reports; \
-			 docker rm -f lucene-solr-test
+			 docker rm -f lucene-solr-test; \
 			 docker rmi -f adoptopenjdk-lucene-solr-test
 		</command>
 		<levels>
