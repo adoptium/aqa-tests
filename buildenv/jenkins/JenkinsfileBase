@@ -54,8 +54,7 @@ def setupEnv() {
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
-	env.AUTO_DETECT = params.AUTO_DETECT ? params.AUTO_DETECT : "on"
-
+	env.AUTO_DETECT = params.AUTO_DETECT
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -148,7 +147,7 @@ def setupParallelEnv() {
 						string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
 						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
 						booleanParam(name: 'IS_PARALLEL', value: false),
-						string(name: 'AUTO_DETECT', value: AUTO_DETECT),
+						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
 					]
 				}
 			}
