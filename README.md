@@ -81,6 +81,9 @@ Why the need for other testing?  The OpenJDK regression tests are a great start,
 The test infrastructure in this repository allows us to lightly yoke a great variety of tests together to be applied to testing the AdoptOpenJDK binaries.  By using an intentionally thin wrapper around a varied set of tests, we can more easily run all types of tests via make targets and as stages in our Jenkins CI pipeline builds.
 
 
-
-
-
+#### How can you help?
+You can:
+- browse through the [openjdk-tests issues list](https://github.com/AdoptOpenJDK/openjdk-tests/issues), select one, add a comment to claim it and ask questions
+- browse through the [openjdk-systemtest issues](https://github.com/AdoptOpenJDK/openjdk-systemtest/issues) or [stf issues](https://github.com/AdoptOpenJDK/stf/issues), claim one with a comment and dig right in
+- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/triage/README.md) for guidance 
+- ask questions in the [#testing channel](https://adoptopenjdk.slack.com/messages/C5219G28G) 
