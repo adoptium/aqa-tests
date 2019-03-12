@@ -1,4 +1,7 @@
 #!groovy
+
+import groovy.json.JsonSlurper;
+
 def getBuildList() {
 	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'thirdparty_containers', functional: 'functional', openjdk:'openjdk_regression', jdk:'openjdk_regression', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
@@ -14,7 +17,7 @@ def makeTest(testParam) {
 	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
-		sh "./openjdk-tests/maketest.sh $testParam" 
+		sh "./openjdk-tests/maketest.sh $testParam"
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -29,7 +32,7 @@ def setupEnv() {
 		if (params.ADOPTOPENJDK_REPO.startsWith('git') && params.USER_CREDENTIALS_ID && !SPEC.startsWith('zos')) {
 			remoteConfigParameters.put('credentialsId', "${params.USER_CREDENTIALS_ID}")
 		}
-		
+
 		checkout([
 			$class: 'GitSCM', branches: [[name: "*/${params.ADOPTOPENJDK_BRANCH}"]],
 			extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
@@ -451,6 +454,8 @@ def uploadToArtifactory() {
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
 		def jenkinsDomain = params.JENKINS_DOMAIN ? params.JENKINS_DOMAIN : getJenkinsDomain()
 		def artifactoryUploadDir = "${artifactoryRepo}/${jenkinsDomain}/${JOB_NAME}/${BUILD_ID}/"
+		def artifactoryUrl = server.getUrl()
+		def artifactoryCreds = server.getCredentialsId()
 
 		def uploadSpec = """{
 			"files":[
@@ -461,20 +466,28 @@ def uploadToArtifactory() {
 				]
 			}"""
 
-		if (params.ARTIFACTORY_VERSION == 'ent') {
+		withCredentials([usernamePassword(credentialsId: artifactoryCreds, passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+            json = sh returnStdout: true, script: "curl -u ${USER}:${PASS} ${artifactoryUrl}/api/system/version"
+        }
+        def jsonslurper = new groovy.json.JsonSlurper()
+        def json_parsed = jsonslurper.parseText(json)
+        def artifactoryLicense = json_parsed.license
+
+		if (artifactoryLicense ==~ /^[0-9a-f]+$/) {
+			// Artifactory PRO licesne is a long HEX string
 			def buildInfo = Artifactory.newBuildInfo()
 			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
 			buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
 			server.upload spec: uploadSpec, buildInfo: buildInfo
 			server.publishBuildInfo buildInfo
-		} else if (params.ARTIFACTORY_VERSION == 'oss') {
+		} else if (artifactoryLicense == 'Artifactory OSS') {
+			// Artifactory OSS doesn't support buildInfo
 			server.upload spec: uploadSpec
 		} else {
-			error "Unknown ARTIFACTORY_VERSION:${ARTIFACTORY_VERSION}"
+			error "Unknown Artifactory License:'${artifactoryLicense}'"
 		}
 
-		def artifactoryUrl = server.getUrl()
 		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
 		echo "Test output artifactory URL:'${uploadUrl}'"
 	} else {
