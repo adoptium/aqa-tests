@@ -199,7 +199,7 @@
 	<!-- target to build all projects in the repository.  -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
-	<target name="build-dependencies" depends="configure_systemtest">
+	<target name="build-dependencies" depends="configure_systemtest" unless="common_build.executed">
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
