@@ -85,6 +85,6 @@ The test infrastructure in this repository allows us to lightly yoke a great var
 You can:
 - browse through the [openjdk-tests issues list](https://github.com/AdoptOpenJDK/openjdk-tests/issues), select one, add a comment to claim it and ask questions
 - browse through the [openjdk-systemtest issues](https://github.com/AdoptOpenJDK/openjdk-systemtest/issues) or [stf issues](https://github.com/AdoptOpenJDK/stf/issues), claim one with a comment and dig right in
-- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/triage/README.md) for guidance
+- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Triage.md) for guidance
   - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
 - ask questions in the [#testing channel](https://adoptopenjdk.slack.com/messages/C5219G28G) 
