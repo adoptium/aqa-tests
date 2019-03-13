@@ -35,7 +35,10 @@
 	<condition property="openjdkGit" value="openjdk-jdk11u">
         <equals arg1="${JDK_VERSION}" arg2="11"/>
     </condition>
-	
+	<condition property="openjdkGit" value="openjdk-jdk12u">
+        <equals arg1="${JDK_VERSION}" arg2="12"/>
+    </condition>
+
 	<property environment="env" />
 	<if>
 		<isset property="env.RELEASE_TAG"/>
