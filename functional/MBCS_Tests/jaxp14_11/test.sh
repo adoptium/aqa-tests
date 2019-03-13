@@ -15,7 +15,6 @@
 
 OS=`uname`
 LOC=`locale charmap`
-# LOC=`echo ${LANG%.*} | tr 'A-Z_' 'a-z\-'`
 # workaround of AIX7 defect
 LOC2=`echo ${LANG%.*} | LANG=C tr 'A-Z_' 'a-z\-'`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
@@ -26,8 +25,7 @@ CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=output.html
 
-
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 ${JAVA_BIN}/java XSLTTest ${BASE}/drinks_${LOC2}.xml ${BASE}/drinks_${LOC2}.xsl > ${OUTPUT}
 diff ${BASE}/expected_${LOC2}.html ${OUTPUT} > /dev/null 2>&1
 RESULT=$?

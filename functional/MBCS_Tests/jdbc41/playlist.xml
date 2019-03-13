@@ -75,6 +75,7 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
+			<subset>8</subset>
 <!-- This testcase works 120 and later by 8211295 -->
 		</subsets>
 		<disabled>bugs.openjdk.java.net/browse/JDK-8211295</disabled>
@@ -116,6 +117,54 @@ limitations under the License.
 		<command>LANG=KO_KR ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+<!-- This testcase works 80, 120, and later due to a regression -->
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test.bat; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+<!-- This testcase works 80, 120, and later due to a regression -->
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_ja_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+<!-- This testcase works 80, 120, and later due to a regression -->
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_ko_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -233,6 +282,51 @@ limitations under the License.
 		</groups>
 		<subsets>
 			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_11_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test11.bat; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_11_ja_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test11_2.bat Windows ja JP MS932 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_11_ko_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test11_2.bat Windows ko KR MS949 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
 		</subsets>
 	</test>
 </playlist>

@@ -18,7 +18,7 @@ BASE=`dirname $0`
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
-
+. ${BASE}/check_env_unix.sh
 CP="-cp ${BASE}/file.jar"
 
 LOGFILE="test_log.txt"

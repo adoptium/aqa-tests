@@ -19,10 +19,16 @@ import java.io.*;
 import javax.sql.rowset.*;
 
 public class jdbc41RowSetProvider {
+    static String getenv(String key) {
+        String val = System.getenv(key);
+        if (null == val)
+           val = System.getProperty(key);
+        return val;
+    }
 	public static void main(String[] args) throws Exception {
-		String env1 = System.getenv("TEST_STRING");
+		String env1 = getenv("TEST_STRING");
 		String driver = "jdbc:derby:javadb/"+ env1;
-		String tb = System.getenv("JDBC41_TABLE_NAME");
+		String tb = getenv("JDBC41_TABLE_NAME");
 		RowSetFactory myRowSetFactory = null;
     		JdbcRowSet jdbcRs = null;
 

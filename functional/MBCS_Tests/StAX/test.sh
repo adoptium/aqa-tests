@@ -18,8 +18,7 @@ BASE=`dirname $0`
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
-
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 CP="-cp ${BASE}/StAX.jar"
 
 COUNTRY=`echo ${LANG%%_*} | LANG=C tr '[A-Z]' '[a-z]'`

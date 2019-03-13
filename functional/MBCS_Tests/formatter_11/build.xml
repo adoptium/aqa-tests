@@ -46,12 +46,14 @@ limitations under the License.
 	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
 		<jar jarfile="${DEST}/formatter_11.jar" filesonly="true">
 			<fileset dir="${build}" />
+			<fileset dir="../data/" includes="*.properties" />
 		</jar>
 		<copy todir="${DEST}">
 			<fileset dir="${src}/../" includes="*.xml" />
 			<fileset dir="${src}/../" includes="*.mk" />
 			<fileset dir="${src}/../" includes="*.sh" />
 			<fileset dir="${src}/../" includes="*.bat" />
+			<fileset dir="../tools/" includes="*" />
 			<fileset dir="data/" includes="*" />
 		</copy>
 	</target>

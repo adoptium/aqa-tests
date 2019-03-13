@@ -22,7 +22,7 @@ BASE=`dirname $0`
 CLASSPATH=${BASE}/pref.jar:.
 export CLASSPATH
 
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 
 OUTPUT=${PWD}/result_${FULLLANG}.txt
 rm -f $OUTPUT

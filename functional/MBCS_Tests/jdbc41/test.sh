@@ -20,9 +20,8 @@ BASE=`dirname $0`
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
-
+. ${BASE}/check_env_unix.sh
 . ${BASE}/data/setjdbc41_${FULLLANG}
-. ${BASE}/../data/test_${FULLLANG}
 
 if [ "x${JDBC41_TABLE_NAME}" = "x" ] ; then
    echo "Environment variable JDBC41_TABLE_NAME is not defined"

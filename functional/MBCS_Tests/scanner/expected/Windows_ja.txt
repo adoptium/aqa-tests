@@ -1,0 +1,39 @@
+
+Tokenizing Test:
+
+test string: Š¿š•\¦”\—Í Š¿ ƒJƒi¶Å‚j‚‚‚Kana Š¿ ‹L†:\~P\_`ac|‘’Ê Š¿ ŠOš:úUúhV‡Š‡‚‡„ Š¿ ŠOš:‡T‡U‡@‡A‡I‡S
+delimiter: (space)
+item 1: Š¿š•\¦”\—Í
+item 2: Š¿
+item 3: ƒJƒi¶Å‚j‚‚‚Kana
+item 4: Š¿
+item 5: ‹L†:\~P\_`ac|‘’Ê
+item 6: Š¿
+item 7: ŠOš:úUúhV‡Š‡‚‡„
+item 8: Š¿
+item 9: ŠOš:‡T‡U‡@‡A‡I‡S
+
+test string: Š¿š•\¦”\—Í Š¿ ƒJƒi¶Å‚j‚‚‚Kana Š¿ ‹L†:\~P\_`ac|‘’Ê Š¿ ŠOš:úUúhV‡Š‡‚‡„ Š¿ ŠOš:‡T‡U‡@‡A‡I‡S
+delimiter: Š¿
+item 1: š•\¦”\—Í
+item 2: ƒJƒi¶Å‚j‚‚‚Kana
+item 3: ‹L†:\~P\_`ac|‘’Ê
+item 4: ŠOš:úUúhV‡Š‡‚‡„
+item 5: ŠOš:‡T‡U‡@‡A‡I‡S
+
+Pattern Matching Test:
+
+test string: Š¿š•\¦”\—Í Š¿ ƒJƒi¶Å‚j‚‚‚Kana Š¿ ‹L†:\~P\_`ac|‘’Ê Š¿ ŠOš:úUúhV‡Š‡‚‡„ Š¿ ŠOš:‡T‡U‡@‡A‡I‡S
+pattern: Š¿[^ ]*
+item 1: Š¿š•\¦”\—Í
+item 2: Š¿
+item 3: Š¿
+item 4: Š¿
+item 5: Š¿
+
+test string: Š¿š•\¦”\—Í Š¿ ƒJƒi¶Å‚j‚‚‚Kana Š¿ ‹L†:\~P\_`ac|‘’Ê Š¿ ŠOš:úUúhV‡Š‡‚‡„ Š¿ ŠOš:‡T‡U‡@‡A‡I‡S
+pattern: Š¿ [^ ]*
+item 1: Š¿ ƒJƒi¶Å‚j‚‚‚Kana
+item 2: Š¿ ‹L†:\~P\_`ac|‘’Ê
+item 3: Š¿ ŠOš:úUúhV‡Š‡‚‡„
+item 4: Š¿ ŠOš:‡T‡U‡@‡A‡I‡S

@@ -39,7 +39,9 @@ public class IDNFromFile {
 		PrintWriter pw = null ;
 		PrintWriter pw2 = null ;
 		String enc = null;
-		enc = System.getProperty("file.encoding");
+                enc = System.getProperty("IDNFromFile.encoding");
+                if (null == enc)
+                        enc = System.getProperty("file.encoding");
 		
 		if(args.length !=1){
 			System.out.println("Usage :  java IDNfromFile <list file>");

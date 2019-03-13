@@ -22,7 +22,8 @@ OUTPUT=output.txt
 BASE=`dirname $0`
 export CLASSPATH=${BASE}/env.jar
 
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
+
 echo "invoking EnvTest" > ${OUTPUT}
 ${JAVA_BIN}/java EnvTest >> ${OUTPUT}
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
