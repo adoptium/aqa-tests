@@ -82,6 +82,29 @@
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>jck-runtime-lang-CONV</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/CONV,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>12+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>jck-runtime-lang-EXPR</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
