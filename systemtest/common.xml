@@ -217,8 +217,9 @@
 	</target>
 	
 	<!-- To make sure common_build target only excute once, the common_build target runs only if common_build.executed value is not set -->
-	<target name="common_build" depends="build-dependencies" unless="common_build.executed">
+	<target name="common_build" unless="common_build.executed">
 		<echo message="target common_build is called....." />
+		<antcall target="build-dependencies" inheritall="true" />
 	</target>
 		
 	<target name="clean">
