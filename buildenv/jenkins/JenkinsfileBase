@@ -281,6 +281,7 @@ def runTest(subDir) {
 				iterations = "${params.ITERATIONS}".toInteger()
 			}
 			def CUSTOM_OPTION = ''
+			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom')) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
