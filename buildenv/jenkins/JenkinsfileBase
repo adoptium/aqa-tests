@@ -193,6 +193,31 @@ def setup() {
 			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
 
+			// system test repository exports to be used by systemtest/common.xml
+			if (params.ADOPTOPENJDK_SYSTEMTEST_REPO) {
+				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO 
+			}
+			
+			if (params.ADOPTOPENJDK_SYSTEMTEST_BRANCH) {
+				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = params.ADOPTOPENJDK_SYSTEMTEST_BRANCH
+			} 
+			
+			if (params.OPENJ9_SYSTEMTEST_REPO) {
+				env.OPENJ9_SYSTEMTEST_REPO = params.OPENJ9_SYSTEMTEST_REPO
+			}
+			
+			if (params.OPENJ9_SYSTEMTEST_BRANCH) {
+				env.OPENJ9_SYSTEMTEST_BRANCH = params.OPENJ9_SYSTEMTEST_BRANCH
+			} 
+			
+			if (params.STF_REPO) {
+				env.STF_REPO = params.STF_REPO
+			}
+			
+			if (params.STF_BRANCH) {
+				env.STF_BRANCH = params.STF_BRANCH
+			}
+			
 			// vendor test
 			// expect VENDOR_TEST_* to be comma separated string parameters
 			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
