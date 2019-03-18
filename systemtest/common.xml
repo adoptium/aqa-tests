@@ -17,6 +17,27 @@
 		<isset property="isZOS"/>
 	</condition>
 	
+	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
+		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
+	</condition>
+	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
+		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
+	</condition>
+	
+	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse/openj9-systemtest.git">
+		<isset property="env.OPENJDK_SYSTEMTEST_REPO"/>
+	</condition>
+	<condition property="openj9_systemtest_branch" value="${env.OPENJ9_SYSTEMTEST_BRANCH}" else="master">
+		<isset property="env.OPENJ9_SYSTEMTEST_BRANCH"/>
+	</condition>
+	
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
+		<isset property="env.STF_REPO"/>
+	</condition>
+	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
+		<isset property="env.STF_BRANCH"/>
+	</condition>
+	
 	<target name="common_init">
 		<if>
 			<not>
@@ -29,12 +50,15 @@
 	</target>
 
 	<target name="clone_stf">
+		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="${git-prefix}://github.com/AdoptOpenJDK/stf.git" />
+			<arg value="-b"/>
+			<arg value="${stf_branch}"/>
+			<arg value="${stf_repo}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -60,12 +84,15 @@
 	</target>
 
 	<target name="clone_systemtest">
+		<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
+			<arg value="-b"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+			<arg value="${openjdk_systemtest_repo}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -91,12 +118,14 @@
 	</target>
 	
 	<target name="clone_openj9-systemtest">
+		<echo message="Cloning from: ${openj9_systemtest_repo} -b ${openj9_systemtest_branch}"/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="${git-prefix}://github.com/eclipse/openj9-systemtest.git" />
+			<arg value="-b"/>
+			<arg value="${openj9_systemtest_branch}"/>
+			<arg value="${openj9_systemtest_repo}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
