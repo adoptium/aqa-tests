@@ -19,13 +19,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java9"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -33,35 +31,17 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
 TEST_SUITE=$1
 
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
 java -version
 
 # Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
 ls .
 pwd
-
-# $JAVA_HOME/bin/jps is not available in OpenJ9. Hence creating a dummy jps file in the case of OpenJ9
-
-ver=`"$JAVA_HOME"/bin/java -version`
-
-
-if [[ "Eclipse OpenJ9 VM" =~ "$ver" ]]
-then
- echo " " > "$JAVA_HOME"/bin/jps;
- `chmod +x "$JAVA_HOME"/bin/jps;`
-fi
-
 
 echo "Building elasticsearch  using gradle \"gradle assemble\"" && \
 gradle -g /tmp assemble
