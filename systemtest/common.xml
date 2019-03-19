@@ -25,7 +25,7 @@
 	</condition>
 	
 	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse/openj9-systemtest.git">
-		<isset property="env.OPENJDK_SYSTEMTEST_REPO"/>
+		<isset property="env.OPENJ9_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openj9_systemtest_branch" value="${env.OPENJ9_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.OPENJ9_SYSTEMTEST_BRANCH"/>
