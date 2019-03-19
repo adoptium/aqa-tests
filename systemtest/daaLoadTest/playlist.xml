@@ -7,8 +7,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D) $(AND_IF_SUCCESS) \
-	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
