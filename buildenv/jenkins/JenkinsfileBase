@@ -342,7 +342,7 @@ def post(output_name) {
 				def jtr_output_tar_name = "jtr_test_output${suffix}"
 				def core_output_tar_name = "core_dmp_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
-				sh "${tar_cmd} ${core_output_tar_name} ./jvmtest/${env.BUILD_LIST}/work/scratch"
+				sh "find ./jvmtest/${env.BUILD_LIST}/work/scratch -name '*.dmp' -o -name '*.trc' -o -iname 'javacore.*' | ${tar_cmd} ${core_output_tar_name} ${tar_opt} ${pax_opt}"
 				sh "find ./jvmtest/${env.BUILD_LIST}/work -name '*.jtr' | ${tar_cmd} ${jtr_output_tar_name} ${tar_opt} ${pax_opt}"
 				
 				if (!params.ARTIFACTORY_SERVER) {
