@@ -77,6 +77,7 @@
 		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
 	</test>
 	
+	<!-- Only running on JDK8 as it fails on JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/7 -->
 	<test>
 		<testCaseName>HCRLateAttachWorkload</testCaseName>
 		<variations>
@@ -96,7 +97,9 @@
 			<groups>
 			<group>system</group>
 		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/7</disabled>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 	
 	<test>
