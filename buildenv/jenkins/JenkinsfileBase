@@ -474,8 +474,8 @@ def uploadToArtifactory() {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
-		def jenkinsDomain = params.JENKINS_DOMAIN ? params.JENKINS_DOMAIN : getJenkinsDomain()
-		def artifactoryUploadDir = "${artifactoryRepo}/${jenkinsDomain}/${JOB_NAME}/${BUILD_ID}/"
+		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
+		def artifactoryUploadDir = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
 
 		def uploadSpec = """{
 			"files":[

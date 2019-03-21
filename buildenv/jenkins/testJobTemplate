@@ -20,6 +20,8 @@
 
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
+if (!binding.hasVariable('ARTIFACTORY_REPO')) ARTIFACTORY_REPO = ""
+if (!binding.hasVariable('ARTIFACTORY_ROOT_DIR')) ARTIFACTORY_ROOT_DIR = ""
 if (!binding.hasVariable('TIME_LIMIT')) TIME_LIMIT = "10"
 if (!binding.hasVariable('SUFFIX')) SUFFIX = ""
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
@@ -135,6 +137,8 @@ SPECS.each { SPEC ->
 							stringParam('SSH_AGENT_CREDENTIAL', "", "Optional. Only use when ssh credentials are needed")
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
+							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
+							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 							booleanParam('IS_PARALLEL', false, "Should tests run in parallel?")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
