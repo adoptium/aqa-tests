@@ -43,12 +43,11 @@ cd /elasticsearch
 ls .
 pwd
 
-echo "Building elasticsearch  using gradle \"gradle assemble\"" && \
-gradle -g /tmp assemble
+echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
+./gradlew -g /tmp assemble
 
 
 echo "Elasticsearch Build - Completed"
 
 echo "Running elasticsearch tests :"
-./gradlew -g /tmp test
-
+./gradlew -g /tmp test -Dtests.haltonfailure=false

@@ -24,7 +24,9 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+# Using nightly temporately util https://github.com/AdoptOpenJDK/openjdk-docker/issues/122 is fix
+#ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
@@ -44,15 +46,6 @@ RUN apt-get update \
 	vim \
 	wget
 
-#Install Gradle
-RUN mkdir -p /usr/share/gradle \
-         && cd /usr/share/gradle \
-         && wget https://services.gradle.org/distributions/gradle-4.5-bin.zip \
-         && unzip gradle-4.5-bin.zip \
-         && rm -rf gradle-4.5-bin.zip \
-         && ln -s /usr/share/gradle/gradle-4.5/bin/gradle /usr/bin/gradle \
-         && cd /
-
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
     PATH=/java/bin:$PATH \
@@ -65,21 +58,18 @@ COPY ./dockerfile/elasticsearch-test.sh /elasticsearch-test.sh
 WORKDIR /
 RUN pwd
 
-RUN git clone https://github.com/elastic/elasticsearch.git
+RUN git clone -q https://github.com/elastic/elasticsearch.git
 
 RUN cd elasticsearch \
 && git checkout v6.1.3
 
 RUN chown -R elasticsearch /elasticsearch
 RUN chown -R elasticsearch /elasticsearch-test.sh
-RUN chown -R elasticsearch /usr/share/gradle/gradle-4.5
 
 RUN chmod -R a+x /elasticsearch
-RUN chmod -R a+x /usr/share/gradle/gradle-4.5
 
 USER elasticsearch
 WORKDIR /
-ENV PATH="/usr/share/gradle/gradle-4.5/bin:${PATH}"
 
 #ENTRYPOINT ["/bin/bash", "/example-test.sh"]
 ENTRYPOINT ["/bin/bash", "/elasticsearch-test.sh"]
