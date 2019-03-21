@@ -2,9 +2,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<include>../systemtest.mk</include>
 
-	<!-- exclude on openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
+	<!-- exclude on JDK8 openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleThreadLoadTest</testCaseName>
+		<testCaseName>MauveSingleThreadLoadTest_OpenJ9_JDK8</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -30,7 +30,32 @@
 		</impls>
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
-	
+	<test>
+		<testCaseName>MauveSingleThreadLoadTest_OpenJ9</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=MauveSingleThreadLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>	
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_HS</testCaseName>
 		<variations>
@@ -50,17 +75,14 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
 	</test>
 
-	<!-- exclude on openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
+	<!-- exclude on JDK8 openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleInvocationLoadTest</testCaseName>
+		<testCaseName>MauveSingleInvocationLoadTest_OpenJ9_JDK8</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -86,7 +108,32 @@
 		</impls>
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
-
+	<test>
+		<testCaseName>MauveSingleInvocationLoadTest_OpenJ9</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=MauveSingleInvocationLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_HS</testCaseName>
 		<variations>
@@ -106,17 +153,14 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
 	</test>
 	
-	<!-- exclude on openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
+	<!-- exclude on JDK8 openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK8</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -142,7 +186,32 @@
 		</impls>
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
-	
+	<test>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=MauveMultiThreadLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_HS</testCaseName>
 		<variations>
@@ -162,9 +231,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
