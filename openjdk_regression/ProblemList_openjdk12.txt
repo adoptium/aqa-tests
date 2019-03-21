@@ -67,8 +67,8 @@ java/net/MulticastSocket/Promiscuous.java               https://github.com/Adopt
 java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 java/net/MulticastSocket/Test.java                             https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java    https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
-java/nio/channels/DatagramChannel/Promiscuous.java                  https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
-
+#java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602
+java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x macosx-all
 ############################################################################
 
 # jdk_io
@@ -93,7 +93,6 @@ java/nio/file/Files/InterruptCopy.java	https://github.com/AdoptOpenJDK/openjdk-t
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 jdk/nio/zipfs/ZipFSTester.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602 macosx-all,linux-ppc64le
-java/nio/channels/DatagramChannel/Promiscuous.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602	macosx-all
 ############################################################################ 
 
 # jdk_rmi
