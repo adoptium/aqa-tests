@@ -30,6 +30,7 @@
 		</impls>
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
+	<!-- exclude from all platforms due to https://github.com/eclipse/openj9/issues/234 -->
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_OpenJ9</testCaseName>
 		<variations>
@@ -55,7 +56,9 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/234</disabled>
 	</test>	
+	<!-- exclude from all platforms due to https://github.com/eclipse/openj9/issues/234 -->
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_HS</testCaseName>
 		<variations>
@@ -78,6 +81,7 @@
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
+		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/234</disabled>
 	</test>
 
 	<!-- exclude on JDK8 openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
@@ -108,6 +112,7 @@
 		</impls>
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
+	<!-- exclude from all platforms due to https://github.com/eclipse/openj9/issues/234 -->
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_OpenJ9</testCaseName>
 		<variations>
@@ -133,7 +138,10 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/234</disabled>
+		<
 	</test>
+	<!-- exclude from all platforms due to https://github.com/eclipse/openj9/issues/234 -->
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_HS</testCaseName>
 		<variations>
@@ -156,6 +164,7 @@
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
+		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/234</disabled>
 	</test>
 	
 	<!-- exclude on JDK8 openj9 on osx https://github.com/eclipse/openj9/issues/4091 -->
@@ -187,7 +196,7 @@
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest_OpenJ9</testCaseName>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK11</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -206,11 +215,66 @@
 			<group>system</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+	</test>
+	<!-- Excluded from JDK12 on Linux PPC 64 LE due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/235 -->
+	<test>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK12_NonLinux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=MauveMultiThreadLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>12</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>^os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK12_Linux</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=MauveMultiThreadLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>12</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_HS</testCaseName>
