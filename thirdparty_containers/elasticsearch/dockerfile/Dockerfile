@@ -27,7 +27,6 @@ ARG IMAGE_NAME=adoptopenjdk/$SDK
 # Using nightly temporately util https://github.com/AdoptOpenJDK/openjdk-docker/issues/122 is fix
 #ARG IMAGE_VERSION=latest
 ARG IMAGE_VERSION=nightly
-
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 RUN groupadd -g 1000 elasticsearch && useradd elasticsearch -u 1000 -g 1000
@@ -54,14 +53,12 @@ ENV JAVA_HOME=/java \
 # This is the main script to run Elasticsarch tests.
 COPY ./dockerfile/elasticsearch-test.sh /elasticsearch-test.sh
 
-# Clone the Elasticsearch test repo
-WORKDIR /
-RUN pwd
-
 RUN git clone -q https://github.com/elastic/elasticsearch.git
 
-RUN cd elasticsearch \
-&& git checkout v6.1.3
+#default is HEAD
+ARG ELASTIC_VERSION=.
+WORKDIR elasticsearch
+RUN git checkout $ELASTIC_VERSION
 
 RUN chown -R elasticsearch /elasticsearch
 RUN chown -R elasticsearch /elasticsearch-test.sh
