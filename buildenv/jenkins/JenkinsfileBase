@@ -14,7 +14,7 @@ def makeTest(testParam) {
 	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
-		sh "./openjdk-tests/maketest.sh $testParam" 
+		sh "./openjdk-tests/maketest.sh $testParam"
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -29,7 +29,7 @@ def setupEnv() {
 		if (params.ADOPTOPENJDK_REPO.startsWith('git') && params.USER_CREDENTIALS_ID && !SPEC.startsWith('zos')) {
 			remoteConfigParameters.put('credentialsId', "${params.USER_CREDENTIALS_ID}")
 		}
-		
+
 		checkout([
 			$class: 'GitSCM', branches: [[name: "*/${params.ADOPTOPENJDK_BRANCH}"]],
 			extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
@@ -65,7 +65,7 @@ def setupEnv() {
 	} else {
 		env.BUILD_LIST = "${getBuildList()}"
 	}
-	
+
 	if( params.PERF_ROOT ) {
 		env.PERF_ROOT = params.PERF_ROOT
 	} else {
@@ -87,11 +87,11 @@ def setupEnv() {
 			echo "params.JCK_GIT_REPO was not defined"
 		}
 	}
-	
+
 	if (env.BUILD_LIST == 'openjdk_regression' ||  env.BUILD_LIST == 'thirdparty_containers') {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
-	
+
 	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
@@ -111,13 +111,13 @@ def setupParallelEnv() {
 			}
 			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			def parallel_tests = [:]
-			
+
 			for (int i = 0; i < testSubDirSize; i++) {
 				def testSubDir = testSubDirs[i].trim().replace("/","");
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
-				//ToDo: need to find a better way to pass parameters to downstream builds. 
-				//Ideally, we should only need to pass in modified parameters (i.e., 
+				//ToDo: need to find a better way to pass parameters to downstream builds.
+				//Ideally, we should only need to pass in modified parameters (i.e.,
 				//BUILD_LIST, IS_PARALLEL)
 				parallel_tests[testSubDir] = {
 					build job: TEST_JOB_NAME, parameters: [
@@ -178,7 +178,7 @@ def setup() {
 			} else {
 				CUSTOMIZED_SDK_URL_OPTION = ""
 			}
-			
+
 			if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 				dir('openjdkbinary') {
 					step([$class: 'CopyArtifact',
@@ -195,29 +195,29 @@ def setup() {
 
 			// system test repository exports to be used by systemtest/common.xml
 			if (params.ADOPTOPENJDK_SYSTEMTEST_REPO) {
-				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO 
+				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO
 			}
-			
+
 			if (params.ADOPTOPENJDK_SYSTEMTEST_BRANCH) {
 				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = params.ADOPTOPENJDK_SYSTEMTEST_BRANCH
-			} 
-			
+			}
+
 			if (params.OPENJ9_SYSTEMTEST_REPO) {
 				env.OPENJ9_SYSTEMTEST_REPO = params.OPENJ9_SYSTEMTEST_REPO
 			}
-			
+
 			if (params.OPENJ9_SYSTEMTEST_BRANCH) {
 				env.OPENJ9_SYSTEMTEST_BRANCH = params.OPENJ9_SYSTEMTEST_BRANCH
-			} 
-			
+			}
+
 			if (params.STF_REPO) {
 				env.STF_REPO = params.STF_REPO
 			}
-			
+
 			if (params.STF_BRANCH) {
 				env.STF_BRANCH = params.STF_BRANCH
 			}
-			
+
 			// vendor test
 			// expect VENDOR_TEST_* to be comma separated string parameters
 			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
@@ -260,7 +260,7 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-					
+
 			if ( params.PERF_CREDENTIALS_ID ) {
 				withCredentials([usernamePassword(credentialsId: "$params.PERF_CREDENTIALS_ID",
 					passwordVariable: "PASSWORD_VAR", usernameVariable: "USERNAME_VAR")]) {
@@ -275,7 +275,7 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			try {
 				if (env.BUILD_LIST.startsWith('systemtest') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
@@ -313,7 +313,7 @@ def runTest(subDir) {
 			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST.startsWith('jck')) {
-					if (env.SPEC.startsWith('linux_x86-64')) { 
+					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
 							def DISPLAY = sh (
 								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -349,7 +349,7 @@ def post(output_name) {
 				for (String tapFile : tapFiles) {
 					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
 				}
-			
+
 				tar_cmd = "pax -wf"
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
@@ -424,7 +424,7 @@ def testBuild() {
 				cleanWs()
 			}
 		}
-		
+
 	}
 }
 
@@ -451,7 +451,7 @@ def addJobDescription() {
 			currentBuild.displayName = "#${BUILD_NUMBER} - ${BUILD_USER_EMAIL}"
 		}
 	}
-	
+
 	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
 	currentBuild.description = description \
 		+ "TARGET: ${params.TARGET}<br/>" \
@@ -497,6 +497,7 @@ def uploadToArtifactory() {
 		def artifactoryUrl = server.getUrl()
 		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
 		echo "Test output artifactory URL:'${uploadUrl}'"
+		currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
 	} else {
 		echo "ARTIFACTORY_SERVER is not set. Artifacts are not uploaded onto artifactory server."
 	}
