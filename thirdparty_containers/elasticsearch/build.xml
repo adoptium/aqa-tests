@@ -21,8 +21,24 @@
 	</target>
 
 	<target name="build_image" depends="clean_image" description="build elasticsearch test docker image">
+		<if>
+			<contains string="${JVM_VERSION}" substring="8" />
+			<then>
+				<property name="ELASTIC_VERSION" value="v6.1.3" />
+			</then>
+			<elseif>
+				<contains string="${JVM_VERSION}" substring="11" />
+				<then>
+					<property name="ELASTIC_VERSION" value="v6.6.2" />
+				</then>
+			</elseif>
+			<else>
+				<echo message="Checkout lastest ELASTIC " />
+				<property name="ELASTIC_VERSION" value="." />
+			</else>
+		</if>
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-elasticsearch-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+			<arg line="build -t adoptopenjdk-elasticsearch-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg ELASTIC_VERSION=${ELASTIC_VERSION}"/>
 		</exec>
 	</target>
 
