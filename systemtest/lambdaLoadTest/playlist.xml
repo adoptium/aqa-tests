@@ -78,6 +78,7 @@
 	</test>
 	
 	<!-- Only running on JDK8 as it fails on JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/7 -->
+	<!-- Excluded from Windows platform due to: https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/236 -->
 	<test>
 		<testCaseName>HCRLateAttachWorkload</testCaseName>
 		<variations>
@@ -100,6 +101,7 @@
 		<subsets>
 			<subset>8</subset>
 		</subsets>
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	
 	<test>
