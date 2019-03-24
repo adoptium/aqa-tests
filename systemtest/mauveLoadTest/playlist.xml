@@ -192,10 +192,11 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>^os.osx</platformRequirements>
+		<platformRequirements>^os.osx,^os.linux</platformRequirements>
 	</test>
+	<!-- Disabled from all platforms on JDK11 ands JDK12 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/235 -->
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK11</testCaseName>
+		<testCaseName>MauveMultiThreadLoadTest_OpenJ9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -214,66 +215,12 @@
 			<group>system</group>
 		</groups>
 		<subsets>
-			<subset>11</subset>
+			<subset>11+</subset>
 		</subsets>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-	</test>
-	<!-- Excluded from JDK12 on Linux PPC 64 LE due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/235 -->
-	<test>
-		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK12_NonLinux</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<subsets>
-			<subset>12</subset>
-		</subsets>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
-	</test>
-	<test>
-		<testCaseName>MauveMultiThreadLoadTest_OpenJ9_JDK12_Linux</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=MauveMultiThreadLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<subsets>
-			<subset>12</subset>
-		</subsets>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
+		<disabled>https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/235</disabled>
 	</test>
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_HS</testCaseName>
