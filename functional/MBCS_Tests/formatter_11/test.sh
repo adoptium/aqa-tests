@@ -22,10 +22,8 @@ export CLASSPATH=${BASE}/formatter_11.jar
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=output.txt
-#OUTPUT=${BASE}/output.txt
 
-
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 echo "invoking FormatterTest2" > ${OUTPUT}
 ${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1

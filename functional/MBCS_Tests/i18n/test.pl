@@ -30,6 +30,24 @@ if ($i == -1) {
 $lang = substr($lang, 0, $i);
 $FULLLANG = $OS."_".$lang.".".$SYSENC;
 
+if ($FULLLANG eq "aix_Ja_JP.IBM-943" ||
+    $FULLLANG eq "aix_ja_JP.IBM-eucJP" ||
+    $FULLLANG eq "aix_JA_JP.UTF-8" ||
+    $FULLLANG eq "aix_ko_KR.IBM-eucKR" ||
+    $FULLLANG eq "aix_KO_KR.UTF-8" ||
+    $FULLLANG eq "Linux_ja_JP.UTF-8" ||
+    $FULLLANG eq "Linux_ko_KR.UTF-8"){}
+elsif ($FULLLANG eq "aix_ja_JP.UTF-8" ||
+       $FULLLANG eq "aix_ko_KR.UTF-8"){ $FULLLANG=$FULLLANG.".s" }
+else {
+    ok(true,"skip");
+    ok(true,"skip");
+    ok(true,"skip");
+    print "SKIPPED! ${FULLLANG} is not supported. ";
+    exit(0);
+}
+
+
 #print $lang."\n";
 #print $OS."\n";
 #print $SYSENC."\n";
@@ -67,5 +85,3 @@ while (my $line = <DATA>) {
 }
 close(DATA);
 ok( $flag eq true, "DateFormatTest");
-
-

@@ -20,6 +20,47 @@ $base = $FindBin::Bin."/";
 print "base ".$base."\n";
 $jar = "-cp ".$base."locale_matching.jar";
 
+$OS=$^O; #OS name
+chomp($OS);
+$SYSENC=`locale charmap`;
+chomp($SYSENC);
+$lang = $ENV{LANG};
+$i = index($lang,".");
+if ($i == -1) {
+    $i = length($lang);
+}
+$lang = substr($lang, 0, $i);
+$FULLLANG = $OS."_".$lang.".".$SYSENC;
+
+if ($FULLLANG eq "aix_Ja_JP.IBM-943" ||
+    $FULLLANG eq "aix_ja_JP.IBM-eucJP" ||
+    $FULLLANG eq "aix_JA_JP.UTF-8" ||
+    $FULLLANG eq "aix_ko_KR.IBM-eucKR" ||
+    $FULLLANG eq "aix_KO_KR.UTF-8" ||
+    $FULLLANG eq "aix_zh_CN.IBM-eucCN" ||
+    $FULLLANG eq "aix_Zh_CN.GB18030" ||
+    $FULLLANG eq "aix_ZH_CN.UTF-8" ||
+    $FULLLANG eq "aix_zh_TW.IBM-eucTW" ||
+    $FULLLANG eq "aix_Zh_TW.big5" ||
+    $FULLLANG eq "aix_ZH_TW.UTF-8" ||
+    $FULLLANG eq "aix_ja_JP.UTF-8" ||
+    $FULLLANG eq "aix_ko_KR.UTF-8" ||
+    $FULLLANG eq "aix_zh_Hans_CN.UTF-8" ||
+    $FULLLANG eq "aix_zh_Hant_TW.UTF-8" ||
+    $FULLLANG eq "linux_ja_JP.UTF-8" ||
+    $FULLLANG eq "linux_ko_KR.UTF-8" ||
+    $FULLLANG eq "linux_zh_CN.UTF-8" ||
+    $FULLLANG eq "linux_zh_TW.UTF-8"){}
+else {
+    ok(true,"skip");
+    ok(true,"skip");
+    ok(true,"skip");
+    ok(true,"skip");
+    ok(true,"skip");
+    print "SKIPPED! ${FULLLANG} is not supported. ";
+    exit(0);
+}
+
 my @list=(
 "LocaleFilterTest1",
 "LocaleFilterTest2",

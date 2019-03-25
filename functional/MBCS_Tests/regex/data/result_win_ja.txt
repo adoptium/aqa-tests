@@ -1,0 +1,83 @@
+------------ Pattern matching test ------------
+11:    #java SimpleGrep ‚ ‚¢‚¤‚¦‚¨ sjis_win.txt
+12: ‚Ğ‚ç‚ª‚È•¶š—ñu‚ ‚¢‚¤‚¦‚¨v‚ğŠÜ‚Şs‚ªA³‚µ‚­’Šo‚³‚ê‚Ü‚µ‚½‚©H
+47: ‚ ‚¢‚¤‚¦‚¨
+--- Confirm that the line(s) includes "‚ ‚¢‚¤‚¦‚¨". 
+--- Did you get the line(s) 11,12 and 47 ?
+11:    #java SimpleGrep ‚ ‚¢‚¤‚¦‚¨ sjis_win.txt
+12: ‚Ğ‚ç‚ª‚È•¶š—ñu‚ ‚¢‚¤‚¦‚¨v‚ğŠÜ‚Şs‚ªA³‚µ‚­’Šo‚³‚ê‚Ü‚µ‚½‚©H
+47: ‚ ‚¢‚¤‚¦‚¨
+48: ‚ ‚¢‚¤‚¥‚¨
+50: ‚ ƒCƒE‚¦‚¨
+52: V”N‚ ‚¯‚Ü‚µ‚Ä‚¨‚ß‚Å‚Æ‚¤‚²‚´‚¢‚Ü‚·
+--- Confirm that the line(s) includes the pattern "‚ *‚¨". 
+--- Did you get the line(s) 11,12,47,48,50 and 52 ?
+53: Š¿š•¶š—ñ•\¦Œ±
+54: Š¿•û–ò
+55: Š¿˜a«“T
+--- Confirm that the line(s) starts with "Š¿".
+--- Did you get the line 53,54 and 55 ?
+19: ”¼Šp¶À¶Å‚ğŒ©‚Ä‚İ‚Ü‚µ‚å‚¤B
+20:    #java SimpleGrep ¶Å sjis_win.txt
+39: š•\¦”\—ÍŒ±•¶š—ñv‚Ì‚æ‚¤‚ÈŠ¿š‚Ì•¶š—ñ‚âAu‚©‚ÈƒJƒi¶ÅKan
+--- Confirm that the line(s) includes half-width Katakana "¶Å". 
+--- Did you get the line 19,20 and 39 ?
+24:    #java SimpleGrep  sjis_win.txt
+66: {|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”
+--- Confirm that the line(s) includes "" (full-width Yen symbol). 
+--- Did you get the line 24 and 66 ?
+33: 	\u3042\u304b\u3055\u305f\u306a
+35:      #java SimpleGrep \u3042\u304b\u3055\u305f\u306a sjis_win.txt
+--- Confirm that the line(s) includes "\" (half-width Yen symbol). 
+--- Did you get the line 33 and 35 ?
+81: ‹@•@ä@ƒ@[–[á[„[‰\”\ä\ƒ\‰]”]æ]ƒ]‰^^ç^^_“_ä_„_
+--- Confirm that the line(s) includes the pattern "•@.*ƒ\". 
+--- Did you get the line 81 ?
+31: ‚È‚Á‚Ä‚¢‚Ü‚·B‚½‚Æ‚¦‚ÎA‚Ğ‚ç‚ª‚Èu‚ ‚©‚³‚½‚Èv‚ğ Unicode ƒV[
+--- Confirm that the line(s) includes "‚ ‚©‚³". 
+--- Did you get the line 31 ?
+60: ‡@‡A‡B‡C‡D‡E‡F‡G‡H‡I‡J‡K‡L‡M‡N‡O‡P‡Q‡R‡S
+61: ‡T‡U‡V‡W‡X‡Y‡Z‡[‡\‡]
+63: ‡o‡p‡q‡r‡s‡t‡u‡~‡€‡‡‚‡ƒ‡„‡…‡†‡‡‡ˆ‡‰‡Š‡‹‡Œ‡‡‡
+--- Confirm that the line(s) includes any of ‡,‡,‡,‡~,‡S or ‡X. 
+--- Did you get the line 60,61 and 63 ?
+
+------------ Pattern replacement test ------------
+11:    #java SimpleGrep ‚ ‚¢‚¤‚¦‚¨ sjis_win.txt
+==>    #java SimpleGrep aiueo sjis_win.txt
+12: ‚Ğ‚ç‚ª‚È•¶š—ñu‚ ‚¢‚¤‚¦‚¨v‚ğŠÜ‚Şs‚ªA³‚µ‚­’Šo‚³‚ê‚Ü‚µ‚½‚©H
+==> ‚Ğ‚ç‚ª‚È•¶š—ñuaiueov‚ğŠÜ‚Şs‚ªA³‚µ‚­’Šo‚³‚ê‚Ü‚µ‚½‚©H
+47: ‚ ‚¢‚¤‚¦‚¨
+==> aiueo
+--- Confirm that "‚ ‚¢‚¤‚¦‚¨" was replaced by "aiueo". 
+--- OK ?
+19: ”¼Šp¶À¶Å‚ğŒ©‚Ä‚İ‚Ü‚µ‚å‚¤B
+==> ”¼Šp¶ÀƒJƒ^ƒJƒi‚ğŒ©‚Ä‚İ‚Ü‚µ‚å‚¤B
+20:    #java SimpleGrep ¶Å sjis_win.txt
+==>    #java SimpleGrep ƒJƒ^ƒJƒi sjis_win.txt
+39: š•\¦”\—ÍŒ±•¶š—ñv‚Ì‚æ‚¤‚ÈŠ¿š‚Ì•¶š—ñ‚âAu‚©‚ÈƒJƒi¶ÅKan
+==> š•\¦”\—ÍŒ±•¶š—ñv‚Ì‚æ‚¤‚ÈŠ¿š‚Ì•¶š—ñ‚âAu‚©‚ÈƒJƒiƒJƒ^ƒJƒiKan
+--- Confirm that "¶Å" was replaced by "ƒJƒ^ƒJƒi". 
+--- OK ?
+24:    #java SimpleGrep  sjis_win.txt
+==>    #java SimpleGrep \ sjis_win.txt
+66: {|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”
+==> {|}~€‚ƒ„…†‡ˆ‰Š‹Œ\‘’“”
+--- Confirm that "" was replaced by "\". 
+--- OK ?
+81: ‹@•@ä@ƒ@[–[á[„[‰\”\ä\ƒ\‰]”]æ]ƒ]‰^^ç^^_“_ä_„_
+==> ‹@‚T‚ƒ•¶š—ñ‰]”]æ]ƒ]‰^^ç^^_“_ä_„_
+--- Confirm that "•@.*ƒ\" was replaced by "‚T‚ƒ•¶š—ñ". 
+--- OK ?
+31: ‚È‚Á‚Ä‚¢‚Ü‚·B‚½‚Æ‚¦‚ÎA‚Ğ‚ç‚ª‚Èu‚ ‚©‚³‚½‚Èv‚ğ Unicode ƒV[
+==> ‚È‚Á‚Ä‚¢‚Ü‚·B‚½‚Æ‚¦‚ÎA‚Ğ‚ç‚ª‚Èuƒ\ç^‚½‚Èv‚ğ Unicode ƒV[
+--- Confirm that "‚ ‚©‚³" was replaced by "ƒ\ç^". 
+--- OK ?
+60: ‡@‡A‡B‡C‡D‡E‡F‡G‡H‡I‡J‡K‡L‡M‡N‡O‡P‡Q‡R‡S
+==> ‡@‡A‡B‡C‡D‡E‡F‡G‡H‡I‡J‡K‡L‡M‡N‡O‡P‡Q‡RŠOš
+61: ‡T‡U‡V‡W‡X‡Y‡Z‡[‡\‡]
+==> ‡T‡U‡V‡WŠOš‡Y‡Z‡[‡\‡]
+63: ‡o‡p‡q‡r‡s‡t‡u‡~‡€‡‡‚‡ƒ‡„‡…‡†‡‡‡ˆ‡‰‡Š‡‹‡Œ‡‡‡
+==> ‡o‡p‡q‡r‡s‡t‡uŠOš‡€‡‡‚‡ƒ‡„‡…‡†‡‡‡ˆ‡‰‡Š‡‹‡ŒŠOšŠOšŠOš
+--- Confirm that any of "‡‡‡‡~‡S‡X" were replaced by "ŠOš". 
+--- OK ?

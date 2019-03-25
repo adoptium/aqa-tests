@@ -24,7 +24,7 @@ SOURCE="${CHARMAP}.txt"
 
 echo "system code page is " ${LOC}
 
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 echo "invoking ReadWriteTest..." 
 ${JAVA_BIN}/java ReadWriteTest ${BASE}/expected_${FULLLANG}.txt ${LOC} converted.txt ${LOC} > /dev/null 2>&1
 diff ${BASE}/expected_${FULLLANG}.txt ./converted.txt > /dev/null 2>&1

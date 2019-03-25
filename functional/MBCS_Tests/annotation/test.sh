@@ -18,7 +18,7 @@ OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
 
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 
 cp ${BASE}/*.java .
 
