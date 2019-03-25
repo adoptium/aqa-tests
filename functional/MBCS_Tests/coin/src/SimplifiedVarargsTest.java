@@ -13,10 +13,17 @@
 *******************************************************************************/
 
 public class SimplifiedVarargsTest{
+        static String getenv(String key){
+           String val = System.getenv(key);
+           if (null == val)
+           val = System.getProperty(key);
+           return val;
+        }
+
 	static String[] getTestStrings(){
-		String envString = System.getenv("TEST_STRINGS_SED");
+		String envString = getenv("TEST_STRINGS_SED");
 		if (envString == null){
-		    System.err.println("Error: Env TEST_STRINGS is empty.");
+		    System.err.println("Error: Env TEST_STRINGS_SED is empty.");
 		    System.exit(-1);
 		}
 		String[] testStrings = envString.split(" ");
@@ -32,7 +39,7 @@ public class SimplifiedVarargsTest{
 	// For easy to read, using '+' instead of append...
 		String className = "SimplifiedVarargsTestCode";
 		StringBuilder builder=new StringBuilder();
-		String[] testStrings = getTestStrings();
+                String[] testStrings = getTestStrings();
 
 		builder.append(
 		"import java.util.*;\n"+

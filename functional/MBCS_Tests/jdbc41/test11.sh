@@ -18,9 +18,8 @@ BASE=`dirname $0`
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
-
+. ${BASE}/check_env_unix.sh
 . ${BASE}/data/setjdbc41_${FULLLANG}
-. ${BASE}/../data/test_${FULLLANG}
 
 if [ "x${JDBC41_TABLE_NAME}" = "x" ] ; then
    echo "Environment variable JDBC41_TABLE_NAME is not defined"
@@ -40,8 +39,6 @@ TEST_STRINGS=`echo "$TEST_STRINGS" | sed -e 's/://g'`
 
 ${JAVA_BIN}/java ${CP} jdbc41autoclose ${TEST_STRINGS} > out_auto.txt 2>&1
 
-#${JAVA_BIN}/java ${CP} jdbc41RowSetProvider > out_row.txt 2>&1
-
 ${JAVA_BIN}/java ${CP} jdbc41droptb > out_drop.txt 2>&1
 
 RESULT=0
@@ -50,11 +47,6 @@ ret=$?
 if [ $ret -ne 0 ] ;then
     RESULT=1
 fi
-#diff out_row.txt ${BASE}/expected/${FULLLANG}_row.txt >> diff.txt
-#ret=$?
-#if [ $ret -ne 0 ] ;then
-#    RESULT=1
-#fi
 diff out_drop.txt ${BASE}/expected/drop.txt >> diff.txt
 ret=$?
 if [ $ret -ne 0 ] ;then

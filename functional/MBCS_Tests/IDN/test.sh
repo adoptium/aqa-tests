@@ -22,9 +22,10 @@ export CLASSPATH=${BASE}/IDN.jar
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=output.txt
+. ${BASE}/check_env_unix.sh
 
 LISTS=`ls ${BASE}/${FULLLANG}*.txt`
-echo "launching IDNFromFile..." >> ${OUTPUT}
+echo "launching IDNFromFile..." > ${OUTPUT}
 for i in ${LISTS}
 do
         j=${i##/*/}
