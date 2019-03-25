@@ -126,4 +126,49 @@ limitations under the License.
 			<subset>9+</subset>
 		</subsets>
 	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test.bat;\
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_ja_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932 TEST_STRINGS;\
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_ko_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRINGS;\
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
 </playlist>

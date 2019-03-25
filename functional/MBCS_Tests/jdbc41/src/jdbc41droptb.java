@@ -17,9 +17,15 @@ import java.util.*;
 import java.io.*;
 
 public class jdbc41droptb {
+    static String getenv(String key) {
+        String val = System.getenv(key);
+        if (null == val)
+           val = System.getProperty(key);
+        return val;
+    }
 	public static void main(String[] args) throws SQLException, IOException {
-		String env1 = System.getenv("TEST_STRING");
-		String tb = System.getenv("JDBC41_TABLE_NAME");
+		String env1 = getenv("TEST_STRING");
+		String tb = getenv("JDBC41_TABLE_NAME");
 		String driver = "jdbc:derby:javadb/"+ env1;
 
 		Properties info = new Properties();

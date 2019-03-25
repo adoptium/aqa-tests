@@ -13,8 +13,15 @@
 *******************************************************************************/
 
 public class ExceptionTest{
+        static String getenv(String key){
+           String val = System.getenv(key);
+           if (null == val)
+           val = System.getProperty(key);
+           return val;
+        }
+
 	static String[] getTestStrings(){
-		String envString = System.getenv("TEST_STRINGS");
+		String envString = getenv("TEST_STRINGS");
 		if (envString == null){
 		    System.err.println("Error: Env TEST_STRINGS is empty.");
 		    System.exit(-1);
@@ -27,7 +34,7 @@ public class ExceptionTest{
 	// For easy to read, using '+' instead of append...
 		String className = "ExceptionTestCode";
 		StringBuilder builder=new StringBuilder();
-		String[] testStrings = getTestStrings();
+                String[] testStrings = getTestStrings();
 
 		builder.append(
 		"public class ExceptionTestCode {\n"

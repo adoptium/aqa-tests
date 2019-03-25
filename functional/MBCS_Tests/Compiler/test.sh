@@ -27,8 +27,9 @@ OUTPUT=$PWD/output.txt
 rm -rf tmp
 mkdir tmp
 cd tmp
-. ${BASE}/../data/test_${FULLLANG}
+. ${BASE}/check_env_unix.sh
 TS=`${JAVA_BIN}/java CheckValidData "${TEST_STRING}"`
+
 JAVAFILE=${TS}.java
 sed "s/TEST_STRING/${TS}/g" ${BASE}/class_org.java > ${JAVAFILE}
 echo "lauching CompilerTest1..." > ${OUTPUT}
