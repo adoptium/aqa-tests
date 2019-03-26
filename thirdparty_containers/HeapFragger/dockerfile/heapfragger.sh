@@ -39,6 +39,13 @@ fi
 
 TEST_SUITE=$1
 
+cd /HeapFragger
+ls .
+echo "Compile and execute HeapFragger" && \
+mvn package && \
+cd target && \
+
+
 echo "PATH is : $PATH"
 echo "JAVA_HOME is : $JAVA_HOME"
 echo "type -p java is :"
@@ -46,9 +53,11 @@ type -p java
 echo "java -version is: \n"
 java -version
 
-cd /HeapFragger
-ls .
-echo "Compile and execute HeapFragger" && \
-mvn package && \
-cd target && \
-java -Xmx2g -Xmx2g -XX:+UseConcMarkSweepGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDetails -javaagent:HeapFragger.jar="-a 400 -s 512" org.HeapFragger.Idle -t 1000000000
+echo "================ Running HeapFragger ==============="
+
+java -Xmx2G -Xms2G -Xmn1G -verbose:gc -Xtgc:parallel -javaagent:HeapFragger.jar="-a 128 -f 0.25 -s 512" org.HeapFragger.Idle -t 60000 |& tee output.log
+
+grep 'gc-op.*scav' output.log
+
+
+ 
