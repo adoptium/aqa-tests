@@ -45,7 +45,6 @@ echo "Compile and execute HeapFragger" && \
 mvn package && \
 cd target && \
 
-
 echo "PATH is : $PATH"
 echo "JAVA_HOME is : $JAVA_HOME"
 echo "type -p java is :"
@@ -54,10 +53,5 @@ echo "java -version is: \n"
 java -version
 
 echo "================ Running HeapFragger ==============="
-
 java -Xmx2G -Xms2G -Xmn1G -verbose:gc -Xtgc:parallel -javaagent:HeapFragger.jar="-a 128 -f 0.25 -s 512" org.HeapFragger.Idle -t 60000 |& tee output.log
-
 grep 'gc-op.*scav' output.log
-
-
- 
