@@ -2,7 +2,6 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<include>../systemtest.mk</include>
 
-	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
 	<test>
 		<testCaseName>MathLoadTest_all</testCaseName>
 		<variations>
@@ -22,11 +21,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-		</subsets>
 	</test>
 	
 	<test>
@@ -51,7 +45,6 @@
 		</groups>
 	</test>
 	
-	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
 		<variations>
@@ -72,11 +65,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-		</subsets>
 	</test>
 	
 	<test>
@@ -210,11 +198,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-		</subsets>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
@@ -280,7 +263,6 @@
 		</impls>
 	</test>
 
- 	<!-- Exclude from JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/178 -->
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal_special</testCaseName>
 		<variations>
@@ -336,11 +318,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-		</subsets>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
