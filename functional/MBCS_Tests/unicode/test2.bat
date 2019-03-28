@@ -13,9 +13,10 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-SET CLASSPATH=%PWD%\formatter_11.jar
 
-%JAVA_BIN%\java -Duser.timezone=Asia/Tokyo Main %1 %2 %3 %4 %5
+%JAVA_BIN%\java -cp %PWD%unicode.jar Main %PWD%\UnicodeData-10.0.0.txt %PWD%\Blocks-10.0.0.txt  %PWD%\Scripts-10.0.0.txt %PWD%\PropertyValueAliases-10.0.0.txt %PWD%\NormalizationTest-10.0.0.txt
+set SIZE=1
+for /f %%i in ("err*.txt") do set SIZE=%%~zi
+echo SIZE= %SIZE%
+exit %SIZE%
 
-fc %PWD%\expected_windows_%2.txt output > fc.out 2>&1
-exit %errorlevel%

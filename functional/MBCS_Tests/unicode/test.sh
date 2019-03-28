@@ -13,20 +13,24 @@
 # limitations under the License.
 ################################################################################
 
-OS=`uname`
-LOC=`locale charmap`
-# workaround of AIX7 defect
-LOC2=`echo ${LANG%.*} | LANG=C tr 'A-Z_' 'a-z\-'`
-FULLLANG=${OS}_${LANG%.*}.${LOC}
-
 BASE=`dirname $0`
-export CLASSPATH=${BASE}/jaxp14_11.jar
-CHARMAP=${FULLLANG}
-SOURCE="${CHARMAP}.txt"
-OUTPUT=output.html
+CP="-cp ${BASE}/unicode.jar"
 
-. ${BASE}/check_env_unix.sh
-${JAVA_BIN}/java XSLTTest ${BASE}/drinks_${LOC2}.xml ${BASE}/drinks_${LOC2}.xsl > ${OUTPUT}
-diff ${BASE}/expected_${LOC2}.html ${OUTPUT} > /dev/null 2>&1
-RESULT=$?
-exit ${RESULT}
+${JAVA_BIN}/java ${CP} UnicodeChecker        ${BASE}/UnicodeData-10.0.0.txt 2>err1.txt
+cat err1.txt
+${JAVA_BIN}/java ${CP} UnicodeBlockChecker   ${BASE}/Blocks-10.0.0.txt 2>err2.txt
+cat err2.txt
+${JAVA_BIN}/java ${CP} UnicodeScriptChecker  ${BASE}/Scripts-10.0.0.txt 2>err3.txt
+cat err3.txt
+${JAVA_BIN}/java ${CP} UnicodeScriptChecker3 ${BASE}/PropertyValueAliases-10.0.0.txt 2>err4.txt
+cat err4.txt
+${JAVA_BIN}/java ${CP} NormalizerTest        ${BASE}/NormalizationTest-10.0.0.txt 2>err5.txt
+cat err5.txt
+
+if [ -s err1.txt ] || [ -s err2.txt ] || [ -s err3.txt ] || [ -s err4.txt ] || [ -s err5.txt ]; then
+  echo Test Failed
+  exit 1
+else
+  echo Test Passed
+  exit 0
+fi

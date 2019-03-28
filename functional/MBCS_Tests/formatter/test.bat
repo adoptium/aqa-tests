@@ -15,26 +15,18 @@ SETLOCAL
 SET PWD=%~dp0
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
 SET OUTPUT=output.txt
-SET CLASSPATH=%PWD%\jaxp14_11.jar
+SET CLASSPATH=%PWD%\formatter.jar
 SET STATUS=UKNOWN
-if %LOCALE% == ja (
-SET STATUS=OK
-SET XMLFILE=drinks_%LOCALE%-jp.xml
-SET XSLFILE=drinks_%LOCALE%-jp.xsl
-SET EXPECTEDFILE=win_%LOCALE%.html
-)
-if %LOCALE% == ko (
-SET STATUS=OK
-SET XMLFILE=drinks_%LOCALE%-kr.xml
-SET XSLFILE=drinks_%LOCALE%-kr.xsl
-SET EXPECTEDFILE=win_%LOCALE%.html
-)
+if %LOCALE% == ja SET STATUS=OK
+if %LOCALE% == ko SET STATUS=OK
 if not %STATUS% == OK (
     echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
     exit 0
 )
 
 call %PWD%\..\data\setup_%LOCALE%.bat
-%JAVA_BIN%\java XSLTTest  %PWD%\%XMLFILE%  %PWD%\%XSLFILE% > %OUTPUT% 2>&1
-fc %PWD%\%EXPECTEDFILE% %OUTPUT% > fc.out 2>&1
+echo "invoking FormatterTest2" > %OUTPUT%
+%JAVA_BIN%\java FormatterTest2 abc%TEST_STRING% >> %OUTPUT%
+
+fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

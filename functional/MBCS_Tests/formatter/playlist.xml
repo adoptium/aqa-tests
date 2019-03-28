@@ -14,8 +14,8 @@ limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ja_JP_linux</testCaseName>
-		<command>LANG=ja_JP.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_ja_JP_linux</testCaseName>
+		<command>LANG=ja_JP.UTF-8 TZ=Asia/Tokyo bash  $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
 		<levels>
@@ -29,8 +29,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ko_KR_linux</testCaseName>
-		<command>LANG=ko_KR.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_ko_KR_linux</testCaseName>
+		<command>LANG=ko_KR.UTF-8 TZ=Asia/Seoul bash $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
 		<levels>
@@ -44,8 +44,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_Ja_JP_aix</testCaseName>
-		<command>LANG=Ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_Ja_JP_aix</testCaseName>
+		<command>LANG=Ja_JP TZ=Asia/Tokyo ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
@@ -59,8 +59,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ja_JP_aix</testCaseName>
-		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_ja_JP_aix</testCaseName>
+		<command>LANG=ja_JP TZ=Asia/Tokyo ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
@@ -75,8 +75,8 @@ limitations under the License.
 		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_JA_JP_aix</testCaseName>
-		<command>LANG=JA_JP ksh $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_JA_JP_aix</testCaseName>
+		<command>LANG=JA_JP TZ=Asia/Tokyo ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
@@ -90,8 +90,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ko_KR_aix</testCaseName>
-		<command>LANG=ko_KR ksh $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_ko_KR_aix</testCaseName>
+		<command>LANG=ko_KR TZ=Asia/Seoul ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
@@ -105,8 +105,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_KO_KR_aix</testCaseName>
-		<command>LANG=KO_KR ksh $(TEST_RESROOT)$(D)test.sh; \
+		<testCaseName>MBCS_Tests_formatter_KO_KR_aix</testCaseName>
+		<command>LANG=KO_KR TZ=Asia/Seoul ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
@@ -120,7 +120,7 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_windows</testCaseName>
+		<testCaseName>MBCS_Tests_formatter_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
@@ -135,8 +135,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ja_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932; \
+		<testCaseName>MBCS_Tests_formatter_ja_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932 TEST_STRING; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>
@@ -150,8 +150,8 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jaxp14_11_ko_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949; \
+		<testCaseName>MBCS_Tests_formatter_ko_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRING; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>

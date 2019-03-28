@@ -14,30 +14,27 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
-SET CLASSPATH=%PWD%\unicode-10.jar
+SET OUTPUT=output.txt
+SET CLASSPATH=%PWD%\jaxp14.jar
 SET STATUS=UKNOWN
-if %LOCALE% == ja SET STATUS=OK
-if %LOCALE% == ko SET STATUS=OK
+if %LOCALE% == ja (
+SET STATUS=OK
+SET XMLFILE=drinks_%LOCALE%-jp.xml
+SET XSLFILE=drinks_%LOCALE%-jp.xsl
+SET EXPECTEDFILE=win_%LOCALE%.html
+)
+if %LOCALE% == ko (
+SET STATUS=OK
+SET XMLFILE=drinks_%LOCALE%-kr.xml
+SET XSLFILE=drinks_%LOCALE%-kr.xsl
+SET EXPECTEDFILE=win_%LOCALE%.html
+)
 if not %STATUS% == OK (
     echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
     exit 0
 )
 
-SET FLAG=0
-
-echo Checking UnicodeData ...
-%JAVA_BIN%\java UnicodeChecker %PWD%\UnicodeData-10.0.0.txt 2>err1.txt
-if ErrorLevel 1 ( SET FLAG=1 )
-echo Checking Blocks ...
-%JAVA_BIN%\java UnicodeBlockChecker  %PWD%\Blocks-10.0.0.txt 2>err2.txt
-if ErrorLevel 1 ( SET FLAG=1 )
-echo Checking Scripts ...
-%JAVA_BIN%\java UnicodeScriptChecker  %PWD%\Scripts-10.0.0.txt 2>err3.txt
-if ErrorLevel 1 ( SET FLAG=1 )
-echo Checking PropertyValueAliases ...
-%JAVA_BIN%\java UnicodeScriptChecker3  %PWD%\PropertyValueAliases-10.0.0.txt 2>err4.txt
-if ErrorLevel 1 ( SET FLAG=1 )
-echo Checking NormalizationTest ...
-%JAVA_BIN%\java NormalizerTest  %PWD%\NormalizationTest-10.0.0.txt 2>err5.txt
-
-exit %FLAG%
+call %PWD%\..\data\setup_%LOCALE%.bat
+%JAVA_BIN%\java XSLTTest  %PWD%\%XMLFILE%  %PWD%\%XSLFILE% > %OUTPUT% 2>&1
+fc %PWD%\%EXPECTEDFILE% %OUTPUT% > fc.out 2>&1
+exit %errorlevel%

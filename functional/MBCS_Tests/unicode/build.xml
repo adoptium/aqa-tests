@@ -13,15 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="MBCS_Tests/unicode-10" default="build" basedir=".">
+<project name="MBCS_Tests/unicode" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-	MBCS_Tests/unicode-10
+	MBCS_Tests/unicode
         </description>
 	<import file="${TEST_ROOT}/functional/build.xml"/>
 
 	<!-- set global properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/unicode-10" />
+	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/unicode" />
 
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
@@ -45,7 +45,7 @@ limitations under the License.
 	</target>
 
 	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
-		<jar jarfile="${DEST}/unicode-10.jar" filesonly="true">
+		<jar jarfile="${DEST}/unicode.jar" filesonly="true">
 			<fileset dir="${build}" />
 		</jar>
 		<copy todir="${DEST}">

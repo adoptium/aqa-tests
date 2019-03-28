@@ -14,8 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
-SET OUTPUT=output.txt
-SET CLASSPATH=%PWD%\formatter_11.jar
+SET CLASSPATH=%PWD%\unicode.jar
 SET STATUS=UKNOWN
 if %LOCALE% == ja SET STATUS=OK
 if %LOCALE% == ko SET STATUS=OK
@@ -24,9 +23,21 @@ if not %STATUS% == OK (
     exit 0
 )
 
-call %PWD%\..\data\setup_%LOCALE%.bat
-echo "invoking FormatterTest2" > %OUTPUT%
-%JAVA_BIN%\java FormatterTest2 abc%TEST_STRING% >> %OUTPUT%
+SET FLAG=0
 
-fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
-exit %errorlevel%
+echo Checking UnicodeData ...
+%JAVA_BIN%\java UnicodeChecker %PWD%\UnicodeData-10.0.0.txt 2>err1.txt
+if ErrorLevel 1 ( SET FLAG=1 )
+echo Checking Blocks ...
+%JAVA_BIN%\java UnicodeBlockChecker  %PWD%\Blocks-10.0.0.txt 2>err2.txt
+if ErrorLevel 1 ( SET FLAG=1 )
+echo Checking Scripts ...
+%JAVA_BIN%\java UnicodeScriptChecker  %PWD%\Scripts-10.0.0.txt 2>err3.txt
+if ErrorLevel 1 ( SET FLAG=1 )
+echo Checking PropertyValueAliases ...
+%JAVA_BIN%\java UnicodeScriptChecker3  %PWD%\PropertyValueAliases-10.0.0.txt 2>err4.txt
+if ErrorLevel 1 ( SET FLAG=1 )
+echo Checking NormalizationTest ...
+%JAVA_BIN%\java NormalizerTest  %PWD%\NormalizationTest-10.0.0.txt 2>err5.txt
+
+exit %FLAG%

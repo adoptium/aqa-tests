@@ -13,24 +13,19 @@
 # limitations under the License.
 ################################################################################
 
+OS=`uname`
+LOC=`locale charmap`
+FULLLANG=${OS}_${LANG%.*}.${LOC}
+
 BASE=`dirname $0`
-CP="-cp ${BASE}/unicode-10.jar"
+export CLASSPATH=${BASE}/formatter.jar
+CHARMAP=${FULLLANG}
+SOURCE="${CHARMAP}.txt"
+OUTPUT=output.txt
 
-${JAVA_BIN}/java ${CP} UnicodeChecker        ${BASE}/UnicodeData-10.0.0.txt 2>err1.txt
-cat err1.txt
-${JAVA_BIN}/java ${CP} UnicodeBlockChecker   ${BASE}/Blocks-10.0.0.txt 2>err2.txt
-cat err2.txt
-${JAVA_BIN}/java ${CP} UnicodeScriptChecker  ${BASE}/Scripts-10.0.0.txt 2>err3.txt
-cat err3.txt
-${JAVA_BIN}/java ${CP} UnicodeScriptChecker3 ${BASE}/PropertyValueAliases-10.0.0.txt 2>err4.txt
-cat err4.txt
-${JAVA_BIN}/java ${CP} NormalizerTest        ${BASE}/NormalizationTest-10.0.0.txt 2>err5.txt
-cat err5.txt
-
-if [ -s err1.txt ] || [ -s err2.txt ] || [ -s err3.txt ] || [ -s err4.txt ] || [ -s err5.txt ]; then
-  echo Test Failed
-  exit 1
-else
-  echo Test Passed
-  exit 0
-fi
+. ${BASE}/check_env_unix.sh
+echo "invoking FormatterTest2" > ${OUTPUT}
+${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
+diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
+RESULT=$?
+exit ${RESULT}

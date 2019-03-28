@@ -13,8 +13,9 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-SET CLASSPATH=%PWD%\jaxp14_11.jar
+SET CLASSPATH=%PWD%\formatter.jar
 
-%JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%
-fc %PWD%\win_%2.html output > fc.out 2>&1
+%JAVA_BIN%\java -Duser.timezone=Asia/Tokyo Main %1 %2 %3 %4 %5
+
+fc %PWD%\expected_windows_%2.txt output > fc.out 2>&1
 exit %errorlevel%

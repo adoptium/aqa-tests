@@ -15,17 +15,18 @@
 
 OS=`uname`
 LOC=`locale charmap`
+# workaround of AIX7 defect
+LOC2=`echo ${LANG%.*} | LANG=C tr 'A-Z_' 'a-z\-'`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
-export CLASSPATH=${BASE}/formatter_11.jar
+export CLASSPATH=${BASE}/jaxp14.jar
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
-OUTPUT=output.txt
+OUTPUT=output.html
 
 . ${BASE}/check_env_unix.sh
-echo "invoking FormatterTest2" > ${OUTPUT}
-${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
-diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
+${JAVA_BIN}/java XSLTTest ${BASE}/drinks_${LOC2}.xml ${BASE}/drinks_${LOC2}.xsl > ${OUTPUT}
+diff ${BASE}/expected_${LOC2}.html ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

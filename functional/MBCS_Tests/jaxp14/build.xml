@@ -12,38 +12,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-
-<project name="MBCS_Tests/codepoint-10" default="build" basedir=".">
+<project name="MBCS_Tests/jaxp14" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-	MBCS_Tests/codepoint-10
-        </description>
+    	MBCS_Tests/jaxp14
+    </description>
 	<import file="${TEST_ROOT}/functional/build.xml"/>
 
 	<!-- set global properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/codepoint-10" />
+	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/jaxp14" />
 
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
 	
-        <condition property="not_se80" value="true">
-           <and>
-             <not>
-               <equals arg1="${JAVA_VERSION}" arg2="SE80" />
-             </not>
-             <not>
-               <equals arg1="${JDK_VERSION}" arg2="8" />
-             </not>
-           </and>
-        </condition>
-
 	<target name="init">
 		<mkdir dir="${DEST}" />
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init" description="Using ${JAVA_VERSION} java compile the source  " if="not_se80">
+	<target name="compile" depends="init" description="Using ${JAVA_VERSION} java compile the source  ">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
 		<echo>===fork:				yes</echo>
@@ -56,16 +44,16 @@ limitations under the License.
 	</target>
 
 	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
-		<jar jarfile="${DEST}/codepoint.jar" filesonly="true">
+		<jar jarfile="${DEST}/jaxp14.jar" filesonly="true">
 			<fileset dir="${build}" />
 		</jar>
 		<copy todir="${DEST}">
+			<fileset dir="${src}/../" includes="*.xml" />
+			<fileset dir="${src}/../" includes="*.mk" />
 			<fileset dir="${src}/../" includes="*.sh" />
 			<fileset dir="${src}/../" includes="*.bat" />
-			<fileset dir="${src}/../" includes="expected.txt" />
-		</copy>
-		<copy todir="${DEST}/data">
-			<fileset dir="${src}/../data/" />
+			<fileset dir="../tools/" includes="*" />
+			<fileset dir="data/" includes="*" />
 		</copy>
 	</target>
 

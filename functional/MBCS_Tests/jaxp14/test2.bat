@@ -13,10 +13,8 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+SET CLASSPATH=%PWD%\jaxp14.jar
 
-%JAVA_BIN%\java -cp %PWD%unicode-10.jar Main %PWD%\UnicodeData-10.0.0.txt %PWD%\Blocks-10.0.0.txt  %PWD%\Scripts-10.0.0.txt %PWD%\PropertyValueAliases-10.0.0.txt %PWD%\NormalizationTest-10.0.0.txt
-set SIZE=1
-for /f %%i in ("err*.txt") do set SIZE=%%~zi
-echo SIZE= %SIZE%
-exit %SIZE%
-
+%JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%
+fc %PWD%\win_%2.html output > fc.out 2>&1
+exit %errorlevel%
