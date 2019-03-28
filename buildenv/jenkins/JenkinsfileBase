@@ -45,7 +45,6 @@ def setupEnv() {
 
 	env.JAVA_BIN = "$WORKSPACE/openjdkbinary/j2sdk-image/${(JDK_VERSION == '8') ? 'jre/' : ''}bin"
 	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
-	env.JAVA_HOME = "${JAVA_BIN}/.."
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
