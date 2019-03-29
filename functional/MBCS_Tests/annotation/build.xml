@@ -32,11 +32,29 @@ limitations under the License.
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="dist" depends="init,dist_functional" description="generate the distribution">
+	<target name="compile" depends="init" description="Using ${JAVA_VERSION} java compile the sourc
+e  ">
+		<echo>Ant version is ${ant.version}</echo>
+		<echo>============COMPILER SETTINGS============</echo>
+		<echo>===fork:				yes</echo>
+		<echo>===executable:			${compiler.javac}</echo>
+		<echo>===debug:				on</echo>
+		<echo>===destdir:				${DEST}</echo>
+		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
+			<src path="${src}" />
+                        <include name="SDKPath.java" />
+                        <include name="SourceVersionCheck.java" />
+                        <include name="CheckValidData.java" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+		<jar jarfile="${DEST}/annotation.jar" filesonly="true">
+			<fileset dir="${build}" />
+		</jar>
 		<copy todir="${DEST}">
-			<fileset dir="${src}/" />
+			<fileset dir="${src}/" includes="*_org.java" />
 			<fileset dir="${src}/../" includes="*.sh" />
-			<fileset dir="${src}/../" includes="*.pl" />
 			<fileset dir="${src}/../" includes="*.bat" />
 			<fileset dir="../tools/" includes="*" />
 		</copy>
