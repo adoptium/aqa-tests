@@ -1,10 +1,6 @@
 #!groovy
 LABEL='ci.role.test&&hw.arch.x86&&sw.os.osx'
 
-// ToDo:
-// This is a copy of openjdk_x86-64_mac_xl
-// Remove this file once all related test jobs are regenerated or updated to use openjdk_x86-64_mac_xl
-
 node ("master") {
     checkout scm
     def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
@@ -14,9 +10,9 @@ node ("master") {
 
 stage('Queue') {
     node("$LABEL") {
-        PLATFORM = 'x64_mac_largeHeap'
+        PLATFORM = 'x64_mac'
         SDK_RESOURCE = 'upstream'
-        SPEC='osx_x86-64'
+        SPEC='osx_x86-64_cmprssptrs'
         checkout scm
         def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()

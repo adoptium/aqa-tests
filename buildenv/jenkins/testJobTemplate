@@ -25,7 +25,7 @@ if (!binding.hasVariable('ARTIFACTORY_ROOT_DIR')) ARTIFACTORY_ROOT_DIR = ""
 if (!binding.hasVariable('TIME_LIMIT')) TIME_LIMIT = "10"
 if (!binding.hasVariable('SUFFIX')) SUFFIX = ""
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
-	BUILD_TO_KEEP = 10
+	BUILDS_TO_KEEP = 10
 } else {
 	BUILDS_TO_KEEP = BUILDS_TO_KEEP.toInteger()
 }
@@ -40,7 +40,7 @@ if (binding.hasVariable('LEVELS')) {
 if (binding.hasVariable('JDK_VERSIONS')) {
 	JDK_VERSIONS = JDK_VERSIONS.split(',')
 } else {
-	JDK_VERSIONS = [8,11,12]
+	JDK_VERSIONS = [8,11]
 }
 
 if (binding.hasVariable('GROUPS')) {
@@ -50,30 +50,36 @@ if (binding.hasVariable('GROUPS')) {
 }
 
 
-if (binding.hasVariable('SPECS')) {
-	SPECS = SPECS.split(',')
+if (binding.hasVariable('ARCH_OS_LIST')) {
+	ARCH_OS_LIST = ARCH_OS_LIST.split(',')
 } else {
-	SPECS = ['aix_ppc-64_cmprssptrs','linux_ppc-64_cmprssptrs_le','linux_390-64_cmprssptrs','zos_390-64_cmprssptrs','linux_x86-64_cmprssptrs','linux_x86-64','osx_x86-64_cmprssptrs','win_x86-64_cmprssptrs', 'win_x86']
+	ARCH_OS_LIST = [
+		'aarch32_linux',
+		'aarch64_linux',
+		'ppc64_aix',
+		'ppc64le_linux',
+		's390x_linux',
+		's390x_zos',
+		'x86-32_windows',
+		'x86-64_linux',
+		'x86-64_linux_xl',
+		'x86-64_mac',
+		'x86-64_mac_xl',
+		'x86-64_windows'
+	]
 }
 
+JDK_IMPL_SN = JDK_IMPL
+if (JDK_IMPL == "openj9") {
+	JDK_IMPL_SN = "j9"
+} else if (JDK_IMPL == "hotspot") {
+	JDK_IMPL_SN = "hs"
+}
 
 println "LEVELS: ${LEVELS}"
 println "JDK_VERSIONS: ${JDK_VERSIONS}"
 println "GROUPS: ${GROUPS}"
-println "SPECS: ${SPECS}"
-
-def SPEC_JENKINS_FILE_MAP = [ 
-	'aix_ppc-64_cmprssptrs' : 'openjdk_ppc64_aix',
-	'linux_ppc-64_cmprssptrs_le' : 'openjdk_ppc64le_linux',
-	'linux_390-64_cmprssptrs' : 'openjdk_s390x_linux',
-	'zos_390-64_cmprssptrs' : 'openjdk_s390x_zos',
-	'linux_x86-64_cmprssptrs' : 'openjdk_x86-64_linux',
-	'linux_x86-64' : 'openjdk_x86-64_linux_largeHeap',
-	'osx_x86-64_cmprssptrs' : 'openjdk_x86-64_osx',
-	'osx_x86-64' : 'openjdk_x86-64_osx_largeHeap',
-	'win_x86-64_cmprssptrs' : 'openjdk_x86-64_windows',
-	'win_x86' : 'openjdk_x86-32_windows'
-]
+println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 
 // add into the map only if GROUP and BUILD_LIST do not match
 def GROUP_BUILD_LIST_MAP = [
@@ -83,28 +89,21 @@ def GROUP_BUILD_LIST_MAP = [
 	'external' : 'thirdparty_containers'
 ]
 
-SPECS.each { SPEC ->
+ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
 	
 	// zos has to use ssh
-	if (SPEC.startsWith("zos")) {
+	if (ARCH_OS.contains("zos")) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/", "git@github.com:")
 	}
-	def JENKINS_FILE = "" 
-	if (SPEC_JENKINS_FILE_MAP.containsKey(SPEC)) {
-		JENKINS_FILE = SPEC_JENKINS_FILE_MAP[SPEC]
-	} else {
-		println "Cannot find key ${SPEC} in ${SPEC_JENKINS_FILE_MAP}."
-	}
+
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
-				def TEST_JOB_NAME = "Test-${LEVEL}.${GROUP}-JDK${JDK_VERSION}-${SPEC}${SUFFIX}" 
-				if (!JENKINS_FILE) {
-					println "WARNING: ${TEST_JOB_NAME} job may have invalid scriptPath=buildenv/jenkins/${JENKINS_FILE}"
-				}
+				def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
+
 				def BUILD_LIST = GROUP
 				if (GROUP_BUILD_LIST_MAP.containsKey(GROUP)) {
 					BUILD_LIST = GROUP_BUILD_LIST_MAP[GROUP]
@@ -163,7 +162,7 @@ SPECS.each { SPEC ->
 										relativeTargetDirectory('openjdk-tests')
 									}
 								}
-								scriptPath("buildenv/jenkins/${JENKINS_FILE}")
+								scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
 								lightweight(true)
 							}
 						}
