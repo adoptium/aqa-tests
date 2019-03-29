@@ -14,7 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 
-%JAVA_BIN%\java -cp %PWD%unicode-10.jar Main %PWD%\UnicodeData-10.0.0.txt %PWD%\Blocks-10.0.0.txt  %PWD%\Scripts-10.0.0.txt %PWD%\PropertyValueAliases-10.0.0.txt %PWD%\NormalizationTest-10.0.0.txt
+%JAVA_BIN%\java -cp %PWD%unicode.jar Main %PWD%\UnicodeData-10.0.0.txt %PWD%\Blocks-10.0.0.txt  %PWD%\Scripts-10.0.0.txt %PWD%\PropertyValueAliases-10.0.0.txt %PWD%\NormalizationTest-10.0.0.txt
 set SIZE=1
 for /f %%i in ("err*.txt") do set SIZE=%%~zi
 echo SIZE= %SIZE%

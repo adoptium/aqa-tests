@@ -14,7 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
-SET CLASSPATH=%PWD%\unicode-10.jar
+SET CLASSPATH=%PWD%\unicode.jar
 SET STATUS=UKNOWN
 if %LOCALE% == ja SET STATUS=OK
 if %LOCALE% == ko SET STATUS=OK

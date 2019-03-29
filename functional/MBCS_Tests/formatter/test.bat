@@ -15,7 +15,7 @@ SETLOCAL
 SET PWD=%~dp0
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
 SET OUTPUT=output.txt
-SET CLASSPATH=%PWD%\formatter_11.jar
+SET CLASSPATH=%PWD%\formatter.jar
 SET STATUS=UKNOWN
 if %LOCALE% == ja SET STATUS=OK
 if %LOCALE% == ko SET STATUS=OK

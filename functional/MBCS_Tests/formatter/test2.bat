@@ -13,7 +13,7 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-SET CLASSPATH=%PWD%\formatter_11.jar
+SET CLASSPATH=%PWD%\formatter.jar
 
 %JAVA_BIN%\java -Duser.timezone=Asia/Tokyo Main %1 %2 %3 %4 %5
 
