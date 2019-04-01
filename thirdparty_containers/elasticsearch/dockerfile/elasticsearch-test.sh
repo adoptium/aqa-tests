@@ -34,7 +34,7 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-TEST_SUITE=$1
+TEST_OPTIONS=$1
 
 java -version
 
@@ -50,4 +50,5 @@ echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
 echo "Elasticsearch Build - Completed"
 
 echo "Running elasticsearch tests :"
-./gradlew -g /tmp test -Dtests.haltonfailure=false
+
+./gradlew -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS

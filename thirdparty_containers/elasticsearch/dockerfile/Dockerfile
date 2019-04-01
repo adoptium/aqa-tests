@@ -70,4 +70,4 @@ WORKDIR /
 
 #ENTRYPOINT ["/bin/bash", "/example-test.sh"]
 ENTRYPOINT ["/bin/bash", "/elasticsearch-test.sh"]
-CMD ["--version"]
+CMD [""]
