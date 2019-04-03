@@ -52,3 +52,5 @@ echo "Elasticsearch Build - Completed"
 echo "Running elasticsearch tests :"
 
 ./gradlew -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
+
+find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;

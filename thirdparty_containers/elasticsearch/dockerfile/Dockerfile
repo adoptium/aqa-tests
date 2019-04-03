@@ -60,13 +60,15 @@ ARG ELASTIC_VERSION=.
 WORKDIR elasticsearch
 RUN git checkout $ELASTIC_VERSION
 
+WORKDIR /
+RUN mkdir testResults
 RUN chown -R elasticsearch /elasticsearch
 RUN chown -R elasticsearch /elasticsearch-test.sh
-
+RUN chown -R elasticsearch /testResults
 RUN chmod -R a+x /elasticsearch
 
 USER elasticsearch
-WORKDIR /
+
 
 #ENTRYPOINT ["/bin/bash", "/example-test.sh"]
 ENTRYPOINT ["/bin/bash", "/elasticsearch-test.sh"]

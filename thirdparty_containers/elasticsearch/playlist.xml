@@ -24,11 +24,7 @@
 		 --exclude-task :test:framework:test \
 		 --exclude-task :modules:lang-painless:test"; \
 			$(TEST_STATUS); \
-			docker cp elasticsearch-test:/elasticsearch/modules/transport-netty4/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/lang-mustache/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/percolator/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/parent-join/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/test/logger-usage/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
+			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
 			docker rm -f elasticsearch-test; \
 			docker rmi -f adoptopenjdk-elasticsearch-test
 		</command>
@@ -46,15 +42,7 @@
 		<testCaseName>elasticsearch_test_hotspot</testCaseName>
 		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest; \
 			$(TEST_STATUS); \
-			docker cp elasticsearch-test:/elasticsearch/core/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/transport-netty4/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/lang-mustache/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/percolator/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/reindex/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/modules/parent-join/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/test/framework/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/test/logger-usage/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
-			docker cp elasticsearch-test:/elasticsearch/client/rest/build/reports/testJunit $(REPORTDIR)/external_test_reports; \
+			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
 			docker rm -f elasticsearch-test; \
 			docker rmi -f adoptopenjdk-elasticsearch-test
 		</command>
