@@ -7,7 +7,6 @@
 	<property name="SYSTEMTEST_ROOT" value="${TEST_ROOT}/systemtest" />
 	<property name="SYSTEMTEST_DEST" value="${BUILD_ROOT}/systemtest" />
 	<property environment="env" />
-	<property name="env.JAVA_HOME" value="${JAVA_BIN}/.." />
 	
 	<condition property="isZOS" value="true">
 		<equals arg1="${os.name}" arg2="z/OS"/>
@@ -198,14 +197,10 @@
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false">
-					<property name="java.home" value="${env.JAVA_HOME}"/>
-				</ant>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false"/>
 			</then>
 			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false">
-					<property name="java.home" value="${env.JAVA_HOME}"/>
-				</ant>
+				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false"/>
 			</else>
 		</if>
 	</target>
@@ -232,14 +227,10 @@
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false">
-					<property name="java.home" value="${env.JAVA_HOME}"/>
-				</ant>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false"/>
 			</then>
 			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false">
-					<property name="java.home" value="${env.JAVA_HOME}"/>
-				</ant>
+				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"/>
 			</else>
 		</if>
 		<antcall target="common_dist" inheritall="false" />
@@ -252,19 +243,13 @@
 	</target>
 		
 	<target name="clean">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean">
-			<property name="java.home" value="${env.JAVA_HOME}"/>
-		</ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"/>
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean">
-					<property name="java.home" value="${env.JAVA_HOME}"/>
-				</ant>
+				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
 			</then>
 		</if>		
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean">
-			<property name="java.home" value="${env.JAVA_HOME}"/>
-		</ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"/>
 	</target>
 </project>
