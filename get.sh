@@ -217,7 +217,7 @@ getTestKitGenAndFunctionalTestMaterial()
 	fi
 
 	echo "git clone $OPENJ9_BRANCH $OPENJ9_REPO"
-	git clone -q --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO
+	git clone -q $OPENJ9_BRANCH $OPENJ9_REPO
 
 	if [ "$OPENJ9_SHA" != "" ]
 	then
