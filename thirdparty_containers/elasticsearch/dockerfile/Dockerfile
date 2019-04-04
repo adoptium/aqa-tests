@@ -34,15 +34,8 @@ RUN groupadd -g 1000 elasticsearch && useradd elasticsearch -u 1000 -g 1000
 # Install test dependent executable files
 RUN apt-get update \
 	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
 	git \
-	make \
 	unzip \
-	vim \
 	wget
 
 VOLUME ["/java"]
@@ -58,7 +51,7 @@ RUN git clone -q https://github.com/elastic/elasticsearch.git
 #default is HEAD
 ARG ELASTIC_VERSION=.
 WORKDIR elasticsearch
-RUN git checkout $ELASTIC_VERSION
+RUN git checkout -q $ELASTIC_VERSION
 
 WORKDIR /
 RUN mkdir testResults

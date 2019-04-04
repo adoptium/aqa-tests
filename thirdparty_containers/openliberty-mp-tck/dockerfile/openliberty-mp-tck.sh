@@ -17,13 +17,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -31,34 +29,44 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
+java -version
 cd ${OPENLIBERTY_HOME}/open-liberty/dev
 
 #Build all projects and create the open-liberty image
-./gradlew cnf:initialize
-./gradlew releaseNeeded
+./gradlew -q cnf:initialize
+./gradlew -q releaseNeeded
 
+echo "Build projects and create images done"
+
+#Following are not enabled tests, may need to enable later
+#com.ibm.ws.microprofile.reactive.streams.operators_fat_tck
+#com.ibm.ws.concurrent.mp_fat_tck
+#com.ibm.ws.microprofile.config_git_fat_tck
+#com.ibm.ws.security.mp.jwt_fat_tck
+#com.ibm.ws.microprofile.faulttolerance_git_fat_tck
 
 #Exclude Metrics TCK
 #Start MicroProfile Metrics TCK
-#./gradlew com.ibm.ws.microprofile.metrics.1.1_fat_tck:clean
-./gradlew com.ibm.ws.microprofile.metrics.1.1_fat_tck:buildandrun
+./gradlew -q com.ibm.ws.microprofile.metrics_fat_tck:clean
+./gradlew -q com.ibm.ws.microprofile.metrics_fat_tck:buildandrun
 
 #Start MicroProfile Config TCK
-./gradlew com.ibm.ws.microprofile.config_fat_tck:clean
-./gradlew com.ibm.ws.microprofile.config_fat_tck:buildandrun
+./gradlew -q com.ibm.ws.microprofile.config.1.4_fat_tck:clean
+./gradlew -q com.ibm.ws.microprofile.config.1.4_fat_tck:buildandrun
 
 #Start MicroProfile FaultTolerance TCK
-./gradlew com.ibm.ws.microprofile.faulttolerance_fat_tck:clean
-./gradlew com.ibm.ws.microprofile.faulttolerance_fat_tck:buildandrun
+./gradlew -q com.ibm.ws.microprofile.faulttolerance_fat_tck:clean
+./gradlew -q com.ibm.ws.microprofile.faulttolerance_fat_tck:buildandrun
 
 #Start MicroProfile Rest Client TCK
-./gradlew com.ibm.ws.microprofile.rest.client_fat_tck:clean
-./gradlew com.ibm.ws.microprofile.rest.client_fat_tck:buildandrun
+./gradlew -q com.ibm.ws.microprofile.rest.client_fat_tck:clean
+./gradlew -q com.ibm.ws.microprofile.rest.client_fat_tck:buildandrun
 
 #Start MicroProfile OpenAPI TCK
-./gradlew com.ibm.ws.microprofile.openapi_fat_tck:clean
-./gradlew com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
+./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:clean
+./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
+
+find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

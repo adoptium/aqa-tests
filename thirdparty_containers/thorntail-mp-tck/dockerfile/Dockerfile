@@ -58,7 +58,7 @@ ENV JAVA_HOME=/java \
 COPY ./dockerfile/thorntail-mp-tck.sh /thorntail-mp-tck.sh
 
 #Clone thorntail repo 
-RUN git clone git://github.com/thorntail/thorntail 
+RUN git clone -q git://github.com/thorntail/thorntail 
 
 ENTRYPOINT ["/bin/bash", "/thorntail-mp-tck.sh"]
 CMD ["--version"]

@@ -17,11 +17,7 @@
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
 		<command>docker run --name openliberty-mp-tck $(EXTRA_DOCKER_ARGS) adoptopenjdk-openliberty-mp-tck:latest; \
 			$(TEST_STATUS); \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.metrics.1.1_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.faulttolerance_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.rest.client_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker cp openliberty-mp-tck:/open-liberty/dev/com.ibm.ws.microprofile.openapi_fat_tck/build/libs/autoFVT/results/tck/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker cp openliberty-mp-tck:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
 			docker rm -f openliberty-mp-tck; \
 			docker rmi -f adoptopenjdk-openliberty-mp-tck
 		</command>

@@ -40,17 +40,14 @@ java -version
 
 # Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
-ls .
-pwd
 
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
-./gradlew -g /tmp assemble
+./gradlew -q -g /tmp assemble
 
 
 echo "Elasticsearch Build - Completed"
 
 echo "Running elasticsearch tests :"
 
-./gradlew -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
-
+./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
 find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
