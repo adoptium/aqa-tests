@@ -234,7 +234,7 @@
 		</groups>
 	</test>
 
-	<!-- Temporarily exclude from jdk11 for: https://github.com/adoptopenjdk/openjdk-systemtest/issues/7 -->
+	<!-- Excluded from Windows platform due to: https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/236 -->
 	<test>
 		<testCaseName>HCRLateAttachWorkload</testCaseName>
 		<variations>
@@ -246,12 +246,13 @@
 	-results-root=$(REPORTDIR)  \
 	-test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>	
-		<subsets>
-			<subset>8</subset>
-		</subsets>
-		<tags>
-			<tag>system</tag>
-		</tags>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	
 	<test>

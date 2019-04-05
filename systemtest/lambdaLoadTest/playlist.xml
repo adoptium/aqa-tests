@@ -74,32 +74,6 @@
 		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
 	</test>
 	
-	<!-- Only running on JDK8 as it fails on JDK11 due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/7 -->
-	<!-- Excluded from Windows platform due to: https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/236 -->
-	<test>
-		<testCaseName>HCRLateAttachWorkload</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=HCRLateAttachWorkload; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-			<groups>
-			<group>system</group>
-		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
-		<platformRequirements>^os.win</platformRequirements>
-	</test>
-	
 	<test>
 		<testCaseName>JdiTest</testCaseName>
 		<variations>
