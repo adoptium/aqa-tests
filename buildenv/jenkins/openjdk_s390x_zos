@@ -5,15 +5,8 @@
     Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
 LABEL='ci.role.test&&hw.arch.s390x&&sw.os.zos'
 
-node ("master") {
-    checkout scm
-    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.setLabelParam()
-    cleanWs()
-}
-
 stage('Queue') {
-    node("$LABEL") {
+    node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 's390x_zos'
         SDK_RESOURCE = 'upstream'
         SPEC='zos_390-64_cmprssptrs'

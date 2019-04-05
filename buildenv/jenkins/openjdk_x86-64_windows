@@ -1,15 +1,8 @@
 #!groovy
 LABEL='ci.role.test&&hw.arch.x86&&sw.os.windows'
 
-node ("master") {
-    checkout scm
-    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.setLabelParam()
-    cleanWs()
-}
-
 stage('Queue') {
-    node("$LABEL") {
+    node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x64_windows'
         SDK_RESOURCE = 'upstream'
         SPEC='win_x86-64_cmprssptrs'

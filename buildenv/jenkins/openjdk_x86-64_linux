@@ -6,15 +6,8 @@ if (params.DOCKER_REQUIRED) {
     LABEL='ci.role.test&&hw.arch.x86&&sw.os.linux'
 }
 
-node ("master") {
-    checkout scm
-    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.setLabelParam()
-    cleanWs()
-}
-
 stage('Queue') {
-    node("$LABEL") {
+    node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x64_linux'
         SDK_RESOURCE = 'upstream'
         SPEC='linux_x86-64_cmprssptrs'
