@@ -7,15 +7,8 @@ if (params.DOCKER_REQUIRED) {
     LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux'
 }
 
-node ("master") {
-    checkout scm
-    def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-    jenkinsfile.setLabelParam()
-    cleanWs()
-}
-
 stage('Queue') {
-    node("$LABEL") {
+    node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 's390x_linux'
         SDK_RESOURCE = 'upstream'
         SPEC='linux_390-64_cmprssptrs'

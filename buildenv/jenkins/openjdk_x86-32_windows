@@ -5,15 +5,8 @@
 	Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
 LABEL='hw.arch.x86&&sw.os.windows'
 
-node ("master") {
-	checkout scm
-	def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-	jenkinsfile.setLabelParam()
-	cleanWs()
-}
-
 stage('Queue') {
-    node("$LABEL") {
+    node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x32_windows'
         JAVA_VERSION = 'SE80'
         SDK_RESOURCE = 'upstream'

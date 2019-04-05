@@ -437,12 +437,6 @@ def getJDKImpl(jvm_version) {
 	return jdk_impl
 }
 
-def setLabelParam() {
-	if( params.LABEL ) {
-		LABEL = params.LABEL
-	}
-}
-
 def addJobDescription() {
 	if (params.PERSONAL_BUILD) {
 		// update build name if personal build
