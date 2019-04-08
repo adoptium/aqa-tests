@@ -59,6 +59,12 @@
 			<arg value="${stf_branch}"/>
 			<arg value="${stf_repo}"/>
 		</exec>
+		<echo message="SHA of the checked out STF materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${stf_repo}"/>
+			<arg value="${stf_branch}"/>
+		</exec>
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -93,6 +99,12 @@
 			<arg value="${openjdk_systemtest_branch}"/>
 			<arg value="${openjdk_systemtest_repo}"/>
 		</exec>
+		<echo message="SHA of the checked out openjdk-systemtest materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${openjdk_systemtest_repo}"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+		</exec>
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -125,6 +137,12 @@
 			<arg value="-b"/>
 			<arg value="${openj9_systemtest_branch}"/>
 			<arg value="${openj9_systemtest_repo}"/>
+		</exec>
+		<echo message="SHA of the checked out openj9-systemtest materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${openj9_systemtest_repo}"/>
+			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
