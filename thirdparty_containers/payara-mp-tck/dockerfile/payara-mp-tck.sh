@@ -33,26 +33,10 @@ else
 fi
 
 java -version
-cd ${PAYARA_HOME}/
 
-#Start Payara server
-${PAYARA_HOME}/payara5/bin/asadmin start-domain
+TEST_OPTIONS=$1
 
-#Start MicroProfile-Metrics TCK
-cd ${PAYARA_HOME}/MicroProfile-TCK-Runners/MicroProfile-Metrics/tck-runner
-mvn -Ppayara-server-remote test
+cd ${PAYARA_HOME}/MicroProfile-TCK-Runners
+mvn clean verify -Dpayara.version=5.184 $TEST_OPTIONS
 
-#Start MicroProfile-Fault-Tolerance TCK
-cd ${PAYARA_HOME}/MicroProfile-TCK-Runners/MicroProfile-Fault-Tolerance/tck-runner
-mvn -Ppayara-server-remote test
-
-#Start MicroProfile-Config TCK
-cd ${PAYARA_HOME}/MicroProfile-TCK-Runners/MicroProfile-Config/tck-runner
-mvn -Ppayara-server-remote test
-
-#Start MicroProfile-OpenAPI TCK
-cd ${PAYARA_HOME}/MicroProfile-TCK-Runners/MicroProfile-OpenAPI/tck-runner
-mvn -Ppayara-server-remote test
-
-#Stop Payara server
-${PAYARA_HOME}/payara5/bin/asadmin stop-domain
+find ./ -type d -name 'junitreports' -exec cp -r "{}" /testResults \;
