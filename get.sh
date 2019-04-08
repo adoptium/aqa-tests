@@ -183,11 +183,11 @@ getBinaryOpenjdk()
 	for jar_dir in "${jar_dir_array[@]}"
 		do
 			jar_dir_name=${jar_dir%?}
-			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2jre-image" ]]; then
+			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
 				if [[ -d $jar_dir_name/Contents/Home ]]; then
-					mv "$jar_dir_name/Contents/Home" j2jre-image
+					mv "$jar_dir_name/Contents/Home" j2re-image
 				else
-					mv $jar_dir_name j2jre-image
+					mv $jar_dir_name j2re-image
 				fi
 			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
 				if [[ -d $jar_dir_name/Contents/Home ]]; then

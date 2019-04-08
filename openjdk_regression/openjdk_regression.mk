@@ -53,7 +53,7 @@ ifndef JRE_IMAGE
 	else
 		JRE_ROOT := $(JAVA_BIN)$(D)..
 	endif
-	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2jre-image
+	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
 endif
 
 ifdef OPENJDK_DIR 
