@@ -37,9 +37,7 @@ RUN apt-get update \
 	dirmngr \
 	curl \
 	git \
-	make \
 	unzip \
-	vim \
 	wget
 	
 # Install openliberty-mp-tck tests dependent
@@ -50,6 +48,7 @@ RUN apt-get update \
 
 WORKDIR /
 ENV OPENLIBERTY_HOME $WORKDIR
+RUN mkdir testResults
 
 VOLUME ["/java"]
 ENV JAVA_HOME=/java \
@@ -59,7 +58,7 @@ ENV JAVA_HOME=/java \
 COPY ./dockerfile/openliberty-mp-tck.sh /openliberty-mp-tck.sh
 
 #Clone openliberty repo 
-RUN git clone git://github.com/OpenLiberty/open-liberty
+RUN git clone -q git://github.com/OpenLiberty/open-liberty
 
 ENTRYPOINT ["/bin/bash", "/openliberty-mp-tck.sh"]
-CMD ["--version"]
+CMD [""]
