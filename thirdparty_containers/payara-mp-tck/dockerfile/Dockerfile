@@ -32,12 +32,8 @@ FROM $IMAGE_NAME:$IMAGE_VERSION
 RUN apt-get update \
 	&& apt-get -y install \
 	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
 	curl \
 	git \
-	make \
 	unzip \
 	vim \
 	wget
@@ -48,6 +44,7 @@ RUN apt-get update \
 	maven
 
 WORKDIR /
+RUN mkdir testResults
 ENV PAYARA_HOME $WORKDIR
 
 VOLUME ["/java"]
@@ -57,14 +54,9 @@ ENV JAVA_HOME=/java \
 
 COPY ./dockerfile/payara-mp-tck.sh /payara-mp-tck.sh
 
-#Download and unzip Payara full distribution
-RUN curl -L -o /tmp/payara-5.182.zip https://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/5.182/payara-5.182.zip && \
-    unzip /tmp/payara-5.182.zip -d / && \
-    rm -f /tmp/payara-5.182.zip
-
 # Clone the Pyara MicroProfile-TCK-Runners
 RUN pwd
 RUN git clone https://github.com/payara/MicroProfile-TCK-Runners
 
 ENTRYPOINT ["/bin/bash", "/payara-mp-tck.sh"]
-CMD ["--version"]
+CMD [""]
