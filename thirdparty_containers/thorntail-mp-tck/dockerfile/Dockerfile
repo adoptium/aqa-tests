@@ -48,6 +48,7 @@ RUN apt-get update \
 	maven
 
 WORKDIR /
+RUN mkdir testResults
 ENV THORNTAIL_HOME $WORKDIR
 
 VOLUME ["/java"]
@@ -61,4 +62,4 @@ COPY ./dockerfile/thorntail-mp-tck.sh /thorntail-mp-tck.sh
 RUN git clone -q git://github.com/thorntail/thorntail 
 
 ENTRYPOINT ["/bin/bash", "/thorntail-mp-tck.sh"]
-CMD ["--version"]
+CMD [""]
