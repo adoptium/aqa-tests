@@ -100,14 +100,14 @@ public class SourceVersionCheck {
                 String[] result = br.lines().toArray(String[]::new);
                 br.close();
                 is.close();
-                compairResult(expectedResults, result);
+                compareResult(expectedResults, result);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static boolean compairResult(String[] l1, String[] l2) {
+    private static boolean compareResult(String[] l1, String[] l2) {
         boolean result = true;
         int len1 = l1.length;
         int len2 = l2.length;
