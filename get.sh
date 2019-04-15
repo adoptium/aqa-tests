@@ -303,13 +303,13 @@ getTestKitGenAndFunctionalTestMaterial()
 
 testJavaVersion()
 {
-# use environment variable JAVA_BIN to run java -version
-_java=${JAVA_BIN}/java
+# use environment variable TEST_JDK_HOME to run java -version
+_java=${TEST_JDK_HOME}/bin/java
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
 	${_java} -version
 else
-	echo "Cannot find java executable in JAVA_BIN: ${JAVA_BIN}!"
+	echo "Cannot find java executable in TEST_JDK_HOME: ${TEST_JDK_HOME}!"
 	exit 1
 fi
 }

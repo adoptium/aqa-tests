@@ -19,7 +19,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>export JAVA_HOME=$(JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
 	perl $(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)systemtest$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \

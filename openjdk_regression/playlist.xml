@@ -23,7 +23,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(JTREG_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -42,7 +42,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx768m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(JTREG_LANGTOOLS_TEST_DIR)$(D)$(LANGTOOLS_CUSTOM_TARGET)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -58,7 +58,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_all$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
@@ -81,7 +81,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_all$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
@@ -104,7 +104,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):jre$(Q); \
 	$(TEST_STATUS)</command>
@@ -128,7 +128,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_awt$(Q); \
@@ -147,7 +147,7 @@
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_beans$(Q); \
@@ -165,7 +165,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_io$(Q); \
@@ -183,7 +183,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_lang$(Q); \
@@ -201,7 +201,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_math$(Q); \
@@ -219,7 +219,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-compilejdk:$(Q)$(JDK_HOME)$(Q) \
+	-compilejdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-jdk:$(Q)$(JRE_IMAGE)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
@@ -243,7 +243,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_other$(Q); \
@@ -261,7 +261,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_net$(Q); \
@@ -279,7 +279,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_nio$(Q); \
@@ -297,7 +297,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_security1$(Q); \
@@ -315,7 +315,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_security2$(Q); \
@@ -333,7 +333,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_security3$(Q); \
@@ -351,7 +351,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_security4$(Q); \
@@ -369,7 +369,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_sound$(Q); \
@@ -388,7 +388,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_swing$(Q); \
@@ -407,7 +407,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_text$(Q); \
@@ -425,7 +425,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_util$(Q); \
@@ -443,7 +443,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_time$(Q); \
@@ -461,7 +461,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_management$(Q); \
@@ -479,7 +479,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_jmx$(Q); \
@@ -497,7 +497,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_rmi$(Q); \
@@ -515,7 +515,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_tools$(Q); \
@@ -533,7 +533,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_jdi$(Q); \
@@ -551,7 +551,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_jfr$(Q); \
@@ -569,7 +569,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_instrument$(Q); \
@@ -591,7 +591,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_svc_sanity$(Q); \
@@ -612,7 +612,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):build$(Q); \
@@ -633,7 +633,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_imageio$(Q); \
@@ -655,7 +655,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_client_sanity$(Q); \
@@ -676,7 +676,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_security_infra$(Q); \
@@ -697,7 +697,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_native_sanity$(Q); \
@@ -722,7 +722,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jdk_2d$(Q); \
@@ -744,7 +744,7 @@
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(JDK_HOME)$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
 	$(Q)$(JTREG_TEST_DIR):jfc_demo$(Q); \
