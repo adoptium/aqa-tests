@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Liberty Tests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>ODM test</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/performance/liberty" />
+
+	<!--Properties for this particular build-->
+	<property name="src" location="." />
+	<property name="BM_DIR_NAME" value="liberty-cleaned" />
+	<property name="BM_PACKAGE_ZIP" value="${BM_DIR_NAME}_Package.zip" />
+	<property name="LIBERTY_VERSION" value="liberty19002" />
+	<property name="LIBERTY_BINARIES_ZIP" value="${LIBERTY_VERSION}_Package.zip" />	
+	<property environment="env" />
+
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+
+	<target name="getBinaries" depends="init">
+		<if>
+			<not>
+				<available file="${DEST}/${LIBERTY_VERSION}" />
+			</not>
+			<then>
+				<echo message="${env.PERF_ROOT}/${LIBERTY_BINARIES_ZIP}" />
+				<if>
+					<available file="${env.PERF_ROOT}/${LIBERTY_BINARIES_ZIP}" type="file" />
+					<then>
+						<unzip src="${env.PERF_ROOT}/${LIBERTY_BINARIES_ZIP}" dest="${DEST}/libertyBinaries" />
+					</then>
+					<else>						
+						<echo message="curl -knO --progress-bar -u ${env.PERF_USERNAME}:XXX http://perffarm.hursley.ibm.com/packages/${LIBERTY_BINARIES_ZIP}" />
+						<exec executable="curl" failonerror="true">
+							<arg line="-knO --progress-bar -u ${env.PERF_USERNAME}:${env.PERF_PASSWORD} http://perffarm.hursley.ibm.com/packages/${LIBERTY_BINARIES_ZIP}" />
+						</exec>
+						<copy file="${LIBERTY_BINARIES_ZIP}" todir="${env.PERF_ROOT}"/>
+						<unzip src="${LIBERTY_BINARIES_ZIP}" dest="${DEST}" />
+					</else>
+				</if>
+			</then>
+		</if>
+	</target>
+	
+	<target name="getBenchmarkPackage" depends="getBinaries">
+		<if>
+			<not>
+				<available file="${DEST}/${BM_DIR_NAME}" />
+			</not>
+			<then>
+				<echo message="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" />
+				<if>
+					<available file="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" type="file" />
+					<then>
+						<unzip src="${env.PERF_ROOT}/${BM_PACKAGE_ZIP}" dest="${DEST}" />
+					</then>
+					<else>
+						<echo message="curl -knO --progress-bar -u ${env.PERF_USERNAME}:XXX http://perffarm.hursley.ibm.com/packages/${BM_PACKAGE_ZIP}" />
+						<exec executable="curl" failonerror="true">
+							<arg line="-knO --progress-bar -u ${env.PERF_USERNAME}:${env.PERF_PASSWORD} http://perffarm.hursley.ibm.com/packages/${BM_PACKAGE_ZIP}" />
+						</exec>
+						<copy file="${BM_PACKAGE_ZIP}" todir="${env.PERF_ROOT}"/>
+						<unzip src="${BM_PACKAGE_ZIP}" dest="${DEST}" />
+					</else>
+				</if>
+			</then>
+		</if>
+	</target>
+
+	<target name="dist" depends="getBenchmarkPackage" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}"/>
+		</copy>
+		<copy file="${src}/scripts/sufp_benchmark.sh" todir="${DEST}/${BM_DIR_NAME}/bin"/>
+		<chmod file="${DEST}/**" perm="a+x"/>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<delete dir="${BM_PACKAGE_ZIP}" />
+	</target>
+
+	<target name="build">
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
