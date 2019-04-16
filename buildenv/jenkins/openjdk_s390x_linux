@@ -13,7 +13,8 @@ stage('Queue') {
         SDK_RESOURCE = 'upstream'
         SPEC='linux_390-64_cmprssptrs'
         checkout scm
-        def jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()
     }
 }
+jenkinsfile.run_parallel_tests()
