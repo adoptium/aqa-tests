@@ -21,7 +21,7 @@ if [ -d /java/jre/bin ];then
 	export PATH=$JAVA_BIN:$PATH
 	java -version
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
@@ -44,13 +44,6 @@ ls .
 echo "Compile and execute HeapFragger" && \
 mvn package && \
 cd target && \
-
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
-java -version
 
 echo "================ Running HeapFragger ==============="
 java -Xmx2G -Xms2G -Xmn1G -verbose:gc -Xtgc:parallel -javaagent:HeapFragger.jar="-a 128 -f 0.25 -s 512" org.HeapFragger.Idle -t 60000 |& tee output.log

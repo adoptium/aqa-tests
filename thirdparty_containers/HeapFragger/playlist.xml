@@ -14,7 +14,7 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>heapfragger</testCaseName>
+		<testCaseName>heapfragger_j9</testCaseName>
 	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-heapfragger:latest ; \
 		$(TEST_STATUS); \
 		docker rmi -f adoptopenjdk-heapfragger
@@ -23,10 +23,13 @@
 			<subset>8</subset>
 		</subsets>
 		<levels>
-			<level>sanity</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
 		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 </playlist>
