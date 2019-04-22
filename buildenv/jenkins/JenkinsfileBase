@@ -109,7 +109,7 @@ def setupParallelEnv() {
 				testSubDirSize = testSubDirs.size()
 			}
 			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
-			def parallel_tests = [:]
+			parallel_tests = [:]
 
 			for (int i = 0; i < testSubDirSize; i++) {
 				def testSubDir = testSubDirs[i].trim().replace("/","");
@@ -150,7 +150,7 @@ def setupParallelEnv() {
 					]
 				}
 			}
-			parallel parallel_tests
+			// return to top level pipeline file in order to exit node block before running tests in parallel
 		}
 	}
 }
@@ -453,7 +453,7 @@ def getJenkinsDomain() {
 	def match = m[0][1]
 	def domainName = "undefined"
 	if (match) {
-	    domainName = match
+		domainName = match
 	}
 	return domainName
 }
@@ -488,6 +488,14 @@ def uploadToArtifactory() {
 		currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
 	} else {
 		echo "ARTIFACTORY_SERVER is not set. Artifacts are not uploaded onto artifactory server."
+	}
+}
+
+def run_parallel_tests() {
+	if (params.IS_PARALLEL == true) {
+		stage ("Parallel Tests") {
+			parallel parallel_tests
+		}
 	}
 }
 
