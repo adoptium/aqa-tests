@@ -19,13 +19,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java9"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -33,24 +31,20 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
 TEST_SUITE=$1
-
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
 java -version
 
 # Replace the following with the initial command lines that trigger execution of your test
 # For this example, we will simply compile and run the ExampleTest class
 cd /tpc-example
-ls .
+
 pwd
+
+set -e
 echo "Compile and execute example-test" && \
 javac src/net/adoptopenjdk/example/test/ExampleTest.java && \
 java -cp ./src net.adoptopenjdk.example.test.ExampleTest
+set +e

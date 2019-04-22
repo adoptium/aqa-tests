@@ -41,5 +41,7 @@ cd ${THORNTAIL_HOME}/thorntail/
 mvn clean install -Dmaven.test.skip=true
 echo "build finished"
 
+set -e
 mvn test $TEST_OPTIONS
+set +e
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

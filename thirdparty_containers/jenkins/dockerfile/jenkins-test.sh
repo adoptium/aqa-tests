@@ -17,13 +17,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -31,16 +29,16 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
+java -version
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin jenkins test
 
 cd /jenkins
-ls .
-pwd
+
+set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
 mvn clean install -pl war -am -DskipTests -Denforcer.fail=false
 
@@ -48,5 +46,6 @@ echo "Building jenkins completed"
 
 echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
 mvn surefire:test -Denforcer.fail=false
-
+set +e
 echo "Executing jenkins tests alone completed"
+find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

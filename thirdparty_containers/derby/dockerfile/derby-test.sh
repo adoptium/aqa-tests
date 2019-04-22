@@ -19,24 +19,22 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
 	suffix="/java"
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
-	echo "JAVA_BIN is: $JAVA_BIN"
 	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
+java -version
 cd ${DERBY_HOME}
 
 pwd
@@ -56,9 +54,10 @@ export CLASSPATH "${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:${tstjardir}
 
 java -jar ${DERBY_HOME}/jars/sane/derbyrun.jar sysinfo
 
+set -e
 #Run all tests
 ant -Dderby.tests.basePort=1690 -Dderby.system.durability=test -DderbyTesting.oldReleasePath=${DERBY_HOME}/jars junit-all
-
+set +e
 #Run only derbylang suite
 #java -Dverbose=true -cp ${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:$tstjardir/junit.jar org.apache.derbyTesting.functionTests.harness.RunSuite #derbylang
 

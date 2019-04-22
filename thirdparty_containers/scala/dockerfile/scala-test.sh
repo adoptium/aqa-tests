@@ -17,13 +17,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
 	echo "Using mounted Java9"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -31,25 +29,22 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
+java -version
 TEST_SUITE=$1
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin scala test
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
-java -version
 cd /scala
-ls .
 pwd
+
+set -e
 echo "Begin to execute Scala test with cmd: sbt \"partest $TEST_SUITE\"" && \
 echo "Try to echo Scala version by using sbt \"scala -version\"" && \
 sbt "scala -version"
 
 echo "Begin to execute Scala test with cmd: sbt \"partest $TEST_SUITE\"" && \
 sbt "partest $TEST_SUITE"
+
+set +e

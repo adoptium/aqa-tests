@@ -37,6 +37,7 @@ java -version
 TEST_OPTIONS=$1
 
 cd ${PAYARA_HOME}/MicroProfile-TCK-Runners
+set -e
 mvn clean verify -Dpayara.version=5.184 $TEST_OPTIONS
-
+set +e
 find ./ -type d -name 'junitreports' -exec cp -r "{}" /testResults \;
