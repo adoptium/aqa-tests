@@ -33,28 +33,13 @@ else
 fi
 
 java -version
+TEST_OPTIONS=$1
 cd ${THORNTAIL_HOME}/
 
 #Build Thorntail 
 cd ${THORNTAIL_HOME}/thorntail/ 
-mvn clean install
+mvn clean install -Dmaven.test.skip=true
+echo "build finished"
 
-#Start MicroProfile Metrics TCK
-cd ${THORNTAIL_HOME}/thorntail/testsuite/testsuite-microprofile-metrics
-mvn integration-test
-
-#Start MicroProfile Fault-Tolerance TCK
-cd ${THORNTAIL_HOME}/thorntail/testsuite/testsuite-microprofile-fault-tolerance
-mvn integration-test
-
-#Start MicroProfile Rest Client TCK
-cd ${THORNTAIL_HOME}/thorntail/testsuite/testsuite-microprofile-restclient 
-mvn integration-test
-
-#Start MicroProfile OpenAPI TCK
-cd ${THORNTAIL_HOME}/thorntail/testsuite/testsuite-microprofile-openapi
-mvn integration-test
-
-#Start MicroProfile JWT TCK
-cd ${THORNTAIL_HOME}/thorntail/testsuite/testsuite-microprofile-jwt
-mvn integration-test
+mvn test $TEST_OPTIONS
+find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
