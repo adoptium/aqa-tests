@@ -20,7 +20,7 @@ if [ -d /java/jre/bin ];then
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
@@ -41,13 +41,16 @@ java -version
 # Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
 
+set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
 ./gradlew -q -g /tmp assemble
 
-
-echo "Elasticsearch Build - Completed"
+echo "Elasticsearch Build - Successful"
 
 echo "Running elasticsearch tests :"
 
 ./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
+
+echo "Elasticsearch tests - Successful"
+set +e
 find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
