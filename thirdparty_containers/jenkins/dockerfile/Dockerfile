@@ -57,7 +57,7 @@ COPY ./dockerfile/jenkins-test.sh /jenkins-test.sh
 
 # Clone jenkins src to /jenkins
 WORKDIR /
-RUN pwd
+RUN mkdir testResults
 RUN git clone https://github.com/jenkinsci/jenkins.git
 
 ENTRYPOINT ["/bin/bash", "/jenkins-test.sh"]

@@ -19,13 +19,11 @@ if [ -d /java/jre/bin ];then
 	export JAVA_BIN=/java/jre/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
@@ -33,22 +31,16 @@ else
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
 	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
 TEST_SUITE=$1
-
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
 java -version
 
 cd /tomcat
-ls .
 pwd
+
+set -e
 echo "Building tomcat" && \
 cp build.properties.default build.properties && \
 ant && \
@@ -56,3 +48,4 @@ ant && \
 echo "Running tomcat tests" 
 #Run tests
 ant test
+set +e

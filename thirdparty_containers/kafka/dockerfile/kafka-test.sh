@@ -51,6 +51,7 @@ cd /kafka
 ls .
 pwd
 
+set -e
 echo "Building kafka  using gradle" && \
 gradle -q
 ./gradlew jar
@@ -60,3 +61,5 @@ echo "Kafka Build - Completed"
 echo "Running (ALL) Kafka tests :"
 
 ./gradlew testAll
+set +e
+echo "Kafka tests - Completed:"

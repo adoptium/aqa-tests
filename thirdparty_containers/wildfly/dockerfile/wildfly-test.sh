@@ -38,6 +38,7 @@ java -version
 # Replace the following with the initial command lines that trigger execution of your test
 cd /wildfly
 
+set -e
 echo "Building wildfly  using maven , by invoking build.sh" && \
 ./build.sh
 
@@ -47,3 +48,4 @@ echo "Wildfly Build - Completed"
 echo "Running (ALL) wildfly tests :"
 
 ./mvnw install -DallTests
+set +e

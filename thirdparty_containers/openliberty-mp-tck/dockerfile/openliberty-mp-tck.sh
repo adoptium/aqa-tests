@@ -35,6 +35,7 @@ fi
 java -version
 cd ${OPENLIBERTY_HOME}/open-liberty/dev
 
+set -e
 #Build all projects and create the open-liberty image
 ./gradlew -q cnf:initialize
 ./gradlew -q releaseNeeded
@@ -69,4 +70,5 @@ echo "Build projects and create images done"
 ./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:clean
 ./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
 
+set +e
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
