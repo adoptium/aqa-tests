@@ -24,9 +24,7 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-# Using nightly temporately util https://github.com/AdoptOpenJDK/openjdk-docker/issues/122 is fix
-#ARG IMAGE_VERSION=latest
-ARG IMAGE_VERSION=nightly
+ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 RUN groupadd -g 1000 elasticsearch && useradd elasticsearch -u 1000 -g 1000
