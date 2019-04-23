@@ -527,6 +527,7 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<!-- exclude jdk_jdi on openj9: https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071 -->
 	<test>
 		<testCaseName>jdk_jdi</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
@@ -544,6 +545,9 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_jfr</testCaseName>
