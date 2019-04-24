@@ -104,6 +104,8 @@ def setupParallelEnv() {
 			setupEnv()
 			def testSubDirs = []
 			def testSubDirSize = 0
+			
+			//For parallel suppose BUILD_LIST is one specific category
 			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
 				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
 				testSubDirSize = testSubDirs.size()
@@ -296,7 +298,7 @@ def buildTest() {
 	}
 }
 
-def runTest(subDir) {
+def runTest( ) {
 	stage('Test') {
 		timestamps{
 			echo 'Running tests...'
@@ -309,7 +311,7 @@ def runTest(subDir) {
 			if (TARGET.contains('custom')) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
-			RUNTEST_CMD = "./openjdk-tests/${subDir} _${params.TARGET} ${CUSTOM_OPTION}"
+			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
 			for (i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk_regression' || env.BUILD_LIST.startsWith('jck')) {
 					if (env.SPEC.startsWith('linux_x86-64')) {
@@ -336,7 +338,12 @@ def runTest(subDir) {
 def post(output_name) {
 	stage('Post') {
 		timestamps{
-			output_name = output_name.replace("/","_");
+			if (output_name.contains(',')) {
+				output_name = "specifiedTarget"
+			}
+			else {
+				output_name = output_name.replace("/","_")
+			}
 			def tar_cmd = "tar -zcf"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
@@ -410,7 +417,7 @@ def testBuild() {
 				} else {
 					buildTest()
 				}
-				runTest("${env.BUILD_LIST}")
+				runTest()
 				post("${env.BUILD_LIST}")
 			}
 		} finally {
