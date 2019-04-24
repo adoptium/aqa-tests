@@ -35,10 +35,6 @@ FROM $IMAGE_NAME:$IMAGE_VERSION
 RUN apt-get update \
 	&& apt-get -y install \
 	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
 	git \
 	make \
 	unzip \
@@ -74,4 +70,4 @@ RUN git checkout $KAFKA_VERSION
 WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/kafka-test.sh"]
-CMD ["--version"]
+CMD [""]
