@@ -61,4 +61,4 @@ RUN pwd
 RUN git clone https://github.com/scala/scala.git
 
 ENTRYPOINT ["/bin/bash", "/scala-test.sh"]
-CMD ["--version"]
+CMD [""]
