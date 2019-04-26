@@ -155,14 +155,16 @@ getBinaryOpenjdk()
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
-			echo "curl -OLJks ${curl_options} $file"
-			curl -OLJks ${curl_options} $file
+			set +e
+			echo "curl -OLJks --retry 5 --retry-delay 30 ${curl_options} $file"
+			curl -OLJks --retry 5 --retry-delay 30 ${curl_options} $file
 			if [ $? -ne 0 ]; then
 				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
 				ls -ld $file
 				md5sum $file
 				exit 1
 			fi
+			set -e
 		done
 	fi
 
