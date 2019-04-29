@@ -36,10 +36,7 @@ RUN apt-get update \
 	unzip \
 	wget
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run Elasticsarch tests.
 COPY ./dockerfile/elasticsearch-test.sh /elasticsearch-test.sh

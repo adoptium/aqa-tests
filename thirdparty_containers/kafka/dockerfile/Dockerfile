@@ -52,10 +52,7 @@ RUN mkdir -p /usr/share/gradle \
 
 RUN cd .
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run kafka tests. 
 COPY ./dockerfile/kafka-test.sh /kafka-test.sh

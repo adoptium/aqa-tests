@@ -58,10 +58,7 @@ RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant
     cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar $WORKDIR/apache-ant-${ANT_VERSION}/lib/
 ENV ANT_HOME ${WORKDIR}/apache-ant-${ANT_VERSION}
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/lucene-solr-test.sh /lucene-solr-test.sh
 

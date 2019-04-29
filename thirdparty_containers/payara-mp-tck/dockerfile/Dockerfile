@@ -47,10 +47,7 @@ WORKDIR /
 RUN mkdir testResults
 ENV PAYARA_HOME $WORKDIR
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/payara-mp-tck.sh /payara-mp-tck.sh
 
