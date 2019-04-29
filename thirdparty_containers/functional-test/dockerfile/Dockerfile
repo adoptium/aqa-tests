@@ -51,10 +51,7 @@ RUN apt-get update \
 	libjson-perl \
 	libxml-parser-perl
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 
 # This is the main script to run functional tests.  

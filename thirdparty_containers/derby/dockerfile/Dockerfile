@@ -43,10 +43,7 @@ RUN apt-get update \
 	wget \
 	ant
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 WORKDIR /
 ENV DERBY_HOME ${WORKDIR}/derby

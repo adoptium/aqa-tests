@@ -49,10 +49,7 @@ RUN git clone https://github.com/openssl/openssl.git && cd /openssl && git check
 	&& make \
 	&& make install
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run tomcat tests.  
 COPY ./dockerfile/tomcat-test.sh /tomcat-test.sh

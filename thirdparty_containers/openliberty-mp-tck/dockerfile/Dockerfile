@@ -50,10 +50,7 @@ WORKDIR /
 ENV OPENLIBERTY_HOME $WORKDIR
 RUN mkdir testResults
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/openliberty-mp-tck.sh /openliberty-mp-tck.sh
 

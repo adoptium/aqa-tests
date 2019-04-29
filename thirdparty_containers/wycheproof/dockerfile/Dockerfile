@@ -44,10 +44,7 @@ WORKDIR /
 RUN mkdir testResults
 ENV WYCHEPROOF_HOME $WORKDIR
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/wycheproof.sh /wycheproof.sh
 

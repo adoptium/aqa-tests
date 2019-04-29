@@ -47,10 +47,7 @@ RUN apt-get update \
 	&& apt-get -y install \
 	maven
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run wildfly tests. 
 COPY ./dockerfile/wildfly-test.sh /wildfly-test.sh

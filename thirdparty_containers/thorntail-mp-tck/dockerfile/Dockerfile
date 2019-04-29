@@ -51,10 +51,7 @@ WORKDIR /
 RUN mkdir testResults
 ENV THORNTAIL_HOME $WORKDIR
 
-VOLUME ["/java"]
-ENV JAVA_HOME=/java \
-    PATH=/java/bin:$PATH \
-    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/thorntail-mp-tck.sh /thorntail-mp-tck.sh
 
