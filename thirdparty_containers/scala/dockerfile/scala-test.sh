@@ -40,11 +40,11 @@ cd /scala
 pwd
 
 set -e
-echo "Begin to execute Scala test with cmd: sbt \"partest $TEST_SUITE\"" && \
+
 echo "Try to echo Scala version by using sbt \"scala -version\"" && \
 sbt "scala -version"
 
 echo "Begin to execute Scala test with cmd: sbt \"partest $TEST_SUITE\"" && \
-sbt "partest $TEST_SUITE"
+sbt "partest --terse $TEST_SUITE"
 
 set +e
