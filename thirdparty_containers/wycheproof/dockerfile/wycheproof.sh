@@ -40,10 +40,11 @@ TEST_OPTIONS=$1
 
 cd ${WYCHEPROOF_HOME}/wycheproof
 
+set -e
 #Run OpenJDKAllTests 
 bazel test OpenJDKTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
 
 #Run BouncyCastleAllTests tests 
 bazel test BouncyCastleTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
-
+set +e
 find /root/.cache -type d -name 'testlogs' -exec cp -r "{}" /testResults \;
