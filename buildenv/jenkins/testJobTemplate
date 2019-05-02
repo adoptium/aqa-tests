@@ -100,9 +100,6 @@ ARCH_OS_LIST.each { ARCH_OS ->
 	}
 
 	JDK_VERSIONS.each { JDK_VERSION ->
-		// if JDK_VERSION is Next, set JDK_VERSION_VALUE to empty. Otherwise, set JDK_VERSION_VALUE = JDK_VERSION
-		JDK_VERSION_VALUE = JDK_VERSION == "Next" ? "" : JDK_VERSION
-
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
 				def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
@@ -121,7 +118,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
 							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
-							stringParam('JDK_VERSION', "${JDK_VERSION_VALUE}", "JDK version. i.e., 8, 11")
+							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
 							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${LEVEL}.${GROUP}", "Test TARGET to execute")
