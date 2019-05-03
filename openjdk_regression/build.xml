@@ -57,10 +57,10 @@
 				<available file="jtreg-4.2.0-tip.tar.gz" />
 			</not>
 			<then>
-				<exec executable="wget" failonerror="false">
+				<exec executable="wget" failonerror="true">
 					<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
 				</exec>
-				<exec executable="tar" failonerror="false">
+				<exec executable="tar" failonerror="true">
 					<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
 				</exec>
 			</then>
