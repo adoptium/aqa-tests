@@ -364,11 +364,7 @@ def post(output_name) {
 				pax_opt = "-x pax"
 			}
 
-			boolean failIfNoResultsValue = true
-			if (params.IS_PARALLEL == true) {
-				failIfNoResultsValue = false
-			}
-			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
+			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
