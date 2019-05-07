@@ -16,7 +16,7 @@
 	<test>
 		<testCaseName>thorntail_microprofile_tck</testCaseName>
 		<command>docker run --name thorntail-mp-tck $(EXTRA_DOCKER_ARGS) adoptopenjdk-thorntail-mp-tck:latest \
-			 "-pl testsuite/testsuite-microprofile-jwt,testsuite/testsuite-microprofile-fault-tolerance,testsuite/testsuite-microprofile-metrics,testsuite/testsuite-microprofile-openapi,testsuite/testsuite-microprofile-restclient"; \
+			 "-pl testsuite/microprofile-tcks,testsuite/microprofile-tcks/config,testsuite/microprofile-tcks/fault-tolerance,testsuite/microprofile-tcks/health,testsuite/microprofile-tcks/jwt-auth,testsuite/microprofile-tcks/metrics,testsuite/microprofile-tcks/openapi,testsuite/microprofile-tcks/opentracing,testsuite/microprofile-tcks/restclient"; \
 			 $(TEST_STATUS); \
 			 docker cp thorntail-mp-tck:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
 			 docker rm -f thorntail-mp-tck; \
