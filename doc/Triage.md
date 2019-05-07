@@ -22,7 +22,7 @@ There are [many different test jobs](https://ci.adoptopenjdk.net/view/Test_all/)
 - exclude in the most minimal way possible, if failing only on 1 platform, version or implementation, only exclude for that instance
 - put the full link to the associated open issue into the exclude file
 - exclude files vary depending on what test group you are triaging, refer to the README files in the openjdk-tests subdirectories for more details
-  - for openjdk tests, see [Exclude an openjdk test](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/openjdk_regression#exclude-a-testcase)
+  - for openjdk tests, see [Exclude an openjdk test](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/openjdk#exclude-a-testcase)
   - for other tests (like system, external and perf tests), tests are typically disabled via the associated playlist.xml (see [example playlist](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/thirdparty_containers/example-test/playlist.xml)) file either by using `<platformRequirements>^os.win</platformRequirements>` if by platform, or `<disabled>` tag if for all platforms/versions/implementations
 
 ![Common Triage Paths](./diagrams/commonTriagePaths.png)
