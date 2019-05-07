@@ -114,11 +114,11 @@ $ git clone https://github.com/AdoptOpenJDK/openjdk-tests
 $ cd openjdk-tests
 $ TOP_DIR=$(pwd)
 $ TEST_DIR="$TOP_DIR"
-$ pushd openjdk_regression
+$ pushd openjdk
 $ ln -s $OPENJDK_SOURCES openjdk-jdk
 $ popd
 $ export JAVA_BIN=$OPENJDK_BUILD/jre/bin
-$ export BUILD_LIST=openjdk_regression
+$ export BUILD_LIST=openjdk
 $ export BUILD_ROOT=$TOP_DIR/test-results
 $ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
 $ ./get.sh -t $TEST_DIR
@@ -159,9 +159,9 @@ _sanity.openjdk done
 Additional test output can be found in the following folders:
 
 ```
-openjdk-tests/test-results/openjdk_regression/TestConfig/test_output_<timestamp>`
-openjdk-tests/test-results/openjdk_regression/work
-openjdk-tests/test-results/openjdk_regression/report
+openjdk-tests/test-results/openjdk/TestConfig/test_output_<timestamp>`
+openjdk-tests/test-results/openjdk/work
+openjdk-tests/test-results/openjdk/report
 ```
 
-The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk_regression/report/html/index.html`
+The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`

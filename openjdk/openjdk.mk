@@ -60,7 +60,7 @@ ifdef OPENJDK_DIR
 # removing "
 OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
 else
-OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk_regression$(D)openjdk-jdk
+OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
 ifneq (,$(findstring $(JDK_VERSION),8-9))
