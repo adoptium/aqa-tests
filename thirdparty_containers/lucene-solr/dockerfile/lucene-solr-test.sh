@@ -18,7 +18,7 @@ if [ -d /java/jre/bin ];then
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
@@ -38,9 +38,10 @@ cd ${LUCENE_SOLR_HOME}/lucene-solr
 pwd
 set -e
 
-echo "Compile and execute lucene-solr test" && \
-${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib ivy-bootstrap && \
-${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${LUCENE_SOLR_HOME}/lucene-solr/build.xml -Duser.home=${LUCENE_SOLR_HOME} -Dcommon.dir=${LUCENE_SOLR_HOME}/lucene-solr/lucene compile && \
+${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib ivy-bootstrap
+echo "Compile and execute lucene-solr test"
+${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${LUCENE_SOLR_HOME}/lucene-solr/build.xml -Duser.home=${LUCENE_SOLR_HOME} -Dcommon.dir=${LUCENE_SOLR_HOME}/lucene-solr/lucene compile
+echo "Execute lucene-solr test"
 ${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${LUCENE_SOLR_HOME}/lucene-solr/build.xml -Duser.home=${LUCENE_SOLR_HOME} -Dcommon.dir=${LUCENE_SOLR_HOME}/lucene-solr/lucene test
 
 set +e
