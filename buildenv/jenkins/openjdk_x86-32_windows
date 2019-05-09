@@ -3,8 +3,7 @@
 	Set parameter TARGET(openjdk, system, external, perf, jck etc.).
 	Set UPSTREAM_JOB_NAME(version_build_arch_os, for example: openjdk8_build_x86-64_linux)
 	Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
-LABEL='hw.arch.x86&&sw.os.windows'
-
+LABEL='ci.role.test&&hw.arch.x86&&sw.os.windows'
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x32_windows'
