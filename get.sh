@@ -20,6 +20,7 @@ PLATFORM=""
 JVMVERSION=""
 SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
+CUSTOMIZED_SDK_SOURCE_URL=""
 OPENJ9_REPO="https://github.com/eclipse/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
@@ -44,6 +45,7 @@ usage ()
 	echo '                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory'
 	echo '                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized'
 	echo '                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized.  Multiple urls can be passed with space as separator'
+	echo '                [--customized_sourceURL|-S ] : indicate sdk source url if sdk source is set as customized.'
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
@@ -87,6 +89,9 @@ parseCommandLineArgs()
 
 			"--customizedURL" | "-c" )
 				CUSTOMIZED_SDK_URL="$1"; shift;;
+
+			"--customized_sourceURL" | "-S" )
+				CUSTOMIZED_SDK_SOURCE_URL="$1"; shift;;
 
 			"--username" )
 				USERNAME="$1"; shift;;
@@ -210,6 +215,26 @@ getBinaryOpenjdk()
 	chmod -R 755 j2sdk-image
 }
 
+getOpenJDKSources() {
+	echo "get jdk sources..."
+	cd $TESTDIR
+	mkdir -p openjdk/src
+	cd openjdk/src
+	echo "curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL"
+	curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL
+	sources_file=`ls`
+	if [[ $sources_file == *zip || $sources_file == *jar ]]; then
+		unzip -q $sources_file -d .
+	else
+		gzip -cd $sources_file | tar xof -
+	fi
+	rm $sources_file
+	folder=`ls -d */`
+	mv $folder ../openjdk-jdk
+	cd ../
+	rm -rf src
+}
+
 getTestKitGenAndFunctionalTestMaterial()
 {
 	echo "get testKitGen and functional test material..."
@@ -321,6 +346,9 @@ fi
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
+fi
+if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
+	getOpenJDKSources
 fi
 
 testJavaVersion
