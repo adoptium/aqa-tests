@@ -4,14 +4,12 @@
 	<description>
 		Build derby-test docker image
 	</description>
-
+	<import file="${TEST_ROOT}/thirdparty_containers/build.xml"/>
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/derby-test" />
-	<property name="dist" location="${DEST}/${JDK_VERSION}" />
 	<property name="src" location="." />
-
 	<target name="init">
-		<mkdir dir="${dist}"/>
+		<mkdir dir="${DEST}"/>
 	</target>
 
 	<target name="clean_image" depends="init" description="clean derby test docker image if there is one">
@@ -22,7 +20,7 @@
 
 	<target name="build_image" depends="clean_image" description="build derby test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-derby-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+			<arg line="build -t adoptopenjdk-derby-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
 		</exec>
 	</target>
 

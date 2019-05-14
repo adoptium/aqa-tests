@@ -4,6 +4,7 @@
 	<description>
 		Build lucene-solr-test Docker image
 	</description>
+	<import file="${TEST_ROOT}/thirdparty_containers/build.xml"/>
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/lucene-solr-test" />
@@ -32,7 +33,7 @@
 			</else>
 		</if>
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-lucene-solr-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg LUCENE_SOLR_TAG=${LUCENE_SOLR_TAG}"/>
+			<arg line="build -t adoptopenjdk-lucene-solr-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg LUCENE_SOLR_TAG=${LUCENE_SOLR_TAG} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
 		</exec>
 	</target>
 
