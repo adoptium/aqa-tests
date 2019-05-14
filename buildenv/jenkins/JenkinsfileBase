@@ -47,7 +47,7 @@ def setupEnv() {
 	}
 
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
-	env.JRE_IMAGE = "$WORKSPACE/openjdkbinary/j2jre-image"
+	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2jre-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
@@ -94,9 +94,6 @@ def setupEnv() {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
-	if (params.JRE_IMAGE) {
-		env.JRE_IMAGE = params.JRE_IMAGE
-	}
 	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
