@@ -117,7 +117,6 @@ $ TEST_DIR="$TOP_DIR"
 $ pushd openjdk
 $ ln -s $OPENJDK_SOURCES openjdk-jdk
 $ popd
-$ export JAVA_BIN=$OPENJDK_BUILD/jre/bin
 $ export BUILD_LIST=openjdk
 $ export BUILD_ROOT=$TOP_DIR/test-results
 $ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
