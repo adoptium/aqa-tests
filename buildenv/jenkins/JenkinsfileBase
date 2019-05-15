@@ -384,6 +384,8 @@ def post(output_name) {
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					uploadToArtifactory()
 				}
 			}
 			//for performance test, achive regardless the build result
@@ -395,10 +397,10 @@ def post(output_name) {
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					uploadToArtifactory()
 				}
 			}
-
-			uploadToArtifactory()
 		}
 	}
 }
