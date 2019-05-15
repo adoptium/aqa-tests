@@ -121,6 +121,7 @@ $ export JAVA_BIN=$OPENJDK_BUILD/jre/bin
 $ export BUILD_LIST=openjdk
 $ export BUILD_ROOT=$TOP_DIR/test-results
 $ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
+$ export TEST_JDK_HOME=$OPENJDK_BUILD
 $ ./get.sh -t $TEST_DIR
 $ ./maketest.sh $TEST_DIR
 $ OPENJDK_DIR=$OPENJDK_SOURCES ./maketest.sh $TEST_DIR _sanity.openjdk
