@@ -20,8 +20,19 @@
 	</target>
 
 	<target name="build_image" depends="clean_image" description="build lucene-solr test docker image">
+		<if>
+			<contains string="${JVM_VERSION}" substring="8" />
+			<then>
+				<!-- After 'releases/lucene-solr/6.6.6', Java 11 is the minimum Java version -->
+				<property name="LUCENE_SOLR_TAG" value='releases/lucene-solr/6.6.6' />
+			</then>
+			<else>
+				<echo message="Checkout lastest Lucence-solr " />
+				<property name="LUCENE_SOLR_TAG" value="." />
+			</else>
+		</if>
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-lucene-solr-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+			<arg line="build -t adoptopenjdk-lucene-solr-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg LUCENE_SOLR_TAG=${LUCENE_SOLR_TAG}"/>
 		</exec>
 	</target>
 

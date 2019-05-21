@@ -63,8 +63,12 @@ ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 COPY ./dockerfile/lucene-solr-test.sh /lucene-solr-test.sh
 
 # Clone the repo where the Lucen-Solr code and tests reside.
-RUN pwd
+
+#default is HEAD
 RUN git clone https://github.com/apache/lucene-solr.git
+ARG LUCENE_SOLR_TAG=.
+WORKDIR lucene-solr
+RUN git checkout -q $LUCENE_SOLR_TAG
 
 ENTRYPOINT ["/bin/bash", "/lucene-solr-test.sh"]
 CMD ["--version"]
