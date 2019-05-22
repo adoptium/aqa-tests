@@ -245,13 +245,14 @@ getTestKitGenAndFunctionalTestMaterial()
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
 	fi
 
-	echo "git clone $OPENJ9_BRANCH $OPENJ9_REPO"
-	git clone -q $OPENJ9_BRANCH $OPENJ9_REPO
+	echo "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
+	git clone --depth 1 -q $OPENJ9_BRANCH $OPENJ9_REPO
 
 	if [ "$OPENJ9_SHA" != "" ]
 	then
 		echo "update to openj9 sha: $OPENJ9_SHA"
 		cd openj9
+		git fetch --unshallow
 		git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
 		git checkout -q $OPENJ9_SHA
 		cd $TESTDIR
