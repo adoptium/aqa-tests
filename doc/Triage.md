@@ -13,7 +13,7 @@ There are [many different test jobs](https://ci.adoptopenjdk.net/view/Test_all/)
 - infra issue - raise an issue in [openjdk-infrastructure](https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues)
 - test issue - ideally, there are enough details to determine which test repo to raise an issue in ond of the test repos from which test material is pulled (OpenJDK, [openjdk-systemtest](https://github.com/AdoptOpenJDK/openjdk-systemtest/issues), [openjdk-tests](https://github.com/AdoptOpenJDK/openjdk-tests/issues) or any of the various 3rd party application suites).  If in doubt, ask some questions in the [#testing channel](https://adoptopenjdk.slack.com/messages/C5219G28G) and/or raise in [openjdk-tests](https://github.com/AdoptOpenJDK/openjdk-tests/issues) where it will get routed to proper repo
   - OpenJDK test issues - see [Guidance for creating OpenJDK bugs](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects) 
-  - Additional guidance for external tests - [Triage Rules for Application tests](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/thirdparty_containers#triage-rules)
+  - Additional guidance for external tests - [Triage Rules for Application tests](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/external#triage-rules)
 - product issue - additional steps may be necessary, before raising an issue
   - rerun the test - locally or using a Grinder: see [How to Run a Grinder wiki](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins)
   - determine if the problem is occurs in other jdk versions, implementations and on other platforms
@@ -23,6 +23,6 @@ There are [many different test jobs](https://ci.adoptopenjdk.net/view/Test_all/)
 - put the full link to the associated open issue into the exclude file
 - exclude files vary depending on what test group you are triaging, refer to the README files in the openjdk-tests subdirectories for more details
   - for openjdk tests, see [Exclude an openjdk test](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/openjdk#exclude-a-testcase)
-  - for other tests (like system, external and perf tests), tests are typically disabled via the associated playlist.xml (see [example playlist](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/thirdparty_containers/example-test/playlist.xml)) file either by using `<platformRequirements>^os.win</platformRequirements>` if by platform, or `<disabled>` tag if for all platforms/versions/implementations
+  - for other tests (like system, external and perf tests), tests are typically disabled via the associated playlist.xml (see [example playlist](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/external/example-test/playlist.xml)) file either by using `<platformRequirements>^os.win</platformRequirements>` if by platform, or `<disabled>` tag if for all platforms/versions/implementations
 
 ![Common Triage Paths](./diagrams/commonTriagePaths.png)
