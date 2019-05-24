@@ -23,6 +23,20 @@
 	<property name="DEST" value="${BUILD_ROOT}/jck" />
 	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest" />
 	<property environment="env" />
+	
+	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
+		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
+	</condition>
+	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
+		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
+	</condition>
+	
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
+		<isset property="env.STF_REPO"/>
+	</condition>
+	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
+		<isset property="env.STF_BRANCH"/>
+	</condition>
 
 	<target name="stage_jck_material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
@@ -50,6 +64,8 @@
 					<or>
  						<equals arg1="jck10" arg2="${env.JCK_VERSION}" />
 						<equals arg1="jck11" arg2="${env.JCK_VERSION}" />
+						<equals arg1="jck12" arg2="${env.JCK_VERSION}" />
+						<equals arg1="jck13" arg2="${env.JCK_VERSION}" />
 					</or>
  				<then>
 					<exec executable="git" failonerror="true">
@@ -105,24 +121,40 @@
 	</target>
 
 	<target name="clone_stf">
-		<exec executable="git" failonerror="false">
+		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="https://github.com/AdoptOpenJDK/stf.git" />
-			<arg value="${SYSTEMTEST_ROOT}/stf" />
+			<arg value="-b"/>
+			<arg value="${stf_branch}"/>
+			<arg value="${stf_repo}"/>
+		</exec>
+		<echo message="SHA of the checked out STF materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${stf_repo}"/>
+			<arg value="${stf_branch}"/>
 		</exec>
 	</target>
 
 	<target name="clone_systemtest">
-		<exec executable="git" failonerror="false">
+		<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />
 			<arg value="--depth" />
 			<arg value="1" />
 			<arg value="--single-branch" />
-			<arg value="https://github.com/AdoptOpenJDK/openjdk-systemtest.git" />
-			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
+			<arg value="-b"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+			<arg value="${openjdk_systemtest_repo}"/>
+		</exec>
+		<echo message="SHA of the checked out openjdk-systemtest materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${openjdk_systemtest_repo}"/>
+			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
 	</target>
 
