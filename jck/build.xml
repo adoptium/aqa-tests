@@ -24,6 +24,10 @@
 	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest" />
 	<property environment="env" />
 	
+	<condition property="git-prefix" value="git" else="https">
+		<isset property="isZOS"/>
+	</condition>
+	
 	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
