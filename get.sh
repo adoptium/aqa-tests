@@ -359,12 +359,12 @@ fi
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
+	testJavaVersion
 fi
 if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
 	getOpenJDKSources
 fi
 
-testJavaVersion
 
 if [ ! -d "$TESTDIR/TestConfig" ]; then
 	getTestKitGenAndFunctionalTestMaterial
