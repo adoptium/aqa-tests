@@ -48,11 +48,7 @@ JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
 ifndef JRE_IMAGE
-	ifeq ($(JDK_VERSION),8)
-		JRE_ROOT := $(JAVA_BIN)$(D)..$(D)..
-	else
-		JRE_ROOT := $(JAVA_BIN)$(D)..
-	endif
+	JRE_ROOT := $(TEST_JDK_HOME)
 	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
 endif
 
