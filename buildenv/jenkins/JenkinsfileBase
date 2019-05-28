@@ -98,6 +98,9 @@ def setupEnv() {
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
 	}
+	if( params.DOCKERIMAGE_TAG ) {
+		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
+	}
 	sh 'printenv'
 }
 

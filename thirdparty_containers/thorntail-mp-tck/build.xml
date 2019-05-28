@@ -4,6 +4,7 @@
 	<description>
 		Build thorntail-mp-tck Docker image
 	</description>
+	<import file="${TEST_ROOT}/thirdparty_containers/build.xml"/>
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/thirdparty_containers/thorntail-mp-tck" />
@@ -21,7 +22,7 @@
 
 	<target name="build_image" depends="clean_image" description="build thorntail-mp-tck tck docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-thorntail-mp-tck -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+			<arg line="build -t adoptopenjdk-thorntail-mp-tck -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
 		</exec>
 	</target>
 
