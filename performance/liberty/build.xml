@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Liberty Tests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>Liberty Tests</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/performance/liberty" />
+
+	<!--Properties for this particular build-->
+	<property name="src" location="." />
+	<property environment="env" />
+	<property name="BM_BINARIES_URL" value="https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/2019-04-19_0642/openliberty-19.0.0.4.zip" />
+	<property name="BM_VERSION" value="openliberty-19.0.0.4" />
+	<basename property="BM_BINARIES_ZIP" file="${BM_BINARIES_URL}"/>
+	
+	<property name="LIBERTY_APP_URL" value="https://github.com/WASdev/sample.daytrader7/releases/download/v1.2/daytrader-ee7.ear" />
+	<basename property="LIBERTY_APP" file="${LIBERTY_APP_URL}"/>
+
+	<target name="init">
+		<mkdir dir="${DEST}" />
+		<mkdir dir="${env.PERF_ROOT}" />
+		<echo message="BM_BINARIES_ZIP=${BM_BINARIES_ZIP}" />
+	</target>
+
+	<target name="getBinaries" depends="init">
+		<var name="curl_command" value=""/>
+		<if>
+			<available file="${DEST}/libertyBinaries/${BM_VERSION}" />
+			<then>
+				<echo message="${DEST}/libertyBinaries/${BM_VERSION} exists." />
+			</then>
+			<else>
+				<echo message="${DEST}/libertyBinaries/${BM_VERSION} doesn't exist." />
+				<if>
+					<available file="${env.PERF_ROOT}/${BM_BINARIES_ZIP}" type="file" />
+					<then>
+						<echo message="${env.PERF_ROOT}/${BM_BINARIES_ZIP} exists. Hence, not downloading it." />
+						<unzip src="${env.PERF_ROOT}/${BM_BINARIES_ZIP}" dest="${DEST}/libertyBinaries" />
+					</then>
+					<else>
+						<echo message="${env.PERF_ROOT}/${BM_BINARIES_ZIP} doesn't exist. Hence, downloading it." />						
+						<var name="curl_command" value="-OLks ${BM_BINARIES_URL}"/>
+						<echo message="curl ${curl_command}" />
+						<exec executable="curl" failonerror="true">
+							<arg line="${curl_command}" />
+						</exec>
+						<copy file="${BM_BINARIES_ZIP}" todir="${env.PERF_ROOT}"/>
+						<unzip src="${BM_BINARIES_ZIP}" dest="${DEST}/libertyBinaries" />										
+					</else>
+				</if>
+				<echo message="Moving ${DEST}/libertyBinaries/wlp to ${DEST}/libertyBinaries/${BM_VERSION}" />
+				<move file="${DEST}/libertyBinaries/wlp" tofile="${DEST}/libertyBinaries/${BM_VERSION}"/>
+			</else>
+		</if>
+		<if>
+			<available file="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP}" type="file" />
+			<then>
+				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP} exists. Hence, not downloading it." />
+			</then>
+			<else>
+				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP} doesn't exist. Hence, downloading it." />						
+				<var name="curl_command" value="-OLks ${LIBERTY_APP_URL}"/>
+				<echo message="curl ${curl_command}" />
+				<exec executable="curl" failonerror="true">
+					<arg line="${curl_command}" />
+				</exec>
+				<copy file="${LIBERTY_APP}" todir="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/"/>
+				<delete file="${env.PERF_ROOT}/${BM_VERSION}.zip"/>
+				<move file="${DEST}/libertyBinaries/${BM_VERSION}" tofile="${DEST}/libertyBinaries/wlp"/>
+				<zip destfile="${env.PERF_ROOT}/${BM_VERSION}.zip" basedir="${DEST}/libertyBinaries"/>
+				<move file="${DEST}/libertyBinaries/wlp" tofile="${DEST}/libertyBinaries/${BM_VERSION}"/>
+			</else>
+		</if>
+	</target>
+	<target name="dist" depends="getBinaries" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}"/>
+		</copy>
+		<chmod file="${DEST}/**" perm="a+x"/>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<delete dir="${BM_BINARIES_ZIP}" />
+	</target>
+
+	<target name="build">
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
