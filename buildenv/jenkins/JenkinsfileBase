@@ -322,7 +322,7 @@ def runTest( ) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
-			for (i = 0; i < iterations; i++) {
+			for (int i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk' || env.BUILD_LIST.startsWith('jck')) {
 					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
