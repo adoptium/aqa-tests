@@ -4,6 +4,7 @@
 	<description>
 		Build wildfly-test Docker image
 	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/external/wildfly-test" />
@@ -21,7 +22,7 @@
 
 	<target name="build_image" depends="clean_image" description="build wildfly test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-wildfly-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION}" />
+			<arg line="build -t adoptopenjdk-wildfly-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
 		</exec>
 	</target>
 

@@ -22,15 +22,25 @@
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/external" />
-
+	<property environment="env" />
+	<if>
+		<isset property="env.DOCKERIMAGE_TAG"/>
+		<then>
+			<property name="dockerImageTag" value="${env.DOCKERIMAGE_TAG}"/>
+		</then>
+		<else>
+			<property name="dockerImageTag" value="latest"/>
+		</else>
+	</if>
 	<target name="init" depends="docker_prune">
 		<mkdir dir="${DEST}" />
 	</target>
 
 	<target name="build" depends="dist">
 		<subant target="">
+			<property name="dockerImageTag" value="${dockerImageTag}"/>
 			<fileset dir="." includes="*/build.xml" />
-		</subant>		
+		</subant>
 	</target>
 	
 	<target name="dist" depends="init">
