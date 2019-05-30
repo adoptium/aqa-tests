@@ -51,12 +51,14 @@
 			<!-- jck materials don't exist, download them -->
 			<then>
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} does not exist, 
-					clone from ${env.JCK_GIT_REPO} to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
+					clone from ${env.JCK_GIT_REPO}, ${env.JCK_GIT_BRANCH} branch, to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				<exec executable="git" failonerror="true">
 					<arg value="clone" />
 					<arg value="--depth" />
 					<arg value="1" />
 					<arg value="--single-branch" />
+					<arg value="-b"/>
+					<arg value="${env.JCK_GIT_BRANCH}"/>
 					<arg value="${env.JCK_GIT_REPO}" />
 					<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				</exec>
