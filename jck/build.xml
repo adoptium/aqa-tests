@@ -42,6 +42,9 @@
 		<isset property="env.STF_BRANCH"/>
 	</condition>
 
+	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="master">
+		<isset property="env.JCK_GIT_BRANCH"/>
+	</condition>
 	<target name="stage_jck_material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
@@ -51,14 +54,14 @@
 			<!-- jck materials don't exist, download them -->
 			<then>
 				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} does not exist, 
-					clone from ${env.JCK_GIT_REPO}, ${env.JCK_GIT_BRANCH} branch, to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
+					clone from ${env.JCK_GIT_REPO}, ${jck_branch} branch, to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				<exec executable="git" failonerror="true">
 					<arg value="clone" />
 					<arg value="--depth" />
 					<arg value="1" />
 					<arg value="--single-branch" />
 					<arg value="-b"/>
-					<arg value="${env.JCK_GIT_BRANCH}"/>
+					<arg value="${jck_branch}"/>
 					<arg value="${env.JCK_GIT_REPO}" />
 					<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				</exec>
