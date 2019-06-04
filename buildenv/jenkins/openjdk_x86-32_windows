@@ -7,7 +7,6 @@ LABEL='ci.role.test&&hw.arch.x86&&sw.os.windows'
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x32_windows'
-        JAVA_VERSION = 'SE80'
         SDK_RESOURCE = 'upstream'
         SPEC='win_x86'
         checkout scm
