@@ -90,7 +90,7 @@ def setupEnv() {
 		}
 	}
 
-	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST == 'external') {
+	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
