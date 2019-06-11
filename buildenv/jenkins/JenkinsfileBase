@@ -155,6 +155,7 @@ def setupParallelEnv() {
 						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
 						booleanParam(name: 'IS_PARALLEL', value: false),
 						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
+						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
 					]
 				}
 			}
@@ -409,11 +410,8 @@ def post(output_name) {
 }
 
 def testBuild() {
-	def time_limit = 10
-	if(params.TIME_LIMIT) {
-		time_limit = params.TIME_LIMIT.toInteger()
-	}
-	timeout(time: time_limit, unit: 'HOURS') {
+	TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
+	timeout(time: TIME_LIMIT, unit: 'HOURS') {
 		try {
 			addJobDescription()
 
