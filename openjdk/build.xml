@@ -39,6 +39,19 @@
         <equals arg1="${JDK_VERSION}" arg2="12"/>
     </condition>
 
+        <condition property="openjdkOpenJ9Git" value="openj9-openjdk-jdk8">
+            <equals arg1="${JDK_VERSION}" arg2="8"/>
+        </condition>
+        <condition property="openjdkOpenJ9Git" value="openj9-openjdk-jdk11">
+            <equals arg1="${JDK_VERSION}" arg2="11"/>
+        </condition>
+        <condition property="openjdkOpenJ9Git" value="openj9-openjdk-jdk12">
+            <equals arg1="${JDK_VERSION}" arg2="12"/>
+        </condition>
+        <condition property="openjdkOpenJ9Git" value="openj9-openjdk-jdk">
+            <equals arg1="${JDK_VERSION}" arg2="13"/>
+        </condition>
+
 	<property environment="env" />
 	<if>
 		<isset property="env.RELEASE_TAG"/>
@@ -82,8 +95,8 @@
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
-				<property name="regressionRepo" value="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git" />
+				<property name="jdkName" value="${openjdkOpenJ9Git}" />
+				<property name="regressionRepo" value="https://github.com/ibmruntimes/${openjdkOpenJ9Git}.git" />
 			</then>
 			<else>
 				<property name="jdkName" value="${openjdkGit}" />
