@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,12 +33,14 @@ echo "JDK_DIR=${JDK_DIR}"
 
 ######### Generated Script #########
 
-#TODO: Need to do some cleanup and restructure some files for adding other configs
-echo ""
-echo "********** START OF NEW TESTCI BENCHMARK JOB **********"
-echo "Benchmark Name: LibertyStartupDT Benchmark Variant: 17dev-4way-0-256-qs"
-echo "Benchmark Product: ${JDK}"
-echo ""
+if [ -z "${DB_SETUP}" ]; then
+	#TODO: Need to do some cleanup and restructure some files for adding other configs
+	echo ""
+	echo "********** START OF NEW TESTCI BENCHMARK JOB **********"
+	echo "Benchmark Name: LibertyStartupDT Benchmark Variant: 17dev-4way-0-256-qs"
+	echo "Benchmark Product: ${JDK}"
+	echo ""
+fi
 
 #TODO: Need to tune these options. Keeping them simple for now 
 export JDK_OPTIONS="-Xmx256m"

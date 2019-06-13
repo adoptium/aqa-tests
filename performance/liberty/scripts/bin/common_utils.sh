@@ -1839,11 +1839,12 @@ terminateRunningJavaProcs()
     JAVA_PIDS=$(terminateRunningJavaProcs_getJavaPIDS)
 
     if [ -n "$JAVA_PIDS" ]; then
-        echo "!!! WARNING !!! Could not terminate running Java processes. Exiting"
+        echo "!!! WARNING !!! Could not terminate running Java processes but not exiting."
         
         #TODO: Temporarily commenting exit since the account used with Jenkins 
         #daemon may not have sudo access to kill other processes on Adopt. 
         #Need to request access.
+        
         #exit
     fi
 }
