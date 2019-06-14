@@ -85,8 +85,7 @@ RUN wget https://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/an
 # Clone AdoptOpenJDK openjdk-tests repo
 RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
-ENV JAVA_BIN=$JAVA_HOME/bin
-ENV SPEC=linux_x86-64_cmprssptrs
+ENV TEST_JDK_HOME=$JAVA_HOME
 ENV BUILD_LIST=systemtest
 
 RUN cd /openjdk-tests && \

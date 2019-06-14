@@ -28,23 +28,6 @@ elif [ -d /java/bin ]; then
 	java -version
 else
 	echo "Using docker image default Java"
-	java_path=$(type -p java)
-	suffix="/java"
-	java_root=${java_path%$suffix}
-	export JAVA_BIN="$java_root"
-	echo "JAVA_BIN is: $JAVA_BIN"
-
-	java_home=$(dirname ${JAVA_BIN})
-	export JAVA_HOME=$java_home
-
-	$JAVA_BIN/java -fullversion > version.log 2>&1
-        if grep  "1.8.0" version.log
-        then
-               JAVA_BIN="$java_home/jre/bin"
-	       JDK_VERSION="8"
-               echo "Set JAVA_BIN to $JAVA_BIN for Java 8"
-        fi
-        rm version.log
 fi
 
 TEST_SUITE=$1
