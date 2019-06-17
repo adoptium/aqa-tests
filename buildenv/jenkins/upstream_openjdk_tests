@@ -196,7 +196,9 @@ class ReleaseMetadata {
     }
 }
 
-node("ci.role.test") {
+Map parallelJobs = [:]
+//node("ci.role.test") {
+node() {
     parameters {
         string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
         booleanParam(name:'INCLUDE_EA', defaultValue: true, description: "Whether or not to include EA builds")
@@ -209,76 +211,73 @@ node("ci.role.test") {
     boolean forceRetest = params.FORCE_RETEST ? params.FORCE_RETEST : false
     Map releaseCtxts = [:]
     Map latestRelInfos = [:]
-    Map parallelJobs = [:]
 
     TEST_JOB_NAME = "${env.JOB_NAME}"
     File workspace = new File("${env.WORKSPACE}")
     workspace.mkdirs()
-    versions.each { version -> 
+    versions.each { version ->
         ReleaseRetriever retriever = new ReleaseRetriever(version, includeEA)
         List ctxts = retriever.getReleaseContexts()
         latestRelInfos.put(version, new LatestReleaseInfo(version, retriever.getLatestReleaseDate()))
         releaseCtxts.put(version, ctxts)
     }
     dir("$env.WORKSPACE") { // use workspace relative directory
-    versions.each { version -> 
-        stage("prepare OpenJDK Version: $version") {
-            LatestReleaseInfo relInfo = latestRelInfos.get(version)
-            List ctxts = releaseCtxts.get(version)
-            ctxts.each { println it.toString() }
-            if (forceRetest || relInfo.isRetestNeeded()) {
-                // trigger tests for each context
-                ctxts.each{ r -> 
-                    stage("prepare $r.OS-$r.ARCH") {
-                        def jdk_url = r.JDK_URL
-                        def source_url = r.SOURCE_URL
-                        def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
-                        parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.openjdk"] = {
-                            // Run a _sanity.openjdk test job with appropriate parameters
-                            build job: TEST_JOB_NAME, parameters: [
-                                string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
-                                string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
-                                string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
-                                string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
-                                string(name: 'JenkinsFile', value: r.getJenkinsFile()),
-                                string(name: 'JDK_IMPL', value: "hotspot"),
-                                string(name: 'BUILD_LIST', value: "openjdk"),
-                                string(name: 'TARGET', value: "sanity"),
-                                string(name: 'SDK_RESOURCE', value: "customized"),
-                                string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
-                                string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
-                                booleanParam(name: 'IS_PARALLEL', value: false),
-                                booleanParam(name: 'AUTO_DETECT', value: true),
-                            ], propagate: true
-                        }
-                        parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.system"] = {
-                            // Run a systemtest test job with appropriate parameters
-                            build job: TEST_JOB_NAME, parameters: [
-                                string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
-                                string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
-                                string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
-                                string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
-                                string(name: 'JenkinsFile', value: r.getJenkinsFile()),
-                                string(name: 'JDK_IMPL', value: "hotspot"),
-                                string(name: 'BUILD_LIST', value: "systemtest"),
-                                string(name: 'TARGET', value: "sanity"),
-                                string(name: 'SDK_RESOURCE', value: "customized"),
-                                string(name: 'CUSTOMIZED_SDK_URL', value: jdk_url),
-                                booleanParam(name: 'IS_PARALLEL', value: false),
-                                booleanParam(name: 'AUTO_DETECT', value: true),
-                            ], propagate: true
+        versions.each { version ->
+            stage("prepare OpenJDK Version: $version") {
+                LatestReleaseInfo relInfo = latestRelInfos.get(version)
+                List ctxts = releaseCtxts.get(version)
+                ctxts.each { println it.toString() }
+                if (forceRetest || relInfo.isRetestNeeded()) {
+                    // trigger tests for each context
+                    ctxts.each{ r -> 
+                        stage("prepare $r.OS-$r.ARCH") {
+                            def jdk_url = r.JDK_URL
+                            def source_url = r.SOURCE_URL
+                            def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
+                            parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.openjdk"] = {
+                                // Run a _sanity.openjdk test job with appropriate parameters
+                                build job: TEST_JOB_NAME, parameters: [
+                                    string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
+                                    string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
+                                    string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
+                                    string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
+                                    string(name: 'JenkinsFile', value: r.getJenkinsFile()),
+                                    string(name: 'JDK_IMPL', value: "hotspot"),
+                                    string(name: 'BUILD_LIST', value: "openjdk"),
+                                    string(name: 'TARGET', value: "sanity"),
+                                    string(name: 'SDK_RESOURCE', value: "customized"),
+                                    string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
+                                    string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
+                                    booleanParam(name: 'IS_PARALLEL', value: false),
+                                    booleanParam(name: 'AUTO_DETECT', value: true),
+                                ], propagate: true
+                            }
+                            parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.system"] = {
+                                // Run a systemtest test job with appropriate parameters
+                                build job: TEST_JOB_NAME, parameters: [
+                                    string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
+                                    string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
+                                    string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
+                                    string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
+                                    string(name: 'JenkinsFile', value: r.getJenkinsFile()),
+                                    string(name: 'JDK_IMPL', value: "hotspot"),
+                                    string(name: 'BUILD_LIST', value: "systemtest"),
+                                    string(name: 'TARGET', value: "sanity"),
+                                    string(name: 'SDK_RESOURCE', value: "customized"),
+                                    string(name: 'CUSTOMIZED_SDK_URL', value: jdk_url),
+                                    booleanParam(name: 'IS_PARALLEL', value: false),
+                                    booleanParam(name: 'AUTO_DETECT', value: true),
+                                ], propagate: true
+                            }
                         }
                     }
+                } else {
+                    println "No new releases detected for Upstream OpenJDK ${version}"
                 }
-            } else {
-                println "No new releases detected for Upstream OpenJDK ${version}"
+                relInfo.writeLatestToWorkspace()
             }
-            relInfo.writeLatestToWorkspace()
         }
     }
-    }
-    stage("run tests parallel") {
-        parallel(parallelJobs)
-    }
 }
+parallel(parallelJobs)
 
