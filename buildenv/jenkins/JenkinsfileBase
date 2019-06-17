@@ -1,7 +1,7 @@
 #!groovy
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
-	def TESTPROJECTS = [system:'systemtest', perf:'performance', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
+	def TESTPROJECTS = [system:'systemtest', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
 	String[] levelTargets = fullTarget.split('\\.')
 	String groupTarget = levelTargets[-1]
@@ -406,12 +406,10 @@ def post(output_name) {
 					uploadToArtifactory()
 				}
 			}
-			//for performance test, achive regardless the build result
-			//TODO: Need to soft-code the output dir path
-			def benchmark_test_output_dir = 'jvmtest/performance/odm/ilog_wodm881/leftoverResults';
-			if (fileExists(benchmark_test_output_dir)) {
+			//for performance test, archive regardless the build result
+			if (env.BUILD_LIST.startsWith('perf')) {
 				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ${benchmark_test_output_dir}"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true

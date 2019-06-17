@@ -14,7 +14,6 @@
 # limitations under the License.
 ################################################################################
 
-##
 ## Print out the help information if all mandatory environment variables are not set
 usage()
 {

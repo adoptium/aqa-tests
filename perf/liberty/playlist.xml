@@ -15,11 +15,8 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>ODM</testCaseName>
-		<command>cd $(TEST_RESROOT)/ilog_wodm881; \
-		cp $(TEST_RESROOT)/../../../openjdk-tests/performance/odm/scripts/benchmark.sh .; \
-		chmod a+x benchmark.sh; \
-		bash benchmark.sh; \
+		<testCaseName>OpenLibertyStartupDT7</testCaseName>
+		<command>bash $(TEST_RESROOT)/../../../openjdk-tests/perf/liberty/configs/benchmark.sh $(TEST_RESROOT); \
 		${TEST_STATUS}
 		</command>
 		<!-- scripts are only tested on linux -->

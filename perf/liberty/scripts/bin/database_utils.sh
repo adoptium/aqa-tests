@@ -18,7 +18,6 @@
 # Identifies that this script is for Liberty Benchmark
 # Note: Backslashes need to be escaped so it looks properly formatted when actually printed
 
-
 # Import the common utilities needed to run this benchmark
 . "$(dirname $0)"/common_utils.sh
 
