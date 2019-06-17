@@ -197,7 +197,9 @@ class ReleaseMetadata {
     }
 }
 
+// parallel build job configs
 Map parallelJobs = [:]
+
 //node("ci.role.test") {
 node() {
     parameters {
@@ -273,7 +275,7 @@ node() {
                         }
                     }
                 } else {
-                    println "No new releases detected for Upstream OpenJDK ${version}"
+                    println "No new releases detected for Upstream OpenJDK ${version}. Latest release published on: $relInfo.latestCurrent"
                 }
                 relInfo.writeLatestToWorkspace()
             }
