@@ -205,8 +205,7 @@ class ReleaseMetadata {
 // parallel build job configs
 Map parallelJobs = [:]
 
-//node("ci.role.test") {
-node() {
+node("ci.role.test") {
     parameters {
         string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
         booleanParam(name:'INCLUDE_EA', defaultValue: true, description: "Whether or not to include EA builds")
