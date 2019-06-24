@@ -43,8 +43,8 @@ class LatestReleaseInfo implements Serializable {
     final File TIMESTAMP_FILE
     final String latestCurrent
 
-    LatestReleaseInfo(String version, String latestCurrent) {
-        this.TIMESTAMP_FILE = new File("latest_timestamp_${version}")
+    LatestReleaseInfo(File workspace, String version, String latestCurrent) {
+        this.TIMESTAMP_FILE = new File(workspace, "latest_timestamp_${version}")
         this.latestCurrent = latestCurrent
     }
 
@@ -233,7 +233,7 @@ node("ci.role.test") {
     versions.each { version ->
         ReleaseRetriever retriever = new ReleaseRetriever(version, includeEA, userTokenBase64)
         List ctxts = retriever.getReleaseContexts()
-        latestRelInfos.put(version, new LatestReleaseInfo(version, retriever.getLatestReleaseDate()))
+        latestRelInfos.put(version, new LatestReleaseInfo(workspace, version, retriever.getLatestReleaseDate()))
         releaseCtxts.put(version, ctxts)
     }
     dir("$env.WORKSPACE") { // use workspace relative directory
