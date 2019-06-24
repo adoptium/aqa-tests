@@ -3,6 +3,7 @@
 import groovy.json.JsonSlurper;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 // Data structure with info for triggering the test builds
 class ReleaseContext implements Serializable {
@@ -83,9 +84,9 @@ class ReleaseRetriever implements Serializable {
     final String VERSION
     final ReleaseMetadata metadata
 
-    ReleaseRetriever(String version, boolean includeEA) {
+    ReleaseRetriever(String version, boolean includeEA, String base64Token) {
         this.VERSION = version
-        this.metadata = getMetadata(version, includeEA)
+        this.metadata = getMetadata(version, includeEA, base64Token)
     }
 
     public List getReleaseContexts() {
@@ -132,12 +133,13 @@ class ReleaseRetriever implements Serializable {
     }
 
     @NonCPS
-    public static ReleaseMetadata getMetadataEA(String version) {
+    public static ReleaseMetadata getMetadataEA(String version, String base64Token) {
         String baseURL = VERSION_TO_URL.get(version)
         def http = new URL("${baseURL}/releases").openConnection() as HttpURLConnection
         http.setRequestMethod('GET')
         http.setRequestProperty("Accept", 'application/json')
         http.setRequestProperty("Content-Type", 'application/json')
+        http.setRequestProperty("Authorization", "Basic " + base64Token)
         http.connect()
         def response = [:]
         boolean error = false
@@ -162,13 +164,14 @@ class ReleaseRetriever implements Serializable {
     }
 
     @NonCPS
-    public static ReleaseMetadata getMetadataGA(String version) {
+    public static ReleaseMetadata getMetadataGA(String version, String base64Token) {
         String baseURL = VERSION_TO_URL.get(version)
         // latest release API URL only includes GA releases
         def http = new URL("${baseURL}/releases/latest").openConnection() as HttpURLConnection
         http.setRequestMethod('GET')
         http.setRequestProperty("Accept", 'application/json')
         http.setRequestProperty("Content-Type", 'application/json')
+        http.setRequestProperty("Authorization", "Basic " + base64Token)
         http.connect()
         def response = [:]
         if (http.responseCode == 200) {
@@ -183,11 +186,11 @@ class ReleaseRetriever implements Serializable {
     }
 
     @NonCPS
-    public static ReleaseMetadata getMetadata(String version, boolean includeEA) {
+    public static ReleaseMetadata getMetadata(String version, boolean includeEA, String base64Token) {
         if (includeEA) {
-            return getMetadataEA(version)
+            return getMetadataEA(version, base64Token)
         } else {
-            return getMetadataGA(version)
+            return getMetadataGA(version, base64Token)
         }
     }
 }
@@ -208,6 +211,8 @@ Map parallelJobs = [:]
 node("ci.role.test") {
     parameters {
         string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
+        string(name:'GH_USERNAME', description: "Github API username to authenticate as")
+        string(name:'GH_TOKEN', description: "Github API OAuth personalized access token to be used for authentication")
         booleanParam(name:'INCLUDE_EA', defaultValue: true, description: "Whether or not to include EA builds")
         booleanParam(name:'FORCE_RETEST', defaultValue: false, description: "Whether or not to force a re-test irrespective previous runs")
     }
@@ -216,6 +221,9 @@ node("ci.role.test") {
     List versions = params.VERSIONS ? params.VERSIONS.split(" ") : "8 11".split(" ")
     boolean includeEA = params.INCLUDE_EA ? params.INCLUDE_EA : true
     boolean forceRetest = params.FORCE_RETEST ? params.FORCE_RETEST : false
+    String user = params.GH_USERNAME ? params.GH_USERNAME : "gh-user-not-set"
+    String token = params.GH_TOKEN ? params.GH_TOKEN : "gh-token-not-set"
+    String userTokenBase64 = Base64.getEncoder().encodeToString((user + ":" + token).getBytes())
     Map releaseCtxts = [:]
     Map latestRelInfos = [:]
 
@@ -223,7 +231,7 @@ node("ci.role.test") {
     File workspace = new File("${env.WORKSPACE}")
     workspace.mkdirs()
     versions.each { version ->
-        ReleaseRetriever retriever = new ReleaseRetriever(version, includeEA)
+        ReleaseRetriever retriever = new ReleaseRetriever(version, includeEA, userTokenBase64)
         List ctxts = retriever.getReleaseContexts()
         latestRelInfos.put(version, new LatestReleaseInfo(version, retriever.getLatestReleaseDate()))
         releaseCtxts.put(version, ctxts)
