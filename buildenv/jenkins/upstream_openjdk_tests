@@ -208,7 +208,9 @@ class ReleaseMetadata {
 // parallel build job configs
 Map parallelJobs = [:]
 
-node("ci.role.test") {
+// Only schedule GH API work on x86 linux nodes as there
+// are plenty available.
+node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     parameters {
         string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
         string(name:'GH_USERNAME', description: "Github API username to authenticate as")
@@ -248,6 +250,7 @@ node("ci.role.test") {
                         stage("prepare $r.OS-$r.ARCH") {
                             def jdk_url = r.JDK_URL
                             def source_url = r.SOURCE_URL
+                            def jdk_version = version
                             def jenkins_file = r.getJenkinsFile()
                             def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
                             parallelJobs["Test_openjdk${version}_hs_sanity.openjdk_${r.ARCH}_${r.OS}"] = {
@@ -259,6 +262,8 @@ node("ci.role.test") {
                                     string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
                                     string(name: 'JenkinsFile', value: jenkins_file),
                                     string(name: 'JDK_IMPL', value: "hotspot"),
+                                    // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
+                                    string(name: 'JDK_VERSION', value: jdk_version),
                                     string(name: 'BUILD_LIST', value: "openjdk"),
                                     string(name: 'TARGET', value: "sanity.openjdk"),
                                     string(name: 'SDK_RESOURCE', value: "customized"),
@@ -277,6 +282,8 @@ node("ci.role.test") {
                                     string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
                                     string(name: 'JenkinsFile', value: jenkins_file),
                                     string(name: 'JDK_IMPL', value: "hotspot"),
+                                    // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
+                                    string(name: 'JDK_VERSION', value: jdk_version),
                                     string(name: 'BUILD_LIST', value: "systemtest"),
                                     string(name: 'TARGET', value: "sanity.system"),
                                     string(name: 'SDK_RESOURCE', value: "customized"),
