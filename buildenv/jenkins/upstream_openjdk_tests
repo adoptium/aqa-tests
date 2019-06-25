@@ -248,18 +248,19 @@ node("ci.role.test") {
                         stage("prepare $r.OS-$r.ARCH") {
                             def jdk_url = r.JDK_URL
                             def source_url = r.SOURCE_URL
+                            def jenkins_file = r.getJenkinsFile()
                             def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
-                            parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.openjdk"] = {
+                            parallelJobs["Test_openjdk${version}_hs_sanity.openjdk_${r.ARCH}_${r.OS}"] = {
                                 // Run a _sanity.openjdk test job with appropriate parameters
                                 build job: TEST_JOB_NAME, parameters: [
                                     string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
                                     string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
                                     string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
                                     string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
-                                    string(name: 'JenkinsFile', value: r.getJenkinsFile()),
+                                    string(name: 'JenkinsFile', value: jenkins_file),
                                     string(name: 'JDK_IMPL', value: "hotspot"),
                                     string(name: 'BUILD_LIST', value: "openjdk"),
-                                    string(name: 'TARGET', value: "sanity"),
+                                    string(name: 'TARGET', value: "sanity.openjdk"),
                                     string(name: 'SDK_RESOURCE', value: "customized"),
                                     string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
                                     string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
@@ -267,17 +268,17 @@ node("ci.role.test") {
                                     booleanParam(name: 'AUTO_DETECT', value: true),
                                 ], propagate: true
                             }
-                            parallelJobs["openjdk$version-$r.OS-$r.ARCH sanity.system"] = {
+                            parallelJobs["Test_openjdk${version}_hs_sanity.system_${r.ARCH}_${r.OS}"] = {
                                 // Run a systemtest test job with appropriate parameters
                                 build job: TEST_JOB_NAME, parameters: [
                                     string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"),
                                     string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"),
                                     string(name: 'OPENJ9_REPO', value: params.OPENJ9_REPO ? params.OPENJ9_REPO : ""),
                                     string(name: 'OPENJ9_BRANCH', value: params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : ""),
-                                    string(name: 'JenkinsFile', value: r.getJenkinsFile()),
+                                    string(name: 'JenkinsFile', value: jenkins_file),
                                     string(name: 'JDK_IMPL', value: "hotspot"),
                                     string(name: 'BUILD_LIST', value: "systemtest"),
-                                    string(name: 'TARGET', value: "sanity"),
+                                    string(name: 'TARGET', value: "sanity.system"),
                                     string(name: 'SDK_RESOURCE', value: "customized"),
                                     string(name: 'CUSTOMIZED_SDK_URL', value: jdk_url),
                                     booleanParam(name: 'IS_PARALLEL', value: false),
