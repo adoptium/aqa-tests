@@ -14,36 +14,36 @@
 
 #Set up Java to be used by the system-test
 
-if [ -d /java/jre/bin ];then
-	echo "Using mounted Java8"
-	export JAVA_BIN=/java/jre/bin
+if [ -d /java/bin ];then
+	echo "Using mounted Java"
 	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-	java -version
-elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
-	export JAVA_BIN=/java/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-	java -version
+	export PATH=$JAVA_HOME/bin:$PATH
 else
 	echo "Using docker image default Java"
+	java_path=$(type -p java)
+	suffix="/java"
+	java_root=${java_path%$suffix}
+	java_home=$(dirname $java_root)
+	export JAVA_HOME=$java_home
 fi
 
-TEST_SUITE=$1
 
-echo "PATH is : $PATH"
-echo "JAVA_HOME is : $JAVA_HOME"
-echo "type -p java is :"
-type -p java
-echo "java -version is: \n"
-java -version
+export TEST_JDK_HOME=$JAVA_HOME
+echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
+export BUILD_LIST=systemtest
 
-testparam=$@
+test=$@
 
-test=_$testparam
+cd /openjdk-tests
+./get.sh -t /openjdk-tests
+
+cd /openjdk-tests/TestConfig
+
+echo "Generating make files..."
+make -f run_configure.mk
+
+echo "Building system test material..." 
+make compile
 
 echo "Running test $test..."
-#Run tests
-sh /openjdk-tests/maketest.sh /openjdk-tests $test
-
+sh /openjdk-tests/maketest.sh /openjdk-tests _$test
