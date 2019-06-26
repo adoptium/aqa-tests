@@ -27,7 +27,7 @@ class ReleaseContext implements Serializable {
         return "openjdk_" + getMappedArch() + "_" + OS;
     }
 
-    private String getMappedArch() {
+    public String getMappedArch() {
         switch(ARCH) {
             case "x64":
                 return "x86-64"
@@ -229,7 +229,6 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     Map releaseCtxts = [:]
     Map latestRelInfos = [:]
 
-    TEST_JOB_NAME = "${env.JOB_NAME}"
     File workspace = new File("${env.WORKSPACE}")
     workspace.mkdirs()
     versions.each { version ->
@@ -253,7 +252,8 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                             def jdk_version = version
                             def jenkins_file = r.getJenkinsFile()
                             def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
-                            def job_branch_name = "Test_upstream_openjdk${version}_hs_sanity.openjdk_${r.ARCH}_${r.OS}"
+                            def mapped_arch = r.getMappedArch()
+                            def job_branch_name = "Test_upstream_openjdk${version}_hs_sanity.openjdk_${mapped_arch}_${r.OS}"
                             parallelJobs[job_branch_name] = {
                                 // Run a _sanity.openjdk test job with appropriate parameters
                                 build job: job_branch_name, parameters: [
@@ -270,7 +270,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                             }
                             parallelJobs["Test_openjdk${version}_hs_sanity.system_${r.ARCH}_${r.OS}"] = {
                                 // Run a systemtest test job with appropriate parameters
-                                build job: TEST_JOB_NAME, parameters: [
+                                build job: job_branch_name, parameters: [
                                     string(name: 'JenkinsFile', value: jenkins_file),
                                     string(name: 'JDK_IMPL', value: "hotspot"),
                                     // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
