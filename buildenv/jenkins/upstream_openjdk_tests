@@ -1,0 +1,291 @@
+#!groovy
+
+import groovy.json.JsonSlurper;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+
+// Data structure with info for triggering the test builds
+class ReleaseContext implements Serializable {
+
+    final String ARCH
+    final String OS
+    String JDK_URL
+    String JRE_URL
+    String SOURCE_URL
+
+    ReleaseContext(String arch, String os) {
+        this.ARCH = arch
+        this.OS = os
+    }
+
+    public String toString() {
+        return "$ARCH-$OS: $JDK_URL $JRE_URL $SOURCE_URL ${getJenkinsFile()}";
+    }
+
+    public String getJenkinsFile() {
+        return "openjdk_" + getMappedArch() + "_" + OS;
+    }
+
+    public String getMappedArch() {
+        switch(ARCH) {
+            case "x64":
+                return "x86-64"
+            default:
+                return ARCH
+        }
+        throw new InternalError() // must not happen
+    }
+}
+
+class LatestReleaseInfo implements Serializable {
+
+    final File TIMESTAMP_FILE
+    final String latestCurrent
+
+    LatestReleaseInfo(File workspace, String version, String latestCurrent) {
+        this.TIMESTAMP_FILE = new File(workspace, "latest_timestamp_${version}")
+        this.latestCurrent = latestCurrent
+    }
+
+    public ZonedDateTime getLatestFromWorspace() {
+       try {
+           String latest_timestamp = TIMESTAMP_FILE.text
+           ZonedDateTime previous = null
+           if (latest_timestamp != null) {
+               previous = ZonedDateTime.parse(latest_timestamp, DateTimeFormatter.ISO_DATE_TIME);
+           }
+           return previous // potentially null
+       } catch (IOException e) {
+           return null
+       }
+    }
+
+    public boolean isRetestNeeded() {
+        ZonedDateTime previous = getLatestFromWorspace()
+        ZonedDateTime current = ZonedDateTime.parse(latestCurrent, DateTimeFormatter.ISO_DATE_TIME);
+        return previous == null || (previous != null && current.compareTo(previous) > 0)
+    }
+
+    public void writeLatestToWorkspace() {
+        TIMESTAMP_FILE.write latestCurrent
+    }
+
+}
+
+// Retrieve latest release information from Github API. The result is being used
+// for triggering relevant test jobs
+class ReleaseRetriever implements Serializable {
+
+    static final Map VERSION_TO_URL = [
+        "8": "https://api.github.com/repos/AdoptOpenJDK/openjdk8-upstream-binaries",
+        "11": "https://api.github.com/repos/AdoptOpenJDK/openjdk11-upstream-binaries"
+    ]
+    final String VERSION
+    final ReleaseMetadata metadata
+
+    ReleaseRetriever(String version, boolean includeEA, String base64Token) {
+        this.VERSION = version
+        this.metadata = getMetadata(version, includeEA, base64Token)
+    }
+
+    public List getReleaseContexts() {
+        List rels = []
+        Map items = metadata.items
+        ZonedDateTime newest = metadata.newest
+        def val = items.get(newest)
+        rels.add(new ReleaseContext("x64", "linux"))
+        if (VERSION.equals("11")) {
+            rels.add(new ReleaseContext("aarch64", "linux"))
+        }
+        rels.add(new ReleaseContext("x64", "windows"))
+        val.assets.each{ a -> 
+            if (!a.name.endsWith(".sign")) {
+                rels.each{ r ->
+                   if (a.name.contains(r.OS) && a.name.contains(r.ARCH)) {
+                       if (!a.name.contains("debuginfo")) {
+                           if (a.name.contains("-jdk")) {
+                               r.JDK_URL = a.browser_download_url
+                           }
+                           if (a.name.contains("-jre")) {
+                               r.JRE_URL = a.browser_download_url
+                           }
+                           // if the name neither contains -jre nor -jdk assume
+                           // JDK (which was prior jre/jdk separation)
+                           if (!a.name.contains("-jre") && !a.name.contains("-jdk")) {
+                               r.JDK_URL = a.browser_download_url
+                           }
+                       }
+                   }
+                   if (a.name.contains("-sources_")) {
+                       r.SOURCE_URL = a.browser_download_url
+                   }
+                }
+            }
+        }
+        return rels;
+    }
+
+
+    public String getLatestReleaseDate() {
+        ZonedDateTime latest = metadata.newest
+        return DateTimeFormatter.ISO_INSTANT.format(latest)
+    }
+
+    @NonCPS
+    public static ReleaseMetadata getMetadataEA(String version, String base64Token) {
+        String baseURL = VERSION_TO_URL.get(version)
+        def http = new URL("${baseURL}/releases").openConnection() as HttpURLConnection
+        http.setRequestMethod('GET')
+        http.setRequestProperty("Accept", 'application/json')
+        http.setRequestProperty("Content-Type", 'application/json')
+        http.setRequestProperty("Authorization", "Basic " + base64Token)
+        http.connect()
+        def response = [:]
+        boolean error = false
+        if (http.responseCode == 200) {
+            response = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
+        } else {
+            response = new JsonSlurper().parseText(http.errorStream.getText('UTF-8'))
+            error = true
+        }
+        if (error) {
+            throw new InternalError("HTTP error: " + response.message)
+        }
+        List publishDates = []
+        Map items = [:]
+        response.each { item ->
+            ZonedDateTime parsedDate = ZonedDateTime.parse(item.published_at, DateTimeFormatter.ISO_DATE_TIME);
+            items.put(parsedDate, item)
+            publishDates.add(parsedDate)
+        }
+        ZonedDateTime newest = publishDates.sort().last()
+        return new ReleaseMetadata(newest, items)
+    }
+
+    @NonCPS
+    public static ReleaseMetadata getMetadataGA(String version, String base64Token) {
+        String baseURL = VERSION_TO_URL.get(version)
+        // latest release API URL only includes GA releases
+        def http = new URL("${baseURL}/releases/latest").openConnection() as HttpURLConnection
+        http.setRequestMethod('GET')
+        http.setRequestProperty("Accept", 'application/json')
+        http.setRequestProperty("Content-Type", 'application/json')
+        http.setRequestProperty("Authorization", "Basic " + base64Token)
+        http.connect()
+        def response = [:]
+        if (http.responseCode == 200) {
+            response = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
+        } else {
+            response = new JsonSlurper().parseText(http.errorStream.getText('UTF-8'))
+        }
+        ZonedDateTime newest = ZonedDateTime.parse(response.published_at, DateTimeFormatter.ISO_DATE_TIME);
+        Map items = [:]
+        items.put(newest, response)
+        return new ReleaseMetadata(newest, items)
+    }
+
+    @NonCPS
+    public static ReleaseMetadata getMetadata(String version, boolean includeEA, String base64Token) {
+        if (includeEA) {
+            return getMetadataEA(version, base64Token)
+        } else {
+            return getMetadataGA(version, base64Token)
+        }
+    }
+}
+
+class ReleaseMetadata {
+    final ZonedDateTime newest
+    final Map items
+    
+    ReleaseMetadata(ZonedDateTime newest, Map items) {
+        this.newest = newest
+        this.items = items
+    }
+}
+
+// parallel build job configs
+Map parallelJobs = [:]
+
+// Only schedule GH API work on x86 linux nodes as there
+// are plenty available.
+node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+    parameters {
+        string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
+        string(name:'GH_USERNAME', description: "Github API username to authenticate as")
+        string(name:'GH_TOKEN', description: "Github API OAuth personalized access token to be used for authentication")
+        booleanParam(name:'INCLUDE_EA', defaultValue: true, description: "Whether or not to include EA builds")
+        booleanParam(name:'FORCE_RETEST', defaultValue: false, description: "Whether or not to force a re-test irrespective previous runs")
+    }
+
+    // All params have sensible defaults
+    List versions = params.VERSIONS ? params.VERSIONS.split(" ") : "8 11".split(" ")
+    boolean includeEA = params.INCLUDE_EA ? params.INCLUDE_EA : true
+    boolean forceRetest = params.FORCE_RETEST ? params.FORCE_RETEST : false
+    String user = params.GH_USERNAME ? params.GH_USERNAME : "gh-user-not-set"
+    String token = params.GH_TOKEN ? params.GH_TOKEN : "gh-token-not-set"
+    String userTokenBase64 = Base64.getEncoder().encodeToString((user + ":" + token).getBytes())
+    Map releaseCtxts = [:]
+    Map latestRelInfos = [:]
+    List testList = [ "openjdk", "system" ]
+    Map testsTargetBuildList = [
+                                 "openjdk": [ "target": "sanity.openjdk", "buildlist": "openjdk" ],
+                                 "system":  [ "target": "sanity.system", "buildlist": "systemtest" ]
+                               ]
+
+    File workspace = new File("${env.WORKSPACE}")
+    workspace.mkdirs()
+    versions.each { version ->
+        ReleaseRetriever retriever = new ReleaseRetriever(version, includeEA, userTokenBase64)
+        List ctxts = retriever.getReleaseContexts()
+        latestRelInfos.put(version, new LatestReleaseInfo(workspace, version, retriever.getLatestReleaseDate()))
+        releaseCtxts.put(version, ctxts)
+    }
+    dir("$env.WORKSPACE") { // use workspace relative directory
+        versions.each { version ->
+            stage("prepare OpenJDK Version: $version") {
+                LatestReleaseInfo relInfo = latestRelInfos.get(version)
+                List ctxts = releaseCtxts.get(version)
+                ctxts.each { println it.toString() }
+                if (forceRetest || relInfo.isRetestNeeded()) {
+                    // trigger tests for each context
+                    ctxts.each{ r -> 
+                        testList.each { testname -> // currently "openjdk" and "system" tests
+                            stage("prepare $r.OS-$r.ARCH") {
+                                def jdk_url = r.JDK_URL
+                                def source_url = r.SOURCE_URL
+                                def jdk_version = version
+                                def jenkins_file = r.getJenkinsFile()
+                                def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
+                                def mapped_arch = r.getMappedArch()
+                                def target = testsTargetBuildList.get(testname).get("target")
+                                def buildList = testsTargetBuildList.get(testname).get("buildlist")
+                                def job_branch_name = "Test_upstream_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}"
+                                parallelJobs[job_branch_name] = {
+                                    // Run a _sanity.openjdk test job with appropriate parameters
+                                    build job: job_branch_name, parameters: [
+                                        string(name: 'JenkinsFile', value: jenkins_file),
+                                        string(name: 'JDK_IMPL', value: "hotspot"),
+                                        // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
+                                        string(name: 'JDK_VERSION', value: jdk_version),
+                                        string(name: 'BUILD_LIST', value: buildList),
+                                        string(name: 'TARGET', value: target),
+                                        string(name: 'SDK_RESOURCE', value: "customized"),
+                                        string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
+                                        string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
+                                    ], propagate: true
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    println "No new releases detected for Upstream OpenJDK ${version}. Latest release published on: $relInfo.latestCurrent"
+                }
+                relInfo.writeLatestToWorkspace()
+            }
+        }
+    }
+}
+parallel(parallelJobs)
+
