@@ -228,6 +228,11 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     String userTokenBase64 = Base64.getEncoder().encodeToString((user + ":" + token).getBytes())
     Map releaseCtxts = [:]
     Map latestRelInfos = [:]
+    List testList = [ "openjdk", "system" ]
+    Map testsTargetBuildList = [
+                                 "openjdk": [ "target": "sanity.openjdk", "buildlist": "openjdk" ],
+                                 "system":  [ "target": "sanity.system", "buildlist": "systemtest" ]
+                               ]
 
     File workspace = new File("${env.WORKSPACE}")
     workspace.mkdirs()
@@ -246,40 +251,31 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                 if (forceRetest || relInfo.isRetestNeeded()) {
                     // trigger tests for each context
                     ctxts.each{ r -> 
-                        stage("prepare $r.OS-$r.ARCH") {
-                            def jdk_url = r.JDK_URL
-                            def source_url = r.SOURCE_URL
-                            def jdk_version = version
-                            def jenkins_file = r.getJenkinsFile()
-                            def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
-                            def mapped_arch = r.getMappedArch()
-                            def job_branch_name = "Test_upstream_openjdk${version}_hs_sanity.openjdk_${mapped_arch}_${r.OS}"
-                            parallelJobs[job_branch_name] = {
-                                // Run a _sanity.openjdk test job with appropriate parameters
-                                build job: job_branch_name, parameters: [
-                                    string(name: 'JenkinsFile', value: jenkins_file),
-                                    string(name: 'JDK_IMPL', value: "hotspot"),
-                                    // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
-                                    string(name: 'JDK_VERSION', value: jdk_version),
-                                    string(name: 'BUILD_LIST', value: "openjdk"),
-                                    string(name: 'TARGET', value: "sanity.openjdk"),
-                                    string(name: 'SDK_RESOURCE', value: "customized"),
-                                    string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
-                                    string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
-                                ], propagate: true
-                            }
-                            parallelJobs["Test_openjdk${version}_hs_sanity.system_${r.ARCH}_${r.OS}"] = {
-                                // Run a systemtest test job with appropriate parameters
-                                build job: job_branch_name, parameters: [
-                                    string(name: 'JenkinsFile', value: jenkins_file),
-                                    string(name: 'JDK_IMPL', value: "hotspot"),
-                                    // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
-                                    string(name: 'JDK_VERSION', value: jdk_version),
-                                    string(name: 'BUILD_LIST', value: "systemtest"),
-                                    string(name: 'TARGET', value: "sanity.system"),
-                                    string(name: 'SDK_RESOURCE', value: "customized"),
-                                    string(name: 'CUSTOMIZED_SDK_URL', value: jdk_url),
-                                ], propagate: true
+                        testList.each { testname -> // currently "openjdk" and "system" tests
+                            stage("prepare $r.OS-$r.ARCH") {
+                                def jdk_url = r.JDK_URL
+                                def source_url = r.SOURCE_URL
+                                def jdk_version = version
+                                def jenkins_file = r.getJenkinsFile()
+                                def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
+                                def mapped_arch = r.getMappedArch()
+                                def target = testsTargetBuildList.get(testname).get("target")
+                                def buildList = testsTargetBuildList.get(testname).get("buildlist")
+                                def job_branch_name = "Test_upstream_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}"
+                                parallelJobs[job_branch_name] = {
+                                    // Run a _sanity.openjdk test job with appropriate parameters
+                                    build job: job_branch_name, parameters: [
+                                        string(name: 'JenkinsFile', value: jenkins_file),
+                                        string(name: 'JDK_IMPL', value: "hotspot"),
+                                        // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
+                                        string(name: 'JDK_VERSION', value: jdk_version),
+                                        string(name: 'BUILD_LIST', value: buildList),
+                                        string(name: 'TARGET', value: target),
+                                        string(name: 'SDK_RESOURCE', value: "customized"),
+                                        string(name: 'CUSTOMIZED_SDK_URL', value: jdk_jre_url),
+                                        string(name: 'CUSTOMIZED_SDK_SOURCE_URL', value: source_url),
+                                    ], propagate: true
+                                }
                             }
                         }
                     }
