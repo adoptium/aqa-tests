@@ -155,9 +155,15 @@ class ReleaseRetriever implements Serializable {
         List publishDates = []
         Map items = [:]
         response.each { item ->
-            ZonedDateTime parsedDate = ZonedDateTime.parse(item.published_at, DateTimeFormatter.ISO_DATE_TIME);
-            items.put(parsedDate, item)
-            publishDates.add(parsedDate)
+            // At certain points in time there may be a release upcoming, which hasn't
+            // been published yet. For example, uploaded, but not saved/published. This
+            // may be visible to some users. If it's not published, we consider it
+            // not available.
+            if (item.published_at != null) {
+                ZonedDateTime parsedDate = ZonedDateTime.parse(item.published_at, DateTimeFormatter.ISO_DATE_TIME);
+                items.put(parsedDate, item)
+                publishDates.add(parsedDate)
+            }
         }
         ZonedDateTime newest = publishDates.sort().last()
         return new ReleaseMetadata(newest, items)
