@@ -219,8 +219,6 @@ Map parallelJobs = [:]
 node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     parameters {
         string(name:'VERSIONS', defaultValue: '8 11', description: "Space separated list of versions to check")
-        string(name:'GH_USERNAME', description: "Github API username to authenticate as")
-        string(name:'GH_TOKEN', description: "Github API OAuth personalized access token to be used for authentication")
         booleanParam(name:'INCLUDE_EA', defaultValue: true, description: "Whether or not to include EA builds")
         booleanParam(name:'FORCE_RETEST', defaultValue: false, description: "Whether or not to force a re-test irrespective previous runs")
     }
@@ -229,9 +227,10 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     List versions = params.VERSIONS ? params.VERSIONS.split(" ") : "8 11".split(" ")
     boolean includeEA = params.INCLUDE_EA ? params.INCLUDE_EA : true
     boolean forceRetest = params.FORCE_RETEST ? params.FORCE_RETEST : false
-    String user = params.GH_USERNAME ? params.GH_USERNAME : "gh-user-not-set"
-    String token = params.GH_TOKEN ? params.GH_TOKEN : "gh-token-not-set"
-    String userTokenBase64 = Base64.getEncoder().encodeToString((user + ":" + token).getBytes())
+    String userTokenBase64 = null
+    withCredentials([usernamePassword(credentialsId: "upstream-tests-github", passwordVariable: "credsToken", usernameVariable: "credsUser")]) {
+        userTokenBase64 = Base64.getEncoder().encodeToString((credsUser + ":" + credsToken).getBytes())
+    }
     Map releaseCtxts = [:]
     Map latestRelInfos = [:]
     List testList = [ "openjdk", "system" ]
