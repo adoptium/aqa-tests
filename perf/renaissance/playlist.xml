@@ -79,13 +79,15 @@
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dotty.json$(Q) dotty; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<variations>
+			<variation>-Xmx4g</variation>
+		</variations>
 		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1184</disabled>
 	</test>
 	<test>
 		<testCaseName>finagle-chirper</testCaseName>
@@ -200,13 +202,15 @@
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)page-rank.json$(Q) page-rank; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<variations>
+			<variation>-Xmx4g</variation>
+		</variations>
 		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1184</disabled>
 	</test>
 	<test>
 		<testCaseName>par-mnemonics</testCaseName>
@@ -237,13 +241,15 @@
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)reactors.json$(Q) reactors; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<variations>
+			<variation>-Xmx4g</variation>
+		</variations>
 		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1184</disabled>
 	</test>
 	<test>
 		<testCaseName>scala-kmeans</testCaseName>
