@@ -75,21 +75,6 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>dotty</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dotty.json$(Q) dotty; \
-		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
-		<variations>
-			<variation>-Xmx4g</variation>
-		</variations>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
-	<test>
 		<testCaseName>finagle-chirper</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
 		$(TEST_STATUS)</command>
@@ -198,21 +183,6 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>page-rank</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)page-rank.json$(Q) page-rank; \
-		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
-		<variations>
-			<variation>-Xmx4g</variation>
-		</variations>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
-	<test>
 		<testCaseName>par-mnemonics</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)par-mnemonics.json$(Q) par-mnemonics; \
 		$(TEST_STATUS)</command>
@@ -229,21 +199,6 @@
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>reactors</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)reactors.json$(Q) reactors; \
-		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
-		<variations>
-			<variation>-Xmx4g</variation>
-		</variations>
 		<levels>
 			<level>extended</level>
 		</levels>
