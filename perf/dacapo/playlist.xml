@@ -15,8 +15,20 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>dacapo-tomcat</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
+		<testCaseName>dacapo-eclipse</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-avrora</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) avrora; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
@@ -27,12 +39,121 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>dacapo-eclipse</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
+		<testCaseName>dacapo-batik</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) batik; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-fop</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) fop; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-h2</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test> 
+	<test>
+		<testCaseName>dacapo-jython</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+		<test>
+		<testCaseName>dacapo-luindex</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-lusearch-fix</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) lusearch-fix; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-pmd</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) pmd; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-sunflow</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) sunflow; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dacapo-tomcat</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<disabled>https://bugs.openjdk.java.net/browse/JDK-8155588</disabled>
+	</test>
+	<test>
+		<testCaseName>dacapo-xalan</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) xalan; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>perf</group>
