@@ -23,6 +23,7 @@
 	<property name="DEST" value="${BUILD_ROOT}/jck" />
 	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/systemtest" />
 	<property environment="env" />
+	<propertyregex property="jck_short_version" input="${env.JCK_VERSION}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
 	
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
@@ -49,13 +50,14 @@
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
 			<not>
-				<available file="${env.JCK_ROOT}/${env.JCK_VERSION}" type="dir" />
+				<available file="${env.JCK_ROOT}" type="dir" />
 			</not>
 			<!-- jck materials don't exist, download them -->
 			<then>
-				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} does not exist, 
-					clone from ${env.JCK_GIT_REPO}, ${jck_branch} branch, to ${env.JCK_ROOT}/${env.JCK_VERSION}" />
-				<exec executable="git" failonerror="true">
+				<echo message="${env.JCK_ROOT} does not exist, 
+					clone from ${env.JCK_GIT_REPO}, ${jck_branch} branch, to ${env.JCK_ROOT}" />
+				<mkdir dir="${env.JCK_ROOT}/.." />
+				<exec executable="git" dir="${env.JCK_ROOT}/.." failonerror="true">
 					<arg value="clone" />
 					<arg value="--depth" />
 					<arg value="1" />
@@ -63,58 +65,22 @@
 					<arg value="-b"/>
 					<arg value="${jck_branch}"/>
 					<arg value="${env.JCK_GIT_REPO}" />
-					<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
 				</exec>
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
-				<echo message="${env.JCK_ROOT}/${env.JCK_VERSION} exists, try to update jck materials" />
-				<if>
-					<or>
- 						<equals arg1="jck10" arg2="${env.JCK_VERSION}" />
-						<equals arg1="jck11" arg2="${env.JCK_VERSION}" />
-						<equals arg1="jck12" arg2="${env.JCK_VERSION}" />
-						<equals arg1="jck13" arg2="${env.JCK_VERSION}" />
-					</or>
- 				<then>
-					<exec executable="git" failonerror="true">
-						<arg value="-C" />
-						<arg value="${env.JCK_ROOT}/${env.JCK_VERSION}" />
-						<arg value="reset" />
-						<arg value="--hard" />
-						<arg value="origin/master" />
-					</exec>   
- 				</then>
-				<else>
-				
-				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
-					<arg value="fetch" />
+				<echo message="${env.JCK_ROOT} exists, deleting previously built natives..." />
+				<delete includeemptydirs="true">
+				    <fileset dir="${env.JCK_ROOT}/natives" includes="**/*"/>
+				</delete>
+				<echo message="Updating ${env.JCK_ROOT} with latest..." />
+				<exec executable="git" dir="${env.JCK_ROOT}" failonerror="true">
+					<arg value="pull" />
+					<arg value="origin" />
+					<arg value="master" />
 				</exec>
-				
-				<exec executable="git" dir="${env.JCK_ROOT}/${env.JCK_VERSION}" failonerror="true">
-					<arg value="rebase" />
-					<arg value="origin/master" />
-				</exec>
-				</else>
-				</if>
 			</else>
 		</if>
-	</target>
-
-	<target name="compile_jck">
-		<propertyregex property="jck_short_version" input="${env.JCK_VERSION}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
-		<propertyregex property="platform_short_name" defaultValue="${PLATFORM}" input="${PLATFORM}" regexp="([^\.]*)_cr.*$$" select="\1" casesensitive="false" />
-		<echo message="jck_short_version is ${jck_short_version}" />
-		<echo message="platform_short_name is ${platform_short_name}" />
-		<exec executable="make" failonerror="true">
-			<arg value="-f" />
-			<arg value="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.test.jck/src/native/makefile" />
-			<arg value="PLATFORM=${platform_short_name}" />
-			<arg value="SRCDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/JCK-runtime-${jck_short_version}" />
-			<arg value="OUTDIR=${env.JCK_ROOT}/${env.JCK_VERSION}/natives" />
-			<arg value="JAVA_HOME=${TEST_JDK_HOME}" />
-			<arg value="build" />
-		</exec>
 	</target>
 
 	<target name="init">
@@ -194,16 +160,16 @@
 		</if>
 	</target>
 
-	<target name="configure_stf" depends="check_systemtest">
+	<target name="prepare_systemtest_for_jck" depends="check_systemtest">
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false"></ant>
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false"></ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="build" inheritAll="false"></ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
+			<property name="jck_runtimes_src_dir" value="${env.JCK_ROOT}/JCK-runtime-${jck_short_version} "/>
+			<property name="out_dir" value="${env.JCK_ROOT}/natives" />
+		</ant>
 	</target>
 
-	<target name="compile_stf" depends="configure_stf">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"></ant>
-	</target>
-
-	<target name="dist" depends="compile_stf" description="generate the distribution">
+	<target name="dist" depends="prepare_systemtest_for_jck" description="generate the distribution">
 		<if>
 			<not>
 				<available file="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest" type="dir" />
@@ -236,31 +202,19 @@
 			<and>
 				<isset property="env.JCK_ROOT" />
 				<isset property="env.JCK_VERSION" />
+				<isset property="env.JCK_GIT_REPO" />
 			</and>
 			<then>
 				<echo>=== env.JCK_ROOT is set to ${env.JCK_ROOT} ===</echo>
 				<echo>=== env.JCK_VERSION is set to ${env.JCK_VERSION} ===</echo>
-				<if>
-					<isset property="env.JCK_GIT_REPO" />
-					<then>
-						<echo>=== env.JCK_GIT_REPO is set to ${env.JCK_GIT_REPO} ===</echo>
-						<echo>start staging jck materials</echo>
-						<antcall target="stage_jck_material" inheritall="true" />
-						<echo>start building stf-based jck project</echo>
-						<antcall target="dist" inheritall="true" />
-						<echo>start compiling jck natives</echo>
-						<antcall target="compile_jck" inheritall="true" />
-					</then>
-					<else>
-						<echo>start building jck project</echo>
-						<antcall target="dist" inheritall="true" />
-						<echo>start compiling jck natives</echo>
-						<antcall target="compile_jck" inheritall="true" />
-					</else>
-				</if>
+				<echo>=== env.JCK_GIT_REPO is set to ${env.JCK_GIT_REPO} ===</echo>
+				<echo>start staging jck materials</echo>
+				<antcall target="stage_jck_material" inheritall="true" />
+				<echo>start building stf, stf jck wrapper and jck itself</echo>
+				<antcall target="dist" inheritall="true" />
 			</then>
 			<else>
-				<fail message="env.JCK_ROOT: ${env.JCK_ROOT} or env.JCK_VERSION: ${env.JCK_VERSION}
+				<fail message="env.JCK_ROOT: ${env.JCK_ROOT} or env.JCK_VERSION: ${env.JCK_VERSION} or env.JCK_GIT_REPO: ${env.JCK_GIT_REPO}
 					was not corretly set. If you do not want to compile JCK tests, 
 					please use BUILD_LIST to include test folders you want to test." />
 			</else>

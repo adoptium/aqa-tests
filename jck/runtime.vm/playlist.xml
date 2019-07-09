@@ -25,7 +25,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -45,7 +45,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/constantpool,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/constantpool,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -65,7 +65,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/jvmti,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/jvmti,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -85,7 +85,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/overview,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/overview,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -105,7 +105,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/classfmt,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/classfmt,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -129,7 +129,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/module,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/module,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -152,7 +152,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/verifier,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/verifier,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -176,7 +176,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/instr,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=vm/instr,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
