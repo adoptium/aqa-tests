@@ -1,6 +1,6 @@
 #/bin/bash
 #
-# (C) Copyright IBM Corporation 2017.
+# (C) Copyright IBM Corporation 2017, 2019.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,37 +15,25 @@
 # limitations under the License.
 #
 
-if [ -d /java/jre/bin ];then
-	echo "Using mounted Java8"
-	export JAVA_BIN=/java/jre/bin
+if [ -d /java/bin ];then
+	echo "Using mounted Java"
 	export JAVA_HOME=/java
 	export PATH=$JAVA_HOME/bin:$PATH
-	export JAVA_VERSION=SE80
-	java -version
-elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
-	export JAVA_BIN=/java/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_HOME/bin:$PATH
-	export JAVA_VERSION=SE90
-	java -version
 else
 	echo "Using docker image default Java"
 	java_path=$(type -p java)
 	suffix="/java"
 	java_root=${java_path%$suffix}
-	export JAVA_BIN="$java_root"
-	export JAVA_VERSION=SE80
-	echo "JAVA_BIN is: $JAVA_BIN"
-	$JAVA_BIN/java -version
-
+	java_home=$(dirname $java_root)
+	export JAVA_HOME=$java_home
 fi
 
-export SPEC=linux_x86-64
+export TEST_JDK_HOME=$JAVA_HOME
+export BUILD_LIST=functional
 
 cd /test/TestConfig
 make -f run_configure.mk
 make compile
-make sanity
+make _sanity.functional.regular
 
 /bin/bash

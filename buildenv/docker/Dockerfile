@@ -60,10 +60,11 @@ RUN apt-get update \
     krb5-admin-server \
     pwgen \
     tomcat8 \
+    libxml-parser-perl \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Docker module to run test framework
-RUN echo yes | cpan install JSON Text::CSV XML::Parser
+RUN echo yes | cpan install JSON Text::CSV
 
 # These two folders are used testing purpose.
 # In the `docker run` command, user also need mount <JDK_ROOT>
