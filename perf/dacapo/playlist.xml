@@ -59,7 +59,7 @@
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>
@@ -150,4 +150,17 @@
 			<group>perf</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>dacapo-cassandra-eval</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapoEval.jar$(Q) cassandra; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+
 </playlist>
