@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Dacapo suite" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>Dacapo suite</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
+	<property name="src" location="." />
+	
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+
+	<target name="getDacapoSuite" depends="init">
+		<echo message="wget -q https://sourceforge.net/projects/dacapobench/files/latest/download" />
+			<exec executable="wget" failonerror="true">
+				<arg line="-q -O dacapo.jar https://sourceforge.net/projects/dacapobench/files/latest/download" />
+			</exec>
+	</target>
+
+	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
