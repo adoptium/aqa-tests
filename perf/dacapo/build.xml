@@ -33,14 +33,7 @@
 			</exec>
 	</target>
 
-	<target name="getEvaluationDacapoSuite" depends="init">
-		<echo message="wget -q https://sourceforge.net/projects/dacapobench/files/evaluation/dacapo-evaluation-git%2B8b7a2dc.jar/download" />
-			<exec executable="wget" failonerror="true">
-				<arg line="-q -O dacapoEval11.jar https://sourceforge.net/projects/dacapobench/files/evaluation/dacapo-evaluation-git%2B8b7a2dc.jar/download" />
-			</exec>
-	</target>
-
-	<target name="dist" depends="getDacapoSuite,getEvaluationDacapoSuite" description="generate the distribution">
+	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}"/>
 		</copy>
