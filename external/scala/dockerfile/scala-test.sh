@@ -42,9 +42,9 @@ pwd
 set -e
 
 echo "Try to echo Scala version by using sbt \"scala -version\"" && \
-sbt "scala -version"
+sbt -Dsbt.log.noformat=true "scala -version"
 
 echo "Begin to execute Scala test with cmd: sbt \"partest $TEST_SUITE\"" && \
-sbt "partest --terse $TEST_SUITE"
+sbt -Dsbt.log.noformat=true "partest --terse $TEST_SUITE"
 
 set +e
