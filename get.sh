@@ -277,6 +277,9 @@ getTestKitGenAndFunctionalTestMaterial()
     else
 	    mv openj9/test/functional functional
     fi
+	echo "call checkTestRepoSHAs" 
+	checkTestRepoSHAs
+
 	rm -rf openj9
 
 	if [ "$VENDOR_REPOS" != "" ]; then
@@ -354,6 +357,21 @@ else
 	echo "Cannot find java executable in TEST_JDK_HOME: ${TEST_JDK_HOME}!"
 	exit 1
 fi
+}
+
+checkTestRepoSHAs()
+{
+output_file="$TESTDIR/TestConfig/SHA.txt"
+if [ -e ${output_file} ]; then
+	echo "rm $output_file"
+	rm ${output_file}
+fi
+
+echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file"
+$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file
+
+echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file"
+$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file
 }
 
 parseCommandLineArgs "$@"

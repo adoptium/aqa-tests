@@ -395,6 +395,8 @@ def post(output_name) {
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			archiveSHAFile()
+
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
@@ -403,7 +405,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 			//for performance test, archive regardless the build result
@@ -414,7 +417,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 		}
@@ -490,7 +494,18 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def uploadToArtifactory() {
+def archiveSHAFile() {
+	def shaFile = "openjdk-tests/TestConfig/SHA.txt";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
+		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${shaFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
+def uploadToArtifactory(pattern) {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
@@ -500,7 +515,7 @@ def uploadToArtifactory() {
 		def uploadSpec = """{
 			"files":[
 					{
-						"pattern": "${env.WORKSPACE}/*_test_output.*",
+						"pattern": "${pattern}",
 						"target": "${artifactoryUploadDir}"
 					}
 				]

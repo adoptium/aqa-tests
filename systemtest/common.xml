@@ -59,12 +59,6 @@
 			<arg value="${stf_branch}"/>
 			<arg value="${stf_repo}"/>
 		</exec>
-		<echo message="SHA of the checked out STF materials:"/>
-		<exec executable="git" failonerror="false">
-			<arg value="ls-remote" />
-			<arg value="${stf_repo}"/>
-			<arg value="${stf_branch}"/>
-		</exec>
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -86,6 +80,7 @@
 				</exec>
 			</then>
 		</if>
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
 	</target>
 
 	<target name="clone_systemtest">
@@ -98,12 +93,6 @@
 			<arg value="-b"/>
 			<arg value="${openjdk_systemtest_branch}"/>
 			<arg value="${openjdk_systemtest_repo}"/>
-		</exec>
-		<echo message="SHA of the checked out openjdk-systemtest materials:"/>
-		<exec executable="git" failonerror="false">
-			<arg value="ls-remote" />
-			<arg value="${openjdk_systemtest_repo}"/>
-			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -126,6 +115,7 @@
 				</exec>
 			</then>
 		</if>
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
 	</target>
 	
 	<target name="clone_openj9-systemtest">
@@ -137,12 +127,6 @@
 			<arg value="-b"/>
 			<arg value="${openj9_systemtest_branch}"/>
 			<arg value="${openj9_systemtest_repo}"/>
-		</exec>
-		<echo message="SHA of the checked out openj9-systemtest materials:"/>
-		<exec executable="git" failonerror="false">
-			<arg value="ls-remote" />
-			<arg value="${openj9_systemtest_repo}"/>
-			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
@@ -165,6 +149,7 @@
 				</exec>
 			</then>
 		</if>
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 	</target>
 
 	<target name="check_systemtest" depends="common_init">
