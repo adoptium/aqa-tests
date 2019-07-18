@@ -25,7 +25,7 @@ if not %STATUS% == OK (
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\env.jar
 call %PWD%\..\data\setup_%LOCALE%.bat
-echo "invoking EnvTest" > %OUTPUT%
+echo "invoking EnvTest"> %OUTPUT%
 %JAVA_BIN%\java EnvTest >> %OUTPUT%
 
 fc %PWD%\expected_Windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
