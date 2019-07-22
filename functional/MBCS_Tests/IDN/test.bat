@@ -23,6 +23,7 @@ if not %STATUS% == OK (
     echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
     exit 0
 )
+del %OUTPUT%
 for %%i in (%PWD%\win_%LOCALE%_*_txt) do (
     %JAVA_BIN%\java IDNFromFile %%i
     type toAscii.txt >> %OUTPUT%
