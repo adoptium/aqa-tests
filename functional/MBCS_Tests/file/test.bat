@@ -25,7 +25,6 @@ if not %STATUS% == OK (
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar
 SET SRC_DIR=file_%LOCALE%
-if exist %SRC_DIR% (rd /S /Q %SRC_DIR%)
 
 SET ZIP=C:\7-Zip\7z.exe
 if exist %ZIP% goto TEST1

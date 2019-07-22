@@ -24,9 +24,6 @@ CP="-cp ${BASE}/file.jar"
 LOGFILE="test_log.txt"
 
 gzip -dc ${BASE}/data/${FULLLANG}.tar.gz | tar xf - 
-if [ -e work ]; then
-   rm -fr work
-fi
 mkdir  work
 
 yes | ${JAVA_BIN}/java ${CP} FileOperator ${FULLLANG} work/${FULLLANG} C > ${LOGFILE} 2>&1
