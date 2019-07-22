@@ -59,8 +59,23 @@ public class CLDR11 {
   public static void main(String[] args) {
     String f = "CLDR11-"+Locale.getDefault().toLanguageTag()+".properties";
     String prefix = "expected_";
-    Runtime.Version ver = Runtime.version();
-    String version = String.format("%03d%03d%03d", ver.feature(), ver.interim(), ver.update());
+    String version_s = System.getProperty("java.version");
+    String version = "";
+    if (version_s.endsWith("-ea")) {
+      version = String.format("%03d000000", Integer.parseInt(version_s.split("-")[0]));
+    } else {
+      String[] ver_a = version_s.split("\\.");
+      if (ver_a.length > 2) {
+        version = String.format("%03d%03d%03d", Integer.parseInt(ver_a[0]),
+                                                Integer.parseInt(ver_a[1]),
+                                                Integer.parseInt(ver_a[2]));
+      } else {
+        try {
+          version = String.format("%03d000000", Integer.parseInt(ver_a[0]));
+        } catch (NumberFormatException nfe) {
+        }
+      }
+    }
     try (InputStream is = CLDR11.class.getResourceAsStream(f);) {
       Properties prop = new Properties();
       prop.load(is);
