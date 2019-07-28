@@ -75,11 +75,14 @@
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
 			</else>
 		</if>
+
 		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		<exec executable="git" failonerror="false">
 			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		</exec>
 		<move file="${jdkName}" tofile="openjdk-jdk"/>
+
+		<checkGitRepoSha repoDir="openjdk-jdk" />
 	</target>
 	
 	<target name="openjdk-jdk.check">
