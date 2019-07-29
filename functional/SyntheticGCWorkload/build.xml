@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project name="SyntheticGCWorkload" default="clean" basedir=".">
+	<taskdef resource='net/sf/antcontrib/antlib.xml'/>
+	<description>
+       Build  SyntheticGCWorkload test
+    </description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/jvmtest/GC/SyntheticGCWorkload" />
+	<property name="BUILDINFO_FSROOT" value="${BUILD_ROOT}" />
+	<property name="dist" location="${DEST}"/>
+
+	<!--Properties for this particular build-->
+	<property name="src" location="./src"/>
+	<property name="build" location="./bin"/>
+	<property name="src.level" value="1.7"/>
+	<property name="target.level" value="1.7"/>
+	<property name="dir.bootcompiler" value="/bluebird/tools/boot-compiler"/>
+	<target name="init">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source " >
+		<echo>Ant version is ${ant.version}</echo>
+		<property name="build.compiler.java" value="${dir.bootcompiler}/sdk70/latest/bin/javac" />
+		<echo>============COMPILER SETTINGS============</echo>
+		<echo>===javabin:				${dir.bootcompiler}/sdk70/latest/bin</echo>
+		<echo>===fork:				yes</echo>
+		<echo>===executable:			${build.compiler.java}</echo>
+		<echo>===source:				${src.level}</echo>
+		<echo>===target:				${target.level}</echo>
+		<echo>===debug:				on</echo>
+		<echo>===destdir:				${build}</echo>
+		<javac srcdir="${src}" destdir="${build}" source="${src.level}" target="${target.level}" 
+			debug="true" fork="true" executable="${build.compiler.java}" encoding="ISO-8859-1">
+			<src path="${src}"/>
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution" >
+		<!-- Store all class files in SyntheticGCWorkload.jar file -->
+		<mkdir dir="${dist}"/>
+		<jar jarfile="${dist}/SyntheticGCWorkload.jar" filesonly="true">
+			<fileset dir="${build}"/>
+			<fileset dir="${src}"/>
+		</jar>
+		<copy todir="${dist}">
+			<fileset dir="./" includes="*.sh,config/**"/>
+		</copy>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up" >
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}"/>
+	</target>
+	
+    <target name="build_test">
+		<antcall target="clean" inheritall="true" />    	
+    </target>
+</project>

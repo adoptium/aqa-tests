@@ -1,0 +1,32 @@
+<!-- 1k max size -->
+<!-- 0.3: new payload set for generating fragmentation -->
+<!-- 0.3: 0ms for lifespan of transient payload -->
+<!-- 0.2: Removed workQueueSize parameter. -->
+<!-- 0.2: Removed statusUpdatePeriod parameter. -->
+<!-- 0.2: Removed containerSize parameter. -->
+<!-- 0.2: Reduced producer threads to 4  -->
+<!-- 0.2: Increased nursery rate slightly -->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+<workload duration="10m" numProducerThreads="4" paymentPeriod="1us" maintenancePeriod="1us">
+        <payloadSet startTime="0" endTime="20s" dataRate="120MB/s" payloadType="auto">
+                <payload proportionOfAllocation="5%" size="1kB" lifespan="1h" />
+                <payload proportionOfAllocation="95%" size="1kB" lifespan="1s" />
+        </payloadSet>
+        <payloadSet startTime="20s">
+                <payloadSet dataRate="70MB/s" payloadType="reflexive">
+                        <payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+                        <payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+                        <payload proportionOfAllocation="55%" size="640B" lifespan="0ms" />
+                </payloadSet>
+                <payloadSet dataRate="15MB/s" payloadType="auto">
+                        <payload proportionOfAllocation="40%" size="1.5kB" lifespan="10s"/>
+                        <payload proportionOfAllocation="40%" size="1.5kB" lifespan="7s"/>
+
+                        <payload proportionOfAllocation="10%" size="2064B" lifespan="33s"/>
+                        <payload proportionOfAllocation="10%" size="2064B" lifespan="7s"/>
+
+                </payloadSet>
+        </payloadSet>
+</workload>
+</configuration>

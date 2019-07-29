@@ -1,0 +1,37 @@
+<!-- 4.x = workload which produces a similar abort pattern to 3.x but without the large object, and responds to concurrent slack similarly. -->
+<!-- Simplified 4.x profile which produces more fragmentation and aborts with a smaller and simpler live set -->
+<!-- 0.2: fixed proportions in set 1; removed workQueueSize, containerSize and statusUpdatePeriod parameters -->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+<workload duration="10m" numProducerThreads="8" paymentPeriod="0" maintenancePeriod="1us">	
+	<payloadSet startTime="0" endTime="20s" dataRate="20MB/s" payloadType="auto">
+		<payload proportionOfAllocation="12.5%" size="3kB" lifespan="1h" />				
+		<payload proportionOfAllocation="12.5%" size="3kB" lifespan="22s" />			
+		<payload proportionOfAllocation="12.5%" size="2kB" lifespan="1h" />				
+		<payload proportionOfAllocation="12.5%" size="2kB" lifespan="22s" />			
+		<payload proportionOfAllocation="12.5%" size="1kB" lifespan="1h" />				
+		<payload proportionOfAllocation="12.5%" size="1kB" lifespan="22s" />												
+		<payload proportionOfAllocation="12.5%" size="1MB" lifespan="1h" />				
+		<payload proportionOfAllocation="12.5%" size="1MB" lifespan="22s" />												
+	</payloadSet>										
+	<payloadSet startTime="20s">								
+		<payloadSet dataRate="55MB/s" payloadType="reflexive">								
+			<payload proportionOfAllocation="10%" size="80B" lifespan="1ms" />
+			<payload proportionOfAllocation="15%" size="192B" lifespan="1ms" />
+			<payload proportionOfAllocation="25%" size="256B" lifespan="1ms" />			
+			<payload proportionOfAllocation="50%" size="640B" lifespan="1ms" />								
+		</payloadSet>
+		<payloadSet dataRate="18MB/s" payloadType="auto">																																				
+			<payload proportionOfAllocation="10%" size="2MB" lifespan="12s" />										
+			<payload proportionOfAllocation="10%" size="2MB" lifespan="7s" />										
+			
+			<payload proportionOfAllocation="10%" size="1MB" lifespan="12s" />							
+			<payload proportionOfAllocation="10%" size="1MB" lifespan="7s" />																			
+			
+			<payload proportionOfAllocation="30%" size="1280kB" lifespan="10s" payloadType="byte_array" />																								
+			<payload proportionOfAllocation="30%" size="1280kB" lifespan="8s" payloadType="byte_array" />																								
+		</payloadSet>
+	</payloadSet>
+</workload>
+
+</configuration>

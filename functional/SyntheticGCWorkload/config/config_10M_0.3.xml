@@ -1,0 +1,38 @@
+<!-- Bursty workload with large max object size in the 10's of MB --> 
+<!-- 0.1 post-release: removed workQueueSize and statusUpdatePeriod --> 
+<!-- 0.2: reduce large max object size from 64M to 10M in set 1, 64M is close to 10% of tenure size and too infrequent to estimate -->
+<!-- 0.3: 0ms for lifespan of transient payload -->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+<workload duration="10m" numProducerThreads="4" paymentPeriod="0" maintenancePeriod="1us">		
+	<payloadSet startTime="0" endTime="20s" dataRate="20MB/s" payloadType="auto">
+		<payload proportionOfAllocation="10%" size="3kB" lifespan="1h" />				
+		<payload proportionOfAllocation="10%" size="3kB" lifespan="22s" />			
+		<payload proportionOfAllocation="15%" size="2kB" lifespan="1h" />				
+		<payload proportionOfAllocation="15%" size="2kB" lifespan="22s" />			
+		<payload proportionOfAllocation="25%" size="1kB" lifespan="1h" />				
+		<payload proportionOfAllocation="25%" size="1kB" lifespan="22s" />												
+	</payloadSet>
+	<payloadSet startTime="20s">							
+		<payloadSet dataRate="40MB/s" payloadType="reflexive">								
+			<payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+			<payload proportionOfAllocation="7%" size="192B" lifespan="0ms" />
+			<payload proportionOfAllocation="8%" size="256B" lifespan="0ms" />
+			<payload proportionOfAllocation="25%" size="512B" lifespan="0ms" />		
+			<payload proportionOfAllocation="30%" size="640B" lifespan="0ms" />					
+			<payload proportionOfAllocation="25%" size="768B" lifespan="0ms" />		
+		</payloadSet>	
+		<payloadSet dataRate="18MB/s" payloadType="auto">									
+			<payload proportionOfAllocation="10%" size="25kB" lifespan="12s" />							
+			<payload proportionOfAllocation="15%" size="25kB" lifespan="7s" />				
+			
+			<payload proportionOfAllocation="10%" size="12kB" lifespan="12s" />							
+			<payload proportionOfAllocation="15%" size="12kB" lifespan="7s" />		
+			
+			<payload proportionOfAllocation="25%" size="10MB"  lifespan="19s" />					
+			<payload proportionOfAllocation="25%" size="10MB"  lifespan="9s" />					
+		</payloadSet>
+	</payloadSet>
+</workload>
+
+</configuration>

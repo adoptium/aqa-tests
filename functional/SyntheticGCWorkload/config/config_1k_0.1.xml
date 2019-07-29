@@ -1,0 +1,30 @@
+<!-- 1k max size -->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+<!-- payload won't cause aborts on AIX with payment period greater than 0 -->
+<workload duration="10m" numProducerThreads="8" workQueueSize="8" containerSize="100%" 	
+	paymentPeriod="0" maintenancePeriod="1us" statusUpdatePeriod="1s">		
+	<payloadSet startTime="0" endTime="20s" dataRate="20MB/s" payloadType="auto">
+		<payload proportionOfAllocation="50%" size="1kB" lifespan="1h" />				
+		<payload proportionOfAllocation="50%" size="1kB" lifespan="20s" />						
+	</payloadSet> 	
+	<payloadSet startTime="20s">					
+		<payloadSet dataRate="45MB/s" payloadType="reflexive">								
+			<payload proportionOfAllocation="5%" size="80B"  lifespan="1ms" />
+			<payload proportionOfAllocation="15%" size="192B" lifespan="1ms" />
+			<payload proportionOfAllocation="25%" size="256B" lifespan="1ms" />
+			<payload proportionOfAllocation="55%" size="640B" lifespan="1ms" />
+		</payloadSet>
+		<payloadSet dataRate="15MB/s" payloadType="auto">									
+			<payload proportionOfAllocation="40%" size="1.5kB" lifespan="10s"/>
+			<payload proportionOfAllocation="40%" size="1.5kB" lifespan="7s"/>
+			
+			<payload proportionOfAllocation="5%" size="1.25kB" lifespan="33s"/>
+			<payload proportionOfAllocation="5%" size="1.25kB" lifespan="7s"/>
+			
+			<payload proportionOfAllocation="5%" size="0.75kB" lifespan="21s"/>
+			<payload proportionOfAllocation="5%" size="0.75kB" lifespan="7s"/>					
+		</payloadSet>
+	</payloadSet>
+</workload>
+</configuration>

@@ -1,0 +1,31 @@
+<!-- 100k max size -->
+<!-- 0.2: Attempt to make the workload abort more. --> 
+<!-- 0.2 post: Removed statusUpdatePeriod --> 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+<workload duration="10m" numProducerThreads="4" containerSize="800MB" paymentPeriod="1us" maintenancePeriod="1us">	
+	<payloadSet startTime="1us" endTime="20s" dataRate="20MB/s" payloadType="auto">
+		<payload proportionOfAllocation="50%" size="100kB" lifespan="1h" />				
+		<payload proportionOfAllocation="50%" size="100kB" lifespan="22s" />												
+	</payloadSet> 	
+	<payloadSet startTime="20s">					
+		<payloadSet dataRate="50MB/s" payloadType="reflexive">								
+			<payload proportionOfAllocation="5%"  size="80B"  lifespan="1ms" />
+			<payload proportionOfAllocation="20%" size="192B" lifespan="1ms" />
+			<payload proportionOfAllocation="25%" size="256B" lifespan="1ms" />
+			<payload proportionOfAllocation="50%" size="640B" lifespan="1ms" />
+		</payloadSet>
+		<payloadSet dataRate="22MB/s" payloadType="auto">									
+			<payload proportionOfAllocation="45%" size="128kB" lifespan="12s"/>																								
+			<payload proportionOfAllocation="45%" size="128kB" lifespan="7s"/>																								
+			
+			<payload proportionOfAllocation="3%" size="90kB" lifespan="16s"/>
+			<payload proportionOfAllocation="3%" size="90kB" lifespan="7s"/>
+			
+			<payload proportionOfAllocation="2%" size="12.5kB" lifespan="19s"/>
+			<payload proportionOfAllocation="2%" size="12.5kB" lifespan="7s"/>	
+		</payloadSet>
+	</payloadSet>
+</workload>
+
+</configuration>
