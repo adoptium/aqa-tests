@@ -2,8 +2,6 @@
 
 IBM Center for Advanced Studies Atlantic
 Sub-Project: Performance of Benchmarks
-Andrew Somerville
-Research Assistant
 October, 2014
 
 ## 1 Motivation and Approach
