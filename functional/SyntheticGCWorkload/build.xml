@@ -53,7 +53,6 @@
 	</target>
 
 	<target name="dist" depends="compile" description="generate the distribution" >
-		<!-- Store all class files in SyntheticGCWorkload.jar file -->
 		<mkdir dir="${dist}"/>
 		<jar jarfile="${dist}/SyntheticGCWorkload.jar" filesonly="true">
 			<fileset dir="${build}"/>
@@ -65,7 +64,6 @@
 	</target>
 
 	<target name="clean" depends="dist" description="clean up" >
-		<!-- Delete the ${build} directory trees -->
 		<delete dir="${build}"/>
 	</target>
 	
