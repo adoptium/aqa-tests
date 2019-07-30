@@ -354,6 +354,11 @@ def runTest( ) {
 							echo "env.DISPLAY is ${env.DISPLAY}"
 							makeTest("${RUNTEST_CMD}")
 						}
+					} else if (env.SPEC.startsWith('aix')) {
+						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+						env.DISPLAY = ":0"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
 					} else {
 						makeTest("${RUNTEST_CMD}")
 					}
