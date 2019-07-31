@@ -22,7 +22,6 @@ def makeTest(testParam) {
 }
 
 def setupEnv() {
-	echo "In setupEnv"
 	// if the provided ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH are not AdoptOpenJDK/openjdk-tests' master branch, clean the workspace and re-download it
 	if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_BRANCH) {
 		if ( !params.ADOPTOPENJDK_REPO.contains( 'AdoptOpenJDK/openjdk-tests.git') || params.ADOPTOPENJDK_BRANCH != "master") {
@@ -104,15 +103,12 @@ def setupEnv() {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
 	sh 'printenv'
-	echo "End of setupEnv"
 }
 
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			echo "In setupParallelEnv, haven't reached setupEnv yet"
 			setupEnv()
-			echo "In setupParallelEnv, HAS reached setupEnv"
 			
 			int iterate = 1;
 			if (params.ITERATIONS) {
@@ -122,58 +118,57 @@ def setupParallelEnv() {
 			parallel_tests = [:]
 			
 			if (iterate == 1){
-			def testSubDirs = []
-			def testSubDirSize = 0
-				
-				//For parallel suppose BUILD_LIST is one specific category
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
-					echo "Is this where it fails?"
-					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-					echo "Yes, this is where it fails"
-					testSubDirSize = testSubDirs.size()
-				}
+				def testSubDirs = []
+				def testSubDirSize = 0
+					
+					//For parallel suppose BUILD_LIST is one specific category
+					dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+						testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
+						testSubDirSize = testSubDirs.size()
+					}
 
-			for (int i = 0; i < testSubDirSize; i++) {
-				def testSubDir = testSubDirs[i].trim().replace("/","");
-				def TEST_JOB_NAME = "${JOB_NAME}"
+				for (int i = 0; i < testSubDirSize; i++) {
+					def testSubDir = testSubDirs[i].trim().replace("/","");
+					def TEST_JOB_NAME = "${JOB_NAME}"
 
-				//ToDo: need to find a better way to pass parameters to downstream builds.
-				//Ideally, we should only need to pass in modified parameters (i.e.,
-				//BUILD_LIST, IS_PARALLEL)
-				parallel_tests[testSubDir] = {
-					build job: TEST_JOB_NAME, parameters: [
-						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
-						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
-						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
-						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
-						string(name: 'JDK_VERSION', value: JDK_VERSION),
-						string(name: 'JDK_IMPL', value: JDK_IMPL),
-						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
-						string(name: 'TARGET', value: TARGET),
-						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
-						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
-						string(name: 'CUSTOMIZED_SDK_URL', value: CUSTOMIZED_SDK_URL),
-						string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID', value: CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
-						string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
-						string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
-						string(name: 'TEST_FLAG', value: TEST_FLAG),
-						string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
-						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
-						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
-						string(name: 'JenkinsFile', value: JENKINS_FILE),
-						string(name: 'ITERATIONS', value: ITERATIONS),
-						string(name: 'LABEL', value: LABEL),
-						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
-						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
-						booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
-						string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
-						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
-						booleanParam(name: 'IS_PARALLEL', value: false),
-						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
-						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
-					]
+					//ToDo: need to find a better way to pass parameters to downstream builds.
+					//Ideally, we should only need to pass in modified parameters (i.e.,
+					//BUILD_LIST, IS_PARALLEL)
+					parallel_tests[testSubDir] = {
+						build job: TEST_JOB_NAME, parameters: [
+							string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
+							string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
+							string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
+							string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
+							string(name: 'JDK_VERSION', value: JDK_VERSION),
+							string(name: 'JDK_IMPL', value: JDK_IMPL),
+							string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
+							string(name: 'TARGET', value: TARGET),
+							string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
+							string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
+							string(name: 'CUSTOMIZED_SDK_URL', value: CUSTOMIZED_SDK_URL),
+							string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID', value: CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
+							string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
+							string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
+							string(name: 'TEST_FLAG', value: TEST_FLAG),
+							string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
+							string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
+							string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
+							string(name: 'JenkinsFile', value: JENKINS_FILE),
+							string(name: 'ITERATIONS', value: ITERATIONS),
+							string(name: 'LABEL', value: LABEL),
+							string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
+							string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
+							booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
+							string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
+							booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
+							booleanParam(name: 'IS_PARALLEL', value: false),
+							booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
+							string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
+						]
+					}
+					// return to top level pipeline file in order to exit node block before running tests in parallel
 				}
-				// return to top level pipeline file in order to exit node block before running tests in parallel
 			}
 			else{
 				int one = 1
@@ -224,10 +219,8 @@ def setupParallelEnv() {
 
 def setup() {
 	stage('Setup') {
-	echo "In setup"
 		timestamps{
 			setupEnv()
-			echo "out of setupEnv"
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -385,14 +378,13 @@ def runTest( ) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
-			if (params.IS_PARALLEL == true)
-			{
-				iterations=1
-			}
+			//if (params.IS_PARALLEL == true)
+			//{
+			//	iterations=1
+			//}
 			for (int i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
-					echo "We are in runTest, right above the other shell script"
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
 							def DISPLAY = sh (
 								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -425,7 +417,6 @@ def runTest( ) {
 						makeTest("${RUNTEST_CMD}")
 					}
 				} else {
-					echo "Change of plan, in the else part"
 					makeTest("${RUNTEST_CMD}")
 				}
 			}
@@ -434,7 +425,6 @@ def runTest( ) {
 }
 
 def post(output_name) {
-	echo "In post"
 	stage('Post') {
 		timestamps{
 			if (output_name.contains(',')) {
@@ -458,20 +448,16 @@ def post(output_name) {
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
 			}
-			echo "Right above failIfNoResultsValue"
 			boolean failIfNoResultsValue = true
 			if (params.IS_PARALLEL == true) {
-				echo "In the checking parallel section"
 				failIfNoResultsValue = false
 			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
-			echo "After step"
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
 
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
-			echo "In if statement checking if unstable"
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
 
@@ -504,7 +490,6 @@ def testBuild() {
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
 		try {
 			addJobDescription()
-			echo "Testing for commonalities" 
 			// prepare environment and compile test projects
 			if( params.IS_PARALLEL == true ){
 				setupParallelEnv()
@@ -513,15 +498,12 @@ def testBuild() {
 				//ToDo: temporary workaround for jck test parallel runs
 				// until build.xml is added into each subfolder
 				if( env.BUILD_LIST.startsWith('jck/')) {
-					echo "In the if part of starting with jck"
 					def temp = env.BUILD_LIST
 					env.BUILD_LIST = "jck"
 					buildTest()
 					env.BUILD_LIST = temp
 				} else {
-					echo "In the else alternative"
 					buildTest()
-					echo "End of buildTest, back to the else alternative"
 				}
 				runTest()
 				post("${env.BUILD_LIST}")
