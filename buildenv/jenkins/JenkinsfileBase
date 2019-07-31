@@ -378,10 +378,10 @@ def runTest( ) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
-			if (params.IS_PARALLEL == true)
-			{
-				iterations=1
-			}
+			//if (params.IS_PARALLEL == true)
+			//{
+			//	iterations=1
+			//}
 			for (int i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
