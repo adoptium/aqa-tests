@@ -22,20 +22,18 @@
 #
 
 DATE_TIME=`date "+%Y-%m-%dT_%H-%M-%S"`
-# Save log files here. 
-LOG_DIR="log"
+
 # Source for config files 
 CONFIG_DIR="config"
-# -Xms and -Xmx value
-HEAP="1g"
-
-VM_OPTIONS_BASE="-Xmx$HEAP -Xms$HEAP -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16"
-
+GC_FRAG_OPTION=" -Xgc:concurrentSlack=macrofrag"
 #######################################
 # Select newest configuration of the given size. 
 SIZE="$1"
 PASS_PROPORTIONS="$2"
-JAVA_TEST_COMMAND="$3"
+LOG_DIR="$3"
+JDK_TEST_COMMAND="$4"
+VM_OPTIONS_BASE="$5"
+
 # Try to list configuration versions of the requested size. 
 CONFIG_VERSIONS="`ls "$CONFIG_DIR"/"config_""$SIZE""_"*".xml"`" || exit 4
 # Pick the last one. 
@@ -50,12 +48,12 @@ LOG_BASE=$LOG_DIR"/"$CONFIG_NAME"_"$DATE_TIME
 # Run the workload $CONFIG using $VM_OPTIONS and $HEAP sending output to $VERBOSE_FILE and $STDOUT_FILE
 run_workload(){	
 	STDOUT_FILE=$LOG_BASE"_stdout_"$LOG_SUFFIX".txt"	
-
+  
 	echo "Start time: "`date "+%Y-%m-%dT_%H-%M-%S"`
 	echo "Workload configuration: "$CONFIG
 	echo "Options: "$VM_OPTIONS
 	echo "Heap: "$HEAP
-	TEST_CMD="$JAVA_TEST_COMMAND $VM_OPTIONS -Xverbosegclog:"$VERBOSE_FILE" -cp .:SyntheticGCWorkload.jar net.adoptopenjdk.casa.workload_sessions.Main "$CONFIG" --log_file "$STDOUT_FILE" -s"
+	TEST_CMD=$JDK_TEST_COMMAND" "$VM_OPTIONS" -Xverbosegclog:"$VERBOSE_FILE" -cp .:SyntheticGCWorkload.jar net.adoptopenjdk.casa.workload_sessions.Main "$CONFIG" --log_file "$STDOUT_FILE" -s"
 	echo "run_workload() - Command: "$TEST_CMD
 	
 	$TEST_CMD
@@ -64,7 +62,7 @@ run_workload(){
 # Compare the log files VERBOSE_1 and VERBOSE_2 for the two runs. 
 test_verbose_files(){	
 	# The return status of the comparator will be 0 if the test passes 
-	TEST_VF_CMD="$JAVA_TEST_COMMAND -cp SyntheticGCWorkload.jar net.adoptopenjdk.casa.verbose_gc_parser.VerboseGCComparator "$VERBOSE_1" "$VERBOSE_2" -e x,p -d 2,2 -p "$PASS_PROPORTIONS
+	TEST_VF_CMD=$JDK_TEST_COMMAND" -cp SyntheticGCWorkload.jar net.adoptopenjdk.casa.verbose_gc_parser.VerboseGCComparator "$VERBOSE_1" "$VERBOSE_2" -e x,p -d 2,2 -p "$PASS_PROPORTIONS
 	echo "test_verbose_files() - Command: "$TEST_VF_CMD
 	
 	$TEST_VF_CMD
@@ -82,7 +80,7 @@ run_workload_1(){
 
 # Test with option 
 run_workload_2(){	
-	VM_OPTIONS=$VM_OPTIONS_BASE" -Xgc:concurrentSlack=macrofrag"
+	VM_OPTIONS=$VM_OPTIONS_BASE$GC_FRAG_OPTION
 	LOG_SUFFIX="concurrentSlackAuto"
 	VERBOSE_FILE=$LOG_BASE"_verbose_"$LOG_SUFFIX".xml"	
 
@@ -91,7 +89,7 @@ run_workload_2(){
 }
 
 #
-# Tests the workload configuration, $CONFIG, with and without the -Xgc:concurrentSlack=macrofrag 
+# Tests the workload configuration, $CONFIG, with and without the extra option (-Xgc:concurrentSlack=macrofrag for J9)
 # option. Exits when done.  
 # 
 # Exit codes: 
