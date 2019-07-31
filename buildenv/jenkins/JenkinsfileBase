@@ -158,7 +158,48 @@ def setupParallelEnv() {
 					]
 				}
 			}
-			// return to top level pipeline file in order to exit node block before running tests in parallel
+			else{
+				int one = 1
+				for (int i = 0; i<iterate; i++){
+					def tempDirectory = "time_${i}"
+					def TEST_JOB_NAME = "${JOB_NAME}"
+					echo "The job name is ${TEST_JOB_NAME}"
+					parallel_tests[tempDirectory] = {
+
+						build job: TEST_JOB_NAME, parameters: [
+							string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
+							string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
+							string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
+							string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
+							string(name: 'JenkinsFile', value: JenkinsFile),
+							string(name: 'JDK_VERSION', value: JDK_VERSION),
+							string(name: 'JDK_IMPL', value: JDK_IMPL),
+							string(name: 'BUILD_LIST', value: env.BUILD_LIST),
+							string(name: 'TARGET', value: TARGET),
+							string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
+							string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
+							string(name: 'CUSTOMIZED_SDK_URL', value: CUSTOMIZED_SDK_URL),
+							string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID', value: CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
+							string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
+							string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
+							string(name: 'TEST_FLAG', value: TEST_FLAG),
+							string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
+							string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
+							string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
+							string(name: 'ITERATIONS', value: one.toString()),
+							string(name: 'LABEL', value: LABEL),
+							string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
+							string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
+							booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
+							string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
+							booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
+							booleanParam(name: 'IS_PARALLEL', value: false),
+							booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
+							string(name: 'RUNTIME_NAME', value: tempDirectory)
+						]
+					}
+				}
+			}
 		}
 	}
 }
