@@ -458,7 +458,8 @@ def testBuild() {
 			}
 		} finally {
 			if (!params.KEEP_WORKSPACE) {
-				cleanWs()
+				// cleanWs() does not work in some cases, so set opts below
+				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
 			}
 		}
 
