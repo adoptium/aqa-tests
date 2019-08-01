@@ -46,6 +46,7 @@ def setupEnv() {
 		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
+	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""			
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
@@ -108,18 +109,24 @@ def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
 			setupEnv()
-			def testSubDirs = []
-			def testSubDirSize = 0
 			
-			//For parallel suppose BUILD_LIST is one specific category
-			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-				testSubDirSize = testSubDirs.size()
+			int iterate = 1;
+			if (params.ITERATIONS) {
+				iterate = "${params.ITERATIONS}".toInteger()
 			}
-			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			echo "iterate is equal to ${iterate}"
 			parallel_tests = [:]
+			
+			if (iterate == 1){
+				def testSubDirs = []
+				def testSubDirSize = 0
+					
+					//For parallel suppose BUILD_LIST is one specific category
+					dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+						testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
+						testSubDirSize = testSubDirs.size()
+					}
 
-			if (iterations == 1)
 				for (int i = 0; i < testSubDirSize; i++) {
 					def testSubDir = testSubDirs[i].trim().replace("/","");
 					def TEST_JOB_NAME = "${JOB_NAME}"
@@ -203,7 +210,6 @@ def setupParallelEnv() {
 					}
 				}
 			}
-			// return to top level pipeline file in order to exit node block before running tests in parallel
 		}
 	}
 }
@@ -212,7 +218,6 @@ def setup() {
 	stage('Setup') {
 		timestamps{
 			setupEnv()
-
 			if (fileExists('openjdkbinary')) {
 				dir('openjdkbinary') {
 					deleteDir()
@@ -370,6 +375,10 @@ def runTest( ) {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
+			//if (params.IS_PARALLEL == true)
+			//{
+			//	iterations=1
+			//}
 			for (int i = 0; i < iterations; i++) {
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
@@ -396,6 +405,11 @@ def runTest( ) {
 							echo "env.DISPLAY is ${env.DISPLAY}"
 							makeTest("${RUNTEST_CMD}")
 						}
+					} else if (env.SPEC.startsWith('aix')) {
+						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+						env.DISPLAY = ":0"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
 					} else {
 						makeTest("${RUNTEST_CMD}")
 					}
@@ -431,7 +445,6 @@ def post(output_name) {
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
 			}
-
 			boolean failIfNoResultsValue = true
 			if (params.IS_PARALLEL == true) {
 				failIfNoResultsValue = false
@@ -439,6 +452,8 @@ def post(output_name) {
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			archiveSHAFile()
+
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
@@ -447,7 +462,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 			//for performance test, archive regardless the build result
@@ -458,7 +474,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 		}
@@ -470,7 +487,6 @@ def testBuild() {
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
 		try {
 			addJobDescription()
-
 			// prepare environment and compile test projects
 			if( params.IS_PARALLEL == true ){
 				setupParallelEnv()
@@ -534,7 +550,18 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def uploadToArtifactory() {
+def archiveSHAFile() {
+	def shaFile = "openjdk-tests/TestConfig/SHA.txt";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
+		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${shaFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
+def uploadToArtifactory(pattern) {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
@@ -544,7 +571,7 @@ def uploadToArtifactory() {
 		def uploadSpec = """{
 			"files":[
 					{
-						"pattern": "${env.WORKSPACE}/*_test_output.*",
+						"pattern": "${pattern}",
 						"target": "${artifactoryUploadDir}"
 					}
 				]
@@ -569,6 +596,8 @@ def uploadToArtifactory() {
 
 def run_parallel_tests() {
 	if (params.IS_PARALLEL == true) {
+		echo "The size of parallel_tests is ${parallel_tests.size()}"
+		println "${parallel_tests.keySet()}"
 		stage ("Parallel Tests") {
 			parallel parallel_tests
 		}
