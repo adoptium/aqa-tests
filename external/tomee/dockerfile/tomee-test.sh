@@ -37,7 +37,7 @@ java -version
 
 cd /tomee
 
-#set -e
+set -e
 echo "Build TomEE without running test"
 mvn --batch-mode -Pquick -Dsurefire.useFile=false -DdisableXmlReport=true -DuniqueVersion=false -ff -Dassemble -DskipTests -DfailIfNoTests=false clean install
 echo "Build TomEE completed"
