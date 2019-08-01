@@ -21,7 +21,7 @@
 	</description>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external" />
+	<property name="DEST_EXTERNAL" value="${BUILD_ROOT}/external" />
 	<property environment="env" />
 	<if>
 		<isset property="env.DOCKERIMAGE_TAG"/>
@@ -33,7 +33,7 @@
 		</else>
 	</if>
 	<target name="init" depends="docker_prune">
-		<mkdir dir="${DEST}" />
+		<mkdir dir="${DEST_EXTERNAL}" />
 	</target>
 
 	<target name="build" depends="dist">
@@ -44,7 +44,7 @@
 	</target>
 	
 	<target name="dist" depends="init">
-		<copy todir="${DEST}">
+		<copy todir="${DEST_EXTERNAL}">
 			<fileset dir="." includes="*.mk"/>
 		</copy>
 	</target>

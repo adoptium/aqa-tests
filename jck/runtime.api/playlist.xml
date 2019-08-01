@@ -228,6 +228,8 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/signaturetest,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
+		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
+		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -364,6 +366,8 @@
 	-results-root=$(REPORTDIR)  \
 	-test=Jck -test-args=$(Q)tests=api/javax_naming/spi,jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
+		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
+		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>

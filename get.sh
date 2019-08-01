@@ -277,6 +277,9 @@ getTestKitGenAndFunctionalTestMaterial()
     else
 	    mv openj9/test/functional functional
     fi
+	echo "call checkTestRepoSHAs" 
+	checkTestRepoSHAs
+
 	rm -rf openj9
 
 	if [ "$VENDOR_REPOS" != "" ]; then
@@ -356,15 +359,30 @@ else
 fi
 }
 
+checkTestRepoSHAs()
+{
+output_file="$TESTDIR/TestConfig/SHA.txt"
+if [ -e ${output_file} ]; then
+	echo "rm $output_file"
+	rm ${output_file}
+fi
+
+echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file"
+$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file
+
+echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file"
+$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file
+}
+
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
+	testJavaVersion
 fi
 if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
 	getOpenJDKSources
 fi
 
-testJavaVersion
 
 if [ ! -d "$TESTDIR/TestConfig" ]; then
 	getTestKitGenAndFunctionalTestMaterial

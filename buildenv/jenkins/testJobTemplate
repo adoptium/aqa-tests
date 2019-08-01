@@ -87,7 +87,6 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 
 // add into the map only if GROUP and BUILD_LIST do not match
 def GROUP_BUILD_LIST_MAP = [
-	'perf' : 'performance',
 	'system' : 'systemtest'
 ]
 
@@ -111,6 +110,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					BUILD_LIST = GROUP_BUILD_LIST_MAP[GROUP]
 				}
 
+				// for all jck builds, we need -Xfuture option passed in
+				def EXTRA_OPTIONS = "";
+				if (GROUP == "jck" && JDK_IMPL == "openj9") {
+					EXTRA_OPTIONS = "-Xfuture"
+				}
+				
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
 				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
 					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
@@ -135,7 +140,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
 							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
 							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
-							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
+							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
 							stringParam('LABEL', "", "Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine")

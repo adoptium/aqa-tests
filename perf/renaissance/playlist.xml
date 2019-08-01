@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
+	<test>
+		<testCaseName>akka-uct</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)akka-uct.json$(Q) akka-uct; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>als</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>chi-square</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>db-shootout</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>dec-tree</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>finagle-chirper</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>finagle-http</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-http.json$(Q) finagle-http; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>fj-kmeans</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)fj-kmeans.json$(Q) fj-kmeans; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>future-genetic</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)future-genetic.json$(Q) future-genetic; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>gauss-mix</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>log-regression</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>mnemonics</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)mnemonics.json$(Q) mnemonics; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>movie-lens</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>naive-bayes</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>par-mnemonics</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)par-mnemonics.json$(Q) par-mnemonics; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>philosophers</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>scala-kmeans</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+</playlist>

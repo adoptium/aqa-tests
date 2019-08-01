@@ -142,9 +142,9 @@ java/net/URLPermission/URLTest.java		https://github.com/eclipse/openj9/issues/11
 java/net/DatagramSocket/SetDatagramSocketImplFactory/ADatagramSocket.java      https://github.com/AdoptOpenJDK/openjdk-tests/issues/649    generic-all
 java/net/MulticastSocket/Promiscuous.java               https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 #java/net/MulticastSocket/SetLoopbackMode.java on aix issue	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1011
-java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x aix-all
+java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,aix-all
 #java/net/MulticastSocket/Test.java	on aix issue https://github.com/AdoptOpenJDK/openjdk-tests/issues/1011	aix-all
-java/net/MulticastSocket/Test.java                             https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x aix-all
+java/net/MulticastSocket/Test.java                             https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,aix-all
 java/net/Socket/asyncClose/AsyncClose.java	https://github.com/eclipse/openj9/issues/4560    generic-all
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java    https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 java/nio/channels/DatagramChannel/Promiscuous.java                  https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
@@ -153,9 +153,10 @@ java/net/MulticastSocket/SetOutgoingIf.java	https://github.com/AdoptOpenJDK/open
 java/net/Inet6Address/B6206527.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
 java/net/ipv6tests/B6521014.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
 java/net/ipv6tests/UdpTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
-sun/net/www/http/ChunkedOutputStream/checkError.java	https://bugs.openjdk.java.net/browse/JDK-8041924 windows-all linux-s390x
+sun/net/www/http/ChunkedOutputStream/checkError.java	https://bugs.openjdk.java.net/browse/JDK-8041924 windows-all,linux-s390x
 #java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1011	aix-all
-java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1048	linux-all aix-all
+java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1048	linux-all,aix-all
+java/net/NetworkInterface/IPv4Only.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1197 aix-all
 ############################################################################
 
 # jdk_io
@@ -191,7 +192,7 @@ java/nio/channels/ServerSocketChannel/Basic.java	https://github.com/AdoptOpenJDK
 java/nio/channels/ServerSocketChannel/AdaptServerSocket.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/821	windows-all
 sun/nio/cs/TestStringCoding.java	https://github.com/eclipse/openj9/issues/4644	generic-all
 sun/nio/cs/TestStringCodingUTF8.java	https://github.com/eclipse/openj9/issues/4684	generic-all
-java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse/openj9/issues/4732	linux-all windows-all aix-all
+java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse/openj9/issues/4732	linux-all,windows-all,aix-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse/openj9/issues/4317 macosx-all
 java/nio/channels/Selector/RacyDeregister.java	https://bugs.openjdk.java.net/browse/JDK-8161083	aix-all
 ############################################################################
@@ -239,7 +240,7 @@ javax/crypto/CryptoPermission/CryptoPolicyFallback.java	https://github.com/Adopt
 javax/crypto/CryptoPermission/TestUnlimited.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/125	generic-all
 sun/security/rsa/TestCACerts.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/125	generic-all
 sun/security/ssl/SSLSocketImpl/SSLSocketCloseHang.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/125	generic-all
-sun/security/pkcs11/KeyStore/SecretKeysBasic.sh	https://bugs.openjdk.java.net/browse/JDK-8189603	linux-all macosx-all windows-all
+sun/security/pkcs11/KeyStore/SecretKeysBasic.sh	https://bugs.openjdk.java.net/browse/JDK-8189603	linux-all,macosx-all,windows-all
 
 ############################################################################
 
@@ -253,7 +254,13 @@ javax/sound/midi/Devices/InitializationHang.java https://bugs.openjdk.java.net/b
 ############################################################################
 
 # jdk_text
-
+sun/text/IntHashtable/Bug4170614Test.sh https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/BreakIterator/BreakIteratorTest.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/Format/DateFormat/DateFormatTest.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/Format/DateFormat/NonGregorianFormatTest.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/Format/MessageFormat/LargeMessageFormat.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/Format/NumberFormat/NumberRegression.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/text/Format/NumberFormat/NumberTest.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
 ############################################################################
 
 # jdk_time
@@ -297,6 +304,9 @@ java/util/logging/CheckZombieLockTest.java	https://github.com/AdoptOpenJDK/openj
 java/util/concurrent/ThreadLocalRandom/ThreadLocalRandomTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/830	linux-all
 java/util/Arrays/ParallelPrefix.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/830	linux-all
 java/util/stream/test/org/openjdk/tests/java/util/SplittableRandomTest.java	https://github.com/eclipse/openj9/issues/4613	generic-all
+java/util/TimeZone/HongKong.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/util/Calendar/CalendarRegression.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
+java/util/Calendar/JapanEraNameCompatTest.java https://bugs.openjdk.java.net/browse/JDK-8218781 generic-all
 ############################################################################
 
 # svc_tools

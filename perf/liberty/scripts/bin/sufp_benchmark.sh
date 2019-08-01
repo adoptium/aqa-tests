@@ -14,7 +14,6 @@
 # limitations under the License.
 ################################################################################
 
-##
 ## Print out the help information if all mandatory environment variables are not set
 usage()
 {
@@ -461,6 +460,7 @@ startupFootprint()
   # TODO: Once verfied, enableJitThreadUtilizationInfo for runs other than xjit
   echoAndRunCmd "cd ${BENCHMARK_DIR}/tmp"
   startLibertyServer 1
+  
   echoAndRunCmd "cd -"
   disableJitThreadUtilizationInfo
   echo ""
@@ -886,7 +886,16 @@ calcTime()
 		SEARCH="The server ${SERVER_NAME} is ready to run a smarter planet"
 		echo "Search string: ${SEARCH}"
 		END_TIME=$(awk ' /'"${SEARCH}"'/ { print $2 }' trace.log)
-
+		
+		if [ -z "$END_TIME" ]; then
+		    echo "END_TIME is NULL. Couldn't find ${SEARCH}."
+		    
+		    #Open Liberty 19.0.0.4 uses this new string. 18.0.0.4 and before used the old one.
+		    SEARCH="The ${SERVER_NAME} server is ready to run a smarter planet"
+		    echo "Search new string: ${SEARCH}"
+		    END_TIME=$(awk ' /'"${SEARCH}"'/ { print $2 }' trace.log)
+		fi
+		
 		echo "End time: ${END_TIME}"
 
 
@@ -943,17 +952,18 @@ calcTime()
 		'`
 
 		# if no end time is found, the awk above will always return the start time,
-		#	 since it takes start to be $1 instead of $2 when end time is missing
-		if [ "$xjitMode" != "true" ]; then
-			if [ "${ELAPSED}" = "${START_MILLIS}" ] || [ "${ELAPSED}" = "${END_MILLIS}" ]; then
-				echo "An error occurred while trying to calculate startup time. WAS measurement is just for info at the moment"
-			else
-				echo "Startup time (Launched-Smarter Planet(WAS Perf Measurement): ${ELAPSED}"
-			fi
+		# since it takes start to be $1 instead of $2 when end time is missing
+
+		if [ "${ELAPSED}" = "${START_MILLIS}" ] || [ "${ELAPSED}" = "${END_MILLIS}" ]; then
+			echo "An error occurred while trying to calculate startup time. WAS measurement is just for info at the moment"
 		else
-			#TODO: Might need to add a check here for "${ELAPSED}" = "${START_MILLIS}" ] || [ "${ELAPSED}" = "${END_MILLIS}"
-			echo "Was Startup time with Xjit:verbose was ${ELAPSED}"
+			if [ "$xjitMode" != "true" ]; then
+				echo "Startup time (Launched-Smarter Planet(WAS Perf Measurement): ${ELAPSED}"
+			else
+				echo "Was Startup time with Xjit:verbose was ${ELAPSED}"
+			fi
 		fi
+
 		rm -f trace.log
 	fi
 }
@@ -982,6 +992,9 @@ BENCHMARK_TYPE=SUFP
 
 # Import the common utilities needed to run this benchmark
 . "$(dirname $0)"/common_utils.sh
+
+# Import the common utilities needed to run this benchmark
+. "$(dirname $0)"/database_utils.sh
 
 # Print Liberty header for script identification
 printLibertyHeader
@@ -1072,7 +1085,6 @@ platformSpecificSetup
 
 # set environment vars for this shell
 setLocalEnv
-terminateRunningJavaProcs
 printSensorInfo
 
 ###############
@@ -1095,6 +1107,10 @@ if [ "${SETUP_ONLY}" = "true" ]; then
   echo "SETUP_ONLY flag set. Setup complete. Exiting."
   exit
 fi
+
+configureDB
+
+terminateRunningJavaProcs
 
 # tprof will be done for Liberty server java process
 #if [ ! -z "$PROFILING_TOOL" ]; then

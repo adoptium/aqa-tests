@@ -23,22 +23,7 @@
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
-	<condition property="openjdkGit" value="openjdk-jdk8u">
-		<equals arg1="${JDK_VERSION}" arg2="8"/>
-	</condition>
-	<condition property="openjdkGit" value="openjdk-jdk9">
-		<equals arg1="${JDK_VERSION}" arg2="9"/>
-	</condition>
-	<condition property="openjdkGit" value="openjdk-jdk10u">
-		<equals arg1="${JDK_VERSION}" arg2="10"/>
-	</condition>
-	<condition property="openjdkGit" value="openjdk-jdk11u">
-        <equals arg1="${JDK_VERSION}" arg2="11"/>
-    </condition>
-	<condition property="openjdkGit" value="openjdk-jdk12u">
-        <equals arg1="${JDK_VERSION}" arg2="12"/>
-    </condition>
-
+	<property name="openjdkGit" value="openjdk-jdk${JDK_VERSION}u" />
 	<property environment="env" />
 	<if>
 		<isset property="env.RELEASE_TAG"/>
@@ -90,11 +75,14 @@
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
 			</else>
 		</if>
+
 		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		<exec executable="git" failonerror="false">
 			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		</exec>
 		<move file="${jdkName}" tofile="openjdk-jdk"/>
+
+		<checkGitRepoSha repoDir="openjdk-jdk" />
 	</target>
 	
 	<target name="openjdk-jdk.check">

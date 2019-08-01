@@ -15,9 +15,11 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>akka-uct</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) akka-uct; \
-		$(TEST_STATUS)</command>
+		<testCaseName>OpenLibertyStartupDT7</testCaseName>
+		<command>bash $(TEST_RESROOT)/../../../openjdk-tests/perf/liberty/configs/benchmark.sh $(TEST_RESROOT); \
+		${TEST_STATUS}
+		</command>
+		<!-- scripts are only tested on linux -->
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
