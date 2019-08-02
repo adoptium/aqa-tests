@@ -12,7 +12,7 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam"
@@ -106,7 +106,11 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	sh 'printenv'
+	if ( env.SPEC.contains('sparcv')) {
+		sh 'env'
+	} else {
+		sh 'printenv'
+	}
 }
 
 def setupParallelEnv() {
