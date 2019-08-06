@@ -324,7 +324,7 @@ def runTest( ) {
 			}
 			def CUSTOM_OPTION = ''
 			TARGET = "${params.TARGET}";
-			if (TARGET.contains('custom')) {
+			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
