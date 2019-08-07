@@ -108,26 +108,54 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()
+			setupEnv()		
+			int iterate = 1
+			if (params.ITERATIONS) {
+				iterate = "${params.ITERATIONS}".toInteger()
+			}
+			//Initialization for things in common between both multiple iterations and many subtests
+			//repeatAmount is the number of times the loops go through
+			int repeatAmount = 0
+			int one = 1
+			def buildListName = ""
+			def currentDirectory = ""
 			def testSubDirs = []
 			def testSubDirSize = 0
 			
-			//For parallel suppose BUILD_LIST is one specific category
-			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
+			{
 				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
 				testSubDirSize = testSubDirs.size()
 			}
-			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			
+			//Setup for option-specific parameters
+			if (iterate == 1){
+				//For parallel suppose BUILD_LIST is one specific category
+				repeatAmount = testSubDirSize
+			}
+			else
+			{
+				repeatAmount = iterate
+			}
+			
+			//echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			parallel_tests = [:]
 
-			for (int i = 0; i < testSubDirSize; i++) {
-				def testSubDir = testSubDirs[i].trim().replace("/","");
+			for (int i = 0; i < repeatAmount; i++) {
+				if (iterate == 1){
+					currentDirectory = testSubDirs[i].trim().replace("/","");
+					buildListName = "${env.BUILD_LIST}/${currentDirectory}"
+				}
+				else{
+					currentDirectory = "test_iteration_${i}"
+					buildListName = "${env.BUILD_LIST}"
+				}
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
 				//ToDo: need to find a better way to pass parameters to downstream builds.
 				//Ideally, we should only need to pass in modified parameters (i.e.,
 				//BUILD_LIST, IS_PARALLEL)
-				parallel_tests[testSubDir] = {
+				parallel_tests[currentDirectory] = {
 					build job: TEST_JOB_NAME, parameters: [
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
@@ -135,7 +163,7 @@ def setupParallelEnv() {
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
-						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
+						string(name: 'BUILD_LIST', value: buildListName),
 						string(name: 'TARGET', value: TARGET),
 						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
 						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
@@ -148,7 +176,7 @@ def setupParallelEnv() {
 						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
 						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
 						string(name: 'JenkinsFile', value: JENKINS_FILE),
-						string(name: 'ITERATIONS', value: ITERATIONS),
+						string(name: 'ITERATIONS', value: one.toString()),
 						string(name: 'LABEL', value: LABEL),
 						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
 						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
@@ -158,6 +186,7 @@ def setupParallelEnv() {
 						booleanParam(name: 'IS_PARALLEL', value: false),
 						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
 						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
+						string(name: 'RUNTIME_NAME', value: currentDirectory),
 					]
 				}
 			}
