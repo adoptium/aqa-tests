@@ -43,8 +43,6 @@ def setupEnv() {
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
-	} else if ( params.JAVA_VERSION ) { // temporarily support JAVA_VERSION
-		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
 	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""			
