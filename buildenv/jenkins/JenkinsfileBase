@@ -82,7 +82,12 @@ def setupEnv() {
 		} else {
 			env.JCK_VERSION = "jck${JDK_VERSION}"
 		}
-		env.JCK_ROOT = "$WORKSPACE/../jck_root"
+		if( params.JCK_ROOT ) {
+			env.JCK_ROOT = params.JCK_ROOT
+		} else {
+			env.JCK_ROOT = "$WORKSPACE/../../jck_root/JCK${JDK_VERSION}-unzipped"
+		}
+		
 		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
 		if( params.JCK_GIT_REPO ) {
 			env.JCK_GIT_REPO = params.JCK_GIT_REPO
