@@ -117,8 +117,6 @@ def setupParallelEnv() {
 			//repeatAmount is the number of times the loops go through
 			int repeatAmount = 0
 			int one = 1
-			def buildListName = ""
-			def currentDirectory = ""
 			def testSubDirs = []
 			def testSubDirSize = 0
 			
@@ -143,12 +141,12 @@ def setupParallelEnv() {
 
 			for (int i = 0; i < repeatAmount; i++) {
 				if (iterate == 1){
-					currentDirectory = testSubDirs[i].trim().replace("/","");
-					buildListName = "${env.BUILD_LIST}/${currentDirectory}"
+					def currentDirectory = testSubDirs[i].trim().replace("/","");
+					def buildListName = "${env.BUILD_LIST}/${currentDirectory}"
 				}
 				else{
-					currentDirectory = "test_iteration_${i}"
-					buildListName = env.BUILD_LIST
+					def currentDirectory = "test_iteration_${i}"
+					def buildListName = env.BUILD_LIST
 				}
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
