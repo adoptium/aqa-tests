@@ -37,7 +37,7 @@ def testBuild() {
 			} else {
 				sh 'wget https://raw.githubusercontent.com/eclipse/openj9/master/test/TestConfig/scripts/tools/getDependencies.pl'
 				sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
-				archiveArtifacts '*.jar, *.zip'
+				archiveArtifacts '*.jar, *.zip, *.txt'
 			}
 		} finally {
 			cleanWs()
