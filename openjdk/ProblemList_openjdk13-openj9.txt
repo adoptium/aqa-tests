@@ -28,6 +28,7 @@
 
 java/lang/Class/GenericStringTest.java https://github.com/eclipse/openj9/issues/4938 generic-all
 java/lang/Class/GetModuleTest.java	https://github.com/eclipse/openj9/issues/3040	generic-all
+#java/lang/Class/GetPackageBootLoaderChildLayer.java is also excluded for the issue https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267
 java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/eclipse/openj9/issues/5274	generic-all
 java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse/openj9/issues/5225	generic-all
 java/lang/Class/forName/modules/TestDriver.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/585	generic-all
@@ -149,7 +150,12 @@ java/lang/reflect/PublicMethods/PublicMethodsTest.java	https://github.com/AdoptO
 java/lang/reflect/exeCallerAccessTest/CallerAccessTest.java https://github.com/AdoptOpenJDK/openjdk-build/issues/248 generic-all
 jdk/modules/scenarios/automaticmodules/RunWithAutomaticModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/749	windows-all
 vm/JniInvocationTest.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/248	macosx-all
-
+java/lang/System/LoggerFinder/modules/JDKLoggerForImageTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
+java/lang/System/LoggerFinder/modules/LoggerInImageTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
+java/lang/System/LoggerFinder/modules/NamedLoggerForImageTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
+java/lang/System/LoggerFinder/modules/UnnamedLoggerForImageTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
+jdk/modules/etc/DefaultModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
+jdk/modules/incubator/ImageModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
 ############################################################################
 
 # jdk_management
@@ -237,7 +243,9 @@ java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/AdoptOpenJ
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/DatagramChannel/ConnectExceptions.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/585	generic-all
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
+#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/AdoptOpenJDK/openjdk-tests/issues/1016
+#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267 macosx-all,linux-s390x
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/SendExceptions.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/585	generic-all
