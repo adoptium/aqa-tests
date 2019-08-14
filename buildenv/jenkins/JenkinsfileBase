@@ -1,7 +1,7 @@
 #!groovy
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
-	def TESTPROJECTS = [system:'systemtest', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
+	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
 	String[] levelTargets = fullTarget.split('\\.')
 	String groupTarget = levelTargets[-1]
@@ -218,7 +218,7 @@ def setup() {
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
-			// system test repository exports to be used by systemtest/common.xml
+			// system test repository exports to be used by system/common.xml
 			if (params.ADOPTOPENJDK_SYSTEMTEST_REPO) {
 				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO
 			}
@@ -302,7 +302,7 @@ def buildTest() {
 			}
 
 			try {
-				if (env.BUILD_LIST.startsWith('systemtest') || env.BUILD_LIST.startsWith('jck')) {
+				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
 					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
 				}
