@@ -74,10 +74,14 @@
 				    <fileset dir="${env.JCK_ROOT}/natives" includes="**/*"/>
 				</delete>
 				<echo message="Updating ${env.JCK_ROOT} with latest..." />
+				<echo message="Fetch..." />
 				<exec executable="git" dir="${env.JCK_ROOT}" failonerror="true">
-					<arg value="pull" />
-					<arg value="origin" />
-					<arg value="master" />
+					<arg value="fetch" />
+				</exec>
+				<echo message="Rebase..." />
+				<exec executable="git" dir="${env.JCK_ROOT}" failonerror="true">
+					<arg value="rebase" />
+					<arg value="origin/master" />
 				</exec>
 			</else>
 		</if>
