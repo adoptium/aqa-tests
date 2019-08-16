@@ -12,7 +12,7 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam"
@@ -41,9 +41,8 @@ def setupEnv() {
 	}
 
 	if ( params.JDK_VERSION ) {
+		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
-	} else if ( params.JAVA_VERSION ) { // temporarily support JAVA_VERSION
-		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
 	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""			
@@ -81,7 +80,12 @@ def setupEnv() {
 		} else {
 			env.JCK_VERSION = "jck${JDK_VERSION}"
 		}
-		env.JCK_ROOT = "$WORKSPACE/../jck_root"
+		if( params.JCK_ROOT ) {
+			env.JCK_ROOT = params.JCK_ROOT
+		} else {
+			env.JCK_ROOT = "$WORKSPACE/../../jck_root/JCK${JDK_VERSION}-unzipped"
+		}
+		
 		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
 		if( params.JCK_GIT_REPO ) {
 			env.JCK_GIT_REPO = params.JCK_GIT_REPO
@@ -102,7 +106,11 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	sh 'printenv'
+	if ( env.SPEC.contains('sparcv')) {
+		sh 'env'
+	} else {
+		sh 'printenv'
+	}
 }
 
 def setupParallelEnv() {
@@ -324,7 +332,7 @@ def runTest( ) {
 			}
 			def CUSTOM_OPTION = ''
 			TARGET = "${params.TARGET}";
-			if (TARGET.contains('custom')) {
+			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"

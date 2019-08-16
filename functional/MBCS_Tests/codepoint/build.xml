@@ -27,23 +27,18 @@ limitations under the License.
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
 	
-        <condition property="not_se80" value="true">
-           <and>
-             <not>
-               <equals arg1="${JAVA_VERSION}" arg2="SE80" />
-             </not>
-             <not>
-               <equals arg1="${JDK_VERSION}" arg2="8" />
-             </not>
-           </and>
-        </condition>
+	<condition property="jdk8above" value="true">
+		<not>
+			<equals arg1="${JDK_VERSION}" arg2="8" />
+		</not>
+	</condition>
 
 	<target name="init">
 		<mkdir dir="${DEST}" />
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init" description="Using ${JAVA_VERSION} java compile the source  " if="not_se80">
+	<target name="compile" depends="init" description="Using java${JDK_VERSION} to compile the source  " if="jdk8above">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
 		<echo>===fork:				yes</echo>

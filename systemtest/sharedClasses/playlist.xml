@@ -24,12 +24,14 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+		<command>if [[ $(Q)$(PLATFORM)$(Q) == *$(Q)osx$(Q)* ]] ; then export original_umask_val=`umask` $(AND_IF_SUCCESS) umask 0002 $(AND_IF_SUCCESS) umask -p; fi; \
+	perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=SharedClassesAPI; \
+	if [[ $(Q)$(PLATFORM)$(Q) == *$(Q)osx$(Q)* ]] ; then umask $$original_umask_val $(AND_IF_SUCCESS) umask -p; fi; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
