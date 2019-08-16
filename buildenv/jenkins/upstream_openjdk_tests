@@ -236,7 +236,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     List testList = [ "openjdk", "system" ]
     Map testsTargetBuildList = [
                                  "openjdk": [ "target": "sanity.openjdk", "buildlist": "openjdk" ],
-                                 "system":  [ "target": "sanity.system", "buildlist": "systemtest" ]
+                                 "system":  [ "target": "sanity.system", "buildlist": "system" ]
                                ]
 
     File workspace = new File("${env.WORKSPACE}")
