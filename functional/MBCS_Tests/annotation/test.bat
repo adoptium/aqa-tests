@@ -15,14 +15,7 @@ SETLOCAL
 SET PWD=%~dp0
 SET OUTPUT=output.txt
 REM SET CLASSPATH=.
-FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
-SET STATUS=UKNOWN
-if %LOCALE% == ja SET STATUS=OK
-if %LOCALE% == ko SET STATUS=OK
-if not %STATUS% == OK (
-    echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
-    exit 0
-)
+call %PWD%\check_env_windows.bat
 SET CP= -cp "%PWD%annotation.jar"
 
 call %PWD%\..\data\setup_%LOCALE%.bat

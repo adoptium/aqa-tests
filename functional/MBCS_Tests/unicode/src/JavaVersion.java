@@ -12,33 +12,51 @@
 * limitations under the License.
 *******************************************************************************/
 
-import java.util.*;
-import java.util.regex.*;
+import java.lang.reflect.Method;
 
 public class JavaVersion {
+  final static long version;
+  final static int feature;
+  final static int interim;
+  final static int update;
+
+  static {
+    int tempFeature = 0;
+    int tempInterim = 0;
+    int tempUpdate  = 0;
+    try {
+      Class<?> runtimeClass = Class.forName("java.lang.Runtime");
+      Method versionMid = runtimeClass.getDeclaredMethod("version", (Class<?>[])null);
+      Object ver = versionMid.invoke(null, (Object[])null);
+      Method featureMid = ver.getClass().getDeclaredMethod("feature", (Class<?>[])null);
+      Method interimMid = ver.getClass().getDeclaredMethod("interim", (Class<?>[])null);
+      Method updateMid  = ver.getClass().getDeclaredMethod("update",  (Class<?>[])null);
+      tempFeature = (int)featureMid.invoke(ver, (Object[])null);
+      tempInterim = (int)interimMid.invoke(ver, (Object[])null);
+      tempUpdate  = (int)updateMid.invoke(ver, (Object[])null);
+    } catch (Exception e) {
+    }
+    feature = tempFeature;
+    interim = tempInterim;
+    update  = tempUpdate;
+    version = feature * 1000000L +
+              interim * 1000L +
+              update;
+  }
+
   public static long getVersion() {
-    String version_s = System.getProperty("java.version");
-    long version = 0;
-    Pattern pat = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+).*");
-    Matcher mat = pat.matcher(version_s);
-    if (mat.matches()) {
-        try {
-          version = Long.parseLong(mat.group(1)) * 1000000L +
-                    Long.parseLong(mat.group(2)) * 1000L +
-                    Long.parseLong(mat.group(3));
-        } catch (NumberFormatException nfe) {
-        }
-    }
-    if (0 == version) {
-      pat = Pattern.compile("^(\\d+)[^0-9]*.*");
-      mat = pat.matcher(version_s);
-      if (mat.matches()) {
-        try {
-          version = Long.parseLong(mat.group(1)) * 1000000L;
-        } catch (NumberFormatException nfe) {
-        }
-      }
-    }
     return version;
+  }
+
+  public static long getFeature() {
+    return feature;
+  }
+
+  public static long getInterim() {
+    return interim;
+  }
+
+  public static long getUpdate() {
+    return update;
   }
 }
