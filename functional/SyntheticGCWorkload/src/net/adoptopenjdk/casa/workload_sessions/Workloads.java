@@ -374,8 +374,6 @@ public class Workloads
 	
 	/**
 	 * A thread that displays status updates to the user. 
-	 *
-	 * @author Andrew Somerville <andrew.somerville@unb.ca>
 	 */
 	private class StatusThread extends Thread 
 	{	

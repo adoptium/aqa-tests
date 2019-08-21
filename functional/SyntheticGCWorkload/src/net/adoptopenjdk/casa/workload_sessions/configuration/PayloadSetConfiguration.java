@@ -580,7 +580,7 @@ public class PayloadSetConfiguration extends AbstractConfiguration implements Cl
 			int numberOfRepetitions = (int) (this.shutdownTime / this.repetitionDelay);
 			if (numberOfRepetitions == 0) {
 				/*
-				 * Due to max duraration and rep delay configurations, we need to *at least*
+				 * Due to max duration and rep delay configurations, we need to *at least*
 				 * repeat ourselves... Due to the numbers being parsed, 0 repetitions of current
 				 * payload is possible, so this is the fix
 				 */

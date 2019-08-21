@@ -104,7 +104,7 @@ public class WorkloadConfiguration extends AbstractConfiguration {
 	}
 
 	/**
-	 * Get the repition delay for workload
+	 * Get the repetition delay for workload
 	 * 
 	 * @return
 	 */
@@ -208,7 +208,7 @@ public class WorkloadConfiguration extends AbstractConfiguration {
 					e.printStackTrace();
 				}
 
-				/** -1 necessary because we do not double count the original payloadSetConfiguration. Doing -1 effectively ommits the doubled up payload */
+				/** -1 necessary because we do not double count the original payloadSetConfiguration. Doing -1 effectively omits the doubled up payload */
 				PayloadSetConfiguration[] updatedPayloads = new PayloadSetConfiguration[payloadSetConfigurations.length
 						+ repeatedPayloads.length -1];
 
