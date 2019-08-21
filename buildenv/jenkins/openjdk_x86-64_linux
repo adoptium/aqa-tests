@@ -6,8 +6,16 @@ if (params.DOCKER_REQUIRED) {
     LABEL='ci.role.test&&hw.arch.x86&&sw.os.linux'
 }
 
+if (params.LABEL) {
+	if (params.LABEL.startsWith('&&')) {
+		LABEL += params.LABEL
+	} else {
+		LABEL = params.LABEL
+	}
+} 
+
 stage('Queue') {
-    node((params.LABEL) ? params.LABEL : LABEL) {
+    node(LABEL) {
         PLATFORM = 'x64_linux'
         SDK_RESOURCE = 'upstream'
         SPEC='linux_x86-64_cmprssptrs'
