@@ -265,7 +265,28 @@ getTestKitGenAndFunctionalTestMaterial()
 		echo "update to openj9 sha: $OPENJ9_SHA"
 		cd openj9
 		git fetch --unshallow
-		git fetch --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
+
+		set +e
+		count=0
+		fetch_exit_code=-1
+		while [ $fetch_exit_code != 0 ] && [ $count -lt 5 ]
+		do
+			if [ $count -gt 0 ]; then
+				sleep_time=300
+				echo "Fetch error code: $fetch_exit_code. Sleep $sleep_time secs, then retry $count..."
+				sleep $sleep_time
+			fi
+			echo "git fetch --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
+			git fetch --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
+			fetch_exit_code=$?
+			count=$(( $count + 1 ))
+		done
+		if [ $fetch_exit_code != 0 ]; then
+			echo "Fetch failed with exit code: $fetch_exit_code"
+			exit 1
+		fi
+		set -e
+
 		git checkout $OPENJ9_SHA
 		cd $TESTDIR
 	fi
