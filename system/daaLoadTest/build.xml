@@ -14,21 +14,21 @@
 # limitations under the License.
 -->
 
-<project name="jlm" default="build" basedir=".">
+<project name="daaLoadTest" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<description>jlm</description>
+	<description>daaLoadTest</description>
 
-	<import file="../common.xml" />
+	<import file="../common.xml"/>
 
-	<property name="DEST" value="${BUILD_ROOT}/systemtest/jlm" />
+	<property name="DEST" value="${BUILD_ROOT}/system/daaLoadTest" />
 
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
 
-	<target name="build" depends="init,common_build">
+	<target name="build" depends="init, common_build">
 		<copy todir="${DEST}">
-			<fileset dir="." includes="*.mk,*.xml" />
+			<fileset dir="." includes="*.mk,*.xml"/>
 		</copy>
 	</target>
 </project>

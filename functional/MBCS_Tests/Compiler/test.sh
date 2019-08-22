@@ -18,6 +18,7 @@ LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
+echo $BASE
 export CLASSPATH=${BASE}/Compiler.jar:.
 
 CHARMAP=${FULLLANG}
