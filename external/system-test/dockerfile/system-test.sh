@@ -30,7 +30,7 @@ fi
 
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
-export BUILD_LIST=systemtest
+export BUILD_LIST=system
 
 test=$@
 
