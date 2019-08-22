@@ -110,9 +110,11 @@ class ReleaseRetriever implements Serializable {
                            if (a.name.contains("-jre")) {
                                r.JRE_URL = a.browser_download_url
                            }
-                           // if the name neither contains -jre nor -jdk assume
+                           // if the name neither contains -jre, -jdk nor -testimage assume
                            // JDK (which was prior jre/jdk separation)
-                           if (!a.name.contains("-jre") && !a.name.contains("-jdk")) {
+                           if (!a.name.contains("-jre") &&
+                               !a.name.contains("-jdk") &&
+                               !a.name.contains("-testimage")) {
                                r.JDK_URL = a.browser_download_url
                            }
                        }
