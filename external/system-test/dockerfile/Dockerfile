@@ -20,7 +20,7 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build systemtest: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-system-test .`
+# Build system test: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-system-test .`
 
  
 ARG SDK=openjdk8

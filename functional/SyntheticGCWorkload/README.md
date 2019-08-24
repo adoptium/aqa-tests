@@ -239,6 +239,34 @@ Running the __caching__ workload:
     $ java -Xbootclasspath/a:. -javaagent:SyntheticGCWorkload.jar="-c <config file> [options]" -jar <app.jar> [app options]
 <br>
 
+## 1.7 - Repetition Delay
+
+If a given payload needs to be repeated at certain intervals, this can be done using the __"repetitionDelay"__ keyword.
+
+Consider an example where we want to repeat a certain payload every 15 seconds. This payload will start at t=10s, needs to allocate for 5 seconds, and the payload needs to completely stop after 60s. The following <__payloadSet__> can be configured: 
+
+```
+<payloadSet startTime="10s" duration="5s" repetitionDelay="15s" endTime="60s" dataRate="5MB/s" payloadType="reflexive">
+    <payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+    <payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+    <payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+    <payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+</payloadSet>
+```        
+
+By setting the following fields
+- startTime="10s"
+- duration="5s"
+- repetitionDelay="15s"
+- endTime="60s"
+
+We obtain the following allocation pattern: 5Mb/s allocations between times 10-15, 25-30, 40-45, 55-60.
+
+Further use of this keyword can be seen in [config_repetitionDelayExample.xml](config/config_repetitionDelayExample.xml).
+
+### A few important notes regarding repetition delays: ###
+- A repetitionDelay is relative to the __startTime__ of a payloadSet, not the endtime. 
+- An error will be thrown if a payloadSet with a repetition delay is nested within another payloadSet, or if the payloadSet contains any child payloadSets. In essence, repetitionDelay 's do not work when involved in any sort of payloadSet nesting
 
 ## 2 - Caching Workload
 
