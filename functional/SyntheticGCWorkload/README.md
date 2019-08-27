@@ -224,7 +224,22 @@ For each payload, we can see additional information such as the period (time bet
 
 It should be noted that the maintenance interval is taken into account when making these calculations, as a payload is not expected to live for less than one maintenance interval. There are, however, two cases where this may occur: first, when the container is full, an interrupt will trigger a maintenance cycle; second, if the payload expires before it can be added to the container, it will not be added but instead will be released prior to addition. 
 
-## 1.6 - Repetition Delay
+### 1.6 - JavaAgent
+
+The syntheticGCWorkload can be run as a _javaagent_.  When run as a java agent, the appropriate main method (caching or sessions main) is started, and runs along side of the regular java application we are instrumenting. The main advantage of running SGCW(Synthetic GC Workload) as an agent, is that SGCW and the other application are sharing the same resources (heap, etc) as they are being run __in the same JVM__. A possible use case for using this, is to observe how additional object allocations (those coming from SGCW) affects the performance of the regular application, which can put different stress on the GC/VM.
+
+To run SGCW as a javaagent, the following command line can be used:
+
+Running the __sessions__ workload:
+
+    $ java -Xbootclasspath/a:. -javaagent:SyntheticGCWorkload.jar="-s <config file> [options]" -jar <app.jar> [app options]
+    
+Running the __caching__ workload:
+
+    $ java -Xbootclasspath/a:. -javaagent:SyntheticGCWorkload.jar="-c <config file> [options]" -jar <app.jar> [app options]
+<br>
+
+## 1.7 - Repetition Delay
 
 If a given payload needs to be repeated at certain intervals, this can be done using the __"repetitionDelay"__ keyword.
 
@@ -252,7 +267,6 @@ Further use of this keyword can be seen in [config_repetitionDelayExample.xml](c
 ### A few important notes regarding repetition delays: ###
 - A repetitionDelay is relative to the __startTime__ of a payloadSet, not the endtime. 
 - An error will be thrown if a payloadSet with a repetition delay is nested within another payloadSet, or if the payloadSet contains any child payloadSets. In essence, repetitionDelay 's do not work when involved in any sort of payloadSet nesting
-
 
 ## 2 - Caching Workload
 
