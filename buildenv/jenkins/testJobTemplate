@@ -164,6 +164,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 									branch('master')
 									extensions {
 										relativeTargetDirectory('openjdk-tests')
+										cleanBeforeCheckout()
+										pruneStaleBranch()
 									}
 								}
 								scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
