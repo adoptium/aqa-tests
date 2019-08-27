@@ -58,6 +58,9 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
+	
+	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -117,26 +120,43 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()
-			def testSubDirs = []
-			def testSubDirSize = 0
+			setupEnv()		
 			
-			//For parallel suppose BUILD_LIST is one specific category
-			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-				testSubDirSize = testSubDirs.size()
+			//Initialization for things in common between both multiple iterations and many subtests
+			//repeatAmount is the number of times the loops go through
+			def testSubDirs = []
+			int repeatAmount = ITERATIONS
+			
+			//Setup for option-specific parameters
+			//If ITERATIONS is 1, then parallel is based on subfolders
+			if (repeatAmount == 1){
+				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
+				{
+					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
+					repeatAmount = testSubDirs.size()
+				}
+				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
-			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			
 			parallel_tests = [:]
 
-			for (int i = 0; i < testSubDirSize; i++) {
-				def testSubDir = testSubDirs[i].trim().replace("/","");
+			for (int i = 0; i < repeatAmount; i++) {
+				def buildListName = ""
+				def childTest = ""
+				if (ITERATIONS == 1) {
+					childTest = testSubDirs[i].trim().replace("/","");
+					buildListName = "${env.BUILD_LIST}/${childTest}"
+				}
+				else {
+					childTest = "test_iteration_${i}"
+					buildListName = env.BUILD_LIST
+				}
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
 				//ToDo: need to find a better way to pass parameters to downstream builds.
 				//Ideally, we should only need to pass in modified parameters (i.e.,
 				//BUILD_LIST, IS_PARALLEL)
-				parallel_tests[testSubDir] = {
+				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: [
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
@@ -144,7 +164,7 @@ def setupParallelEnv() {
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
-						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
+						string(name: 'BUILD_LIST', value: buildListName),
 						string(name: 'TARGET', value: TARGET),
 						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
 						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
@@ -157,7 +177,7 @@ def setupParallelEnv() {
 						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
 						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
 						string(name: 'JenkinsFile', value: JENKINS_FILE),
-						string(name: 'ITERATIONS', value: ITERATIONS),
+						string(name: 'ITERATIONS', value: "1"),
 						string(name: 'LABEL', value: LABEL),
 						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
 						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
@@ -168,6 +188,9 @@ def setupParallelEnv() {
 						booleanParam(name: 'IS_PARALLEL', value: false),
 						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
 						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
+						//This parameter is needed because it enables many iterations of the same test (which all have same names)
+						//to have a unique variable in the array so that Jenkins will run it
+						string(name: 'RUNTIME_NAME', value: childTest),
 					]
 				}
 			}
@@ -328,17 +351,14 @@ def runTest( ) {
 	stage('Test') {
 		timestamps{
 			echo 'Running tests...'
-			int iterations = 1;
-			if (params.ITERATIONS) {
-				iterations = "${params.ITERATIONS}".toInteger()
-			}
 			def CUSTOM_OPTION = ''
+			
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
-			for (int i = 0; i < iterations; i++) {
+			for (int i = 0; i < ITERATIONS; i++) {
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
