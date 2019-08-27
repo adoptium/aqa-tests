@@ -144,9 +144,16 @@ java/net/InetAddress/IPv4Formats.java	https://github.com/AdoptOpenJDK/openjdk-te
 java/net/SocketPermission/Wildcard.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
 java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
 java/net/MulticastSocket/SetOutgoingIf.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
-java/net/Inet6Address/B6206527.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
-java/net/ipv6tests/B6521014.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
-java/net/ipv6tests/UdpTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all
+java/net/Inet6Address/B6206527.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all,macosx-all
+java/net/ipv6tests/UdpTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	linux-all,macosx-all
+java/net/Inet6Address/B6558853.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827	macosx-all
+java/net/InetAddress/CheckJNI.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
+java/net/Socket/LinkLocal.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
+java/net/ipv6tests/B6521014.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	linux-all,macosx-all
+java/net/ipv6tests/TcpTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
+java/rmi/transport/dgcDeadLock/DGCDeadLock.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
+java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
+java/util/logging/TestLoggerWeakRefLeak.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1259	macosx-all
 com/sun/net/httpserver/Test1.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/827 linux-ppc64le
 java/net/MulticastSocket/Promiscuous.java               https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 #java/net/MulticastSocket/SetLoopbackMode.java on aix issue	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1011
@@ -157,11 +164,12 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java    https://gith
 java/nio/channels/DatagramChannel/Promiscuous.java                  https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 #java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1011	aix-all
 java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1048	linux-all,aix-all
+sun/net/www/http/ChunkedOutputStream/checkError.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1261	windows-all
 ############################################################################
 
 # jdk_io
 java/nio/Buffer/Basic.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/118 linux-all
-
+java/io/Serializable/concurrentClassDescLookup/ConcurrentClassDescLookup.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1261 windows-all
 ############################################################################
 
 
@@ -176,6 +184,7 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/AdoptOpenJDK/op
 sun/nio/ch/TestMaxCachedBufferSize.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1051 linux-s390x
 sun/nio/cs/OLD/TestIBMDB.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1051 linux-s390x
 java/nio/MappedByteBuffer/Truncate.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1052 linux-s390x
+java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 ############################################################################
 
 # jdk_rmi
@@ -251,6 +260,7 @@ java/util/stream/test/org/openjdk/tests/java/util/stream/StreamSpliteratorTest.j
 java/util/TimeZone/HongKong.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
 java/util/Calendar/CalendarRegression.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
 java/util/Calendar/JapanEraNameCompatTest.java https://bugs.openjdk.java.net/browse/JDK-8218781 generic-all
+java/util/Locale/LocaleProviders.sh	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1261	windows-all
 ############################################################################
 
 # svc_tools

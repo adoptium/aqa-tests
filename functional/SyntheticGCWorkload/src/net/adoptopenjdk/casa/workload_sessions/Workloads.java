@@ -86,7 +86,7 @@ public class Workloads
 	{
 		// Populate the workloads array 
 		initializeWorkloads();
-		
+	
 		// Print configuration 
 		Main.out.println(this);
 		
@@ -173,16 +173,21 @@ public class Workloads
 	 */
 	private void initializeWorkloads()
 	{
-		workloads = new Workload[configuration.getNumWorkloads()];		
-				
+		workloads = new Workload[configuration.getNumWorkloads()];	
+						
 		// Iterate over all workloads 
 		for (int i = 0; i < configuration.getNumWorkloads(); i++) 
 		{	
 			// Construct the workload from the given configuration. 
-			workloads[i] = new Workload(workloadConfigurations[i]);			 
+			workloads[i] = new Workload(workloadConfigurations[i]);	
+			
+			if (workloads[i].isRepeatingWorkload()) {
+				//we must copy over the workloads in as many workloads as needed, and modify the start and end times
+				workloads[i].createRepeatingPayloads();
+			}			
 		}
 	}
-	
+
 	/**
 	 * Iterates over the workloadConfigurations and runs each workload. 
 	 * 
@@ -369,8 +374,6 @@ public class Workloads
 	
 	/**
 	 * A thread that displays status updates to the user. 
-	 *
-	 *  
 	 */
 	private class StatusThread extends Thread 
 	{	
