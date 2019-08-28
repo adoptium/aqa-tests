@@ -46,6 +46,7 @@ def setupEnv() {
 	}
 
 	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
+	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
@@ -161,6 +162,7 @@ def setupParallelEnv() {
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
 						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
+						string(name: 'OPENJ9_SHA', value: OPENJ9_SHA),
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
