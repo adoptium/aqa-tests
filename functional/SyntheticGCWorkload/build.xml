@@ -52,6 +52,9 @@
 		<jar jarfile="${DEST}/SyntheticGCWorkload.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../" includes="*.properties,*.xml" />
+			<manifest>
+				<attribute name="Premain-Class" value="net.adoptopenjdk.casa.agent.Agent"/>
+			</manifest>
 		</jar>
 		<copy todir="${DEST}">
 			<fileset dir="${src}/../" includes="*.xml" />

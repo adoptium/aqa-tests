@@ -134,6 +134,22 @@ public class Main
 		// Attempt to exit on successfully 
 		Event.SUCCESS.issue();		
 	}
+
+	/**
+	 * Used when run as agent. Simply runs the main method in a new thread
+	 */
+	public static void premainRunner(final String [] args) {
+		
+		Thread main = new Thread(new Runnable(){
+		
+			@Override
+			public void run() {
+				main(args);
+			}
+		});
+
+		main.start();		
+    }
 	
 	/**
 	 * Gets the workloads object. 
