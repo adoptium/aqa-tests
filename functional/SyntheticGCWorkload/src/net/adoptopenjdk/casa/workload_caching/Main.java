@@ -151,6 +151,26 @@ public class Main
 		 */
 		Event.SUCCESS.issue(); 
 	}
+
+	/**
+	 * Function is called from the agent. Simply starts the main method in a new thread
+	 */
+	public static void premainRunner(final String [] args) throws InterruptedException {
+
+		Thread main = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					main(args);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		main.start();
+	}
 	
 	/**
 	 * Allows the progress bar to be printed again. 

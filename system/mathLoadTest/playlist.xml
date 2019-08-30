@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<include>../systemtest.mk</include>
+
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
 	<test>
 		<testCaseName>MachineInfo</testCaseName>
-		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TestConfig$(D)src$(D)EnvDetector.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TestConfig$(D)TKGJ$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -18,90 +19,17 @@
 		</groups>
 	</test>
 	
-	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
-		Reason: https://github.com/eclipse/openj9/issues/2209)-->
 	<test>
-		<testCaseName>LambdaLoadTest_Hotspot</testCaseName>
+		<testCaseName>MathLoadTest_all</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>NoOptions</variation> 
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
-	</test>
-	
-	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>^os.linux</platformRequirements> 
-	</test>
-	
-	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
-	</test>
-	
-	<test>
-		<testCaseName>JdiTest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=JdiTest; \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -109,20 +37,86 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/63</disabled>
 	</test>
 	
 	<test>
-		<testCaseName>LambdaLoadTest_ConcurrentScavenge</testCaseName>
+		<testCaseName>MathLoadTest_autosimd</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=autoSimd$(Q) \
+	-test=MathLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	
+	<test>
+		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest \
+	-test-args=$(Q)workload=bigDecimal$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	
+	<test>
+		<testCaseName>MathLoadTest_all_ConcurrentScavenge</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>MathLoadTest_autosimd_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=autoSimd$(Q) \
+	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -137,7 +131,32 @@
 	</test>
 	
 	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux_special</testCaseName>
+		<testCaseName>MathLoadTest_bigdecimal_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest \
+	-test-args=$(Q)workload=bigDecimal$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.ppc,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>MathLoadTest_all_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -161,7 +180,7 @@
 			<variation>Mode550</variation>
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
-			<variation>Mode554</variation>
+			<!-- disable Mode554 until the issue is fixed rtc 139897-->
 			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
@@ -176,12 +195,12 @@
 			<variation>Mode610-OSRG</variation>
 			<variation>Mode612-OSRG</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -192,11 +211,10 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements> 
 	</test>
 
  	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs_special</testCaseName>
+		<testCaseName>MathLoadTest_autosimd_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -235,12 +253,13 @@
 			<variation>Mode610-OSRG</variation>
 			<variation>Mode612-OSRG</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
 	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LambdaLoadTest; \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=autoSimd$(Q) \
+	-test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -251,6 +270,64 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
+	</test>
+
+	<test>
+		<testCaseName>MathLoadTest_bigdecimal_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode108</variation>
+			<variation>Mode109</variation>
+			<variation>Mode109-CS</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode159</variation>
+			<variation>Mode159-CS</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode550</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=MathLoadTest \
+	-test-args=$(Q)workload=bigDecimal$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 </playlist>

@@ -110,9 +110,11 @@ class ReleaseRetriever implements Serializable {
                            if (a.name.contains("-jre")) {
                                r.JRE_URL = a.browser_download_url
                            }
-                           // if the name neither contains -jre nor -jdk assume
+                           // if the name neither contains -jre, -jdk nor -testimage assume
                            // JDK (which was prior jre/jdk separation)
-                           if (!a.name.contains("-jre") && !a.name.contains("-jdk")) {
+                           if (!a.name.contains("-jre") &&
+                               !a.name.contains("-jdk") &&
+                               !a.name.contains("-testimage")) {
                                r.JDK_URL = a.browser_download_url
                            }
                        }
@@ -236,7 +238,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     List testList = [ "openjdk", "system" ]
     Map testsTargetBuildList = [
                                  "openjdk": [ "target": "sanity.openjdk", "buildlist": "openjdk" ],
-                                 "system":  [ "target": "sanity.system", "buildlist": "systemtest" ]
+                                 "system":  [ "target": "sanity.system", "buildlist": "system" ]
                                ]
 
     File workspace = new File("${env.WORKSPACE}")
