@@ -46,7 +46,19 @@ def setupEnv() {
 		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
-	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""			
+	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
+	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
+	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
+	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
+	JCK_GIT_REPO = params.JCK_GIT_REPO ? params.JCK_GIT_REPO : ""
+	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : "j9build (j9build_2048 (github and github.ibm))"
+	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : "false"
+	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
