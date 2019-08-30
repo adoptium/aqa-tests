@@ -19,15 +19,17 @@
   * your own set of JCK test materials (JCK test source under OCTLA License): jck8b or jck9
   * ant 1.10.1 or above with ant-contrib.jar
 
+1. Create an empty folder where your JCK test materials will be stored. For example `makedir /jck`
 
-1. Put unarchived jck test materials (jck8b or jck9) into an empty folder, for example:
-* `/jck/jck8b/` and `/jck/jck9`
+2. Export `JCK_GIT_REPO=<test_material_repo | test_material_folder>` as an environment variable or pass it in when run as a make command.
+* If your test material is stored in a git repository it will be cloned to the empty folder created in step 1. For example `export JCK_GIT_REPO=git@github.com:<org>/<repo>.git`
+* Otherwise put your unarchived jck test materials into the empty folder created in step 1 and point `JCK_GIT_REPO` to this folder. For example `export JCK_GIT_REPO=/jck/jck8b`
 
-2. Export `JCK_ROOT=/jck` as an environment variable or pass it in when run as a make command
+3. Export `JCK_ROOT=/jck/<test_material_folder>` as an environment variable or pass it in when run as a make command. For example `export JCK_ROOT=/jck/jck8b`
 
 3. Export `JCK_VERSION=<your_jck_version>` as an environment variable or pass it in when run as a make command. For example `export JCK_VERSION=jck8b` 
 
-4. Export `JAVA_HOME=<your_JDK_root>` as an environment variable
+4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable
 
 5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in [openjdk-tests/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/README.md).
 
@@ -46,7 +48,7 @@ There is one custom JCK test targets `jck-runtime-custom`. This test target is u
 
 2. Export `JCK_CUSTOM_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_CUSTOM_TARGET=api/java_math`
 
-3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)/$(JCK_VERSION)/`.
+3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)`.
 
 4. If you need to add extra Java options to JCK tests, you could export `EXTRA_OPTIONS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
 
@@ -77,7 +79,7 @@ git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 // build docker image and run it
 // the JCK_ROOT structure should be like
-//root:jck_root root$ tree -L 2 ./
+//root:jck root$ tree -L 2 ./
 //./
 //├── jck11
 //├── jck10
@@ -86,14 +88,15 @@ git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 cd openjdk-tests/buildenv/docker
 docker build -t openjdk-test .
-docker run -it -v <path_to_openjdk-tests_root>:/test  -v <jck_material_root>:/jck_root openjdk-test /bin/bash
+docker run -it -v <path_to_openjdk-tests_root>:/test  -v <jck_material_root>:/jck openjdk-test /bin/bash
 
 // within docker container
 cd /test
 bash get.sh --testdir /test --customizedURL https://api.adoptopenjdk.net/openjdk8-openj9/nightly/x64_linux/latest/binary --sdkdir /java 
 export TEST_JDK_HOME=/java/openjdkbinary/j2sdk-image
 export BUILD_LIST=jck
-export JCK_ROOT=/jck_root
+export JCK_GIT_REPO=git@github.com:mypretendcompany/jck8tests.git
+export JCK_ROOT=/jck/jck8tests
 export JCK_VERSION=jck8b
 
 cd TestConfig
