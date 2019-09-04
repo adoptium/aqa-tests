@@ -13,18 +13,8 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
 SET CLASSPATH=%PWD%\locale_matching.jar
-SET STATUS=UKNOWN
-if %LOCALE% == ja SET STATUS=OK
-if %LOCALE% == ko SET STATUS=OK
-if %LOCALE% == zh-cn SET STATUS=OK
-if %LOCALE% == zh-tw SET STATUS=OK
-if not %STATUS% == OK (
-    echo SKIPPED!  This testcase is designed for Japanese, Korean, Chinese or Taiwan Windows environment. 
-    exit 0
-)
-
+call %PWD%\check_env_windows.bat
 
 if exist result rd /S /Q result
 mkdir result

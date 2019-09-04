@@ -15,7 +15,11 @@
 
 BASE=`dirname $0`
 export BASE
+OS=`uname`
+LOC=`locale charmap`
+FULLLANG=${OS}_${LANG%.*}.${LOC}
 
+. ${BASE}/check_env_unix.sh
 LANGTAG=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar PrintLanguageTag`
 export LANGTAG
 echo "Running ..."

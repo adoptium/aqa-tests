@@ -12,22 +12,16 @@ rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
 SETLOCAL
-SET BASE=%~dp0
-FOR /F "usebackq" %%i IN (`cscript //NOLOGO %BASE%\locale.vbs`) DO SET LOCALE=%%i
-SET STATUS=UKNOWN
-if %LOCALE% == ja SET STATUS=OK
-if %LOCALE% == ko SET STATUS=OK
-if not %STATUS% == OK (
-    echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
-    exit 0
-)
-call %BASE%\..\data\SETup_%LOCALE%.bat
-FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %BASE%\CLDR_11.jar PrintLanguageTag`) DO SET LANGTAG=%%i
+SET PWD=%~dp0
+SET BASE=%PWD%
+call %PWD%\check_env_windows.bat
+call %PWD%\..\data\setup_%LOCALE%.bat
+FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar PrintLanguageTag`) DO SET LANGTAG=%%i
 
 echo "Running ..."
-%JAVA_BIN%\java -cp %BASE%\CLDR_11.jar MainStarter
+%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar MainStarter
 
-%JAVA_BIN%\java -cp %BASE%\CLDR_11.jar CLDR11
+%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar CLDR11
 
 
 SET FLAG=0
@@ -42,7 +36,7 @@ fc DecimalFormatSymbolsTest-%LANGTAG%-CLDR.log expected_DecimalFormatSymbolsTest
 if ErrorLevel 1 ( SET FLAG=1 )
 fc DecimalFormatSymbolsTest-%LANGTAG%-JRE.log expected_DecimalFormatSymbolsTest-%LANGTAG%-JRE.log > fc4.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-REM fc DecimalFormatSymbolsTest-%LANGTAG%-HOST.log %BASE%win_expected_DecimalFormatSymbolsTest-%LANGTAG%-HOST.log > fc5.out 2>&1
+REM fc DecimalFormatSymbolsTest-%LANGTAG%-HOST.log %PWD%win_expected_DecimalFormatSymbolsTest-%LANGTAG%-HOST.log > fc5.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
 fc DecimalFormatSymbolsTest-%LANGTAG%-SPI.log expected_DecimalFormatSymbolsTest-%LANGTAG%-SPI.log > fc6.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
@@ -55,7 +49,7 @@ fc DateFormatSymbolsTest-%LANGTAG%-CLDR.log expected_DateFormatSymbolsTest-%LANG
 if ErrorLevel 1 ( SET FLAG=1 )
 fc DateFormatSymbolsTest-%LANGTAG%-JRE.log expected_DateFormatSymbolsTest-%LANGTAG%-JRE.log > fc10.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-REM fc DateFormatSymbolsTest-%LANGTAG%-HOST.log %BASE%\win_expected_DateFormatSymbolsTest-%LANGTAG%-HOST.log> fc11.out 2>&1
+REM fc DateFormatSymbolsTest-%LANGTAG%-HOST.log %PWD%\win_expected_DateFormatSymbolsTest-%LANGTAG%-HOST.log> fc11.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
 fc DateFormatSymbolsTest-%LANGTAG%-SPI.log expected_DateFormatSymbolsTest-%LANGTAG%-SPI.log > fc12.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
@@ -81,7 +75,7 @@ fc CurrencyTest-%LANGTAG%-CLDR.log expected_CurrencyTest-%LANGTAG%-CLDR.log > fc
 if ErrorLevel 1 ( SET FLAG=1 )
 fc CurrencyTest-%LANGTAG%-JRE.log expected_CurrencyTest-%LANGTAG%-JRE.log > fc22.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-REM fc CurrencyTest-%LANGTAG%-HOST.log %BASE%\win_expected_CurrencyTest-%LANGTAG%-HOST.log > fc23.out 2>&1
+REM fc CurrencyTest-%LANGTAG%-HOST.log %PWD%\win_expected_CurrencyTest-%LANGTAG%-HOST.log > fc23.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
 fc CurrencyTest-%LANGTAG%-SPI.log expected_CurrencyTest-%LANGTAG%-SPI.log > fc24.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
@@ -94,7 +88,7 @@ fc LocaleTest-%LANGTAG%-CLDR.log expected_LocaleTest-%LANGTAG%-CLDR.log > fc27.o
 if ErrorLevel 1 ( SET FLAG=1 )
 fc LocaleTest-%LANGTAG%-JRE.log expected_LocaleTest-%LANGTAG%-JRE.log > fc28.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-REM fc LocaleTest-%LANGTAG%-HOST.log %BASE%\win_expected_LocaleTest-%LANGTAG%-HOST.log > fc29.out 2>&1
+REM fc LocaleTest-%LANGTAG%-HOST.log %PWD%\win_expected_LocaleTest-%LANGTAG%-HOST.log > fc29.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
 fc LocaleTest-%LANGTAG%-SPI.log expected_LocaleTest-%LANGTAG%-SPI.log > fc30.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
