@@ -21,6 +21,7 @@ Research Assistant
       - 1.2.6 The MaintenanceThread
    - 1.3 Configuration and Usage
    - 1.4 Output
+   - 1.5 Repetition Delay
 - 2 The Caching Workload Application
    - 2.1 Typical Workflow
    - 2.2 Design
@@ -258,7 +259,7 @@ Note that the payloadType in the payload tag itself overrides that of the set.
 
 
 <tr>
-    <td rowspan="6">payloadSet </td>
+    <td rowspan="8">payloadSet </td>
   </tr>
 
   <tr>
@@ -281,6 +282,14 @@ Note that the payloadType in the payload tag itself overrides that of the set.
     <td>numPayloadContainerLists</td> 
     <td>The number of separate lists
         the container should split the Payloads up into. By default this is 256 times the number of available processors. This option improves GC parallelism on some VMs and system</td>
+  </tr>
+  <tr>
+    <td>repetitionDelay</td> 
+    <td>The delay at which a payload "burst" will be repeated. If this option is used, a 'duration' must also be specified in the payloadSet. Default is to only execute the payloadSet/payloads once. View section 1.5 for details</td>
+  </tr>
+  <tr>
+    <td>duration</td> 
+    <td>The length of a payload "burst". If this option is used, a 'repetitionDelay' must also be specified in the payloadSet. Default is to "burst" only once, for the time between startTime and endTime.</td>
   </tr>
 
 <tr>
@@ -331,6 +340,36 @@ Note that the payloadType in the payload tag itself overrides that of the set.
 For each payload, we can see additional information such as the period (time between two allocations), the peak live set size of that payload and the time at which it is expected to reach its peak size. For each set, we see the set’s expected peak usage and the time at which it is expected to peak.
 
 It should be noted that the maintenance interval is taken into account when making these calculations, as a payload is not expected to live for less than one maintenance interval. There are, however, two cases where this may occur: first, when the container is full, an interrupt will trigger a maintenance cycle; second, if the payload expires before it can be added to the container, it will not be added but instead will be released prior to addition.
+
+## 1.5 - Repetition Delay
+
+If a given payload needs to be repeated at certain intervals, this can be done using the __"repetitionDelay"__ keyword.
+
+Consider an example where we want to repeat a certain payload every 15 seconds. This payload will start at t=10s, needs to allocate for 5 seconds, and the payload needs to completely stop after 60s. The following <__payloadSet__> can be configured: 
+
+```
+<payloadSet startTime="10s" duration="5s" repetitionDelay="15s" endTime="60s" dataRate="5MB/s" payloadType="reflexive">
+    <payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+    <payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+    <payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+    <payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+</payloadSet>
+```        
+
+By setting the following fields
+- startTime="10s"
+- duration="5s"
+- repetitionDelay="15s"
+- endTime="60s"
+
+We obtain the following allocation pattern: 5Mb/s allocations between times 10-15, 25-30, 40-45, 55-60.
+
+Further use of this keyword can be seen in [config_repetitionDelayExample.xml](config/config_repetitionDelayExample.xml).
+
+### A few important notes regarding repetition delays: ###
+- A repetitionDelay is relative to the __startTime__ of a payloadSet, not the endtime. 
+- An error will be thrown if a payloadSet with a repetition delay is nested within another payloadSet, or if the payloadSet contains any child payloadSets. In essence, repetitionDelay 's do not work when involved in any sort of payloadSet nesting
+
 
 
 ## 2 The Caching Workload Application
