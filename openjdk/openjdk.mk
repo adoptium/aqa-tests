@@ -20,6 +20,9 @@ endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
 endif
+ifeq ($(OS),FreeBSD)
+	NPROCS:=$(shell sysctl -n hw.ncpu)
+endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
 endif
