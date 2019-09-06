@@ -55,6 +55,27 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=vm/jdwp,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1330</disabled>
+	</test>
+	<test>
 		<testCaseName>jck-runtime-vm-jvmti</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
