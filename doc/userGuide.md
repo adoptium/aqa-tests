@@ -165,3 +165,61 @@ openjdk-tests/test-results/openjdk/report
 ```
 
 The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`
+
+
+
+Environment Variable Guide – Jenkins
+
+This is the guide on how to pass in environment variables when making builds with Jenkins. For the directions on this, we will be using the example variable below:
+TR_Options='verbose,vlog=testExample1.log'
+There are two ways to do this, and there will be screenshot demonstrations for each step. 
+
+Method 1: Write it in as part of the playlist file
+
+
+1.	Find the folder that your test is in
+ 
+2.	Open the playlist.xml file
+ 
+3.	Find the <testCaseName> matching with the test you want to run
+ 
+4.	In the corresponding <command> section, at the beginning, add the key word `export`, your environment variable, followed by a semicolon
+ 
+5.	Save it, git add, commit, push
+ 
+6.	Go to the Jenkins page, and open up the Grinders
+ 
+7.	Click “Build with Parameters” on the left side of the page, third down from the top
+8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+ 
+9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+ 
+10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
+ 
+11.	Scroll to the bottom and hit the Build button
+ 
+
+Method 2: Put it in the systemtest.mk file
+
+
+1.	Open the openjdk-tests/system folder
+ 
+2.	Open the systemtest.mk file
+ 
+3.	Find the last line of the file, the line that says SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../
+ 
+4.	Insert the key word `export`, followed by your environment variable, without any single or double quotation marks, in the line above it
+ 
+5.	Save it, git add, commit, push
+ 
+6.	Go to the Jenkins page, and open up the Grinders
+ 
+7.	Click “Build with Parameters” on the left side of the page, third down from the top
+8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+ 
+9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+ 
+10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
+ 
+11.	Scroll to the bottom and hit the Build button
+ 
