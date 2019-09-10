@@ -287,7 +287,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -346,7 +346,13 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-
+			
+			if (fileExists('openjdkbinary/openjdk-test-image/jdk/jtreg/native')) {
+				env.JDK_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/jdk/jtreg/native"
+			}
+			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
+				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
+			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
