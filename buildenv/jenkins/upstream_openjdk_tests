@@ -268,7 +268,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                                 def mapped_arch = r.getMappedArch()
                                 def target = testsTargetBuildList.get(testname).get("target")
                                 def buildList = testsTargetBuildList.get(testname).get("buildlist")
-                                def job_branch_name = "Test_upstream_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}"
+                                def job_branch_name = "Test_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}_upstream"
                                 parallelJobs[job_branch_name] = {
                                     // Run a _sanity.openjdk test job with appropriate parameters
                                     build job: job_branch_name, parameters: [
