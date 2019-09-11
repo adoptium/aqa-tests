@@ -353,6 +353,9 @@ def buildTest() {
 			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
 				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
 			}
+			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
+				env.OPENJ9_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
+			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
