@@ -1,0 +1,49 @@
+<!-- Bursty workload with large max object size in the 10's of MB --> 
+<!-- 0.1 post-release: removed workQueueSize and statusUpdatePeriod --> 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<configuration maxDuration="15m">
+<workload duration="10m" numProducerThreads="4" paymentPeriod="0" maintenancePeriod="1us">		
+	<payloadSet startTime="0" endTime="20s" dataRate="20MB/s" payloadType="auto">
+		<payload proportionOfAllocation="10%" size="3kB" lifespan="1h" />				
+		<payload proportionOfAllocation="10%" size="3kB" lifespan="22s" />			
+		<payload proportionOfAllocation="15%" size="2kB" lifespan="1h" />				
+		<payload proportionOfAllocation="15%" size="2kB" lifespan="22s" />			
+		<payload proportionOfAllocation="25%" size="1kB" lifespan="1h" />				
+		<payload proportionOfAllocation="25%" size="1kB" lifespan="22s" />												
+	</payloadSet>
+	<payloadSet startTime="20s">							
+		<payloadSet dataRate="40MB/s" payloadType="reflexive">								
+			<payload proportionOfAllocation="5%" size="80B" lifespan="1ms" />
+			<payload proportionOfAllocation="7%" size="192B" lifespan="1ms" />
+			<payload proportionOfAllocation="8%" size="256B" lifespan="1ms" />
+			<payload proportionOfAllocation="25%" size="512B" lifespan="1ms" />		
+			<payload proportionOfAllocation="30%" size="640B" lifespan="1ms" />					
+			<payload proportionOfAllocation="25%" size="768B" lifespan="1ms" />		
+		</payloadSet>	
+		<payloadSet dataRate="15MB/s" payloadType="auto">									
+			<payload proportionOfAllocation="10%" size="2.5kB" lifespan="12s" />							
+			<payload proportionOfAllocation="20%" size="2.5kB" lifespan="7s" />				
+			
+			<payload proportionOfAllocation="10%" size="1280B" lifespan="12s" />							
+			<payload proportionOfAllocation="20%" size="1280B" lifespan="7s" />		
+			
+			<payload proportionOfAllocation="20%" size="64MB"  lifespan="19s" />					
+			<payload proportionOfAllocation="20%" size="64MB"  lifespan="9s" />					
+		</payloadSet>
+	</payloadSet>
+</workload>
+
+</configuration>

@@ -11,11 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ######
-if [ `uname` = AIX ]; then
-  MAKE=gmake
-else
-  MAKE=make
-fi
+case `uname` in
+  AIX | *BSD )
+    MAKE=gmake
+    ;;
+  *)
+    MAKE=make
+    ;;
+esac
 
 if [ "$#" -eq 1 ];then
 	cd $1/TestConfig

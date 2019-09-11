@@ -13,24 +13,22 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
-SET STATUS=UKNOWN
-if %LOCALE% == ja SET STATUS=OK
-if %LOCALE% == ko SET STATUS=OK
-if not %STATUS% == OK (
-    echo SKIPPED!  This testcase is designed for Japanese or Korean Windows environment. 
-    exit 0
-)
+call %PWD%\check_env_windows.bat
 
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar
 SET SRC_DIR=file_%LOCALE%
+if exist %SRC_DIR% (rd /S /Q %SRC_DIR%)
 
 SET ZIP=C:\7-Zip\7z.exe
 if exist %ZIP% goto TEST1
 SET ZIP=7z.exe
 where /Q %ZIP%
-IF %ERRORLEVEL% NEQ 0 goto END
+IF %ERRORLEVEL% NEQ 0 (  echo -----------------------------------
+                         echo Please install 7-zip to c:\7-Zip\
+                         echo -----------------------------------
+                         goto END
+)
 
 :TEST1
 
@@ -49,4 +47,5 @@ md tmp
  
 
 fc %PWD%\expected\windows_%LOCALE%.txt tmp\%OUTPUT% > fc.out 2>&1
+:END
 exit %errorlevel%

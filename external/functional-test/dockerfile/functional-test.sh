@@ -33,8 +33,6 @@ TEST_SUITE=$1
 
 echo "JAVA_HOME is : $JAVA_HOME"
 
-export SPEC=linux_x86-64_cmprssptrs
-
 cd /openj9/test/TestConfig
 
 # Generate make files 
@@ -46,4 +44,4 @@ make compile
 
 echo "Running the functional tests" 
 #Run tests
-make _sanity.functional
+make _sanity.functional.regular

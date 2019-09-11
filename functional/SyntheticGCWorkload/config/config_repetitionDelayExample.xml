@@ -1,0 +1,31 @@
+<!-- Example use of repetition delay to repeat a payload 
+    Use repetition delay tag, and duration
+
+    The payload here provides an examples of how to use repetition delay syntax
+    If the repetition delay keyword is used, a duration must also be given, along with a start and endTime.
+
+    The payload below will allocate the specified 5Mb/s from times 5-10, 20-25, and 35-40 
+
+    config_repetitionDelayExample2.xml has additional examples of the mutliple types of payloadSets that can be configured
+
+-->
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+
+   
+    <workload duration="45s" numProducerThreads="4"  paymentPeriod="1us" maintenancePeriod="1us">
+
+         <!-- Repetiton delay is specified only in the payloadSet -->
+        <payloadSet startTime="5s" duration="5s" repetitionDelay="15s" endTime="45s" dataRate="5MB/s" payloadType="reflexive">
+            <payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+            <payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+            <payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+            <payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+        </payloadSet>
+
+        <!-- More payload sets can be specified here, with or without a repetitionDelay -->
+
+    </workload>
+
+
+</configuration>

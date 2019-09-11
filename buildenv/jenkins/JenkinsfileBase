@@ -1,7 +1,7 @@
 #!groovy
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
-	def TESTPROJECTS = [system:'systemtest', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
+	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
 	String fullTarget="${TARGET}"
 	String[] levelTargets = fullTarget.split('\\.')
 	String groupTarget = levelTargets[-1]
@@ -12,7 +12,7 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam"
@@ -41,11 +41,23 @@ def setupEnv() {
 	}
 
 	if ( params.JDK_VERSION ) {
+		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
-	} else if ( params.JAVA_VERSION ) { // temporarily support JAVA_VERSION
-		env.JDK_VERSION = (params.JAVA_VERSION.trim())[2..-2];
 	}
 
+	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
+	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
+	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
+	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
+	JCK_GIT_REPO = params.JCK_GIT_REPO ? params.JCK_GIT_REPO : ""
+	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
+	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
+	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
@@ -57,6 +69,9 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
+	
+	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -80,7 +95,12 @@ def setupEnv() {
 		} else {
 			env.JCK_VERSION = "jck${JDK_VERSION}"
 		}
-		env.JCK_ROOT = "$WORKSPACE/../jck_root"
+		if( params.JCK_ROOT ) {
+			env.JCK_ROOT = params.JCK_ROOT
+		} else {
+			env.JCK_ROOT = "$WORKSPACE/../../jck_root/JCK${JDK_VERSION}-unzipped"
+		}
+		
 		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
 		if( params.JCK_GIT_REPO ) {
 			env.JCK_GIT_REPO = params.JCK_GIT_REPO
@@ -101,40 +121,62 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	sh 'printenv'
+	if ( env.SPEC.contains('sparcv')) {
+		sh 'env'
+	} else {
+		sh 'printenv'
+	}
 }
 
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()
-			def testSubDirs = []
-			def testSubDirSize = 0
+			setupEnv()		
 			
-			//For parallel suppose BUILD_LIST is one specific category
-			dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-				testSubDirSize = testSubDirs.size()
+			//Initialization for things in common between both multiple iterations and many subtests
+			//repeatAmount is the number of times the loops go through
+			def testSubDirs = []
+			int repeatAmount = ITERATIONS
+			
+			//Setup for option-specific parameters
+			//If ITERATIONS is 1, then parallel is based on subfolders
+			if (repeatAmount == 1){
+				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
+				{
+					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
+					repeatAmount = testSubDirs.size()
+				}
+				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
-			echo "testSubDirSize is ${testSubDirSize}, testSubDirs is ${testSubDirs}, running test in parallel mode"
+			
 			parallel_tests = [:]
 
-			for (int i = 0; i < testSubDirSize; i++) {
-				def testSubDir = testSubDirs[i].trim().replace("/","");
+			for (int i = 0; i < repeatAmount; i++) {
+				def buildListName = ""
+				def childTest = ""
+				if (ITERATIONS == 1) {
+					childTest = testSubDirs[i].trim().replace("/","");
+					buildListName = "${env.BUILD_LIST}/${childTest}"
+				}
+				else {
+					childTest = "test_iteration_${i}"
+					buildListName = env.BUILD_LIST
+				}
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
 				//ToDo: need to find a better way to pass parameters to downstream builds.
 				//Ideally, we should only need to pass in modified parameters (i.e.,
 				//BUILD_LIST, IS_PARALLEL)
-				parallel_tests[testSubDir] = {
+				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: [
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
 						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
+						string(name: 'OPENJ9_SHA', value: OPENJ9_SHA),
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
-						string(name: 'BUILD_LIST', value: "${env.BUILD_LIST}/${testSubDir}"),
+						string(name: 'BUILD_LIST', value: buildListName),
 						string(name: 'TARGET', value: TARGET),
 						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
 						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
@@ -146,16 +188,21 @@ def setupParallelEnv() {
 						string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
 						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
 						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
-						string(name: 'ITERATIONS', value: ITERATIONS),
+						string(name: 'JenkinsFile', value: JENKINS_FILE),
+						string(name: 'ITERATIONS', value: "1"),
 						string(name: 'LABEL', value: LABEL),
 						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
 						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
+						string(name: 'USER_CREDENTIALS_ID', value: env.USER_CREDENTIALS_ID),
 						booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
 						string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
 						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
 						booleanParam(name: 'IS_PARALLEL', value: false),
 						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
 						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
+						//This parameter is needed because it enables many iterations of the same test (which all have same names)
+						//to have a unique variable in the array so that Jenkins will run it
+						string(name: 'RUNTIME_NAME', value: childTest),
 					]
 				}
 			}
@@ -208,7 +255,7 @@ def setup() {
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
-			// system test repository exports to be used by systemtest/common.xml
+			// system test repository exports to be used by system/common.xml
 			if (params.ADOPTOPENJDK_SYSTEMTEST_REPO) {
 				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO
 			}
@@ -240,7 +287,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -292,14 +339,20 @@ def buildTest() {
 			}
 
 			try {
-				if (env.BUILD_LIST.startsWith('systemtest') || env.BUILD_LIST.startsWith('jck')) {
+				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
 					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
 				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-
+			
+			if (fileExists('openjdkbinary/openjdk-test-image/jdk/jtreg/native')) {
+				env.JDK_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/jdk/jtreg/native"
+			}
+			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
+				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
+			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
@@ -316,17 +369,14 @@ def runTest( ) {
 	stage('Test') {
 		timestamps{
 			echo 'Running tests...'
-			int iterations = 1;
-			if (params.ITERATIONS) {
-				iterations = "${params.ITERATIONS}".toInteger()
-			}
 			def CUSTOM_OPTION = ''
+			
 			TARGET = "${params.TARGET}";
-			if (TARGET.contains('custom')) {
+			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
-			for (int i = 0; i < iterations; i++) {
+			for (int i = 0; i < ITERATIONS; i++) {
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
@@ -352,6 +402,11 @@ def runTest( ) {
 							echo "env.DISPLAY is ${env.DISPLAY}"
 							makeTest("${RUNTEST_CMD}")
 						}
+					} else if (env.SPEC.startsWith('aix')) {
+						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+						env.DISPLAY = ":0"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
 					} else {
 						makeTest("${RUNTEST_CMD}")
 					}
@@ -395,6 +450,8 @@ def post(output_name) {
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			archiveSHAFile()
+
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
@@ -403,7 +460,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 			//for performance test, archive regardless the build result
@@ -414,7 +472,8 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					uploadToArtifactory()
+					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					uploadToArtifactory(pattern)
 				}
 			}
 		}
@@ -447,7 +506,8 @@ def testBuild() {
 			}
 		} finally {
 			if (!params.KEEP_WORKSPACE) {
-				cleanWs()
+				// cleanWs() does not work in some cases, so set opts below
+				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
 			}
 		}
 
@@ -490,7 +550,18 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def uploadToArtifactory() {
+def archiveSHAFile() {
+	def shaFile = "openjdk-tests/TestConfig/SHA.txt";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
+		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${shaFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
+def uploadToArtifactory(pattern) {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
@@ -500,7 +571,7 @@ def uploadToArtifactory() {
 		def uploadSpec = """{
 			"files":[
 					{
-						"pattern": "${env.WORKSPACE}/*_test_output.*",
+						"pattern": "${pattern}",
 						"target": "${artifactoryUploadDir}"
 					}
 				]
