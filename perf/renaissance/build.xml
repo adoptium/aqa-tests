@@ -27,11 +27,12 @@
 	</target>
 
 	<target name="getRenaissanceSuite" depends="init">
-		<echo message="wget -q https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar" />
-			<exec executable="wget" failonerror="true">
-				<arg line="-q -O renaissance-mit.jar https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar" />
+		<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar -o renaissance-mit.jar"/>
+		<echo message="curl ${curl_options}" />
+			<exec executable="curl" failonerror="true">
+				<arg line="${curl_options}" />
 			</exec>
-	</target>
+	</target>	
 
 	<target name="dist" depends="getRenaissanceSuite" description="generate the distribution">
 		<copy todir="${DEST}">
