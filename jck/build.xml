@@ -70,7 +70,7 @@
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
 				<echo message="${env.JCK_ROOT} exists, deleting previously built natives..." />
-				<delete includeemptydirs="true">
+				<delete includeemptydirs="true" quiet="true" failonerror="false">
 				    <fileset dir="${env.JCK_ROOT}/natives" includes="**/*"/>
 				</delete>
 				<echo message="Updating ${env.JCK_ROOT} with latest..." />

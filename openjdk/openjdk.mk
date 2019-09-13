@@ -20,6 +20,9 @@ endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
 endif
+ifeq ($(OS),FreeBSD)
+	NPROCS:=$(shell sysctl -n hw.ncpu)
+endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
 endif
@@ -50,6 +53,16 @@ JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
 	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
+endif
+
+JDK_NATIVE_OPTIONS :=
+ifdef JDK_NATIVE_TEST_PATH
+	JDK_NATIVE_OPTIONS := -nativepath:"$(JDK_NATIVE_TEST_PATH)"
+endif
+
+HOTSPOT_NATIVE_OPTIONS :=
+ifdef HOTSPOT_NATIVE_TEST_PATH
+	HOTSPOT_NATIVE_OPTIONS := -nativepath:"$(HOTSPOT_NATIVE_TEST_PATH)"
 endif
 
 ifdef OPENJDK_DIR 

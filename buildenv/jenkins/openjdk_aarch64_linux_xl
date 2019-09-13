@@ -1,16 +1,11 @@
 #!groovy
-
-// ToDo:
-// This is a copy of openjdk_x86-64_mac
-// Remove this file once all related test jobs are regenerated or updated to use openjdk_x86-64_mac
-
-LABEL='ci.role.test&&hw.arch.x86&&sw.os.osx'
+LABEL='ci.role.test&&sw.os.linux&&hw.arch.aarch64'
 
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
-        PLATFORM = 'x64_mac'
+        PLATFORM = 'aarch64_linux_largeHeap'
         SDK_RESOURCE = 'upstream'
-        SPEC='osx_x86-64_cmprssptrs'
+        SPEC='linux_aarch64'
         checkout scm
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()

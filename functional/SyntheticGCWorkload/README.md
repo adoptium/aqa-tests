@@ -148,7 +148,7 @@ Figure 3 represents the possible options within the xml configuration files, and
 
 
 <tr>
-    <td rowspan="6">payloadSet </td>
+    <td rowspan="8">payloadSet </td>
   </tr>
 
   <tr>
@@ -171,6 +171,14 @@ Figure 3 represents the possible options within the xml configuration files, and
     <td>numPayloadContainerLists</td> 
     <td>The number of separate lists
         the container should split the Payloads up into. By default this is 256 times the number of available processors. This option improves GC parallelism on some VMs and system</td>
+  </tr>
+  <tr>
+    <td>repetitionDelay</td> 
+    <td>The delay at which a payload "burst" will be repeated. If this option is used, a 'duration' must also be specified in the payloadSet. Default is to only execute the payloadSet/payloads once. View section 1.7 for details</td>
+  </tr>
+  <tr>
+    <td>duration</td> 
+    <td>The length of a payload "burst". If this option is used, a 'repetitionDelay' must also be specified in the payloadSet. Default is to "burst" only once, for the time between startTime and endTime.</td>
   </tr>
 
 <tr>
