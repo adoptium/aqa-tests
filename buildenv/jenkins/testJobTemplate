@@ -154,7 +154,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							booleanParam('AUTO_DETECT', true, "Optional. Default is to enable AUTO_DETECT")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
-							stringParam('RELEASE_TAG', "", RELEASE_TAG)
+							stringParam('RELEASE_TAG', "", "SCM tag from which to run tests")
 						}
 						cpsScm {
 							scm {
