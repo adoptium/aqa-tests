@@ -55,6 +55,20 @@ ifndef JRE_IMAGE
 	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
 endif
 
+JDK_NATIVE_OPTIONS :=
+ifdef JDK_NATIVE_TEST_PATH
+	JDK_NATIVE_OPTIONS := -nativepath:"$(JDK_NATIVE_TEST_PATH)"
+endif
+
+JVM_NATIVE_OPTIONS :=
+ifdef HOTSPOT_NATIVE_TEST_PATH
+	JVM_NATIVE_OPTIONS := -nativepath:"$(HOTSPOT_NATIVE_TEST_PATH)"
+endif
+
+ifdef OPENJ9_NATIVE_TEST_PATH
+	JVM_NATIVE_OPTIONS := -nativepath:"$(OPENJ9_NATIVE_TEST_PATH)"
+endif
+
 ifdef OPENJDK_DIR 
 # removing "
 OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
