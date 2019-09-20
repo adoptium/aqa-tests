@@ -43,7 +43,7 @@ setMachinePlatform()
 .--------------------------
 | Setting Machine Platform
 "
-    export PLATFORM=`/bin/uname | cut -f1 -d_`
+    export PLATFORM=`uname | cut -f1 -d_`
     echo "Platform identified as: ${PLATFORM}"
 }
 
@@ -112,9 +112,9 @@ checkAndSetCommonEnvVars()
                 echo "AFFINITY not set. On Sun/HP so is ok"
                 ;;
             *)
-                echo "AFFINITY not set"
+                echo "!!! WARNING !!! AFFINITY not set"
                 usage
-                exit
+                #exit
                 ;;
         esac
     fi

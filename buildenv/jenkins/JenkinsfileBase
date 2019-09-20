@@ -140,12 +140,17 @@ def setupParallelEnv() {
 			
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
-			if (repeatAmount == 1){
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
-				{
+			if (repeatAmount == 1) {
+				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
 					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-					repeatAmount = testSubDirs.size()
 				}
+
+				// We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
+				// In order to save machine resources, exclude the following system test subfolders in parallel mode
+				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
+				echo "exclude the following system test subfolders: ${excludes}"
+				testSubDirs = testSubDirs - excludes
+				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
 			
@@ -287,7 +292,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -346,7 +351,16 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-
+			
+			if (fileExists('openjdkbinary/openjdk-test-image/jdk/jtreg/native')) {
+				env.JDK_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/jdk/jtreg/native"
+			}
+			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
+				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
+			}
+			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
+				env.OPENJ9_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
+			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {

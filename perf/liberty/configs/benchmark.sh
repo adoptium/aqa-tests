@@ -67,6 +67,6 @@ export APP_VERSION="daytrader-ee7"
 export WLP_SKIP_MAXPERMSIZE="1"
 
 #TODO: Need to soft-code these configs. Need to add various affinity tools in the perf pre-reqs ()
-export AFFINITY="numactl --physcpubind=0-3 --membind=0"
+export AFFINITY=""
 
 bash ${1}/scripts/bin/sufp_benchmark.sh 
