@@ -471,6 +471,8 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_test_output.*"
 					uploadToArtifactory(pattern)
 				}
+
+				addGrinderLink()
 			}
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
@@ -596,10 +598,28 @@ def uploadToArtifactory(pattern) {
 		def artifactoryUrl = server.getUrl()
 		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
 		echo "Test output artifactory URL:'${uploadUrl}'"
-		currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+		if (!currentBuild.description.contains(uploadUrl)) {
+			currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+		}
 	} else {
 		echo "ARTIFACTORY_SERVER is not set. Artifacts are not uploaded onto artifactory server."
 	}
+}
+
+def addGrinderLink() {
+	def	customTargetOpt = params.CUSTOM_TARGET ? "&CUSTOM_TARGET=${params.CUSTOM_TARGET}" :  ""
+	def	sdkSourceOpt = params.SDK_RESOURCE ? "&SDK_RESOURCE=${params.SDK_RESOURCE}" :  ""
+	def	sdkUrlOpt = params.CUSTOMIZED_SDK_URL ? "&CUSTOMIZED_SDK_URL=${params.CUSTOMIZED_SDK_URL}" : ""
+	def	sdkUrlCredentialOpt = params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID ? "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}" : ""
+
+	def url = "${HUDSON_URL}/job/Grinder/parambuild/?" \
+	+ "JDK_VERSION=${params.JDK_VERSION}" \
+	+ "&JDK_IMPL=${params.JDK_IMPL}" \
+	+ "&BUILD_LIST=${params.BUILD_LIST}" \
+	+ "&JenkinsFile=${params.JenkinsFile}" \
+	+ "&TARGET=${params.TARGET}" \
+	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}"
+	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
 
 def run_parallel_tests() {
