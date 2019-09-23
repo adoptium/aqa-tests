@@ -352,14 +352,8 @@ def buildTest() {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
 			
-			if (fileExists('openjdkbinary/openjdk-test-image/jdk/jtreg/native')) {
-				env.JDK_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/jdk/jtreg/native"
-			}
-			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
-				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
-			}
-			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
-				env.OPENJ9_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
+			if (fileExists('openjdkbinary/openjdk-test-image')) {
+				env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
 			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
