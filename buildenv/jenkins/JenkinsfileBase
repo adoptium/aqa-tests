@@ -140,12 +140,17 @@ def setupParallelEnv() {
 			
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
-			if (repeatAmount == 1){
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
-				{
+			if (repeatAmount == 1) {
+				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
 					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-					repeatAmount = testSubDirs.size()
 				}
+
+				// We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
+				// In order to save machine resources, exclude the following system test subfolders in parallel mode
+				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
+				echo "exclude the following system test subfolders: ${excludes}"
+				testSubDirs = testSubDirs - excludes
+				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
 			
@@ -352,6 +357,9 @@ def buildTest() {
 			}
 			if (fileExists('openjdkbinary/openjdk-test-image/hotspot/jtreg/native')) {
 				env.HOTSPOT_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/hotspot/jtreg/native"
+			}
+			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
+				env.OPENJ9_NATIVE_TEST_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			if (!env.SPEC.startsWith('zos')) {
