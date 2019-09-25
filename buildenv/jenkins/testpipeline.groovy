@@ -103,7 +103,7 @@ def createJob( JOB_NAME, JDK_VERSION, ARCH_OS ) {
 	params.put('ARCH_OS', ARCH_OS)
 	params.put('JOB_NAME', JOB_NAME)
 
-    def templatePath = 'buildenv/jenkins/JobTemplate.groovy'
+    def templatePath = 'openjdk-tests/buildenv/jenkins/JobTemplate.groovy'
 
     create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: params
     return create
