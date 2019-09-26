@@ -214,7 +214,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -237,7 +237,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -260,7 +260,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -283,7 +283,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -306,7 +306,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -329,7 +329,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -352,7 +352,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -375,7 +375,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -398,7 +398,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -421,7 +421,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -444,7 +444,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -467,7 +467,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -490,7 +490,7 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
 		</subsets>
 	</test>
 	<test>
@@ -513,7 +513,168 @@
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-ANNOT</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/ANNOT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/CLSS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CONV</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/CONV,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/EXPR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-LEX</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/LEX,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-LMBD</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/LMBD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-STMT</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=lang/STMT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>11</subset>
 		</subsets>
 	</test>
 </playlist>
