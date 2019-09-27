@@ -459,6 +459,8 @@ def post(output_name) {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
 
+			addGrinderLink()
+
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
@@ -470,8 +472,6 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_test_output.*"
 					uploadToArtifactory(pattern)
 				}
-
-				addGrinderLink()
 			}
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
