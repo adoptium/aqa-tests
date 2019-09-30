@@ -610,6 +610,8 @@ def addGrinderLink() {
 	def	sdkSourceOpt = params.SDK_RESOURCE ? "&SDK_RESOURCE=${params.SDK_RESOURCE}" :  ""
 	def	sdkUrlOpt = params.CUSTOMIZED_SDK_URL ? "&CUSTOMIZED_SDK_URL=${params.CUSTOMIZED_SDK_URL}" : ""
 	def	sdkUrlCredentialOpt = params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID ? "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}" : ""
+	def	upstreamJobNameOpt = params.UPSTREAM_JOB_NAME ? "&UPSTREAM_JOB_NAME=${params.UPSTREAM_JOB_NAME}" : ""
+	def	upstreamJobNumOpt = params.UPSTREAM_JOB_NUMBER ? "&UPSTREAM_JOB_NUMBER=${params.UPSTREAM_JOB_NUMBER}" : ""
 
 	def url = "${HUDSON_URL}/job/Grinder/parambuild/?" \
 	+ "JDK_VERSION=${params.JDK_VERSION}" \
@@ -617,7 +619,10 @@ def addGrinderLink() {
 	+ "&BUILD_LIST=${params.BUILD_LIST}" \
 	+ "&JenkinsFile=${params.JenkinsFile}" \
 	+ "&TARGET=${params.TARGET}" \
-	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}"
+	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}${upstreamJobNameOpt}${upstreamJobNumOpt}"
+
+	url = url.replace(" ", "%20")
+
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
 
