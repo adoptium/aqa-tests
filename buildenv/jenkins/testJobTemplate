@@ -124,6 +124,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
+							stringParam('JenkinsFile', "openjdk_${ARCH_OS}", "Jenkins file to be used")
 							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${LEVEL}.${GROUP}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
@@ -154,6 +155,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							booleanParam('AUTO_DETECT', true, "Optional. Default is to enable AUTO_DETECT")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
+							stringParam('RELEASE_TAG', "", "SCM tag from which to run tests")
 						}
 						cpsScm {
 							scm {

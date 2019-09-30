@@ -63,14 +63,30 @@ OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
 ifneq (,$(findstring $(JDK_VERSION),8-9))
-	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
+	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)langtools$(D)test
+	JDK_CUSTOM_TARGET ?= jdk/test/java/math/BigInteger/BigIntegerTest.java
 else
-	JTREG_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
+	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
+	JDK_CUSTOM_TARGET ?= test/jdk/java/math/BigInteger/BigIntegerTest.java
 endif
 
-JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
-LANGTOOLS_CUSTOM_TARGET ?= tools/javac/declaration/method/MethodVoidParameter.java
+JDK_NATIVE_OPTIONS :=
+JVM_NATIVE_OPTIONS :=
+CUSTOM_NATIVE_OPTIONS :=
+ifdef TESTIMAGE_PATH
+	JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
+	ifeq ($(JDK_IMPL), hotspot)
+		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
+	else ifeq ($(JDK_IMPL), openj9)
+		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+	endif
+	ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
+		CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
+	else
+		CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
+	endif
+endif

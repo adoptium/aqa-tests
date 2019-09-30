@@ -140,12 +140,17 @@ def setupParallelEnv() {
 			
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
-			if (repeatAmount == 1){
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") 
-				{
+			if (repeatAmount == 1) {
+				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
 					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-					repeatAmount = testSubDirs.size()
 				}
+
+				// We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
+				// In order to save machine resources, exclude the following system test subfolders in parallel mode
+				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
+				echo "exclude the following system test subfolders: ${excludes}"
+				testSubDirs = testSubDirs - excludes
+				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
 			
@@ -287,7 +292,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -345,6 +350,14 @@ def buildTest() {
 				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
+			}
+			
+			if (fileExists('openjdkbinary/openjdk-test-image')) {
+				env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
+			}
+
+			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
+				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
 
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -445,6 +458,8 @@ def post(output_name) {
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
+
+			addGrinderLink()
 
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
@@ -582,10 +597,28 @@ def uploadToArtifactory(pattern) {
 		def artifactoryUrl = server.getUrl()
 		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
 		echo "Test output artifactory URL:'${uploadUrl}'"
-		currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+		if (!currentBuild.description.contains(uploadUrl)) {
+			currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+		}
 	} else {
 		echo "ARTIFACTORY_SERVER is not set. Artifacts are not uploaded onto artifactory server."
 	}
+}
+
+def addGrinderLink() {
+	def	customTargetOpt = params.CUSTOM_TARGET ? "&CUSTOM_TARGET=${params.CUSTOM_TARGET}" :  ""
+	def	sdkSourceOpt = params.SDK_RESOURCE ? "&SDK_RESOURCE=${params.SDK_RESOURCE}" :  ""
+	def	sdkUrlOpt = params.CUSTOMIZED_SDK_URL ? "&CUSTOMIZED_SDK_URL=${params.CUSTOMIZED_SDK_URL}" : ""
+	def	sdkUrlCredentialOpt = params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID ? "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}" : ""
+
+	def url = "${HUDSON_URL}/job/Grinder/parambuild/?" \
+	+ "JDK_VERSION=${params.JDK_VERSION}" \
+	+ "&JDK_IMPL=${params.JDK_IMPL}" \
+	+ "&BUILD_LIST=${params.BUILD_LIST}" \
+	+ "&JenkinsFile=${params.JenkinsFile}" \
+	+ "&TARGET=${params.TARGET}" \
+	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}"
+	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
 
 def run_parallel_tests() {

@@ -204,7 +204,9 @@ getBinaryOpenjdk()
 	for jar_dir in "${jar_dir_array[@]}"
 		do
 			jar_dir_name=${jar_dir%?}
-			if [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
+			if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
+				mv $jar_dir_name openjdk-test-image
+			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
 				if [[ -d $jar_dir_name/Contents/Home ]]; then
 					mv "$jar_dir_name/Contents/Home" j2re-image
 				else
