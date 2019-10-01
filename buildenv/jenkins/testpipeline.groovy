@@ -80,7 +80,7 @@ node('master') {
 						def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL}_${ARCH_OS}${SUFFIX}"
 						TestJobs["${TEST_JOB_NAME}"] = {
 							echo "create the job ${TEST_JOB_NAME}"
-							createJob(TEST_JOB_NAME, JDK_VERSION, ARCH_OS)
+							createJob(TEST_JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX)
 							echo "runing the job $TEST_JOB_NAME}"
 							buildJob(TEST_JOB_NAME, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, OPENJ9_REPO, 
 							OPENJ9_BRANCH, CUSTOM_TARGET, JCK_GIT_REPO, SSH_AGENT_CREDENTIAL, 
@@ -98,11 +98,12 @@ node('master') {
 	}
 }
 
-def createJob( JOB_NAME, JDK_VERSION, ARCH_OS ) {
+def createJob( JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX ) {
     def params = [:]
 	params.put('ARCH_OS', ARCH_OS)
 	params.put('JOB_NAME', JOB_NAME)
-
+	params.put('SUFFIX', SUFFIX)
+	params.put('JDK_VERSION', JDK_VERSION)
     def templatePath = 'openjdk-tests/buildenv/jenkins/JobTemplate.groovy'
 
     create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: params
@@ -118,7 +119,7 @@ def buildJob(JOB_NAME, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, OPENJ9_REPO,
 								BUILD_LIST, TARGET) 
 	{
     stage ("${JOB_NAME}") {
-        JOB = build job: JOB_NAME,
+        JOB = build job: "test${SUFFIX}build/jobs/$JDK_VERSION/$JOB_NAME",
                 parameters: [
                     string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
                     string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
