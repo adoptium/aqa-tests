@@ -86,6 +86,7 @@ pipelineJob("$ROOTFOLDER/jobs/$JDK_VERSION/$JOB_NAME") {
 				lightweight(true)
 			}
 		}
+		concurrentBuild(false)
 		logRotator {
 			numToKeep(BUILDS_TO_KEEP)
 			artifactNumToKeep(BUILDS_TO_KEEP)
