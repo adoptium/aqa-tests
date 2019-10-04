@@ -16,12 +16,12 @@
     <test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1k_J9</testCaseName>
 		<variations>
-			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16</variation>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
 		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	chmod a+x run_test.sh; \
-	./run_test.sh 1k 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 1k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
@@ -39,12 +39,12 @@
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10k_J9</testCaseName>
 		<variations>
-			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16</variation>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
 		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	chmod a+x run_test.sh; \
-	./run_test.sh 10k 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 10k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
@@ -61,12 +61,12 @@
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_100k_J9</testCaseName>
 		<variations>
-			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16</variation>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
 		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	chmod a+x run_test.sh; \
-	./run_test.sh 100k 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 100k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
@@ -83,12 +83,12 @@
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1M_J9</testCaseName>
 		<variations>
-			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16</variation>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
 		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	chmod a+x run_test.sh; \
-	./run_test.sh 1M 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 1M 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
@@ -106,12 +106,12 @@
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10M_J9</testCaseName>
 		<variations>
-			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16</variation>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
 		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	chmod a+x run_test.sh; \
-	./run_test.sh 10M 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 10M 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
@@ -135,7 +135,7 @@
 	$(JAVA_COMMAND) $(JVM_OPTIONS) \
 	-cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main config$(D)config_1k_0.3.xml --log_file $(REPORTDIR)$(D)synthGCOutput.txt -s \
 	chmod a+x run_test.sh; \
-	./run_test.sh 1k 0.15,0.15 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	./run_test.sh 1k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
 	${TEST_STATUS}</command>
 		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
 		<levels>
