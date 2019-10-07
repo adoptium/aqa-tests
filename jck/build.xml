@@ -23,8 +23,7 @@
 	<property name="DEST" value="${BUILD_ROOT}/jck" />
 	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/system" />
 	<property environment="env" />
-	<propertyregex property="jck_short_version" input="${env.JCK_VERSION}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
-	
+
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
 	</condition>
@@ -50,31 +49,31 @@
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
 			<not>
-				<available file="${env.JCK_ROOT}" type="dir" />
+				<available file="${JCK_ROOT_USED}" type="dir" />
 			</not>
 			<!-- jck materials don't exist, download them -->
 			<then>
-				<echo message="${env.JCK_ROOT} does not exist, 
-					clone from ${env.JCK_GIT_REPO}, ${jck_branch} branch, to ${env.JCK_ROOT}" />
-				<mkdir dir="${env.JCK_ROOT}/.." />
-				<exec executable="git" dir="${env.JCK_ROOT}/.." failonerror="true">
+				<echo message="${JCK_ROOT_USED} does not exist, 
+					clone from ${JCK_GIT_REPO_USED}, ${jck_branch} branch, to ${JCK_ROOT_USED}" />
+				<mkdir dir="${JCK_ROOT_USED}/.." />
+				<exec executable="git" dir="${JCK_ROOT_USED}/.." failonerror="true">
 					<arg value="clone" />
 					<arg value="--depth" />
 					<arg value="1" />
 					<arg value="--single-branch" />
 					<arg value="-b"/>
 					<arg value="${jck_branch}"/>
-					<arg value="${env.JCK_GIT_REPO}" />
+					<arg value="${JCK_GIT_REPO_USED}" />
 				</exec>
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
-				<echo message="${env.JCK_ROOT} exists, deleting previously built natives..." />
+				<echo message="${JCK_ROOT_USED} exists, deleting previously built natives..." />
 				<delete includeemptydirs="true" quiet="true" failonerror="false">
-				    <fileset dir="${env.JCK_ROOT}/natives" includes="**/*"/>
+				    <fileset dir="${JCK_ROOT_USED}/natives" includes="**/*"/>
 				</delete>
-				<echo message="Updating ${env.JCK_ROOT} with latest..." />
-				<exec executable="git" dir="${env.JCK_ROOT}" failonerror="true">
+				<echo message="Updating ${JCK_ROOT_USED} with latest..." />
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 					<arg value="pull" />
 					<arg value="origin" />
 					<arg value="master" />
@@ -164,8 +163,8 @@
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="configure" inheritAll="false"></ant>
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build/" target="build" inheritAll="false"></ant>
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
-			<property name="jck_runtimes_src_dir" value="${env.JCK_ROOT}/JCK-runtime-${jck_short_version} "/>
-			<property name="out_dir" value="${env.JCK_ROOT}/natives" />
+			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version} "/>
+			<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
 		</ant>
 	</target>
 
@@ -192,33 +191,53 @@
 				<exclude name="README.md" />
 			</fileset>
 		</copy>
-		<copy todir="${env.JCK_ROOT}/">
+		<copy todir="${JCK_ROOT_USED}/">
 			<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
 		</copy>
 	</target>
 
 	<target name="build">
+		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests, 
+						please use BUILD_LIST to include test folders you want to test.">
+			<condition>
+				<not>
+					<isset property="env.JCK_GIT_REPO"/>
+				</not>
+			</condition>
+		</fail>
+		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
+		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
+
+		<condition property="JCK_ROOT_USED" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
+			<isset property="env.JCK_ROOT" />
+		</condition>
+		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
+
 		<if>
-			<and>
-				<isset property="env.JCK_ROOT" />
-				<isset property="env.JCK_VERSION" />
-				<isset property="env.JCK_GIT_REPO" />
-			</and>
+			<isset property="env.JCK_VERSION" />
 			<then>
-				<echo>=== env.JCK_ROOT is set to ${env.JCK_ROOT} ===</echo>
-				<echo>=== env.JCK_VERSION is set to ${env.JCK_VERSION} ===</echo>
-				<echo>=== env.JCK_GIT_REPO is set to ${env.JCK_GIT_REPO} ===</echo>
-				<echo>start staging jck materials</echo>
-				<antcall target="stage_jck_material" inheritall="true" />
-				<echo>start building stf, stf jck wrapper and jck itself</echo>
-				<antcall target="dist" inheritall="true" />
+				<property name="JCK_VERSION_USED" value="${env.JCK_VERSION}" />
 			</then>
 			<else>
-				<fail message="env.JCK_ROOT: ${env.JCK_ROOT} or env.JCK_VERSION: ${env.JCK_VERSION} or env.JCK_GIT_REPO: ${env.JCK_GIT_REPO}
-					was not corretly set. If you do not want to compile JCK tests, 
-					please use BUILD_LIST to include test folders you want to test." />
+				<if>
+					<equals arg1="${JDK_VERSION}" arg2="8" />
+					<then>
+						<property name="JCK_VERSION_USED" value="jck8b" />
+					</then>
+					<else>
+						<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
+					</else>
+				</if>
 			</else>
 		</if>
+		<echo>=== JCK_VERSION_USED is set to ${JCK_VERSION_USED} ===</echo>
+
+		<propertyregex property="jck_short_version" input="${JCK_VERSION_USED}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
+
+		<echo>start staging jck materials</echo>
+		<antcall target="stage_jck_material" inheritall="true" />
+		<echo>start building stf, stf jck wrapper and jck itself</echo>
+		<antcall target="dist" inheritall="true" />
 	</target>
 
 	<target name="clean">
