@@ -53,7 +53,6 @@ def setupEnv() {
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
-	JCK_GIT_REPO = params.JCK_GIT_REPO ? params.JCK_GIT_REPO : ""
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
 	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
@@ -89,26 +88,9 @@ def setupEnv() {
 		env.PERF_ROOT = "$WORKSPACE/../../benchmarks"
 	}
 
-	if (env.BUILD_LIST.startsWith("jck")) {
-		if ( JDK_VERSION == "8" ) {
-			env.JCK_VERSION = "jck8b"
-		} else {
-			env.JCK_VERSION = "jck${JDK_VERSION}"
-		}
-		if( params.JCK_ROOT ) {
-			env.JCK_ROOT = params.JCK_ROOT
-		} else {
-			env.JCK_ROOT = "$WORKSPACE/../../jck_root/JCK${JDK_VERSION}-unzipped"
-		}
-		
-		echo "env.JCK_ROOT is: ${env.JCK_ROOT}, env.JCK_VERSION is: ${env.JCK_VERSION}"
-		if( params.JCK_GIT_REPO ) {
-			env.JCK_GIT_REPO = params.JCK_GIT_REPO
-			echo "env.JCK_GIT_REPO is ${env.JCK_GIT_REPO}"
-		} else {
-			echo "params.JCK_GIT_REPO was not defined"
-		}
-	}
+	env.JCK_VERSION = params.JCK_VERSION ? params.JCK_VERSION : ""
+	env.JCK_ROOT = params.JCK_ROOT ? params.JCK_ROOT : ""
+	env.JCK_GIT_REPO = params.JCK_GIT_REPO ? params.JCK_GIT_REPO : ""
 
 	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'

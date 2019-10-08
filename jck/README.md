@@ -26,8 +26,7 @@
 * Otherwise put your unarchived jck test materials into the empty folder created in step 1 and point `JCK_GIT_REPO` to this folder. For example `export JCK_GIT_REPO=/jck/jck8b`
 
 3. Export `JCK_ROOT=/jck/<test_material_folder>` as an environment variable or pass it in when run as a make command. For example `export JCK_ROOT=/jck/jck8b`
-
-3. Export `JCK_VERSION=<your_jck_version>` as an environment variable or pass it in when run as a make command. For example `export JCK_VERSION=jck8b` 
+* Optional. The default value is `<openjdk-test>/../../../jck_root/JCK$(JDK_VERSION)-unzipped`
 
 4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable
 
@@ -97,7 +96,6 @@ export TEST_JDK_HOME=/java/openjdkbinary/j2sdk-image
 export BUILD_LIST=jck
 export JCK_GIT_REPO=git@github.com:mypretendcompany/jck8tests.git
 export JCK_ROOT=/jck/jck8tests
-export JCK_VERSION=jck8b
 
 cd TestConfig
 make -f run_configure.mk

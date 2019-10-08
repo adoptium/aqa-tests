@@ -43,3 +43,16 @@ ifeq ($(CYGWIN),1)
    PERL:=$(dir $(PERL))
    export PATH:=$(PERL):$(PATH)
 endif
+
+
+ifndef JCK_VERSION
+  ifeq (8, $(JDK_VERSION))
+    export JCK_VERSION=jck8b
+  else
+    export JCK_VERSION=jck$(JDK_VERSION)
+  endif
+endif
+
+ifndef JCK_ROOT
+  export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
+endif
