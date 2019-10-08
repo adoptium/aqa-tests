@@ -13,6 +13,7 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+call %PWD%\check_env_windows.bat
 
 %JAVA_BIN%\java -cp %PWD%codepoint.jar UnicodeDataTest 2>err.txt
 %JAVA_BIN%\java -cp %PWD%codepoint.jar UnihanCodePoint 2>>err.txt

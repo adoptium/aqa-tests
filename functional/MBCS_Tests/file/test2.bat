@@ -13,6 +13,11 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar

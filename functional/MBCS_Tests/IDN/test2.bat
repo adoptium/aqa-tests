@@ -15,6 +15,11 @@ SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\IDN.jar
 SET OUTPUT="output"
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 for %%i in (%PWD%\win_%2_*_txt) do (
     %JAVA_BIN%\java Main2 %1 %2 %3 %4 %%i
     copy /b %OUTPUT% + toAscii.txt + toUnicode.txt %OUTPUT% > NUL 2>&1

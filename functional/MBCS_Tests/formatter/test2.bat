@@ -14,6 +14,11 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\formatter.jar
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 
 %JAVA_BIN%\java -Duser.timezone=Asia/Tokyo Main %1 %2 %3 %4 %5
 

@@ -14,6 +14,11 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\nio.jar
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 %JAVA_BIN%\java ReadWriteTest %PWD%\%4.txt %4 converted.txt %4 %2 %3 > nul 2>&1
 fc %PWD%\%4.txt converted.txt > fc.out 2>&1
 exit %errorlevel%

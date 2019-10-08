@@ -13,6 +13,11 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 
 SET CLASSPATH=%PWD%\coin.jar
 %JAVA_BIN%\java Main %1 %2 %3 %4

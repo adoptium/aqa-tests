@@ -11,9 +11,15 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
+
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
 SET STATUS=UKNOWN
-echo %CD% | find "jaxp14" > NUL
+echo %CD% | findstr "jaxp14" > NUL
 set JAXP14=%ERRORLEVEL%
 if %LOCALE% == ja (
    SET STATUS=OK

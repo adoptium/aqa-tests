@@ -14,6 +14,11 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\codepage.jar
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 %JAVA_BIN%\java conv %PWD%\WIN_%4.txt %4 tmp.txt %4 > \nul 2>&1
 fc %PWD%\WIN_%4.txt tmp.txt > fc.out 2>&1
 exit %errorlevel%

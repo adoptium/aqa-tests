@@ -17,6 +17,11 @@ SET PWD=%~dp0
 SET OUTPUT="output"
 SET DERBY_JAR=%PWD%\derby\db-derby-10.14.2.0-lib\lib\derby.jar
 SET CLASSPATH=%PWD%\jdbc41.jar;%DERBY_JAR%
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 %JAVA_BIN%\java Main2 %1 %2 %3 %4 %5
 
 fc %PWD%\expected\win_%2.expected.txt %OUTPUT% > fc.out 2>&1

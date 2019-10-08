@@ -14,6 +14,11 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET ENVINFO=%1_%2
+if %JDK_VERSION% == 8 (
+   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+) else (
+   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+)
 %JAVA_BIN%\java -cp %PWD%\scanner.jar Main %1 %2 %3 %4 %5
 fc output %PWD%\expected\%ENVINFO%.txt > fc.out 2>&1
 exit %errorlevel%
