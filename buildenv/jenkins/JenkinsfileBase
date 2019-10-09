@@ -22,24 +22,6 @@ def makeTest(testParam) {
 }
 
 def setupEnv() {
-	// if the provided ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH are not AdoptOpenJDK/openjdk-tests' master branch, clean the workspace and re-download it
-	if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_BRANCH) {
-		if ( !params.ADOPTOPENJDK_REPO.contains( 'AdoptOpenJDK/openjdk-tests.git') || params.ADOPTOPENJDK_BRANCH != "master") {
-			cleanWs()
-
-			def remoteConfigParameters = [url: "${params.ADOPTOPENJDK_REPO}"]
-			if (params.ADOPTOPENJDK_REPO.startsWith('git') && params.USER_CREDENTIALS_ID && !SPEC.startsWith('zos')) {
-				remoteConfigParameters.put('credentialsId', "${params.USER_CREDENTIALS_ID}")
-			}
-
-			checkout([
-				$class: 'GitSCM', branches: [[name: "*/${params.ADOPTOPENJDK_BRANCH}"]],
-				extensions: [[$class:'CloneOption', shallow:true, depth:1],[$class: 'CleanBeforeCheckout'],[$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
-				userRemoteConfigs: [remoteConfigParameters]
-			])
-		}
-	}
-
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
