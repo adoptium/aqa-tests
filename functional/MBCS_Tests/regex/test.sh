@@ -23,10 +23,11 @@ CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=result.txt
 
+. ${BASE}/check_env_unix.sh
+
 PATH=${JAVA_BIN}:$PATH
 export PATH
 
-. ${BASE}/check_env_unix.sh
 ${SHELL} ${BASE}/test_${FULLLANG} ${BASE}/${FULLLANG}.txt 2>./error.log < ${BASE}/answer.txt > ${OUTPUT}
 
 diff ${OUTPUT} ${BASE}/expected_${FULLLANG} > /dev/null 2>&1

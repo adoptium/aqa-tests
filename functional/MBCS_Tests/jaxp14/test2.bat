@@ -14,6 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\jaxp14.jar
+call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%
 fc %PWD%\win_%2.html output > fc.out 2>&1

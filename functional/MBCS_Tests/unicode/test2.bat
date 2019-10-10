@@ -14,7 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET BASE=%PWD%
-
+call %PWD%\check_env_windows.bat
 %JAVA_BIN%\java -cp %PWD%unicode.jar Main
 set SIZE=1
 for /f %%i in ("err*.txt") do set SIZE=%%~zi

@@ -15,6 +15,8 @@ SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\IDN.jar
 SET OUTPUT="output"
+call %PWD%\set_variable.bat
+
 for %%i in (%PWD%\win_%2_*_txt) do (
     %JAVA_BIN%\java Main2 %1 %2 %3 %4 %%i
     copy /b %OUTPUT% + toAscii.txt + toUnicode.txt %OUTPUT% > NUL 2>&1
