@@ -14,6 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\urlclassloader.jar
+call %PWD%\set_variable.bat
 
 @echo UrlClassLoader close test
 %JAVA_BIN%\java Main %1 %2 %3 %4 %5

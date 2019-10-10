@@ -13,6 +13,7 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+call %PWD%\set_variable.bat
 
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar

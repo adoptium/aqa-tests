@@ -14,6 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\locale_matching.jar
+call %PWD%\check_env_windows.bat
 
 %JAVA_BIN%\java -Dresult=false Main %2 %3 %4
 
