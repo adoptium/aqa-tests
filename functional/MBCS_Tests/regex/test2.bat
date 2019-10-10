@@ -14,11 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\regex.jar
-if %JDK_VERSION% == 8 (
-   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
-) else (
-   SET JAVA_BIN=%TEST_JDK_HOME%/bin
-)
+call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%\win_%2.txt
 

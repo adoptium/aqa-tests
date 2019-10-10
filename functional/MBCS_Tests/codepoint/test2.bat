@@ -14,11 +14,8 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET BASE=%PWD%
-if %JDK_VERSION% == 8 (
-   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
-) else (
-   SET JAVA_BIN=%TEST_JDK_HOME%/bin
-)
+call %PWD%\set_variable.bat
+
 %JAVA_BIN%\java -cp %PWD%codepoint.jar Main
 
 set SIZE=1
