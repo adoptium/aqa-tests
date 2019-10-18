@@ -14,6 +14,7 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET BASE=%PWD%
+call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java -cp %PWD%codepoint.jar Main
 

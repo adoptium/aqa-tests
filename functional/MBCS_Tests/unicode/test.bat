@@ -16,7 +16,6 @@ SET PWD=%~dp0
 SET BASE=%PWD%
 SET CLASSPATH=%PWD%\unicode.jar
 
-call %PWD%\check_env_windows.bat
 SET FLAG=0
 
 echo Checking UnicodeData ...
