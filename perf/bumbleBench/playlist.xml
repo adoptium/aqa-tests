@@ -14,15 +14,19 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
-	<!-- Math Tests -->
+	<!-- Lambda Benchmarks -->
 	<test>
-		<testCaseName>bumbleBench-SIMDDoubleMaxMinBench</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SIMDDoubleMaxMinBench; \
+		<testCaseName>bumbleBench-DispatchBench-InnerClasses</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DispatchBench.InnerClasses; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<subsets>
 			<subset>8</subset>
+			<subset>11</subset>
 		</subsets>
+		<impls>
+			<impl>openj9</impl>
+		</impls>		
 		<levels>
 			<level>special</level>
 		</levels>
@@ -31,13 +35,62 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>bumbleBench-ExactBench</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar ExactBench; \
+		<testCaseName>bumbleBench-FibBench-Vanilla</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.Vanilla; \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<subsets>
 			<subset>8</subset>
-		</subsets>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-FibBench-InnerClass</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.InnerClass; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-FibBench-Lambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.Lambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-FibBench-LocalLambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.LocalLambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
 		<levels>
 			<level>special</level>
 		</levels>
@@ -45,7 +98,120 @@
 			<group>perf</group>
 		</groups>
 	</test>	
-	<!-- String Tests -->
+	<test>
+		<testCaseName>bumbleBench-FibBench-DynamicLambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.DynamicLambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-FibBench-LocalMethodReferences</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar FibBench.LocalMethodReferences; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-GroupingBench-Serial</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar GroupingBench.Serial; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-GroupingBench-Parallel</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar GroupingBench.Parallel; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>bumbleBench-SieveBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SieveBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<!-- Math Benchmarks -->
+	<test>
+		<testCaseName>bumbleBench-ExactBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar ExactBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>bumbleBench-SIMDDoubleMaxMinBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SIMDDoubleMaxMinBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<!-- String Benchmarks -->
 	<test>
 		<testCaseName>bumbleBench-StringConversionBench</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar StringConversionBench; \
@@ -53,7 +219,8 @@
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<subsets>
 			<subset>8</subset>
-		</subsets>
+			<subset>11</subset>
+		</subsets>		
 		<levels>
 			<level>special</level>
 		</levels>
@@ -68,7 +235,8 @@
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<subsets>
 			<subset>8</subset>
-		</subsets>
+			<subset>11</subset>
+		</subsets>		
 		<levels>
 			<level>special</level>
 		</levels>
@@ -83,7 +251,8 @@
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<subsets>
 			<subset>8</subset>
-		</subsets>
+			<subset>11</subset>
+		</subsets>		
 		<levels>
 			<level>special</level>
 		</levels>
