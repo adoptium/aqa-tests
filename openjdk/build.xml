@@ -91,6 +91,14 @@
 			</else>
 		</if>
 
+		<if>
+			<isset property="REGRESSION_REPO"/>
+			<then>
+				<echo message="Overriding test repo location with: ${REGRESSION_REPO}" />
+				<property name="regressionRepo" value="${REGRESSION_REPO}" />
+			</then>
+		</if>
+
 		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		<exec executable="git" failonerror="false">
 			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
