@@ -79,24 +79,19 @@
 			</then>
 			<else>
 				<if>
-					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
-					<then>
-						<property name="jdkName" value="openjdk-jdk" />
-					</then>					
+					<and>
+						<contains string="${env.SPEC}" substring="aarch64" />
+						<equals arg1="${JDK_VERSION}" arg2="8" />
+					</and>
+  						<then>
+							<property name="jdkName" value="openjdk-aarch64-jdk8u" />
+  						</then>		
 					<else>
 						<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
 					</else>
 				</if>
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
 			</else>
-		</if>
-
-		<if>
-			<isset property="REGRESSION_REPO"/>
-			<then>
-				<echo message="Overriding test repo location with: ${REGRESSION_REPO}" />
-				<property name="regressionRepo" value="${REGRESSION_REPO}" />
-			</then>
 		</if>
 
 		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
