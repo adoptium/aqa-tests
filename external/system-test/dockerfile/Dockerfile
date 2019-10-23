@@ -47,7 +47,7 @@ RUN apt-get update \
 
 # Install ant
 ENV ANT_VERSION 1.10.5
-RUN wget --no-check-certificate https://www.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
+RUN wget --no-check-certificate https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
     gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
     tar -xvf apache-ant-${ANT_VERSION}-bin.tar
 
