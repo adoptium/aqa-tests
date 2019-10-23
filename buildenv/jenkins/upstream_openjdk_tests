@@ -12,6 +12,7 @@ class ReleaseContext implements Serializable {
     final String OS
     String JDK_URL
     String JRE_URL
+    String TESTIMAGE_URL
     String SOURCE_URL
 
     ReleaseContext(String arch, String os) {
@@ -20,7 +21,7 @@ class ReleaseContext implements Serializable {
     }
 
     public String toString() {
-        return "$ARCH-$OS: $JDK_URL $JRE_URL $SOURCE_URL ${getJenkinsFile()}";
+        return "$ARCH-$OS: $JDK_URL $JRE_URL " + ( TESTIMAGE_URL == null ? "" : " $TESTIMAGE_URL " ) + "$SOURCE_URL ${getJenkinsFile()}";
     }
 
     public String getJenkinsFile() {
@@ -110,9 +111,14 @@ class ReleaseRetriever implements Serializable {
                            if (a.name.contains("-jre")) {
                                r.JRE_URL = a.browser_download_url
                            }
-                           // if the name neither contains -jre nor -jdk assume
+                           if (a.name.contains("-testimage")) {
+                               r.TESTIMAGE_URL = a.browser_download_url
+                           }
+                           // if the name neither contains -jre, -jdk nor -testimage assume
                            // JDK (which was prior jre/jdk separation)
-                           if (!a.name.contains("-jre") && !a.name.contains("-jdk")) {
+                           if (!a.name.contains("-jre") &&
+                               !a.name.contains("-jdk") &&
+                               !a.name.contains("-testimage")) {
                                r.JDK_URL = a.browser_download_url
                            }
                        }
@@ -236,7 +242,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     List testList = [ "openjdk", "system" ]
     Map testsTargetBuildList = [
                                  "openjdk": [ "target": "sanity.openjdk", "buildlist": "openjdk" ],
-                                 "system":  [ "target": "sanity.system", "buildlist": "systemtest" ]
+                                 "system":  [ "target": "sanity.system", "buildlist": "system" ]
                                ]
 
     File workspace = new File("${env.WORKSPACE}")
@@ -262,11 +268,11 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                                 def source_url = r.SOURCE_URL
                                 def jdk_version = version
                                 def jenkins_file = r.getJenkinsFile()
-                                def jdk_jre_url = "$r.JDK_URL $r.JRE_URL"
+                                def jdk_jre_url = "$r.JDK_URL $r.JRE_URL" + ( r.TESTIMAGE_URL == null ? "" : " $r.TESTIMAGE_URL" )
                                 def mapped_arch = r.getMappedArch()
                                 def target = testsTargetBuildList.get(testname).get("target")
                                 def buildList = testsTargetBuildList.get(testname).get("buildlist")
-                                def job_branch_name = "Test_upstream_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}"
+                                def job_branch_name = "Test_openjdk${version}_hs_${target}_${mapped_arch}_${r.OS}_upstream"
                                 parallelJobs[job_branch_name] = {
                                     // Run a _sanity.openjdk test job with appropriate parameters
                                     build job: job_branch_name, parameters: [

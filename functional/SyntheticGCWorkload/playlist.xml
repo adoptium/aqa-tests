@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+    <test>
+		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1k_J9</testCaseName>
+		<variations>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
+		</variations>
+		<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	chmod a+x run_test.sh; \
+	./run_test.sh 1k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<disabled>https://github.com/eclipse/openj9/issues/6777</disabled>
+	</test>
+	<test>
+		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10k_J9</testCaseName>
+		<variations>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
+		</variations>
+		<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	chmod a+x run_test.sh; \
+	./run_test.sh 10k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_100k_J9</testCaseName>
+		<variations>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
+		</variations>
+		<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	chmod a+x run_test.sh; \
+	./run_test.sh 100k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1M_J9</testCaseName>
+		<variations>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
+		</variations>
+		<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	chmod a+x run_test.sh; \
+	./run_test.sh 1M 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<disabled>https://github.com/eclipse/openj9/issues/6777</disabled>
+	</test>
+	<test>
+		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10M_J9</testCaseName>
+		<variations>
+			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
+		</variations>
+		<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	chmod a+x run_test.sh; \
+	./run_test.sh 10M 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>SyntheticGCWorkload_TestCase</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+			<command>mkdir -p $(REPORTDIR); \
+	cd $(TEST_RESROOT); \
+	$(JAVA_COMMAND) $(JVM_OPTIONS) \
+	-cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main config$(D)config_1k_0.3.xml --log_file $(REPORTDIR)$(D)synthGCOutput.txt -s \
+	chmod a+x run_test.sh; \
+	./run_test.sh 1k 0.15,0.75 $(REPORTDIR) $(JAVA_COMMAND) $(Q)$(JVM_OPTIONS)$(Q); \
+	${TEST_STATUS}</command>
+		<platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<disabled>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</disabled>
+	</test>
+</playlist>

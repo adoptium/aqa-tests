@@ -33,6 +33,157 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 
 ![jenkins parameters](/doc/diagrams/jenkinsParameters.jpg)
 
+## How to pass in environment variables
+
+This is the guide on how to pass in environment variables when making builds with Jenkins. For the directions on this, we will be using the example variable below: TR_Options='verbose,vlog=testExample1.log' There are three ways to do this, and there will be screenshot demonstrations for each step. Keep in mind that this operation is not typically necessary, and is usually used for debugging purposes.
+
+#### Method 1: Write it in as part of the playlist file
+
+This method is typically used if that environment variable is to be used in that specific test target. 
+
+1.	Find the folder that your test is in
+
+ ![test_folder](/doc/diagrams/testFolder.jpg)
+ 
+2.	Open the playlist.xml file
+
+ ![playlist_file](/doc/diagrams/playListFile.jpg)
+ 
+3.	Find the testCaseName matching with the test you want to run
+
+ ![test_case_name](/doc/diagrams/testCaseName.jpg)
+ 
+4.	In the corresponding command section, at the beginning, add the key word `export`, your environment variable, followed by a semicolon, just as you might do if you were running this set of commands locally
+
+ ![export](/doc/diagrams/commandSection.jpg)
+ 
+5.	Save it, git add, commit, push
+
+ ``` bash
+git add --all
+git commit -m "Added TR_Options as an environment variable in the playlist"
+git push origin env_var
+```
+ 
+6.	Go to the Jenkins page, and open up the Grinders
+
+ ![open_grinders](/doc/diagrams/openGrinders.jpg)
+ 
+7.	Click “Build with Parameters” on the left side of the page, third down from the top
+
+8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+
+ ![repo](/doc/diagrams/repo.jpg)
+ 
+9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+
+ ![branch](/doc/diagrams/branch.jpg)
+ 
+10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
+
+ ![build_list_target](/doc/diagrams/buildListTarget.jpg)
+ 
+11.	Scroll to the bottom and hit the Build button
+
+ ![build](/doc/diagrams/build.jpg)
+
+
+#### Method 2: Put it in the .mk file of the test that you want to run 
+
+This method is to be used when the objective is to set that environment variable for all test targets in the group being run. For this example, we will be looking at the systemtest.mk file. 
+
+1.	Open the openjdk-tests/system folder
+
+ ![system_folder](/doc/diagrams/systemFolder.jpg)
+ 
+2.	Open the .mk file corresponding to your test
+
+ ![system_test](/doc/diagrams/systemtest.jpg)
+ 
+3.	Find the last line of the file with the RESROOT name, the line that says SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../ in this example 
+
+ ![resroot_line](/doc/diagrams/resrootLine.jpg)
+ 
+4.	Insert the key word `export`, followed by your environment variable, without any single or double quotation marks, in the line above it
+
+ ![export](/doc/diagrams/export.jpg)
+ 
+5.	Save it, git add, commit, push
+
+  ``` bash
+git add --all
+git commit -m "Added TR_Options as an environment variable in the playlist"
+git push origin env_var
+```
+ 
+6.	Go to the Jenkins page, and open up the Grinders
+
+ ![open_grinders](/doc/diagrams/openGrinders.jpg)
+ 
+7.	Click “Build with Parameters” on the left side of the page, third down from the top
+
+8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+
+ ![repo](/doc/diagrams/repo.jpg)
+ 
+9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+
+ ![branch](/doc/diagrams/branch.jpg)
+ 
+10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
+
+ ![build_list_target](/doc/diagrams/buildListTarget.jpg)
+ 
+11.	Scroll to the bottom and hit the Build button
+
+ ![build](/doc/diagrams/build.jpg)
+ 
+ 
+#### Method 3: Put it in the testEnv.mk file 
+
+This method is to be used when the objective is to set that environment variable for a more generic case.
+
+1.	Open the openj9/test/TestConfig folder 
+
+ ![test_config](/doc/diagrams/testConfig.jpg)
+ 
+2.	Open the testEnv.mk file
+ 
+ ![test_env](/doc/diagrams/testEnv.jpg)
+ 
+3.	Scroll to the bottom of the document 
+ 
+ ![bottom](/doc/diagrams/bottom.jpg)
+ 
+4.	Insert the key word export, followed by your environment variable, without any single or double quotation marks, or spaces
+ 
+ ![export](/doc/diagrams/otherExport.jpg)
+ 
+5.	Save it, git add, commit, push
+```
+git add --all
+git commit -m "Added TR_Options as an environment variable in testEnv"
+git push origin env_var
+```
+6.	Go to the Jenkins page, and open up the Grinders
+
+ ![open_grinders](/doc/diagrams/openGrinders.jpg)
+ 
+7.	Click “Build with Parameters” on the left side of the page, third down from the top
+ 
+8.	In the OPENJ9_REPO section, put in the repository you were working from when you made those changes
+  
+ ![openj9_repo](/doc/diagrams/openj9Repo.jpg)
+ 
+9.	In the OPENJ9_BRANCH section, put in the branch you were on
+ 
+ ![openj9_branch](/doc/diagrams/openj9Branch.jpg)
+ 
+10.	Scroll to the bottom and hit the Build button
+
+ ![build](/doc/diagrams/build.jpg)
+ 
+
 ## Local testing via make targets on the commandline
 
 #### Clone the repo and pick up the dependencies

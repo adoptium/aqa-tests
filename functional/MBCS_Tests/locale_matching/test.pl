@@ -61,6 +61,12 @@ else {
     exit(0);
 }
 
+if ($ENV{'JDK_VERSION'} eq '8'){
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
+}else{
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+}
+
 my @list=(
 "LocaleFilterTest1",
 "LocaleFilterTest2",

@@ -14,6 +14,8 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET ENVINFO=%1_%2
+call %PWD%\set_variable.bat
+
 %JAVA_BIN%\java -cp %PWD%\scanner.jar Main %1 %2 %3 %4 %5
 fc output %PWD%\expected\%ENVINFO%.txt > fc.out 2>&1
 exit %errorlevel%

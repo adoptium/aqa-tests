@@ -13,6 +13,7 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
+call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java -cp %PWD%\StAX.jar Main %PWD%\data\drinks_%2.xml %PWD%\data\drinks_%2.xml %1 %2 %3 %4 %5
 

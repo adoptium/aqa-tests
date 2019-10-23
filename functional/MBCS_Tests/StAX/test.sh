@@ -44,3 +44,5 @@ ${JAVA_BIN}/java ${CP} StAXReadCursor ${BASE}/data/drinks_${COUNTRY}.xml >read_c
 ${JAVA_BIN}/java ${CP} StAXReadEveIter ${BASE}/data/drinks_${COUNTRY}.xml >read_event.html 2>&1
 ${JAVA_BIN}/java ${CP} StAXWriteCursor $TEST_STRINGS
 ${JAVA_BIN}/java ${CP} StAXWriteEveIter $TEST_STRINGS
+
+LANG=${LANG} perl ${BASE}/resultCheck.pl
