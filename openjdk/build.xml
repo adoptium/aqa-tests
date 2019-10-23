@@ -77,18 +77,21 @@
 				</if>
 				<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
 			</then>
-			<else>
-				<if>
-					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
-					<then>
-						<property name="jdkName" value="openjdk-jdk" />
-					</then>					
-					<else>
-						<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
-					</else>
-				</if>
-				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
-			</else>
+            <else>
+                <if>
+                <and>
+                    <contains string="${env.SPEC}" substring="aarch64" />
+                    <equals arg1="${JDK_VERSION}" arg2="8" />
+                </and>
+                    <then>
+                        <property name="jdkName" value="openjdk-aarch64-jdk8u" />
+                    </then>     
+                <else>
+                    <property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+                </else>
+                </if>
+                <property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
+            </else>
 		</if>
 
 		<if>
