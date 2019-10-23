@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck-runtime-xml_schema-boeingData</testCaseName>
+		<testCaseName>jck-devtools-java2schema-CustomizedMapping</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -25,7 +25,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=xml_schema/boeingData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=java2schema/CustomizedMapping,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -33,9 +33,12 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-xml_schema-msData</testCaseName>
+		<testCaseName>jck-devtools-java2schema-DefaultMapping</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -45,7 +48,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=xml_schema/msData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=java2schema/DefaultMapping,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -53,45 +56,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-xml_schema-nistData</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=xml_schema/nistData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-xml_schema-sunData</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=xml_schema/sunData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 </playlist>
+
