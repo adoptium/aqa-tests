@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck-runtime-vm-constantpool</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_class</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -25,101 +25,20 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/constantpool,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_class,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/jdwp,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1330</disabled>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-jvmti</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/jvmti,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-overview</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/overview,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-classfmt</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/classfmt,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>10+</subset>
+			<subset>8</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-vm-module</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_dom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -129,20 +48,20 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/module,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_dom,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>9+</subset>
+			<subset>8</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-vm-verifier</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_factoryMethod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -152,21 +71,44 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/verifier,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_factoryMethod,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>9+</subset>
+			<subset>8</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>jck-devtools-schema_bind-bind_globalBindings</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
+	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
+	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)  \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_globalBindings,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
 		</subsets>
 	</test>
 	
 	<test>
-		<testCaseName>jck-runtime-vm-instr</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_inlineBinaryData</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -176,20 +118,20 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/instr,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_inlineBinaryData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>jck</group>
 		</groups>
 		<subsets>
-			<subset>10+</subset>
+			<subset>8</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-vm-cldc</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_javaType</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -199,7 +141,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/cldc,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_javaType,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -207,9 +149,12 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-vm-concepts</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_property</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -219,7 +164,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/concepts,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_property,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -227,9 +172,12 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-vm-fp</testCaseName>
+		<testCaseName>jck-devtools-schema_bind-bind_schemaBindings</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -239,7 +187,7 @@
 	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
 	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/fp,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	-test=Jck -test-args=$(Q)tests=schema_bind/bind_schemaBindings,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -247,46 +195,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-jni</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/jni,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-typechecker</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>export JAVA_HOME=$(TEST_JDK_HOME)$(D)  $(AND_IF_SUCCESS) \
-	perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(JCK_ROOT)$(Q)  \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=Jck -test-args=$(Q)tests=vm/typechecker,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 </playlist>
 
