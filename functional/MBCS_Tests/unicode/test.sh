@@ -16,7 +16,6 @@
 BASE=`dirname $0`
 export BASE
 CP="-cp ${BASE}/unicode.jar"
-. ${BASE}/check_env_unix.sh
 
 ${JAVA_BIN}/java ${CP} UnicodeChecker        2>err1.txt
 cat err1.txt
