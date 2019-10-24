@@ -266,9 +266,12 @@ getTestKitGenAndFunctionalTestMaterial()
 	then
 		echo "update to openj9 sha: $OPENJ9_SHA"
 		cd openj9
-		git fetch --unshallow
-		git fetch --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
-		git checkout $OPENJ9_SHA
+		echo "git fetch -q --unshallow"
+		git fetch -q --unshallow
+		echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
+		git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
+		echo "git checkout -q $OPENJ9_SHA"
+		git checkout -q $OPENJ9_SHA
 		cd $TESTDIR
 	fi
 
