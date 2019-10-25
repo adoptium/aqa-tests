@@ -1,0 +1,20 @@
+#!groovy
+
+
+if (params.DOCKER_REQUIRED) {
+    LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux&&sw.tool.docker&&hw.bits.32'
+} else {
+    LABEL='ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32'
+}
+
+stage('Queue') {
+    node((params.LABEL) ? params.LABEL : LABEL) {
+        PLATFORM = 's390_linux'
+        SDK_RESOURCE = 'upstream'
+        SPEC='linux_390'
+        checkout scm
+        jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
+}
+jenkinsfile.run_parallel_tests()
