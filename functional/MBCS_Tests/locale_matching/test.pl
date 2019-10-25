@@ -61,7 +61,7 @@ else {
     exit(0);
 }
 
-if ($ENV{'JDK_VERSION'} eq '8'){
+if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
    $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
 }else{
    $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
