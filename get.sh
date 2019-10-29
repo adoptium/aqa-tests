@@ -126,6 +126,12 @@ parseCommandLineArgs()
 			*) echo >&2 "Invalid option: ${opt}"; echo "This option was unrecognized."; usage; exit 1;
 		esac
 	done
+
+        # Adding this check otherwise it starts writing stuff to $HOME
+        if [ -z "$TESTDIR" ]; then
+           echo "-t parameter to set TESTDIR is mandatory"
+           exit 1
+        fi
 }
 
 getBinaryOpenjdk()
