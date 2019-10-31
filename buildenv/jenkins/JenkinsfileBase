@@ -424,6 +424,17 @@ def post(output_name) {
 			archiveSHAFile()
 
 			addGrinderLink()
+			
+			if (env.BUILD_LIST.startsWith('jck')) {
+				xunit (
+				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
+					deleteOutputFiles: true,
+					failIfNotNew: true,
+					pattern: "**/TestConfig/test_output_*/**/report.xml",
+					skipNoTestFiles: true,
+					stopProcessingIfError: true)]
+				)
+			}
 
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
