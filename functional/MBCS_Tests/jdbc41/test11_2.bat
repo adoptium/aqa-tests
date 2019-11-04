@@ -16,6 +16,8 @@ SET PWD=%~dp0
 SET OUTPUT="output"
 SET DERBY_JAR=%PWD%\derby\db-derby-10.14.2.0-lib\lib\derby.jar
 SET CLASSPATH=%PWD%\jdbc41.jar;%DERBY_JAR%
+call %PWD%\set_variable.bat
+
 %JAVA_BIN%\java Main %1 %2 %3 %4 %5
 
 fc %PWD%\expected\win_%2.expected_11.txt %OUTPUT% > fc.out 2>&1

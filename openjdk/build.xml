@@ -23,7 +23,6 @@
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
-	<property name="openjdkGit" value="openjdk-jdk${JDK_VERSION}u" />
 	<property environment="env" />
 	<if>
 		<isset property="env.RELEASE_TAG"/>
@@ -67,19 +66,41 @@
 		<if>
 			<contains string="${JVM_VERSION}" substring="openj9"/>
 			<then>
-				<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
-				<property name="regressionRepo" value="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git" />
+				<if>
+					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
+					<then>
+						<property name="jdkName" value="openj9-openjdk-jdk" />
+					</then>					
+					<else>
+						<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+					</else>
+				</if>
+				<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
 			</then>
 			<else>
-				<property name="jdkName" value="${openjdkGit}" />
-				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${openjdkGit}.git" />
+				<if>
+					<and>
+						<contains string="${env.SPEC}" substring="aarch64" />
+						<equals arg1="${JDK_VERSION}" arg2="8" />
+					</and>
+  						<then>
+							<property name="jdkName" value="openjdk-aarch64-jdk8u" />
+  						</then>		
+					<else>
+						<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+					</else>
+				</if>
+				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
 			</else>
 		</if>
+
 		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		<exec executable="git" failonerror="false">
 			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
 		</exec>
 		<move file="${jdkName}" tofile="openjdk-jdk"/>
+
+		<checkGitRepoSha repoDir="openjdk-jdk" />
 	</target>
 	
 	<target name="openjdk-jdk.check">

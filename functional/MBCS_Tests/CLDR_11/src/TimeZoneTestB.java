@@ -58,14 +58,26 @@ public class TimeZoneTestB {
     TreeMap<String, String> map = new TreeMap<String, String>();
     for(String id : TimeZone.getAvailableIDs()) {
       TimeZone tz = TimeZone.getTimeZone(id);
+      if (tz.getDisplayName(false, TimeZone.LONG).startsWith("GMT"))
+        continue;
       boolean useDST = tz.useDaylightTime();
       StringBuilder sb = new StringBuilder();
       if (useDST) {
+        if ((tz.getDisplayName(false, TimeZone.LONG, Locale.ENGLISH)
+               .equals(tz.getDisplayName(false, TimeZone.LONG)) &&
+             tz.getDisplayName(true,  TimeZone.LONG, Locale.ENGLISH)
+               .equals(tz.getDisplayName(true,  TimeZone.LONG)))) {
+          continue;
+        }
         sb.append(tz.getDisplayName(false, TimeZone.LONG, Locale.ENGLISH)).append("\t")
           .append(tz.getDisplayName(true,  TimeZone.LONG, Locale.ENGLISH)).append("\t")
           .append(tz.getDisplayName(false, TimeZone.LONG)).append("\t")
           .append(tz.getDisplayName(true,  TimeZone.LONG));
       } else {
+        if (tz.getDisplayName(false, TimeZone.LONG, Locale.ENGLISH)
+              .equals(tz.getDisplayName(false, TimeZone.LONG))) {
+          continue;
+        }
         sb.append(tz.getDisplayName(false, TimeZone.LONG,Locale.ENGLISH)).append("\t")
           .append(tz.getDisplayName(false, TimeZone.LONG));
       }

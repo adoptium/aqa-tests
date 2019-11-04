@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+	<include>../systemtest.mk</include>
+
+	<!-- 
+	Special target to get machine information. This target is in each subfolder playlist.xml.
+	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
+	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TestConfig$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+
+	<!--  The following tests are specific to openj9 only -->
+	<test>
+		<testCaseName>DaaLoadTest_daa1</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa1$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa2</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa2$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa3</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa3$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_all</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa1_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa1$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa2_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa2$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa3_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa3$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_all_ConcurrentScavenge</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+	</test>
+	
+	<test>
+		<testCaseName>DaaLoadTest_daa1_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa1$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+
+ 	<test>
+		<testCaseName>DaaLoadTest_daa2_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa2$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+
+ 	<test>
+		<testCaseName>DaaLoadTest_daa3_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test-args=$(Q)workload=daa3$(Q) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+
+ 	<test>
+		<testCaseName>DaaLoadTest_all_special</testCaseName>
+		<variations>
+			<variation>Mode101</variation>
+			<variation>Mode103</variation>
+			<variation>Mode104</variation>
+			<variation>Mode107</variation>
+			<variation>Mode110</variation>
+			<variation>Mode112</variation>
+			<variation>Mode113</variation>
+			<variation>Mode121</variation>
+			<variation>Mode122</variation>
+			<variation>Mode140</variation>
+			<variation>Mode187</variation>
+			<variation>Mode301</variation>
+			<variation>Mode351</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+			<variation>Mode553</variation>
+			<variation>Mode554</variation>
+			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode556</variation>
+			<variation>Mode557</variation>
+			<variation>Mode607</variation>
+			<variation>Mode610</variation>
+			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode615</variation>
+			<variation>Mode687</variation>
+			<variation>Mode688</variation>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR) \
+	-test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+
+</playlist>

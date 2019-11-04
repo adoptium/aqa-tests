@@ -61,6 +61,12 @@ else {
     exit(0);
 }
 
+if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
+}else{
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+}
+
 my @list=(
 "LocaleFilterTest1",
 "LocaleFilterTest2",

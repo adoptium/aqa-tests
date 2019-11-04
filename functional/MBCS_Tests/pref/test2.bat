@@ -14,6 +14,8 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\pref.jar
+call %PWD%\set_variable.bat
+
 %JAVA_BIN%\java Main %1 %2 %3 %4 %5
 
 C:\Strawberry\perl\bin\perl %PWD%\tap_compare.pl output %PWD%\expected_%1_%2.txt

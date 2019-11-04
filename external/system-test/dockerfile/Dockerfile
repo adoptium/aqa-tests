@@ -20,7 +20,7 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build systemtest: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-system-test .`
+# Build system test: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-system-test .`
 
  
 ARG SDK=openjdk8
@@ -47,7 +47,7 @@ RUN apt-get update \
 
 # Install ant
 ENV ANT_VERSION 1.10.5
-RUN wget --no-check-certificate https://www.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
+RUN wget --no-check-certificate https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
     gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
     tar -xvf apache-ant-${ANT_VERSION}-bin.tar
 

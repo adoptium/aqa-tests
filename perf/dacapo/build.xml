@@ -27,12 +27,13 @@
 	</target>
 
 	<target name="getDacapoSuite" depends="init">
-		<echo message="wget -q https://sourceforge.net/projects/dacapobench/files/latest/download" />
-			<exec executable="wget" failonerror="true">
-				<arg line="-q -O dacapo.jar https://sourceforge.net/projects/dacapobench/files/latest/download" />
+		<var name="curl_options" value="-Lks https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
+		<echo message="curl ${curl_options}" />
+			<exec executable="curl" failonerror="true">
+				<arg line="${curl_options}" />
 			</exec>
 	</target>
-
+	
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}"/>

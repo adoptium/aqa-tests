@@ -35,8 +35,8 @@ if ($FULLLANG eq "aix_Ja_JP.IBM-943" ||
     $FULLLANG eq "aix_JA_JP.UTF-8" ||
     $FULLLANG eq "aix_ko_KR.IBM-eucKR" ||
     $FULLLANG eq "aix_KO_KR.UTF-8" ||
-    $FULLLANG eq "Linux_ja_JP.UTF-8" ||
-    $FULLLANG eq "Linux_ko_KR.UTF-8"){}
+    $FULLLANG eq "linux_ja_JP.UTF-8" ||
+    $FULLLANG eq "linux_ko_KR.UTF-8"){}
 elsif ($FULLLANG eq "aix_ja_JP.UTF-8" ||
        $FULLLANG eq "aix_ko_KR.UTF-8"){ $FULLLANG=$FULLLANG.".s" }
 else {
@@ -47,6 +47,11 @@ else {
     exit(0);
 }
 
+if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
+}else{
+   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+}
 
 #print $lang."\n";
 #print $OS."\n";

@@ -22,6 +22,12 @@ showMessage() {
     exit 0
 }
 
+if [ -x "${TEST_JDK_HOME}/jre/bin/java" ] ; then
+    export JAVA_BIN=${TEST_JDK_HOME}/jre/bin
+else
+    export JAVA_BIN=${TEST_JDK_HOME}/bin
+fi
+
 case "${FULLLANG}" in
     "AIX_Ja_JP.IBM-943"|\
     "AIX_ja_JP.IBM-eucJP"|\

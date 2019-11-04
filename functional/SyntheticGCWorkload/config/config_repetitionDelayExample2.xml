@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="15m">
+
+    <workload duration="35s" numProducerThreads="4"  paymentPeriod="1us" maintenancePeriod="1us">
+
+		<!-- nested payload example	 -->
+		<payloadSet startTime="0s" endTime="8s" dataRate="12MB/s">
+			<payloadSet  payloadType="reflexive" >	
+					<payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+					<payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+					<payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+					<payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+			</payloadSet>
+			<payloadSet payloadType="reflexive" >	
+					<payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+					<payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+					<payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+					<payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+			</payloadSet>
+		</payloadSet>
+
+		<!-- regular payload example -->
+		<payloadSet payloadType="reflexive" startTime="10s" endTime="15s" dataRate="9MB/s">	
+					<payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+					<payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+					<payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+					<payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+		</payloadSet>
+
+		<!-- repeated payload example -->
+		<payloadSet dataRate="10MB/s" payloadType="reflexive" startTime="20s" endTime="30s" duration ="3s" repetitionDelay="5s" >								
+				<payload proportionOfAllocation="5%" size="80B" lifespan="0ms" />
+				<payload proportionOfAllocation="20%" size="192B" lifespan="0ms" />
+				<payload proportionOfAllocation="25%" size="256B" lifespan="0ms" />
+				<payload proportionOfAllocation="50%" size="640B" lifespan="0ms" />
+		</payloadSet>
+
+	</workload>
+
+
+</configuration>

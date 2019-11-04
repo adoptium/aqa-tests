@@ -79,11 +79,20 @@ public class TimeZoneTestA {
           return s1.compareTo(s2);
       });
       for(TimeZone tz: list) {
-        System.out.print(tz.getRawOffset()+"\t"+tz.getID()
-          +"\t"+tz.getDisplayName(false, TimeZone.SHORT));
-        if (tz.useDaylightTime()) 
-          System.out.print("\t"+tz.getDisplayName(true, TimeZone.SHORT));
-        System.out.println();
+        if (tz.useDaylightTime()) {
+          if (tz.getDisplayName(false, TimeZone.SHORT).startsWith("GMT") &&
+              tz.getDisplayName(true, TimeZone.SHORT).startsWith("GMT")) {
+            continue;
+          }
+          System.out.println(tz.getRawOffset()+"\t"+tz.getID()
+            +"\t"+tz.getDisplayName(false, TimeZone.SHORT)
+            +"\t"+tz.getDisplayName(true, TimeZone.SHORT));
+        } else {
+          if (tz.getDisplayName(false, TimeZone.SHORT).startsWith("GMT")) continue;
+          if (tz.getDisplayName(false, TimeZone.SHORT).startsWith("UTC")) continue;
+          System.out.println(tz.getRawOffset()+"\t"+tz.getID()
+            +"\t"+tz.getDisplayName(false, TimeZone.SHORT));
+        }
       }
     }
   }

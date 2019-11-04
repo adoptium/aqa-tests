@@ -40,12 +40,12 @@ cd /jenkins
 
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
-mvn clean install -pl war -am -DskipTests -Denforcer.fail=false
+mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
 
 echo "Building jenkins completed"
 
 echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
-mvn surefire:test -Denforcer.fail=false
+mvn --batch-mode surefire:test -Denforcer.fail=false
 set +e
 echo "Executing jenkins tests alone completed"
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
