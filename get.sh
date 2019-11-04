@@ -135,6 +135,12 @@ getBinaryOpenjdk()
 	mkdir -p openjdkbinary
 	cd openjdkbinary
 
+	if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
+        echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+        echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
+        exit 1
+    fi
+
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
                 # if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
@@ -170,8 +176,8 @@ getBinaryOpenjdk()
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
 				fi
-				echo "curl -OLJks ${curl_options} $file"
-				curl -OLJks ${curl_options} $file
+				echo "curl -OLJSks ${curl_options} $file"
+				curl -OLJSks ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
