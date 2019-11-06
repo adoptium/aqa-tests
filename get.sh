@@ -140,11 +140,13 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir -p openjdkbinary
 	cd openjdkbinary
-
-	if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
-        echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
-        echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
-        exit 1
+	
+	if [ "$SDK_RESOURCE" != "upstream" ]; then
+		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
+        	echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+        	echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
+        	exit 1
+        fi
     fi
 
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
