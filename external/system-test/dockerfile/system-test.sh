@@ -35,9 +35,9 @@ export BUILD_LIST=system
 test=$@
 
 cd /openjdk-tests
-./get.sh -t /openjdk-tests
+./get.sh -t /openjdk-tests --clone_openj9 false
 
-cd /openjdk-tests/TestConfig
+cd /openjdk-tests/TKG
 
 echo "Generating make files..."
 make -f run_configure.mk

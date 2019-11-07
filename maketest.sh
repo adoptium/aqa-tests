@@ -21,7 +21,7 @@ case `uname` in
 esac
 
 if [ "$#" -eq 1 ];then
-	cd $1/TestConfig
+	cd $1/TKG
 	$MAKE -f run_configure.mk
 	if [ $? -ne 0 ]; then
 		exit 1
