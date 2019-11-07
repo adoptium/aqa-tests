@@ -28,7 +28,11 @@ ifeq ($(CYGWIN),1)
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(NPROCS)
 
-JTREG_BASIC_OPTIONS += -agentvm
+ifeq ($(OS),OS/390)
+    JTREG_BASIC_OPTIONS += -othervm
+else
+    JTREG_BASIC_OPTIONS += -agentvm
+endif
 # Only run automatic tests
 JTREG_BASIC_OPTIONS += -a
 # Always turn on assertions

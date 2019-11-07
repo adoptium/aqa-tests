@@ -41,12 +41,29 @@
 				<available file="jtreg-4.2.0-tip.tar.gz" />
 			</not>
 			<then>
-				<exec executable="wget" failonerror="true">
-					<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
-				</exec>
-				<exec executable="tar" failonerror="true">
-					<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
-				</exec>
+                            <if>
+                                <contains string="${PLATFORM}" substring="zos"/>
+                                <then>
+                                    <move file="${BUILD_ROOT}/../openjdkbinary/jtreg-4.2-b14.tar.gz" tofile="jtreg-4.2.0-tip.tar.gz"/>
+                                    <exec executable="gunzip" failonerror="true">
+                                        <arg line="jtreg-4.2.0-tip.tar.gz" />
+                                    </exec>
+                                    <exec executable="tar" failonerror="true">
+                                        <arg line="-o -xf jtreg-4.2.0-tip.tar -C ${DEST}" />
+                                    </exec>
+                                    <exec executable="gzip" failonerror="true">
+                                        <arg line="jtreg-4.2.0-tip.tar" />
+                                    </exec>
+                                </then>
+                                <else>
+                                    <exec executable="wget" failonerror="true">
+                                        <arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+                                    </exec>
+                                    <exec executable="tar" failonerror="true">
+                                        <arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
+                                    </exec>
+                                </else>
+                            </if>
 			</then>
 		</if>
 	</target>
@@ -75,7 +92,15 @@
 						<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
 					</else>
 				</if>
-				<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+                                <if>
+                                    <contains string="${PLATFORM}" substring="zos"/>
+                                    <then>
+                                        <property name="regressionRepo" value="git@github.com:ibmruntimes/${jdkName}.git" />
+                                    </then>
+                                    <else>
+				        <property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+                                    </else>
+                                </if>
 			</then>
 			<else>
 				<if>

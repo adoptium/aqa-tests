@@ -234,7 +234,7 @@ getBinaryOpenjdk()
 			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
 				mv $jar_dir_name native-test-libs
 			#The following only needed if openj9 has a different image name convention
-			elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+			elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" && "$jar_dir_name" != "jtreg" ]]; then
 				mv $jar_dir_name j2sdk-image
 			fi
 		done
