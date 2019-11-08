@@ -58,8 +58,6 @@
 				<mkdir dir="${JCK_ROOT_USED}/.." />
 				<exec executable="git" dir="${JCK_ROOT_USED}/.." failonerror="true">
 					<arg value="clone" />
-					<arg value="--depth" />
-					<arg value="1" />
 					<arg value="--single-branch" />
 					<arg value="-b"/>
 					<arg value="${jck_branch}"/>
@@ -68,15 +66,22 @@
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
+				<echo message="Running git clean at ${JCK_ROOT_USED}..." />
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
+					<arg value="clean" />
+					<arg value="-d" />
+					<arg value="--force" />
+					<arg value="--quiet" />
+				</exec>
+				
 				<echo message="${JCK_ROOT_USED} exists, deleting previously built natives..." />
 				<delete includeemptydirs="true" quiet="true" failonerror="false">
 				    <fileset dir="${JCK_ROOT_USED}/natives" includes="**/*"/>
 				</delete>
+								
 				<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 					<arg value="pull" />
-					<arg value="origin" />
-					<arg value="master" />
 				</exec>
 			</else>
 		</if>

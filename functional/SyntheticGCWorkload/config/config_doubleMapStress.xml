@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration maxDuration="10m">
+    <workload numProducerThreads="4"  paymentPeriod="1ms" maintenancePeriod="1ms">
+        <payloadSet dataRate="70MB/s" payloadType="auto">
+            <payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
+            <payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
+        </payloadSet>
+    </workload>
+</configuration>
