@@ -86,16 +86,31 @@
 				<if>
 					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
 					<then>
-						<property name="jdkName" value="openj9-openjdk-jdk" />
+                                            <if>
+                                                <contains string="${PLATFORM}" substring="zos"/>
+                                                <then>
+                                                </then>
+                                                <else>
+    						    <property name="jdkName" value="openj9-openjdk-jdk" />
+                                                </else>
+                                            </if>
 					</then>					
 					<else>
-						<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+                                            <if>
+                                                <contains string="${PLATFORM}" substring="zos"/>
+                                                <then>
+                                                    <property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
+                                                </then>
+                                                <else>
+                                                    <property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+                                                </else>
+                                            </if>
 					</else>
 				</if>
                                 <if>
                                     <contains string="${PLATFORM}" substring="zos"/>
                                     <then>
-                                        <property name="regressionRepo" value="git@github.ibm.com:runtimes/openj9-openjdk-jdk11-zos.git" />
+                                        <property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git" />
                                     </then>
                                     <else>
 				        <property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
