@@ -1,0 +1,22 @@
+#!groovy
+/* Template for test jobs on z/OS. Configure test job as parameterized.
+    Set parameter TARGET(openjdk, system, external, perf, jck etc.).
+    Set UPSTREAM_JOB_NAME(version_build_arch_os, for example: openjdk8_build_s390x)
+    Set JVM_VERSION(openjdk8, openjdk8-openj9, openjdk9, openjdk8-openj9, etc.*/
+LABEL='ci.role.test&&hw.arch.s390x&&sw.os.zos'
+
+stage('Queue') {
+    node((params.LABEL) ? params.LABEL : LABEL) {
+        PLATFORM = 's390x_zos_largeHeap'
+        SDK_RESOURCE = 'upstream'
+        SPEC='zos_390-64'
+
+        def gitConfig = scm.getUserRemoteConfigs()[0]
+        def SCM_GIT_REPO = gitConfig.getUrl()
+        def SCM_GIT_BRANCH = scm.branches[0].name
+        sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO} openjdk-tests"
+        jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
+}
+jenkinsfile.run_parallel_tests()
