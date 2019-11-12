@@ -126,6 +126,12 @@ parseCommandLineArgs()
 			*) echo >&2 "Invalid option: ${opt}"; echo "This option was unrecognized."; usage; exit 1;
 		esac
 	done
+
+        # Adding this check otherwise it starts writing stuff to $HOME
+        if [ -z "$TESTDIR" ]; then
+           echo "-t parameter to set TESTDIR is mandatory"
+           exit 1
+        fi
 }
 
 getBinaryOpenjdk()
@@ -134,6 +140,14 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir -p openjdkbinary
 	cd openjdkbinary
+	
+	if [ "$SDK_RESOURCE" != "upstream" ]; then
+		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
+        	echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+        	echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
+        	exit 1
+        fi
+    fi
 
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
@@ -170,8 +184,8 @@ getBinaryOpenjdk()
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
 				fi
-				echo "curl -OLJks ${curl_options} $file"
-				curl -OLJks ${curl_options} $file
+				echo "curl -OLJSks ${curl_options} $file"
+				curl -OLJSks ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
@@ -226,7 +240,9 @@ getBinaryOpenjdk()
 				mv $jar_dir_name j2sdk-image
 			fi
 		done
-	chmod -R 755 j2sdk-image
+	if [[ "$PLATFORM" == "s390x_zos" ]]; then
+		chmod -R 755 j2sdk-image
+	fi
 }
 
 getOpenJDKSources() {

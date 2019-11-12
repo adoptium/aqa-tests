@@ -14,6 +14,286 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
+	<!-- Crypto Benchmarks -->
+	<test>
+		<testCaseName>bumbleBench-CipherBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar CipherBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>bumbleBench-DigestBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DigestBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/19</disabled>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-EllipticCurveBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar EllipticCurveBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-GCMBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar GCMBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-HMACBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar HMACBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/19</disabled>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-KeyExchangeBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar KeyExchangeBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-RSABench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar RSABench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>bumbleBench-SignatureBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SignatureBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-SSLSocketBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SSLSocketBench; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/18</disabled>
+	</test>		
+	<!-- GPU Benchmarks -->
+	<test>
+		<testCaseName>bumbleBench-BitonicBench-CPU</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar BitonicBench.CPU; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-BitonicBench-GPULambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar BitonicBench.GPULambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-DoitgenBench-CPU</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DoitgenBench.CPU; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-DoitgenBench-GPULambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DoitgenBench.GPULambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>
+		<impls>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/openjdk-build/issues/1348 -->
+		</impls>				
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-KmeansBench-CPU</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar KmeansBench.CPU; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-KmeansBench-GPULambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar KmeansBench.GPULambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>		
+	<test>
+		<testCaseName>bumbleBench-MatMultBench-CPU</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar MatMultBench.CPU; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-MatMultBench-GPULambda</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar MatMultBench.GPULambda; \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+			<subset>11</subset>
+		</subsets>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
 	<!-- Lambda Benchmarks -->
 	<test>
 		<testCaseName>bumbleBench-DispatchBench-InnerClasses</testCaseName>
@@ -25,7 +305,7 @@
 			<subset>11</subset>
 		</subsets>
 		<impls>
-			<impl>openj9</impl>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/bumblebench/issues/14 -->
 		</impls>		
 		<levels>
 			<level>special</level>

@@ -206,11 +206,11 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
                 [--type|-T ] : optional. jdk or jre
 
-                [--sdkdir|-s binarySDKDIR] : if do not have a local sdk available, specify preferred directory
+                [--sdkdir|-s binarySDKDIR] : optional.  Used if do not have a local sdk available and wish to download one to specify preferred directory to download into
 
-                [--sdk_resource|-r ] : indicate where to get sdk - releases, nightly , upstream or customized
+                [--sdk_resource|-r ] : optional. Indicate where to download an sdk from - releases, nightly, upstream or customized
 
-                [--customizedURL|-c ] : indicate sdk url if sdk source is set as customized
+                [--customizedURL|-c ] : optional. If downloading an sdk and if sdk source is set as customized, indicates sdk url 
                 [--openj9_repo ] : optional. OpenJ9 git repo. Default value: https://github.com/eclipse/openj9.git is used if not provided
                 [--openj9_sha ] : optional. OpenJ9 pull request sha.
                 [--openj9_branch ] : optional. OpenJ9 branch.
