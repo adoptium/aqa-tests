@@ -30,7 +30,7 @@
 			<property name="gitReleaseTag" value="--branch ${env.RELEASE_TAG}"/>
 		</then>
 		<else>
-			<property name="gitReleaseTag" value=""/>
+		        <property name="gitReleaseTag" value=""/>
 		</else>
 	</if>
 	
@@ -95,7 +95,7 @@
                                 <if>
                                     <contains string="${PLATFORM}" substring="zos"/>
                                     <then>
-                                        <property name="regressionRepo" value="git@github.com:ibmruntimes/${jdkName}.git" />
+                                        <property name="regressionRepo" value="git@github.ibm.com:runtimes/openj9-openjdk-jdk11-zos.git" />
                                     </then>
                                     <else>
 				        <property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
