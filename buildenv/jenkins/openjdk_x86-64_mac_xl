@@ -1,11 +1,12 @@
 #!groovy
+
 LABEL='ci.role.test&&hw.arch.x86&&sw.os.osx'
 
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'x64_mac_largeHeap'
         SDK_RESOURCE = 'upstream'
-        SPEC='osx_x86-64'
+        SPEC = 'osx_x86-64'
         checkout scm
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()

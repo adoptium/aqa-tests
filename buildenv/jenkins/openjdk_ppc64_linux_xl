@@ -1,17 +1,16 @@
 #!groovy
 
-
 if (params.DOCKER_REQUIRED) {
-    LABEL='ci.role.test&&hw.arch.ppc64&&sw.os.linux&&sw.tool.docker'
+    LABEL = 'ci.role.test&&hw.arch.ppc64&&sw.os.linux&&sw.tool.docker'
 } else {
-    LABEL='ci.role.test&&hw.arch.ppc64&&sw.os.linux'
+    LABEL = 'ci.role.test&&hw.arch.ppc64&&sw.os.linux'
 }
 
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'ppc64_linux_largeHeap'
         SDK_RESOURCE = 'upstream'
-        SPEC='linux_ppc-64'
+        SPEC = 'linux_ppc-64'
         checkout scm
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()

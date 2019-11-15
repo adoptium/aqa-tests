@@ -50,9 +50,9 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
-	
+
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
-	
+
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -95,13 +95,13 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()		
-			
+			setupEnv()
+
 			//Initialization for things in common between both multiple iterations and many subtests
 			//repeatAmount is the number of times the loops go through
 			def testSubDirs = []
 			int repeatAmount = ITERATIONS
-			
+
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
 			if (repeatAmount == 1) {
@@ -117,7 +117,7 @@ def setupParallelEnv() {
 				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
-			
+
 			parallel_tests = [:]
 
 			for (int i = 0; i < repeatAmount; i++) {
@@ -256,7 +256,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-			
+
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -315,7 +315,7 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			if (fileExists('openjdkbinary/openjdk-test-image')) {
 				env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
 			}
@@ -341,7 +341,7 @@ def runTest( ) {
 		timestamps{
 			echo 'Running tests...'
 			def CUSTOM_OPTION = ''
-			
+
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"

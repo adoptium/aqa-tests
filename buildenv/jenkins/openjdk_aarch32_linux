@@ -1,11 +1,12 @@
 #!groovy
+
 LABEL='ci.role.test&&sw.os.linux&&hw.arch.aarch32'
 
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'aarch32_linux'
         SDK_RESOURCE = 'upstream'
-        SPEC='linux_arm'
+        SPEC = 'linux_arm'
         checkout scm
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()

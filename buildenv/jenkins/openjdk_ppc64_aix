@@ -1,11 +1,12 @@
 #!groovy
+
 LABEL='ci.role.test&&hw.arch.ppc64&&sw.os.aix'
 
 stage('Queue') {
     node((params.LABEL) ? params.LABEL : LABEL) {
         PLATFORM = 'ppc64_aix'
         SDK_RESOURCE = 'upstream'
-        SPEC='aix_ppc-64_cmprssptrs'
+        SPEC = 'aix_ppc-64_cmprssptrs'
         checkout scm
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()
