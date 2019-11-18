@@ -82,6 +82,10 @@ def setupEnv() {
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
 	}
+	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
+	if( params.OPENJDK_SHA) {
+		env.OPENJDK_SHA = params.OPENJDK_SHA
+	}
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
