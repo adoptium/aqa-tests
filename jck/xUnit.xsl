@@ -39,10 +39,10 @@
 		<xsl:for-each select="//TestResult">
 			<xsl:element name="testcase">
 				<xsl:attribute name="classname"> 
-					<xsl:value-of select="DescriptionData/Property[@name='executeClass']/@value"/>
+					<xsl:value-of select="@url"/>
 				</xsl:attribute>
 				<xsl:attribute name="name"> 
-					<xsl:value-of select="DescriptionData/Property[@name='title']/@value"/>
+					<xsl:value-of select="DescriptionData/Property[@name='executeClass']/@value"/>
 				</xsl:attribute>
 				<xsl:attribute name="time"> 
 					<xsl:value-of select="format-number(ResultProperties/Property[@name='totalTime']/@value div 1000, '###,###.000')"/>
@@ -53,7 +53,8 @@
 				<xsl:variable name="failureCount" select="count(Sections/Section[@status='FAILED'])"/>
 				 <xsl:choose>
 					<xsl:when test="$failureCount > 0">
-						<xsl:element name="failure">  
+						<xsl:element name="failure">
+							<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='messages']"/>
 							<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='out1']"/>
 						</xsl:element>
 					</xsl:when>
