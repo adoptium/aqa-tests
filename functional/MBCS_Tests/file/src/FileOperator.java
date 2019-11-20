@@ -41,8 +41,6 @@ public class FileOperator {
 	  else
 	    System.out.println("Failed");
 
-	  System.out.println("Hit Enter Key");
-	  System.in.read();
 	  break;
 
 	case 'R':
@@ -54,8 +52,6 @@ public class FileOperator {
 	      System.out.println("Renamed Directory :");
 	      fo.list(newdir, 3);
 
-	      System.out.println("Hit Enter Key");
-	      System.in.read();
 
 	      System.out.println("Rename-back : ");
 	      dst = fo.rename(newdir);
@@ -68,8 +64,6 @@ public class FileOperator {
 	      else
 		System.out.println("Failed");
 
-	      System.out.println("Hit Enter Key");
-	      System.in.read();
 	  } else
 	      System.out.println("Rename Failed");
 	  break;
