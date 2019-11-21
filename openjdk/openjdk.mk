@@ -103,7 +103,7 @@ JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
 CUSTOM_NATIVE_OPTIONS :=
 
-ifneq ($(JDK_VERSION),8))
+ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
 		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
 		ifeq ($(JDK_IMPL), hotspot)
