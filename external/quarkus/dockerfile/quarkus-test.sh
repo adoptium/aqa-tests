@@ -39,7 +39,7 @@ java -version
 
 # See https://github.com/quarkusio/quarkus/blob/master/CONTRIBUTING.md#frequently-asked-questions
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
-export MAVEN_OPTS="-Xmx1g -XX:MaxPermSize=128m"
+export MAVEN_OPTS="-Xmx1g"
 
 cd /quarkus
 
