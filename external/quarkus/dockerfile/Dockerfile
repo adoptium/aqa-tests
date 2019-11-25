@@ -48,6 +48,7 @@ COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
 WORKDIR /
 RUN pwd
 RUN git clone https://github.com/quarkusio/quarkus.git
-
-ENTRYPOINT ["/bin/bash", "/quarkus-test.sh"]
+  
+RUN printenv
+ENTRYPOINT ["/bin/bash", "/quarkus-test.sh $MODE"]
 CMD ["--version"]
