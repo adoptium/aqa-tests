@@ -14,6 +14,7 @@ stage('Queue') {
         def gitConfig = scm.getUserRemoteConfigs()[0]
         def SCM_GIT_REPO = gitConfig.getUrl()
         def SCM_GIT_BRANCH = scm.branches[0].name
+        cleanWs()
         sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO} openjdk-tests"
         jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
         jenkinsfile.testBuild()
