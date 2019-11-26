@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>quarkus_java_test</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-quarkus-test:latest ; \
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-quarkus-test:latest ""; \
 			$(TEST_STATUS); \
 			docker rmi -f adoptopenjdk-quarkus-test
 		</command>
@@ -28,7 +28,7 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_native_test</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) -e "MODE=-Dnative" adoptopenjdk-quarkus-test:latest ; \
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-quarkus-test:latest "-Dnative" ; \
 			$(TEST_STATUS); \
 			docker rmi -f adoptopenjdk-quarkus-test
 		</command>

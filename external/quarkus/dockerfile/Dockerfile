@@ -42,6 +42,7 @@ RUN apt-get update \
 	vim 
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV MODE=""
 
 COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
 
@@ -50,5 +51,5 @@ RUN pwd
 RUN git clone https://github.com/quarkusio/quarkus.git
   
 RUN printenv
-ENTRYPOINT ["/bin/bash", "/quarkus-test.sh $MODE"]
+ENTRYPOINT ["/bin/bash", "/quarkus-test.sh"]
 CMD ["--version"]
