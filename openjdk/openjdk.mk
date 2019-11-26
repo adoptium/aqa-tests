@@ -102,16 +102,19 @@ endif
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
 CUSTOM_NATIVE_OPTIONS :=
-ifdef TESTIMAGE_PATH
-	JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
-	ifeq ($(JDK_IMPL), hotspot)
-		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
-	else ifeq ($(JDK_IMPL), openj9)
-		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
-	endif
-	ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
-		CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
-	else
-		CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
+
+ifneq ($(JDK_VERSION),8)
+	ifdef TESTIMAGE_PATH
+		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
+		ifeq ($(JDK_IMPL), hotspot)
+			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
+		else ifeq ($(JDK_IMPL), openj9)
+			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+		endif
+		ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
+			CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
+		else
+			CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
+		endif
 	endif
 endif

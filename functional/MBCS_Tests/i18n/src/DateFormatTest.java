@@ -233,9 +233,9 @@ public class DateFormatTest {
 		{
 			TimeZone tz = calendar.getTimeZone();
 			if (followingCount >= 3) {
-				buffer.append(tz.getDisplayName(tz.useDaylightTime(), TimeZone.LONG));
+				buffer.append(tz.getDisplayName(tz.inDaylightTime(new Date()), TimeZone.LONG));
 			}else{
-				buffer.append(tz.getDisplayName(tz.useDaylightTime(), TimeZone.SHORT));
+				buffer.append(tz.getDisplayName(tz.inDaylightTime(new Date()), TimeZone.SHORT));
 			}
 			break;
 		}

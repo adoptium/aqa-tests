@@ -82,6 +82,10 @@ def setupEnv() {
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
 	}
+	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
+	if( params.OPENJDK_SHA) {
+		env.OPENJDK_SHA = params.OPENJDK_SHA
+	}
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
@@ -424,6 +428,17 @@ def post(output_name) {
 			archiveSHAFile()
 
 			addGrinderLink()
+			
+			if (env.BUILD_LIST.startsWith('jck')) {
+				xunit (
+				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
+					deleteOutputFiles: true,
+					failIfNotNew: true,
+					pattern: "**/TestConfig/test_output_*/**/report.xml",
+					skipNoTestFiles: true,
+					stopProcessingIfError: true)]
+				)
+			}
 
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
