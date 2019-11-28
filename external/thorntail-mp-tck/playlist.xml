@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
+<!-- Tests require a larger java heap than the default when running with openj9 jdk.  -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>thorntail_microprofile_tck</testCaseName>
-		<command>docker run --name thorntail-mp-tck $(EXTRA_DOCKER_ARGS) adoptopenjdk-thorntail-mp-tck:latest \
+		<command>docker run --name thorntail-mp-tck --env OPENJ9_JAVA_OPTONS=-Xmx1g $(EXTRA_DOCKER_ARGS) adoptopenjdk-thorntail-mp-tck:latest \
 			 "-pl testsuite/microprofile-tcks,testsuite/microprofile-tcks/config,testsuite/microprofile-tcks/fault-tolerance,testsuite/microprofile-tcks/health,testsuite/microprofile-tcks/jwt-auth,testsuite/microprofile-tcks/metrics,testsuite/microprofile-tcks/openapi,testsuite/microprofile-tcks/opentracing,testsuite/microprofile-tcks/restclient"; \
 			 $(TEST_STATUS); \
 			 docker cp thorntail-mp-tck:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
