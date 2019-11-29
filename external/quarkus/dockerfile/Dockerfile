@@ -41,7 +41,7 @@ RUN apt-get update \
 	unzip \
 	vim 
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 ENV MODE=""
 
 COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
