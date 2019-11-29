@@ -41,13 +41,11 @@ java -version
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
 export MAVEN_OPTS="-Xmx1g"
 
-MODE=$@
-
 cd /quarkus
-
 pwd
+ls -al
+echo "Compile and run quarkus tests"
 
 set -e
-echo "Compile and execute quarkus-test" && \
-./mvnw clean install $MODE
+./mvnw clean install
 set +e
