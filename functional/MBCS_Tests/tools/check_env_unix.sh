@@ -22,7 +22,7 @@ showMessage() {
     exit 0
 }
 
-if [ ${JDK_VERSION} = '8' ] ; then
+if [ -x "${TEST_JDK_HOME}/jre/bin/java" ] ; then
     export JAVA_BIN=${TEST_JDK_HOME}/jre/bin
 else
     export JAVA_BIN=${TEST_JDK_HOME}/bin
@@ -34,19 +34,18 @@ case "${FULLLANG}" in
     "AIX_JA_JP.UTF-8"|\
     "AIX_ko_KR.IBM-eucKR"|\
     "AIX_KO_KR.UTF-8"|\
+    "AIX_zh_CN.IBM-eucCN"|\
+    "AIX_Zh_CN.GB18030"|\
+    "AIX_ZH_CN.UTF-8"|\
+    "AIX_zh_TW.IBM-eucTW"|\
+    "AIX_Zh_TW.big5"|\
+    "AIX_ZH_TW.UTF-8"|\
     "Linux_ja_JP.UTF-8"|\
-    "Linux_ko_KR.UTF-8") setData ;;
+    "Linux_ko_KR.UTF-8"|\
+    "Linux_zh_CN.UTF-8"|\
+    "Linux_zh_TW.UTF-8") setData ;;
     "AIX_ja_JP.UTF-8"|\
     "AIX_ko_KR.UTF-8") FULLLANG=${FULLLANG}.s
                        setData ;;
     *) showMessage ;;
-esac     
-
-
-
-
-
-
-
-
-
+esac

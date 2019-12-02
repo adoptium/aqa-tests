@@ -12,21 +12,46 @@
 # limitations under the License.
 ##############################################################################
 NPROCS:=1
+# Memory size in MB
+MEMORY_SIZE:=1024
+
 OS:=$(shell uname -s)
 
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
+	MEMORY_SIZE:=$(shell \
+		expr `cat /proc/meminfo | grep MemTotal | awk '{print $$2}'` / 1024 \
+		)
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
+	MEMORY_SIZE:=$(shell expr `sysctl -n hw.memsize` / 1024 / 1024)
 endif
 ifeq ($(OS),FreeBSD)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
+	MEMORY_SIZE:=$(shell expr `sysctl -n hw.memsize` / 1024 / 1024)
 endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
+	MEMORY_SIZE:=$(shell \
+		expr `wmic computersystem get totalphysicalmemory -value | grep = \
+		| cut -d "=" -f 2-` / 1024 / 1024 \
+		)
 endif
-EXTRA_JTREG_OPTIONS += -concurrency:$(NPROCS)
+# Upstream OpenJDK, roughly, sets concurrency based on the
+# following: min(NPROCS/2, MEM_IN_GB/2).
+MEM := $(shell expr $(MEMORY_SIZE) / 2048)
+CORE := $(shell expr $(NPROCS) / 2)
+CONC := $(CORE)
+ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
+	CONC := $(MEM)
+endif
+JTREG_CONC ?= 0
+# Allow JTREG_CONC be set via parameter
+ifeq ($(JTREG_CONC), 0)
+	JTREG_CONC := $(CONC)
+endif
+EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
 
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
@@ -77,16 +102,19 @@ endif
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
 CUSTOM_NATIVE_OPTIONS :=
-ifdef TESTIMAGE_PATH
-	JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
-	ifeq ($(JDK_IMPL), hotspot)
-		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
-	else ifeq ($(JDK_IMPL), openj9)
-		JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
-	endif
-	ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
-		CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
-	else
-		CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
+
+ifneq ($(JDK_VERSION),8)
+	ifdef TESTIMAGE_PATH
+		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
+		ifeq ($(JDK_IMPL), hotspot)
+			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
+		else ifeq ($(JDK_IMPL), openj9)
+			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+		endif
+		ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
+			CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
+		else
+			CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
+		endif
 	endif
 endif

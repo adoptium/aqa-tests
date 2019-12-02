@@ -17,7 +17,6 @@ SET PWD=%~dp0
 SET CLASSPATH=%PWD%\IDN.jar
 SET OUTPUT=output.txt
 call %PWD%\check_env_windows.bat
-del %OUTPUT%
 for %%i in (%PWD%\win_%LOCALE%_*_txt) do (
     %JAVA_BIN%\java IDNFromFile %%i
     type toAscii.txt >> %OUTPUT%

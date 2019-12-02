@@ -72,6 +72,13 @@ node('master') {
 				}
 				//SUFFIX = nightly, releases, personal, prtest
 				SUFFIX = '_personal'
+				if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || ARCH_OS_LIST.size() >1) {
+					if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'release') {
+						error("If grinder with multiple SDKs please set SDK_RESOURCE nightly or release")
+						exit
+					}
+				}
+				
 			}
 			checkout scm
 			ARCH_OS_LIST.each { ARCH_OS ->
