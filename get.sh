@@ -225,41 +225,44 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
+			if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then 
+				rm -rf $SDKDIR/openjdkbinary/tmp/*
+			else
+				mkdir $SDKDIR/openjdkbinary/tmp
+			fi
+
 			echo "unzip file: $jar_name ..."
 			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
-				unzip -q $jar_name -d .
+				unzip -q $jar_name -d ./tmp
 			else
-				gzip -cd $jar_name | tar xof -
+				gzip -cd $jar_name | tar xof - -C ./tmp
 			fi
+			
+			cd ./tmp
+			jar_dirs=`ls -d */`
+			jar_dir_array=(${jar_dirs//\\n/ })
+			len=${#jar_dir_array[@]}
+			if [[ "$len" == 1 ]]; then
+				jar_dir_name=${jar_dir_array[0]}
+				if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
+					mv $jar_dir_name ../openjdk-test-image
+				elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
+					mv $jar_dir_name ../j2re-image
+				elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
+					mv $jar_dir_name ../j2sdk-image
+				# if native test libs folder is available, mv it under native-test-libs
+				elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					mv $jar_dir_name ../native-test-libs
+				#The following only needed if openj9 has a different image name convention
+				elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					mv $jar_dir_name ../j2sdk-image
+				fi
+			elif [[ "$len" > 1 ]]; then
+				mv ../tmp ../j2sdk-image
+			fi
+			cd $SDKDIR/openjdkbinary
 		done
 
-	jar_dirs=`ls -d */`
-	jar_dir_array=(${jar_dirs//\\n/ })
-	for jar_dir in "${jar_dir_array[@]}"
-		do
-			jar_dir_name=${jar_dir%?}
-			if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
-				mv $jar_dir_name openjdk-test-image
-			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
-				if [[ -d $jar_dir_name/Contents/Home ]]; then
-					mv "$jar_dir_name/Contents/Home" j2re-image
-				else
-					mv $jar_dir_name j2re-image
-				fi
-			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
-				if [[ -d $jar_dir_name/Contents/Home ]]; then
-					mv "$jar_dir_name/Contents/Home" j2sdk-image
-				else
-					mv $jar_dir_name j2sdk-image
-				fi
-			# if native test libs folder is available, mv it under native-test-libs
-			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-				mv $jar_dir_name native-test-libs
-			#The following only needed if openj9 has a different image name convention
-			elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-				mv $jar_dir_name j2sdk-image
-			fi
-		done
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
 	fi
@@ -416,13 +419,36 @@ getFunctionalTestMaterial()
 testJavaVersion()
 {
 # use environment variable TEST_JDK_HOME to run java -version
+if [[ $TEST_JDK_HOME == "" ]]; then
+	TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
+fi
 _java=${TEST_JDK_HOME}/bin/java
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
 	${_java} -version
 else
-	echo "Cannot find java executable in TEST_JDK_HOME: ${TEST_JDK_HOME}!"
-	exit 1
+	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
+	# Search javac as java may not be unique
+	javac_path=`find ${TEST_JDK_HOME}/ \( -name "javac" -o -name "javac.exe" \)`
+	if [[ $javac_path != "" ]]; then
+		echo "javac_path: ${javac_path}"
+		javac_path_array=(${javac_path//\\n/ })
+		_javac=${javac_path_array[0]}
+
+		# for windows, replace \ to /. Otherwise, readProperties() in Jenkins script cannot read \
+		if [[ "${_javac}" =~ "javac.exe" ]]; then
+			_javac="${_javac//\\//}"
+		fi
+
+		java_dir=$(dirname "${_javac}")
+		echo "Run: ${java_dir}/java -version"
+		${java_dir}/java -version
+		TEST_JDK_HOME=${java_dir}/../
+		echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
+	else
+		echo "Cannot find javac under TEST_JDK_HOME: ${TEST_JDK_HOME}!"
+		exit 1
+	fi
 fi
 }
 

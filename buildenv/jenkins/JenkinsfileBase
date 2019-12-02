@@ -283,7 +283,20 @@ def setup() {
 				} else {
 					get_sources()
 				}
+				getJobProperties()
 			}
+		}
+	}
+}
+
+def getJobProperties() {
+	def jobProperties = "./openjdk-tests/job.properties"
+	if (fileExists("${jobProperties}")) {
+		echo "readProperties file: ${jobProperties}"
+		def properties = readProperties file: "${jobProperties}"
+		if (properties.TEST_JDK_HOME) {
+			env.TEST_JDK_HOME = properties.TEST_JDK_HOME
+			echo "Reset TEST_JDK_HOME to ${TEST_JDK_HOME}"
 		}
 	}
 }
