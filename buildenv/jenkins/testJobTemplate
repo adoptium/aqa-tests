@@ -169,6 +169,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										relativeTargetDirectory('openjdk-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
+										cloneOptions {
+											reference('$HOME/openjdk_cache')
+											timeout(60)
+										}
 									}
 								}
 								scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
