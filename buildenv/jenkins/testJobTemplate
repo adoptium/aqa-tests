@@ -89,11 +89,13 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
+        def TKG_REPO = "https://github.com/AdoptOpenJDK/TKG.git"
 	
 	// zos has to use ssh
 	if (ARCH_OS.contains("zos")) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/", "git@github.com:")
+                TKG_REPO = TKG_REPO.replace("https://github.com/", "git@github.com:")
 	}
 
 	JDK_VERSIONS.each { JDK_VERSION ->
@@ -157,6 +159,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 							stringParam('RELEASE_TAG', "", "SCM tag from which to run tests")
 							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
+                                                        stringParam('TKG_REPO', TKG_REPO, "TestKitGen git repo. Please use ssh for zos.")
 						}
 						cpsScm {
 							scm {
