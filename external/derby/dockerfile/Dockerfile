@@ -29,7 +29,7 @@ ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 # Install test dependent executable files
-RUN    apt-get update; \
+RUN apt-get update; \
     apt-get install -y --no-install-recommends \
         git \
         wget \
