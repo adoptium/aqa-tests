@@ -16,12 +16,12 @@
 
 <project name="Dacapo suite" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<description>Dacapo suite</description>
+	<description>Dacapo Suite</description>
 
-	<!-- set global properties for this build -->
+	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
-	<property name="src" location="." />
-	
+	<property name="SRC" location="." />
+		
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
@@ -36,7 +36,7 @@
 	
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}"/>
+			<fileset dir="${SRC}"/>
 		</copy>
 	</target>
 

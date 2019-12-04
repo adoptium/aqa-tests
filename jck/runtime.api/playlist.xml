@@ -1161,6 +1161,7 @@
 			<group>jck</group>
 		</groups>
 	</test>
+	<!-- This is a "special" test that requires kerberos server set up -->
 	<test>
 		<testCaseName>jck-runtime-api-org_ietf</testCaseName>
 		<variations>
@@ -1175,7 +1176,7 @@
 	-test=Jck -test-args=$(Q)tests=api/org_ietf,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>jck</group>
