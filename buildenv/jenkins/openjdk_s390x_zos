@@ -11,6 +11,11 @@ stage('Queue') {
         SDK_RESOURCE = 'upstream'
         SPEC='zos_390-64_cmprssptrs'
 
+        /* Ensure correct CC env */
+        env._CC_CCMODE = '1'
+        env._CXX_CCMODE = '1'
+        env._C89_CCMODE = '1'
+
         def gitConfig = scm.getUserRemoteConfigs()[0]
         def SCM_GIT_REPO = gitConfig.getUrl()
         def SCM_GIT_BRANCH = scm.branches[0].name

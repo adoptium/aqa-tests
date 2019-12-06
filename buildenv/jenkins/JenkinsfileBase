@@ -12,7 +12,7 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam"
@@ -30,9 +30,13 @@ def setupEnv() {
 	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
+	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
+	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
+	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
@@ -144,9 +148,13 @@ def setupParallelEnv() {
 					build job: TEST_JOB_NAME, parameters: [
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
+						string(name: 'CLONE_OPENJ9', value: CLONE_OPENJ9),
 						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
 						string(name: 'OPENJ9_SHA', value: OPENJ9_SHA),
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
+						string(name: 'TKG_REPO', value: TKG_REPO),
+						string(name: 'TKG_SHA', value: TKG_SHA),
+						string(name: 'TKG_BRANCH', value: TKG_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
 						string(name: 'BUILD_LIST', value: buildListName),
@@ -223,9 +231,13 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
+			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
 			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
 			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+			TKG_REPO_OPTION = (params.TKG_REPO) ? "--tkg_repo ${params.TKG_REPO}" : "--tkg_repo https://github.com/AdoptOpenJDK/TKG.git"
+			TKG_BRANCH_OPTION = (params.TKG_BRANCH) ? "--tkg_branch ${params.TKG_BRANCH}" : ""
+			TKG_SHA_OPTION = (params.TKG_SHA) ? "--tkg_sha ${params.TKG_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 			// system test repository exports to be used by system/common.xml
@@ -259,7 +271,7 @@ def setup() {
 			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
-			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
 			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -407,7 +419,7 @@ def post(output_name) {
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
 				echo 'Converting tap file from ebcdic to ascii...'
-				sh 'cd ./openjdk-tests/TestConfig'
+				sh 'cd ./openjdk-tests/TKG'
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (String tapFile : tapFiles) {
 					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
@@ -442,7 +454,7 @@ def post(output_name) {
 
 			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
-				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
+				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
@@ -455,7 +467,7 @@ def post(output_name) {
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
 				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
@@ -539,7 +551,7 @@ def getJenkinsDomain() {
 }
 
 def archiveSHAFile() {
-	def shaFile = "openjdk-tests/TestConfig/SHA.txt";
+	def shaFile = "openjdk-tests/TKG/SHA.txt";
 	if (!params.ARTIFACTORY_SERVER) {
 		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
 		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true

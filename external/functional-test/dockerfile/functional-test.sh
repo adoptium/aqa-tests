@@ -33,7 +33,7 @@ TEST_SUITE=$1
 
 echo "JAVA_HOME is : $JAVA_HOME"
 
-cd /openj9/test/TestConfig
+cd /openj9/test/TKG
 
 # Generate make files 
 echo "Generating make files..."
