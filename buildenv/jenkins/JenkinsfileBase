@@ -27,14 +27,16 @@ def setupEnv() {
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
 	}
 
+	env.SPEC = "${SPEC}"
+
 	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/openjdk-tests.git" : "https://github.com/AdoptOpenJDK/openjdk-tests.git")
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:eclipse/openj9.git" : "https://github.com/eclipse/openj9.git")
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/TKG.git" :"https://github.com/AdoptOpenJDK/TKG.git")
 	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
 	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
@@ -49,7 +51,7 @@ def setupEnv() {
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
-	env.SPEC = "${SPEC}"
+
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
@@ -232,11 +234,11 @@ def setup() {
 				}
 			}
 			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
-			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
-			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
+			OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
+			OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
-			TKG_REPO_OPTION = (params.TKG_REPO) ? "--tkg_repo ${params.TKG_REPO}" : "--tkg_repo https://github.com/AdoptOpenJDK/TKG.git"
-			TKG_BRANCH_OPTION = (params.TKG_BRANCH) ? "--tkg_branch ${params.TKG_BRANCH}" : ""
+			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
+			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
 			TKG_SHA_OPTION = (params.TKG_SHA) ? "--tkg_sha ${params.TKG_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
