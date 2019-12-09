@@ -1,0 +1,14 @@
+#!groovy
+LABEL='ci.role.test&&hw.arch.ppc64&&sw.os.aix'
+
+stage('Queue') {
+    node((params.LABEL) ? params.LABEL : LABEL) {
+        PLATFORM = 'ppc64_aix_largeHeap'
+        SDK_RESOURCE = 'upstream'
+        SPEC='aix_ppc-64'
+        checkout scm
+        jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+        jenkinsfile.testBuild()
+    }
+}
+jenkinsfile.run_parallel_tests()
