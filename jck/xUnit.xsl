@@ -14,7 +14,7 @@
 			<xsl:value-of select="count(//TestResult)" />
 		</xsl:attribute>
 		<xsl:attribute name="failures">
-			<xsl:value-of select="count(//TestResult/Sections/Section[@status='FAILED'])"/>
+			<xsl:value-of select="count(//TestResult[@status='FAILED'])"/>
 		</xsl:attribute>
 		<xsl:attribute name="errors">
 			<xsl:value-of select="count(//TestResult/Sections/Section/Output[contains(normalize-space(.), 'Error:')])"/>
@@ -42,7 +42,7 @@
 					<xsl:value-of select="@url"/>
 				</xsl:attribute>
 				<xsl:attribute name="name"> 
-					<xsl:value-of select="DescriptionData/Property[@name='executeClass']/@value"/>
+					<xsl:value-of select="DescriptionData/Property[@name='title']/@value"/>
 				</xsl:attribute>
 				<xsl:attribute name="time"> 
 					<xsl:value-of select="format-number(ResultProperties/Property[@name='totalTime']/@value div 1000, '###,###.000')"/>
@@ -50,15 +50,12 @@
 				<xsl:attribute name="time"> 
 					<xsl:value-of select="format-number(ResultProperties/Property[@name='totalTime']/@value div 1000, '###,###.000')"/>
 				</xsl:attribute>
-				<xsl:variable name="failureCount" select="count(Sections/Section[@status='FAILED'])"/>
-				 <xsl:choose>
-					<xsl:when test="$failureCount > 0">
-						<xsl:element name="failure">
-							<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='messages']"/>
-							<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='out1']"/>
-						</xsl:element>
-					</xsl:when>
-				</xsl:choose>
+				<xsl:if test="self::node()[@status='FAILED']">
+					<xsl:element name="failure">
+						<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='messages']"/>
+						<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='out1']"/>
+					</xsl:element>
+				</xsl:if>
 			</xsl:element>
 		</xsl:for-each>
 		<system-out/>
