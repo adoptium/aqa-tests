@@ -318,7 +318,7 @@ def buildTest() {
 
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TestConfig/lib'
+				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
