@@ -42,6 +42,7 @@ ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 COPY ./dockerfile/jenkins-test.sh /jenkins-test.sh
 
 WORKDIR /
+RUN mkdir testResults
 
 # Clone jenkins src to /jenkins
 RUN git clone https://github.com/jenkinsci/jenkins.git
