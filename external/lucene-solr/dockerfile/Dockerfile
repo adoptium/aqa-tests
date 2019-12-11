@@ -22,53 +22,61 @@
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version> -t adoptopenjdk-lucene-solr-test .`
 
-ARG SDK=openjdk8
+ARG SDK=openjdk11
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+# Lucene Branch/Tag
+ARG LUCENE_SOLR_TAG=.
+ARG ANT_VERSION=1.10.6
+ARG IVY_VERSION=2.5.0
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        tar \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /
-ENV LUCENE_SOLR_HOME ${WORKDIR}
+ENV ANT_VERSION=$ANT_VERSION
+ENV ANT_HOME=/opt/ant
 
-#apache ant setup 
-ENV ANT_VERSION 1.10.3
-RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
-    gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
-    tar -xvf apache-ant-${ANT_VERSION}-bin.tar
+# Install Ant
+RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz.sha512 \
+    && echo "$(cat apache-ant-${ANT_VERSION}-bin.tar.gz.sha512) apache-ant-${ANT_VERSION}-bin.tar.gz" | sha512sum -c \
+    && tar -zvxf apache-ant-${ANT_VERSION}-bin.tar.gz -C /opt/ \
+    && ln -s /opt/apache-ant-${ANT_VERSION} /opt/ant \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz.sha512
+
+# Add Ant to PATH
+ENV PATH ${PATH}:${ANT_HOME}/bin
 
 #apache ivy setup 
-ENV IVY_VERSION 2.4.0
-RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz && \
-    gunzip apache-ivy-${IVY_VERSION}-bin.tar.gz && \
-    tar -xvf apache-ivy-${IVY_VERSION}-bin.tar && \
-    cp apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar $WORKDIR/apache-ant-${ANT_VERSION}/lib/
-ENV ANT_HOME ${WORKDIR}/apache-ant-${ANT_VERSION}
+ENV IVY_VERSION=$IVY_VERSION
+RUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz \
+    && wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/${IVY_VERSION}/apache-ivy-${IVY_VERSION}-bin.tar.gz.sha512 \
+    && echo "$(cat apache-ivy-${IVY_VERSION}-bin.tar.gz.sha512) apache-ivy-${IVY_VERSION}-bin.tar.gz" | sha512sum -c \
+    && tar -zvxf apache-ivy-${IVY_VERSION}-bin.tar.gz apache-ivy-${IVY_VERSION}/ivy-${IVY_VERSION}.jar -C ${ANT_HOME}/lib/ \
+    && rm -f apache-ivy-${IVY_VERSION}-bin.tar.gz \
+    && rm -f apache-ivy-${IVY_VERSION}-bin.tar.gz.sha512
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/lucene-solr-test.sh /lucene-solr-test.sh
 
-# Clone the repo where the Lucen-Solr code and tests reside.
+ENV LUCENE_SOLR_HOME ${WORKDIR}
 
-#default is HEAD
+# Clone the repo where the Lucen-Solr code and tests reside.
+ENV LUCENE_SOLR_TAG=$LUCENE_SOLR_TAG
 RUN git clone https://github.com/apache/lucene-solr.git
-ARG LUCENE_SOLR_TAG=.
-WORKDIR lucene-solr
-RUN git checkout -q $LUCENE_SOLR_TAG
+WORKDIR /lucene-solr/
+RUN git checkout ${LUCENE_SOLR_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/lucene-solr-test.sh"]
-CMD ["--version"]

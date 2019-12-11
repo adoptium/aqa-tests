@@ -28,38 +28,49 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG ANT_VERSION=1.10.6
+ARG TOMCAT_TAG=9.0.30
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget \
-	gcc
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        tar \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-# Install OpenSSL
-RUN git clone https://github.com/openssl/openssl.git && cd /openssl && git checkout OpenSSL_1_0_2k \ 
-	&& ./config --prefix=/usr --openssldir=/usr/local/openssl shared \
-	&& make \
-	&& make install
+ENV ANT_VERSION=$ANT_VERSION
+ENV ANT_HOME=/opt/ant
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+# Install Ant
+RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz.sha512 \
+    && echo "$(cat apache-ant-${ANT_VERSION}-bin.tar.gz.sha512) apache-ant-${ANT_VERSION}-bin.tar.gz" | sha512sum -c \
+    && tar -zvxf apache-ant-${ANT_VERSION}-bin.tar.gz -C /opt/ \
+    && ln -s /opt/apache-ant-${ANT_VERSION} /opt/ant \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz.sha512
+
+# Add Ant to PATH
+ENV PATH ${PATH}:${ANT_HOME}/bin
+
+## Install OpenSSL
+#RUN git clone https://github.com/openssl/openssl.git && cd /openssl && git checkout OpenSSL_1_0_2k \
+#	&& ./config --prefix=/usr --openssldir=/usr/local/openssl shared \
+#	&& make \
+#	&& make install
+
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run tomcat tests.  
 COPY ./dockerfile/tomcat-test.sh /tomcat-test.sh
 
-# Clone the repo where the 3rd party application code and tests reside. 
-WORKDIR /
-RUN pwd
-
-# Clone tomcat to /tomcat 
+# Clone tomcat to /tomcat
+ENV TOMCAT_TAG=$TOMCAT_TAG
 RUN git clone https://github.com/apache/tomcat.git
+WORKDIR /tomcat/
+RUN git checkout ${TOMCAT_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/tomcat-test.sh"]
-CMD ["--version"]

@@ -28,34 +28,28 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG OPENLIBERTY_TAG=integration
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	unzip \
-	wget
-	
-# Install openliberty-mp-tck tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-
-WORKDIR /
-ENV OPENLIBERTY_HOME $WORKDIR
-RUN mkdir testResults
-
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/openliberty-mp-tck.sh /openliberty-mp-tck.sh
 
+ENV OPENLIBERTY_HOME $WORKDIR
+RUN mkdir testResults
+
 #Clone openliberty repo 
-RUN git clone -q git://github.com/OpenLiberty/open-liberty
+ENV OPENLIBERTY_TAG=$OPENLIBERTY_TAG
+RUN git clone https://github.com/OpenLiberty/open-liberty.git
+WORKDIR /open-liberty/
+RUN git checkout ${OPENLIBERTY_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/openliberty-mp-tck.sh"]
-CMD [""]

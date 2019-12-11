@@ -20,7 +20,7 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-scala-test .`
+# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-scala-test .`
 
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
@@ -28,34 +28,48 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG SBT_VERSION=1.3.4
+ARG SCALA_VERSION=v2.13.1
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        curl \
+        gpg \
+        gpg-agent \
+        tar \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-# Install sbt
-RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-RUN apt-get update && apt-get install -y sbt
+ENV SBT_VERSION=$SBT_VERSION
+ENV SBT_HOME=/opt/sbt
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+# Install SBT
+RUN wget --no-check-certificate --no-cookies https://piccolo.link/sbt-${SBT_VERSION}.tgz \
+    && wget --no-check-certificate --no-cookies https://piccolo.link/sbt-${SBT_VERSION}.tgz.asc \
+    && curl "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | gpg --import \
+    && gpg --verify sbt-${SBT_VERSION}.tgz.asc sbt-${SBT_VERSION}.tgz \
+    && tar -zvxf sbt-${SBT_VERSION}.tgz -C /opt/ \
+    && rm -f sbt-${SBT_VERSION}.tgz \
+    && rm -f sbt-${SBT_VERSION}.tgz.asc
+
+ENV PATH ${PATH}:${SBT_HOME}/bin
+
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run scala tests
 COPY ./dockerfile/scala-test.sh /scala-test.sh
 
 # Clone scala src to /scala
-WORKDIR /
-RUN pwd
+ENV SCALA_VERSION=$SCALA_VERSION
 RUN git clone https://github.com/scala/scala.git
+WORKDIR /scala/
+RUN git checkout ${SCALA_VERSION}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/scala-test.sh"]
-CMD [""]
+
+# Used to pass in a default value for TEST_SUITE
+#CMD [""]

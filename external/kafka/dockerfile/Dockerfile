@@ -20,51 +20,49 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-kafka-test .`
+# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-kafka-test .`
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
-## Kafka 2.1 branch, 2.1.0 release
-ARG KAFKA_VERSION="809be928f1ae004e11d65c307ea322bef126c834"
-
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+# Kafka 2.1 branch, 2.1.0 release
+ARG KAFKA_TAG="809be928f1ae004e11d65c307ea322bef126c834"
+ARG GRADLE_VERSION=5.1
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        unzip \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-#Install Gradle
-RUN mkdir -p /usr/share/gradle \
-         && cd /usr/share/gradle \
-         && wget -q https://services.gradle.org/distributions/gradle-5.0-bin.zip \
-         && unzip -qq gradle-5.0-bin.zip \
-         && rm -rf gradle-5.0-bin.zip \
-         && ln -s /usr/share/gradle/gradle-5.0/bin/gradle /usr/bin/gradle \
-         && cd /
+ENV GRADLE_VERSION=$GRADLE_VERSION
+ENV GRADLE_HOME /opt/gradle
 
-RUN cd .
+# Install Gradle
+RUN wget --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
+    && wget --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256 \
+    && echo "$(cat gradle-${GRADLE_VERSION}-bin.zip.sha256) gradle-${GRADLE_VERSION}-bin.zip" | sha256sum -c \
+    && unzip gradle-${GRADLE_VERSION}-bin.zip -d ${GRADLE_HOME} \
+    && ln --symbolic "${GRADLE_HOME}/gradle-${GRADLE_VERSION}/bin/gradle" /usr/bin/gradle \
+    && rm -f gradle-${GRADLE_VERSION}-bin.zip \
+    && rm -f gradle-${GRADLE_VERSION}-bin.zip.sha256
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run kafka tests. 
 COPY ./dockerfile/kafka-test.sh /kafka-test.sh
 
 # Clone the repo where kafka tests reside.
-WORKDIR /
-RUN pwd
-
+ENV KAFKA_TAG=$KAFKA_TAG
 RUN git clone https://github.com/apache/kafka.git
-WORKDIR kafka
-RUN git checkout $KAFKA_VERSION
+WORKDIR /kafka/
+RUN git checkout ${KAFKA_TAG}
 WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/kafka-test.sh"]
-CMD [""]

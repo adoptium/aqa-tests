@@ -28,6 +28,9 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG ANT_VERSION=1.10.6
+ARG DERBY_TAG=10.15.1.3
+
 # Install test dependent executable files
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -37,7 +40,7 @@ RUN apt-get update; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-ENV ANT_VERSION=1.10.6
+ENV ANT_VERSION=$ANT_VERSION
 ENV ANT_HOME=/opt/ant
 
 # Install Ant
@@ -52,16 +55,18 @@ RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/
 # Add Ant to PATH
 ENV PATH ${PATH}:${ANT_HOME}/bin
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-WORKDIR /
 ENV DERBY_HOME ${WORKDIR}/derby
 
 # This is the main script to run derby tests.
 COPY ./dockerfile/derby-test.sh /derby-test.sh
 
 # Clone Derby source.
+ENV DERBY_TAG=$DERBY_TAG
 RUN git clone https://github.com/apache/derby.git
+WORKDIR /derby/
+RUN git checkout ${DERBY_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/derby-test.sh"]
-CMD ["--version"]

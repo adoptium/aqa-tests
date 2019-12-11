@@ -28,32 +28,31 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-# Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	curl \
-	git \
-	unzip \
-	vim \
-	wget
-	
-# Install payara-mp-tck tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
+ARG PAYARA_TAG=2.0
 
-WORKDIR /
-RUN mkdir testResults
-ENV PAYARA_HOME $WORKDIR
+# Install test dependent executable files
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/payara-mp-tck.sh /payara-mp-tck.sh
 
+ENV PAYARA_HOME $WORKDIR
+RUN mkdir testResults
+
 # Clone the Pyara MicroProfile-TCK-Runners
-RUN pwd
+ENV PAYARA_TAG=$PAYARA_TAG
 RUN git clone https://github.com/payara/MicroProfile-TCK-Runners
+WORKDIR /MicroProfile-TCK-Runners/
+RUN git checkout ${PAYARA_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/payara-mp-tck.sh"]
-CMD [""]
+
+# Used to pass in a default value for TEST_OPTIONS
+#CMD [""]
