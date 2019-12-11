@@ -20,7 +20,7 @@
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-jenkins-test .`
+# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-jenkins-test .`
 
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
@@ -29,33 +29,22 @@ ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-# Install jenkins tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
-	
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 # This is the main script to run jenkins tests
 COPY ./dockerfile/jenkins-test.sh /jenkins-test.sh
 
-# Clone jenkins src to /jenkins
 WORKDIR /
 RUN mkdir testResults
+
+# Clone jenkins src to /jenkins
 RUN git clone https://github.com/jenkinsci/jenkins.git
 
 ENTRYPOINT ["/bin/bash", "/jenkins-test.sh"]
-CMD ["--version"]
