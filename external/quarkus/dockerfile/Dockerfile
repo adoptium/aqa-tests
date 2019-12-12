@@ -45,7 +45,7 @@ ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 ENV MODE="java"
 
 COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
-
+RUN mkdir testResults
 WORKDIR /
 RUN pwd
 RUN git clone https://github.com/quarkusio/quarkus.git
