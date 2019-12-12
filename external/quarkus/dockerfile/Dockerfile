@@ -42,7 +42,7 @@ RUN apt-get update \
 	vim 
 
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-ENV MODE=""
+ENV MODE="java"
 
 COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
 
@@ -50,6 +50,8 @@ WORKDIR /
 RUN pwd
 RUN git clone https://github.com/quarkusio/quarkus.git
   
-RUN printenv
+# if MODE=-Dnative, then get graalvm
+# RUN wget https://ci.adoptopenjdk.net/view/all/job/jdk8-with-graal_build_x86-64_linux/lastSuccessfulBuild/artifact/build/x86_64/linux_macos/jdk8-with-graal-local/jdk8-with-graal-jdk.tar.gz
+
 ENTRYPOINT ["/bin/bash", "/quarkus-test.sh"]
-CMD ["--version"]
+CMD ["$MODE"]

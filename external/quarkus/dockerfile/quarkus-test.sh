@@ -49,3 +49,4 @@ echo "Compile and run quarkus tests"
 set -e
 ./mvnw clean install
 set +e
+find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
