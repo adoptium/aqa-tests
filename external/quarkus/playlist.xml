@@ -15,9 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>quarkus_java_test</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-quarkus-test:latest ; \
+		<command>docker run --name quarkus-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-quarkus-test:latest; \
 			$(TEST_STATUS); \
-			docker cp quarkus-test:/testResults/junitreports $(REPORTDIR)/external_test_reports; \
+			docker cp quarkus-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
 			docker rmi -f adoptopenjdk-quarkus-test
 		</command>
 		<levels>
@@ -29,7 +29,7 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_native_test</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g --env MODE="-Dnative" adoptopenjdk-quarkus-test:latest ; \
+		<command>docker run --name quarkus-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g --env MODE="-Dnative" adoptopenjdk-quarkus-test:latest ; \
 			$(TEST_STATUS); \
 			docker rmi -f adoptopenjdk-quarkus-test
 		</command>
