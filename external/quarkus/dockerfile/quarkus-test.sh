@@ -39,14 +39,19 @@ java -version
 
 # See https://github.com/quarkusio/quarkus/blob/master/CONTRIBUTING.md#frequently-asked-questions
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
-export MAVEN_OPTS="-Xmx1g"
+export MAVEN_OPTS="-Xmx1g -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
 cd /quarkus
 pwd
 ls -al
 echo "Compile and run quarkus tests"
 
-set -e
-./mvnw clean install
-set +e
+test_exit_code=0
+#./mvnw clean install
+./mvnw -pl '!:quarkus-test-extension-deployment,!:quarkus-logging-json-deployment,!:quarkus-logging-sentry-deployment,!:quarkus-test-extension-nativetests' clean install
+if [ $? -ne 0 ]; then
+	test_exit_code=$?
+fi
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+echo "exit with $$test_exit_code"
+exit $test_exit_code
