@@ -45,7 +45,7 @@ COPY ./dockerfile/openliberty-mp-tck.sh /openliberty-mp-tck.sh
 ENV OPENLIBERTY_HOME $WORKDIR
 RUN mkdir testResults
 
-#Clone openliberty repo 
+# Clone openliberty repo
 ENV OPENLIBERTY_TAG=$OPENLIBERTY_TAG
 RUN git clone https://github.com/OpenLiberty/open-liberty.git
 WORKDIR /open-liberty/

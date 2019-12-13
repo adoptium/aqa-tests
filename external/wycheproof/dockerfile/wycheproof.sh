@@ -34,8 +34,6 @@ fi
 
 java -version
 
-TEST_OPTIONS=$1
-
 #Run tests 
 
 cd ${WYCHEPROOF_HOME}/wycheproof
