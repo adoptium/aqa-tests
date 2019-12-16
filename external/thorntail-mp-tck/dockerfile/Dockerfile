@@ -28,7 +28,7 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-ARG THORNTAIL_TAG=master
+ARG THORNTAIL_TAG=2.6.0.Final
 
 # Install test dependent executable files
 RUN apt-get update; \

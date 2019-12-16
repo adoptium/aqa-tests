@@ -28,7 +28,7 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-ARG TOMEE_TAG=tomee-8.0.0
+ARG TOMEE_TAG=tomee-8.0.1
 
 # Install test dependent executable files
 RUN apt-get update; \

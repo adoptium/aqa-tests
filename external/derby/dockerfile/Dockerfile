@@ -29,7 +29,7 @@ ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 ARG ANT_VERSION=1.10.6
-ARG DERBY_TAG=10.15.1.3
+ARG DERBY_TAG=trunk
 
 # Install test dependent executable files
 RUN apt-get update; \

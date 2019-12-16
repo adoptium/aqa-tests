@@ -28,7 +28,7 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-ARG JENKINS_TAG=jenkins-2.208
+ARG JENKINS_TAG=jenkins-2.190.3
 
 # Install test dependent executable files
 RUN apt-get update; \

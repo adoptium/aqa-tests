@@ -47,7 +47,7 @@ RUN mkdir testResults
 
 # Clone the Pyara MicroProfile-TCK-Runners
 ENV PAYARA_TAG=$PAYARA_TAG
-RUN git clone https://github.com/payara/MicroProfile-TCK-Runners
+RUN git clone https://github.com/payara/MicroProfile-TCK-Runners.git
 WORKDIR /MicroProfile-TCK-Runners/
 RUN git checkout ${PAYARA_TAG}
 WORKDIR /

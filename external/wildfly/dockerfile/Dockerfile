@@ -28,7 +28,7 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-ARG WILDFLY_TAG=18.0.1.Final
+ARG WILDFLY_TAG=18.0.0.Final
 
 # Install test dependent executable files
 RUN apt-get update; \

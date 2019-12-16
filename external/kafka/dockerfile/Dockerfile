@@ -28,8 +28,7 @@ ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-# Kafka 2.1 branch, 2.1.0 release
-ARG KAFKA_TAG="809be928f1ae004e11d65c307ea322bef126c834"
+ARG KAFKA_TAG=2.1.0
 ARG GRADLE_VERSION=5.1
 
 # Install test dependent executable files
