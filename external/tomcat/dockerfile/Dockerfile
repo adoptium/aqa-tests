@@ -29,6 +29,7 @@ ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 ARG ANT_VERSION=1.10.6
+ARG OPENSSL_VERSION=1.1.1d
 ARG TOMCAT_TAG=9.0.30
 
 # Install test dependent executable files
@@ -37,6 +38,10 @@ RUN apt-get update; \
         git \
         wget \
         tar \
+        make \
+        gcc \
+        linux-libc-dev \
+        libc6-dev \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -55,11 +60,21 @@ RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/
 # Add Ant to PATH
 ENV PATH ${PATH}:${ANT_HOME}/bin
 
-## Install OpenSSL
-#RUN git clone https://github.com/openssl/openssl.git && cd /openssl && git checkout OpenSSL_1_0_2k \
-#	&& ./config --prefix=/usr --openssldir=/usr/local/openssl shared \
-#	&& make \
-#	&& make install
+ENV OPENSSL_VERSION=$OPENSSL_VERSION
+ENV OPENSSL_HOME=/opt/openssl
+
+# Install OpenSSL
+RUN wget --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
+    && wget --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz.sha256 \
+    && echo "$(cat openssl-${OPENSSL_VERSION}.tar.gz.sha256) openssl-${OPENSSL_VERSION}.tar.gz" | sha256sum -c \
+    && tar -zvxf openssl-${OPENSSL_VERSION}.tar.gz -C /opt/ \
+    && ln -s /opt/openssl-${OPENSSL_VERSION} /opt/openssl \
+    && rm -f openssl-${OPENSSL_VERSION}.tar.gz \
+    && rm -f openssl-${OPENSSL_VERSION}.tar.gz.sha256 \
+    && cd ${OPENSSL_HOME} \
+    && ./config --prefix=/usr --openssldir=/usr/local/openssl shared \
+    && make \
+    && make install
 
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
