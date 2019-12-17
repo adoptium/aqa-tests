@@ -77,7 +77,7 @@ JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
 ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
-	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
 endif
 
 ifdef OPENJDK_DIR 
