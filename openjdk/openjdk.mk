@@ -50,6 +50,9 @@ JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter
 ifeq ($(JTREG_CONC), 0)
 	JTREG_CONC := $(CONC)
+	ifeq ($(JTREG_CONC), 0)
+		JTREG_CONC := 1
+	endif
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
 
