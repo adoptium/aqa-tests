@@ -39,7 +39,7 @@ java -version
 
 # See https://github.com/quarkusio/quarkus/blob/master/CONTRIBUTING.md#frequently-asked-questions
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
-export MAVEN_OPTS="-Xmx1g -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+export MAVEN_OPTS="-Xmx1g"
 
 cd /quarkus
 pwd
@@ -47,8 +47,8 @@ ls -al
 echo "Compile and run quarkus tests"
 
 test_exit_code=0
-#./mvnw clean install
-./mvnw -pl '!:quarkus-test-extension-deployment,!:quarkus-logging-json-deployment,!:quarkus-logging-sentry-deployment,!:quarkus-test-extension-nativetests' clean install
+./mvnw -DargLine="-Djava.util.logging.manager=org.jboss.logmanager.LogManager" clean install
+#./mvnw -pl '!:quarkus-test-extension-deployment,!:quarkus-logging-json-deployment,!:quarkus-logging-sentry-deployment,!:quarkus-test-extension-nativetests' clean install
 if [ $? -ne 0 ]; then
 	test_exit_code=$?
 fi

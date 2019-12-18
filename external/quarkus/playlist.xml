@@ -15,11 +15,11 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>quarkus_java_test</testCaseName>
-		<command>docker run --name quarkus_java-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-quarkus-test:latest; \
+		<command>docker run --name quarkus_java-test3 $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-quarkus-test3:latest; \
 			$(TEST_STATUS); \
-			docker cp quarkus_java-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker rm -f quarkus_java-test; \
-			docker rmi -f adoptopenjdk-quarkus-test
+			docker cp quarkus_java-test3:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
+			docker rm -f quarkus_java-test3; \
+			docker rmi -f adoptopenjdk-quarkus-test3
 		</command>
 		<levels>
 			<level>extended</level>
