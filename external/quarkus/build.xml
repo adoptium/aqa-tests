@@ -16,13 +16,13 @@
 
 	<target name="clean_image" depends="init" description="clean quarkus test docker image if there is one">
 		<exec executable="docker">
-			<arg line="rmi -f adoptopenjdk-quarkus-test3" />
+			<arg line="rmi -f adoptopenjdk-quarkus-test" />
 		</exec>
 	</target>
 
 	<target name="build_image" depends="clean_image" description="build quarkus test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-quarkus-test3 -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
+			<arg line="build -t adoptopenjdk-quarkus-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
 		</exec>
 	</target>
 

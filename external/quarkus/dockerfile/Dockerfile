@@ -32,14 +32,8 @@ FROM $IMAGE_NAME:$IMAGE_VERSION
 # Install test dependent executable files
 RUN apt-get update \
 	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	curl \
 	git \
-	make \
-	unzip \
-	vim 
+	wget 
 
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 ENV MODE="java"

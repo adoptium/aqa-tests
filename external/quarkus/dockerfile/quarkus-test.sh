@@ -20,7 +20,7 @@ if [ -d /java/jre/bin ];then
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
 elif [ -d /java/bin ]; then
-	echo "Using mounted Java9"
+	echo "Using mounted Java"
 	export JAVA_BIN=/java/bin
 	export JAVA_HOME=/java
 	export PATH=$JAVA_BIN:$PATH
@@ -34,7 +34,6 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-TEST_SUITE=$1
 java -version
 
 # See https://github.com/quarkusio/quarkus/blob/master/CONTRIBUTING.md#frequently-asked-questions
@@ -43,15 +42,12 @@ export MAVEN_OPTS="-Xmx1g"
 
 cd /quarkus
 pwd
-ls -al
 echo "Compile and run quarkus tests"
 
 test_exit_code=0
-./mvnw -DargLine="-Djava.util.logging.manager=org.jboss.logmanager.LogManager" clean install
-#./mvnw -pl '!:quarkus-test-extension-deployment,!:quarkus-logging-json-deployment,!:quarkus-logging-sentry-deployment,!:quarkus-test-extension-nativetests' clean install
+./mvnw -DargLine="-Djava.util.logging.manager=org.jboss.logmanager.LogManager" -pl '!:quarkus-documentation' clean install
 if [ $? -ne 0 ]; then
 	test_exit_code=$?
 fi
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "exit with $$test_exit_code"
 exit $test_exit_code
