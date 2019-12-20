@@ -15,7 +15,8 @@
 
 BASE=`dirname $0`
 export BASE
-. ${BASE}/check_env_unix.sh
+. ${BASE}/set_variable.sh
+
 CP="-cp ${BASE}/codepoint.jar"
 
 ${JAVA_BIN}/java ${CP} UnicodeDataTest 2> err.txt
