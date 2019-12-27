@@ -53,7 +53,6 @@ RUN apt-get update \
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-
 # This is the main script to run functional tests.  
 COPY ./dockerfile/functional-test.sh /functional-test.sh
 
@@ -63,6 +62,10 @@ RUN pwd
 
 # Clone OpenJ9 functional test repo
 RUN git clone https://github.com/eclipse/openj9.git
+
+WORKDIR /openj9/test/
+#Clone TKG
+RUN git clone https://github.com/AdoptOpenJDK/TKG.git
 
 ENTRYPOINT ["/bin/bash", "/functional-test.sh"]
 CMD ["--version"]

@@ -21,9 +21,13 @@ JVMVERSION=""
 SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
 CUSTOMIZED_SDK_SOURCE_URL=""
+CLONE_OPENJ9="true"
 OPENJ9_REPO="https://github.com/eclipse/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
+TKG_REPO="https://github.com/AdoptOpenJDK/TKG.git"
+TKG_SHA=""
+TKG_BRANCH="master"
 VENDOR_REPOS=""
 VENDOR_SHAS=""
 VENDOR_BRANCHES=""
@@ -48,9 +52,13 @@ usage ()
 	echo '                [--customized_sourceURL|-S ] : indicate sdk source url if sdk source is set as customized.'
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
+	echo '                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
+	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided'
+	echo '                [--tkg_sha ] : optional. TkG pull request sha.'
+	echo '                [--tkg_branch ] : optional. TKG branch.'
 	echo '                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories'
 	echo '                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories'
 	echo '                [--vendor_branches ] : optional. Comma separated vendor branches'
@@ -99,6 +107,9 @@ parseCommandLineArgs()
 			"--password" )
 				PASSWORD="$1"; shift;;
 
+			"--clone_openj9" )
+				CLONE_OPENJ9="$1"; shift;;
+
 			"--openj9_repo" )
 				OPENJ9_REPO="$1"; shift;;
 
@@ -107,6 +118,15 @@ parseCommandLineArgs()
 
 			"--openj9_branch" )
 				OPENJ9_BRANCH="$1"; shift;;
+
+			"--tkg_repo" )
+				TKG_REPO="$1"; shift;;
+
+			"--tkg_sha" )
+				TKG_SHA="$1"; shift;;
+
+			"--tkg_branch" )
+				TKG_BRANCH="$1"; shift;;
 
 			"--vendor_repos" )
 				VENDOR_REPOS="$1"; shift;;
@@ -140,6 +160,14 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir -p openjdkbinary
 	cd openjdkbinary
+	
+	if [ "$SDK_RESOURCE" != "upstream" ]; then
+		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
+        	echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+        	echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
+        	exit 1
+        fi
+    fi
 
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
@@ -176,8 +204,8 @@ getBinaryOpenjdk()
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
 				fi
-				echo "curl -OLJks ${curl_options} $file"
-				curl -OLJks ${curl_options} $file
+				echo "curl -OLJSks ${curl_options} $file"
+				curl -OLJSks ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
@@ -197,41 +225,44 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
+			if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then 
+				rm -rf $SDKDIR/openjdkbinary/tmp/*
+			else
+				mkdir $SDKDIR/openjdkbinary/tmp
+			fi
+
 			echo "unzip file: $jar_name ..."
 			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
-				unzip -q $jar_name -d .
+				unzip -q $jar_name -d ./tmp
 			else
-				gzip -cd $jar_name | tar xof -
+				gzip -cd $jar_name | tar xof - -C ./tmp
 			fi
+			
+			cd ./tmp
+			jar_dirs=`ls -d */`
+			jar_dir_array=(${jar_dirs//\\n/ })
+			len=${#jar_dir_array[@]}
+			if [[ "$len" == 1 ]]; then
+				jar_dir_name=${jar_dir_array[0]}
+				if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
+					mv $jar_dir_name ../openjdk-test-image
+				elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
+					mv $jar_dir_name ../j2re-image
+				elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
+					mv $jar_dir_name ../j2sdk-image
+				# if native test libs folder is available, mv it under native-test-libs
+				elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					mv $jar_dir_name ../native-test-libs
+				#The following only needed if openj9 has a different image name convention
+				elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					mv $jar_dir_name ../j2sdk-image
+				fi
+			elif [[ "$len" > 1 ]]; then
+				mv ../tmp ../j2sdk-image
+			fi
+			cd $SDKDIR/openjdkbinary
 		done
 
-	jar_dirs=`ls -d */`
-	jar_dir_array=(${jar_dirs//\\n/ })
-	for jar_dir in "${jar_dir_array[@]}"
-		do
-			jar_dir_name=${jar_dir%?}
-			if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
-				mv $jar_dir_name openjdk-test-image
-			elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
-				if [[ -d $jar_dir_name/Contents/Home ]]; then
-					mv "$jar_dir_name/Contents/Home" j2re-image
-				else
-					mv $jar_dir_name j2re-image
-				fi
-			elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
-				if [[ -d $jar_dir_name/Contents/Home ]]; then
-					mv "$jar_dir_name/Contents/Home" j2sdk-image
-				else
-					mv $jar_dir_name j2sdk-image
-				fi
-			# if native test libs folder is available, mv it under native-test-libs
-			elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-				mv $jar_dir_name native-test-libs
-			#The following only needed if openj9 has a different image name convention
-			elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-				mv $jar_dir_name j2sdk-image
-			fi
-		done
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
 	fi
@@ -257,9 +288,36 @@ getOpenJDKSources() {
 	rm -rf src
 }
 
-getTestKitGenAndFunctionalTestMaterial()
+getTestKitGen()
 {
-	echo "get testKitGen and functional test material..."
+	echo "get testKitGen..."
+	cd $TESTDIR
+
+	if [ "$TKG_BRANCH" != "" ]
+	then
+		TKG_BRANCH="-b $TKG_BRANCH"
+	fi
+
+	echo "git clone $TKG_BRANCH $TKG_REPO"
+	git clone -q $TKG_BRANCH $TKG_REPO
+
+	if [ "$TKG_SHA" != "" ]
+	then
+		echo "update to tkg sha: $TKG_SHA"
+		cd TKG
+		echo "git fetch -q --tags $TKG_REPO +refs/pull/*:refs/remotes/origin/pr/*"
+		git fetch -q --tags $TKG_REPO +refs/pull/*:refs/remotes/origin/pr/*
+		echo "git checkout -q $TKG_SHA"
+		git checkout -q $TKG_SHA
+		cd $TESTDIR
+	fi
+
+	checkTestRepoSHAs
+}
+
+getFunctionalTestMaterial()
+{
+	echo "get functional test material..."
 	cd $TESTDIR
 
 	if [ "$OPENJ9_BRANCH" != "" ]
@@ -290,8 +348,7 @@ getTestKitGenAndFunctionalTestMaterial()
     else
 	    mv openj9/test/functional functional
     fi
-	echo "call checkTestRepoSHAs" 
-	checkTestRepoSHAs
+	checkOpenJ9RepoSHA
 
 	rm -rf openj9
 
@@ -362,29 +419,64 @@ getTestKitGenAndFunctionalTestMaterial()
 testJavaVersion()
 {
 # use environment variable TEST_JDK_HOME to run java -version
+if [[ $TEST_JDK_HOME == "" ]]; then
+	TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
+fi
 _java=${TEST_JDK_HOME}/bin/java
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
 	${_java} -version
 else
-	echo "Cannot find java executable in TEST_JDK_HOME: ${TEST_JDK_HOME}!"
-	exit 1
+	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
+	# Search javac as java may not be unique
+	javac_path=`find ${TEST_JDK_HOME}/ \( -name "javac" -o -name "javac.exe" \)`
+	if [[ $javac_path != "" ]]; then
+		echo "javac_path: ${javac_path}"
+		javac_path_array=(${javac_path//\\n/ })
+		_javac=${javac_path_array[0]}
+
+		# for windows, replace \ to /. Otherwise, readProperties() in Jenkins script cannot read \
+		if [[ "${_javac}" =~ "javac.exe" ]]; then
+			_javac="${_javac//\\//}"
+		fi
+
+		java_dir=$(dirname "${_javac}")
+		echo "Run: ${java_dir}/java -version"
+		${java_dir}/java -version
+		TEST_JDK_HOME=${java_dir}/../
+		echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
+	else
+		echo "Cannot find javac under TEST_JDK_HOME: ${TEST_JDK_HOME}!"
+		exit 1
+	fi
 fi
+}
+
+checkRepoSHA()
+{
+	output_file="$TESTDIR/TKG/SHA.txt"
+	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file"
+	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file
 }
 
 checkTestRepoSHAs()
 {
-output_file="$TESTDIR/TestConfig/SHA.txt"
-if [ -e ${output_file} ]; then
-	echo "rm $output_file"
-	rm ${output_file}
-fi
+	echo "check AdoptOpenJDK repo and TKG repo SHA" 
 
-echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file"
-$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR --output_file $output_file
+	output_file="$TESTDIR/TKG/SHA.txt"
+	if [ -e ${output_file} ]; then
+		echo "rm $output_file"
+		rm ${output_file}
+	fi
 
-echo "$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file"
-$TESTDIR/TestConfig/scripts/getSHA.sh --repo_dir $TESTDIR/openj9 --output_file $output_file
+	checkRepoSHA "$TESTDIR"
+	checkRepoSHA "$TESTDIR/TKG"
+}
+
+checkOpenJ9RepoSHA()
+{
+	echo "check OpenJ9 Repo sha" 
+	checkRepoSHA "$TESTDIR/openj9"
 }
 
 parseCommandLineArgs "$@"
@@ -396,7 +488,10 @@ if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]
 	getOpenJDKSources
 fi
 
+if [ ! -d "$TESTDIR/TKG" ]; then
+	getTestKitGen
+fi
 
-if [ ! -d "$TESTDIR/TestConfig" ]; then
-	getTestKitGenAndFunctionalTestMaterial
+if [ $CLONE_OPENJ9 != "false" ]; then
+	getFunctionalTestMaterial
 fi

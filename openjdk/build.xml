@@ -24,16 +24,7 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
 	<property environment="env" />
-	<if>
-		<isset property="env.RELEASE_TAG"/>
-		<then>
-			<property name="gitReleaseTag" value="--branch ${env.RELEASE_TAG}"/>
-		</then>
-		<else>
-			<property name="gitReleaseTag" value=""/>
-		</else>
-	</if>
-	
+
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>
 		<if>
@@ -41,8 +32,8 @@
 				<available file="jtreg-4.2.0-tip.tar.gz" />
 			</not>
 			<then>
-				<exec executable="wget" failonerror="true">
-					<arg line="-q --no-check-certificate https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+				<exec executable="curl" failonerror="true">
+					<arg line="-OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
 				</exec>
 				<exec executable="tar" failonerror="true">
 					<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
@@ -93,13 +84,47 @@
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
 			</else>
 		</if>
-
-		<echo message="git clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
-		<exec executable="git" failonerror="false">
-			<arg line="clone --depth 1 -q ${gitReleaseTag} ${regressionRepo}" />
-		</exec>
-		<move file="${jdkName}" tofile="openjdk-jdk"/>
-
+		<if>
+			<isset property="env.RELEASE_TAG"/>
+			<then>
+				<echo message="git clone --depth 1 -q -b ${env.RELEASE_TAG} ${regressionRepo}" />
+				<exec executable="git" failonerror="true">
+					<arg line="clone --depth 1 -q -b ${env.RELEASE_TAG} ${regressionRepo}" />
+				</exec>
+				<move file="${jdkName}" tofile="openjdk-jdk"/>
+			</then>
+			<else>
+				<if>
+					<contains string="${JDK_IMPL}" substring="hotspot"/>
+					<then>
+						<property name="defaultBranch" value="-b dev"/>
+					</then>
+					<else>
+						<property name="defaultBranch" value=""/>
+					</else>
+				</if>
+				<if>
+					<isset property="env.OPENJDK_SHA"/>
+					<then>
+						<echo message="git clone -q ${defaultBranch} ${regressionRepo}" />
+						<exec executable="git" failonerror="true">
+							<arg line="clone -q ${defaultBranch} ${regressionRepo}" />
+						</exec>
+						<move file="${jdkName}" tofile="openjdk-jdk"/>
+						<exec executable="git" failonerror="true" dir="openjdk-jdk">
+							<arg line="checkout ${env.OPENJDK_SHA}" />
+						</exec>
+					</then>
+					<else>
+						<echo message="git clone --depth 1 -q ${defaultBranch} ${regressionRepo}" />
+						<exec executable="git" failonerror="true">
+							<arg line="clone --depth 1 -q ${defaultBranch} ${regressionRepo}" />
+						</exec>
+						<move file="${jdkName}" tofile="openjdk-jdk"/>
+					</else>
+				</if>
+			</else>
+		</if>
 		<checkGitRepoSha repoDir="openjdk-jdk" />
 	</target>
 	

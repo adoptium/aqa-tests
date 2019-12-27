@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>functional-test</testCaseName>
 		<variations>
 			<variation>-XX:+UseContainerSupport</variation>
 		</variations>
-		<command>docker run --name functional-test --rm adoptopenjdk-functional-test:latest ; \
-		 docker rmi -f adoptopenjdk-functional-test; \
-		$(TEST_STATUS)</command>
+		<command>docker run --name functional-test adoptopenjdk-functional-test:latest ; \
+		 $(TEST_STATUS); \
+		 docker rm -f functional-test; \
+		 docker rmi -f adoptopenjdk-functional-test
+		</command>
 		<subsets>
 			<subset>8</subset>
 			<subset>9</subset>

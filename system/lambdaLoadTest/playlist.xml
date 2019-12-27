@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
 	<test>
 		<testCaseName>MachineInfo</testCaseName>
-		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TestConfig$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -133,7 +133,7 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	
 	<test>

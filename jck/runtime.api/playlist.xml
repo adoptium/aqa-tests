@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck_custom</testCaseName>
@@ -1161,6 +1161,7 @@
 			<group>jck</group>
 		</groups>
 	</test>
+	<!-- This is a "special" test that requires kerberos server set up -->
 	<test>
 		<testCaseName>jck-runtime-api-org_ietf</testCaseName>
 		<variations>
@@ -1175,7 +1176,7 @@
 	-test=Jck -test-args=$(Q)tests=api/org_ietf,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>jck</group>

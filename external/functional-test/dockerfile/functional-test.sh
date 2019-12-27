@@ -33,8 +33,9 @@ TEST_SUITE=$1
 
 echo "JAVA_HOME is : $JAVA_HOME"
 
-cd /openj9/test/TestConfig
+cd /openj9/test/TKG
 
+set -e
 # Generate make files 
 echo "Generating make files..."
 make -f run_configure.mk
@@ -45,3 +46,4 @@ make compile
 echo "Running the functional tests" 
 #Run tests
 make _sanity.functional.regular
+set +e

@@ -143,7 +143,7 @@ git push origin env_var
 
 This method is to be used when the objective is to set that environment variable for a more generic case.
 
-1.	Open the openj9/test/TestConfig folder 
+1.	Open the openj9/test/TKG folder 
 
  ![test_config](/doc/diagrams/testConfig.jpg)
  
@@ -211,9 +211,13 @@ Usage : get.sh  --testdir|-t openjdktestdir
                 [--sdk_resource|-r ] : optional. Indicate where to download an sdk from - releases, nightly, upstream or customized
 
                 [--customizedURL|-c ] : optional. If downloading an sdk and if sdk source is set as customized, indicates sdk url 
-                [--openj9_repo ] : optional. OpenJ9 git repo. Default value: https://github.com/eclipse/openj9.git is used if not provided
-                [--openj9_sha ] : optional. OpenJ9 pull request sha.
-                [--openj9_branch ] : optional. OpenJ9 branch.
+                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true
+                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided
+                [--openj9_sha ] : optional. OpenJ9 pull request sha
+                [--openj9_branch ] : optional. OpenJ9 branch
+                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided
+                [--tkg_sha ] : optional. TkG pull request sha
+                [--tkg_branch ] : optional. TKG branch
                 [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories
                 [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories
                 [--vendor_branches ] : optional. Comma separated vendor branches
@@ -310,7 +314,7 @@ _sanity.openjdk done
 Additional test output can be found in the following folders:
 
 ```
-openjdk-tests/test-results/openjdk/TestConfig/test_output_<timestamp>`
+openjdk-tests/test-results/openjdk/TKG/test_output_<timestamp>`
 openjdk-tests/test-results/openjdk/work
 openjdk-tests/test-results/openjdk/report
 ```

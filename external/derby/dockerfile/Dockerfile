@@ -22,26 +22,35 @@
 #
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-derby-test .`
 
-ARG SDK=openjdk8
+ARG SDK=openjdk9
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	tar \
-	wget \
-	ant
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        wget \
+        tar \
+    ; \
+    rm -rf /var/lib/apt/lists/*
+
+ENV ANT_VERSION=1.10.6
+ENV ANT_HOME=/opt/ant
+
+# Install Ant
+RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz.sha512 \
+    && echo "$(cat apache-ant-${ANT_VERSION}-bin.tar.gz.sha512) apache-ant-${ANT_VERSION}-bin.tar.gz" | sha512sum -c \
+    && tar -zvxf apache-ant-${ANT_VERSION}-bin.tar.gz -C /opt/ \
+    && ln -s /opt/apache-ant-${ANT_VERSION} /opt/ant \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz.sha512
+
+# Add Ant to PATH
+ENV PATH ${PATH}:${ANT_HOME}/bin
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
@@ -52,7 +61,7 @@ ENV DERBY_HOME ${WORKDIR}/derby
 COPY ./dockerfile/derby-test.sh /derby-test.sh
 
 # Clone Derby source.
-RUN git clone https://github.com/apache/derby.git 
+RUN git clone https://github.com/apache/derby.git
 
 ENTRYPOINT ["/bin/bash", "/derby-test.sh"]
 CMD ["--version"]
