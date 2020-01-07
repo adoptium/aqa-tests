@@ -141,6 +141,6 @@ if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
     }
     jenkinsfile.run_parallel_tests()
 } else {
-	println "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
+	assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
 }
 
