@@ -178,12 +178,18 @@ getBinaryOpenjdk()
 		fi
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
 		os=${PLATFORM#*_}
-		os=${os%_largeHeap}
+		os=${os%_xl}
 		arch=${PLATFORM%%_*}
 		OPENJDK_VERSION="openjdk${JDK_VERSION}"
 		heap_size="normal"
-		if [[ $PLATFORM = *"largeHeap"* ]]; then
+		if [[ $PLATFORM = *"_xl"* ]]; then
 			heap_size="large"
+		fi
+		if [[ $arch = *"x86-64"* ]]; then
+			arch="x64"
+		fi
+		if [[ $arch = *"x86-32"* ]]; then
+			arch="x32"
 		fi
 		download_url="https://api.adoptopenjdk.net/v2/binary/${SDK_RESOURCE}/${OPENJDK_VERSION}?openjdk_impl=${JDK_IMPL}&os=${os}&arch=${arch}&release=${RELEASES}&type=${TYPE}&heap_size=${heap_size}"
 	else
