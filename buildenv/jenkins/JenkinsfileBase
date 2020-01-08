@@ -467,7 +467,7 @@ def post(output_name) {
 				)
 			}
 
-			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
+			if (currentBuild.result != 'SUCCESS' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
 
@@ -505,19 +505,22 @@ def testBuild() {
 			if( params.IS_PARALLEL == true ){
 				setupParallelEnv()
 			} else {
-				setup()
-				//ToDo: temporary workaround for jck test parallel runs
-				// until build.xml is added into each subfolder
-				if( env.BUILD_LIST.startsWith('jck/')) {
-					def temp = env.BUILD_LIST
-					env.BUILD_LIST = "jck"
-					buildTest()
-					env.BUILD_LIST = temp
-				} else {
-					buildTest()
+				try {
+					setup()
+					//ToDo: temporary workaround for jck test parallel runs
+					// until build.xml is added into each subfolder
+					if( env.BUILD_LIST.startsWith('jck/')) {
+						def temp = env.BUILD_LIST
+						env.BUILD_LIST = "jck"
+						buildTest()
+						env.BUILD_LIST = temp
+					} else {
+						buildTest()
+					}
+					runTest()
+				} finally {
+					post("${env.BUILD_LIST}")
 				}
-				runTest()
-				post("${env.BUILD_LIST}")
 			}
 		} finally {
 			if (!params.KEEP_WORKSPACE) {
