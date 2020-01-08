@@ -50,6 +50,9 @@ JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter
 ifeq ($(JTREG_CONC), 0)
 	JTREG_CONC := $(CONC)
+	ifeq ($(JTREG_CONC), 0)
+		JTREG_CONC := 1
+	endif
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
 
@@ -77,7 +80,7 @@ JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
 ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
-	JRE_IMAGE := $(JRE_ROOT)$(D)..$(D)j2re-image
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
 endif
 
 ifdef OPENJDK_DIR 
