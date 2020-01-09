@@ -49,7 +49,7 @@ echo "Running (ALL) wildfly tests :"
 
 echo "Setting user to blank"
 printenv
-# export USER=""
+export USER=""
 echo "Printing Environment Variables"
 printenv
 
