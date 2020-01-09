@@ -29,7 +29,7 @@ ARG IMAGE_VERSION=latest
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 ARG ANT_VERSION=1.10.6
-ARG OPENLIBERTY_TAG=integration
+ARG OPENLIBERTY_TAG=gm-19.0.0.12
 
 # Install test dependent executable files
 RUN apt-get update; \
