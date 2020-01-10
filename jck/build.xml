@@ -89,6 +89,29 @@
 				</exec>
 			</else>
 		</if>
+                <if>
+                        <isset property="isZOS" />
+                        <then>
+                                <echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
+                                <delete includeemptydirs="true" failonerror="false">
+                                   <fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
+                                </delete>
+                                <mkdir dir="${JCK_ROOT_USED}/.git/info" />
+                                <move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
+                                <exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+                                    <arg value="rm" />
+                                    <arg value="--cached" />
+                                    <arg value="-r" />
+                                    <arg value="-q" />
+                                    <arg value="." />
+                               </exec>
+                                <exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+                                    <arg value="reset" />
+                                    <arg value="--hard" />
+                                </exec>
+                        </then>
+                </if>
+
 	</target>
 
 	<target name="init">
