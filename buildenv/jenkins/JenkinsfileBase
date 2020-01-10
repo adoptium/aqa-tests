@@ -46,7 +46,6 @@ def setupEnv() {
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
-	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
@@ -58,6 +57,10 @@ def setupEnv() {
 	env.AUTO_DETECT = params.AUTO_DETECT
 	
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	
+	if (params.JRE_IMAGE) {
+		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
+	}
 	
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
