@@ -113,7 +113,11 @@ if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
     LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
 
     if (params.DOCKER_REQUIRED) {
-        LABEL="${LABEL}&&sw.tool.docker"
+        LABEL += "&&sw.tool.docker"
+    }
+
+    if (params.LABEL_ADDITION) {
+        LABEL += "&&${params.LABEL_ADDITION}"
     }
 
     println "SPEC: ${SPEC}"
@@ -143,4 +147,3 @@ if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
 } else {
 	assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
 }
-

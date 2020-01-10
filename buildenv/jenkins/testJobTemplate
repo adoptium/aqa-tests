@@ -90,7 +90,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
 	def TKG_REPO = "https://github.com/AdoptOpenJDK/TKG.git"
-	
+
 	// zos has to use ssh
 	if (ARCH_OS.contains("zos")) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
@@ -110,7 +110,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				if (GROUP == "jck" && JDK_IMPL == "openj9") {
 					EXTRA_OPTIONS = "-Xfuture"
 				}
-				
+
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
 				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
 					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
@@ -139,7 +139,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
-							stringParam('LABEL', "", "Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine")
+							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
+							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
 							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
 							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
