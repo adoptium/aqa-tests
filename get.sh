@@ -160,7 +160,7 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir -p openjdkbinary
 	cd openjdkbinary
-	
+
 	if [ "$SDK_RESOURCE" != "upstream" ]; then
 		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
         	echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
@@ -231,7 +231,7 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	for jar_name in "${jar_file_array[@]}"
 		do
-			if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then 
+			if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
 				rm -rf $SDKDIR/openjdkbinary/tmp/*
 			else
 				mkdir $SDKDIR/openjdkbinary/tmp
@@ -243,7 +243,7 @@ getBinaryOpenjdk()
 			else
 				gzip -cd $jar_name | tar xof - -C ./tmp
 			fi
-			
+
 			cd ./tmp
 			jar_dirs=`ls -d */`
 			jar_dir_array=(${jar_dirs//\\n/ })
@@ -340,10 +340,13 @@ getFunctionalTestMaterial()
 		cd openj9
 		echo "git fetch -q --unshallow"
 		git fetch -q --unshallow
-		echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
-		git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
-		echo "git checkout -q $OPENJ9_SHA"
-		git checkout -q $OPENJ9_SHA
+		if ! git checkout $OPENJ9_SHA; then
+			echo "SHA not yet found. Continue fetching PR refs and tags..."
+			echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
+			git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
+			echo "git checkout -q $OPENJ9_SHA"
+			git checkout -q $OPENJ9_SHA
+		fi
 		cd $TESTDIR
 	fi
 
@@ -467,7 +470,7 @@ checkRepoSHA()
 
 checkTestRepoSHAs()
 {
-	echo "check AdoptOpenJDK repo and TKG repo SHA" 
+	echo "check AdoptOpenJDK repo and TKG repo SHA"
 
 	output_file="$TESTDIR/TKG/SHA.txt"
 	if [ -e ${output_file} ]; then
@@ -481,7 +484,7 @@ checkTestRepoSHAs()
 
 checkOpenJ9RepoSHA()
 {
-	echo "check OpenJ9 Repo sha" 
+	echo "check OpenJ9 Repo sha"
 	checkRepoSHA "$TESTDIR/openj9"
 }
 
