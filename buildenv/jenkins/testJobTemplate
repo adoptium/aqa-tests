@@ -126,7 +126,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
-							stringParam('JenkinsFile', "openjdk_${ARCH_OS}", "Jenkins file to be used")
+							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
 							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${LEVEL}.${GROUP}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
@@ -180,7 +180,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										}
 									}
 								}
-								scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
+								scriptPath("buildenv/jenkins/openjdk_tests")
 								lightweight(true)
 							}
 						}
