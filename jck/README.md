@@ -11,8 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
+# JCK Test Group
 
-# How-to Run JCK Tests
+TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement.  While this test material is currently not run at the AdoptOpenJDK project (see the [support statement](https://adoptopenjdk.net/support.html#jck) for details), those with their own OCTLA agreements may use the AdoptOpenJDK test automation infrastructure to execute their TCK test material in their own private CI servers.
+
+## How to Build and Run
+
+## Test Targets in this group
+
+## How-to Run JCK Tests
 
 * Prerequisites:
   * OpenJDK Community TCK License Agreement (OCTLA)

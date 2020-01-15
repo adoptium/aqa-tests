@@ -12,6 +12,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 -->
 
+# Perf Test Group
+
+## How to Build and Run
+
+## Test Targets in this Group
+
 # AdoptOpenJDK Performance Testing
 
 We are in the process of adding more microbenchmarks (both bumblebench and jmh formats) and full open-source benchmarks to this directory. New perftest jobs are added to the [Test_perf](https://ci.adoptopenjdk.net/view/Test_perf/) view.  While we will run these benchmarks regularly at AdoptOpenJDK, the intention is to make it easy for developers to run performance testing locally.  
@@ -21,30 +27,29 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 
 ```
 //./
-//├── micro
-//├────── idle
-//├────── bumblebench
-//├────── jmh
-//├── odm
-//├── acme_air
-//├── liberty_daytrader
+//├── bumblebench
+//├── dacapo
+//├── idle_micro
+//├── liberty
+//├── renaissance
 ```
 Each subdirectory requires a build.xml file describing where to pull the benchmark suite from, and how to build and run it.  Each subdirectory also requires a playlist.xml file which describes what commands to run in order to execute a particular benchmark run.
 ### Microbenchmarks
-#### idle_micro
-Currently we run a single micro-benchmark called idle_micro against OpenJDK8 builds (both hotspot and openj9 variants).  
 
 #### bumblebench  
 In plan, we intend to add other microbenchmarks found in the [bumblebench repo](https://github.com/AdoptOpenJDK/bumblebench).  There are already a good variety of microbenchmarks for evaluating performance of various aspects of code, such as string, lambda, gpu, math, crypto, etc.
 
+#### idle_micro
+Currently we run a single micro-benchmark called idle_micro against OpenJDK8 builds (both hotspot and openj9 variants).  
+
 ### Full Benchmark Suites
 Transparency and the ability to see how the binaries are being exercised is important to us.  We will focus on running fully open-sourced benchmarks at AdoptOpenJDK so that developers have full-access to see the benchmarking code.  
 
-#### odm 
-Added, but not running regularly in builds, as some of the test materials are not yet available in the open.  
 
-#### acme_air 
-In plan, benchmark material to be cloned from the [acme-air git repo](https://github.com/blueperf/acmeair-monolithic-java).
+#### dacapo
+For more details on these benchmarks, please see their website, http://dacapobench.org/
 
-#### liberty_daytrader
-In plan
+#### liberty
+
+#### renaissance
+For more details on these benchmarks, please see their website, https://renaissance.dev/

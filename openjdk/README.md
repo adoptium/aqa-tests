@@ -10,14 +10,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 -->
+# OpenJDK Test Group
 
-# OpenJDK regression tests
-This group of tests are the set that comes from the openjdk project, often referred to as jtreg tests, as the jtreg framework is the underlying executable used to execute them.  The entire set of openjdk regression tests is quite large.  For our nightly builds, we run only a subset of these tests (typically, those suites of tests that we 'tag' as sanity in the [playlist.xml](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/playlist.xml) file).  For release builds, we intend to run the suites tagged as sanity and extended in the playlist.  
+This group of tests are the set that comes from the openjdk project, often referred to as jtreg tests, as the jtreg framework is the underlying executable used to execute them.  
 
-For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
+The entire set of openjdk regression tests is quite large.  For our nightly builds, we run only a subset of these tests (typically, those suites of tests that we 'tag' as sanity in the [playlist.xml](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/playlist.xml) file).  For release builds, we intend to run the suites tagged as sanity and extended in the playlist.  
+
+For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html) and [Testing OpenJDK](https://hg.openjdk.java.net/jdk-updates/jdk9u/raw-file/tip/common/doc/testing.html) documentation.
+
+## How to Build and Run
+
+## Test Targets in this Group
 
 ## Add a sub group test
-We already have a large set of tests defined in the playlist.xml file, but not all of the openjdk regression test groups are presented there.  If you wish to define more, add a `<test></test>` in playlist.xml and specify:
+We already have a large set of tests defined in the playlist.xml file, but not all of the openjdk regression test groups are represented there.  If you wish to define more, add a `<test></test>` in playlist.xml and specify:
 
 * testCaseName
 * command (how to run the test) - essentially the command that invokes the underlying jtreg harness

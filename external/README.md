@@ -1,14 +1,31 @@
-# Third Party Container Tests
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Third Party container tests help verify that the AdoptOpenJDK binaries are *good* by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/[Issue #172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.  
+[1]https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+-->
+# External Test Group
+
+The external test group is a set of 3rd party tests run to help verify that the AdoptOpenJDK binaries are *good* by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/[Issue #172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.  
 
 When [running these from the command-line](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the openjdk-tests/external directory.  These tests run nightly and can be found in the [Test_external view](https://ci.adoptopenjdk.net/view/Test_external/) at ci.adoptopenjdk.net.
 
 See the [roadmap](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/external#roadmap) for additional ways we plan to expand this approach.
 
-### Roadmap
+## How to Build and Run
+
+## Test Targets in this Group
+
+## Roadmap
 Our next steps to improve and expand this set of external tests is divided into 2 categories:
-#### Technical Goals
+
+### Technical Goals
 - Verify the docker images that the project produces
 - Copy results from Docker container for easier viewing and triage in Jenkins 
 - Quick compare view, easy comparison of how different implementations stack up
