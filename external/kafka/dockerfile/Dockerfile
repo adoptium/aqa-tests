@@ -24,7 +24,7 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 ## Kafka 2.1 branch, 2.1.0 release
 ARG KAFKA_VERSION="809be928f1ae004e11d65c307ea322bef126c834"
