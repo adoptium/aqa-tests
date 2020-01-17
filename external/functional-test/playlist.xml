@@ -14,24 +14,45 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
-		<testCaseName>functional-test</testCaseName>
-		<variations>
-			<variation>-XX:+UseContainerSupport</variation>
-		</variations>
+		<testCaseName>sanity_functional</testCaseName>
 		<command>docker run --name functional-test adoptopenjdk-functional-test:latest ; \
 		 $(TEST_STATUS); \
-		 docker rm -f functional-test; \
-		 docker rmi -f adoptopenjdk-functional-test
+		 docker rm -f sanity_functional; \
+		 docker rmi adoptopenjdk-functional-test
+		 </command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+		<test>
+		<testCaseName>extended_functional</testCaseName>
+		<command>docker run --name functional-test adoptopenjdk-functional-test:latest _extended.functional.regular; \
+		 $(TEST_STATUS); \
+		 docker rm -f extended_functional; \
+		 docker rmi adoptopenjdk-functional-test
+		 </command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>example_functional</testCaseName>
+		<command>docker run --name example_functional adoptopenjdk-functional-test:latest _testExample; \
+		 $(TEST_STATUS); \
+		 docker rm -f example_functional; \
+		 docker rmi adoptopenjdk-functional-test
 		</command>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-		</subsets>
 		<levels>
 			<level>special</level>
 		</levels>
 		<groups>
-			<group>functional</group>
+			<group>external</group>
 		</groups>
 	</test>
 </playlist>

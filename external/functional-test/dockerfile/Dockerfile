@@ -39,17 +39,10 @@ RUN apt-get update \
 	apt-transport-https \
 	ca-certificates \
 	dirmngr \
-	curl \
 	git \
 	make \
-	unzip \
-	vim \
 	zip \
-	wget \
-	gcc \
-	libtext-csv-perl \
-	libjson-perl \
-	libxml-parser-perl
+	wget
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
@@ -58,14 +51,8 @@ COPY ./dockerfile/functional-test.sh /functional-test.sh
 
 # Clone the repo where the functional tests reside. 
 WORKDIR /
-RUN pwd
 
-# Clone OpenJ9 functional test repo
-RUN git clone https://github.com/eclipse/openj9.git
-
-WORKDIR /openj9/test/
-#Clone TKG
-RUN git clone https://github.com/AdoptOpenJDK/TKG.git
+RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 ENTRYPOINT ["/bin/bash", "/functional-test.sh"]
-CMD ["--version"]
+CMD ["_sanity.functional.regular"]

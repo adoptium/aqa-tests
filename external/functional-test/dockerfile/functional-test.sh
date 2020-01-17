@@ -28,24 +28,23 @@ else
 fi
 
 export TEST_JDK_HOME=$JAVA_HOME
-
+echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
+export BUILD_LIST=functional
 java -version
 
-TEST_SUITE=$1
+cd /openjdk-tests
+./get.sh -t /openjdk-tests
 
-echo "JAVA_HOME is : $JAVA_HOME"
-
-cd /openj9/test/TKG
+cd /openjdk-tests/TKG
 
 set -e
 # Generate make files 
 echo "Generating make files..."
 make -f run_configure.mk
 
-echo "Building openj9 functional test material..." 
+echo "Building functional test material..." 
 make compile
 
 echo "Running the functional tests" 
-#Run tests
-make _sanity.functional.regular
+make $1
 set +e
