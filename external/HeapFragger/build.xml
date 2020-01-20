@@ -23,7 +23,7 @@
 
 	<target name="build_image" depends="clean_image" description="build HeapFragger test docker image">
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-heapfragger -f dockerfile/Dockerfile --pull . --build-arg IMAGE_VERSION=${dockerImageTag}" />
+			<arg line="build -t adoptopenjdk-heapfragger -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}" />
 		</exec>
 	</target>
 
