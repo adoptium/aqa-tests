@@ -38,12 +38,13 @@ cd ${THORNTAIL_HOME}/
 
 #Build Thorntail 
 cd ${THORNTAIL_HOME}/thorntail/ 
+set -e
 mvn --batch-mode clean install -Pmicroprofile-tck -Dmaven.test.skip=true
+set +e
 echo "build finished"
 
-set -e
 echo "microprofile tck testsuite start"
 mvn --batch-mode test -Pmicroprofile-tck $TEST_OPTIONS
-set +e
-echo "microprofile tck testsuite finish"
+test_exit_code=$?
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+exit $test_exit_code
