@@ -47,7 +47,7 @@
 		     run the config command to allow file paths of 4096 characters 
 		-->
 		<if>
-			<contains string="${PLATFORM}" substring="win" />
+			<contains string="${SPEC}" substring="win" />
 			<then>
 				<exec executable="git" failonerror="false">
 					<arg line="config --system core.longpaths true" />
