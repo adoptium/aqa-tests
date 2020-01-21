@@ -29,6 +29,8 @@ fi
 
 export TEST_JDK_HOME=$JAVA_HOME
 
+java -version
+
 TEST_SUITE=$1
 
 echo "JAVA_HOME is : $JAVA_HOME"
