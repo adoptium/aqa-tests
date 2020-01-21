@@ -32,10 +32,8 @@ export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
 export BUILD_LIST=system
 
-test=$@
-
 cd /openjdk-tests
-./get.sh -t /openjdk-tests --clone_openj9 false
+./get.sh -t /openjdk-tests
 
 cd /openjdk-tests/TKG
 
@@ -45,5 +43,5 @@ make -f run_configure.mk
 echo "Building system test material..." 
 make compile
 
-echo "Running test $test..."
-sh /openjdk-tests/maketest.sh /openjdk-tests _$test
+echo "Running system $1..."
+make $1
