@@ -46,5 +46,5 @@ mvn package && \
 cd target && \
 
 echo "================ Running HeapFragger ==============="
-java -Xmx2G -Xms2G -Xmn1G -verbose:gc -Xtgc:parallel -javaagent:HeapFragger.jar="-a 128 -f 0.25 -s 512" org.HeapFragger.Idle -t 60000 |& tee output.log
+java -Xmx2G -Xms2G -Xmn1G -verbose:gc -Xtgc:parallel -javaagent:HeapFragger.jar="-a 128 -f 0.25 -s 512" org.heaputils.Idle -t 60000 |& tee output.log
 grep 'gc-op.*scav' output.log
