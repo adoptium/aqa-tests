@@ -22,7 +22,7 @@
 #
 # Build heapfragger: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-heapfragger .`
 
-ARG SDK=openjdk8
+ARG SDK=openjdk8-openj9
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
@@ -55,4 +55,3 @@ RUN pwd
 RUN git clone https://github.com/giltene/HeapFragger.git
 
 ENTRYPOINT ["/bin/bash", "/heapfragger.sh"]
-CMD ["--version"]
