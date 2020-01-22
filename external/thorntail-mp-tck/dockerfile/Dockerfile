@@ -28,35 +28,31 @@ ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG THORNTAIL_TAG=2.6.0.Final
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-# Install thorntail tck tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
-
-WORKDIR /
-RUN mkdir testResults
-ENV THORNTAIL_HOME $WORKDIR
-
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/thorntail-mp-tck.sh /thorntail-mp-tck.sh
 
-#Clone thorntail repo 
-RUN git clone -q git://github.com/thorntail/thorntail 
+ENV THORNTAIL_HOME $WORKDIR
+RUN mkdir testResults
+
+# Clone thorntail repo
+ENV THORNTAIL_TAG=$THORNTAIL_TAG
+RUN git clone https://github.com/thorntail/thorntail.git
+WORKDIR /thorntail/
+RUN git checkout ${THORNTAIL_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/thorntail-mp-tck.sh"]
-CMD [""]
+
+# Used to pass in a default value for TEST_OPTIONS
+#CMD [""]
