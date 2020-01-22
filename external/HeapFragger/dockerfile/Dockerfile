@@ -22,7 +22,7 @@
 #
 # Build heapfragger: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-heapfragger .`
 
-ARG SDK=openjdk8-openj9
+ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=latest
 
