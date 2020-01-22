@@ -10,45 +10,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This Dockerfile in thirdpart_containers/tomee/dockerfile dir is used to create an image with
+# This Dockerfile in external/quarkus-test/dockerfile dir is used to create an image with
 # AdoptOpenJDK jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
-# Build example: `docker build -t adoptopenjdk-tomee-test -f Dockerfile ../.`
+# Build example: `docker build -t adoptopenjdk-quarkus-test -f Dockerfile ../.`
 #
 # This Dockerfile builds image based on adoptopenjdk/openjdk8:latest.
 # If you want to build image based on other images, please use
 # `--build-arg list` to specify your base image
 #
-# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-tomee-test .`
+# Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-quarkus-test .`
 
+ 
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
-ARG TOMEE_TAG=tomee-8.0.0
-
 # Install test dependent executable files
-RUN apt-get update; \
-    apt-get install -y --no-install-recommends \
-        git \
-        maven \
-    ; \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+	&& apt-get -y install \
+	git \
+	wget 
 
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV MODE="java"
 
-COPY ./dockerfile/tomee-test.sh /tomee-test.sh
-
+COPY ./dockerfile/quarkus-test.sh /quarkus-test.sh
 RUN mkdir testResults
-
-# Clone tomee repo
-ENV TOMEE_TAG=$TOMEE_TAG
-RUN git clone https://github.com/apache/tomee.git
-WORKDIR /tomee/
-RUN git checkout ${TOMEE_TAG}
 WORKDIR /
+RUN pwd
+RUN git clone https://github.com/quarkusio/quarkus.git
+  
+# if MODE=-Dnative, then get graalvm
+# RUN wget https://ci.adoptopenjdk.net/view/all/job/jdk8-with-graal_build_x86-64_linux/lastSuccessfulBuild/artifact/build/x86_64/linux_macos/jdk8-with-graal-local/jdk8-with-graal-jdk.tar.gz
 
-ENTRYPOINT ["/bin/bash", "/tomee-test.sh"]
+ENTRYPOINT ["/bin/bash", "/quarkus-test.sh"]
+CMD ["$MODE"]

@@ -255,7 +255,7 @@
 		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-results-root=$(REPORTDIR)  \
+	-results-root=$(REPORTDIR) \
 	-test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>	
 		<levels>
@@ -265,6 +265,35 @@
 			<group>system</group>
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
+	</test>
+	
+	<test>
+		<testCaseName>HCRLateAttachWorkload_previewEnabled</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
+	-results-root=$(REPORTDIR) \
+	-debug-generation=$(Q)true$(Q) \
+	-java-debug-args=$(Q)--enable-preview$(Q) \
+	-java-args=$(Q)--enable-preview$(Q) \
+	-test=HCRLateAttachWorkload; \
+	$(TEST_STATUS)</command>	
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<platformRequirements>^os.win</platformRequirements>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
 	</test>
 	
 	<test>
