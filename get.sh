@@ -180,7 +180,6 @@ getBinaryOpenjdk()
 		os=${PLATFORM#*_}
 		os=${os%_xl}
 		arch=${PLATFORM%%_*}
-		OPENJDK_VERSION="openjdk${JDK_VERSION}"
 		heap_size="normal"
 		if [[ $PLATFORM = *"_xl"* ]]; then
 			heap_size="large"
@@ -191,7 +190,11 @@ getBinaryOpenjdk()
 		if [[ $arch = *"x86-32"* ]]; then
 			arch="x32"
 		fi
-		download_url="https://api.adoptopenjdk.net/v2/binary/${SDK_RESOURCE}/${OPENJDK_VERSION}?openjdk_impl=${JDK_IMPL}&os=${os}&arch=${arch}&release=${RELEASES}&type=${TYPE}&heap_size=${heap_size}"
+		release_type="ea"
+		if [ "$SDK_RESOURCE" == "releases" ]; then
+			release_type="ga"
+		fi
+		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
