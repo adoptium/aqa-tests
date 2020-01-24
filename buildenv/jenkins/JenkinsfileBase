@@ -375,6 +375,7 @@ def runTest( ) {
 		timestamps{
 			echo 'Running tests...'
 			def CUSTOM_OPTION = ''
+			int iterationCount = 1
 			
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
@@ -382,6 +383,7 @@ def runTest( ) {
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
+				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
@@ -418,6 +420,7 @@ def runTest( ) {
 				} else {
 					makeTest("${RUNTEST_CMD}")
 				}
+				iterationCount++
 			}
 		}
 	}
