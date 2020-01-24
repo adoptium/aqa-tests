@@ -213,8 +213,8 @@ getBinaryOpenjdk()
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
 				fi
-				echo "curl -OLJSks ${curl_options} $file"
-				curl -OLJSks ${curl_options} $file
+				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSks ${curl_options} $file"
+				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSks ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
@@ -282,8 +282,8 @@ getOpenJDKSources() {
 	cd $TESTDIR
 	mkdir -p openjdk/src
 	cd openjdk/src
-	echo "curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL"
-	curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL
+	echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL"
+	_ENCODE_FILE_NEW=UNTAGGED curl -OLJks --retry 5 --retry-delay 300 ${curl_options} $CUSTOMIZED_SDK_SOURCE_URL
 	sources_file=`ls`
 	if [[ $sources_file == *zip || $sources_file == *jar ]]; then
 		unzip -q $sources_file -d .
