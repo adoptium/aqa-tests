@@ -511,8 +511,8 @@ def testBuild() {
 			if( params.IS_PARALLEL == true ){
 				setupParallelEnv()
 			} else {
+				setup()
 				try {
-					setup()
 					//ToDo: temporary workaround for jck test parallel runs
 					// until build.xml is added into each subfolder
 					if( env.BUILD_LIST.startsWith('jck/')) {
