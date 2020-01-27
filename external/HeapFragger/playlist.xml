@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>heapfragger_j9</testCaseName>
-	<command>docker run -it --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-heapfragger:latest ; \
+	<command>docker run -i --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-heapfragger:latest ; \
 		$(TEST_STATUS); \
 		docker rmi -f adoptopenjdk-heapfragger
 	</command>
