@@ -44,6 +44,36 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_formatter_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 TZ=Asia/Shanghai bash  $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 TZ=Asia/Taipei bash  $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_formatter_Ja_JP_aix</testCaseName>
 		<command>LANG=Ja_JP TZ=Asia/Tokyo ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
@@ -119,6 +149,96 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_formatter_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN TZ=Asia/Shanghai ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN TZ=Asia/Shanghai ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN TZ=Asia/Shanghai ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW TZ=Asia/Taipei ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW TZ=Asia/Taipei ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW TZ=Asia/Taipei ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_formatter_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat; \
 	$(TEST_STATUS)</command>
@@ -151,6 +271,36 @@ limitations under the License.
 	<test>
 		<testCaseName>MBCS_Tests_formatter_ko_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRING; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_cn_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows zh CN MS936 TEST_STRING; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_formatter_tw_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows zh TW MS950 TEST_STRING; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>

@@ -16,7 +16,18 @@ SET PWD=%~dp0
 SET CLASSPATH=%PWD%\regex.jar
 call %PWD%\set_variable.bat
 
-%JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%\win_%2.txt
+SET DATAFILE=win_%2.txt
+SET EXPECTEDFILE=result_win_%2.txt
+if %3 == CN ( 
+   SET DATAFILE=win_%2-%3.txt
+   SET EXPECTEDFILE=result_win_%2-%3.txt 
+)
+if %3 == TW ( 
+   SET DATAFILE=win_%2-%3.txt
+   SET EXPECTEDFILE=result_win_%2-%3.txt 
+)
 
-fc output %PWD%\result_win_%2.txt > fc.out 2>&1
+%JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%\%DATAFILE%
+
+fc output %PWD%\%EXPECTEDFILE% > fc.out 2>&1
 exit %errorlevel%

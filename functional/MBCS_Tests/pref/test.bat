@@ -1,4 +1,4 @@
-@echo off
+@echo on
 rem Licensed under the Apache License, Version 2.0 (the "License");
 rem you may not use this file except in compliance with the License.
 rem You may obtain a copy of the License at
@@ -13,11 +13,11 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-SET OUTPUT=result_Windows_%LOCALE%.txt
 SET CLASSPATH=%PWD%\pref.jar
 
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
+SET OUTPUT=result_Windows_%LOCALE%.txt
 echo "registering %TEST_STRING% ..." > %OUTPUT%
 %JAVA_BIN%\java PrefTest %TEST_STRING% >> %OUTPUT%
 

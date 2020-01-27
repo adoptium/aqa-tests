@@ -1,0 +1,25 @@
+¡¡#echo off
+#echo (1) GB18030 G1
+#echo    
+#echo    °¡¡î¡¡¡¡U¡¡
+export TEST_STRING1='°¡¡¡¡¡¡¡'
+
+#echo (2) GB18030 G2
+#echo    
+#echo    ANSIString2
+export TEST_STRING2='ANSIString2'
+
+#echo (3) Full angle character
+#echo    
+#echo    £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
+export TEST_STRING3='Ò»¶¡Æß'
+
+#echo (4) Half-angle character
+#echo    
+#echo    ABCCDE/\!
+export TEST_STRING4='ABCCDE'
+
+export TEST_STRING='°¡Ò»¶¡Æß'
+export TEST_STRING_SED=$TEST_STRING
+export TEST_STRINGS="$TEST_STRING1 $TEST_STRING2 $TEST_STRING3 $TEST_STRING4"
+export TEST_STRINGS_SED=$TEST_STRINGS

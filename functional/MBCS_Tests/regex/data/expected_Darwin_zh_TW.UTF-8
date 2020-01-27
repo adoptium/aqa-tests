@@ -1,0 +1,50 @@
+------------ Pattern matching test ------------
+5: 磩軿輆輅輂輁輈輇逿輋輀
+9: 鉆鉬鉠鉏鉧鉯輆輅輂鉡鉰鈶
+20: 澉駘駋瘲駗駌骳Breaker髫輆輅輂
+--- Confirm that the line(s) includes 輆輅輂. 
+--- Did you get the line(s) ?
+9: 鉆鉬鉠鉏鉧鉯輆輅輂鉡鉰鈶
+12: 毿氂氀殦鉬樖氁潁韏鉏澇潾
+--- Confirm that the line(s) includes the pattern 鉬*鉏. 
+--- Did you get the line(s) ?
+14: 澉澍潢澌潏獒熳獞犚獘熧
+15: 澉ＡＢＣ１８９２１壹捌玖貳壹一丁七
+18: 澉鄮鄯遫醁醂醊醆醅鋄鋐
+20: 澉駘駋瘲駗駌骳Breaker髫輆輅輂
+--- Confirm that the line(s) starts with 澉.
+--- Did you get the line(s) ?
+4: 嶕蜵髳
+21:  #java SimpleGrep 髳 zh-tw.txt
+22: 髳
+25: 瞡瞛瞜瞢瞣髳瞕瞙
+--- Confirm that the line(s) includes 髳. 
+--- Did you get the line(s) ?
+6: 表噂十豹毿氀殦竹敷～椄＊＠
+11:   #java SimpleGrep 毿氂氀殦樖氁 zh-tw.txt
+12: 毿氂氀殦鉬樖氁潁韏鉏澇潾
+16: 蓰蓨蔘蓹蓯蔋蔰鉬蔠蔙蔯虢毿氂氀殦
+--- Confirm that the line(s) includes 氀. 
+--- Did you get the line(s) ?
+6: 表噂十豹毿氀殦竹敷～椄＊＠
+--- Confirm that the line(s) includes 豹竹敷. 
+--- Did you get the line 33 ?
+------------ Pattern replacement test ------------
+5: 磩軿輆輅輂輁輈輇逿輋輀
+==> 磩軿aiueo輁輈輇逿輋輀
+9: 鉆鉬鉠鉏鉧鉯輆輅輂鉡鉰鈶
+==> 鉆鉬鉠鉏鉧鉯aiueo鉡鉰鈶
+20: 澉駘駋瘲駗駌骳Breaker髫輆輅輂
+==> 澉駘駋瘲駗駌骳Breaker髫aiueo
+--- Confirm that 輆輅輂 was replaced by aiueo. 
+--- OK ?
+4: 嶕蜵髳
+==> 嶕蜵僇僞僇僫
+21:  #java SimpleGrep 髳 zh-tw.txt
+==>  #java SimpleGrep 僇僞僇僫 zh-tw.txt
+22: 髳
+==> 僇僞僇僫
+25: 瞡瞛瞜瞢瞣髳瞕瞙
+==> 瞡瞛瞜瞢瞣僇僞僇僫瞕瞙
+--- Confirm that 髳 was replaced by 僇僞僇僫. 
+--- OK ?

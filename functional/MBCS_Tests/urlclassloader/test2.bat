@@ -19,5 +19,9 @@ call %PWD%\set_variable.bat
 @echo UrlClassLoader close test
 %JAVA_BIN%\java Main %1 %2 %3 %4 %5
 
-fc %PWD%\expected\win_%2.expected.txt output > fc.out 2>&1
+SET EXPECTEDFILE=win_%2.expected.txt
+if %3 == CN ( SET EXPECTEDFILE=win_%2-%3.expected.txt )
+if %3 == TW ( SET EXPECTEDFILE=win_%2-%3.expected.txt )
+
+fc %PWD%\expected\%EXPECTEDFILE% output > fc.out 2>&1
 exit %errorlevel%

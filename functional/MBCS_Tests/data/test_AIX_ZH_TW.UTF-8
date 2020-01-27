@@ -1,0 +1,25 @@
+#echo off
+#echo (1) UTF-8= G1
+#echo    
+#echo    表噂十豹竹敷～椄＊＠’鷗葛
+export TEST_STRING1='表噂十豹竹敷～椄＊＠’鷗葛'
+
+#echo (2) UTF-8 G2
+#echo    
+#echo    株表噂十豹竹敷～椄＊＠
+export TEST_STRING2='株表噂十豹竹敷～椄＊＠'
+
+#echo (3) Full angle character
+#echo    
+#echo    ＡＢＣ１８９２１壹捌玖貳壹一丁七／＼～
+export TEST_STRING3='ＡＢＣ１８９２１壹捌玖貳壹一丁七／＼'
+
+#echo (4) Half-angle character
+#echo    
+#echo    ABCCDE18921壹捌玖貳壹貳參肆伍陸柒捌玖拾/\\
+export TEST_STRING4='ABCCDE18921壹捌玖貳壹貳參肆伍陸柒捌玖拾/\\'
+
+export TEST_STRING='株表噂十豹竹敷～椄＊＠ＡＢＣ１８９２１壹捌玖貳壹貳參肆伍陸柒捌玖拾一丁七／＼'
+export TEST_STRING_SED=$TEST_STRING
+export TEST_STRINGS="$TEST_STRING1 $TEST_STRING2 $TEST_STRING3 $TEST_STRING4"
+export TEST_STRINGS_SED=$TEST_STRINGS

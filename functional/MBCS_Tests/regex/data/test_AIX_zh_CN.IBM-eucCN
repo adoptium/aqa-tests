@@ -1,0 +1,82 @@
+################################################################################
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# javac *.java
+
+SOURCE=$1
+
+echo "------------ Pattern matching test ------------"
+
+java SimpleGrep 　　　　　　　　　　　　 ${SOURCE}
+echo "--- Confirm that the line(s) includes "　　　　　　　　　　　　". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "　*　" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "　*　". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "^　" ${SOURCE}
+echo "--- Confirm that the line(s) starts with "　"."
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep 　 ${SOURCE}
+echo "--- Confirm that the line(s) includes "　". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "　" ${SOURCE}
+echo "--- Confirm that the line(s) includes "　". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "燕　　兆" ${SOURCE}
+echo "--- Confirm that the line(s) includes "燕　　兆". "
+echo "--- Did you get the line 33 ?"
+read word1
+
+
+echo ------------ Pattern replacement test ------------
+
+java RegexReplaceTest 　　　　　　　　　　　　 aiueo ${SOURCE} -v
+echo "--- Confirm that "　　　　　　　　　　　　" was replaced by "aiueo". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest 　 　　　　 ${SOURCE} -v
+echo "--- Confirm that "　" was replaced by "　　　　". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "　" "\\\\" ${SOURCE} -v
+echo "--- Confirm that "　" was replaced by "\\". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "燕　　兆" "　　" ${SOURCE} -v
+echo "--- Confirm that "燕　　兆" was replaced by "　　". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "\\\\u628e" "　" ${SOURCE} -v
+echo "--- Confirm that "\\u628e" was replaced by "　". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest [掣℃Ж] 　催 ${SOURCE} -v
+echo "--- Confirm that any of "掣℃Ж" were replaced by "　催". "
+echo "--- OK ?"
+read word1

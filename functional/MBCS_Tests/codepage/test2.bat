@@ -17,4 +17,9 @@ SET CLASSPATH=%PWD%\codepage.jar
 call %PWD%\set_variable.bat
 %JAVA_BIN%\java conv %PWD%\WIN_%4.txt %4 tmp.txt %4 > \nul 2>&1
 fc %PWD%\WIN_%4.txt tmp.txt > fc.out 2>&1
+if %errorlevel% neq 0 (
+    echo Run UCompare
+    %JAVA_BIN%\java UCompare %PWD%\WIN_%4.txt %4 tmp.txt %4 
+)
+
 exit %errorlevel%

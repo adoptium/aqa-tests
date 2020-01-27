@@ -18,5 +18,9 @@ call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 %5
 
-C:\Strawberry\perl\bin\perl %PWD%\tap_compare.pl output %PWD%\expected_%1_%2.txt
+SET EXPECTEDFILE=expected_%1_%2.txt
+if %3 == CN ( SET EXPECTEDFILE=expected_%1_%2-%3.txt )
+if %3 == TW ( SET EXPECTEDFILE=expected_%1_%2-%3.txt )
+
+C:\Strawberry\perl\bin\perl %PWD%\tap_compare.pl output %PWD%\%EXPECTEDFILE%
 exit %errorlevel%

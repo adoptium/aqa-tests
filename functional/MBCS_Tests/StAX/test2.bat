@@ -1,4 +1,4 @@
-@echo off
+@echo on
 rem Licensed under the Apache License, Version 2.0 (the "License");
 rem you may not use this file except in compliance with the License.
 rem You may obtain a copy of the License at
@@ -14,20 +14,29 @@ rem limitations under the License.
 SETLOCAL
 SET PWD=%~dp0
 call %PWD%\set_variable.bat
-
-%JAVA_BIN%\java -cp %PWD%\StAX.jar Main %PWD%\data\drinks_%2.xml %PWD%\data\drinks_%2.xml %1 %2 %3 %4 %5
-
 SET RESULT=0
-fc %PWD%expected\Windows_%2\read_cursor.html read_cursor.html > fc.out 2>&1
+SET DATAFILE=drinks_%2.xml
+SET EXPECTEDFOLDER=Windows_%2
+if %3 == CN (
+   SET DATAFILE=drinks_%2-%3.xml
+   SET EXPECTEDFOLDER=Windows_%2-%3
+)
+if %3 == TW (
+   SET DATAFILE=drinks_%2-%3.xml
+   SET EXPECTEDFOLDER=Windows_%2-%3
+)
+
+%JAVA_BIN%\java -cp %PWD%\StAX.jar Main %PWD%\data\%DATAFILE% %PWD%\data\%DATAFILE% %1 %2 %3 %4 %5
+fc %PWD%expected\%EXPECTEDFOLDER%\read_cursor.html read_cursor.html > fc.out 2>&1
 if %errorlevel% neq 0 SET RESULT=1
 
-fc %PWD%expected\Windows_%2\read_event.html read_event.html >> fc.out 2>&1
+fc %PWD%expected\%EXPECTEDFOLDER%\read_event.html read_event.html >> fc.out 2>&1
 if %errorlevel% neq 0 SET RESULT=1
 
-fc %PWD%expected\Windows_%2\write_cursor.xml write_cursor.xml >> fc.out 2>&1
+fc %PWD%expected\%EXPECTEDFOLDER%\write_cursor.xml write_cursor.xml >> fc.out 2>&1
 if %errorlevel% neq 0 SET RESULT=1
 
-fc %PWD%expected\Windows_%2\write_event.xml write_event.xml >> fc.out 2>&1
+fc %PWD%expected\%EXPECTEDFOLDER%\write_event.xml write_event.xml >> fc.out 2>&1
 if %errorlevel% neq 0 SET RESULT=1
 
 exit %RESULT%

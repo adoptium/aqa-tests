@@ -1,0 +1,25 @@
+#echo off
+#echo (1) UTF-8= G1
+#echo    
+#echo    ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶
+export TEST_STRING1='ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶'
+
+#echo (2) UTF-8 G2
+#echo    
+#echo    Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é
+export TEST_STRING2='Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é'
+
+#echo (3) Full angle character
+#echo    
+#echo    ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à¢Ä
+export TEST_STRING3='¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à'
+
+#echo (4) Half-angle character
+#echo    
+#echo    ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+export TEST_STRING4='ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\'
+
+export TEST_STRING='Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅÄ¡Ä£Ä¤¢ß¢à'
+export TEST_STRING_SED=$TEST_STRING
+export TEST_STRINGS="$TEST_STRING1 $TEST_STRING2 $TEST_STRING3 $TEST_STRING4"
+export TEST_STRINGS_SED=$TEST_STRINGS

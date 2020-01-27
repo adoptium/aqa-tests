@@ -24,5 +24,10 @@ for %%i in (%PWD%\win_%2_*_txt) do (
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 
 
-fc %PWD%\expected_Windows_%2.txt %OUTPUT% > fc.out 2>&1
+SET EXPECTEDFILE=expected_Windows_%2.txt
+if %3 == CN ( SET EXPECTEDFILE=expected_Windows_%2-%3.txt )
+if %3 == TW ( SET EXPECTEDFILE=expected_Windows_%2-%3.txt )
+
+fc %PWD%\%EXPECTEDFILE% %OUTPUT% > fc.out 2>&1
+
 exit %errorlevel%

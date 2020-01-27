@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
@@ -31,9 +30,11 @@ do
         j=${i##/*/}
 	echo >> ${OUTPUT}
 	echo ${j} >> ${OUTPUT}
-	
 	${JAVA_BIN}/java IDNFromFile $i
-	
+        RESULT=$?
+	if [ ${RESULT} != 0 ]; then 
+            exit ${RESULT}
+        fi
 	mv toAscii.txt ${i}_toAscii
         cat ${i}_toAscii >> ${OUTPUT}
 

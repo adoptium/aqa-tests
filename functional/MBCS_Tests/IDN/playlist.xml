@@ -38,6 +38,30 @@ limitations under the License.
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_IDN_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_IDN_Ja_JP_aix</testCaseName>
 		<command>LANG=Ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
@@ -109,6 +133,92 @@ limitations under the License.
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_IDN_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_IDN_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat; \
 	$(TEST_STATUS)</command>
@@ -135,6 +245,30 @@ limitations under the License.
 	<test>
 		<testCaseName>MBCS_Tests_IDN_ko_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_cn_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows zh CN MS936; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_IDN_tw_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat Windows zh TW MS950; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>

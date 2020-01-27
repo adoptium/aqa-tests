@@ -15,8 +15,16 @@ SETLOCAL
 SET PWD=%~dp0
 SET CLASSPATH=%PWD%\formatter.jar
 call %PWD%\set_variable.bat
+SET EXPECTEDFILE=expected_Windows_%2.txt
 
-%JAVA_BIN%\java -Duser.timezone=Asia/Tokyo Main %1 %2 %3 %4 %5
+if %3 == JP ( SET CITY=Tokyo )
+if %3 == KR ( SET CITY=Seoul )
+if %3 == CN ( SET CITY=Shanghai
+              SET EXPECTEDFILE=expected_Windows_%2-%3.txt )
+if %3 == TW ( SET CITY=Taipei
+              SET EXPECTEDFILE=expected_Windows_%2-%3.txt )
 
-fc %PWD%\expected_windows_%2.txt output > fc.out 2>&1
+%JAVA_BIN%\java -Duser.timezone=Asia/%CITY% Main %1 %2 %3 %4 %5
+
+fc %PWD%\%EXPECTEDFILE% output > fc.out 2>&1
 exit %errorlevel%

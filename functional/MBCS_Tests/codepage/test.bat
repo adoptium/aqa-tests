@@ -20,4 +20,8 @@ call %PWD%\set_%LOCALE%.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 %JAVA_BIN%\java conv %PWD%\WIN_%CHARMAP%.txt %ENCODING% tmp.txt %ENCODING% > \nul 2>&1
 fc %PWD%\WIN_%CHARMAP%.txt tmp.txt > fc.out 2>&1
+if %errorlevel% neq 0 (
+    echo Run UCompare
+    %JAVA_BIN%\java UCompare %PWD%\WIN_%CHARMAP%.txt %ENCODING% tmp.txt %ENCODING%
+)  
 exit %errorlevel%

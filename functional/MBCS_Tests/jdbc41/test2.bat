@@ -18,9 +18,13 @@ SET OUTPUT="output"
 SET DERBY_JAR=%PWD%\derby\db-derby-10.14.2.0-lib\lib\derby.jar
 SET CLASSPATH=%PWD%\jdbc41.jar;%DERBY_JAR%
 call %PWD%\set_variable.bat
+SET EXPECTEDFILE=win_%2.expected.txt
+if %3 == CN ( SET EXPECTEDFILE=win_%2-%3.expected.txt )
+if %3 == TW ( SET EXPECTEDFILE=win_%2-%3.expected.txt )
+REM call %PWD%\data\setjdbc41_%LOCALE%.bat
 
 %JAVA_BIN%\java Main2 %1 %2 %3 %4 %5
 
-fc %PWD%\expected\win_%2.expected.txt %OUTPUT% > fc.out 2>&1
+fc %PWD%\expected\%EXPECTEDFILE% %OUTPUT% > fc.out 2>&1
 exit %errorlevel%
 

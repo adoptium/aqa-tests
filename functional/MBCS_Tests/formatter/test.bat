@@ -19,8 +19,13 @@ SET CLASSPATH=%PWD%\formatter.jar
 call %PWD%\check_env_windows.bat
 
 call %PWD%\..\data\setup_%LOCALE%.bat
+if %LOCALE% == ja ( SET CITY=Tokyo )
+if %LOCALE% == ko ( SET CITY=Seoul )
+if %LOCALE% == zh-cn ( SET CITY=Shanghai )
+if %LOCALE% == zh-tw ( SET CITY=Taipei )
+
 echo "invoking FormatterTest2" > %OUTPUT%
-%JAVA_BIN%\java FormatterTest2 abc%TEST_STRING% >> %OUTPUT%
+%JAVA_BIN%\java -Duser.timezone=Asia/%CITY% FormatterTest2 abc%TEST_STRING% >> %OUTPUT%
 
 fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

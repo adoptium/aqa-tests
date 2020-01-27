@@ -20,6 +20,9 @@ public class Main {
       Locale.setDefault(new Locale(args[1],args[2]));
       System.setOut(new java.io.PrintStream(new File("output"),args[3]));
       String propfile = "setup_" + args[0] + "_" + args[1] + ".properties";
+      if ( args[2].equals("CN") || args[2].equals("TW") ){
+         propfile = "setup_" + args[0] + "_" + args[1] + "-" + args[2] + ".properties";
+      }
       
       try (InputStream is = Main.class.getClassLoader().getResourceAsStream(propfile);){
          Properties prop = new Properties();

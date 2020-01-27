@@ -20,6 +20,9 @@ public class Main {
    public static void main(String[] args) throws Exception {
       Locale.setDefault(new Locale(args[3],args[4]));
       String propfile = args[2]+"_"+args[3]+"_"+args[4]+"."+args[5]+".properties";
+      if(args[4].equals("TW")){
+         propfile = args[2]+"_"+args[3]+"_"+args[4]+"."+args[5]+"_2.properties";
+      }
       String[] arr1 = { args[0] };
       String[] arr2 = { args[1] };
       String[] teststring = null;
