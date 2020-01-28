@@ -272,9 +272,7 @@ getBinaryOpenjdk()
 			cd $SDKDIR/openjdkbinary
 		done
 
-	if [[ "$PLATFORM" == "s390x_zos" ]]; then
-		chmod -R 755 j2sdk-image
-	fi
+	chmod -R 755 j2sdk-image
 }
 
 getOpenJDKSources() {
