@@ -435,7 +435,8 @@ def post(output_name) {
 			else {
 				output_name = output_name.replace("/","_")
 			}
-			def tar_cmd = "tar -zcf"
+			def tar_cmd = "tar -cf"
+			def tar_cmd_suffix = "| gzip -9"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
@@ -449,6 +450,7 @@ def post(output_name) {
 				tar_cmd = "pax -wf"
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
+				tar_cmd_suffix = ""
 			}
 
 			boolean failIfNoResultsValue = true
@@ -475,7 +477,7 @@ def post(output_name) {
 
 			if (currentBuild.result != 'SUCCESS' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
-				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
+				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix}"
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
