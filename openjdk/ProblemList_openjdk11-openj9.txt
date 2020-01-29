@@ -193,7 +193,7 @@ java/io/FileOutputStream/UnreferencedFOSClosesFd.java https://github.com/eclipse
 java/nio/Buffer/DirectBufferAllocTest.java https://github.com/eclipse/openj9/issues/4473 generic-all
 java/nio/Buffer/LimitDirectMemory.java	https://github.com/eclipse/openj9/issues/8063	generic-all
 java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse/openj9/issues/8065	generic-all
-java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602	linux-all
+java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse/openj9/issues/8395	linux-all, aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/AdoptOpenJDK/openjdk-tests/issues/1016
@@ -201,11 +201,8 @@ java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267 macosx-all,linux-s390x
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse/openj9/issues/6669
 java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x, macosx-all
-java/nio/channels/FileChannel/directio/DirectIOTest.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/248	generic-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse/openj9/issues/4317 macosx-all
-java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java	https://github.com/eclipse/openj9/issues/7624	linux-s390x
 java/nio/file/Files/CopyAndMove.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/795 macosx-all
-java/nio/file/attribute/BasicFileAttributeView/UnixSocketFile.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/602	linux-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse/openj9/issues/4679 linux-x64,macosx-all
 
 ############################################################################
@@ -258,7 +255,7 @@ java/util/BitSet/stream/BitSetStreamTest.java https://github.com/eclipse/openj9/
 java/util/Spliterator/SpliteratorCollisions.java	https://github.com/eclipse/openj9/issues/7090	generic-all
 java/util/concurrent/atomic/VMSupportsCS8.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/util/concurrent/forkjoin/FJExceptionTableLeak.java	https://github.com/eclipse/openj9/issues/3209	generic-all
-java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse/openj9/issues/7125	macosx-all,linux-all
+java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse/openj9/issues/7125	macosx-all,linux-all,aix-all
 java/util/concurrent/ArrayBlockingQueue/WhiteBox.java      https://github.com/eclipse/openj9/issues/5988    macosx-all
 java/util/logging/CheckZombieLockTest.java	https://bugs.openjdk.java.net/browse/JDK-8148972	macosx-all,linux-all
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse/openj9/issues/4561 generic-all
