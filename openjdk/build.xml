@@ -35,8 +35,11 @@
 				<exec executable="curl" failonerror="true">
 					<arg line="-OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
 				</exec>
+				<exec executable="gzip" failonerror="true">
+					<arg line="-d jtreg-4.2.0-tip.tar.gz" />
+				</exec>
 				<exec executable="tar" failonerror="true">
-					<arg line="xf jtreg-4.2.0-tip.tar.gz -C ${DEST}" />
+					<arg line="xf jtreg-4.2.0-tip.tar -C ${DEST}" />
 				</exec>
 			</then>
 		</if>
