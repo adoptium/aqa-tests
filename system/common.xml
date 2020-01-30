@@ -178,7 +178,10 @@
 			</else>
 		</if>
 		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<or>
+				<contains string="${JVM_VERSION}" substring="openj9"/>
+				<contains string="${JVM_VERSION}" substring="ibm"/>
+			</or>
 			<then>
 				<if>
 					<not>
@@ -198,7 +201,10 @@
 	
 	<target name="configure_systemtest" depends="check_systemtest">
 		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<or>
+				<contains string="${JVM_VERSION}" substring="openj9"/>
+				<contains string="${JVM_VERSION}" substring="ibm"/>
+			</or>
 			<then>
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false"/>
 			</then>
@@ -228,7 +234,11 @@
 	<!-- Also make sure stf is built -->
 	<target name="build-dependencies" depends="configure_systemtest">
 		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<or>
+				<contains string="${JVM_VERSION}" substring="openj9"/>
+				<contains string="${JVM_VERSION}" substring="ibm"/>
+			</or>
+
 			<then>
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false"/>
 			</then>
@@ -248,7 +258,10 @@
 	<target name="clean">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"/>
 		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<or>
+				<contains string="${JVM_VERSION}" substring="openj9"/>
+				<contains string="${JVM_VERSION}" substring="ibm"/>
+			</or>
 			<then>
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
 			</then>
