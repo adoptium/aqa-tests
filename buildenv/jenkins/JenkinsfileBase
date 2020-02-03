@@ -55,13 +55,13 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
-	
+
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
-	
+
 	if (params.JRE_IMAGE) {
 		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
 	}
-	
+
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -108,13 +108,13 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()		
-			
+			setupEnv()
+
 			//Initialization for things in common between both multiple iterations and many subtests
 			//repeatAmount is the number of times the loops go through
 			def testSubDirs = []
 			int repeatAmount = ITERATIONS
-			
+
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
 			if (repeatAmount == 1) {
@@ -130,7 +130,7 @@ def setupParallelEnv() {
 				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
-			
+
 			parallel_tests = [:]
 
 			for (int i = 0; i < repeatAmount; i++) {
@@ -277,7 +277,7 @@ def setup() {
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-			
+
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -311,13 +311,15 @@ def get_sources_with_authentication() {
 }
 
 def get_sources() {
-	if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-		// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
-		withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+	withEnv(['VERBOSE_CURL=VERBOSE']) {
+		if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+			// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
+			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+				sh "$GET_SH_CMD"
+			}
+		} else {
 			sh "$GET_SH_CMD"
 		}
-	} else {
-		sh "$GET_SH_CMD"
 	}
 }
 
@@ -349,7 +351,7 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			if (fileExists('openjdkbinary/openjdk-test-image')) {
 				env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
 			}
@@ -376,7 +378,7 @@ def runTest( ) {
 			echo 'Running tests...'
 			def CUSTOM_OPTION = ''
 			int iterationCount = 1
-			
+
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
@@ -435,7 +437,8 @@ def post(output_name) {
 			else {
 				output_name = output_name.replace("/","_")
 			}
-			def tar_cmd = "tar -zcf"
+			def tar_cmd = "tar -cf"
+			def tar_cmd_suffix = "| gzip -9"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
@@ -449,6 +452,7 @@ def post(output_name) {
 				tar_cmd = "pax -wf"
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
+				tar_cmd_suffix = ""
 			}
 
 			boolean failIfNoResultsValue = true
@@ -461,7 +465,7 @@ def post(output_name) {
 			archiveSHAFile()
 
 			addGrinderLink()
-			
+
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
 				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
@@ -475,7 +479,11 @@ def post(output_name) {
 
 			if (currentBuild.result != 'SUCCESS' || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
-				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
+				if (tar_cmd.startsWith('tar')) {
+					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
+				} else {
+					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix}"
+				}
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."

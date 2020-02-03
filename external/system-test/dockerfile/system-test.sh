@@ -37,11 +37,6 @@ cd /openjdk-tests
 
 cd /openjdk-tests/TKG
 
-echo "Generating make files..."
-make -f run_configure.mk
-
-echo "Building system test material..." 
 make compile
-
-echo "Running system $1..."
 make $1
+

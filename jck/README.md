@@ -98,7 +98,6 @@ export JCK_GIT_REPO=git@github.com:mypretendcompany/jck8tests.git
 export JCK_ROOT=/jck/jck8tests
 
 cd TKG
-make -f run_configure.mk
 make compile
 make _sanity.jck
 ```
