@@ -477,7 +477,7 @@ def post(output_name) {
 				)
 			}
 
-			if (currentBuild.result != 'SUCCESS' || params.ARCHIVE_TEST_RESULTS) {
+			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
