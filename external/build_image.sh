@@ -46,9 +46,9 @@ function build_image() {
     tags="adoptopenjdk-${test}-test"
 
 	echo "#####################################################"
-	echo "INFO: docker build --no-cache ${tags} -f ${file} ."
+	echo "INFO: docker build --no-cache -t ${tags} -f ${file} ."
 	echo "#####################################################"
-	docker build --pull --no-cache ${tags} -f ${file} .
+	docker build --no-cache -t ${tags} -f ${file} .
 	if [ $? != 0 ]; then
 		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
 		exit 1
@@ -70,6 +70,6 @@ if [ ! -f ${file} ]; then
     echo "ERROR: Dockerfile generation for ${file} failed."
 	exit 1
 fi
-#
-## Build Dockerfile that was generated
-#build_image ${file} ${test}
+
+# Build Dockerfile that was generated
+build_image ${file} ${test}
