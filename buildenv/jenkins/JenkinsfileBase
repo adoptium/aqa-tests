@@ -438,7 +438,8 @@ def post(output_name) {
 				output_name = output_name.replace("/","_")
 			}
 			def tar_cmd = "tar -cf"
-			def tar_cmd_suffix = "| gzip -9"
+			// Use pigz if we can as it is faster - 2> hides fallback message
+			def tar_cmd_suffix = "| (pigz -9 2>/dev/null || gzip -9)"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
