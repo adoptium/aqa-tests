@@ -19,49 +19,57 @@ source ./dockerfile_functions.sh
 
 if [ $# -ne 6 ]; then
 	echo
-	echo "usage: $0 os test version vm package build"
-	echo "os      = ${all_os}"
-	echo "test    = ${all_tests}"
-	echo "version = ${all_versions}"
-	echo "vm      = ${all_jvms}"
-	echo "package = ${all_packages}"
-	echo "build   = ${all_builds}"
+	echo "usage: $0 test version vm os package build"
+	echo "test    = ${supported_tests}"
+	echo "version = ${supported_versions}"
+	echo "vm      = ${supported_jvms}"
+	echo "os      = ${supported_os}"
+	echo "package = ${supported_packages}"
+	echo "build   = ${supported_builds}"
 	exit -1
 fi
 
-set_os $1
-set_test $2
-set_version $3
-set_vm $4
+set_test $1
+set_version $2
+set_vm $3
+set_os $4
 set_package $5
 set_build $6
 
+
 # Build the Docker image with the given repo, build, build type and tags.
-#function build_image() {
-#	repo=$1; shift;
-#	build=$1; shift;
-#	btype=$1; shift;
-#
-#	tags=""
-#
-#	dockerfile="Dockerfile.${vm}.${build}.${btype}"
-#
-#	echo "#####################################################"
-#	echo "INFO: docker build --no-cache ${tags} -f ${dockerfile} ."
-#	echo "#####################################################"
-#	docker build --pull --no-cache ${tags} -f ${dockerfile} .
-#	if [ $? != 0 ]; then
-#		echo "ERROR: Docker build of image: ${tags} from ${dockerfile} failed."
-#		exit 1
-#	fi
-#}
+function build_image() {
+    local file=$1
+    local test=$2
 
+    # Used for tagging the image
+    tags="adoptopenjdk-${test}-test"
 
-# Generate all the Dockerfiles for each of the builds and build types
-dir="${test}/dockerfile"
-file="${dir}/Dockerfile.${os}"
-generate_dockerfile ${file} ${os} ${test} ${version} ${vm} ${package} ${build}
+	echo "#####################################################"
+	echo "INFO: docker build --no-cache ${tags} -f ${file} ."
+	echo "#####################################################"
+	docker build --pull --no-cache ${tags} -f ${file} .
+	if [ $? != 0 ]; then
+		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
+		exit 1
+	fi
+}
+
+# Handle making the directory for organizing the Dockerfiles
+dir="${test}/dockerfile/${version}/${package}/${os}"
+mkdir -p ${dir}
+
+# File Path to Dockerfile
+file="${dir}/Dockerfile.${vm}.${build}"
+
+# Generate Dockerfile
+generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build}
+
+# Check if Dockerfile exists
 if [ ! -f ${file} ]; then
-    continue;
+    echo "ERROR: Dockerfile generation for ${file} failed."
+	exit 1
 fi
-
+#
+## Build Dockerfile that was generated
+#build_image ${file} ${test}
