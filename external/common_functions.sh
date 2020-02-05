@@ -13,152 +13,165 @@
 # limitations under the License.
 #
 
-# All supported JVMs
-all_jvms="hotspot openj9"
+# Supported versions
+supported_versions="8 9 10 11 12 13 14 15"
 
-# All supported packges
-all_packages="jdk jre"
+# Supported JVMs
+supported_jvms="hotspot openj9"
 
-# All supported distros
-all_os="alpine debian debianslim ubi ubi-minimal centos clefos ubuntu windowsservercore-ltsc2016"
+# Supported distros
+# Distros Note Included: windowsservercore-ltsc2016
+supported_os="alpine debian debianslim ubi ubi-minimal centos clefos ubuntu"
 
-# All support versions
-all_versions="8 9 10 11 12 13"
+# Supported packges
+supported_packages="jdk jre"
 
-# All supported builds
-all_builds="slim full"
+# Supported builds
+supported_builds="slim full"
 
-# All supported tests
-all_tests="derby elasticsearch jenkins kafka lucene-solr openliberty payara quarkus scala thorntail tomcat tomee wildfly wycheproof"
+# Supported tests
+# Test Not Included: elasticsearch quarkus functional-test system-test
+supported_tests="derby jenkins kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
 	version=$1
-	case ${version} in
-	8|9|10|11|12|13)
-		;;
-	*)
-		echo "ERROR: Invalid version"
-		;;
-	esac
+
+    for current_version in ${supported_versions}
+    do
+        if [[ "${version}" == "${current_version}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid version
 function set_version() {
 	version=$1
-	if [ ! -z "$(check_version ${version})" ]; then
+	if (check_version ${version}); then
 		echo "ERROR: Invalid Version: ${version}"
-		echo "Usage: $0 [${all_versions}]"
+		echo "Usage: $0 [${supported_versions}]"
 		exit 1
 	fi
 }
 
 function check_os() {
 	os=$1
-	case ${os} in
-	alpine|debian|debianslim|ubi|ubi-minimal|centos|clefos|ubuntu|windowsservercore-ltsc2016)
-		;;
-	*)
-		echo "ERROR: Invalid os"
-		;;
-	esac
+
+    for current_os in ${supported_os}
+    do
+        if [[ "${os}" == "${current_os}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid os
 function set_os() {
 	os=$1
-	if [ ! -z "$(check_os ${os})" ]; then
+	if (check_os ${os}); then
 		echo "ERROR: Invalid OS: ${os}"
-		echo "Usage: $0 [${all_os}]"
+		echo "Usage: $0 [${supported_os}]"
 		exit 1
 	fi
 }
 
 function check_test() {
 	test=$1
-	case ${test} in
-	derby|elasticsearch|jenkins|kafka|lucene-solr|openliberty|payara|quarkus|scala|thorntail|tomcat|tomee|wildfly|wycheproof)
-		;;
-	*)
-		echo "ERROR: Invalid test"
-		;;
-	esac
+
+    for current_test in ${supported_tests}
+    do
+        if [[ "${test}" == "${current_test}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid test
 function set_test() {
 	test=$1
-	if [ ! -z "$(check_test ${test})" ]; then
+	if (check_test ${test}); then
 		echo "ERROR: Invalid Test: ${test}"
-		echo "Usage: $0 [${all_tests}]"
+		echo "Usage: $0 [${supported_tests}]"
 		exit 1
 	fi
 }
 
-
 function check_vm() {
 	vm=$1
-	case ${vm} in
-	hotspot|openj9)
-		;;
-	*)
-		echo "ERROR: Invalid VM"
-		;;
-	esac
+
+    for current_vm in ${supported_jvms}
+    do
+        if [[ "${vm}" == "${current_vm}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid vm
 function set_vm() {
 	vm=$1
-	if [ ! -z "$(check_vm ${vm})" ]; then
+	if (check_vm ${vm}); then
 		echo "ERROR: Invalid VM: ${vm}"
-		echo "Usage: $0 [${all_jvms}]"
+		echo "Usage: $0 [${supported_jvms}]"
 		exit 1
 	fi
 }
 
 function check_package() {
 	package=$1
-	case ${package} in
-	jdk|jre)
-		;;
-	*)
-		echo "ERROR: Invalid Package"
-		;;
-	esac
+
+    for current_package in ${supported_packages}
+    do
+        if [[ "${package}" == "${current_package}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid package
 function set_package() {
 	package=$1
-	if [ ! -z "$(check_package ${package})" ]; then
+	if (check_package ${package}); then
 		echo "ERROR: Invalid Package: ${package}"
-		echo "Usage: $0 [${all_packages}]"
+		echo "Usage: $0 [${supported_packages}]"
 		exit 1
 	fi
 }
 
 function check_build() {
 	build=$1
-	case ${build} in
-	slim|full)
-		;;
-	*)
-		echo "ERROR: Invalid Build"
-		;;
-	esac
+
+    for current_build in ${supported_builds}
+    do
+        if [[ "${build}" == "${current_build}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 # Set a valid build
 function set_build() {
 	build=$1
-	if [ ! -z "$(check_build ${build})" ]; then
+	if (check_build ${build}); then
 		echo "ERROR: Invalid Build: ${build}"
-		echo "Usage: $0 [${all_builds}]"
+		echo "Usage: $0 [${supported_builds}]"
 		exit 1
 	fi
 }
 
-# Set the valid OSes for the current architecure.
+# Set the valid OSes for the current architectures.
 function set_test_info() {
 	test=$1
 	case ${test} in
@@ -179,15 +192,84 @@ function set_test_info() {
 		;;
 	elasticsearch)
 		;;
+	funcitional-test)
+	    ;;
 	jenkins)
+		github_url="https://github.com/jenkinsci/jenkins.git"
+	    script="jenkins-test.sh"
+	    home_path=""
+	    test_results="testResults"
+	    tag_version="jenkins-2.190.3"
+		debian_packages="git maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git maven"
+		centos_packages="git maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	kafka)
+		github_url="https://github.com/apache/kafka.git"
+	    script="kafka-test.sh"
+	    home_path=""
+	    tag_version="2.1.0"
+	    gradle_version="5.1"
+		debian_packages="git wget unzip"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget unzip"
+		centos_packages="git wget unzip"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget unzip"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	lucene-solr)
+		github_url="https://github.com/apache/lucene-solr.git"
+	    script="lucene-solr-test.sh"
+	    home_path="\${WORKDIR}"
+	    tag_version="releases/lucene-solr/8.3.1"
+	    ant_version="1.10.6"
+	    ivy_version="2.5.0"
+		debian_packages="git wget tar"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget tar"
+		centos_packages="git wget tar"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget tar"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
-    openliberty)
+    openliberty-mp-tck)
+	    github_url="https://github.com/OpenLiberty/open-liberty.git"
+	    script="openliberty-mp-tck.sh"
+	    home_path="\${WORKDIR}"
+	    test_results="testResults"
+	    tag_version="gm-19.0.0.12"
+	    ant_version="1.10.6"
+		debian_packages="git wget tar maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget tar maven"
+		centos_packages="git wget tar maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget tar maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
-	payara)
+	payara-mp-tck)
+		github_url="https://github.com/payara/MicroProfile-TCK-Runners.git"
+	    script="payara-mp-tck.sh"
+	    home_path="\${WORKDIR}"
+	    test_results="testResults"
+	    tag_version="2.0"
+		debian_packages="git maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git maven"
+		centos_packages="git maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	quarkus)
 		;;
@@ -206,19 +288,96 @@ function set_test_info() {
 		ubi_packages="git wget tar curl gpg"
 		ubi_minimal_packages="${ubi_packages}"
 		;;
-	thorntail)
+	system-test)
+	    ;;
+	thorntail-mp-tck)
+		github_url="https://github.com/thorntail/thorntail.git"
+	    script="thorntail-mp-tck.sh"
+	    home_path="\${WORKDIR}"
+	    test_results="testResults"
+	    tag_version="2.6.0.Final"
+		debian_packages="git maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git maven"
+		centos_packages="git maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	tomcat)
+	    github_url="https://github.com/apache/tomcat.git"
+	    script="tomcat-test.sh"
+	    home_path=""
+	    tag_version="9.0.30"
+	    ant_version="1.10.6"
+	    openssl_version="1.1.1d"
+		debian_packages="git wget tar make gcc linux-libc-dev libc6-dev perl"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget tar make gcc libc-dev perl linux-headers"
+		centos_packages="git wget tar make gcc glibc-devel perl"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget tar make gcc glibc-devel perl"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	tomee)
+		github_url="https://github.com/apache/tomee.git"
+	    script="tomee-test.sh"
+	    home_path=""
+	    test_results="testResults"
+	    tag_version="tomee-8.0.0"
+		debian_packages="git maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git maven"
+		centos_packages="git maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	wildfly)
+		github_url="https://github.com/wildfly/wildfly.git"
+	    script="wildfly-test.sh"
+	    home_path=""
+	    test_results=""
+	    tag_version="18.0.1.Final"
+		debian_packages="git maven"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git maven"
+		centos_packages="git maven"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git maven"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	wycheproof)
+		github_url="https://github.com/google/wycheproof.git"
+	    script="wycheproof.sh"
+	    home_path="\${WORKDIR}"
+	    test_results="testResults"
+	    tag_version="master"
+	    bazel_version="1.2.1"
+		debian_packages="git wget unzip zip g++"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget unzip zip g++ bash"
+		centos_packages="git wget unzip zip gcc-c++"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget unzip zip gcc-c++"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	*)
 		echo "ERROR: Unsupported test:${test}, Exiting"
 		exit 1
 		;;
 	esac
+}
+
+function cleanup_images() {
+	# Delete any old containers that have exited.
+	docker rm $(docker ps -a | grep "Exited" | awk '{ print $1 }') 2>/dev/null
+
+	# Delete any old images for our target_repo on localhost.
+	docker rmi -f $(docker images | grep -e "adoptopenjdk" | awk '{ print $3 }' | sort | uniq) 2>/dev/null
 }
