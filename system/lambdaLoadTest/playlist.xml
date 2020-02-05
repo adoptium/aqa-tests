@@ -113,7 +113,7 @@
 		</groups>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/63</disabled>
 	</test>
-	
+	<!-- Temporarily excluding this test from linux ppc64le xl and linux x64 xl, ref: https://github.com/eclipse/openj9/issues/6475 -->
 	<test>
 		<testCaseName>LambdaLoadTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -136,7 +136,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm</platformRequirements>
+		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
 	</test>
 	
 	<test>
