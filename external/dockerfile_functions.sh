@@ -45,7 +45,7 @@ print_adopt_test() {
     local file=$1
     local test=$2
 
-	echo -e "# This Dockerfile in external/${test}/dockerfile dir is used to create an image with" \
+    echo -e "# This Dockerfile in external/${test}/dockerfile dir is used to create an image with" \
           "\n# AdoptOpenJDK jdk binary installed. Basic test dependent executions" \
           "\n# are installed during the building process." \
           "\n#" \
@@ -475,83 +475,83 @@ remove_trailing_spaces() {
 
 # Generate the dockerfile for a given build
 generate_dockerfile() {
-	file=$1
-	test=$2
-	version=$3
-	vm=$4
-	os=$5
-	package=$6
+    file=$1
+    test=$2
+    version=$3
+    vm=$4
+    os=$5
+    package=$6
     build=$7
 
     set_test_info ${test}
     packages=$(echo ${os}_packages | sed 's/-/_/')
 
-	jhome="/opt/java/openjdk"
+    jhome="/opt/java/openjdk"
 
-	mkdir -p `dirname ${file}` 2>/dev/null
-	echo
-	echo -n "Writing ${file} ... "
-	print_legal ${file};
-	print_adopt_test ${file} ${test};
-	print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
-	print_test_tag_arg ${file} ${test} ${tag_version};
-	print_${os}_pkg ${file} "${!packages}";
+    mkdir -p `dirname ${file}` 2>/dev/null
+    echo
+    echo -n "Writing ${file} ... "
+    print_legal ${file};
+    print_adopt_test ${file} ${test};
+    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_test_tag_arg ${file} ${test} ${tag_version};
+    print_${os}_pkg ${file} "${!packages}";
 
-	if [[ ! -z ${ant_version} ]]; then
-	    print_ant_install ${file} ${ant_version} ${os};
-	fi
+    if [[ ! -z ${ant_version} ]]; then
+        print_ant_install ${file} ${ant_version} ${os};
+    fi
 
   if [[ ! -z ${ant_contrib_version} ]]; then
-	    print_ant_contrib_install ${file} ${ant_contrib_version} ${os};
-	fi
+        print_ant_contrib_install ${file} ${ant_contrib_version} ${os};
+    fi
 
   if [[ ! -z ${ivy_version} ]]; then
-	    print_ivy_install ${file} ${ivy_version} ${os};
-	fi
+        print_ivy_install ${file} ${ivy_version} ${os};
+    fi
 
-	if [[ ! -z ${sbt_version} ]]; then
-	    print_sbt_install ${file} ${sbt_version} ${os};
-	fi
+    if [[ ! -z ${sbt_version} ]]; then
+        print_sbt_install ${file} ${sbt_version} ${os};
+    fi
 
     if [[ ! -z ${gradle_version} ]]; then
-	    print_gradle_install ${file} ${gradle_version} ${os};
-	fi
+        print_gradle_install ${file} ${gradle_version} ${os};
+    fi
 
     if [[ ! -z ${openssl_version} ]]; then
-	    print_openssl_install ${file} ${openssl_version} ${os};
-	fi
+        print_openssl_install ${file} ${openssl_version} ${os};
+    fi
 
-	if [[ ! -z ${bazel_version} ]]; then
-	    print_bazel_install ${file} ${bazel_version} ${os};
-	fi
+    if [[ ! -z ${bazel_version} ]]; then
+        print_bazel_install ${file} ${bazel_version} ${os};
+    fi
 
     print_java_tool_options ${file};
 
     if [[ ! -z ${environment_variable} ]]; then
-	    print_environment_variable ${file} ${environment_variable};
-	fi
+        print_environment_variable ${file} ${environment_variable};
+    fi
 
     if [[ ! -z ${home_path} ]]; then
-	    print_home_path ${file} ${test} ${home_path};
-	fi
+        print_home_path ${file} ${test} ${home_path};
+    fi
 
-	if [[ ! -z ${test_results} ]]; then
-	    print_test_results ${file};
-	fi
+    if [[ ! -z ${test_results} ]]; then
+        print_test_results ${file};
+    fi
 
-	if [[ ! -z ${script} ]]; then
-	    print_test_script ${file} ${test} ${script};
-	fi
+    if [[ ! -z ${script} ]]; then
+        print_test_script ${file} ${test} ${script};
+    fi
 
     print_clone_project ${file} ${test} ${github_url};
     print_entrypoint ${file} ${script} ${os};
 
   if [[ ! -z ${cmd} ]]; then
-	    print_cmd ${file} ${cmd};
-	fi
+        print_cmd ${file} ${cmd};
+    fi
 
     remove_trailing_spaces ${file};
 
-	echo "done"
-	echo
+    echo "done"
+    echo
 }
