@@ -66,7 +66,7 @@ sanitize_test_names() {
 
     if [[ "${mp_tck}" == "mp-tck" ]]; then
         echo "$(echo ${test} | awk -F'-' '{print $1}')"
-    elif [[ "${mp_tck}" == "solr-" ]]; then
+    elif [[ "${mp_tck}" == "solr-" || "${mp_tck}" == "test-" ]]; then
         echo "$(echo ${test} | sed 's/-/_/g')"
     else
         echo "${test}"
@@ -221,6 +221,33 @@ print_ant_install() {
             "\n" >> ${file}
 }
 
+# Install Ant Contrib
+print_ant_contrib_install() {
+    local file=$1
+    local ant_contrib_version=$2
+    local os=$3
+
+    echo -e "ARG ANT_CONTRIB_VERSION=${ant_contrib_version}" \
+          "\nENV ANT_CONTRIB_VERSION=\$ANT_CONTRIB_VERSION" \
+          "\n\n# Install Ant Contrib" \
+          "\nRUN wget --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
+          "\n\t&& wget --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5 \\" >> ${file}
+
+    # Alpine md5sum requires two spaces https://github.com/gliderlabs/docker-alpine/issues/174
+    if [[ "${os}" = "alpine" ]]; then
+        echo -e "\t&& echo \"\$(cat ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5)  ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz\" | md5sum -c \\" >> ${file}
+    else
+        echo -e "\t&& echo \"\$(cat ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5) ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz\" | md5sum -c \\" >> ${file}
+    fi
+
+    echo -e "\t&& tar -zvxf ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz -C /tmp/ \\" \
+            "\n\t&& mv /tmp/ant-contrib/ant-contrib-\${ANT_CONTRIB_VERSION}.jar \${ANT_HOME}/lib/ant-contrib.jar \\" \
+            "\n\t&& rm -rf /tmp/ant-contrib \\" \
+            "\n\t&& rm -f ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
+            "\n\t&& rm -f ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5" \
+            "\n" >> ${file}
+}
+
 # Install SBT
 print_sbt_install() {
     local file=$1
@@ -362,6 +389,13 @@ print_java_tool_options() {
     echo -e "ENV JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF8\"\n" >> ${file}
 }
 
+print_environment_variable() {
+    local file=$1
+    local environment_variable=$2
+
+    echo -e "ENV ${environment_variable}\n" >> ${file}
+}
+
 print_home_path() {
     local file=$1
     local test=$2
@@ -411,8 +445,20 @@ print_clone_project() {
 print_entrypoint() {
     local file=$1
     local script=$2
+    local os=$3
 
-    echo -e "ENTRYPOINT [\"/bin/bash\", \"/${script}\"]" >> ${file}
+    if [[ "${os}" = "alpine" ]]; then
+        echo -e "ENTRYPOINT [\"/bin/ash\", \"/${script}\"]" >> ${file}
+    else
+        echo -e "ENTRYPOINT [\"/bin/bash\", \"/${script}\"]" >> ${file}
+    fi
+}
+
+print_cmd() {
+    local file=$1
+    local cmd=$2
+
+    echo -e "CMD [\"${cmd}\"]" >> ${file}
 }
 
 remove_trailing_spaces() {
@@ -455,6 +501,10 @@ generate_dockerfile() {
 	    print_ant_install ${file} ${ant_version} ${os};
 	fi
 
+    if [[ ! -z ${ant_contrib_version} ]]; then
+	    print_ant_contrib_install ${file} ${ant_contrib_version} ${os};
+	fi
+
     if [[ ! -z ${ivy_version} ]]; then
 	    print_ivy_install ${file} ${ivy_version} ${os};
 	fi
@@ -477,6 +527,10 @@ generate_dockerfile() {
 
     print_java_tool_options ${file};
 
+    if [[ ! -z ${environment_variable} ]]; then
+	    print_environment_variable ${file} ${environment_variable};
+	fi
+
     if [[ ! -z ${home_path} ]]; then
 	    print_home_path ${file} ${test} ${home_path};
 	fi
@@ -490,7 +544,11 @@ generate_dockerfile() {
 	fi
 
     print_clone_project ${file} ${test} ${github_url};
-    print_entrypoint ${file} ${script};
+    print_entrypoint ${file} ${script} ${os};
+
+    if [[ ! -z ${cmd} ]]; then
+	    print_cmd ${file} ${cmd};
+	fi
 
     remove_trailing_spaces ${file};
 

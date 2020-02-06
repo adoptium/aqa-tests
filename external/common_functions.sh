@@ -30,8 +30,8 @@ supported_packages="jdk jre"
 supported_builds="slim full"
 
 # Supported tests
-# Test Not Included: elasticsearch quarkus functional-test system-test
-supported_tests="derby jenkins kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala thorntail-mp-tck tomcat tomee wildfly wycheproof"
+# Test Not Included: elasticsearch
+supported_tests="derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
 	version=$1
@@ -192,7 +192,22 @@ function set_test_info() {
 		;;
 	elasticsearch)
 		;;
-	funcitional-test)
+	functional-test)
+	    github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	    script="functional-test.sh"
+	    home_path=""
+	    tag_version="master"
+	    ant_version="1.10.6"
+	    ant_contrib_version="1.0b3"
+	    cmd="_sanity.functional.regular"
+		debian_packages="git wget make gcc unzip"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget make gcc unzip"
+		centos_packages="git wget make gcc unzip"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget make gcc unzip"
+		ubi_minimal_packages="${ubi_packages}"
 	    ;;
 	jenkins)
 		github_url="https://github.com/jenkinsci/jenkins.git"
@@ -272,6 +287,20 @@ function set_test_info() {
 		ubi_minimal_packages="${ubi_packages}"
 		;;
 	quarkus)
+		github_url="https://github.com/quarkusio/quarkus.git"
+	    script="quarkus-test.sh"
+	    test_results="testResults"
+	    tag_version="1.2.0.Final"
+	    cmd="\$MODE"
+	    environment_variable="MODE=\"java\""
+		debian_packages="git wget"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget"
+		centos_packages="git wget"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget"
+		ubi_minimal_packages="${ubi_packages}"
 		;;
 	scala)
 	    github_url="https://github.com/scala/scala.git"
@@ -289,6 +318,21 @@ function set_test_info() {
 		ubi_minimal_packages="${ubi_packages}"
 		;;
 	system-test)
+	    github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	    script="system-test.sh"
+	    home_path=""
+	    tag_version="master"
+	    ant_version="1.10.6"
+	    ant_contrib_version="1.0b3"
+	    cmd="_sanity.system"
+		debian_packages="git wget make gcc unzip"
+		debian_slim_packages="${debian_packages}"
+		ubuntu_packages="${debian_packages}"
+		alpine_packages="git wget make gcc unzip"
+		centos_packages="git wget make gcc unzip"
+		clefos_packages="${centos_packages}"
+		ubi_packages="git wget make gcc unzip"
+		ubi_minimal_packages="${ubi_packages}"
 	    ;;
 	thorntail-mp-tck)
 		github_url="https://github.com/thorntail/thorntail.git"
