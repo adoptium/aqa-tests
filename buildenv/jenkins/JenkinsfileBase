@@ -12,7 +12,7 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TestConfig/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
 	try {
 		sh "$tearDownCmd"
 		sh "./openjdk-tests/maketest.sh $testParam"
@@ -27,12 +27,18 @@ def setupEnv() {
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
 	}
 
-	JENKINS_FILE = params.JenkinsFile ? params.JenkinsFile : ""
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	env.SPEC = "${SPEC}"
+
+	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/openjdk-tests.git" : "https://github.com/AdoptOpenJDK/openjdk-tests.git")
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:eclipse/openj9.git" : "https://github.com/eclipse/openj9.git")
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
+	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/TKG.git" :"https://github.com/AdoptOpenJDK/TKG.git")
+	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
+	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
@@ -40,19 +46,22 @@ def setupEnv() {
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
-	env.JRE_IMAGE = params.JRE_IMAGE ? "${WORKSPACE}/${params.JRE_IMAGE}" : "$WORKSPACE/openjdkbinary/j2re-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
-	env.SPEC = "${SPEC}"
+
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
-	
+
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
-	
+
+	if (params.JRE_IMAGE) {
+		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
+	}
+
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -82,6 +91,10 @@ def setupEnv() {
 	if( params.RELEASE_TAG ) {
 		env.RELEASE_TAG = params.RELEASE_TAG
 	}
+	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
+	if( params.OPENJDK_SHA) {
+		env.OPENJDK_SHA = params.OPENJDK_SHA
+	}
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
@@ -95,13 +108,13 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
-			setupEnv()		
-			
+			setupEnv()
+
 			//Initialization for things in common between both multiple iterations and many subtests
 			//repeatAmount is the number of times the loops go through
 			def testSubDirs = []
 			int repeatAmount = ITERATIONS
-			
+
 			//Setup for option-specific parameters
 			//If ITERATIONS is 1, then parallel is based on subfolders
 			if (repeatAmount == 1) {
@@ -117,7 +130,7 @@ def setupParallelEnv() {
 				repeatAmount = testSubDirs.size()
 				echo "repeatAmount is ${repeatAmount}, testSubDirs is ${testSubDirs}, running test in parallel mode"
 			}
-			
+
 			parallel_tests = [:]
 
 			for (int i = 0; i < repeatAmount; i++) {
@@ -140,9 +153,13 @@ def setupParallelEnv() {
 					build job: TEST_JOB_NAME, parameters: [
 						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
 						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
+						string(name: 'CLONE_OPENJ9', value: CLONE_OPENJ9),
 						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
 						string(name: 'OPENJ9_SHA', value: OPENJ9_SHA),
 						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
+						string(name: 'TKG_REPO', value: TKG_REPO),
+						string(name: 'TKG_SHA', value: TKG_SHA),
+						string(name: 'TKG_BRANCH', value: TKG_BRANCH),
 						string(name: 'JDK_VERSION', value: JDK_VERSION),
 						string(name: 'JDK_IMPL', value: JDK_IMPL),
 						string(name: 'BUILD_LIST', value: buildListName),
@@ -157,7 +174,7 @@ def setupParallelEnv() {
 						string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
 						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
 						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
-						string(name: 'JenkinsFile', value: JENKINS_FILE),
+						string(name: 'PLATFORM', value: PLATFORM),
 						string(name: 'ITERATIONS', value: "1"),
 						string(name: 'LABEL', value: LABEL),
 						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
@@ -219,9 +236,13 @@ def setup() {
 						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
 			}
-			OPENJ9_REPO_OPTION = (params.OPENJ9_REPO) ? "--openj9_repo ${params.OPENJ9_REPO}" : "--openj9_repo https://github.com/eclipse/openj9.git"
-			OPENJ9_BRANCH_OPTION = (params.OPENJ9_BRANCH) ? "--openj9_branch ${params.OPENJ9_BRANCH}" : ""
+			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
+			OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
+			OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
+			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
+			TKG_SHA_OPTION = (params.TKG_SHA) ? "--tkg_sha ${params.TKG_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 			// system test repository exports to be used by system/common.xml
@@ -255,8 +276,8 @@ def setup() {
 			VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 			VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 			VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
-			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
-			
+			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS}"
+
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -265,7 +286,20 @@ def setup() {
 				} else {
 					get_sources()
 				}
+				getJobProperties()
 			}
+		}
+	}
+}
+
+def getJobProperties() {
+	def jobProperties = "./openjdk-tests/job.properties"
+	if (fileExists("${jobProperties}")) {
+		echo "readProperties file: ${jobProperties}"
+		def properties = readProperties file: "${jobProperties}"
+		if (properties.TEST_JDK_HOME) {
+			env.TEST_JDK_HOME = properties.TEST_JDK_HOME
+			echo "Reset TEST_JDK_HOME to ${TEST_JDK_HOME}"
 		}
 	}
 }
@@ -277,13 +311,15 @@ def get_sources_with_authentication() {
 }
 
 def get_sources() {
-	if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-		// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
-		withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+	withEnv(['VERBOSE_CURL=VERBOSE']) {
+		if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+			// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
+			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+				sh "$GET_SH_CMD"
+			}
+		} else {
 			sh "$GET_SH_CMD"
 		}
-	} else {
-		sh "$GET_SH_CMD"
 	}
 }
 
@@ -302,7 +338,7 @@ def buildTest() {
 
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TestConfig/lib'
+				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
@@ -315,7 +351,7 @@ def buildTest() {
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			if (fileExists('openjdkbinary/openjdk-test-image')) {
 				env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
 			}
@@ -341,13 +377,15 @@ def runTest( ) {
 		timestamps{
 			echo 'Running tests...'
 			def CUSTOM_OPTION = ''
-			
+			int iterationCount = 1
+
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 			RUNTEST_CMD = "./openjdk-tests _${params.TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
+				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
 				if (env.BUILD_LIST == 'openjdk') {
 					if (env.SPEC.startsWith('linux_x86-64')) {
 						wrap([$class: 'Xvfb', autoDisplayName: true]) {
@@ -384,6 +422,7 @@ def runTest( ) {
 				} else {
 					makeTest("${RUNTEST_CMD}")
 				}
+				iterationCount++
 			}
 		}
 	}
@@ -398,12 +437,14 @@ def post(output_name) {
 			else {
 				output_name = output_name.replace("/","_")
 			}
-			def tar_cmd = "tar -zcf"
+			def tar_cmd = "tar -cf"
+			// Use pigz if we can as it is faster - 2> hides fallback message
+			def tar_cmd_suffix = "| (pigz -9 2>/dev/null || gzip -9)"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
 				echo 'Converting tap file from ebcdic to ascii...'
-				sh 'cd ./openjdk-tests/TestConfig'
+				sh 'cd ./openjdk-tests/TKG'
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (String tapFile : tapFiles) {
 					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
@@ -412,6 +453,7 @@ def post(output_name) {
 				tar_cmd = "pax -wf"
 				suffix = ".pax.Z"
 				pax_opt = "-x pax"
+				tar_cmd_suffix = ""
 			}
 
 			boolean failIfNoResultsValue = true
@@ -425,9 +467,24 @@ def post(output_name) {
 
 			addGrinderLink()
 
-			if (currentBuild.result == 'UNSTABLE' || params.ARCHIVE_TEST_RESULTS) {
+			if (env.BUILD_LIST.startsWith('jck')) {
+				xunit (
+				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
+					deleteOutputFiles: true,
+					failIfNotNew: true,
+					pattern: "**/TKG/test_output_*/**/report.xml",
+					skipNoTestFiles: true,
+					stopProcessingIfError: true)]
+				)
+			}
+
+			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
-				sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
+				if (tar_cmd.startsWith('tar')) {
+					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
+				} else {
+					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix}"
+				}
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
@@ -440,7 +497,7 @@ def post(output_name) {
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
 				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TestConfig/test_output_*"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
@@ -464,18 +521,21 @@ def testBuild() {
 				setupParallelEnv()
 			} else {
 				setup()
-				//ToDo: temporary workaround for jck test parallel runs
-				// until build.xml is added into each subfolder
-				if( env.BUILD_LIST.startsWith('jck/')) {
-					def temp = env.BUILD_LIST
-					env.BUILD_LIST = "jck"
-					buildTest()
-					env.BUILD_LIST = temp
-				} else {
-					buildTest()
+				try {
+					//ToDo: temporary workaround for jck test parallel runs
+					// until build.xml is added into each subfolder
+					if( env.BUILD_LIST.startsWith('jck/')) {
+						def temp = env.BUILD_LIST
+						env.BUILD_LIST = "jck"
+						buildTest()
+						env.BUILD_LIST = temp
+					} else {
+						buildTest()
+					}
+					runTest()
+				} finally {
+					post("${env.BUILD_LIST}")
 				}
-				runTest()
-				post("${env.BUILD_LIST}")
 			}
 		} finally {
 			if (!params.KEEP_WORKSPACE) {
@@ -524,7 +584,7 @@ def getJenkinsDomain() {
 }
 
 def archiveSHAFile() {
-	def shaFile = "openjdk-tests/TestConfig/SHA.txt";
+	def shaFile = "openjdk-tests/TKG/SHA.txt";
 	if (!params.ARTIFACTORY_SERVER) {
 		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
 		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true
@@ -581,7 +641,7 @@ def addGrinderLink() {
 	+ "JDK_VERSION=${params.JDK_VERSION}" \
 	+ "&JDK_IMPL=${params.JDK_IMPL}" \
 	+ "&BUILD_LIST=${params.BUILD_LIST}" \
-	+ "&JenkinsFile=${params.JenkinsFile}" \
+	+ "&PLATFORM=${params.PLATFORM}" \
 	+ "&TARGET=${params.TARGET}" \
 	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}${upstreamJobNameOpt}${upstreamJobNumOpt}"
 

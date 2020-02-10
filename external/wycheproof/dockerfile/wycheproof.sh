@@ -34,17 +34,18 @@ fi
 
 java -version
 
-TEST_OPTIONS=$1
-
 #Run tests 
 
 cd ${WYCHEPROOF_HOME}/wycheproof
 
-set -e
 #Run OpenJDKAllTests 
 bazel test OpenJDKTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
-
+OpenJDKTest_exit_code=$?
 #Run BouncyCastleAllTests tests 
 bazel test BouncyCastleTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
-set +e
+BouncyCastle_exit_code=$?
 find /root/.cache -type d -name 'testlogs' -exec cp -r "{}" /testResults \;
+
+if [ "$(( OpenJDKTest_exit_code + BouncyCastle_exit_cod ))" -gt 0 ] {
+	exit 1
+}

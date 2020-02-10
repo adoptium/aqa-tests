@@ -24,38 +24,50 @@
 
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG ANT_VERSION=1.10.6
+ARG OPENLIBERTY_TAG=gm-19.0.0.12
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	unzip \
-	wget
-	
-# Install openliberty-mp-tck tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+        wget \
+        tar \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
+ENV ANT_VERSION=$ANT_VERSION
+ENV ANT_HOME=/opt/ant
 
-WORKDIR /
-ENV OPENLIBERTY_HOME $WORKDIR
-RUN mkdir testResults
+# Install Ant
+RUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz.sha512 \
+    && echo "$(cat apache-ant-${ANT_VERSION}-bin.tar.gz.sha512) apache-ant-${ANT_VERSION}-bin.tar.gz" | sha512sum -c \
+    && tar -zvxf apache-ant-${ANT_VERSION}-bin.tar.gz -C /opt/ \
+    && ln -s /opt/apache-ant-${ANT_VERSION} /opt/ant \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz \
+    && rm -f apache-ant-${ANT_VERSION}-bin.tar.gz.sha512
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+# Add Ant to PATH
+ENV PATH ${PATH}:${ANT_HOME}/bin
+
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
 COPY ./dockerfile/openliberty-mp-tck.sh /openliberty-mp-tck.sh
 
-#Clone openliberty repo 
-RUN git clone -q git://github.com/OpenLiberty/open-liberty
+ENV OPENLIBERTY_HOME $WORKDIR
+RUN mkdir testResults
+
+# Clone openliberty repo
+ENV OPENLIBERTY_TAG=$OPENLIBERTY_TAG
+RUN git clone https://github.com/OpenLiberty/open-liberty.git
+WORKDIR /open-liberty/
+RUN git checkout ${OPENLIBERTY_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/openliberty-mp-tck.sh"]
-CMD [""]

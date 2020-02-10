@@ -39,7 +39,7 @@ set -e
 #Build all projects and create the open-liberty image
 ./gradlew -q cnf:initialize
 ./gradlew -q releaseNeeded
-
+set +e
 echo "Build projects and create images done"
 
 #Following are not enabled tests, may need to enable later
@@ -70,5 +70,6 @@ echo "Build projects and create images done"
 ./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:clean
 ./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
 
-set +e
+test_exit_code=$?
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+exit $test_exit_code

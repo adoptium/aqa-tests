@@ -47,7 +47,7 @@ endif
 
 ifndef JCK_VERSION
   ifeq (8, $(JDK_VERSION))
-    export JCK_VERSION=jck8b
+    export JCK_VERSION=jck8c
   else
     export JCK_VERSION=jck$(JDK_VERSION)
   endif
@@ -56,3 +56,5 @@ endif
 ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
+
+SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system

@@ -47,5 +47,11 @@ echo "Wildfly Build - Completed"
 
 echo "Running (ALL) wildfly tests :"
 
+echo "Setting user to blank"
+printenv
+export USER=""
+echo "Printing Environment Variables"
+printenv
+
 ./mvnw install -DallTests
 set +e

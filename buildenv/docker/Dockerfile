@@ -25,7 +25,7 @@
 # Build example: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version >-t adoptopenjdk-test .`
 
 ARG IMAGE_NAME=adoptopenjdk/openjdk8
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM ${IMAGE_NAME}:${IMAGE_VERSION}
 

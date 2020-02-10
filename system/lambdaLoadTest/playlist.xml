@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
 	<test>
 		<testCaseName>MachineInfo</testCaseName>
-		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TestConfig$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -63,6 +63,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>^os.linux</platformRequirements> 
 	</test>
@@ -87,6 +88,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
 	</test>
@@ -111,7 +113,7 @@
 		</groups>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/63</disabled>
 	</test>
-	
+	<!-- Temporarily excluding this test from linux ppc64le xl and linux x64 xl, ref: https://github.com/eclipse/openj9/issues/6475 -->
 	<test>
 		<testCaseName>LambdaLoadTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -132,8 +134,9 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm,^os.osx</platformRequirements>
+		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
 	</test>
 	
 	<test>
@@ -186,6 +189,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>^os.linux</platformRequirements> 
 	</test>
@@ -240,6 +244,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
 	</test>

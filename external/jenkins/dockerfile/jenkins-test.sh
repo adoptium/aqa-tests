@@ -41,11 +41,11 @@ cd /jenkins
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
 mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
-
+set +e
 echo "Building jenkins completed"
 
 echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
 mvn --batch-mode surefire:test -Denforcer.fail=false
-set +e
-echo "Executing jenkins tests alone completed"
+test_exit_code=$?
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+exit $test_exit_code
