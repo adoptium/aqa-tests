@@ -7,9 +7,18 @@
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external/derby-test" />
+	<property name="EXT_DEST" value="${BUILD_ROOT}/external" />
+	<property name="DEST" value="${BUILD_ROOT}/external/derby" />
 	<property name="dist" location="${DEST}/${JDK_VERSION}" />
 	<property name="src" location="." />
+
+	<!-- properties to generate Dockerfiles -->
+	<property name="TEST" value="derby" />
+	<property name="VERSION" value="${JVM_VERSION}" />
+	<property name="VM" value="${env.JDK_IMPL}" />
+	<property name="OS" value="${env.DOCKERIMAGE_TAG}" />
+	<property name="PACKAGE" value="jdk" />
+	<property name="BUILD" value="full" />
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
@@ -21,9 +30,23 @@
 		</exec>
 	</target>
 
-	<target name="build_image" depends="clean_image" description="build derby test docker image">
+	<target name="build_dockerfile" depends="clean_image" description="build derby test dockerfile">
+		<echo message="Generate dockerfile!!! : build_image.sh ${TEST} ${VERSION} ${VM} ${OS} ${PACKAGE} ${BUILD}" />						
+		<exec executable="bash">
+			<arg value="${EXT_DEST}/build_image.sh"/>
+			<arg value="${TEST}"/>
+			<arg value="${VERSION}"/>
+			<arg value="${VM}"/>
+			<arg value="${OS}"/>
+			<arg value="${PACKAGE}"/>
+			<arg value="${BUILD}"/>
+		</exec>
+	</target>
+
+	<target name="build_image" depends="build_dockerfile" description="build derby test docker image">
+		<echo message="env var ==== ${env.DOCKERIMAGE_TAG}" />
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-derby-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
+			<arg line="build -t adoptopenjdk-derby-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${OS}"/>
 		</exec>
 	</target>
 
