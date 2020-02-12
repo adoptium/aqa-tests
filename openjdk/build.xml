@@ -81,7 +81,15 @@
 							<property name="jdkName" value="openjdk-aarch64-jdk8u" />
   						</then>		
 					<else>
-						<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+						<if>
+							<equals arg1="${JDK_VERSION}" arg2="14" />
+							<then>
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
+							</then>
+							<else>
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+							</else>
+						</if>
 					</else>
 				</if>
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
