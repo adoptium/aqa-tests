@@ -82,12 +82,19 @@
   						</then>		
 					<else>
 						<if>
-							<equals arg1="${JDK_VERSION}" arg2="14" />
+							<or>
+								<equals arg1="${JDK_VERSION}" arg2="8" />
+								<equals arg1="${JDK_VERSION}" arg2="9" />
+								<equals arg1="${JDK_VERSION}" arg2="10" />
+								<equals arg1="${JDK_VERSION}" arg2="11" />
+								<equals arg1="${JDK_VERSION}" arg2="12" />
+								<equals arg1="${JDK_VERSION}" arg2="13" />
+							</or>
 							<then>
-								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
 							</then>
 							<else>
-								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
 							</else>
 						</if>
 					</else>
