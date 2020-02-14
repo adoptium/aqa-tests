@@ -31,7 +31,7 @@ supported_builds="slim full"
 
 # Supported tests
 # Test Not Included: elasticsearch
-supported_tests="derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
+supported_tests="camel derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
     version=$1
@@ -176,6 +176,22 @@ function set_build() {
 function set_test_info() {
     test=$1
     case ${test} in
+    camel)
+        github_url="https://github.com/apache/camel-quarkus.git"
+        script="camel-test.sh"
+        test_results="testResults"
+        tag_version="master"
+        cmd="\$MODE"
+        environment_variable="MODE=\"java\""
+        debian_packages="git maven"
+        debian_slim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git maven"
+        centos_packages="git maven"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git maven"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
     derby)
         github_url="https://github.com/apache/derby.git"
         script="derby-test.sh"
