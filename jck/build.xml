@@ -82,6 +82,7 @@
 					<arg value="pull" />
 				</exec>
 			</else>
+			
 		</if>
                 <if>
                         <isset property="isZOS" />
@@ -105,7 +106,10 @@
                                 </exec>
                         </then>
                 </if>
-
+		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system. 
+			This is especially needed to execute the shell scripts under devtools for JCK 8.
+		-->
+		<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
 	</target>
 
 	<target name="init">
