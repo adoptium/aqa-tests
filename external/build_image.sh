@@ -41,9 +41,14 @@ set_build $6
 function build_image() {
     local file=$1
     local test=$2
+    local version=$3
+    local vm=$4
+    local os=$5
+    local package=$6
+    local build=$7
 
     # Used for tagging the image
-    tags="adoptopenjdk-${test}-test"
+    tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
 
 	echo "#####################################################"
 	echo "INFO: docker build --no-cache -t ${tags} -f ${file} ."
@@ -72,4 +77,4 @@ if [ ! -f ${file} ]; then
 fi
 
 # Build Dockerfile that was generated
-build_image ${file} ${test}
+build_image ${file} ${test} ${version} ${vm} ${os} ${package} ${build}
