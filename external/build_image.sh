@@ -14,8 +14,8 @@
 #
 set -o pipefail
 
-source ./common_functions.sh
-source ./dockerfile_functions.sh
+source $(dirname "$0")/common_functions.sh
+source $(dirname "$0")/dockerfile_functions.sh
 
 if [ $# -ne 6 ]; then
 	echo
@@ -56,7 +56,7 @@ function build_image() {
 }
 
 # Handle making the directory for organizing the Dockerfiles
-dir="${test}/dockerfile/${version}/${package}/${os}"
+dir="$(dirname "$0")/${test}/dockerfile/${version}/${package}/${os}"
 mkdir -p ${dir}
 
 # File Path to Dockerfile
