@@ -14,7 +14,7 @@
 #
 set -o pipefail
 
-source ./common_functions.sh
+source $(dirname "$0")/common_functions.sh
 
 # Cleanup any old containers and images
 echo "==============================================================================="
@@ -40,7 +40,7 @@ do
                         echo " Building Docker Images for ${test} ${version} ${vm} ${os} ${package} ${build} "
                         echo "                                                                               "
                         echo "==============================================================================="
-                        ./build_image.sh ${test} ${version} ${vm} ${os} ${package} ${build}
+                        $(dirname "$0")/build_image.sh ${test} ${version} ${vm} ${os} ${package} ${build}
                         echo
                         echo
                     done
