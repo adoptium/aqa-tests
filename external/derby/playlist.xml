@@ -14,7 +14,7 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
-		<testCaseName>derby_test_junit_all_ubuntu</testCaseName>
+		<testCaseName>derby_test_junit_all</testCaseName>
 		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:latest ; \
 		docker rmi -f adoptopenjdk-derby-test; \
 		$(TEST_STATUS)</command>
@@ -29,87 +29,12 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>derby_test_junit_all_alpine</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:alpine ; \
+		<testCaseName>derby_test_junit_all_with_tag</testCaseName>
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:${DOCKERIMAGE_TAG} ; \
 		docker rmi -f adoptopenjdk-derby-test; \
 		$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
-		</levels>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>derby_test_junit_all_debianslim</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:debianslim ; \
-		docker rmi -f adoptopenjdk-derby-test; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>derby_test_junit_all_ubi</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:ubi ; \
-		docker rmi -f adoptopenjdk-derby-test; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>derby_test_junit_all_ubi-minimal</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:ubi-minimal ; \
-		docker rmi -f adoptopenjdk-derby-test; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>derby_test_junit_all_centos</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:centos ; \
-		docker rmi -f adoptopenjdk-derby-test; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>derby_test_junit_all_clefos</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:clefos ; \
-		docker rmi -f adoptopenjdk-derby-test; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<subsets>
 			<subset>9+</subset>

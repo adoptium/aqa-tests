@@ -11,6 +11,7 @@
 	<property name="DEST" value="${BUILD_ROOT}/external/derby" />
 	<property name="dist" location="${DEST}/${JDK_VERSION}" />
 	<property name="src" location="." />
+	<property name="top" location="../" />
 
 	<!-- properties to generate Dockerfiles -->
 	<property name="TEST" value="derby" />
@@ -30,7 +31,14 @@
 		</exec>
 	</target>
 
-	<target name="build_dockerfile" depends="clean_image" description="build derby test dockerfile">
+	<target name="move_scripts" depends="clean_image" description="">
+	<echo message=" external/derby move scripts ........ ${top}"/>
+		<copy todir="${EXT_DEST}">
+			<fileset dir="${top}" includes="*.sh"/>
+		</copy>
+	</target>
+
+	<target name="build_dockerfile" depends="move_scripts" description="build derby test dockerfile">
 		<echo message="Generate dockerfile!!! : build_image.sh ${TEST} ${VERSION} ${VM} ${OS} ${PACKAGE} ${BUILD}" />						
 		<exec executable="bash">
 			<arg value="${EXT_DEST}/build_image.sh"/>
