@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-source ./common_functions.sh
+source $(dirname "$0")/common_functions.sh
 
 # Generate the common license and copyright header
 print_legal() {
@@ -419,7 +419,7 @@ print_test_script() {
     local script=$3
 
     echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY ./${test}/dockerfile/${script} /${script}\n" >> ${file}
+            "\nCOPY $(dirname $0)/${test}/dockerfile/${script} /${script}\n" >> ${file}
 }
 
 print_clone_project() {
@@ -501,11 +501,11 @@ generate_dockerfile() {
         print_ant_install ${file} ${ant_version} ${os};
     fi
 
-  if [[ ! -z ${ant_contrib_version} ]]; then
+    if [[ ! -z ${ant_contrib_version} ]]; then
         print_ant_contrib_install ${file} ${ant_contrib_version} ${os};
     fi
 
-  if [[ ! -z ${ivy_version} ]]; then
+    if [[ ! -z ${ivy_version} ]]; then
         print_ivy_install ${file} ${ivy_version} ${os};
     fi
 
@@ -546,7 +546,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_entrypoint ${file} ${script} ${os};
 
-  if [[ ! -z ${cmd} ]]; then
+    if [[ ! -z ${cmd} ]]; then
         print_cmd ${file} ${cmd};
     fi
 
