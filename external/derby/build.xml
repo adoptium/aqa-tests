@@ -32,14 +32,17 @@
 	</target>
 
 	<target name="move_scripts" depends="clean_image" description="">
-	<echo message=" external/derby move scripts ........ ${top}"/>
+		<echo message="copy ${src}/dockerfile...   ${DEST}/dockerfile " />
+		<copy todir="${DEST}/dockerfile">
+			<fileset dir="${src}/dockerfile" includes="*.sh"/>
+		</copy>
 		<copy todir="${EXT_DEST}">
 			<fileset dir="${top}" includes="*.sh"/>
 		</copy>
 	</target>
 
-	<target name="build_image" depends="move_scripts" description="build derby test dockerfile">
-		<echo message="Generate dockerfile!!! : build_image.sh ${TEST} ${VERSION} ${VM} ${OS} ${PACKAGE} ${BUILD}" />						
+	<target name="build_image" depends="clean_image,move_scripts" description="build derby test dockerfile">
+		<echo message="Executing build_image.sh ${TEST} ${VERSION} ${VM} ${OS} ${PACKAGE} ${BUILD}" />						
 		<exec executable="bash">
 			<arg value="${EXT_DEST}/build_image.sh"/>
 			<arg value="${TEST}"/>
