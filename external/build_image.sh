@@ -51,9 +51,9 @@ function build_image() {
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
 
 	echo "#####################################################"
-	echo "INFO: docker build --no-cache -t ${tags} -f ${file} ."
+	echo "INFO: docker build --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
 	echo "#####################################################"
-	docker build --no-cache -t ${tags} -f ${file} .
+	docker build --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
 	if [ $? != 0 ]; then
 		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
 		exit 1
@@ -61,7 +61,7 @@ function build_image() {
 }
 
 # Handle making the directory for organizing the Dockerfiles
-dir="$(dirname "$0")/${test}/dockerfile/${version}/${package}/${os}"
+dir="$(realpath $(dirname "$0"))/${test}/dockerfile/${version}/${package}/${os}"
 mkdir -p ${dir}
 
 # File Path to Dockerfile
