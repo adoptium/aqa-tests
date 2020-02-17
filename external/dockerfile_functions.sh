@@ -419,7 +419,7 @@ print_test_script() {
     local script=$3
 
     echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY $(dirname $0)/${test}/dockerfile/${script} /${script}\n" >> ${file}
+            "\nCOPY ${test}/dockerfile/${script} /${script}\n" >> ${file}
 }
 
 print_clone_project() {
