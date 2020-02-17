@@ -39,6 +39,10 @@
 		<copy todir="${EXT_DEST}">
 			<fileset dir="${top}" includes="*.sh"/>
 		</copy>
+		<exec executable="ls">
+			<arg value="${DEST}/dockerfile"/>
+			<arg value="-al"/>
+		</exec>
 	</target>
 
 	<target name="build_image" depends="clean_image,move_scripts" description="build derby test dockerfile">
