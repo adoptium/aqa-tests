@@ -43,7 +43,9 @@ public class UnicodeScriptChecker {
       String BASE = System.getenv("BASE");
       if (null == BASE) BASE = ".";
       long version = JavaVersion.getVersion();
-      if (version >= 12000000L) {
+      if (version >= 13000000L) {
+        vals = new String[]{ BASE+FS+"Scripts-12.1.0.txt" };
+      } else if (version >= 12000000L) {
         vals = new String[]{ BASE+FS+"Scripts-11.0.0.txt" };
       } else if (version >= 11000000L) {
         vals = new String[]{ BASE+FS+"Scripts-10.0.0.txt" };

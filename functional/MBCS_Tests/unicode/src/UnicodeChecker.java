@@ -50,7 +50,9 @@ public class UnicodeChecker {
       String BASE = System.getenv("BASE");
       if (null == BASE) BASE = ".";
       long version = JavaVersion.getVersion();
-      if (version >= 12000001L) {
+      if (version >= 13000000L) {
+        vals = new String[]{ BASE+FS+"UnicodeData-12.1.0.txt" };
+      } else if (version >= 12000001L) {
         vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt", BASE+FS+"UnicodeData-u32FF.txt" };
       } else if (version == 12000000L) {
         vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt", BASE+FS+"UnicodeData-u32FF-jdk12.txt" };
