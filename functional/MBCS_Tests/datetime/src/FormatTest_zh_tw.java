@@ -20,6 +20,12 @@ import java.time.format.*;
 import java.util.*;
 
 public class FormatTest_zh_tw{
+    private long version = 0L;
+
+    @Before
+    public void init() {
+        version = JavaVersion.getVersion();
+    }
 
     @Test
     public void WeekOfDayTest(){
@@ -110,7 +116,12 @@ public class FormatTest_zh_tw{
         str = date.format(DateTimeFormatter.ofPattern(
                             "q qq qqq qqqq qqqqq",
                             Locale.TRADITIONAL_CHINESE));
-        assertEquals("1 01 1 \u7b2c1\u5b63 1", str);
+        if (11_000_000L <= version && version < 13_000_000L) {
+            assertEquals("1 01 1 \u7b2c1\u5b63 1", str);
+        } else if (version >= 13_000_000L) {
+            //Updated by JDK-8221432: Upgrade CLDR to Version 35.1
+            assertEquals("1 01 \u7b2c1\u5b63 \u7b2c1\u5b63 1", str);
+        }
     }
 
     @Test
