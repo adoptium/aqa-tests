@@ -276,9 +276,12 @@
 		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
 		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
 
-		<condition property="JCK_ROOT_USED" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
+		<condition property="JCK_ROOT_RELATIVE_PATH" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
 			<isset property="env.JCK_ROOT" />
 		</condition>
+		
+		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
+			
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
 
 		<if>
