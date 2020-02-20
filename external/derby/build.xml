@@ -17,9 +17,7 @@
 	<property name="TEST" value="derby" />
 	<property name="VERSION" value="${JDK_VERSION}" />
 	<property name="VM" value="${env.JDK_IMPL}" />
-	<property name="OS" value="${env.DOCKERIMAGE_TAG}" />
-	<property name="PACKAGE" value="jdk" />
-	<property name="BUILD" value="full" />
+<!-- 	<property name="OS" value="${env.DOCKERIMAGE_TAG}" />  -->
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
@@ -43,18 +41,22 @@
 			<arg value="-al"/>
 			<arg value="${DEST}/dockerfile"/>
 		</exec>
+		<exec executable="bash">
+			<arg value="${EXT_DEST}/parse_tag.sh"/>
+			<arg value="${DOCKERIMAGE_TAG}"/>
+		</exec>
 	</target>
 
 	<target name="build_image" depends="clean_image,move_scripts" description="build derby test dockerfile">
-		<echo message="Executing build_image.sh ${TEST} ${VERSION} ${VM} ${OS} ${PACKAGE} ${BUILD}" />						
+		<echo message="Executing build_image.sh ${TEST} ${VERSION} ${VM} ${DOCKER_OS} ${PACKAGE} ${BUILD_TYPE}" />						
 		<exec executable="bash">
 			<arg value="${EXT_DEST}/build_image.sh"/>
 			<arg value="${TEST}"/>
 			<arg value="${VERSION}"/>
 			<arg value="${VM}"/>
-			<arg value="${OS}"/>
+			<arg value="${DOCKER_OS}"/>
 			<arg value="${PACKAGE}"/>
-			<arg value="${BUILD}"/>
+			<arg value="${BUILD_TYPE}"/>
 		</exec>
 	</target>
 
