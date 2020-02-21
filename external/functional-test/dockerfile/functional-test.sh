@@ -38,13 +38,10 @@ cd /openjdk-tests
 cd /openjdk-tests/TKG
 
 set -e
-# Generate make files 
-echo "Generating make files..."
-make -f run_configure.mk
 
 echo "Building functional test material..." 
 make compile
 
-echo "Running the functional tests" 
+echo "Generating make files and running the functional tests" 
 make $1
 set +e

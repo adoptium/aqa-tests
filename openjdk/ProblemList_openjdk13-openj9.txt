@@ -33,11 +33,12 @@ java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse/openj9/issues
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse/openj9/issues/6668	macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse/openj9/issues/3055	generic-all
 java/lang/ClassLoader/ExtDirs.java	https://github.com/eclipse/openj9/issues/3055	generic-all
-java/lang/ClassLoader/LibraryPathProperty.java	https://github.ibm.com/runtimes/openjdk-contribution/issues/606	generic-all
+java/lang/ClassLoader/LibraryPathProperty.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/ClassLoader/RecursiveSystemLoader.java	https://github.com/eclipse/openj9/issues/3178	generic-all
 java/lang/ClassLoader/nativeLibrary/NativeLibraryTest.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/248	generic-all
 java/lang/Enum/ConstantDirectoryOptimalCapacity.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/ModuleLayer/BasicLayerTest.java	https://github.com/eclipse/openj9/issues/6462	generic-all
+java/lang/ProcessBuilder/Basic.java#id0		https://github.com/AdoptOpenJDK/openjdk-tests/issues/1397	aix-all
 java/lang/ProcessBuilder/SkipTest.java https://github.com/eclipse/openj9/issues/4124 windows-all
 java/lang/StackTraceElement/PublicConstructor.java	https://github.com/eclipse/openj9/issues/6659	generic-all
 java/lang/StackTraceElement/SerialTest.java	https://github.com/eclipse/openj9/issues/6659	generic-all
@@ -112,8 +113,8 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/eclipse/openj9/issues/3940	generic-all
 java/lang/invoke/VarargsArrayTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/invoke/condy/CondyNestedTest.java https://github.com/eclipse/openj9/issues/4127 linux-ppc64le
+java/lang/invoke/condy/CondyNestedResolutionTest.java	https://github.com/eclipse/openj9/issues/7158	aix-all
 java/lang/invoke/lambda/LambdaStackTrace.java	https://github.com/eclipse/openj9/issues/3394	generic-all
-java/lang/module/ModuleFinderTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/749	windows-all
 java/lang/ref/CleanerTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/ref/EarlyTimeout.java	https://github.com/eclipse/openj9/issues/7225	generic-all
 java/lang/ref/FinalizerHistogramTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
@@ -130,7 +131,6 @@ java/lang/reflect/PublicMethods/PublicMethodsTest.java	https://github.com/eclips
 java/lang/reflect/exeCallerAccessTest/CallerAccessTest.java https://github.com/AdoptOpenJDK/openjdk-build/issues/248 generic-all
 jdk/modules/etc/DefaultModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
 jdk/modules/incubator/ImageModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267	macosx-all
-jdk/modules/scenarios/automaticmodules/RunWithAutomaticModules.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/749	windows-all
 vm/JniInvocationTest.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/248	macosx-all
 
 ############################################################################
@@ -162,6 +162,7 @@ java/math/BigInteger/PrimeTest.java https://github.com/AdoptOpenJDK/openjdk-test
 
 # jdk_net
 
+java/net/Inet4Address/PingThis.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1127	aix-all
 java/net/MulticastSocket/Promiscuous.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
 java/net/MulticastSocket/PromiscuousIPv6.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699	linux-s390x
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
@@ -184,7 +185,6 @@ java/net/httpclient/websocket/PendingTextPongClose.java https://github.com/eclip
 java/io/CharArrayReader/OverflowInRead.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1500	generic-all
 java/io/FileInputStream/UnreferencedFISClosesFd.java  https://github.com/eclipse/openj9/issues/3543 generic-all
 java/io/FileOutputStream/UnreferencedFOSClosesFd.java https://github.com/eclipse/openj9/issues/3543 generic-all
-java/io/Serializable/concurrentClassDescLookup/ConcurrentClassDescLookup.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602	windows-all
 
 ############################################################################
 
@@ -197,7 +197,7 @@ java/io/Serializable/concurrentClassDescLookup/ConcurrentClassDescLookup.java	ht
 java/nio/Buffer/DirectBufferAllocTest.java https://github.com/eclipse/openj9/issues/4473 generic-all
 java/nio/Buffer/LimitDirectMemory.java	https://github.com/eclipse/openj9/issues/8063	generic-all
 java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse/openj9/issues/8065	generic-all
-java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/602	linux-all
+java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1597	linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/AdoptOpenJDK/openjdk-tests/issues/1016
@@ -206,9 +206,7 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse/openj9/issues/6669
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
-java/nio/channels/FileChannel/directio/DirectIOTest.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/248	generic-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse/openj9/issues/4317 macosx-all
-java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java	https://github.com/eclipse/openj9/issues/7624	linux-s390x
 java/nio/file/Files/CopyAndMove.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/795 macosx-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse/openj9/issues/4679 linux-x64,macosx-all
 
@@ -219,8 +217,7 @@ jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse/openj9/issues/4679 lin
 java/rmi/activation/Activatable/checkAnnotations/CheckAnnotations https://github.com/eclipse/openj9/issues/6749 windows-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java	https://github.com/eclipse/openj9/issues/3347	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java	https://github.com/eclipse/openj9/issues/7592	generic-all
-java/rmi/module/ModuleTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/749	windows-all
-java/rmi/server/RemoteServer/AddrInUse.java	https://github.com/eclipse/openj9/issues/3377	generic-all
+java/rmi/server/RemoteServer/AddrInUse.java		https://github.com/eclipse/openj9/issues/3377	generic-all
 java/rmi/server/UnicastRemoteObject/serialFilter/FilterUROTest.java	https://github.com/eclipse/openj9/issues/3347	generic-all
 java/rmi/server/UnicastRemoteObject/unexportObject/UnexportLeak.java https://github.com/eclipse/openj9/issues/4094 generic-all
 java/rmi/server/UnicastServerRef/serialFilter/FilterUSRTest.java	https://github.com/eclipse/openj9/issues/3347	generic-all
@@ -263,7 +260,7 @@ java/util/BitSet/stream/BitSetStreamTest.java https://github.com/eclipse/openj9/
 java/util/Spliterator/SpliteratorCollisions.java	https://github.com/eclipse/openj9/issues/7090	generic-all
 java/util/concurrent/ArrayBlockingQueue/WhiteBox.java 	https://github.com/eclipse/openj9/issues/5988 	macosx-all
 java/util/concurrent/forkjoin/FJExceptionTableLeak.java	https://github.com/eclipse/openj9/issues/3209	generic-all
-java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse/openj9/issues/7125	macosx-all,linux-all
+java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse/openj9/issues/7125	macosx-all,linux-all,aix-all
 java/util/logging/CheckZombieLockTest.java	https://bugs.openjdk.java.net/browse/JDK-8148972	macosx-all,linux-all
 java/util/logging/TestLoggerWeakRefLeak.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1352	generic-all
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse/openj9/issues/4561 generic-all
@@ -289,7 +286,5 @@ sun/net/www/protocol/file/DirPermissionDenied.java https://github.com/AdoptOpenJ
 sun/nio/ch/TestMaxCachedBufferSize.java		https://github.com/eclipse/openj9/issues/5328		generic-all
 
 vm/verifier/VerifyProtectedConstructor.java	https://github.com/eclipse/openj9/issues/7336	generic-all
-
-native_sanity/simplenativelauncher/ProgramTest.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/964 windows-all
 
 ############################################################################
