@@ -24,12 +24,7 @@
 		<variations>
 			<variation>NoOptions</variation> 
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -44,13 +39,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=autoSimd$(Q) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -65,13 +54,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest \
-	-test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -86,12 +69,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -111,13 +89,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=autoSimd$(Q) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -137,13 +109,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest \
-	-test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -193,12 +159,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -247,13 +208,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=autoSimd$(Q) \
-	-test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -302,13 +257,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=MathLoadTest \
-	-test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
