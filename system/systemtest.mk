@@ -40,3 +40,11 @@ ifeq ($(CYGWIN),1)
 endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../
+
+define SYSTEMTEST_CMD_TEMPLATE
+perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
+	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
+	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-results-root=$(REPORTDIR)
+endef

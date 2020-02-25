@@ -25,13 +25,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa1$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -50,13 +44,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa2$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q)  -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -75,13 +63,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa3$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -100,12 +82,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -124,13 +101,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa1$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -150,13 +121,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa2$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -176,13 +141,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa3$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -202,12 +161,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -257,13 +211,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa1$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -312,13 +260,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa2$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -367,13 +309,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test-args=$(Q)workload=daa3$(Q) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -422,12 +358,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
