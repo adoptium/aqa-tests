@@ -31,32 +31,31 @@ usage () {
 
 parseCommandLineArgs()
 {
-
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
-		shift;
+		shift; 
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1";;
+				test="$1";shift;;
 			
 			"--version" | "-v" )
-				version="$1";;
+				version="$1";shift;;
 			
 			"--impl" | "-i" )
-				impl="$1";;
+				impl="$1";shift;;
 
 			"--tag" | "-t" )
-				tag="$1";;
+				tag="$1"; shift; parse_tag;;
 
 			"--build" | "-b" )
-				command_type=build; parse_tag;;
+				command_type=build;; 
 
 			"--run" | "-r" )
-				command_type=run; parse_tag;;
+				command_type=run;;
 			
 			"--clean" | "-c" )
-				command_type=clean; parse_tag;;
+				command_type=clean;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -68,7 +67,7 @@ parseCommandLineArgs()
 
 # Parse environment variable DOCKERIMAGE_TAG
 # to set docker_os, build_type, package
-function parse_tag () {
+function parse_tag () { 
 
 	# set PACKAGE
 	case $tag in
@@ -85,36 +84,26 @@ function parse_tag () {
 	# set DOCKER_OS
 	case $tag in
    		*alpine*) 
-	   		docker_os=alpine
-		;;
+	   		docker_os=alpine;;
    		*debianslim*) 
-	   		docker_os=debianslim
-		;;
+	   		docker_os=debianslim;;
 		*debian*) 
-	   		docker_os=debian
-		;;
+	   		docker_os=debian;;
 		*centos*) 
-	   		docker_os=centos
-		;;
+	   		docker_os=centos;;
 		*clefos*) 
-	   		docker_os=clefos
-		;;
+	   		docker_os=clefos;;
 		*ubi-minimal*) 
-	   		docker_os=ubi-minimal
-		;;
+	   		docker_os=ubi-minimal;;
 		*ubi*) 
-	   		docker_os=ubi
-		;;
+	   		docker_os=ubi;;
 		*ubuntu*|*latest*|*nightly*) 
-	   		docker_os=ubuntu
-		;;
+	   		docker_os=ubuntu;;
    		*) echo "Unable to recognize DOCKER_OS from DOCKERIMAGE_TAG = $tag!";;
 	esac     
 }
 
 parseCommandLineArgs "$@"
-
-echo "Command type: $command_type, testdir: $test, version: $version, impl: $impl, docker_os: $docker_os, package: $package, build_type: $build_type"
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type

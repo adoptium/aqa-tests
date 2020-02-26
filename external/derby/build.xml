@@ -37,9 +37,10 @@
 	</target>
 
 	<target name="build_image" depends="clean_image,move_scripts" description="build derby test dockerfile">
-		<echo message="Executing external.sh --dir ${TEST} --version ${JDK_VERSION} --impl ${JDK_IMPL} --tag ${dockerImageTag}" />						
+		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
 		<exec executable="bash">
 			<arg value="${EXT_DEST}/external.sh"/>
+			<arg value="--build"/>
 			<arg value="--dir"/>
 			<arg value="${TEST}"/>
 			<arg value="--tag"/>
@@ -48,7 +49,6 @@
 			<arg value="${JDK_VERSION}"/>
 			<arg value="--impl"/>
 			<arg value="${JDK_IMPL}"/>
-			<arg value="--build"/>
 		</exec>
 	</target>
 
