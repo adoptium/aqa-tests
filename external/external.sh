@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-# script runs in 2 modes - build and run
+# script runs in 3 modes - build / run / clean
 
 set -e
 tag=${DOCKERIMAGE_TAG}
@@ -31,34 +31,32 @@ usage () {
 
 parseCommandLineArgs()
 {
+
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
 		shift;
 
 		case "$opt" in
 			"--dir" | "-d" )
-				$test="$1";;
+				test="$1";;
 			
 			"--version" | "-v" )
-				$version="$1";;
+				version="$1";;
 			
 			"--impl" | "-i" )
-				$impl="$1";;
+				impl="$1";;
 
 			"--tag" | "-t" )
-				$tag="$1";;
+				tag="$1";;
 
 			"--build" | "-b" )
-				$command_type=build
-				parse_tag;;
+				command_type=build; parse_tag;;
 
 			"--run" | "-r" )
-				$command_type=run
-				parse_tag;;
+				command_type=run; parse_tag;;
 			
 			"--clean" | "-c" )
-				$command_type=clean
-				parse_tag;;
+				command_type=clean; parse_tag;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -75,46 +73,46 @@ function parse_tag () {
 	# set PACKAGE
 	case $tag in
    		*jre*) 
-    		$package=jre
+    		package=jre
 		;;
 	esac
 	# set BUILD_TYPE
 	case $tag in
    		*-slim*|*_slim*) 
-   			$build_type=slim
+   			build_type=slim
    		;;
 	esac
 	# set DOCKER_OS
 	case $tag in
    		*alpine*) 
-	   		$docker_os=alpine
+	   		docker_os=alpine
 		;;
    		*debianslim*) 
-	   		$docker_os=debianslim
+	   		docker_os=debianslim
 		;;
 		*debian*) 
-	   		$docker_os=debian
+	   		docker_os=debian
 		;;
 		*centos*) 
-	   		$docker_os=centos
+	   		docker_os=centos
 		;;
 		*clefos*) 
-	   		$docker_os=clefos
+	   		docker_os=clefos
 		;;
 		*ubi-minimal*) 
-	   		$docker_os=ubi-minimal
+	   		docker_os=ubi-minimal
 		;;
 		*ubi*) 
-	   		$docker_os=ubi
+	   		docker_os=ubi
 		;;
 		*ubuntu*|*latest*|*nightly*) 
-	   		$docker_os=ubuntu
+	   		docker_os=ubuntu
 		;;
    		*) echo "Unable to recognize DOCKER_OS from DOCKERIMAGE_TAG = $tag!";;
 	esac     
 }
 
-parseCommandLineArgs
+parseCommandLineArgs "$@"
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test ${JDK_VERSION} ${JDK_IMPL} $docker_os $package $build_type
