@@ -114,7 +114,7 @@ function parse_tag () {
 
 parseCommandLineArgs "$@"
 
-echo $test $version $impl $docker_os $package $build_type
+echo "Command type: $command_type, testdir: $test, version: $version, impl: $impl, docker_os: $docker_os, package: $package, build_type: $build_type"
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
