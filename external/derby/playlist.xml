@@ -30,8 +30,8 @@
 	</test>
 	<test>
 		<testCaseName>derby_test_junit_all_with_tag</testCaseName>  
-		<command>echo ${DOCKERIMAGE_TAG}; docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-derby-test:$(JDK_VERSION)-$(PACKAGE)-$(DOCKER_OS)-$(JDK_IMPL)-$(BUILD_TYPE) ; \
-		docker rmi -f adoptopenjdk-derby-test; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir derby; \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir derby; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
