@@ -124,7 +124,7 @@ if [ $command_type == "run" ]; then
 fi
 
 if [ $report != "false" ]; then
-	docker cp adoptopenjdk-$test-test:/testResults/surefire-reports $report/external_test_reports;
+	docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports;
 fi
 
 
