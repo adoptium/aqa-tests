@@ -7,8 +7,9 @@
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external/camel-test" />
+	<property name="DEST" value="${BUILD_ROOT}/external/camel" />
 	<property name="src" location="." />
+	<property name="TEST" value="camel" />
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
@@ -20,13 +21,7 @@
 		</exec>
 	</target>
 
-	<target name="build_image" depends="clean_image" description="build camel test docker image">
-		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-camel-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
-		</exec>
-	</target>
-
-	<target name="dist" depends="build_image" description="generate the distribution">
+	<target name="dist" depends="clean_image,move_scripts,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>

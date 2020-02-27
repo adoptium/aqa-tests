@@ -7,13 +7,8 @@
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="EXT_DEST" value="${BUILD_ROOT}/external" />
 	<property name="DEST" value="${BUILD_ROOT}/external/derby" />
-	<property name="dist" location="${DEST}/${JDK_VERSION}" />
 	<property name="src" location="." />
-	<property name="top" location="../" />
-
-	<!-- properties to generate Dockerfiles -->
 	<property name="TEST" value="derby" />
 
 	<target name="init">
@@ -26,33 +21,7 @@
 		</exec>
 	</target>
 
-	<target name="move_scripts" depends="clean_image" description="">
-		<echo message="copy ${src}/dockerfile...   ${DEST}/dockerfile " />
-		<copy todir="${DEST}/dockerfile">
-			<fileset dir="${src}/dockerfile" includes="*.sh"/>
-		</copy>
-		<copy todir="${EXT_DEST}">
-			<fileset dir="${top}" includes="*.sh"/>
-		</copy>
-	</target>
-
-	<target name="build_image" depends="clean_image,move_scripts" description="build derby test dockerfile">
-		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
-		<exec executable="bash">
-			<arg value="${EXT_DEST}/external.sh"/>
-			<arg value="--build"/>
-			<arg value="--dir"/>
-			<arg value="${TEST}"/>
-			<arg value="--tag"/>
-			<arg value="${dockerImageTag}"/>
-			<arg value="--version"/>
-			<arg value="${JDK_VERSION}"/>
-			<arg value="--impl"/>
-			<arg value="${JDK_IMPL}"/>
-		</exec>
-	</target>
-
-	<target name="dist" depends="build_image" description="generate the distribution">
+	<target name="dist" depends="clean_image,move_scripts,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
