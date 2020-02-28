@@ -23,7 +23,7 @@
 	<!-- set properties for this build -->
 	<property name="DEST_EXTERNAL" value="${BUILD_ROOT}/external" />
 	<property environment="env" />
-	<property name="top" location="." />
+	<property name="top" location="../" />
 	
 	<if>
 		<isset property="env.DOCKERIMAGE_TAG"/>
@@ -57,8 +57,23 @@
 		</exec>
 	</target>
 
-	<target name="move_scripts" description="">
-		<echo message="copy ${top}/dockerfile...   ${DEST_EXTERNAL}/${TEST}/dockerfile " />
+	<target name="clean_image" description="clean test docker image if there is one">
+		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
+		<exec executable="bash">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--clean"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+		</exec>
+	</target>
+
+	<target name="move_scripts" description="move shell scripts to working directory">
 		<copy todir="${DEST_EXTERNAL}/${TEST}/dockerfile">
 			<fileset dir="${src}/dockerfile" includes="*.sh"/>
 		</copy>

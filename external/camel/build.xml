@@ -15,13 +15,7 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="clean_image" depends="init" description="clean camel test docker image if there is one">
-		<exec executable="docker">
-			<arg line="rmi -f adoptopenjdk-camel-test" />
-		</exec>
-	</target>
-
-	<target name="dist" depends="clean_image,move_scripts,build_image" description="generate the distribution">
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
