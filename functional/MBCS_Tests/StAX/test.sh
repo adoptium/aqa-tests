@@ -45,4 +45,3 @@ ${JAVA_BIN}/java ${CP} StAXReadEveIter ${BASE}/data/drinks_${COUNTRY}.xml >read_
 ${JAVA_BIN}/java ${CP} StAXWriteCursor $TEST_STRINGS
 ${JAVA_BIN}/java ${CP} StAXWriteEveIter $TEST_STRINGS
 
-LANG=${LANG} perl ${BASE}/resultCheck.pl

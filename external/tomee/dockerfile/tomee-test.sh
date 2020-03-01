@@ -40,11 +40,12 @@ cd /tomee
 set -e
 echo "Build TomEE without running test"
 mvn --batch-mode -Pquick -Dsurefire.useFile=false -DdisableXmlReport=true -DuniqueVersion=false -ff -Dassemble -DskipTests -DfailIfNoTests=false clean install
+set +e
 echo "Build TomEE completed"
 
 echo "Run Microprofile TCK"
 cd tck/microprofile-tck
 mvn --batch-mode test -Denforcer.fail=false
-set +e
-echo "Tomee Microprofile TCK completed"
+test_exit_code=$?
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+exit $test_exit_code

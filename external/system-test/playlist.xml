@@ -12,35 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	 <test>
                 <testCaseName>sanity_system</testCaseName>
-                <command>docker run --name system-test adoptopenjdk-system-test:latest sanity.system; \
-                 docker rm system-test; \
-                $(TEST_STATUS)</command>
-                <subsets>
-                        <subset>8</subset>
-                        <subset>9</subset>
-                </subsets>
+                <command>docker run --name sanity_system adoptopenjdk-system-test:latest ; \
+                	$(TEST_STATUS); \
+                	docker rm -f sanity_system; \
+                 	docker rmi -f adoptopenjdk-system-test
+                </command>
                 <levels>
-                        <level>special</level>
+                	<level>sanity</level>
                 </levels>
                 <groups>
-                        <group>system</group>
+                 	<group>system</group>
                 </groups>
         </test>
 
 	 <test>
                 <testCaseName>extended_system</testCaseName>
-                <command>docker run --name system-test adoptopenjdk-system-test:latest extended.system; \
-                 docker rm system-test; \
-                $(TEST_STATUS)</command>
-                <subsets>
-                        <subset>8</subset>
-                        <subset>9</subset>
-                </subsets>
+                <command>docker run --name extended_system adoptopenjdk-system-test:latest _extended.system; \
+					$(TEST_STATUS); \
+                	docker rm -f extended_system; \
+                 	docker rmi -f adoptopenjdk-system-test
+                </command>
                 <levels>
-                        <level>special</level>
+                        <level>extended</level>
                 </levels>
                 <groups>
                         <group>system</group>

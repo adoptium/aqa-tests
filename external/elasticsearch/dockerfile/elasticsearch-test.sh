@@ -44,13 +44,12 @@ cd /elasticsearch
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
 ./gradlew -q -g /tmp assemble
-
+set +e
 echo "Elasticsearch Build - Successful"
 
 echo "Running elasticsearch tests :"
 
 ./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
-
-echo "Elasticsearch tests - Successful"
-set +e
+test_exit_code=$?
 find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
+exit $test_exit_code

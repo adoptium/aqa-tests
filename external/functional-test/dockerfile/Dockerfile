@@ -25,7 +25,7 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
@@ -39,30 +39,20 @@ RUN apt-get update \
 	apt-transport-https \
 	ca-certificates \
 	dirmngr \
-	curl \
 	git \
 	make \
-	unzip \
-	vim \
 	zip \
-	wget \
-	gcc \
-	libtext-csv-perl \
-	libjson-perl \
-	libxml-parser-perl
+	wget
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
 
 # This is the main script to run functional tests.  
 COPY ./dockerfile/functional-test.sh /functional-test.sh
 
 # Clone the repo where the functional tests reside. 
 WORKDIR /
-RUN pwd
 
-# Clone OpenJ9 functional test repo
-RUN git clone https://github.com/eclipse/openj9.git
+RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 ENTRYPOINT ["/bin/bash", "/functional-test.sh"]
-CMD ["--version"]
+CMD ["_sanity.functional.regular"]

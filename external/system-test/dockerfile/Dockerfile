@@ -25,7 +25,7 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
@@ -33,56 +33,25 @@ FROM $IMAGE_NAME:$IMAGE_VERSION
 RUN apt-get update \
 	&& apt-get -y install \
 	ant \
+	ant-contrib \
 	apt-transport-https \
 	ca-certificates \
 	dirmngr \
-	curl \
 	git \
 	make \
 	unzip \
-	vim \
 	wget \
 	cpio \
 	gcc
-
-# Install ant
-ENV ANT_VERSION 1.10.5
-RUN wget --no-check-certificate https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
-    gunzip apache-ant-${ANT_VERSION}-bin.tar.gz && \
-    tar -xvf apache-ant-${ANT_VERSION}-bin.tar
-
-RUN apt-get -y install \
-        libtext-csv-perl \
-        libjson-perl
-
-
-VOLUME ["/java"]
-#ENV JAVA_HOME=/java \
-#    PATH=/java/bin:$PATH \
-#    JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
-# Install Docker module to run test framework
-RUN apt-get -y install \
-	libtext-csv-perl \
-	libjson-perl \
-	libxml-parser-perl
 
 # This is the main script to run system tests.  
 COPY ./dockerfile/system-test.sh /system-test.sh
 
 # Clone the repo where the 3rd party application code and tests reside. 
 WORKDIR /
-RUN pwd
-
-ENV ANT_HOME ${WORKDIR}/apache-ant-${ANT_VERSION}
-
-RUN wget https://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.tar.gz && \
-    tar -zxvf ant-contrib-1.0b3-bin.tar.gz && \
-    cp ant-contrib/ant-contrib-1.0b3.jar ${ANT_HOME}/lib
-
 
 # Clone AdoptOpenJDK openjdk-tests repo
 RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 
 ENTRYPOINT ["/bin/bash", "/system-test.sh"]
-CMD ["--version"]
+CMD ["_sanity.system"]

@@ -29,7 +29,7 @@
 			<property name="dockerImageTag" value="${env.DOCKERIMAGE_TAG}"/>
 		</then>
 		<else>
-			<property name="dockerImageTag" value="latest"/>
+			<property name="dockerImageTag" value="nightly"/>
 		</else>
 	</if>
 	<target name="init" depends="docker_prune">

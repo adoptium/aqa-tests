@@ -147,24 +147,22 @@
 		<disabled>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</disabled>
 	</test>
 	<test>
-                <testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
-                <variations>
-                        <variation>-Xmx2g -Xms2g -Xdump:none -Xgcpolicy:balanced -verbose:gc -XXgc:enableDoubleMapping</variation>
-                </variations>
-                <command>mkdir -p $(REPORTDIR); \
-        cd $(TEST_RESROOT); \
-        $(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main config/config_doubleMapStress.xml -n; \
-        ${TEST_STATUS}</command>
-                <platformRequirements>arch.x86,bits.64,os.linux</platformRequirements>
-                <levels>
-                        <level>extended</level>
-                </levels>
-                <groups>
-                        <group>functional</group>
-                </groups>
-                <impls>
-                        <impl>openj9</impl>
-                        <impl>ibm</impl>
-                </impls>
-        </test>
+		<testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
+		<variations>
+			<variation>-Xmx2g -Xdump:none -Xgcpolicy:balanced -Xgc:enableArrayletDoubleMapping -verbose:gc</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main $(TEST_RESROOT)/config/config_doubleMapStress.xml -n; \
+	${TEST_STATUS}</command>
+		<platformRequirements>bits.64,os.linux</platformRequirements>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
 </playlist>
