@@ -119,11 +119,10 @@ if [ $command_type == "build" ]; then
 fi
 
 if [ $command_type == "run" ]; then
-	docker run --rm $docker_args adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
+	docker run --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 fi
 
 if [ $report != "false" ]; then
-	echo "About to run: docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports"
 	docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports;
 fi
 
