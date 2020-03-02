@@ -14,13 +14,10 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
-		<testCaseName>jenkins_test</testCaseName>
-		<command>docker run --name jenkins-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-jenkins-test:latest; \
-			 $(TEST_STATUS); \
-			 docker cp jenkins-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
-			 docker rm -f jenkins-test; \
-			 docker rmi -f adoptopenjdk-jenkins-test
-		</command>
+		<testCaseName>jenkins_test_with_tag</testCaseName>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir jenkins --report $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir jenkins; \
+		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
