@@ -16,8 +16,9 @@
 	<test>
 		<testCaseName>kafka_test_with_tag</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir kafka --report $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir kafka; \
-		$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir kafka
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

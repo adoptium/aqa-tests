@@ -123,10 +123,9 @@ fi
 
 if [ $command_type == "run" ]; then
 	docker run $docker_args adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
-fi
-
-if [ $report != "false" ]; then
-	docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports;
+	if [ $report != "false" ]; then
+		docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports;
+	fi
 fi
 
 if [ $command_type == "clean" ]; then

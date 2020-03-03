@@ -16,8 +16,9 @@
 	<test>
 		<testCaseName>jenkins_test_with_tag</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir jenkins --report $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir jenkins; \
-		$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir jenkins
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

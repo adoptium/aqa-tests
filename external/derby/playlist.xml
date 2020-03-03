@@ -16,8 +16,9 @@
 	<test>
 		<testCaseName>derby_test_junit_all_with_tag</testCaseName>  
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir derby --report $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir derby; \
-		$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir derby
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
