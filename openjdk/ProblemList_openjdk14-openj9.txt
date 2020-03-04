@@ -160,10 +160,12 @@ java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/ecl
 # jdk_net
 
 java/net/Inet4Address/PingThis.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1127	aix-all
+java/net/MulticastSocket/IPMulticastIF.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1153 windows-all
 java/net/MulticastSocket/Promiscuous.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
 java/net/MulticastSocket/PromiscuousIPv6.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699	linux-s390x
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
 java/net/MulticastSocket/Test.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
+java/net/MulticastSocket/TestInterfaces.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1153 windows-all
 java/net/Socket/asyncClose/AsyncClose.java https://github.com/eclipse/openj9/issues/4560 generic-all
 java/net/SocketPermission/SocketPermissionTest.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1650 aix-all
 java/net/httpclient/websocket/BlowupOutputQueue.java https://github.com/eclipse/openj9/issues/4298 macosx-all
@@ -200,10 +202,10 @@ java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.n
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/DatagramChannel/AfterDisconnect.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1650 aix-all
 java/nio/channels/DatagramChannel/ChangingAddress.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1650 aix-all
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/AdoptOpenJDK/openjdk-tests/issues/1016
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267 macosx-all,linux-s390x
-#java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse/openj9/issues/6669
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1153 windows-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267 macosx-all,linux-s390x,windows-all
+# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse/openj9/issues/6669
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse/openj9/issues/4317 macosx-all
