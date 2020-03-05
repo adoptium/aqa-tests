@@ -24,11 +24,12 @@ command_type=build
 version=8
 impl=hotspot
 test=derby
-report="false"
+reportdst="false"
+reportsrc="/testResults/surefire-reports"
 docker_args="--rm"
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--report REPORTDIR] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--reportsrc appReportDir] [--reportdst REPORTDIR] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
 }
 
 parseCommandLineArgs()
@@ -57,8 +58,11 @@ parseCommandLineArgs()
 			"--tag" | "-t" )
 				tag="$1"; shift; parse_tag;;
 
-			"--report" )
-				report="$1"; shift;;
+			"--reportsrc" )
+				reportsrc="$1"; shift;;
+
+			"--reportdst" )
+				reportdst="$1"; shift;;
 
 			"--build" | "-b" )
 				command_type=build;; 
@@ -122,12 +126,13 @@ if [ $command_type == "build" ]; then
 fi
 
 if [ $command_type == "run" ]; then
-	docker run $docker_args adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
-	if [ $report != "false" ]; then
-		docker cp adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type:/testResults/surefire-reports $report/external_test_reports;
+	docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
+	if [ $reportdst != "false" ]; then
+		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
 	fi
 fi
 
 if [ $command_type == "clean" ]; then
+	docker rm -f $test-test;
 	docker rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 fi
