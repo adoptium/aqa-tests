@@ -1,0 +1,34 @@
+
+Tokenizing Test:
+
+test string: °¡¡î °¡ ANSIString2 °¡ £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡« °¡ ABCCDE/\\!
+delimiter: (space)
+item 1: °¡¡î
+item 2: °¡
+item 3: ANSIString2
+item 4: °¡
+item 5: £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
+item 6: °¡
+item 7: ABCCDE/\\!
+
+test string: °¡¡î °¡ ANSIString2 °¡ £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡« °¡ ABCCDE/\\!
+delimiter: °¡
+item 1: ¡î
+item 2: ANSIString2
+item 3: £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
+item 4: ABCCDE/\\!
+
+Pattern Matching Test:
+
+test string: °¡¡î °¡ ANSIString2 °¡ £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡« °¡ ABCCDE/\\!
+pattern: °¡[^ ]*
+item 1: °¡¡î
+item 2: °¡
+item 3: °¡
+item 4: °¡
+
+test string: °¡¡î °¡ ANSIString2 °¡ £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡« °¡ ABCCDE/\\!
+pattern: °¡ [^ ]*
+item 1: °¡ ANSIString2
+item 2: °¡ £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
+item 3: °¡ ABCCDE/\\!

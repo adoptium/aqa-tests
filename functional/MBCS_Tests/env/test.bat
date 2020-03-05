@@ -21,5 +21,5 @@ call %PWD%\..\data\setup_%LOCALE%.bat
 echo "invoking EnvTest"> %OUTPUT%
 %JAVA_BIN%\java EnvTest >> %OUTPUT%
 
-fc %PWD%\expected_Windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
+fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

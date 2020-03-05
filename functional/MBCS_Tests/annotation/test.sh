@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
 BASE=`dirname $0`
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 . ${BASE}/check_env_unix.sh
+
+if [ "${BASE}" != "${PWD}" ]; then
+  cp ${BASE}/*.java .
+fi
 
 cp ${BASE}/*.java .
 
@@ -58,13 +61,11 @@ public class AnnotatedTest{
     @${TS}_constructor("${TS}") 
         public AnnotatedTest(){
     }
-
     // Annotated Methods
     @${TS}_method("${TS}_1") 
     public void ${TS}_1(){}
     @${TS}_method("${TS}_2")
     public  void ${TS}_2(){}
-
     // Annotated Fields
     @${TS}_field("${TS}_1") 
     public String ${TS}_1 = "${TS}";

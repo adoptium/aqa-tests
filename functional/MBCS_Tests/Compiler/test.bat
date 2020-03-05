@@ -24,5 +24,5 @@ FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java CheckValidDataEnv TEST_STRINGS`) DO  
 
 cscript //nologo %PWD%\ChgWord.vbs TEST_STRING %TS% %PWD%\class_org.java > %TS%.java
 %JAVA_BIN%\java CompilerTest1 %TS%.java > %OUTPUT% 2>&1
-fc %PWD%\expected_Windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
+fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

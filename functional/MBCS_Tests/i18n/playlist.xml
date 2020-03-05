@@ -45,6 +45,36 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_i18n_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_i18n_ja_JP_aix</testCaseName>
 		<command>LANG=ja_JP perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
@@ -107,6 +137,96 @@ limitations under the License.
 	<test>
 		<testCaseName>MBCS_Tests_i18n_KO_KR_aix</testCaseName>
 		<command>LANG=KO_KR perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_i18n_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>

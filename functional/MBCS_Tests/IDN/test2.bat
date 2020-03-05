@@ -17,12 +17,22 @@ SET CLASSPATH=%PWD%\IDN.jar
 SET OUTPUT="output"
 call %PWD%\set_variable.bat
 
-for %%i in (%PWD%\win_%2_*_txt) do (
+SET INPUTFILES=win_%2_*_txt
+if %3 == cn ( SET INPUTFILES=win_%2-%3_*_txt )
+if %3 == tw ( SET INPUTFILES=win_%2-%3_*_txt )
+
+
+for %%i in (%PWD%\%INPUTFILES%) do (
     %JAVA_BIN%\java Main2 %1 %2 %3 %4 %%i
     copy /b %OUTPUT% + toAscii.txt + toUnicode.txt %OUTPUT% > NUL 2>&1
 )
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 
 
-fc %PWD%\expected_Windows_%2.txt %OUTPUT% > fc.out 2>&1
+SET EXPECTEDFILE=expected_windows_%2.txt
+if %3 == cn ( SET EXPECTEDFILE=expected_windows_%2-%3.txt )
+if %3 == tw ( SET EXPECTEDFILE=expected_windows_%2-%3.txt )
+
+fc %PWD%\%EXPECTEDFILE% %OUTPUT% > fc.out 2>&1
+
 exit %errorlevel%

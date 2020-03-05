@@ -20,6 +20,10 @@ public class Main {
    public static void main(String[] args) throws Exception {
       Locale.setDefault(new Locale(args[1],args[2]));
       String propfile = "setup_"+args[1]+".properties";
+      if ( args[2].equalsIgnoreCase("CN") || args[2].equalsIgnoreCase("TW") ){
+         propfile = "setup_" + args[1] + "-" + args[2] + ".properties";
+      }
+
       String[] teststring = null;
       try (InputStream is = Main.class.getClassLoader().getResourceAsStream(propfile);){
          Properties prop = new Properties();

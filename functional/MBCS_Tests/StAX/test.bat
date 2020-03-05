@@ -16,6 +16,9 @@ SET PWD=%~dp0
 
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
+if %LOCALE% == zh-tw (
+   call %PWD%\data2\setup_zh-tw.bat
+)
 
 if exist write_cursor.xml del write_cursor.xml
 if exist write_event.xml del write_event.xml

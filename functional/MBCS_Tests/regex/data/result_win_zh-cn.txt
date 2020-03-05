@@ -1,0 +1,51 @@
+------------ Pattern matching test ------------
+13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
+15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
+32: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
+--- Confirm that the line(s) includes "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦". 
+--- Did you get the line(s)?
+13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
+15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
+27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
+32: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
+--- Confirm that the line(s) includes the pattern "嘨*嘪". 
+--- Did you get the line(s) ?
+5: 劚兊兌兛兝兞兟兠兡 兣兤兦內 java.util.regex 兩
+10: 劚則剈剋剎剏剓剗剘剙剚剛剝剟剠剢剣剤剦剨剫剬
+34: 劚泲嶡壡泭泩泴泬擩炈怰泹椌泿洂洀悺帥懳庻晻
+--- Confirm that the line(s) starts with "劚".
+--- Did you get the line ?
+22:    #java SimpleGrep 噲 zh-cn.txt
+--- Confirm that the line(s) includes "噲". 
+--- Did you get the line ?
+25:    #java SimpleGrep 椷 zh-cn.txt
+26: 埲樋壖嬄拠審樍擟椷
+27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
+--- Confirm that the line(s) includes "椷". 
+--- Did you get the line?
+--- Confirm that the line(s) includes "表抎駡名". 
+--- Did you get the line ?
+
+------------ Pattern replacement test ------------
+13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
+==>    #java SimpleGrep aiueo zh-cn.txt
+15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
+==> 伾伩aiueo伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
+32: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
+==> 鷫栨擋aiueo曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
+--- Confirm that "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦" was replaced by "aiueo". 
+--- OK ?
+22:    #java SimpleGrep 噲 zh-cn.txt
+==>    #java SimpleGrep 僇僞僇僫 zh-cn.txt
+--- Confirm that "噲" was replaced by "僇僞僇僫". 
+--- OK ?
+25:    #java SimpleGrep 椷 zh-cn.txt
+==>    #java SimpleGrep \ zh-cn.txt
+26: 埲樋壖嬄拠審樍擟椷
+==> 埲樋壖嬄拠審樍擟\
+27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
+==> 鷍鷎柋嘨嘩嘪嘫嘮\嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
+--- Confirm that "椷" was replaced by "\". 
+--- OK ?
+--- Confirm that "表抎駡名" was replaced by "椷噲". 
+--- OK ?

@@ -24,7 +24,7 @@ ENCODING=`${JAVA_BIN}/java showcode`
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 
-${JAVA_BIN}/java conv ${BASE}/expected_${SOURCE} ${ENCODING} ./converted.txt ${ENCODING} 2>&1
-diff ${BASE}/expected_${SOURCE} ./converted.txt > /dev/null 2>&1
+${JAVA_BIN}/java conv ${BASE}/expected_${FULLLANG}.txt ${ENCODING} ./converted.txt ${ENCODING} 2>&1
+diff ${BASE}/expected_${FULLLANG}.txt ./converted.txt > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}
