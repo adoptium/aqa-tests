@@ -23,6 +23,8 @@
 	<!-- set properties for this build -->
 	<property name="DEST_EXTERNAL" value="${BUILD_ROOT}/external" />
 	<property environment="env" />
+	<property name="top" location="../" />
+	
 	<if>
 		<isset property="env.DOCKERIMAGE_TAG"/>
 		<then>
@@ -42,7 +44,7 @@
 			<fileset dir="." includes="*/build.xml" />
 		</subant>
 	</target>
-	
+
 	<target name="dist" depends="init">
 		<copy todir="${DEST_EXTERNAL}">
 			<fileset dir="." includes="*.mk"/>
@@ -52,6 +54,47 @@
 	<target name="docker_prune" description="Remove all unused images from the machine before running new builds">
 		<exec executable="docker">
 			<arg line="system prune --all --force" />
+		</exec>
+	</target>
+
+	<target name="clean_image" description="clean test docker image if there is one">
+		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
+		<exec executable="bash">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--clean"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+		</exec>
+	</target>
+
+	<target name="move_scripts" description="move shell scripts to working directory">
+		<copy todir="${DEST_EXTERNAL}/${TEST}/dockerfile">
+			<fileset dir="${src}/dockerfile" includes="*.sh"/>
+		</copy>
+		<copy todir="${DEST_EXTERNAL}">
+			<fileset dir="${top}" includes="*.sh"/>
+		</copy>
+	</target>
+
+	<target name="build_image" description="build test dockerfile">
+		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
+		<exec executable="bash">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--build"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
 		</exec>
 	</target>
 </project>
