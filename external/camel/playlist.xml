@@ -15,11 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>camel_test</testCaseName>
-		<command>docker run --name camel-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-camel-test:latest; \
-			$(TEST_STATUS); \
-			docker cp camel-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker rm -f camel-test; \
-			docker rmi -f adoptopenjdk-camel-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir camel --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir camel 
 		</command>
 		<levels>
 			<level>extended</level>
