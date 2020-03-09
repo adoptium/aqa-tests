@@ -15,7 +15,7 @@
 set -e
 
 SDKDIR=""
-TESTDIR=""
+TESTDIR="$(pwd)"
 PLATFORM=""
 JVMVERSION=""
 SDK_RESOURCE="nightly"
@@ -40,7 +40,7 @@ TYPE="jdk"
 
 usage ()
 {
-	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
+	echo 'Usage : get.sh  --testdir|-t optional. path to openjdktestdir. Default value current dir (pwd) is used if not provided'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
 	echo '                [--jdk_version|-j ]: optional. JDK version'
 	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
@@ -147,11 +147,12 @@ parseCommandLineArgs()
 		esac
 	done
 
-        # Adding this check otherwise it starts writing stuff to $HOME
-        if [ -z "$TESTDIR" ]; then
-           echo "-t parameter to set TESTDIR is mandatory"
-           exit 1
-        fi
+	# Check if TESTDIR exists and points to openjdk-tests
+	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"openjdk-tests"* ]]; then
+		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under openjdk-tests. Default value current dir (pwd) is used if not provided."
+		exit 1
+	fi
+	echo "TESTDIR: $TESTDIR"
 }
 
 getBinaryOpenjdk()
@@ -195,6 +196,10 @@ getBinaryOpenjdk()
 			release_type="ga"
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+
+		if [[ "$JDK_VERSION" -ge "11" ]]; then
+			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+		fi
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
