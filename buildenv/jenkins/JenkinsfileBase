@@ -541,9 +541,16 @@ def testBuild() {
 			if (!params.KEEP_WORKSPACE) {
 				// cleanWs() does not work in some cases, so set opts below
 				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
-			}
+				// clean up remaining core files
+				if (PLATFORM.contains("mac")) {
+					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+				} else if (PLATFORM.contains("windows")) {
+					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+				} else {
+					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
+				}
+			}	
 		}
-
 	}
 }
 
