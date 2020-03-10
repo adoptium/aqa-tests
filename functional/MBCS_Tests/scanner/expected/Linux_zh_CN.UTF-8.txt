@@ -1,0 +1,34 @@
+
+Tokenizing Test:
+
+test string: 啊☆€抎駡U郂 啊 ANSIString2 啊 ＡＢＣ一丁七／＼～ 啊 ABCCDE/!
+delimiter: (space)
+item 1: 啊☆€抎駡U郂
+item 2: 啊
+item 3: ANSIString2
+item 4: 啊
+item 5: ＡＢＣ一丁七／＼～
+item 6: 啊
+item 7: ABCCDE/!
+
+test string: 啊☆€抎駡U郂 啊 ANSIString2 啊 ＡＢＣ一丁七／＼～ 啊 ABCCDE/!
+delimiter: 啊
+item 1: ☆€抎駡U郂
+item 2: ANSIString2
+item 3: ＡＢＣ一丁七／＼～
+item 4: ABCCDE/!
+
+Pattern Matching Test:
+
+test string: 啊☆€抎駡U郂 啊 ANSIString2 啊 ＡＢＣ一丁七／＼～ 啊 ABCCDE/!
+pattern: 啊[^ ]*
+item 1: 啊☆€抎駡U郂
+item 2: 啊
+item 3: 啊
+item 4: 啊
+
+test string: 啊☆€抎駡U郂 啊 ANSIString2 啊 ＡＢＣ一丁七／＼～ 啊 ABCCDE/!
+pattern: 啊 [^ ]*
+item 1: 啊 ANSIString2
+item 2: 啊 ＡＢＣ一丁七／＼～
+item 3: 啊 ABCCDE/!

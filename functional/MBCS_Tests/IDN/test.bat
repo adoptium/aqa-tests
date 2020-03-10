@@ -17,6 +17,7 @@ SET PWD=%~dp0
 SET CLASSPATH=%PWD%\IDN.jar
 SET OUTPUT=output.txt
 call %PWD%\check_env_windows.bat
+if exist %OUTPUT% (del %OUTPUT%)
 for %%i in (%PWD%\win_%LOCALE%_*_txt) do (
     %JAVA_BIN%\java IDNFromFile %%i
     type toAscii.txt >> %OUTPUT%
@@ -35,5 +36,5 @@ echo converting URL from ACE to UNICODE... >> %OUTPUT%
 FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java IDNtoUNICODE %ToASCII%`) DO  set ToUNICODE=%%i
 echo UNICODE=http://%ToUNICODE% >> %OUTPUT%
 
-fc %PWD%\expected_Windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
+fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

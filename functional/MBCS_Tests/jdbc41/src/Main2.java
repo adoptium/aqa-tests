@@ -45,7 +45,13 @@ public class Main2 {
               e.printStackTrace();
           }
       }
-      System.out.println("LOCALE = " + args[1] + " ");
+      String loc="LOCALE = " + args[1] + " ";
+      if (args[2].equalsIgnoreCase("cn") || args[2].equalsIgnoreCase("tw")){
+         loc="LOCALE = " + args[1] + "-" + args[2] + " ";
+      }
+ 
+      System.out.println(loc);
+      //System.out.println("LOCALE = " + args[1] + " ");
       System.out.println("JDBC41_TABLE_NAME = " + System.getProperty("JDBC41_TABLE_NAME") + " ");
       System.out.println("JDBC41_CNAME = " +  System.getProperty("JDBC41_CNAME") + " ");
       System.out.println("--- Create Table and Insert test data in JavaDB. ");

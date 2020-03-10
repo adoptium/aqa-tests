@@ -18,5 +18,5 @@ call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 %JAVA_BIN%\java -cp %PWD%\scanner.jar ScannerTest %TEST_STRINGS% > result 2>&1
 
-fc result %PWD%\expected\Windows_%LOCALE%.txt > fc.out 2>&1
+fc result %PWD%\expected\windows_%LOCALE%.txt > fc.out 2>&1
 exit %errorlevel%

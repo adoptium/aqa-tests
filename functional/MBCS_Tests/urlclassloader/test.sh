@@ -22,6 +22,9 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 CP="-cp ${BASE}/urlclassloader.jar"
 
+mkdir tmp
+cd tmp
+
 ${JAVA_BIN}/java ${CP} UrlClassClose $TEST_STRINGS > output.txt 2>&1
 
 diff output.txt ${BASE}/expected/${FULLLANG}.txt > diff.txt

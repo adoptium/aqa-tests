@@ -19,6 +19,7 @@ SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar
 SET SRC_DIR=file_%LOCALE%
 if exist %SRC_DIR% (rd /S /Q %SRC_DIR%)
+SET DATAFILE=%SRC_DIR%.zip
 
 SET ZIP=C:\7-Zip\7z.exe
 if exist %ZIP% goto TEST1
@@ -32,7 +33,8 @@ IF %ERRORLEVEL% NEQ 0 (  echo -----------------------------------
 
 :TEST1
 
-%ZIP% x %PWD%\data\%SRC_DIR%.zip > NUL
+%JAVA_BIN%\java MimeDecoder %PWD%\data\%DATAFILE%.base64 %PWD%\data\%DATAFILE%
+%ZIP% x %PWD%\data\%DATAFILE% > NUL
 
 
 

@@ -18,6 +18,10 @@ SET CLASSPATH=%PWD%\nio.jar
 call %PWD%\check_env_windows.bat
 call %PWD%\set_%LOCALE%.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
-%JAVA_BIN%\java ReadWriteTest %PWD%\%CHARMAP%.txt %CHARMAP% converted.txt %CHARMAP% > nul 2>&1
+%JAVA_BIN%\java ReadWriteTest %PWD%\%CHARMAP%.txt %CHARMAP% converted.txt %CHARMAP% > log 2>&1
 fc %PWD%\%CHARMAP%.txt converted.txt > fc.out 2>&1
+if %errorlevel% neq 0 (
+    echo Run UCompare
+    %JAVA_BIN%\java UCompare %PWD%\%CHARMAP%.txt %CHARMAP% converted.txt %CHARMAP%
+)  
 exit %errorlevel%

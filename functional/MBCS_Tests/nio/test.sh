@@ -26,7 +26,7 @@ echo "system code page is " ${LOC}
 
 . ${BASE}/check_env_unix.sh
 echo "invoking ReadWriteTest..." 
-${JAVA_BIN}/java ReadWriteTest ${BASE}/expected_${FULLLANG}.txt ${LOC} converted.txt ${LOC} > /dev/null 2>&1
-diff ${BASE}/expected_${FULLLANG}.txt ./converted.txt > /dev/null 2>&1
+${JAVA_BIN}/java ReadWriteTest ${BASE}/expected_${FULLLANG}.txt ${LOC} converted.txt ${LOC} > log 2>&1
+diff ${BASE}/expected_${FULLLANG}.txt ./converted.txt > diff.txt 2>&1
 RESULT=$?
 exit ${RESULT}

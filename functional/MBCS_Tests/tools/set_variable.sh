@@ -13,8 +13,10 @@
 # limitations under the License.
 ################################################################################
 
-if [ -x "${TEST_JDK_HOME}/jre/bin/java" ] ; then
-    export JAVA_BIN=${TEST_JDK_HOME}/jre/bin
-else
-    export JAVA_BIN=${TEST_JDK_HOME}/bin
+if [ "x$JAVA_BIN" = "x" ] ; then
+    if [ -x "${TEST_JDK_HOME}/jre/bin/java" ] ; then
+        export JAVA_BIN=${TEST_JDK_HOME}/jre/bin
+    else
+        export JAVA_BIN=${TEST_JDK_HOME}/bin
+    fi
 fi

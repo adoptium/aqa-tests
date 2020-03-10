@@ -39,6 +39,30 @@ limitations under the License.
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_coin_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_coin_ja_JP_aix</testCaseName>
 		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
@@ -110,6 +134,92 @@ limitations under the License.
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_coin_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8</subset>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_coin_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat; \
 	$(TEST_STATUS)</command>
@@ -123,7 +233,7 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_coin_ja_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932; \
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ja jp MS932; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>
@@ -135,7 +245,31 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_coin_ko_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949; \
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ko kr MS949; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_cn_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh cn MS936; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_coin_tw_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh tw MS950; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>

@@ -1,0 +1,36 @@
+
+Tokenizing Test:
+
+test string: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶ ÏÐ Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é ÏÐ ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à ÏÐ ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+delimiter: (space)
+item 1: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶
+item 2: ÏÐ
+item 3: Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é
+item 4: ÏÐ
+item 5: ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à
+item 6: ÏÐ
+item 7: ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+
+test string: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶ ÏÐ Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é ÏÐ ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à ÏÐ ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+delimiter: ÏÐ
+item 1: Ž¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶
+item 2: Ö¬
+item 3: Ž¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é
+item 4: ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à
+item 5: ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+
+Pattern Matching Test:
+
+test string: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶ ÏÐ Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é ÏÐ ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à ÏÐ ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+pattern: ÏÐ[^ ]*
+item 1: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶
+item 2: ÏÐ
+item 3: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é
+item 4: ÏÐ
+item 5: ÏÐ
+
+test string: ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é¡åü¯æ¶ ÏÐ Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é ÏÐ ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à ÏÐ ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
+pattern: ÏÐ [^ ]*
+item 1: ÏÐ Ö¬ÏÐŽ¢ÏßÄ²ØÁÈÌí¯¢ÄŽ¢¼Ï¡î¢é
+item 2: ÏÐ ¤Á¤Â¤Ã¤¢¤©¤ª¤£¤¢ÞâÕåË«â³ÞâÄ¡Ä£Ä¤¢ß¢à
+item 3: ÏÐ ABCCDE18921ÞâÕåË«â³Þââ³Ù¶åýÇ°ÝôÑðÕåË«ÑÅ/\\
