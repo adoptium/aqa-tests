@@ -1,0 +1,58 @@
+------------ Pattern matching test ------------
+13:   #java SimpleGrep ечешецефепех zh-tw.txt
+14: ечешецефепехещиµеьеы
+--- Confirm that the line(s) includes "ечешецефепех". 
+--- Did you get the line(s)?
+8: ™ндч§Q∞\ечецеф¶ЋЉ≈°гўђ°ѓҐI
+13:   #java SimpleGrep ечешецефепех zh-tw.txt
+14: ечешецефепехещиµеьеы
+18: зuзtзxзwзvз{зzзyз|з}з~ечешецеф
+--- Confirm that the line(s) includes the pattern "еч*еф". 
+--- Did you get the line(s) ?
+16: жAж@жCжBжDжvжrжwжtжuы¶жq
+17: жAҐѕҐ–Ґ—Ґ∞ҐЈҐЄҐ±Ґ∞≥ьЃ√®hґL≥ь§@§B§C
+20: жAиZиTиSыди^и_и]и\и[иdиb
+22: жAиќиѕкrЦ и–и—и“Breakerи‘
+--- Confirm that the line(s) starts with "жA".
+--- Did you get the line ?
+6: еhЦlгми’Ц`Ц√ХP
+23:  #java SimpleGrep и’ zh-tw.txt
+24: и’
+27: кxкzкyк{к|и’к}к~
+--- Confirm that the line(s) includes "и’". 
+--- Did you get the line ?
+26:    #java SimpleGrep кz zh-tw.txt
+27: кxкzкyк{к|и’к}к~
+--- Confirm that the line(s) includes "кz". 
+--- Did you get the line?
+8: ™ндч§Q∞\ечецеф¶ЋЉ≈°гўђ°ѓҐI
+--- Confirm that the line(s) includes "≥ьЃ√®h". 
+--- Did you get the line ?
+
+------------ Pattern replacement test ------------
+13:   #java SimpleGrep ечешецефепех zh-tw.txt
+==>   #java SimpleGrep aiueo zh-tw.txt
+14: ечешецефепехещиµеьеы
+==> aiueoещиµеьеы
+--- Confirm that "ечешецефепех" was replaced by "aiueo". 
+--- OK ?
+6: еhЦlгми’Ц`Ц√ХP
+==> еhЦlгмаЈаЄаЇЦ`Ц√ХP
+23:  #java SimpleGrep и’ zh-tw.txt
+==>  #java SimpleGrep аЈаЄаЇ zh-tw.txt
+24: и’
+==> аЈаЄаЇ
+27: кxкzкyк{к|и’к}к~
+==> кxкzкyк{к|аЈаЄаЇк}к~
+--- Confirm that "и’" was replaced by "аЈаЄаЇ". 
+--- OK ?
+26:    #java SimpleGrep кz zh-tw.txt
+==>    #java SimpleGrep \ zh-tw.txt
+27: кxкzкyк{к|и’к}к~
+==> кx\кyк{к|и’к}к~
+--- Confirm that "кz" was replaced by "\". 
+--- OK ?
+8: ™ндч§Q∞\ечецеф¶ЋЉ≈°гўђ°ѓҐI
+==> §B§Cечецеф¶ЋЉ≈°гўђ°ѓҐI
+--- Confirm that "™ндч§Q∞\" was replaced by "§B§C". 
+--- OK ?

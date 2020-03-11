@@ -32,7 +32,9 @@ import java.io.IOException;
 import java.io.File;
 
 public class FileTest{
-    Path tempPath;
+    private Path tempPath;
+    private long version = 0L;
+
     @Before
     public void generate() {
         try{
@@ -40,6 +42,7 @@ public class FileTest{
         }catch(IOException e) {
             e.printStackTrace();
         }
+        version = JavaVersion.getVersion();
     }
     @After
     public void cleanup() {
@@ -50,53 +53,56 @@ public class FileTest{
     }
 
     @Test
-    public void check(){
-        try{
-            FileTime ft = Files.getLastModifiedTime(tempPath,
-                              LinkOption.NOFOLLOW_LINKS);
-            Instant ins = ft.toInstant();
-            isEqualTimeString(ft.toString(), ins.toString());
-            //assertNotEquals(ft, ins); // FileTime and Instant are different
-            assertFalse(ft.equals(ins)); // FileTime and Instant are different
+    public void check() throws Exception {
+        FileTime ft = Files.getLastModifiedTime(tempPath,
+                          LinkOption.NOFOLLOW_LINKS);
+        Instant ins = ft.toInstant();
+        isEqualTimeString(ft.toString(), ins.toString());
+        //assertNotEquals(ft, ins); // FileTime and Instant are different
+        assertFalse(ft.equals(ins)); // FileTime and Instant are different
 
-            FileTime ft2 = FileTime.from(ins);
-            assertEquals(ft, ft2);
+        FileTime ft2 = FileTime.from(ins);
+        assertEquals(ft, ft2);
 
-            Instant ins2 = ins.plusNanos(1);
-            //assertNotEquals(ins, ins2);
-            assertFalse(ins.equals(ins2));
-            //assertNotEquals(ft, FileTime.from(ins2));
-            assertFalse(ft.equals(FileTime.from(ins2)));
+        Instant ins2 = ins.plusNanos(1);
+        //assertNotEquals(ins, ins2);
+        assertFalse(ins.equals(ins2));
+        //assertNotEquals(ft, FileTime.from(ins2));
+        assertFalse(ft.equals(FileTime.from(ins2)));
 
-            Instant ins3 = ins.plusMillis(1);
-            //assertNotEquals(ins, ins3);
-            assertFalse(ins.equals(ins3));
-            //assertNotEquals(ft, FileTime.from(ins3));
-            assertFalse(ft.equals(FileTime.from(ins3)));
+        Instant ins3 = ins.plusMillis(1);
+        //assertNotEquals(ins, ins3);
+        assertFalse(ins.equals(ins3));
+        //assertNotEquals(ft, FileTime.from(ins3));
+        assertFalse(ft.equals(FileTime.from(ins3)));
 
-            assertEquals(ft.toMillis(), ins.toEpochMilli());
-        }catch(IOException e){
-            System.err.println(e);
-        }
+        assertEquals(ft.toMillis(), ins.toEpochMilli());
     }
 
     @Test
-    public void modifyTest(){
-        try{
-            FileStore store = Files.getFileStore(tempPath);
-            String type = store.type();
-            //System.out.println("FS="+type);
+    public void modifyTest() throws Exception {
+        FileStore store = Files.getFileStore(tempPath);
+        String type = store.type();
+        System.out.println("FS="+type);
 
-            FileTime ft = Files.getLastModifiedTime(tempPath,
-                              LinkOption.NOFOLLOW_LINKS);
-            Instant ins = ft.toInstant();
+        FileTime ft = Files.getLastModifiedTime(tempPath,
+                          LinkOption.NOFOLLOW_LINKS);
+        Instant ins = ft.toInstant();
 
-            Instant insplus = ins.plusNanos(1);
-            Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
-            ft = Files.getLastModifiedTime(tempPath,
-                              LinkOption.NOFOLLOW_LINKS);
-            //assertNotEquals(ft.toString(), insplus.toString()); // No nano second support in file
+        Instant insplus = ins.plusNanos(1);
+        Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
+        ft = Files.getLastModifiedTime(tempPath,
+                          LinkOption.NOFOLLOW_LINKS);
+
+        if (version >= 14_000_000L) {
+            // JDK-8181493 enhanced to support nano seconds.
+            if (type.equals("xfs") ||
+                type.equals("ext4")) {
+                assertEquals(ft.toInstant(), insplus);
+            }
+        } else {
             assertFalse(ft.toString().equals(insplus.toString())); // No nano second support in file
+        }
 
 // Micro seconds interval may not be supported 
 /*
@@ -116,36 +122,35 @@ public class FileTest{
             }
 */
 
-            insplus = ins.plusMillis(1);
-            Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
-            ft = Files.getLastModifiedTime(tempPath,
-                              LinkOption.NOFOLLOW_LINKS);
-            if (type.equals("NTFS") ||
-                // NTFS supports 100-nanosecond intervals
-                type.equals("ext4") ||
-                type.equals("btrfs") ||
-                type.equals("xfs")
-               ) {
-                isEqualTimeString(ft.toString(), insplus.toString());
-            }else{
-                // Unix filesystems support 1-second intervals (implementaion of java side)
-                assertEquals(ft.toInstant(), insplus);
-            }
+        insplus = ins.plusMillis(1);
+        Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
+        ft = Files.getLastModifiedTime(tempPath,
+                          LinkOption.NOFOLLOW_LINKS);
+        if (type.equals("NTFS") ||
+            // NTFS supports 100-nanosecond intervals
+            type.equals("ext4") ||
+            type.equals("btrfs") ||
+            type.equals("xfs")
+           ) {
+            isEqualTimeString(ft.toString(), insplus.toString());
+        } else if (type.equals("hfs")) {
+            // HFS supports 1 second interval.
+            // Skip the test
+        }else{
+            assertEquals(ft.toInstant(), insplus);
+        }
 
-            insplus = ins.plusSeconds(1);
-            Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
-            ft = Files.getLastModifiedTime(tempPath,
-                              LinkOption.NOFOLLOW_LINKS);
-            if (type.indexOf("FAT") != -1){
-                // FAT16/FAT32 supports 1-day intervals
-                // exFAT supports 2-second intervals
-                //assertNotEquals(ft.toString(), insplus.toString());
-                assertFalse(ft.toString().equals(insplus.toString()));
-            }else{
-                isEqualTimeString(ft.toString(), insplus.toString());
-            }
-        }catch(IOException e){
-            System.err.println(e);
+        insplus = ins.plusSeconds(1);
+        Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
+        ft = Files.getLastModifiedTime(tempPath,
+                          LinkOption.NOFOLLOW_LINKS);
+        if (type.indexOf("FAT") != -1){
+            // FAT16/FAT32 supports 1-day intervals
+            // exFAT supports 2-second intervals
+            //assertNotEquals(ft.toString(), insplus.toString());
+            assertFalse(ft.toString().equals(insplus.toString()));
+        }else{
+            isEqualTimeString(ft.toString(), insplus.toString());
         }
     }
 

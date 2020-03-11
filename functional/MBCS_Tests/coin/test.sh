@@ -22,7 +22,8 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 . ${BASE}/check_env_unix.sh
 CP="-cp ${BASE}/coin.jar"
 
-rm -f *.code *.log
+mkdir tmp
+cd tmp
 
 ${JAVA_BIN}/java ${CP} SwitchTest > SwitchTest.code
 ${JAVA_BIN}/java SwitchTestCode > SwitchTest.log 2>&1

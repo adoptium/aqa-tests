@@ -1,0 +1,72 @@
+------------ Pattern matching test ------------
+5: –l–»ê£àuàtàxà{àvàzàyà~à|àw
+9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
+20: æAèÎèÏêr–ÊèÐèÑèÒBreakerèÔàtàxà{
+--- Confirm that the line(s) includes àtàxà{. 
+--- Did you get the line(s) ?
+9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
+12: å÷åøåöåôà»åïåõåùèµà¼åüåû
+--- Confirm that the line(s) includes the pattern à»*à¼. 
+--- Did you get the line(s) ?
+14: æAæ@æCæBæDæværæwætæuæq
+15: æA¢Ï¢Ð¢Ñ¢°¢·¢¸¢±¢°³ü®Ã¨h¶L³ü¤@¤B¤C
+18: æAèZèTèSè^è_è]è\è[èdèb
+20: æAèÎèÏêr–ÊèÐèÑèÒBreakerèÔàtàxà{
+--- Confirm that the line(s) starts with æA.
+--- Did you get the line(s) ?
+4: åh–lãìèÕ–`–Ã•P
+21:  #java SimpleGrep èÕ zh-tw.txt
+22: èÕ
+25: êxêzêyê{ê|èÕê}ê~
+--- Confirm that the line(s) includes èÕ. 
+--- Did you get the line(s) ?
+6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?þÙ¬¡¯¢I
+11:   #java SimpleGrep å÷åøåöåôåïåõ zh-tw.txt
+12: å÷åøåöåôà»åïåõåùèµà¼åüåû
+16: çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åøåöåô
+--- Confirm that the line(s) includes åö. 
+--- Did you get the line(s) ?
+6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?þÙ¬¡¯¢I
+17:  ªíä÷¤Q°\
+19:  #java SimpleGrep ªíä÷¤Q°\ zh-tw.txt
+--- Confirm that the line(s) includes ªíä÷¤Q°\. 
+--- Did you get the line 33 ?
+------------ Pattern replacement test ------------
+5: –l–»ê£àuàtàxà{àvàzàyà~à|àw
+==> –l–»ê£àuaiueoàvàzàyà~à|àw
+9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
+==> à¹à»à½à¼à¾à¿aiueoàÁàÂàÀ
+20: æAèÎèÏêr–ÊèÐèÑèÒBreakerèÔàtàxà{
+==> æAèÎèÏêr–ÊèÐèÑèÒBreakerèÔaiueo
+--- Confirm that àtàxà{ was replaced by aiueo. 
+--- OK ?
+4: åh–lãìèÕ–`–Ã•P
+==> åh–lãì¶Îþ¶ÎÈ–`–Ã•P
+21:  #java SimpleGrep èÕ zh-tw.txt
+==>  #java SimpleGrep ¶Îþ¶ÎÈ zh-tw.txt
+22: èÕ
+==> ¶Îþ¶ÎÈ
+25: êxêzêyê{ê|èÕê}ê~
+==> êxêzêyê{ê|¶Îþ¶ÎÈê}ê~
+--- Confirm that èÕ was replaced by ¶Îþ¶ÎÈ. 
+--- OK ?
+6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?þÙ¬¡¯¢I
+==> ªíä÷¤Q°\å÷\åô¦Ë¼Å?þÙ¬¡¯¢I
+11:   #java SimpleGrep å÷åøåöåôåïåõ zh-tw.txt
+==>   #java SimpleGrep å÷åø\åôåïåõ zh-tw.txt
+12: å÷åøåöåôà»åïåõåùèµà¼åüåû
+==> å÷åø\åôà»åïåõåùèµà¼åüåû
+16: çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åøåöåô
+==> çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åø\åô
+--- Confirm that åö was replaced by \. 
+--- OK ?
+--- Confirm that ÊéþU was replaced by ÝìéD. 
+--- OK ?
+29: Éi
+==> °O
+30: ¡¸
+==> °O
+31: Çú
+==> °O
+--- Confirm that any of Éi¡¸Çú were replaced by °O. 
+--- OK ?

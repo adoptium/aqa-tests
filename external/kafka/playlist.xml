@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>kafka_test</testCaseName>
-	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-kafka-test:latest ; \
-		docker rmi -f adoptopenjdk-kafka-test; \
-		$(TEST_STATUS)</command>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir kafka --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir kafka
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

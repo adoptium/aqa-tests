@@ -13,9 +13,13 @@
 # limitations under the License.
 ################################################################################
 
+OS=`uname`
+LOC=`locale charmap`
+FULLLANG=${OS}_${LANG%.*}.${LOC}
+
 BASE=`dirname $0`
 export BASE
-. ${BASE}/check_env_unix.sh
+. ${BASE}/set_variable.sh
 CP="-cp ${BASE}/codepoint.jar"
 
 ${JAVA_BIN}/java ${CP} UnicodeDataTest 2> err.txt

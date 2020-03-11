@@ -60,7 +60,9 @@ public class TimeZoneTestA {
         return i2.compareTo(i1);
       }
     });
+    Set<String> ignoreEntries = CheckZHTW.getDataInstance();
     for(String id : TimeZone.getAvailableIDs()) {
+      if (ignoreEntries.contains(id)) continue;
       TimeZone tz = TimeZone.getTimeZone(id);
       ArrayList<TimeZone> list = null;
       Integer offset = Integer.valueOf(tz.getRawOffset());

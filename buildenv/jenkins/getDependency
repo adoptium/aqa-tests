@@ -32,10 +32,10 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/log4j-2.3/log4j-api-2.3.jar'
 				archiveArtifacts '**/systemtest_prereqs/log4j-2.3/log4j-core-2.3.jar'
 				archiveArtifacts '**/systemtest_prereqs/apache-ant-1.10.2/lib/ant-launcher.jar'
-				archiveArtifacts '**/systemtest_prereqs/asm-7.1/asm-7.1.jar'
+				archiveArtifacts '**/systemtest_prereqs/asm-7.3.1/asm-7.3.1.jar'
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
-				sh 'wget https://raw.githubusercontent.com/eclipse/openj9/master/test/TestConfig/scripts/getDependencies.pl'
+				sh 'wget https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
 				sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
 				archiveArtifacts '*.jar, *.zip, *.txt'
 			}

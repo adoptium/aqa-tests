@@ -29,28 +29,38 @@ if ($i == -1) {
 }
 $lang = substr($lang, 0, $i);
 $FULLLANG = $OS."_".$lang.".".$SYSENC;
+undef %LOC;
+foreach $l (
+    "aix_Ja_JP.IBM-943","aix_ja_JP.IBM-eucJP","aix_JA_JP.UTF-8",
+    "aix_ko_KR.IBM-eucKR","aix_KO_KR.UTF-8",
+    "aix_zh_CN.IBM-eucCN","aix_Zh_CN.GB18030","aix_ZH_CN.UTF-8",
+    "aix_zh_TW.IBM-eucTW","aix_Zh_TW.big5","aix_ZH_TW.UTF-8",
+    "linux_ja_JP.UTF-8","linux_ko_KR.UTF-8","linux_zh_CN.UTF-8","linux_zh_TW.UTF-8")
+{
+    $LOC{$l} = "";
+}
+foreach $l (
+    "aix_ja_JP.UTF-8","aix_ko_KR.UTF-8", "aix_zh_Hans_CN.UTF-8", "aix_zh_Hant_TW.UTF-8")
+{
+    $LOC{$l} = ".s";
+}
 
-if ($FULLLANG eq "aix_Ja_JP.IBM-943" ||
-    $FULLLANG eq "aix_ja_JP.IBM-eucJP" ||
-    $FULLLANG eq "aix_JA_JP.UTF-8" ||
-    $FULLLANG eq "aix_ko_KR.IBM-eucKR" ||
-    $FULLLANG eq "aix_KO_KR.UTF-8" ||
-    $FULLLANG eq "linux_ja_JP.UTF-8" ||
-    $FULLLANG eq "linux_ko_KR.UTF-8"){}
-elsif ($FULLLANG eq "aix_ja_JP.UTF-8" ||
-       $FULLLANG eq "aix_ko_KR.UTF-8"){ $FULLLANG=$FULLLANG.".s" }
-else {
-    ok(true,"skip");
-    ok(true,"skip");
-    ok(true,"skip");
-    print "SKIPPED! ${FULLLANG} is not supported. ";
+if (defined($LOC{$FULLLANG})) {
+    $FULLLANG .= $LOC{$FULLLANG};
+} else {
+    for($i = 0; $i < 3; $i+=1) {
+        ok(1 == 1,"skip");
+    }
+    print "SKIPPED! $FULLLANG is not supported.\n";
     exit(0);
 }
 
-if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
-   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
-}else{
-   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+unless (defined($ENV{'JAVA_BIN'})) {
+    if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
+        $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
+    }else{
+        $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+    }
 }
 
 #print $lang."\n";
@@ -81,12 +91,12 @@ ok( compare("result/BreakIteratorTest.out",
     "BreakIteratorTest test");
 
 open(DATA, "< result/DateFormatTest.out");
-$flag = false;
+$flag = 0;
 while (my $line = <DATA>) {
     chomp($line);
     if ($line eq "OK") {
-        $flag=true;
+        $flag=1;
     }
 }
 close(DATA);
-ok( $flag eq true, "DateFormatTest");
+ok( $flag == 1, "DateFormatTest");

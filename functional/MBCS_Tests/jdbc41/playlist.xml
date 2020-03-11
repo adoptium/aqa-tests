@@ -15,7 +15,7 @@ limitations under the License.
 
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ja_JP_linux</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_ja_JP_linux</testCaseName>
 		<command>LANG=ja_JP.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
@@ -26,13 +26,11 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ko_KR_linux</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_ko_KR_linux</testCaseName>
 		<command>LANG=ko_KR.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
@@ -43,13 +41,41 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ja_JP_aix</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 bash $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_ja_JP_aix</testCaseName>
 		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -60,14 +86,11 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
-		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_Ja_JP_aix</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_Ja_JP_aix</testCaseName>
 		<command>LANG=Ja_JP ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -78,14 +101,11 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 120 and later by 8211295 -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
-		<disabled>bugs.openjdk.java.net/browse/JDK-8211295</disabled>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_JA_JP_aix</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_JA_JP_aix</testCaseName>
 		<command>LANG=JA_JP ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -96,13 +116,11 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ko_KR_aix</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_ko_KR_aix</testCaseName>
 		<command>LANG=ko_KR ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -113,13 +131,11 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_KO_KR_aix</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_KO_KR_aix</testCaseName>
 		<command>LANG=KO_KR ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -130,13 +146,101 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_windows</testCaseName>
+		<testCaseName>MBCS_Tests_jdbc41_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
@@ -147,171 +251,12 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ja_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932 TEST_STRINGS; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.win</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41RS_ko_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRINGS; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.win</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>8</subset>
-<!-- This testcase works 80, 120, and later due to a regression -->
-<!-- bugs.openjdk.java.net/browse/JDK-8211295 -->
-		</subsets>
-	</test>
-
-<!-- for 9, 10 and 11 -->
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_ja_JP_linux</testCaseName>
-		<command>LANG=ja_JP.UTF-8 bash $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.linux</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_ko_KR_linux</testCaseName>
-		<command>LANG=ko_KR.UTF-8 bash $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.linux</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_ja_JP_aix</testCaseName>
-		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-	<platformRequirements>os.aix</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>11+</subset>
-		</subsets>
-		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_Ja_JP_aix</testCaseName>
-		<command>LANG=Ja_JP ksh $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-	<platformRequirements>os.aix</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>11+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_JA_JP_aix</testCaseName>
-		<command>LANG=JA_JP ksh $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-	<platformRequirements>os.aix</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_ko_KR_aix</testCaseName>
-		<command>LANG=ko_KR ksh $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-	<platformRequirements>os.aix</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>11+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_KO_KR_aix</testCaseName>
-		<command>LANG=KO_KR ksh $(TEST_RESROOT)$(D)test11.sh; \
-	$(TEST_STATUS)</command>
-	<platformRequirements>os.aix</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
-	</test>
-	<test>
-		<testCaseName>MBCS_Tests_jdbc41_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test11.bat; \
-	$(TEST_STATUS)</command>
-		<platformRequirements>os.win</platformRequirements>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>functional</group>
-		</groups>
-		<subsets>
-			<subset>9+</subset>
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_jdbc41_ja_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test11_2.bat Windows ja JP MS932 TEST_STRINGS; \
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ja jp MS932 TEST_STRINGS; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>
@@ -321,12 +266,12 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>8+</subset>
 		</subsets>
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_jdbc41_ko_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test11_2.bat Windows ko KR MS949 TEST_STRINGS; \
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ko kr MS949 TEST_STRINGS; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>
@@ -336,7 +281,37 @@ limitations under the License.
 			<group>functional</group>
 		</groups>
 		<subsets>
-			<subset>11+</subset>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_cn_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh cn MS936 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_jdbc41_tw_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh tw MS950 TEST_STRINGS; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>8+</subset>
 		</subsets>
 	</test>
 </playlist>

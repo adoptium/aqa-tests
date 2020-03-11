@@ -33,7 +33,12 @@ public class UnihanCodePoint
         String BASE = System.getenv("BASE");
         long version = JavaVersion.getVersion();
         if (null == BASE) BASE = ".";
-        if (version >= 12000000L)
+        if (version >= 13000000L)
+          {
+            vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-12.1.0.txt",
+                                 BASE+FS+"data"+FS+"Unihan_IRGSources-12.1.0.txt" };
+          }
+        else if (version >= 12000000L)
           {
             vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-11.0.0.txt",
                                  BASE+FS+"data"+FS+"Unihan_IRGSources-11.0.0.txt" };

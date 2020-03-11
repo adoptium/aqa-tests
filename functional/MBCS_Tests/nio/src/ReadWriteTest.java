@@ -19,6 +19,7 @@ import java.nio.charset.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 
 public class ReadWriteTest {
     protected Charset charset;
@@ -95,7 +96,7 @@ public static void main(String[] args) {
         System.err.println("Usage: java ReadWriteTest infile inenc outfile outenc");
         return;
     }
-    if(args.length > 4 && args[4].toLowerCase().equals("-w") ){
+    if(args.length > 4 && args[4].toLowerCase(Locale.ENGLISH).equals("-w") ){
        winmode = true;
     }
     ReadWriteTest rwt = new ReadWriteTest(winmode);
