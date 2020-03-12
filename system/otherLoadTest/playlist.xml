@@ -300,4 +300,20 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
+	
+	<test>
+		<testCaseName>MixedLoadTest</testCaseName>
+		<variations>
+			<variation>NoOptions</variation> 
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	
 </playlist>
