@@ -136,7 +136,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
+		<!-- concurrentScavenge is unsupported on aarch64; github.com/eclipse/openj9/issues/8762 -->
+		<platformRequirements>bits.64,^arch.arm,^arch.aarch64,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
 	</test>
 	
 	<test>
