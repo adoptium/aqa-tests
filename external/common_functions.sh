@@ -31,7 +31,7 @@ supported_builds="slim full"
 
 # Supported tests
 # Test Not Included: elasticsearch
-supported_tests="camel derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
+supported_tests="camel derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
     version=$1
@@ -307,7 +307,7 @@ function set_test_info() {
         github_url="https://github.com/quarkusio/quarkus.git"
         script="quarkus-test.sh"
         test_results="testResults"
-        tag_version="1.2.0.Final"
+        tag_version="1.3.0.CR2"
         cmd="\$MODE"
         environment_variable="MODE=\"java\""
         debian_packages="git wget"
@@ -317,6 +317,22 @@ function set_test_info() {
         centos_packages="git wget"
         clefos_packages="${centos_packages}"
         ubi_packages="git wget"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
+    quarkus_quickstarts)
+        github_url="https://github.com/quarkusio/quarkus-quickstarts.git"
+        script="test.sh"
+        test_results="testResults"
+        tag_version="1.2.1.Final"
+        cmd="\$MODE"
+        environment_variable="MODE=\"java\""
+        debian_packages="git wget maven"
+        debian_slim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git wget maven"
+        centos_packages="git wget maven"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git wget maven"
         ubi_minimal_packages="${ubi_packages}"
         ;;
     scala)
