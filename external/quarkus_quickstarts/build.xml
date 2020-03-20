@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<project name="functional-test" default="build" basedir=".">
+<project name="Quarkus-Quickstarts-Test" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-		Build functional-test Docker image
+		Build quarkus quickstarts test Docker image
 	</description>
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="TEST" value="functional-test" />
+	<property name="TEST" value="quarkus_quickstarts" />
 	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Set up Java to be used by the the quarkus-test
+# Set up Java to be used by the the quarkus quickstarts test
 
 if [ -d /java/jre/bin ];then
 	echo "Using mounted Java8"
@@ -36,16 +36,16 @@ fi
 
 java -version
 
-# See https://github.com/quarkusio/quarkus/blob/master/CONTRIBUTING.md#frequently-asked-questions
-# for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
 export MAVEN_OPTS="-Xmx1g"
 
-cd /quarkus
+cd /quarkus-quickstarts
 pwd
-echo "Compile and run quarkus tests"
-
-./mvnw -pl '!:quarkus-documentation' clean install
+echo "Compile and run quarkus_quickstarts tests"
+mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart clean install 
 test_exit_code=$?
+echo "Build quarkus_quickstarts completed"
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+echo "Test results copied"
+
 exit $test_exit_code
