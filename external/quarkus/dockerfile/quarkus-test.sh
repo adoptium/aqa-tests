@@ -44,7 +44,7 @@ cd /quarkus
 pwd
 echo "Compile and run quarkus tests"
 
-./mvnw -DargLine="-Djava.util.logging.manager=org.jboss.logmanager.LogManager" -pl '!:quarkus-documentation' clean install
+./mvnw -pl '!:quarkus-documentation' clean install
 test_exit_code=$?
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

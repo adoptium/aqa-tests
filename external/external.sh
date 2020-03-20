@@ -24,6 +24,7 @@ command_type=build
 version=8
 impl=hotspot
 test=derby
+testtarget=""
 reportdst="false"
 reportsrc="false"
 docker_args=""
@@ -63,6 +64,9 @@ parseCommandLineArgs()
 
 			"--reportdst" )
 				reportdst="$1"; shift;;
+
+			"--testtarget" )
+				testtarget="$1"; shift;;
 
 			"--build" | "-b" )
 				command_type=build;; 
@@ -121,13 +125,16 @@ function parse_tag () {
 
 parseCommandLineArgs "$@"
 
+# set DOCKER_HOST env variables 
+#$(boot2docker shellinit)
+
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
 fi
 
 if [ $command_type == "run" ]; then
 	if [ $reportsrc != "false" ]; then
-		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
+		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
 		else
 		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
