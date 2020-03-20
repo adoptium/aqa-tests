@@ -30,11 +30,10 @@ reportsrc="false"
 docker_args=""
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--reportsrc appReportDir] [--reportdst REPORTDIR] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
 }
 
-parseCommandLineArgs()
-{
+parseCommandLineArgs() {
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
 		shift; 
@@ -87,7 +86,7 @@ parseCommandLineArgs()
 
 # Parse environment variable DOCKERIMAGE_TAG
 # to set docker_os, build_type, package
-function parse_tag () { 
+function parse_tag() { 
 
 	# set PACKAGE
 	case $tag in
@@ -123,10 +122,14 @@ function parse_tag () {
 	esac     
 }
 
+function docker-ip() {
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$@"
+}
+
 parseCommandLineArgs "$@"
 
 # set DOCKER_HOST env variables 
-#$(boot2docker shellinit)
+# DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
@@ -134,10 +137,10 @@ fi
 
 if [ $command_type == "run" ]; then
 	if [ $reportsrc != "false" ]; then
-		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
+		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget; 
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
 		else
-		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
+		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 	fi
 fi
 
