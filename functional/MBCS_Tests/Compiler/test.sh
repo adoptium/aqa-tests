@@ -25,7 +25,6 @@ CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=$PWD/output.txt
 
-rm -rf tmp
 mkdir tmp
 cd tmp
 . ${BASE}/check_env_unix.sh

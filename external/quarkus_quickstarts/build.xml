@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="Quarkus-Quickstarts-Test" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build quarkus quickstarts test Docker image
+	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
+
+	<!-- set properties for this build -->
+	<property name="TEST" value="quarkus_quickstarts" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="src" location="." />
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>

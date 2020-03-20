@@ -482,6 +482,7 @@ generate_dockerfile() {
     os=$5
     package=$6
     build=$7
+    testtarget=$8
 
     set_test_info ${test}
     packages=$(echo ${os}_packages | sed 's/-/_/')
@@ -546,8 +547,8 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_entrypoint ${file} ${script} ${os};
 
-    if [[ ! -z ${cmd} ]]; then
-        print_cmd ${file} ${cmd};
+    if [[ ! -z ${testtarget} ]]; then
+        print_cmd ${file} ${testtarget};
     fi
 
     remove_trailing_spaces ${file};

@@ -96,15 +96,6 @@ java/lang/invoke/SpreadCollectTest.java	https://github.com/AdoptOpenJDK/openjdk-
 java/lang/invoke/TryFinallyTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/invoke/VarHandle/AccessMode/OptimalMapSize.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/invoke/VarHandles/VarHandleTestAccessModeMethodNames.java	https://github.com/eclipse/openj9/issues/3181	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessBoolean.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessByte.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessChar.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessDouble.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessFloat.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessInt.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessLong.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://github.com/eclipse/openj9/issues/8661	generic-all
-java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/eclipse/openj9/issues/8661	generic-all
 java/lang/invoke/VarHandles/accessibility/TestFieldLookupAccessibility.java	https://github.com/eclipse/openj9/issues/3175	generic-all
 java/lang/invoke/VarargsArrayTest.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/lang/invoke/condy/CondyNestedTest.java https://github.com/eclipse/openj9/issues/4127 linux-ppc64le
@@ -149,8 +140,9 @@ sun/management/HotspotThreadMBean/GetInternalThreads.java	https://github.com/Ado
 
 # jdk_math
 
-java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/eclipse/openj9/issues/8728 generic-all
+java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://bugs.openjdk.java.net/browse/JDK-8241097 generic-all
 java/math/BigInteger/PrimeTest.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/440 linux_arm
+java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/eclipse/openj9/issues/8728 generic-all
 
 ############################################################################
 
@@ -182,7 +174,6 @@ com/sun/net/httpserver/bugs/B6361557.java	https://github.com/AdoptOpenJDK/openjd
 
 # jdk_io
 
-java/io/CharArrayReader/OverflowInRead.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1500	generic-all
 java/io/FileInputStream/UnreferencedFISClosesFd.java  https://github.com/eclipse/openj9/issues/3543 generic-all
 java/io/FileOutputStream/UnreferencedFOSClosesFd.java https://github.com/eclipse/openj9/issues/3543 generic-all
 
@@ -260,7 +251,6 @@ java/util/Spliterator/SpliteratorCollisions.java	https://github.com/eclipse/open
 java/util/concurrent/atomic/VMSupportsCS8.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/1297	generic-all
 java/util/concurrent/forkjoin/FJExceptionTableLeak.java	https://github.com/eclipse/openj9/issues/3209	generic-all
 java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse/openj9/issues/7125	macosx-all,linux-all,aix-all
-java/util/concurrent/ArrayBlockingQueue/WhiteBox.java      https://github.com/eclipse/openj9/issues/5988    macosx-all
 java/util/concurrent/TimeUnit/Basic.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1665 windows-all
 java/util/logging/CheckZombieLockTest.java	https://bugs.openjdk.java.net/browse/JDK-8148972	macosx-all,linux-all
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse/openj9/issues/4561 generic-all

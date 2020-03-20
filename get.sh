@@ -217,6 +217,13 @@ getBinaryOpenjdk()
 					sleep_time=300
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
+
+					download_filename=${file##*/}
+					echo "check for $download_filename..."
+					if [ -f "$download_filename" ]; then
+						echo "remove $download_filename before retry..."
+						rm $download_filename
+					fi
 				fi
 
 				case "$VERBOSE_CURL" in

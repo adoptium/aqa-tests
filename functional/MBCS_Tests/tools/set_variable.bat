@@ -11,8 +11,10 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-if exist %TEST_JDK_HOME%/jre/bin/java.exe (
-   SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
-) else (
-   SET JAVA_BIN=%TEST_JDK_HOME%/bin
+if x%JAVA_BIN% == x (
+   if exist %TEST_JDK_HOME%/jre/bin/java.exe (
+      SET JAVA_BIN=%TEST_JDK_HOME%/jre/bin
+   ) else (
+      SET JAVA_BIN=%TEST_JDK_HOME%/bin
+   )
 )

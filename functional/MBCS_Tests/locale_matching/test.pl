@@ -32,39 +32,35 @@ if ($i == -1) {
 $lang = substr($lang, 0, $i);
 $FULLLANG = $OS."_".$lang.".".$SYSENC;
 
-if ($FULLLANG eq "aix_Ja_JP.IBM-943" ||
-    $FULLLANG eq "aix_ja_JP.IBM-eucJP" ||
-    $FULLLANG eq "aix_JA_JP.UTF-8" ||
-    $FULLLANG eq "aix_ko_KR.IBM-eucKR" ||
-    $FULLLANG eq "aix_KO_KR.UTF-8" ||
-    $FULLLANG eq "aix_zh_CN.IBM-eucCN" ||
-    $FULLLANG eq "aix_Zh_CN.GB18030" ||
-    $FULLLANG eq "aix_ZH_CN.UTF-8" ||
-    $FULLLANG eq "aix_zh_TW.IBM-eucTW" ||
-    $FULLLANG eq "aix_Zh_TW.big5" ||
-    $FULLLANG eq "aix_ZH_TW.UTF-8" ||
-    $FULLLANG eq "aix_ja_JP.UTF-8" ||
-    $FULLLANG eq "aix_ko_KR.UTF-8" ||
-    $FULLLANG eq "aix_zh_Hans_CN.UTF-8" ||
-    $FULLLANG eq "aix_zh_Hant_TW.UTF-8" ||
-    $FULLLANG eq "linux_ja_JP.UTF-8" ||
-    $FULLLANG eq "linux_ko_KR.UTF-8" ||
-    $FULLLANG eq "linux_zh_CN.UTF-8" ||
-    $FULLLANG eq "linux_zh_TW.UTF-8"){}
-else {
-    ok(true,"skip");
-    ok(true,"skip");
-    ok(true,"skip");
-    ok(true,"skip");
-    ok(true,"skip");
-    print "SKIPPED! ${FULLLANG} is not supported. ";
+undef %LOC;
+foreach $l (
+    "aix_Ja_JP.IBM-943","aix_ja_JP.IBM-eucJP","aix_JA_JP.UTF-8",
+    "aix_ko_KR.IBM-eucKR","aix_KO_KR.UTF-8",
+    "aix_zh_CN.IBM-eucCN","aix_Zh_CN.GB18030","aix_ZH_CN.UTF-8",
+    "aix_zh_TW.IBM-eucTW","aix_Zh_TW.big5","aix_ZH_TW.UTF-8",
+    "aix_ja_JP.UTF-8", "aix_ko_KR.UTF-8",
+    "aix_zh_Hans_CN.UTF-8", "aix_zh_Hant_TW.UTF-8",
+    "linux_ja_JP.UTF-8","linux_ko_KR.UTF-8","linux_zh_CN.UTF-8","linux_zh_TW.UTF-8")
+{
+    $LOC{$l} = "";
+}
+
+if (defined($LOC{$FULLLANG})) {
+    $FULLLANG .= $LOC{$FULLLANG};
+} else {
+    for($i = 0; $i < 5; $i+=1) {
+        ok(1 == 1,"skip");
+    }
+    print "SKIPPED! $FULLLANG is not supported.\n";
     exit(0);
 }
 
-if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
-   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
-}else{
-   $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+unless (defined($ENV{'JAVA_BIN'})) {
+    if (-f $ENV{'TEST_JDK_HOME'}."/jre/bin/java"){
+        $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/jre/bin"
+    }else{
+        $ENV{'JAVA_BIN'} = $ENV{'TEST_JDK_HOME'}."/bin"
+    }
 }
 
 my @list=(
@@ -76,16 +72,16 @@ my @list=(
 );
 
 foreach my $target(@list){
-    my $flag = false;
+    my $flag = 0;
     system($ENV{'JAVA_BIN'}."/java ".$jar." ".$target." > ".$target.".log 2>&1");
     open(DATA, "< ".$target.".log");
     while (my $line = <DATA>) {
         chomp($line);
         if ($line =~ /Passed/) {
-            $flag=true;
+            $flag=1;
         }
     }
     close(DATA);
-    ok( $flag eq true, $target);
+    ok( $flag == 1, $target);
 }
 

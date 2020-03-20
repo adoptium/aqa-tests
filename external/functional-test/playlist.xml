@@ -15,11 +15,10 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>sanity_functional</testCaseName>
-		<command>docker run --name functional-test adoptopenjdk-functional-test:latest ; \
-		 $(TEST_STATUS); \
-		 docker rm -f sanity_functional; \
-		 docker rmi adoptopenjdk-functional-test
-		 </command>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _sanity.functional.regular --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -29,11 +28,10 @@
 	</test>
 		<test>
 		<testCaseName>extended_functional</testCaseName>
-		<command>docker run --name functional-test adoptopenjdk-functional-test:latest _extended.functional.regular; \
-		 $(TEST_STATUS); \
-		 docker rm -f extended_functional; \
-		 docker rmi adoptopenjdk-functional-test
-		 </command>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _extended.functional.regular --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -43,10 +41,9 @@
 	</test>
 	<test>
 		<testCaseName>example_functional</testCaseName>
-		<command>docker run --name example_functional adoptopenjdk-functional-test:latest _testExample; \
-		 $(TEST_STATUS); \
-		 docker rm -f example_functional; \
-		 docker rmi adoptopenjdk-functional-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _testExample --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
 		</command>
 		<levels>
 			<level>special</level>

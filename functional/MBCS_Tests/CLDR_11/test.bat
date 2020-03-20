@@ -18,11 +18,21 @@ call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar PrintLanguageTag`) DO SET LANGTAG=%%i
 
+SET USE_ZHTW_WORKAROUND=false
+%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar CheckZHTW
+if ErrorLevel 1 (SET USE_ZHTW_WORKAROUND=true)
+
 echo "Running ..."
 %JAVA_BIN%\java -cp %PWD%\CLDR_11.jar MainStarter
 
 %JAVA_BIN%\java -cp %PWD%\CLDR_11.jar CLDR11
 
+if %USE_ZHTW_WORKAROUND%==true (
+    for /D %%i in ( expected_TimeZoneTestA-zh-TW-CLDR.log TimeZoneTestA-zh-TW-JRE.log ) DO (
+        copy /Y %%i %%i.orig > NUL 2>&1
+        %JAVA_BIN%\java -cp %PWD%\CLDR_11.jar ModifyZHTW %%i
+    )
+)
 
 SET FLAG=0
 

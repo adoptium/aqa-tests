@@ -298,6 +298,26 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm</platformRequirements>
+		<!-- concurrentScavenge is unsupported on aarch64; github.com/eclipse/openj9/issues/8762 -->
+		<platformRequirements>bits.64,^arch.arm,^arch.aarch64</platformRequirements>
 	</test>
+	
+	<test>
+		<testCaseName>MixedLoadTest</testCaseName>
+		<variations>
+			<variation>NoOptions</variation> 
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	
 </playlist>
