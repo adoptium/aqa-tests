@@ -15,11 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>tomee_test</testCaseName>
-		<command>docker run --name tomee-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-tomee-test:latest; \
-			 $(TEST_STATUS); \
-			 docker cp tomee-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
-			 docker rm -f tomee-test; \
-			 docker rmi -f adoptopenjdk-tomee-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee
 		</command>
 		<subsets>
 			<subset>8</subset>
