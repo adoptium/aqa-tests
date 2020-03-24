@@ -17,7 +17,7 @@
 		<testCaseName>lucene_solr_nightly_smoketest</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr
 		</command>
 		<levels>
 			<level>extended</level>
@@ -33,7 +33,7 @@
 		<testCaseName>lucene_solr_nightly_smoketest_OpenJ9</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr
 		</command>
 		<levels>
 			<level>extended</level>
