@@ -336,7 +336,7 @@ function set_test_info() {
         script="scala-test.sh"
         home_path=""
         tag_version="v2.13.1"
-        sbt_version="1.3.4"
+        sbt_version="1.2.8"
         debian_packages="git wget tar curl gpg gpg-agent"
         debian_slim_packages="${debian_packages}"
         ubuntu_packages="${debian_packages}"
