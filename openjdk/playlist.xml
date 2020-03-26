@@ -187,7 +187,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_io$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -337,7 +337,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_net$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -355,7 +355,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_nio$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -373,7 +373,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security1$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -601,7 +601,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_rmi$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -638,8 +638,11 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jdi$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -669,6 +672,27 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_foreign</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m --add-modules jdk.incubator.foreign $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_foreign$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>14+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jdk_instrument</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -690,6 +714,8 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<!-- exclude jdk_jdi on openj9: https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071 -->
+	<!-- From jdk11 jdk_jdi is part of jdk_svc_sanity -->
 	<test>
 		<testCaseName>jdk_svc_sanity</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
@@ -705,11 +731,39 @@
 			<subset>11+</subset>
 		</subsets>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
+	</test>
+	<!-- exclude jdk_jdi on openj9: https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071 -->
+	<test>
+		<testCaseName>jdk_jdi</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jdi$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>build</testCaseName>
@@ -811,7 +865,7 @@
 			<subset>11+</subset>
 		</subsets>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -855,6 +909,90 @@
 		</subsets>
 		<levels>
 			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jdk11_tier1_cipher</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)/com/sun/crypto/provider/Cipher$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jdk11_tier1_buffer</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)/java/nio/Buffer$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jdk11_tier1_iso8859</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)/sun/nio/cs/ISO8859x.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jdk11_tier1_pack200</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)/tools/pack200$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
