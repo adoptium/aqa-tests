@@ -305,7 +305,7 @@ function set_test_info() {
         github_url="https://github.com/quarkusio/quarkus.git"
         script="quarkus-test.sh"
         test_results="testResults"
-        tag_version="1.3.0.CR2"
+        tag_version="1.3.0.Final"
         environment_variable="MODE=\"java\""
         debian_packages="git wget"
         debianslim_packages="${debian_packages}"
