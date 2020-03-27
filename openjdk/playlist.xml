@@ -210,6 +210,33 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_lang_j9</testCaseName>
+		<variations>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_lang$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_math</testCaseName>
@@ -228,8 +255,35 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
-		<test>
+	<test>
+		<testCaseName>jdk_math_j9</testCaseName>
+		<variations>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_math$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_math_jre</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -453,6 +507,33 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_util_j9</testCaseName>
+		<variations>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)ProblemList_$(JVM_VERSION).txt$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_util$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_time</testCaseName>
