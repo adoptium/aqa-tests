@@ -179,7 +179,7 @@ print_centos_pkg() {
     local packages=$2
 
     echo -e "RUN yum install -y ${packages} \\" \
-            "\nt&& yum update; yum clean all" \
+            "\n\t&& yum update; yum clean all" \
             "\n" >> ${file}
 }
 

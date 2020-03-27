@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="system-test" default="build" basedir=".">
+<project name="System-Test" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Build system-test Docker image
@@ -7,26 +7,15 @@
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external/system-test" />
+	<property name="TEST" value="system-test" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="clean_image" depends="init" description="clean system test docker image if there is one">
-		<exec executable="docker">
-			<arg line="rmi -f adoptopenjdk-system-test" />
-		</exec>
-	</target>
-
-	<target name="build_image" depends="clean_image" description="build system test docker image">
-		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-system-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
-		</exec>
-	</target>
-
-	<target name="dist" depends="build_image" description="generate the distribution">
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
