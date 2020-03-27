@@ -390,7 +390,7 @@ function set_test_info() {
         alpine_packages="git wget tar make gcc libc-dev perl linux-headers"
         centos_packages="git wget tar make gcc glibc-devel perl"
         clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar make gcc glibc-devel perl"
+        ubi_packages="git wget tar make gcc glibc-devel"
         ubi_minimal_packages="${ubi_packages}"
         ;;
     tomee)
