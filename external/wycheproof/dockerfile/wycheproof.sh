@@ -46,6 +46,6 @@ bazel test BouncyCastleTest --genrule_strategy=standalone --spawn_strategy=stand
 BouncyCastle_exit_code=$?
 find /root/.cache -type d -name 'testlogs' -exec cp -r "{}" /testResults \;
 
-if [ "$(( OpenJDKTest_exit_code + BouncyCastle_exit_cod ))" -gt 0 ] {
+if [ "$(( OpenJDKTest_exit_code + BouncyCastle_exit_code ))" -gt 0 ]; then
 	exit 1
-}
+fi

@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#      https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,20 +20,20 @@
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
 		</command>
 		<levels>
-			<level>sanity</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
 		</groups>
 	</test>
-		<test>
+	<test>
 		<testCaseName>extended_functional</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _extended.functional.regular --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
 		</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
