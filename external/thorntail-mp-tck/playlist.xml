@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>thorntail_microprofile_tck</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) \
 		--testtarget "-pl testsuite/microprofile-tcks,testsuite/microprofile-tcks/config,testsuite/microprofile-tcks/fault-tolerance,testsuite/microprofile-tcks/health,testsuite/microprofile-tcks/jwt-auth,testsuite/microprofile-tcks/metrics,testsuite/microprofile-tcks/openapi,testsuite/microprofile-tcks/opentracing,testsuite/microprofile-tcks/restclient" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck

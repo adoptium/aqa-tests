@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>payara_microprofile_tck</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) \
 		--testtarget "-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck
