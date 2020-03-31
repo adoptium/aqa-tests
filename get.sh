@@ -289,7 +289,7 @@ getBinaryOpenjdk()
 	if [[ $DEBUG_IMAGES_REQUIRED = true ]]; then
 		last_index=$(( ${#jar_file_array[@]} -1 ))
 		for i in "${!jar_file_array[@]}"; do
-			if [[ "${jar_file_array[$i]}" =~ "debug-image" ]]; then
+			if [[ "${jar_file_array[$i]}" =~ "debug-image" || "${jar_file_array[$i]}" =~ "debugimage" ]]; then
 				if [[ $i -ne $last_index ]]; then
 					debug_image_jar="${jar_file_array[$i]}"
 
@@ -308,7 +308,7 @@ getBinaryOpenjdk()
 		do
 			# if jar_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
 			# Otherwise, files will be extracted under ./tmp
-			if [[ "$jar_name"  =~ "debug-image" ]]; then
+			if [[ "$jar_name"  =~ "debug-image" || "$jar_name"  =~ "debugimage" ]]; then
 				extract_dir="./j2sdk-image"
 				if [ -d "$SDKDIR/openjdkbinary/j2sdk-image/jre" ]; then
 					extract_dir="./j2sdk-image/jre"
