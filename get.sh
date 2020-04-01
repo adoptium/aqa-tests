@@ -252,9 +252,10 @@ getBinaryOpenjdk()
 				
 				#Starts-Added for checking md5 checksum command on fly
 				if [[ "$OSTYPE" == "darwin"* ]]; then
-				md5 $file
-				else
-				md5sum $file
+				    md5 $file
+				 else
+				    md5sum $file
+				fi
 				#Ends-Added for checking md5 checksum command on fly
 				
 				exit 1
