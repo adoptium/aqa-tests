@@ -420,6 +420,18 @@ getTestKitGen()
 	checkTestRepoSHAs
 }
 
+getCustomJtreg()
+{
+	echo "get custom Jtreg..."
+	cd $TESTDIR/openjdk
+	if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
+		curl_options="--user $USERNAME:$PASSWORD"
+	fi
+	echo "_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL"
+	_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL
+
+}
+
 getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
@@ -598,6 +610,10 @@ fi
 
 if [ ! -d "$TESTDIR/TKG" ]; then
 	getTestKitGen
+fi
+
+if [[ $JTREG_URL != "" ]]; then
+	getCustomJtreg
 fi
 
 if [ $CLONE_OPENJ9 != "false" ]; then
