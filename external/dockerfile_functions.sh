@@ -139,7 +139,11 @@ print_debianslim_pkg() {
     local file=$1
     local packages=$2
 
-    print_ubuntu_pkg ${file} "${packages}"
+    echo -e "RUN apt-get update \\" \
+            "\n\t&& for i in \$(seq 1 8); do mkdir -p \"/usr/share/man/man\${i}\"; done \\" \
+            "\n\t&& apt-get install -y --no-install-recommends ${packages} \\" \
+            "\n\t&& rm -rf /var/lib/apt/lists/*" \
+            "\n" >> ${file}
 }
 
 # Select the alpine OS packages.
