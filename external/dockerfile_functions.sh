@@ -139,6 +139,7 @@ print_debianslim_pkg() {
     local file=$1
     local packages=$2
 
+    # Revert back to calling `print_ubuntu_pkg` once https://github.com/debuerreotype/debuerreotype/issues/10 is resolved
     echo -e "RUN apt-get update \\" \
             "\n\t&& for i in \$(seq 1 8); do mkdir -p \"/usr/share/man/man\${i}\"; done \\" \
             "\n\t&& apt-get install -y --no-install-recommends ${packages} \\" \
