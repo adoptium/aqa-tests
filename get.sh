@@ -549,7 +549,7 @@ if [ -x ${_java} ]; then
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique
-	javac_path=`find ${TEST_JDK_HOME}/ \( -name "javac" -o -name "javac.exe" \)`
+	javac_path=`find ${TEST_JDK_HOME} \( -path "*/bin/javac" -o -path "*/bin/javac.exe" \)`
 	if [[ $javac_path != "" ]]; then
 		echo "javac_path: ${javac_path}"
 		javac_path_array=(${javac_path//\\n/ })
