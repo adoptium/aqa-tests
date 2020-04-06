@@ -31,7 +31,7 @@ supported_builds="slim full"
 
 # Supported tests
 # Test Not Included: elasticsearch
-supported_tests="camel derby jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
+supported_tests="camel derby elasticsearch jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
     version=$1
@@ -207,6 +207,18 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;;
     elasticsearch)
+        github_url="https://github.com/elastic/elasticsearch.git"
+        script="elasticsearch-test.sh"
+        tag_version="v7.6.2"
+        test_results="testResults"
+        debian_packages="git wget unzip"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git wget unzip"
+        centos_packages="git wget unzip"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git wget unzip"
+        ubi_minimal_packages="${ubi_packages}"
         ;;
     functional-test)
         github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
