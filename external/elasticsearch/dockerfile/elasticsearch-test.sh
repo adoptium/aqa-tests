@@ -43,7 +43,7 @@ cd /elasticsearch
 
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
-./gradlew -q -g /tmp assemble --exclude-task :distribution:docker:buildDockerImage --exclude-task :distribution:docker:buildOssDockerImage
+./gradlew -q -g /tmp assemble --exclude-task :distribution:docker:buildDockerImage --exclude-task :distribution:docker:buildOssDockerImage -exclude-task :distribution:docker:docker-export:exportDockerImage -exclude-task :distribution:docker:oss-docker-export:exportOssDockerImage
 set +e
 echo "Elasticsearch Build - Successful"
 
