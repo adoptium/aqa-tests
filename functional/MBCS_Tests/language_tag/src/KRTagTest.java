@@ -23,19 +23,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Method;
 
 public class KRTagTest{
-
-    private static Method localizedBy = null;
-    static {
-        try {
-            localizedBy = DateTimeFormatter.class
-                .getDeclaredMethod("localizedBy", Locale.class);
-        } catch (NoSuchMethodException nsme) {
-        }
-    }
-
     // NUMBER
     @Test
     public void numberTest(){
@@ -142,19 +131,11 @@ public class KRTagTest{
         assertEquals("tz-krsel", l.getExtension('u'));
         assertEquals("krsel", l.getUnicodeLocaleType("tz"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Seoul", formatter.getZone().toString());
-                assertEquals("Asia/Seoul", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Seoul", formatter.getZone().toString());
+        assertEquals("Asia/Seoul", zdt.format(formatter));
     }
 
     @Test
@@ -168,19 +149,11 @@ public class KRTagTest{
         assertEquals("krsel", l.getUnicodeLocaleType("tz"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Seoul"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d/ HH:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Seoul", formatter.getZone().toString());
-                assertEquals("레이와1/6/1/ 12:00:00 Asia/Seoul", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Seoul"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d/ HH:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Seoul", formatter.getZone().toString());
+        assertEquals("레이와1/6/1/ 12:00:00 Asia/Seoul", zdt.format(formatter));
     }
 
     @Test
@@ -195,19 +168,11 @@ public class KRTagTest{
         assertEquals("latn", l.getUnicodeLocaleType("nu"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Seoul"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d HH:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Seoul", formatter.getZone().toString());
-                assertEquals("레이와1/6/1 12:00:00 Asia/Seoul", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Seoul"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d HH:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Seoul", formatter.getZone().toString());
+        assertEquals("레이와1/6/1 12:00:00 Asia/Seoul", zdt.format(formatter));
     }
 
     // FIRST DAY of WEEK

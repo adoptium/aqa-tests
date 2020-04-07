@@ -23,19 +23,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Method;
 
 public class USTagTest{
-
-    private static Method localizedBy = null;
-    static {
-        try {
-            localizedBy = DateTimeFormatter.class
-                .getDeclaredMethod("localizedBy", Locale.class);
-        } catch (NoSuchMethodException nsme) {
-        }
-    }
-
     // NUMBER
     @Test
     public void numberTest(){
@@ -140,19 +129,11 @@ public class USTagTest{
         assertEquals("tz-usnyc", l.getExtension('u'));
         assertEquals("usnyc", l.getUnicodeLocaleType("tz"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("America/New_York", formatter.getZone().toString());
-                assertEquals("America/New_York", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("America/New_York", formatter.getZone().toString());
+        assertEquals("America/New_York", zdt.format(formatter));
     }
 
     @Test
@@ -166,19 +147,11 @@ public class USTagTest{
         assertEquals("usnyc", l.getUnicodeLocaleType("tz"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("America/New_York"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d/ HH:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("America/New_York", formatter.getZone().toString());
-                assertEquals("Reiwa1/6/1/ 12:00:00 America/New_York", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("America/New_York"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d/ HH:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("America/New_York", formatter.getZone().toString());
+        assertEquals("Reiwa1/6/1/ 12:00:00 America/New_York", zdt.format(formatter));
     }
 
     @Test
@@ -193,19 +166,11 @@ public class USTagTest{
         assertEquals("latn", l.getUnicodeLocaleType("nu"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("America/New_York"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d HH:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("America/New_York", formatter.getZone().toString());
-                assertEquals("Reiwa1/6/1 12:00:00 America/New_York", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("America/New_York"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy/M/d HH:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("America/New_York", formatter.getZone().toString());
+        assertEquals("Reiwa1/6/1 12:00:00 America/New_York", zdt.format(formatter));
     }
 
     // FIRST DAY of WEEK
