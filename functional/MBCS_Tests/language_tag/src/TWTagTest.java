@@ -23,19 +23,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Method;
 
 public class TWTagTest{
-
-    private static Method localizedBy = null;
-    static {
-        try {
-            localizedBy = DateTimeFormatter.class
-                .getDeclaredMethod("localizedBy", Locale.class);
-        } catch (NoSuchMethodException nsme) {
-        }
-    }
-
     // NUMBER
     @Test
     public void numberTest(){
@@ -143,19 +132,11 @@ public class TWTagTest{
         assertEquals("tz-twtpe", l.getExtension('u'));
         assertEquals("twtpe", l.getUnicodeLocaleType("tz"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Taipei", formatter.getZone().toString());
-                assertEquals("Asia/Taipei", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Taipei", formatter.getZone().toString());
+        assertEquals("Asia/Taipei", zdt.format(formatter));
     }
 
     @Test
@@ -170,19 +151,11 @@ public class TWTagTest{
         assertEquals("twtpe", l.getUnicodeLocaleType("tz"));
         assertEquals("roc", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Taipei"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 EEEE ah:mm:ss [zzzz]");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Taipei", formatter.getZone().toString());
-                assertEquals("民國108年6月1日 星期六 下午12:00:00 台北標準時間", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Taipei"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 EEEE ah:mm:ss [zzzz]");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Taipei", formatter.getZone().toString());
+        assertEquals("民國108年6月1日 星期六 下午12:00:00 台北標準時間", zdt.format(formatter));
     }
 
     @Test
@@ -199,19 +172,11 @@ public class TWTagTest{
         assertEquals("fullwide", l.getUnicodeLocaleType("nu"));
         assertEquals("roc", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Taipei"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 EEEE ah:mm:ss [zzzz]");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Taipei", formatter.getZone().toString());
-                assertEquals("民國１０８年６月１日 星期六 下午１２:００:００ 台北標準時間", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Taipei"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 EEEE ah:mm:ss [zzzz]");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Taipei", formatter.getZone().toString());
+        assertEquals("民國１０８年６月１日 星期六 下午１２:００:００ 台北標準時間", zdt.format(formatter));
     }
 
     // FIRST DAY of WEEK
