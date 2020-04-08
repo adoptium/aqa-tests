@@ -50,6 +50,8 @@ echo "================================"
 echo ""
 echo "Running elasticsearch tests :"
 
+echo $TEST_OPTIONS
+
 ./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
 test_exit_code=$?
 find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
