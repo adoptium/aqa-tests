@@ -105,6 +105,7 @@
 	</test>
 	
 	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: AdoptOpenJDK/openjdk-systemtest/issues/79 -->
+	<!-- Exclude the following test on Linux aarch64. Reason: eclipse/openj9/issues/8966 -->
 	<test>
 		<testCaseName>SC_Softmx_JitAot</testCaseName>
 		<variations>
@@ -142,7 +143,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>os.linux,^arch.ppc,^arch.390</platformRequirements>
+		<platformRequirements>os.linux,^arch.ppc,^arch.390,^arch.aarch64</platformRequirements>
 	</test>
 	
 	<test>
