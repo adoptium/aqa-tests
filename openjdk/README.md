@@ -32,7 +32,7 @@ List items  are testnames followed by labels, all MUST BE commented
 as to why they are here and use a label:
 
 * generic-all   Problems on all platforms
-* generic-ARCH  Where ARCH is one of: x64, s390x, ppc64le, sparc, sparcv9, i586, etc.
+* generic-ARCH  Where ARCH is one of: x64, x86, s390x, ppc64le, sparc, sparcv9, i586, etc.
 * OSNAME-all    Where OSNAME is one of: solaris, linux, windows, macosx, aix
 * OSNAME-ARCH   Specific on to one OSNAME and ARCH, e.g. solaris-amd64
 * OSNAME-REV    Specific on to one OSNAME and REV, e.g. solaris-5.8
