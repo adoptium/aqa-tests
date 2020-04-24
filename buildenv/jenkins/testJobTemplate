@@ -113,10 +113,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					if (JDK_VERSION != "8") {
 						EXTRA_OPTIONS += " --enable-preview"
 					}
-					if (ARCH_OS == "s390x_zos") {
-						// zOS has Attach API disabled by default
-						EXTRA_OPTIONS += " -Dcom.ibm.tools.attach.enable=yes"
-					}
+				}
+				
+				// for jck and openjdk builds on z/OS, we need to pass in an additional EXTRA_OPTIONS
+				if (ARCH_OS == "s390x_zos" && JDK_IMPL == "openj9" && (GROUP == "jck" || GROUP == "openjdk")) {
+					// zOS has Attach API disabled by default
+					EXTRA_OPTIONS += " -Dcom.ibm.tools.attach.enable=yes"
 				}
 
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
