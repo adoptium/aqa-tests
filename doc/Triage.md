@@ -2,7 +2,7 @@
 
 ## Triage Guidance
 
-There are [many different test jobs](https://ci.adoptopenjdk.net/view/Test_all/) running at the AdoptOpenJDK project.  No matter which test jobs are being triaged, there is a straight-forward pattern to follow: 
+There are many different test jobs running at the AdoptOpenJDK project.  No matter which test jobs are being triaged, there is a straight-forward pattern to follow: 
 #### Categorize the test failure (based on test output) into 1 of 3 general types: 
 - infra problem (machine/network)
 - test problem
