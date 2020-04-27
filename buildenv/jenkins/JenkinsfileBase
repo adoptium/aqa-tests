@@ -144,52 +144,33 @@ def setupParallelEnv() {
 					childTest = "test_iteration_${i}"
 					buildListName = env.BUILD_LIST
 				}
+
+				def childParams = []
+				// loop through all the params and change the parameters if needed
+				params.each { param ->
+					if (param.key == "ITERATIONS") {
+						childParams << string(name: param.key, value: "1")
+					} else if (param.key == "BUILD_LIST") {
+						childParams << string(name: param.key, value: "${buildListName}")
+					} else if (param.key == "IS_PARALLEL") {
+						childParams << booleanParam(name: param.key, value: false)
+					} else {
+						def value = param.value.toString()
+						if (value == "true" || value == "false") {
+							childParams << booleanParam(name: param.key, value: value.toBoolean())
+						} else {
+							childParams << string(name: param.key, value: value)
+						}
+					}
+				}
+				//This parameter is needed because it enables many iterations of the same test (which all have same names)
+				//to have a unique variable in the array so that Jenkins will run it
+				childParams << string(name: 'RUNTIME_NAME', value: childTest)
+
 				def TEST_JOB_NAME = "${JOB_NAME}"
 
-				//ToDo: need to find a better way to pass parameters to downstream builds.
-				//Ideally, we should only need to pass in modified parameters (i.e.,
-				//BUILD_LIST, IS_PARALLEL)
 				parallel_tests[childTest] = {
-					build job: TEST_JOB_NAME, parameters: [
-						string(name: 'ADOPTOPENJDK_REPO', value: ADOPTOPENJDK_REPO),
-						string(name: 'ADOPTOPENJDK_BRANCH', value: ADOPTOPENJDK_BRANCH),
-						string(name: 'CLONE_OPENJ9', value: CLONE_OPENJ9),
-						string(name: 'OPENJ9_REPO', value: OPENJ9_REPO),
-						string(name: 'OPENJ9_SHA', value: OPENJ9_SHA),
-						string(name: 'OPENJ9_BRANCH', value: OPENJ9_BRANCH),
-						string(name: 'TKG_REPO', value: TKG_REPO),
-						string(name: 'TKG_SHA', value: TKG_SHA),
-						string(name: 'TKG_BRANCH', value: TKG_BRANCH),
-						string(name: 'JDK_VERSION', value: JDK_VERSION),
-						string(name: 'JDK_IMPL', value: JDK_IMPL),
-						string(name: 'BUILD_LIST', value: buildListName),
-						string(name: 'TARGET', value: TARGET),
-						string(name: 'CUSTOM_TARGET', value: CUSTOM_TARGET),
-						string(name: 'SDK_RESOURCE', value: SDK_RESOURCE),
-						string(name: 'CUSTOMIZED_SDK_URL', value: CUSTOMIZED_SDK_URL),
-						string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID', value: CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
-						string(name: 'UPSTREAM_JOB_NAME', value: UPSTREAM_JOB_NAME),
-						string(name: 'UPSTREAM_JOB_NUMBER', value: UPSTREAM_JOB_NUMBER),
-						string(name: 'TEST_FLAG', value: TEST_FLAG),
-						string(name: 'KEEP_REPORTDIR', value: KEEP_REPORTDIR),
-						string(name: 'EXTRA_OPTIONS', value: EXTRA_OPTIONS),
-						string(name: 'JVM_OPTIONS', value: JVM_OPTIONS),
-						string(name: 'PLATFORM', value: PLATFORM),
-						string(name: 'ITERATIONS', value: "1"),
-						string(name: 'LABEL', value: LABEL),
-						string(name: 'JCK_GIT_REPO', value: JCK_GIT_REPO),
-						string(name: 'SSH_AGENT_CREDENTIAL', value: SSH_AGENT_CREDENTIAL),
-						string(name: 'USER_CREDENTIALS_ID', value: env.USER_CREDENTIALS_ID),
-						booleanParam(name: 'KEEP_WORKSPACE', value: KEEP_WORKSPACE),
-						string(name: 'ARTIFACTORY_SERVER', value: ARTIFACTORY_SERVER),
-						booleanParam(name: 'PERSONAL_BUILD', value: PERSONAL_BUILD),
-						booleanParam(name: 'IS_PARALLEL', value: false),
-						booleanParam(name: 'AUTO_DETECT', value: AUTO_DETECT),
-						string(name: 'TIME_LIMIT', value: "${TIME_LIMIT}"),
-						//This parameter is needed because it enables many iterations of the same test (which all have same names)
-						//to have a unique variable in the array so that Jenkins will run it
-						string(name: 'RUNTIME_NAME', value: childTest),
-					]
+					build job: TEST_JOB_NAME, parameters: childParams
 				}
 			}
 			// return to top level pipeline file in order to exit node block before running tests in parallel
