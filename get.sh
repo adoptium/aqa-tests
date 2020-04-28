@@ -248,16 +248,13 @@ getBinaryOpenjdk()
 				echo "curl error code: $download_exit_code"
 				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
 				ls -ld $file
-				#md5sum $file
 				
-				#Starts-Added for checking md5 checksum command on fly
 				if [[ "$OSTYPE" == "darwin"* ]]; then
 				    md5 $file
 				 else
 				    md5sum $file
 				fi
-				#Ends-Added for checking md5 checksum command on fly
-				
+						
 				exit 1
 			fi
 			set -e
