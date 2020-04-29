@@ -104,7 +104,7 @@ class ReleaseRetriever implements Serializable {
             if (!a.name.endsWith(".sign")) {
                 rels.each{ r ->
                    if (a.name.contains(r.OS) && a.name.contains(r.ARCH)) {
-                       if (!a.name.contains("debuginfo")) {
+                       if (!a.name.contains("debuginfo") && !a.name.contains("jfr") && !a.name.contains("static-libs")) {
                            if (a.name.contains("-jdk")) {
                                r.JDK_URL = a.browser_download_url
                            }
