@@ -107,15 +107,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
-				if (!TEST_JOB_NAME) {
-					TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
-				}
-				if (!TARGET) {
-					TARGET = "${LEVEL}.${GROUP}"
-				}
-				if (!BUILD_LIST) {
-					BUILD_LIST = GROUP
-				}
+				def ACTUAL_TEST_JOB_NAME = TEST_JOB_NAME ? TEST_JOB_NAME : "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
+				def ACTUAL_TARGET = TARGET ? TARGET : "${LEVEL}.${GROUP}"
+				def ACTUAL_BUILD_LIST = BUILD_LIST ? BUILD_LIST : GROUP
 
 				// for jck builds, we need to pass in EXTRA_OPTIONS
 				def EXTRA_OPTIONS = "";
@@ -134,7 +128,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
 					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
 				}
-				pipelineJob("$TEST_JOB_NAME") {
+				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
 					definition {
 						parameters {
@@ -146,8 +140,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
 							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
-							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
-							stringParam('TARGET', "${TARGET}", "Test TARGET to execute")
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
+							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
 							choiceParam('SDK_RESOURCE', ['upstream', 'nightly', 'customized', 'releases'], "Where to get sdk?")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
