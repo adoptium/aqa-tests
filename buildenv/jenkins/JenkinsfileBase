@@ -407,6 +407,17 @@ def get_sources() {
 	}
 }
 
+def make_test() {
+	// use sshagent with Jenkins credentials ID for all platforms except zOS
+	if (!env.SPEC.startsWith('zos')) {
+		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+			sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+		}
+	} else {
+		sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+	}
+}
+
 def buildTest() {
 	stage('Build') {
 		timestamps{
@@ -451,14 +462,14 @@ def buildTest() {
 			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
 				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
-
-			// use sshagent with Jenkins credentials ID for all platforms except zOS
-			if (!env.SPEC.startsWith('zos')) {
-				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-					sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+			
+			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", 
+					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+					make_test()
 				}
 			} else {
-				sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+				make_test()
 			}
 		}
 	}
