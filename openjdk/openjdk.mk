@@ -49,6 +49,10 @@ CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
 endif
+# Can't determine cores on zOS, use a reasonable default
+ifeq ($(OS),OS/390)
+	CONC := 4
+endif
 JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter
 ifeq ($(JTREG_CONC), 0)
