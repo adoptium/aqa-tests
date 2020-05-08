@@ -36,7 +36,7 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
 				sh 'wget https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
-				sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
+				sh 'perl ./getDependencies.pl -path . -task default'
 				archiveArtifacts '*.jar, *.zip, *.txt'
 			}
 		} finally {
