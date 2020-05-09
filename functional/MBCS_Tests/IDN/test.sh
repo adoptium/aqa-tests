@@ -12,37 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
 OS=`uname`
 LOC=`locale charmap`
 FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
 export CLASSPATH=${BASE}/IDN.jar
-CHARMAP=${FULLLANG}
-SOURCE="${CHARMAP}.txt"
 OUTPUT=output.txt
 . ${BASE}/check_env_unix.sh
+CHARMAP=${FULLLANG}
+SOURCE="${CHARMAP}.txt"
 
 LISTS=`ls ${BASE}/${FULLLANG}*.txt`
-echo "launching IDNFromFile..." > ${OUTPUT}
+rm -f ${OUTPUT}
+echo "launching IDNFromFile..."
 for i in ${LISTS}
 do
         j=${i##/*/}
-	echo >> ${OUTPUT}
-	echo ${j} >> ${OUTPUT}
-	
+	echo
+	echo ${j}
 	${JAVA_BIN}/java IDNFromFile $i
-	
+        RESULT=$?
+	if [ ${RESULT} != 0 ]; then 
+            exit ${RESULT}
+        fi
 	mv toAscii.txt ${i}_toAscii
         cat ${i}_toAscii >> ${OUTPUT}
 
-	echo "Comparing ${j}_toAscii with ${j}_toascii" >> ${OUTPUT}
+	echo "Comparing ${j}_toAscii with ${j}_toascii"
 
 	mv toUnicode.txt ${i}_toUnicode
         cat ${i}_toUnicode >> ${OUTPUT}
 
-	echo "Comparing ${j}_toUnicode with ${j}_tounicode" >> ${OUTPUT}
+	echo "Comparing ${j}_toUnicode with ${j}_tounicode"
 done
 
 . ${BASE}/setup_${FULLLANG}

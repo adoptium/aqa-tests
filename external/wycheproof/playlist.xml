@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>WycheproofTests</testCaseName>
-		<command>docker run --name wycheproof $(EXTRA_DOCKER_ARGS) adoptopenjdk-wycheproof:latest; \
-			 $(TEST_STATUS); \
-			 docker cp wycheproof:/testResults/testlogs $(REPORTDIR)/external_test_reports; \
-			 docker rm -f wycheproof; \
-			 docker rmi -f adoptopenjdk-wycheproof
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir wycheproof --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir wycheproof
 		</command>
 		<levels>
 			<level>extended</level>

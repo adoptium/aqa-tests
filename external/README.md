@@ -9,7 +9,8 @@ See the [roadmap](https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/exte
 ### Roadmap
 Our next steps to improve and expand this set of external tests is divided into 2 categories:
 #### Technical Goals
-- Copy results from Docker container for easier viewing in Jenkins 
+- Verify the docker images that the project produces
+- Copy results from Docker container for easier viewing and triage in Jenkins 
 - Quick compare view, easy comparison of how different implementations stack up
 - Parallel testing (to improve execution time)
 - Startup-only testing (application startup, but not full runs of app functional testing)

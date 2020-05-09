@@ -46,6 +46,38 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_StAX_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 bash $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=zh_CN.UTF-8 perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 bash $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=zh_TW.UTF-8 perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_StAX_ja_JP_aix</testCaseName>
 		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
 	LANG=ja_JP perl $(TEST_RESROOT)$(D)resultCheck.pl; \
@@ -60,7 +92,6 @@ limitations under the License.
 		<subsets>
 			<subset>11+</subset>
 		</subsets>
-		<disabled>bugs.openjdk.java.net/browse/JDK-8212794</disabled>
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_StAX_Ja_JP_aix</testCaseName>
@@ -127,6 +158,102 @@ limitations under the License.
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_StAX_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=zh_CN perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=Zh_CN perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=ZH_CN perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_zh_TW_aix</testCaseName>
+                <command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+        LANG=zh_TW perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+        $(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_Zh_TW_aix</testCaseName>
+                <command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+        LANG=Zh_TW perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+        $(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh &gt; log 2&gt;&amp;1; \
+	LANG=ZH_TW perl $(TEST_RESROOT)$(D)resultCheck.pl; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_StAX_windows</testCaseName>
 		<command>$(TEST_RESROOT)$(D)test.bat;\
 	$(TEST_STATUS)</command>
@@ -143,7 +270,7 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_StAX_ja_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ja JP MS932 TEST_STRINGS;\
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ja jp MS932 TEST_STRINGS;\
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>
@@ -158,7 +285,37 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_StAX_ko_windows</testCaseName>
-		<command>$(TEST_RESROOT)$(D)test2.bat Windows ko KR MS949 TEST_STRINGS;\
+		<command>$(TEST_RESROOT)$(D)test2.bat windows ko kr MS949 TEST_STRINGS;\
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_cn_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh cn MS936 TEST_STRINGS;\
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.win</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<subsets>
+			<subset>9+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_StAX_tw_windows</testCaseName>
+		<command>$(TEST_RESROOT)$(D)test2.bat windows zh tw MS950 TEST_STRINGS;\
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
 		<levels>

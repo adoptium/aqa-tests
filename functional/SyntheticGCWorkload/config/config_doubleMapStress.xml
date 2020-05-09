@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<configuration maxDuration="10m">
-    <workload numProducerThreads="4"  paymentPeriod="1ms" maintenancePeriod="1ms">
-        <payloadSet dataRate="70MB/s" payloadType="auto">
-            <payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
-            <payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
-        </payloadSet>
-    </workload>
+<configuration maxDuration="15m">
+	<!-- Test to force heap expansion and contraction  -->
+	<workload numProducerThreads="4" duration="10m" paymentPeriod="1ms" maintenancePeriod="1ms">
+		<payloadSet dataRate="100MB/s" startTime="0s" endTime="150s" payloadType="auto">
+			<payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
+			<payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
+		</payloadSet>
+		<payloadSet dataRate="20MB/s" startTime="152s" endTime="240s" payloadType="auto">
+			<payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
+			<payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
+		</payloadSet>
+		<payloadSet dataRate="100MB/s" startTime="242s" endTime="500s" payloadType="auto">
+			<payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
+			<payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
+		</payloadSet>
+		<payloadSet dataRate="20MB/s" startTime="502s" payloadType="auto">
+			<payload proportionOfAllocation="80%" size="5MB" sizeRadius="5MB" sizeVariance="3MB" lifespan="2s" lifespanRadius="2s"/>
+			<payload proportionOfAllocation="20%" size="50MB" sizeRadius="10MB" sizeVariance="5MB" lifespan="20s" lifespanRadius="5s"/>
+		</payloadSet>
+	</workload>
 </configuration>

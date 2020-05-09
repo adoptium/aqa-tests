@@ -18,6 +18,10 @@ SET CLASSPATH=%PWD%\codepage.jar
 call %PWD%\check_env_windows.bat
 call %PWD%\set_%LOCALE%.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
-%JAVA_BIN%\java conv %PWD%\WIN_%CHARMAP%.txt %ENCODING% tmp.txt %ENCODING% > \nul 2>&1
-fc %PWD%\WIN_%CHARMAP%.txt tmp.txt > fc.out 2>&1
+%JAVA_BIN%\java conv %PWD%\windows_%CHARMAP%.txt %ENCODING% tmp.txt %ENCODING% > \nul 2>&1
+fc %PWD%\windows_%CHARMAP%.txt tmp.txt > fc.out 2>&1
+if %errorlevel% neq 0 (
+    echo Run UCompare
+    %JAVA_BIN%\java UCompare %PWD%\windows_%CHARMAP%.txt %ENCODING% tmp.txt %ENCODING%
+)  
 exit %errorlevel%

@@ -34,7 +34,6 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-TEST_SUITE=$1
 java -version
 
 cd /tomcat

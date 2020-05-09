@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>lucene_solr_nightly_smoketest</testCaseName>
-		<command>docker run --name lucene-solr-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-lucene-solr-test:latest; \
-			 $(TEST_STATUS); \
-			 docker cp lucene-solr-test:/lucene-solr/lucene/build/core/test $(REPORTDIR)/external_test_reports; \
-			 docker rm -f lucene-solr-test; \
-			 docker rmi -f adoptopenjdk-lucene-solr-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr
 		</command>
 		<levels>
 			<level>extended</level>
@@ -31,15 +29,11 @@
 			<impl>hotspot</impl>
 		</impls>
 	</test>
-	
-	<!-- Temporarily exclude lucene-solr tests from running on OpenJ9 JDK11 until fixed: https://github.com/eclipse/openj9/issues/3213 -->
 	<test>
 		<testCaseName>lucene_solr_nightly_smoketest_OpenJ9</testCaseName>
-		<command>docker run --name lucene-solr-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-lucene-solr-test:latest; \
-			 $(TEST_STATUS); \
-			 docker cp lucene-solr-test:/lucene-solr/lucene/build/core/test $(REPORTDIR)/external_test_reports; \
-			 docker rm -f lucene-solr-test; \
-			 docker rmi -f adoptopenjdk-lucene-solr-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir lucene-solr
 		</command>
 		<levels>
 			<level>extended</level>

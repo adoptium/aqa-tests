@@ -17,7 +17,7 @@ def testBuild() {
 	timeout(time: time_limit, unit: 'HOURS') {
 		try {
 			if( params.BUILD_TYPE == "systemtest" ){
-				sh 'curl -OLJks "https://api.adoptopenjdk.net/v2/binary/releases/openjdk8?openjdk_impl=hotspot&os=linux&arch=x64&release=latest&type=jdk"'
+				sh 'curl -OLJks "https://api.adoptopenjdk.net/v3/binary/latest/8/ga/linux/x64/jdk/hotspot/normal/adoptopenjdk"'
 				sh 'mkdir ${WORKSPACE}/j2sdk-image'
 				sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 1'
 				sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
@@ -32,11 +32,11 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/log4j-2.3/log4j-api-2.3.jar'
 				archiveArtifacts '**/systemtest_prereqs/log4j-2.3/log4j-core-2.3.jar'
 				archiveArtifacts '**/systemtest_prereqs/apache-ant-1.10.2/lib/ant-launcher.jar'
-				archiveArtifacts '**/systemtest_prereqs/asm-7.1/asm-7.1.jar'
+				archiveArtifacts '**/systemtest_prereqs/asm-7.3.1/asm-7.3.1.jar'
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
-				sh 'wget https://raw.githubusercontent.com/eclipse/openj9/master/test/TestConfig/scripts/getDependencies.pl'
-				sh 'perl ./getDependencies.pl -path . -task default -os os.linux'
+				sh 'wget https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
+				sh 'perl ./getDependencies.pl -path . -task default'
 				archiveArtifacts '*.jar, *.zip, *.txt'
 			}
 		} finally {

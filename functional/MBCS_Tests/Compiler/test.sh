@@ -25,18 +25,26 @@ CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 OUTPUT=$PWD/output.txt
 
-rm -rf tmp
 mkdir tmp
 cd tmp
 . ${BASE}/check_env_unix.sh
 TS=`${JAVA_BIN}/java CheckValidData "${TEST_STRING}"`
 
 JAVAFILE=${TS}.java
-sed "s/TEST_STRING/${TS}/g" ${BASE}/class_org.java > ${JAVAFILE}
+# sed "s/TEST_STRING/${TS}/g" ${BASE}/class_org.java > ${JAVAFILE}
+
+cat > ${JAVAFILE} <<EOF
+public class ${TS} {
+    public static void main(String args[]) {
+        System.out.println("Class: ${TS}");
+    }
+}
+EOF
+
 echo "lauching CompilerTest1..." > ${OUTPUT}
 ${JAVA_BIN}/java CompilerTest1 ${JAVAFILE} >> ${OUTPUT}
 cd ..
 
-diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
+diff ${BASE}/expected_${FULLLANG}.txt ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

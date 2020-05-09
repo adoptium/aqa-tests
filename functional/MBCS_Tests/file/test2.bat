@@ -18,10 +18,25 @@ call %PWD%\set_variable.bat
 SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\file.jar
 SET SRC_DIR=file_%2
+SET DATAFILE=file_%2.jar
+SET EXPECTEDFILE=windows_%2.txt
+if %3 == cn ( 
+   SET SRC_DIR=file_%2-cn
+   SET DATAFILE=file_%2-cn.jar
+   SET EXPECTEDFILE=windows_%2-%3.txt 
+)
+if %3 == tw ( 
+   SET SRC_DIR=file_%2-tw
+   SET DATAFILE=file_%2-tw.jar
+   SET EXPECTEDFILE=windows_%2-%3.txt 
+)
+
+%JAVA_BIN%\java MimeDecoder %PWD%\data\%DATAFILE%.base64 %PWD%\data\%DATAFILE%
+
 if exist %JAVA_BIN%\jar.exe (
-    %JAVA_BIN%\jar -xf %PWD%\data\%SRC_DIR%.jar > NUL
+    %JAVA_BIN%\jar -xf %PWD%\data\%DATAFILE% > NUL
 ) else (
-    %JAVA_BIN%\..\..\bin\jar -xf %PWD%\data\%SRC_DIR%.jar > NUL
+    %JAVA_BIN%\..\..\bin\jar -xf %PWD%\data\%DATAFILE% > NUL
 )
 
 if exist tmp\. rd /s/q tmp
@@ -29,5 +44,5 @@ md tmp
 
 %JAVA_BIN%\java Main %SRC_DIR% tmp\%SRC_DIR% "MODE" %2 %3 %4
 
-fc %PWD%\expected\windows_%2.txt output > fc.out 2>&1
+fc %PWD%\expected\%EXPECTEDFILE% output > fc.out 2>&1
 exit %errorlevel%

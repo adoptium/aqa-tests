@@ -34,8 +34,6 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-TEST_SUITE=$1
-
 java -version
 
 # Initial command to trigger the execution of kafka test

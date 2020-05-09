@@ -24,39 +24,29 @@
  
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
-ARG IMAGE_VERSION=latest
+ARG IMAGE_VERSION=nightly
 
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
+ARG WILDFLY_TAG=18.0.1.Final
+
 # Install test dependent executable files
-RUN apt-get update \
-	&& apt-get -y install \
-	ant \
-	apt-transport-https \
-	ca-certificates \
-	dirmngr \
-	curl \
-	git \
-	make \
-	unzip \
-	vim \
-	wget
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+        maven \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-# Install wildfly tests dependent
-RUN apt-get update \
-	&& apt-get -y install \
-	maven
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-
-# This is the main script to run wildfly tests. 
 COPY ./dockerfile/wildfly-test.sh /wildfly-test.sh
 
-# Clone the repo where wildfly tests reside.
-WORKDIR /
-RUN pwd
-
+# Clone openliberty repo
+ENV WILDFLY_TAG=$WILDFLY_TAG
 RUN git clone https://github.com/wildfly/wildfly.git
+WORKDIR /wildfly/
+RUN git checkout ${WILDFLY_TAG}
+WORKDIR /
 
 ENTRYPOINT ["/bin/bash", "/wildfly-test.sh"]
-CMD ["--version"]

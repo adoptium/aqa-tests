@@ -1,0 +1,83 @@
+#!/bin/ksh
+################################################################################
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# javac *.java
+
+SOURCE=$1
+
+echo "------------ Pattern matching test ------------"
+
+java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 ${SOURCE}
+echo "--- Confirm that the line(s) includes "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "嘨*嘪" ${SOURCE}
+echo "--- Confirm that the line(s) includes the pattern "嘨*嘪". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "^劚" ${SOURCE}
+echo "--- Confirm that the line(s) starts with "劚"."
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep 噲 ${SOURCE}
+echo "--- Confirm that the line(s) includes "噲". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "椷" ${SOURCE}
+echo "--- Confirm that the line(s) includes "椷". "
+echo "--- Did you get the line(s) ?"
+read word1
+
+java SimpleGrep "表抎駡名" ${SOURCE}
+echo "--- Confirm that the line(s) includes "表抎駡名". "
+echo "--- Did you get the line 33 ?"
+read word1
+
+
+echo ------------ Pattern replacement test ------------
+
+java RegexReplaceTest 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 aiueo ${SOURCE} -v
+echo "--- Confirm that "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦" was replaced by "aiueo". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest 噲 僇僞僇僫 ${SOURCE} -v
+echo "--- Confirm that "噲" was replaced by "僇僞僇僫". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "椷" "\\\\" ${SOURCE} -v
+echo "--- Confirm that "椷" was replaced by "\\". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "表抎駡名" "椷噲" ${SOURCE} -v
+echo "--- Confirm that "表抎駡名" was replaced by "椷噲". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest "\\\\u628e" "噲" ${SOURCE} -v
+echo "--- Confirm that "\\u628e" was replaced by "噲". "
+echo "--- OK ?"
+read word1
+
+java RegexReplaceTest [仝☆Ж] 記号 ${SOURCE} -v
+echo "--- Confirm that any of "仝☆Ж" were replaced by "記号". "
+echo "--- OK ?"
+read word1
