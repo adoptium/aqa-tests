@@ -316,12 +316,27 @@ function set_test_info() {
         ubi_packages="git wget"
         ubi_minimal_packages="${ubi_packages}"
         ;;
+    quarkus_openshift)
+        github_url="https://github.com/quarkus-qe/quarkus-openshift-test-suite.git"
+        script="test.sh"
+        test_results="testResults"
+        tag_version="1.3.2.Final"
+        environment_variable="MODE=\"java\""
+        debian_packages="git wget"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git wget"
+        centos_packages="git wget"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git wget"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
     quarkus_quickstarts)
         github_url="https://github.com/quarkusio/quarkus-quickstarts.git"
         script="test.sh"
         test_results="testResults"
         tag_version="1.3.2.Final"
-        environment_variable="MODE=\"java\""
+        environment_variable="DOCKERIMAGE_TAG=\"1.3.2.Final\""
         debian_packages="git wget maven"
         debianslim_packages="${debian_packages}"
         ubuntu_packages="${debian_packages}"
