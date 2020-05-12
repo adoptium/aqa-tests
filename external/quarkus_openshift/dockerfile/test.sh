@@ -41,7 +41,7 @@ export MAVEN_OPTS="-Xmx1g"
 cd /quarkus-quickstarts
 pwd
 echo "Compile and run quarkus_openshift tests"
-mvn -pl clean verify -Dversion.quarkus=1.3.0.Final -Dts.use-ephemeral-namespaces
+mvn -pl clean verify -Dversion.quarkus=1.3.2.Final -Dts.use-ephemeral-namespaces
 test_exit_code=$?
 echo "Build quarkus_openshift completed"
 
