@@ -123,7 +123,11 @@ def setupParallelEnv() {
 				}
 			} else if (params.PARALLEL == "Dynamic") {
 				int numOfMachines = getNumMachines()
-				sh "cd ./openjdk-tests/TKG; make genParallelList TEST=${TARGET} NUM_MACHINES=${numOfMachines}"
+				String PARALLEL_OPTIONS = "TEST=${TARGET} NUM_MACHINES=${numOfMachines}"
+				if (params.TRSS_URL) {
+					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}" 
+				}
+				sh "cd ./openjdk-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
 
 				// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
 				def parallelList = "openjdk-tests/TKG/parallelList.mk"
