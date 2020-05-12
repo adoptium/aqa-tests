@@ -14,6 +14,19 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>elasticsearch_test_openj9_jdk8</testCaseName>
 		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest \
 		 "--exclude-task :core:test \
