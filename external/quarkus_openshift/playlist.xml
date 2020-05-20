@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>MachineInfo</testCaseName>
 		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
@@ -27,21 +27,17 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>payara_microprofile_tck</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --testtarget "-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner" \
-		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		<testCaseName>quarkus_openshift_test</testCaseName>
+		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_openshift --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_openshift 
 		</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>external</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1160</disabled>
+		<disabled>Requires openshift cluster environment to run</disabled>
 	</test>
 </playlist>
