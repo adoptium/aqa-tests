@@ -31,11 +31,11 @@
 	<library filesetRef="DerbyFileset" id="DerbyLib"/>
 	<fileset dir="${shared.resource.dir}/derby" id="DerbyFileset" includes="derby.jar"/>
 
-	<authData id="TradeDataSourceAuthData" password="db_password" user="db_username"/>
-	<authData id="TradeAdminAuthData" password="db_password" user="db_username"/>
+	<authData id="TradeDataSourceAuthData" password="DB_PASSWORD_HERE" user="DB_USR_HERE"/>
+	<authData id="TradeAdminAuthData" password="DB_PASSWORD_HERE" user="DB_USR_HERE"/>
 
 	<dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">
-		<properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/tradedb7" password="db_password" user="db_username"/>
+		<properties.derby.embedded createDatabase="create" databaseName="DB_NAME_HERE" password="DB_PASSWORD_HERE" user="DB_USR_HERE"/>
 	</dataSource>
 
 	<messagingEngine id="defaultME">
