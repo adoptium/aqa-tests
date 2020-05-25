@@ -28,7 +28,7 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_quickstarts_test</testCaseName>
-		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_quickstarts --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS); \
+		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_quickstarts --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_quickstarts 
 		</command>

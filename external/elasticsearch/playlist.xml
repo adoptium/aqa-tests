@@ -28,7 +28,7 @@
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_openj9_jdk8</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest \
+		<command>docker run --name elasticsearch-test "$(EXTRA_DOCKER_ARGS)" adoptopenjdk-elasticsearch-test:latest \
 		 "--exclude-task :core:test \
 		 --exclude-task :client:rest:test \
 		 --exclude-task :modules:reindex:test \
@@ -56,7 +56,7 @@
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_openj9_latest</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest \
+		<command>docker run --name elasticsearch-test "$(EXTRA_DOCKER_ARGS)" adoptopenjdk-elasticsearch-test:latest \
 		 "--exclude-task :client:rest:test \
 		 --exclude-task :modules:reindex:test \
 		 --exclude-task :client:transport:test \
@@ -83,7 +83,7 @@
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_hotspot</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest; \
+		<command>docker run --name elasticsearch-test "$(EXTRA_DOCKER_ARGS)" adoptopenjdk-elasticsearch-test:latest; \
 			$(TEST_STATUS); \
 			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
 			docker rm -f elasticsearch-test; \

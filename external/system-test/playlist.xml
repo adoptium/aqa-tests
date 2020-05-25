@@ -28,7 +28,7 @@
 	</test>
     <test>
 		<testCaseName>sanity_system</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _sanity.system --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _sanity.system --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test
 		</command>
@@ -41,7 +41,7 @@
 	</test>
     <test>
 		<testCaseName>extended_system</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _extended.system --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _extended.system --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test
 		</command>

@@ -29,7 +29,7 @@
 	<test>
 		<testCaseName>payara_microprofile_tck</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --testtarget "-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner" \
-		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck
 		</command>
