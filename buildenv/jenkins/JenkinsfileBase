@@ -118,14 +118,14 @@ def setupParallelEnv() {
 				// limit childJobNum
 				if (childJobNum > 20) {
 					echo "Due to the limited machines, ITERATIONS can only be set up to 20. Current ITERATIONS is ${ITERATIONS}."
-					echo "Reset ITERATIONS to 20..." 
+					echo "Reset ITERATIONS to 20..."
 					childJobNum = 20
 				}
 			} else if (params.PARALLEL == "Dynamic") {
 				int numOfMachines = getNumMachines()
 				String PARALLEL_OPTIONS = "TEST=${TARGET} NUM_MACHINES=${numOfMachines}"
 				if (params.TRSS_URL) {
-					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}" 
+					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 				}
 				sh "cd ./openjdk-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
 
@@ -163,7 +163,7 @@ def setupParallelEnv() {
 					echo "exclude the following system test subfolders: ${excludes}"
 					testSubDirs = testSubDirs - excludes
 				}
-				
+
 				childJobNum = testSubDirs.size()
 				if ( childJobNum > 20) {
 					assert false : "Build failed becuase childJobNum: ${childJobNum} > 20."
@@ -179,7 +179,6 @@ def setupParallelEnv() {
 				def childTarget = TARGET
 				if (params.PARALLEL == "Iteration") {
 					childTest = "iteration_${i}"
-					
 				} else if (params.PARALLEL == "Dynamic") {
 					childTest = "testList_${i}"
 					childTarget = "-f parallelList.mk ${childTest}"
@@ -466,9 +465,9 @@ def buildTest() {
 			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
 				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
-			
+
 			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", 
+				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 					make_test()
 				}
@@ -584,7 +583,7 @@ def post(output_name) {
 					failIfNotNew: true,
 					pattern: "**/TKG/test_output_*/**/report.xml",
 					skipNoTestFiles: true,
-					stopProcessingIfError: true)]
+					stopProcessingIfError: false)]
 				)
 			}
 
@@ -652,13 +651,13 @@ def testBuild() {
 				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
 				// clean up remaining core files
 				if (PLATFORM.contains("mac")) {
-					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else if (PLATFORM.contains("windows")) {
-					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else {
 					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				}
-			}	
+			}
 		}
 	}
 }
