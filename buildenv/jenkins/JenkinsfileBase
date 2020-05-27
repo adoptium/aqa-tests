@@ -243,6 +243,10 @@ def setupParallelEnv() {
 def getNumMachines(){
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	def slaves = nodesByLabel(LABEL).size()
+	if (slaves == 1) {
+		echo "Only 1 slave machine available. Set num to 1"
+		return slaves
+	}
 	int limit = slaves / 2
 	if (num > limit) {
 		echo "Number of slave machines is ${slaves}. Number of machines cannot be greater than ${slaves} / 2 (=${limit}). Set num to ${limit}"
