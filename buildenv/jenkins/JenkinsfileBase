@@ -29,14 +29,20 @@ def setupEnv() {
 
 	env.SPEC = "${SPEC}"
 
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+	if (env.SPEC.startsWith('zos')) {
+		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
+		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
+		TKG_REPO = TKG_REPO.replace("https://github.com/","git@github.com:")
+	}
+
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/openjdk-tests.git" : "https://github.com/AdoptOpenJDK/openjdk-tests.git")
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:eclipse/openj9.git" : "https://github.com/eclipse/openj9.git")
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/TKG.git" :"https://github.com/AdoptOpenJDK/TKG.git")
 	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
 	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
