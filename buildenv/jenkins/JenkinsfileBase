@@ -575,6 +575,11 @@ def post(output_name) {
 				failIfNoResultsValue = false
 			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
+			
+			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
+			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
+				archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
+			}
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
@@ -773,7 +778,21 @@ def addGrinderLink() {
 def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
-			parallel parallel_tests
+			def childJobs = parallel parallel_tests
+			node("$LABEL") {	
+				childJobs.each {
+					cjob ->
+					def jobInvocation = cjob.value.getRawBuild()
+					def buildId = jobInvocation.getNumber()
+					def name = cjob.value.getProjectName()
+					try {
+						copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+					} catch (Exception e) {
+						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+					}
+				}
+				step([$class: "TapPublisher", testResults: "**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
+			}	
 		}
 	}
 }
