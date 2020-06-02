@@ -336,7 +336,7 @@ function set_test_info() {
         script="test.sh"
         test_results="testResults"
         tag_version="1.3.2.Final"
-        environment_variable="DOCKERIMAGE_TAG=\"1.3.2.Final\""
+        environment_variable="MODE=\"java\""
         debian_packages="git wget maven"
         debianslim_packages="${debian_packages}"
         ubuntu_packages="${debian_packages}"
