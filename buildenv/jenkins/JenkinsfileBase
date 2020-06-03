@@ -141,6 +141,10 @@ def setupParallelEnv() {
 				def parallelList = "openjdk-tests/TKG/parallelList.mk"
 				int NUM_LIST = -1
 				if (fileExists("${parallelList}")) {
+					if (SPEC.startsWith('zos')) {
+						echo 'Converting parallelList.mk file from ebcdic to ascii...'
+						sh "iconv -f ibm-1047 -t iso8859-1 ${parallelList} > ${parallelList}.ascii; rm ${parallelList}; mv ${parallelList}.ascii ${parallelList}"
+					}
 					echo "read parallelList.mk file: ${parallelList}"
 					def properties = readProperties file: "${parallelList}"
 					if (properties.NUM_LIST) {
@@ -504,6 +508,12 @@ def runTest( ) {
 			}
 			if (!TARGET.startsWith('-f')) {
 				TARGET="_${params.TARGET}"
+			} else if (TARGET.contains('-f parallelList.mk') && SPEC.startsWith('zos')) {
+				def parallelList = "openjdk-tests/TKG/parallelList.mk"
+				if (fileExists("${parallelList}")) {
+					echo 'Converting parallelList.mk file from ascii to ebcdic...'
+					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
+				}
 			}
 			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
