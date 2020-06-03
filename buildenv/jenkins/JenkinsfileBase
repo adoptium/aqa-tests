@@ -125,8 +125,16 @@ def setupParallelEnv() {
 				int numOfMachines = getNumMachines()
 				String PARALLEL_OPTIONS = "TEST=${TARGET} NUM_MACHINES=${numOfMachines}"
 				if (params.TRSS_URL) {
-					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}" 
+					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 				}
+
+				try {
+					//get pre-staged jars from test.getDependency build
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+				} catch (Exception e) {
+					echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
+				}
+
 				sh "cd ./openjdk-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
 
 				// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
