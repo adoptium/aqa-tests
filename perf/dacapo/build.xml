@@ -28,10 +28,14 @@
 
 	<target name="getDacapoSuite" depends="init">
 		<var name="curl_options" value="-Lks https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
-		<echo message="curl ${curl_options}" />
-			<exec executable="curl" failonerror="true">
-				<arg line="${curl_options}" />
-			</exec>
+		<retry retrycount="3">
+			<sequential>
+				<echo message="curl ${curl_options}" />
+				<exec executable="curl" failonerror="true">
+					<arg line="${curl_options}" />
+				</exec>
+			</sequential>
+		</retry>
 	</target>
 	
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
