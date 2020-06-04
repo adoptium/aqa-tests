@@ -17,16 +17,15 @@
 		TestKitGen can produce the equivalent make command lines to be executed in the build 
 	-->
 	<test>
-		<testCaseName>example_test</testCaseName>
-	<command>docker run --rm "$(EXTRA_DOCKER_ARGS)" adoptopenjdk-example-test:latest ; \
-		$(TEST_STATUS); \
-		docker rmi -f adoptopenjdk-example-test
-	</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<testCaseName>example-test</testCaseName>
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-example-test:latest ; \
+			$(TEST_STATUS); \
+			docker rmi -f adoptopenjdk-example-test
+		</command>
 		<levels>
 			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
