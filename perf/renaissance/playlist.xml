@@ -13,24 +13,22 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../../TestConfig/playlist.xsd">
+	xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
-		<testCaseName>akka-uct</testCaseName>
+		<testCaseName>renaissance-akka-uct</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)akka-uct.json$(Q) akka-uct; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
 	</test>
 	<test>
-		<testCaseName>als</testCaseName>
+		<testCaseName>renaissance-als</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -39,10 +37,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>chi-square</testCaseName>
+		<testCaseName>renaissance-chi-square</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -51,11 +48,12 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>db-shootout</testCaseName>
+		<testCaseName>renaissance-db-shootout</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
-		<levels>
+		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
+		<platformRequirements>^arch.ppc</platformRequirements> 
+		<levels> 
 			<level>extended</level>
 		</levels>
 		<groups>
@@ -63,10 +61,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>dec-tree</testCaseName>
+		<testCaseName>renaissance-dec-tree</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -75,22 +72,21 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>finagle-chirper</testCaseName>
+		<testCaseName>renaissance-finagle-chirper</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
-		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		$(TEST_STATUS)</command>			
 		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
+		<disabled>https://github.com/renaissance-benchmarks/renaissance/issues/231</disabled>
 	</test>
 	<test>
-		<testCaseName>finagle-http</testCaseName>
+		<testCaseName>renaissance-finagle-http</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-http.json$(Q) finagle-http; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -99,34 +95,31 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>fj-kmeans</testCaseName>
+		<testCaseName>renaissance-fj-kmeans</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)fj-kmeans.json$(Q) fj-kmeans; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
 	</test>
 	<test>
-		<testCaseName>future-genetic</testCaseName>
+		<testCaseName>renaissance-future-genetic</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)future-genetic.json$(Q) future-genetic; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
 	</test>
 	<test>
-		<testCaseName>gauss-mix</testCaseName>
+		<testCaseName>renaissance-gauss-mix</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -135,10 +128,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>log-regression</testCaseName>
+		<testCaseName>renaissance-log-regression</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -147,10 +139,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>mnemonics</testCaseName>
+		<testCaseName>renaissance-mnemonics</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)mnemonics.json$(Q) mnemonics; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -159,10 +150,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>movie-lens</testCaseName>
+		<testCaseName>renaissance-movie-lens</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -171,22 +161,20 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>naive-bayes</testCaseName>
+		<testCaseName>renaissance-naive-bayes</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>
 		</groups>
 	</test>
 	<test>
-		<testCaseName>par-mnemonics</testCaseName>
+		<testCaseName>renaissance-par-mnemonics</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)par-mnemonics.json$(Q) par-mnemonics; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -195,10 +183,9 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>philosophers</testCaseName>
+		<testCaseName>renaissance-philosophers</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -207,12 +194,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>scala-kmeans</testCaseName>
+		<testCaseName>renaissance-scala-kmeans</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans; \
 		$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>perf</group>

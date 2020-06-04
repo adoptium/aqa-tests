@@ -1,32 +1,21 @@
 <?xml version="1.0"?>
-<project name="thorntail-mp-tck" default="build" basedir=".">
+<project name="Thorntail-mp-tck-Test" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-		Build thorntail-mp-tck Docker image
+		Build thorntail-mp-tck-test Docker image
 	</description>
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external/thorntail-mp-tck" />
+	<property name="TEST" value="thorntail-mp-tck" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="clean_image" depends="init" description="clean thorntail-mp-tck tck docker image if there is one">
-		<exec executable="docker">
-			<arg line="rmi -f adoptopenjdk-thorntail-mp-tck" />
-		</exec>
-	</target>
-
-	<target name="build_image" depends="clean_image" description="build thorntail-mp-tck tck docker image">
-		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-thorntail-mp-tck -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
-		</exec>
-	</target>
-
-	<target name="dist" depends="build_image" description="generate the distribution">
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>

@@ -59,4 +59,8 @@ public class JavaVersion {
   public static long getUpdate() {
     return update;
   }
+
+  public static void main(String[] args) {
+    System.out.println(version);
+  }
 }

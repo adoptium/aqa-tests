@@ -21,11 +21,11 @@ class ReleaseContext implements Serializable {
     }
 
     public String toString() {
-        return "$ARCH-$OS: $JDK_URL $JRE_URL " + ( TESTIMAGE_URL == null ? "" : " $TESTIMAGE_URL " ) + "$SOURCE_URL ${getJenkinsFile()}";
+        return "$ARCH-$OS: $JDK_URL $JRE_URL " + ( TESTIMAGE_URL == null ? "" : " $TESTIMAGE_URL " ) + "$SOURCE_URL ${getPlatform()}";
     }
 
-    public String getJenkinsFile() {
-        return "openjdk_" + getMappedArch() + "_" + OS;
+    public String getPlatform() {
+        return getMappedArch() + "_" + OS;
     }
 
     public String getMappedArch() {
@@ -104,7 +104,7 @@ class ReleaseRetriever implements Serializable {
             if (!a.name.endsWith(".sign")) {
                 rels.each{ r ->
                    if (a.name.contains(r.OS) && a.name.contains(r.ARCH)) {
-                       if (!a.name.contains("debuginfo")) {
+                       if (!a.name.contains("debuginfo") && !a.name.contains("jfr") && !a.name.contains("static-libs")) {
                            if (a.name.contains("-jdk")) {
                                r.JDK_URL = a.browser_download_url
                            }
@@ -267,7 +267,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                                 def jdk_url = r.JDK_URL
                                 def source_url = r.SOURCE_URL
                                 def jdk_version = version
-                                def jenkins_file = r.getJenkinsFile()
+                                def platform = r.getPlatform()
                                 def jdk_jre_url = "$r.JDK_URL $r.JRE_URL" + ( r.TESTIMAGE_URL == null ? "" : " $r.TESTIMAGE_URL" )
                                 def mapped_arch = r.getMappedArch()
                                 def target = testsTargetBuildList.get(testname).get("target")
@@ -276,7 +276,7 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                                 parallelJobs[job_branch_name] = {
                                     // Run a _sanity.openjdk test job with appropriate parameters
                                     build job: job_branch_name, parameters: [
-                                        string(name: 'JenkinsFile', value: jenkins_file),
+                                        string(name: 'PLATFORM', value: platform),
                                         string(name: 'JDK_IMPL', value: "hotspot"),
                                         // needs to be passed for 11 as default is 8, causing conflicts with AUTO_DETECT
                                         string(name: 'JDK_VERSION', value: jdk_version),

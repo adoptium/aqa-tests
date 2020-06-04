@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<!--Add entries corresponding to your test similar to the example below so that
 		TestKitGen can produce the equivalent make command lines to be executed in the build 
 	-->
 	<test>
-		<testCaseName>example_test</testCaseName>
-	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-example-test:latest ; \
-		$(TEST_STATUS); \
-		docker rmi -f adoptopenjdk-example-test
-	</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<testCaseName>example-test</testCaseName>
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-example-test:latest ; \
+			$(TEST_STATUS); \
+			docker rmi -f adoptopenjdk-example-test
+		</command>
 		<levels>
 			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>

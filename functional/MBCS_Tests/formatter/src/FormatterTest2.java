@@ -42,6 +42,18 @@ public class FormatterTest2 {
          formatter = new Formatter(fos);
       }
 
+      if ("".equals(System.getProperty("user.timezone"))) {
+         Locale current_locale = Locale.getDefault();
+         if (Locale.getDefault().equals(Locale.JAPAN)){
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tokyo"));
+         } else if (Locale.getDefault().equals(Locale.KOREA)){
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+         } else if (Locale.getDefault().equals(Locale.CHINA)){
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+         } else if (Locale.getDefault().equals(Locale.TAIWAN)){
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+         }
+      }
 
       Calendar c1 = new GregorianCalendar(2007,0,1);
       Calendar c2 = new GregorianCalendar(2007,7,1);

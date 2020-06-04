@@ -18,4 +18,8 @@ call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java ReadWriteTest %PWD%\%4.txt %4 converted.txt %4 %2 %3 > nul 2>&1
 fc %PWD%\%4.txt converted.txt > fc.out 2>&1
+if %errorlevel% neq 0 (
+    echo Run UCompare
+    %JAVA_BIN%\java UCompare %PWD%\%4.txt %4 converted.txt %4
+)
 exit %errorlevel%

@@ -28,6 +28,11 @@ if (!binding.hasVariable('JCK_GIT_REPO')) JCK_GIT_REPO = ""
 if (!binding.hasVariable('JCK_GIT_REPO_PREFIX')) JCK_GIT_REPO_PREFIX = ""
 if (!binding.hasVariable('SSH_AGENT_CREDENTIAL')) SSH_AGENT_CREDENTIAL = ""
 if (!binding.hasVariable('KEEP_REPORTDIR')) KEEP_REPORTDIR = "true"
+if (!binding.hasVariable('AUTO_DETECT')) AUTO_DETECT = true
+if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
+if (!binding.hasVariable('TARGET')) TARGET = ""
+if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
+if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -39,19 +44,21 @@ if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 if (binding.hasVariable('LEVELS')) {
 	LEVELS = LEVELS.split(',')
 } else {
-	LEVELS = ['sanity','extended','special']
+	// 'sanity','extended','special'
+	LEVELS = ['sanity']
 }
 
 if (binding.hasVariable('JDK_VERSIONS')) {
 	JDK_VERSIONS = JDK_VERSIONS.split(',')
 } else {
-	JDK_VERSIONS = [8,11]
+	JDK_VERSIONS = [8]
 }
 
 if (binding.hasVariable('GROUPS')) {
 	GROUPS = GROUPS.split(',')
 } else {
-	GROUPS = ['functional','system','openjdk', 'perf', 'external']
+	// 'functional','system','openjdk', 'perf', 'external', 'jck'
+	GROUPS = ['functional']
 }
 
 
@@ -89,31 +96,51 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
-	
+	def TKG_REPO = "https://github.com/AdoptOpenJDK/TKG.git"
+
 	// zos has to use ssh
 	if (ARCH_OS.contains("zos")) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/", "git@github.com:")
+		TKG_REPO = TKG_REPO.replace("https://github.com/", "git@github.com:")
 	}
 
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
-				def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
+				def ACTUAL_TEST_JOB_NAME = TEST_JOB_NAME ? TEST_JOB_NAME : "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
+				def ACTUAL_TARGET = TARGET ? TARGET : "${LEVEL}.${GROUP}"
+				def ACTUAL_BUILD_LIST = BUILD_LIST ? BUILD_LIST : GROUP
 
-				def BUILD_LIST = GROUP
-
-				// for all jck builds, we need -Xfuture option passed in
+				// for jck builds, we need to pass in EXTRA_OPTIONS
 				def EXTRA_OPTIONS = "";
 				if (GROUP == "jck" && JDK_IMPL == "openj9") {
 					EXTRA_OPTIONS = "-Xfuture"
+					if (JDK_VERSION != "8") {
+						EXTRA_OPTIONS += " --enable-preview"
+					}
+					if (ARCH_OS == "s390x_zos") {
+						// zOS has Attach API disabled by default
+						EXTRA_OPTIONS += " -Dcom.ibm.tools.attach.enable=yes"
+					}
 				}
-				
+
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
 				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
 					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
 				}
-				pipelineJob("$TEST_JOB_NAME") {
+
+				def DOCKER_REQUIRED = false
+				def DOCKERIMAGE_TAG = ""
+				def EXTRA_DOCKER_ARGS = ""
+				if (GROUP == "external") {
+					DOCKER_REQUIRED = true
+					DOCKERIMAGE_TAG = "nightly"
+					if (LEVEL == "sanity" || LEVEL == "extended") {
+						EXTRA_DOCKER_ARGS = '-v ${TEST_JDK_HOME}:/opt/java/openjdk'
+					}
+				}
+				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
 					definition {
 						parameters {
@@ -124,11 +151,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
-							stringParam('JenkinsFile', "openjdk_${ARCH_OS}", "Jenkins file to be used")
-							stringParam('BUILD_LIST', BUILD_LIST, "Specific test directory to compile, set blank for all projects to be compiled")
-							stringParam('TARGET', "${LEVEL}.${GROUP}", "Test TARGET to execute")
+							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
+							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
-							choiceParam('SDK_RESOURCE', ['upstream', 'nightly', 'customized', 'releases'], "Where to get sdk?")
+							stringParam('SDK_RESOURCE', SDK_RESOURCE, "Where to get sdk? upstream, nightly, releases, or customized")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
 							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
 							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
@@ -137,7 +164,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
-							stringParam('LABEL', "", "Jenkins node label to run on, leave this blank to get sent to any machine matching the platform, set to node name for runs a particular machine")
+							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
+							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
+							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
+							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
+							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
 							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
 							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
@@ -145,7 +176,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
-							booleanParam('IS_PARALLEL', false, "Should tests run in parallel?")
+							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'Iteration'], "Optional. Parallel mode")
+							stringParam('NUM_MACHINES', "1", "Optional. Number of machines to run in parallel. Default value is 1. Need to be used with PARALLEL=Dynamic")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
 							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
 							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
@@ -153,9 +185,15 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
 							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
-							booleanParam('AUTO_DETECT', true, "Optional. Default is to enable AUTO_DETECT")
+							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 							stringParam('RELEASE_TAG', "", "SCM tag from which to run tests")
+							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
+							stringParam('TKG_REPO', TKG_REPO, "TestKitGen git repo. Please use ssh for zos.")
+							stringParam('TKG_BRANCH', "master", "TKG branch")
+							stringParam('TKG_SHA', "", "TKG sha")
+							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
+							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
 						}
 						cpsScm {
 							scm {
@@ -168,9 +206,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										relativeTargetDirectory('openjdk-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
+										cloneOptions {
+											timeout(60)
+										}
 									}
 								}
-								scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
+								scriptPath("buildenv/jenkins/openjdk_tests")
 								lightweight(true)
 							}
 						}

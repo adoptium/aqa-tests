@@ -31,8 +31,7 @@ fi
 export TEST_JDK_HOME=$JAVA_HOME
 export BUILD_LIST=functional
 
-cd /test/TestConfig
-make -f run_configure.mk
+cd /test/TKG
 make compile
 make _sanity.functional.regular
 

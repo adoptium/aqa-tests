@@ -17,5 +17,9 @@ SET CLASSPATH=%PWD%\jaxp14.jar
 call %PWD%\set_variable.bat
 
 %JAVA_BIN%\java Main %1 %2 %3 %4 %PWD%
-fc %PWD%\win_%2.html output > fc.out 2>&1
+SET EXPECTEDFILE=win_%2.html
+if %3 == CN ( SET EXPECTEDFILE=win_%2-%3.html )
+if %3 == TW ( SET EXPECTEDFILE=win_%2-%3.html )
+
+fc %PWD%\%EXPECTEDFILE% output > fc.out 2>&1
 exit %errorlevel%

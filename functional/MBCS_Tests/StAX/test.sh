@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
-
 BASE=`dirname $0`
 
 OS=`uname`
@@ -21,7 +20,11 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 . ${BASE}/check_env_unix.sh
 CP="-cp ${BASE}/StAX.jar"
 
-COUNTRY=`echo ${LANG%%_*} | LANG=C tr '[A-Z]' '[a-z]'`
+
+# Overwrite TEST_STRINGS if the file is there
+if [ -f "${BASE}/data2/test_${FULLLANG}" ]; then
+    . ${BASE}/data2/test_${FULLLANG}
+fi
 
 if [ -f read_cursor.html ] ; then
 	rm -f read_cursor.html
@@ -40,9 +43,8 @@ if [ -f write_event.xml ] ; then
 	rm -f write_event.xml
 fi
 
-${JAVA_BIN}/java ${CP} StAXReadCursor ${BASE}/data/drinks_${COUNTRY}.xml >read_cursor.html 2>&1
-${JAVA_BIN}/java ${CP} StAXReadEveIter ${BASE}/data/drinks_${COUNTRY}.xml >read_event.html 2>&1
+${JAVA_BIN}/java ${CP} StAXReadCursor ${BASE}/data/drinks_${FULLLANG}.xml >read_cursor.html 2>&1
+${JAVA_BIN}/java ${CP} StAXReadEveIter ${BASE}/data/drinks_${FULLLANG}.xml >read_event.html 2>&1
 ${JAVA_BIN}/java ${CP} StAXWriteCursor $TEST_STRINGS
 ${JAVA_BIN}/java ${CP} StAXWriteEveIter $TEST_STRINGS
 
-LANG=${LANG} perl ${BASE}/resultCheck.pl

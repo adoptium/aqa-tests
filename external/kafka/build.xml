@@ -2,31 +2,20 @@
 <project name="kafka-test" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-		Build kafka-test Docker image
+		Build kafka test Docker image
 	</description>
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/external/kafka-test" />
+	<property name="TEST" value="kafka" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="clean_image" depends="init" description="clean kafka test docker image if there is one">
-		<exec executable="docker">
-			<arg line="rmi -f adoptopenjdk-kafka-test" />
-		</exec>
-	</target>
-
-	<target name="build_image" depends="clean_image" description="build kafka test docker image">
-		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-kafka-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
-		</exec>
-	</target>
-
-	<target name="dist" depends="build_image" description="generate the distribution">
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>

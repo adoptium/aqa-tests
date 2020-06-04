@@ -13,7 +13,7 @@ rem limitations under the License.
 
 SETLOCAL
 SET PWD=%~dp0
-SET OUTPUT=result_Windows_%LOCALE%.txt
+SET OUTPUT=result_windows_%LOCALE%.txt
 SET CLASSPATH=%PWD%\pref.jar
 
 call %PWD%\check_env_windows.bat
@@ -28,5 +28,5 @@ echo "removing ..." >> %OUTPUT%
 %JAVA_BIN%\java PrefTest -r >> %OUTPUT%
 %JAVA_BIN%\java PrefTest -q >> %OUTPUT%
 
-C:\Strawberry\perl\bin\perl %PWD%\tap_compare.pl %OUTPUT% %PWD%\expected_Windows_%LOCALE%.txt
+C:\Strawberry\perl\bin\perl %PWD%\tap_compare.pl %OUTPUT% %PWD%\expected_windows_%LOCALE%.txt
 exit %errorlevel%

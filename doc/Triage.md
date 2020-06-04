@@ -2,13 +2,13 @@
 
 ## Triage Guidance
 
-There are [many different test jobs](https://ci.adoptopenjdk.net/view/Test_all/) running at the AdoptOpenJDK project.  No matter which test jobs are being triaged, there is a straight-forward pattern to follow: 
+There are many different test jobs running at the AdoptOpenJDK project.  No matter which test jobs are being triaged, there is a straight-forward pattern to follow: 
 #### Categorize the test failure (based on test output) into 1 of 3 general types: 
 - infra problem (machine/network)
 - test problem
 - product problem 
 #### Check for an existing issue 
-- if issue already exists for the failure, annotate with additional information if needed
+- if issue already exists for the failure, annotate with additional information if needed.  For example, if you are investigating failures in openjdk tests, look to see if its already reported in JBS, as per instructions in [Guidance for creating OpenJDK bugs](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects). 
 #### Raise an issue if no issue exists
 - infra issue - raise an issue in [openjdk-infrastructure](https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues)
 - test issue - ideally, there are enough details to determine which test repo to raise an issue in ond of the test repos from which test material is pulled (OpenJDK, [openjdk-systemtest](https://github.com/AdoptOpenJDK/openjdk-systemtest/issues), [openjdk-tests](https://github.com/AdoptOpenJDK/openjdk-tests/issues) or any of the various 3rd party application suites).  If in doubt, ask some questions in the [#testing channel](https://adoptopenjdk.slack.com/messages/C5219G28G) and/or raise in [openjdk-tests](https://github.com/AdoptOpenJDK/openjdk-tests/issues) where it will get routed to proper repo
