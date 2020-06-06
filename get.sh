@@ -42,7 +42,7 @@ DEBUG_IMAGES_REQUIRED=true
 usage ()
 {
 	echo 'Usage : get.sh  --testdir|-t optional. path to openjdktestdir. Default value current dir (pwd) is used if not provided'
-	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
+	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix | riscv64_linux'
 	echo '                [--jdk_version|-j ]: optional. JDK version'
 	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
 	echo '                [--releases|-R ]: optional. Example: latest, jdk8u172-b00-201807161800'
