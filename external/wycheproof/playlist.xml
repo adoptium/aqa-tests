@@ -14,12 +14,23 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>WycheproofTests</testCaseName>
-		<command>docker run --name wycheproof $(EXTRA_DOCKER_ARGS) adoptopenjdk-wycheproof:latest; \
-			 $(TEST_STATUS); \
-			 docker cp wycheproof:/testResults/testlogs $(REPORTDIR)/external_test_reports; \
-			 docker rm -f wycheproof; \
-			 docker rmi -f adoptopenjdk-wycheproof
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir wycheproof --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir wycheproof
 		</command>
 		<levels>
 			<level>extended</level>

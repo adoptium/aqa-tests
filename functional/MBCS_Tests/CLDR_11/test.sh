@@ -22,10 +22,25 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 . ${BASE}/check_env_unix.sh
 LANGTAG=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar PrintLanguageTag`
 export LANGTAG
+JAVAVERSION=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar JavaVersion`
+export JAVAVERSION
 echo "Running ..."
+${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar CheckZHTW
+if [ "$?" = "1" ]; then
+    export USE_ZHTW_WORKAROUND="true"
+fi
+
 ${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar MainStarter
 
 ${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar CLDR11
+
+if [ "$USE_ZHTW_WORKAROUND" = "true" ]; then
+    for i in expected_TimeZoneTestA-zh-TW-CLDR.log TimeZoneTestA-zh-TW-JRE.log
+    do
+        cp ${i} ${i}.orig
+        ${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar ModifyZHTW ${i}
+    done
+fi
 
 perl $BASE/tap_compare.pl
 RESULT=$?

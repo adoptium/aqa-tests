@@ -14,13 +14,24 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>payara_microprofile_tck</testCaseName>
-		<command>docker run --name payara-mp-tck $(EXTRA_DOCKER_ARGS) adoptopenjdk-payara-mp-tck:latest \
-			"-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner"; \
-			 $(TEST_STATUS); \
-			 docker cp payara-mp-tck:/testResults/junitreports $(REPORTDIR)/external_test_reports; \
-			 docker rm -f payara-mp-tck; \
-			 docker rmi -f adoptopenjdk-payara-mp-tck
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --testtarget "-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner" \
+		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck
 		</command>
 		<subsets>
 			<subset>8</subset>

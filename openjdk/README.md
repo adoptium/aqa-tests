@@ -32,12 +32,15 @@ List items  are testnames followed by labels, all MUST BE commented
 as to why they are here and use a label:
 
 * generic-all   Problems on all platforms
-* generic-ARCH  Where ARCH is one of: x64, s390x, ppc64le, sparc, sparcv9, i586, etc.
+* generic-ARCH  Where ARCH is one of: x64, x86, s390x, ppc64le, sparc, sparcv9, i586, etc.
 * OSNAME-all    Where OSNAME is one of: solaris, linux, windows, macosx, aix
 * OSNAME-ARCH   Specific on to one OSNAME and ARCH, e.g. solaris-amd64
 * OSNAME-REV    Specific on to one OSNAME and REV, e.g. solaris-5.8
 
-	
+If you need to exclude more than one testcase, put an indent after the reason and a comma in between the labels. Like the following:
+
+	* java/util/concurrent/tck/JSR166TestCase.java	0000 windows-x86,linux-aarch64
+
 **Note:** If the test will be run more than once ( more than one annotation @test in test source code) need to append specific testcase number something like following:
 
 	* java/util/concurrent/tck/JSR166TestCase.java#id0  0000 generic-all

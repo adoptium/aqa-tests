@@ -29,22 +29,41 @@
 		<mkdir dir="${DEST}"/>
 		<if>
 			<not>
-				<available file="jtreg-4.2.0-tip.tar.gz" />
+				<available file="jtreg-4.2.0-tip.tar" />
 			</not>
 			<then>
-				<exec executable="curl" failonerror="true">
-					<arg line="-OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
-				</exec>
+				<if> <available file="custom_jtreg.tar.gz"/>
+					<then>
+						<echo message="Using custom_jtreg.tar.gz"/>
+							<copy file="custom_jtreg.tar.gz" tofile="jtreg-4.2.0-tip.tar.gz"/>
+					</then>
+				<else>
+					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"/>
+					<exec executable="curl" failonerror="true">
+						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+					</exec>
+				</else>
+				</if>
 				<exec executable="gzip" failonerror="true">
 					<arg line="-d jtreg-4.2.0-tip.tar.gz" />
 				</exec>
-				<exec executable="tar" failonerror="true">
-					<arg line="xf jtreg-4.2.0-tip.tar -C ${DEST}" />
-				</exec>
 			</then>
 		</if>
+		<if>
+			<contains string="${SPEC}" substring="zos" />
+			<then>
+				<exec executable="tar" failonerror="true">
+					<arg line="xfo jtreg-4.2.0-tip.tar -C ${DEST}" />
+				</exec>
+			</then>
+		<else>
+			<exec executable="tar" failonerror="true">
+				<arg line="xf jtreg-4.2.0-tip.tar -C ${DEST}" />
+			</exec>
+		</else>
+		</if>
 	</target>
-	
+
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
 		     run the config command to allow file paths of 4096 characters 
@@ -66,10 +85,25 @@
 						<property name="jdkName" value="openj9-openjdk-jdk" />
 					</then>					
 					<else>
-						<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+						<if> <contains string="${SPEC}" substring="zos"/>
+                                        	   <then>
+							<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
+						   </then>
+						   <else>
+							<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+						   </else>
+						</if>
 					</else>
 				</if>
-				<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+				<if>
+                                        <contains string="${SPEC}" substring="zos"/>
+                                        <then>
+						<property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git" />
+                                        </then>
+                                        <else>
+				        	<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+					</else>
+				</if>
 			</then>
 			<else>
 				<if>
@@ -81,7 +115,23 @@
 							<property name="jdkName" value="openjdk-aarch64-jdk8u" />
   						</then>		
 					<else>
-						<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+						<if>
+							<or>
+								<equals arg1="${JDK_VERSION}" arg2="8" />
+								<equals arg1="${JDK_VERSION}" arg2="9" />
+								<equals arg1="${JDK_VERSION}" arg2="10" />
+								<equals arg1="${JDK_VERSION}" arg2="11" />
+								<equals arg1="${JDK_VERSION}" arg2="12" />
+								<equals arg1="${JDK_VERSION}" arg2="13" />
+                                                                <equals arg1="${JDK_VERSION}" arg2="14" /> 
+							</or>
+							<then>
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+							</then>
+							<else>
+								<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
+							</else>
+						</if>
 					</else>
 				</if>
 				<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />

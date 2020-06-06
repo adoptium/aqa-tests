@@ -22,8 +22,9 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 CP="-cp ${BASE}/file.jar"
 
 LOGFILE="test_log.txt"
-
-gzip -dc ${BASE}/data/${FULLLANG}.tar.gz | tar xf - 
+DATAFILE=${FULLLANG}.tar.gz
+${JAVA_BIN}/java ${CP} MimeDecoder ${BASE}/data/${DATAFILE}.base64 ${BASE}/data/${DATAFILE}
+gzip -dc ${BASE}/data/${DATAFILE} | tar xf - 
 if [ -e work ]; then
    rm -fr work
 fi

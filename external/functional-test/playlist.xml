@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#      https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,28 +14,39 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
-		<testCaseName>sanity_functional</testCaseName>
-		<command>docker run --name functional-test adoptopenjdk-functional-test:latest ; \
-		 $(TEST_STATUS); \
-		 docker rm -f sanity_functional; \
-		 docker rmi adoptopenjdk-functional-test
-		 </command>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
 		</groups>
 	</test>
-		<test>
-		<testCaseName>extended_functional</testCaseName>
-		<command>docker run --name functional-test adoptopenjdk-functional-test:latest _extended.functional.regular; \
-		 $(TEST_STATUS); \
-		 docker rm -f extended_functional; \
-		 docker rmi adoptopenjdk-functional-test
-		 </command>
+	<test>
+		<testCaseName>sanity_functional</testCaseName>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _sanity.functional.regular --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>extended_functional</testCaseName>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _extended.functional.regular --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
+		</command>
+		<levels>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>external</group>
@@ -43,10 +54,9 @@
 	</test>
 	<test>
 		<testCaseName>example_functional</testCaseName>
-		<command>docker run --name example_functional adoptopenjdk-functional-test:latest _testExample; \
-		 $(TEST_STATUS); \
-		 docker rm -f example_functional; \
-		 docker rmi adoptopenjdk-functional-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _testExample --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
 		</command>
 		<levels>
 			<level>special</level>

@@ -1,0 +1,189 @@
+name: "place holder for example，this can be replaced by any following examples "
+on:
+  push:
+    branches-ignore:
+      - '**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo Hello, world!
+
+##########################################################################
+# 
+# Case one :
+# Workflow: 
+#    Step 1: build-jdk-openj9 action
+#    Step 2: run-aqa action (Note: both action is temporary personal branch
+#    Step 2: upload test result if there is failure      //Note: 1. using v2-preview as wildcards is not official supported https://github.com/actions/upload-artifact/issues/11
+#                                                        //      2. Multi-path is not official supported yet. https://github.com/actions/upload-artifact/issues/55
+#                                                        // To upload configure log using  path: ./**/config.log
+# Tested:
+#    https://github.com/sophia-guo/runaqaTest/runs/612331604?check_suite_focus=true
+#
+###########################################################################
+#
+# name: "run-aqa test against build OpenJ9 JDK directly"
+# on: # rebuild any PRs and main branch changes
+#   push:
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-16.04
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: Build Openj9 JDK
+#       id: buildOpenj9
+#       uses: sophia-guo/build-jdk-openj9@v2
+#       with:
+#         version: '8'
+#     - name: AQA
+#       uses: AdoptOpenJDK/run-aqa@v1
+#       env:
+#         TEST_JDK_HOME: ${{ steps.buildOpenj9.outputs.BuildOpenJ9JDK }}
+#       with:
+#         build_list: 'openjdk'
+#         target: '_jdk_math'
+#     - uses: actions/upload-artifact@v2-preview
+#       if: failure()
+#       with:
+#         name: test_output
+#         path: ./**/test_output_*/
+
+###########################################################################
+# 
+# Case two:
+# Workflow: 
+#    Step 1: wget a coustomized JDK tar file
+#    Step 2: AdoptOpenJDK/install-jdk action install JDK as a local file
+#    Step 3: run-aqa action (Note: both action is temporary personal branch
+# Test reference:
+#    https://github.com/sophia-guo/runaqaTest/runs/603152361?check_suite_focus=true
+###########################################################################
+#
+# name: "run-aqa against a local  cusomized JDK"
+# on: # rebuild any PRs and main branch changes
+#   push:
+#
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v1
+#     - run: 'wget -P buildJDK https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
+#     - uses: AdoptOpenJDK/install-jdk@v1
+#       with:
+#         version: '11'
+#         architecture: x64
+#         source: './buildJDK/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
+#         targets: 'JDK_11'
+#         archiveExtension: '.tar'
+#     - name: AQA
+#       uses: AdoptOpenJDK/run-aqa@v1
+#       with:
+#         version: '11'
+#         jdksource: 'install-jdk'
+#         build_list: 'openjdk'
+#         target: '_jdk_math'
+
+
+###########################################################################
+# 
+# Case three:
+# Workflow: 
+#    Step 1: AdoptOpenJDK/install-jdk action install JDK by a url
+#    Step 2: run-aqa action (Note: both action is temporary personal branch
+# Test reference:
+#    https://github.com/sophia-guo/runaqaTest/runs/603715783?check_suite_focus=true
+#
+###########################################################################
+#  name: "test jDK installed by buildJDK action, first test with http://"
+#  on: # rebuild any PRs and main branch changes
+#    push:
+#
+#  jobs:
+#    build:
+#      runs-on: ubuntu-latest
+#      steps:
+#      - uses: actions/checkout@v1
+#      - uses: AdoptOpenJDK/install-jdk@v1
+#        with:
+#          version: '11'
+#          architecture: x64
+#          source: 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
+#          archiveExtension: '.tar'
+#      - name: AQA
+#        uses: AdoptOpenJDK/run-aqa@v1
+#        with: 
+#          version: '11'
+#          jdksource: 'install-jdk'
+#          build_list: 'openjdk'
+#          target: '_jdk_math'
+
+
+###########################################################################
+# 
+# Case four:
+# Workflow: 
+#    Step 1: AdoptOpenJDK/install-jdk action install JDK by nightly|releases
+#    Step 2: run-aqa action
+# Test reference:
+#    https://github.com/sophia-guo/runaqaTest/runs/603730743?check_suite_focus=true
+#
+###########################################################################
+#  name: "test jDK installed by AdoptOpenJDK/install-jdk nightly|releases"
+#  on: # rebuild any PRs and main branch changes
+#    push:
+#
+#  jobs:
+#    build:
+#      runs-on: ${{ matrix.os }}
+#      strategy:
+#        fail-fast: false
+#        matrix:
+#          os: ubuntu-latest #[ubuntu-latest, macos-latest] TODO: investigate issue with  Mac
+#      steps:
+#      - uses: actions/checkout@v1
+#      - uses: AdoptOpenJDK/install-jdk@v1
+#        with:
+#          version: '11'
+#          source: 'nightly'
+#          impl: 'openj9'
+#      - name: AQA
+#        uses: AdoptOpenJDKo/run-aqa@v1
+#        with: 
+#          version: '11'
+#          jdksource: 'install-jdk'
+#          build_list: 'openjdk'
+#          target: '_jdk_math'
+
+
+###########################################################################
+# 
+# Case five:
+# Workflow: 
+#    Step 1: run-aqa action against github-hosted machine installed JDK
+# Test reference:
+#    https://github.com/sophia-guo/runaqaTest/actions/runs/83442029
+#
+###########################################################################
+#  name: "test jDK installed by AdoptOpenJDK/install-jdk nightly|releases"
+#  on: # rebuild any PRs and main branch changes
+#    push:
+#
+#  jobs:
+#    build:
+#      runs-on: ${{ matrix.os }}
+#      strategy:
+#        fail-fast: false
+#        matrix:
+#          os: [ubuntu-latest, macos-latest]
+#      steps:
+#      - uses: actions/checkout@v1
+#      - name: AQA
+#        uses: AdoptOpenJDK/run-aqa@v1
+#        with:
+#          version: '11'
+#          jdksource: 'github-hosted'
+#          build_list: 'openjdk'
+#          target: '_jdk_math'

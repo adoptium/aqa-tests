@@ -14,11 +14,24 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>scala_test</testCaseName>
-	<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-scala-test:latest "jvm pos neg"; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir scala --testtarget "jvm pos neg" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
-		docker rmi -f adoptopenjdk-scala-test
-	</command>
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir scala
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

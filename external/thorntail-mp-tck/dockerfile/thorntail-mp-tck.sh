@@ -36,6 +36,8 @@ java -version
 TEST_OPTIONS=$1
 cd ${THORNTAIL_HOME}/
 
+export OPENJ9_JAVA_OPTIONS="-Xmx1g"
+
 #Build Thorntail 
 cd ${THORNTAIL_HOME}/thorntail/ 
 set -e

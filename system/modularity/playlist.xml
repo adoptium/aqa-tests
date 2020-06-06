@@ -31,13 +31,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpTest \
-	-test-args=$(Q)variant=CpMp$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpTest -test-args=$(Q)variant=CpMp$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -54,13 +48,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpTest \
-	-test-args=$(Q)variant=Mp$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpTest -test-args=$(Q)variant=Mp$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -77,12 +65,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpTest2; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpTest2; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -99,12 +82,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpTest3; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpTest3; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -121,12 +99,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpModularJarTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -143,12 +116,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpModularJarTest2; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest2; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -165,12 +133,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpModularJarTest3; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest3; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -187,12 +150,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=JDKInternalAPIsTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JDKInternalAPIsTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -209,13 +167,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=AutomaticModulesTest \
-	-test-args=$(Q)variant=AutomaticModulesTest1$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=AutomaticModulesTest1$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -232,13 +184,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=AutomaticModulesTest \
-	-test-args=$(Q)variant=AutomaticModulesTest2$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=AutomaticModulesTest2$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -255,13 +201,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=AutomaticModulesTest \
-	-test-args=$(Q)variant=ImpliedReadabilityTest1$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest1$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -278,13 +218,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=AutomaticModulesTest \
-	-test-args=$(Q)variant=ImpliedReadabilityTest2$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest2$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -301,13 +235,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=AutomaticModulesTest \
-	-test-args=$(Q)variant=ImpliedReadabilityTest3$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest3$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -326,12 +254,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=ExplicitModulesTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ExplicitModulesTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9</subset>
@@ -350,12 +273,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=ServiceLoadersTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ServiceLoadersTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -374,13 +292,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleTest \
-	-test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=PlatformModPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -398,13 +310,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleTest \
-	-test-args=$(Q)variant=AppModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=AppModPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -421,13 +327,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleTest \
-	-test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -444,13 +344,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleTest \
-	-test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=AdvancedPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -469,13 +363,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleImageTest \
-	-test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=PlatformModPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -493,13 +381,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleImageTest \
-	-test-args=$(Q)variant=AppModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=AppModPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -516,13 +398,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleImageTest \
-	-test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -539,13 +415,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=PatchModuleImageTest \
-	-test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=AdvancedPatchModule$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -562,13 +432,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=UpgradeModPathTest \
-	-test-args=$(Q)variant=ExpDirModUpgrade$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=ExpDirModUpgrade$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -585,13 +449,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=UpgradeModPathTest \
-	-test-args=$(Q)variant=ExpDirModUpgradeCRImage$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=ExpDirModUpgradeCRImage$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -608,13 +466,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=UpgradeModPathTest \
-	-test-args=$(Q)variant=JarredModUpgrade$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=JarredModUpgrade$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -631,13 +483,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=UpgradeModPathTest \
-	-test-args=$(Q)variant=JarredModUpgradeCRImage$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=JarredModUpgradeCRImage$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -657,13 +503,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=JlinkTest \
-	-test-args=$(Q)variant=RequiredMod$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=RequiredMod$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -683,13 +523,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=JlinkTest \
-	-test-args=$(Q)variant=AddModLimitMod$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=AddModLimitMod$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -707,12 +541,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CpMpJlinkTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpJlinkTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -731,13 +560,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=JlinkPluginOptionsTest  \
-	-test-args=$(Q)variant=GeneralOptionsTest$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkPluginOptionsTest -test-args=$(Q)variant=GeneralOptionsTest$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -755,13 +578,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS) -Xalwaysclassgc$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=LayersTest \
-	-test-args=$(Q)heapsize=10m$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LayersTest -test-args=$(Q)heapsize=10m$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -782,13 +599,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CLTest \
-	-test-args=$(Q)variant=CLTest$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLTest -test-args=$(Q)variant=CLTest$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -805,13 +616,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CLTestImage \
-	-test-args=$(Q)variant=CLTest$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLTestImage -test-args=$(Q)variant=CLTest$(Q); \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -828,12 +633,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CLLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLLoadTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -850,12 +650,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CLStressWithLayers; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressWithLayers; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>
@@ -873,12 +668,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=CLStressWithLayersCRI; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressWithLayersCRI; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>9+</subset>

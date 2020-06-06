@@ -24,12 +24,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command> 
 		<levels>
 			<level>sanity</level>
@@ -74,12 +69,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command> 
 		<levels>
 			<level>special</level>
@@ -99,12 +89,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ConcurrentLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ConcurrentLoadTest; \
 	$(TEST_STATUS)</command> 
 		<subsets>
 			<subset>8</subset>
@@ -125,12 +110,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=DirectByteBufferLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DirectByteBufferLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -146,12 +126,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LangLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LangLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -166,12 +141,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=LockingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LockingLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -187,12 +157,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=NioLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -208,12 +173,7 @@
 		<variations>
 			<variation>Mode110</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=NioLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -233,12 +193,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=UtilLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UtilLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -254,11 +209,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-results-root=$(REPORTDIR) \
-	-test=HCRLateAttachWorkload; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>	
 		<levels>
 			<level>extended</level>
@@ -277,14 +228,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-results-root=$(REPORTDIR) \
-	-debug-generation=$(Q)true$(Q) \
-	-java-debug-args=$(Q)--enable-preview$(Q) \
-	-java-args=$(Q)--enable-preview$(Q) \
-	-test=HCRLateAttachWorkload; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -debug-generation=$(Q)true$(Q) -java-debug-args=$(Q)--enable-preview$(Q) -java-args=$(Q)--enable-preview$(Q) -test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>	
 		<levels>
 			<level>extended</level>
@@ -303,12 +247,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=HeapHogLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) -test=HeapHogLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -327,12 +266,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) \
-	-results-root=$(REPORTDIR) \
-	-test=ObjectTreeLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) -test=ObjectTreeLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -352,12 +286,7 @@
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl  \
-	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(Q) \
-	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q)  \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
-	-results-root=$(REPORTDIR)  \
-	-test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -371,4 +300,23 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
+	
+	<test>
+		<testCaseName>MixedLoadTest</testCaseName>
+		<variations>
+			<variation>NoOptions</variation> 
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	
 </playlist>

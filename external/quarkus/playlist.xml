@@ -14,12 +14,23 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>quarkus_java_test</testCaseName>
-		<command>docker run --name quarkus_java-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g adoptopenjdk-quarkus-test:latest; \
-			$(TEST_STATUS); \
-			docker cp quarkus_java-test:/testResults/surefire-reports $(REPORTDIR)/external_test_reports; \
-			docker rm -f quarkus_java-test; \
-			docker rmi -f adoptopenjdk-quarkus-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus
 		</command>
 		<levels>
 			<level>extended</level>
@@ -30,10 +41,9 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_native_test</testCaseName>
-		<command>docker run --name quarkus_native-test $(EXTRA_DOCKER_ARGS) --env OPENJ9_JAVA_OPTIONS=-Xmx1g --env MODE="-Dnative" adoptopenjdk-quarkus-test:latest ; \
-			$(TEST_STATUS); \
-			docker rm -f quarkus_native-test; \
-			docker rmi -f adoptopenjdk-quarkus-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus
 		</command>
 		<levels>
 			<level>extended</level>

@@ -15,7 +15,7 @@
 set -e
 
 SDKDIR=""
-TESTDIR=""
+TESTDIR="$(pwd)"
 PLATFORM=""
 JVMVERSION=""
 SDK_RESOURCE="nightly"
@@ -36,11 +36,12 @@ JDK_VERSION="8"
 JDK_IMPL="openj9"
 RELEASES="latest"
 TYPE="jdk"
-
+TEST_IMAGES_REQUIRED=true
+DEBUG_IMAGES_REQUIRED=true
 
 usage ()
 {
-	echo 'Usage : get.sh  --testdir|-t openjdktestdir'
+	echo 'Usage : get.sh  --testdir|-t optional. path to openjdktestdir. Default value current dir (pwd) is used if not provided'
 	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
 	echo '                [--jdk_version|-j ]: optional. JDK version'
 	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
@@ -140,6 +141,12 @@ parseCommandLineArgs()
 			"--vendor_dirs" )
 				VENDOR_DIRS="$1"; shift;;
 
+			"--test_images_required" )
+				TEST_IMAGES_REQUIRED="$1"; shift;;
+			
+			"--debug_images_required" )
+				DEBUG_IMAGES_REQUIRED="$1"; shift;;
+
 			"--help" | "-h" )
 				usage; exit 0;;
 
@@ -147,11 +154,12 @@ parseCommandLineArgs()
 		esac
 	done
 
-        # Adding this check otherwise it starts writing stuff to $HOME
-        if [ -z "$TESTDIR" ]; then
-           echo "-t parameter to set TESTDIR is mandatory"
-           exit 1
-        fi
+	# Check if TESTDIR exists and points to openjdk-tests
+	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"openjdk-tests"* ]]; then
+		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under openjdk-tests. Default value current dir (pwd) is used if not provided."
+		exit 1
+	fi
+	echo "TESTDIR: $TESTDIR"
 }
 
 getBinaryOpenjdk()
@@ -176,6 +184,24 @@ getBinaryOpenjdk()
 		if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
 			curl_options="--user $USERNAME:$PASSWORD"
 		fi
+		images="test-images.tar.gz debug-image.tar.gz"
+		download_urls=($download_url)
+		# for now, auto-download is enabled only if users provide one URL and filename contains OpenJ9-JDK
+		if [[ "${#download_urls[@]}" == 1 ]]; then
+			download_filename=${download_url##*/}
+			if [[ "$download_filename" =~ "OpenJ9-JDK" ]]; then
+				link=${download_url%$download_filename}
+				for image in $images
+				do
+					required=true
+					checkURL "$image"
+					if [[ $required != false ]]; then
+						download_url+=" ${link}${image}"
+						echo "auto download: ${link}${image}"
+					fi
+				done
+			fi
+		fi
 	elif [ "$SDK_RESOURCE" == "nightly" ] || [ "$SDK_RESOURCE" == "releases" ]; then
 		os=${PLATFORM#*_}
 		os=${os%_xl}
@@ -195,6 +221,10 @@ getBinaryOpenjdk()
 			release_type="ga"
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+
+		if [[ "$JDK_VERSION" -ge "11" ]]; then
+			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+		fi
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
@@ -212,6 +242,13 @@ getBinaryOpenjdk()
 					sleep_time=300
 					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
 					sleep $sleep_time
+
+					download_filename=${file##*/}
+					echo "check for $download_filename. If found, the file will be removed."
+					if [ -f "$download_filename" ]; then
+						echo "remove $download_filename before retry..."
+						rm $download_filename
+					fi
 				fi
 
 				case "$VERBOSE_CURL" in
@@ -236,7 +273,13 @@ getBinaryOpenjdk()
 				echo "curl error code: $download_exit_code"
 				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
 				ls -ld $file
-				md5sum $file
+				
+				if [[ "$OSTYPE" == "darwin"* ]]; then
+				    md5 $file
+				 else
+				    md5sum $file
+				fi
+						
 				exit 1
 			fi
 			set -e
@@ -245,48 +288,94 @@ getBinaryOpenjdk()
 
 	jar_files=`ls`
 	jar_file_array=(${jar_files//\\n/ })
+
+	# if $jar_file_array contains debug-image, move debug-image element to the end of the array
+	# debug image jar needs to be extracted after jdk as debug image jar extraction location depends on jdk structure
+	# debug image jar extracts into j2sdk-image/jre dir if it exists. Otherwise, extracts into j2sdk-image dir
+	if [[ $DEBUG_IMAGES_REQUIRED = true ]]; then
+		last_index=$(( ${#jar_file_array[@]} -1 ))
+		for i in "${!jar_file_array[@]}"; do
+			if [[ "${jar_file_array[$i]}" =~ "debug-image" || "${jar_file_array[$i]}" =~ "debugimage" ]]; then
+				if [[ $i -ne $last_index ]]; then
+					debug_image_jar="${jar_file_array[$i]}"
+
+					#remove the element
+					unset jar_file_array[$i]
+
+					# add $debug_image_jar to the end of the array
+					jar_file_array=( "${jar_file_array[@]}" "${debug_image_jar}" )
+					break
+				fi
+			fi
+		done
+	fi
+
 	for jar_name in "${jar_file_array[@]}"
 		do
-			if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
-				rm -rf $SDKDIR/openjdkbinary/tmp/*
-			else
-				mkdir $SDKDIR/openjdkbinary/tmp
-			fi
-
-			echo "unzip file: $jar_name ..."
-			if [[ $jar_name == *zip || $jar_name == *jar ]]; then
-				unzip -q $jar_name -d ./tmp
-			else
-				gzip -cd $jar_name | tar xof - -C ./tmp
-			fi
-
-			cd ./tmp
-			jar_dirs=`ls -d */`
-			jar_dir_array=(${jar_dirs//\\n/ })
-			len=${#jar_dir_array[@]}
-			if [[ "$len" == 1 ]]; then
-				jar_dir_name=${jar_dir_array[0]}
-				if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
-					mv $jar_dir_name ../openjdk-test-image
-				elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
-					mv $jar_dir_name ../j2re-image
-				elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
-					mv $jar_dir_name ../j2sdk-image
-				# if native test libs folder is available, mv it under native-test-libs
-				elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-					mv $jar_dir_name ../native-test-libs
-				#The following only needed if openj9 has a different image name convention
-				elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-					mv $jar_dir_name ../j2sdk-image
+			# if jar_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
+			# Otherwise, files will be extracted under ./tmp
+			if [[ "$jar_name"  =~ "debug-image" || "$jar_name"  =~ "debugimage" ]]; then
+				extract_dir="./j2sdk-image"
+				if [ -d "$SDKDIR/openjdkbinary/j2sdk-image/jre" ]; then
+					extract_dir="./j2sdk-image/jre"
 				fi
-			elif [[ "$len" > 1 ]]; then
-				mv ../tmp ../j2sdk-image
+				echo "unzip $jar_name in $extract_dir..."
+				if [[ $jar_name == *zip || $jar_name == *jar ]]; then
+					unzip -q $jar_name -d $extract_dir
+				else
+					# some debug-image tar has parent folder. --strip 1 is used to remove it
+					gzip -cd $jar_name | tar xof - -C $extract_dir --strip 1
+				fi
+			else
+				if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
+					rm -rf $SDKDIR/openjdkbinary/tmp/*
+				else
+					mkdir $SDKDIR/openjdkbinary/tmp
+				fi
+				echo "unzip file: $jar_name ..."
+				if [[ $jar_name == *zip || $jar_name == *jar ]]; then
+					unzip -q $jar_name -d ./tmp
+				else
+					gzip -cd $jar_name | tar xof - -C ./tmp
+				fi
+
+				cd ./tmp
+				jar_dirs=`ls -d */`
+				jar_dir_array=(${jar_dirs//\\n/ })
+				len=${#jar_dir_array[@]}
+				if [[ "$len" == 1 ]]; then
+					jar_dir_name=${jar_dir_array[0]}
+					if [[ "$jar_dir_name" =~ "test-image" && "$jar_dir_name" != "openjdk-test-image" ]]; then
+						mv $jar_dir_name ../openjdk-test-image
+					elif [[ "$jar_dir_name" =~ jre*  &&  "$jar_dir_name" != "j2re-image" ]]; then
+						mv $jar_dir_name ../j2re-image
+					elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
+						mv $jar_dir_name ../j2sdk-image
+					# if native test libs folder is available, mv it under native-test-libs
+					elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+						mv $jar_dir_name ../native-test-libs
+					#The following only needed if openj9 has a different image name convention
+					elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+						mv $jar_dir_name ../j2sdk-image
+					fi
+				elif [[ "$len" > 1 ]]; then
+					mv ../tmp ../j2sdk-image
+				fi
+				cd $SDKDIR/openjdkbinary
 			fi
-			cd $SDKDIR/openjdkbinary
 		done
 
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
+	fi
+}
+
+checkURL() {
+	local filename="$1"
+	if [[ $filename =~ "test-image" && $TEST_IMAGES_REQUIRED = false ]]; then
+		required=false
+	elif [[ $filename =~ "debug-image" && $DEBUG_IMAGES_REQUIRED = false ]]; then
+		required=false
 	fi
 }
 
@@ -335,6 +424,18 @@ getTestKitGen()
 	fi
 
 	checkTestRepoSHAs
+}
+
+getCustomJtreg()
+{
+	echo "get custom Jtreg..."
+	cd $TESTDIR/openjdk
+	if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
+		curl_options="--user $USERNAME:$PASSWORD"
+	fi
+	echo "_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL"
+	_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL
+
 }
 
 getFunctionalTestMaterial()
@@ -454,7 +555,7 @@ if [ -x ${_java} ]; then
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique
-	javac_path=`find ${TEST_JDK_HOME}/ \( -name "javac" -o -name "javac.exe" \)`
+	javac_path=`find ${TEST_JDK_HOME} \( -path "*/bin/javac" -o -path "*/bin/javac.exe" \)`
 	if [[ $javac_path != "" ]]; then
 		echo "javac_path: ${javac_path}"
 		javac_path_array=(${javac_path//\\n/ })
@@ -515,6 +616,10 @@ fi
 
 if [ ! -d "$TESTDIR/TKG" ]; then
 	getTestKitGen
+fi
+
+if [[ $JTREG_URL != "" ]]; then
+	getCustomJtreg
 fi
 
 if [ $CLONE_OPENJ9 != "false" ]; then

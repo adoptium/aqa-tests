@@ -38,6 +38,9 @@ ifeq ($(CYGWIN),1)
 		| cut -d "=" -f 2-` / 1024 / 1024 \
 		)
 endif
+ifeq ($(OS),OS/390)
+	EXTRA_OPTIONS += -Dcom.ibm.tools.attach.enable=yes
+endif
 # Upstream OpenJDK, roughly, sets concurrency based on the
 # following: min(NPROCS/2, MEM_IN_GB/2).
 MEM := $(shell expr $(MEMORY_SIZE) / 2048)
@@ -45,6 +48,10 @@ CORE := $(shell expr $(NPROCS) / 2)
 CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
+endif
+# Can't determine cores on zOS, use a reasonable default
+ifeq ($(OS),OS/390)
+	CONC := 4
 endif
 JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter
@@ -69,8 +76,12 @@ JTREG_BASIC_OPTIONS += -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc
 # Ignore tests are not run and completely silent about it
 JTREG_IGNORE_OPTION = -ignore:quiet
 JTREG_BASIC_OPTIONS += $(JTREG_IGNORE_OPTION)
-# Multiple by 4 the timeout numbers
-JTREG_TIMEOUT_OPTION =  -timeoutFactor:8
+# Multiple by 8 the timeout numbers, except on zOS use 2
+ifneq ($(OS),OS/390)
+	JTREG_TIMEOUT_OPTION =  -timeoutFactor:8
+else
+	JTREG_TIMEOUT_OPTION =  -timeoutFactor:2
+endif
 JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
 # Create junit xml
 JTREG_XML_OPTION = -xml:verify
@@ -108,7 +119,9 @@ CUSTOM_NATIVE_OPTIONS :=
 
 ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
-		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
+		ifneq ($(OS),OS/390)
+			JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
+		endif
 		ifeq ($(JDK_IMPL), hotspot)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
 		else ifeq ($(JDK_IMPL), openj9)

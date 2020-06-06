@@ -39,6 +39,30 @@ limitations under the License.
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MBCS_Tests_annotation_zh_CN_linux</testCaseName>
+		<command>LANG=zh_CN.UTF-8 bash $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_zh_TW_linux</testCaseName>
+		<command>LANG=zh_TW.UTF-8 bash $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MBCS_Tests_annotation_ja_JP_aix</testCaseName>
 		<command>LANG=ja_JP ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
 	$(TEST_STATUS)</command>
@@ -89,6 +113,78 @@ limitations under the License.
 	<test>
 		<testCaseName>MBCS_Tests_annotation_KO_KR_aix</testCaseName>
 		<command>LANG=KO_KR ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_zh_CN_aix</testCaseName>
+		<command>LANG=zh_CN ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_Zh_CN_aix</testCaseName>
+		<command>LANG=Zh_CN ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_ZH_CN_aix</testCaseName>
+		<command>LANG=ZH_CN ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_zh_TW_aix</testCaseName>
+		<command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_Zh_TW_aix</testCaseName>
+		<command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_annotation_ZH_TW_aix</testCaseName>
+		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh > output.txt 2>error.txt; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>

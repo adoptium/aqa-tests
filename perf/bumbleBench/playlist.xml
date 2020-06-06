@@ -375,6 +375,63 @@
 			<group>perf</group>
 		</groups>
 	</test>	
+	<!-- Humble Benchmarks -->
+	<test>
+		<testCaseName>bumbleBench-DistinctStringsEqualsBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DistinctStringsEqualsBench; \
+		$(TEST_STATUS)</command>
+		<impls>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/bumblebench/issues/24 -->
+		</impls>				
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-NewStringBufferWithCapacityBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar NewStringBufferWithCapacityBench; \
+		$(TEST_STATUS)</command>
+		<impls>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/bumblebench/issues/24 -->
+		</impls>				
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>bumbleBench-NewStringBuilderWithCapacityBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar NewStringBuilderWithCapacityBench; \
+		$(TEST_STATUS)</command>
+		<impls>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/bumblebench/issues/24 -->
+		</impls>				
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
+	<test>
+		<testCaseName>bumbleBench-SameStringsEqualsBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SameStringsEqualsBench; \
+		$(TEST_STATUS)</command>
+		<impls>
+			<impl>openj9</impl> <!-- Issue for JDK 11 HotSpot: https://github.com/AdoptOpenJDK/bumblebench/issues/24 -->
+		</impls>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>				
 	<!-- Lambda Benchmarks -->
 	<test>
 		<testCaseName>bumbleBench-DispatchBench-InnerClasses</testCaseName>

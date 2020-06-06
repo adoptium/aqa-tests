@@ -19,11 +19,11 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
 export CLASSPATH=${BASE}/formatter.jar
-CHARMAP=${FULLLANG}
-SOURCE="${CHARMAP}.txt"
 OUTPUT=output.txt
 
 . ${BASE}/check_env_unix.sh
+CHARMAP=${FULLLANG}
+SOURCE="${CHARMAP}.txt"
 echo "invoking FormatterTest2" > ${OUTPUT}
 ${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
 diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
