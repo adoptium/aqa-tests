@@ -24,7 +24,8 @@
 	<property name="DEST_EXTERNAL" value="${BUILD_ROOT}/external" />
 	<property environment="env" />
 	<property name="top" location="../" />
-	
+	<property name="extraDockerArgs" value="${env.EXTRA_DOCKER_ARGS}"/>
+
 	<if>
 		<isset property="env.DOCKERIMAGE_TAG"/>
 		<then>
@@ -50,7 +51,7 @@
 			<fileset dir="." includes="*.mk"/>
 		</copy>
 	</target>
-	
+
 	<target name="docker_prune" description="Remove all unused images from the machine before running new builds">
 		<exec executable="docker">
 			<arg line="system prune --all --force" />
@@ -58,7 +59,7 @@
 	</target>
 
 	<target name="clean_image" description="clean test docker image if there is one">
-		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
+		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />
 		<exec executable="bash">
 			<arg value="${DEST_EXTERNAL}/external.sh"/>
 			<arg value="--clean"/>
@@ -83,7 +84,7 @@
 	</target>
 
 	<target name="build_image" description="build test dockerfile">
-		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
+		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />
 		<exec executable="bash">
 			<arg value="${DEST_EXTERNAL}/external.sh"/>
 			<arg value="--build"/>

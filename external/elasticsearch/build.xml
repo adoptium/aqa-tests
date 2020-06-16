@@ -38,7 +38,7 @@
 			</else>
 		</if>
 		<exec executable="docker"  failonerror="true">
-			<arg line="build -t adoptopenjdk-elasticsearch-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag}"/>
+			<arg line="build -t adoptopenjdk-elasticsearch-test -f dockerfile/Dockerfile --pull . --build-arg SDK=${JVM_VERSION} --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} --build-arg IMAGE_VERSION=${dockerImageTag} ${extraDockerArgs}"/>
 		</exec>
 	</target>
 
