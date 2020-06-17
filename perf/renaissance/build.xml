@@ -28,10 +28,14 @@
 
 	<target name="getRenaissanceSuite" depends="init">
 		<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar -o renaissance-mit.jar"/>
-		<echo message="curl ${curl_options}" />
-			<exec executable="curl" failonerror="true">
-				<arg line="${curl_options}" />
-			</exec>
+		<retry retrycount="3">
+ 			<sequential>
+				<echo message="curl ${curl_options}" />
+				<exec executable="curl" failonerror="true">
+					<arg line="${curl_options}" />
+				</exec>
+			</sequential>
+ 		</retry>
 	</target>	
 
 	<target name="dist" depends="getRenaissanceSuite" description="generate the distribution">
