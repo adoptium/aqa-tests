@@ -22,124 +22,26 @@
 	<property name="DEST" value="${BUILD_ROOT}/perf/liberty" />
 
 	<!--Properties for this particular build-->
-	<property name="src" location="." />
+	<property name="SRC" location="." />
 	<property environment="env" />
 	
-	<property name="BM_BIN_DIR" value="${env.PERF_ROOT}/libertyBinaries" />
-	
-	<property name="BM_BINARIES_URL" value="https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/2019-04-19_0642/openliberty-19.0.0.4.zip" />
-	<property name="BM_VERSION" value="openliberty-19.0.0.4" />
-	<basename property="BM_BINARIES_ZIP" file="${BM_BINARIES_URL}"/>
-	
-	<property name="LIBERTY_APP_URL" value="https://github.com/WASdev/sample.daytrader7/releases/download/v1.2/daytrader-ee7.ear" />
-	<basename property="LIBERTY_APP" file="${LIBERTY_APP_URL}"/>
-
-	<property name="DERBY_BINARIES_URL" value="http://archive.apache.org/dist/db/derby/db-derby-10.10.1.1/db-derby-10.10.1.1-lib.zip" />
-	<property name="DERBY_PACKAGE" value="db-derby-10.10.1.1-lib" />
-	<basename property="DERBY_BINARIES_ZIP" file="${DERBY_BINARIES_URL}"/>
+	<property name="BM_VERSION" value="openliberty-19.0.0.4" />	
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
-		<mkdir dir="${BM_BIN_DIR}" />
-		<echo message="BM_BINARIES_ZIP=${BM_BINARIES_ZIP}" />
 	</target>
-
-	<target name="getBinaries" depends="init">
-		<var name="curl_command" value=""/>
-		<if>
-			<available file="${DEST}/libertyBinaries/${BM_VERSION}" />
-			<then>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION} exists." />
-			</then>
-			<else>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION} doesn't exist." />
-				<if>
-					<available file="${BM_BIN_DIR}/${BM_BINARIES_ZIP}" type="file" />
-					<then>
-						<echo message="${BM_BIN_DIR}/${BM_BINARIES_ZIP} exists. Hence, not downloading it." />
-						<unzip src="${BM_BIN_DIR}/${BM_BINARIES_ZIP}" dest="${DEST}/libertyBinaries" />
-					</then>
-					<else>
-						<echo message="${BM_BIN_DIR}/${BM_BINARIES_ZIP} doesn't exist. Hence, downloading it." />						
-						<var name="curl_command" value="-OLks ${BM_BINARIES_URL}"/>
-						<echo message="curl ${curl_command}" />
-						<exec executable="curl" failonerror="true">
-							<arg line="${curl_command}" />
-						</exec>
-						<unzip src="${BM_BINARIES_ZIP}" dest="${DEST}/libertyBinaries" />										
-					</else>
-				</if>
-				<echo message="Moving ${DEST}/libertyBinaries/wlp to ${DEST}/libertyBinaries/${BM_VERSION}" />
-				<move file="${DEST}/libertyBinaries/wlp" tofile="${DEST}/libertyBinaries/${BM_VERSION}"/>
-			</else>
-		</if>
-		<if>
-			<available file="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP}" type="file" />
-			<then>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP} exists. Hence, not downloading it." />
-			</then>
-			<else>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/${LIBERTY_APP} doesn't exist. Hence, downloading it." />						
-				<var name="curl_command" value="-OLks ${LIBERTY_APP_URL}"/>
-				<echo message="curl ${curl_command}" />
-				<exec executable="curl" failonerror="true">
-					<arg line="${curl_command}" />
-				</exec>
-				<copy file="${LIBERTY_APP}" todir="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/apps/webcontainer/"/>
-			</else>
-		</if>
-		<if>
-			<available file="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/derby/derby.jar" type="file" />
-			<then>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/derby/derby.jar exists. Hence, not downloading it." />
-			</then>
-			<else>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/derby/derby.jar doesn't exist. Hence, downloading it." />						
-				<var name="curl_command" value="-OLks ${DERBY_BINARIES_URL}"/>
-				<echo message="curl ${curl_command}" />
-				<exec executable="curl" failonerror="true">
-					<arg line="${curl_command}" />
-				</exec>
-				<unzip src="${DERBY_BINARIES_ZIP}" dest="." />
-				<copy file="${DERBY_PACKAGE}/lib/derby.jar" todir="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/derby/"/>
-				<delete file="${DERBY_BINARIES_ZIP}"/>
-				<delete dir="${DERBY_PACKAGE}"/>
-			</else>
-		</if>
-	</target>	
-	<target name="dist" depends="getBinaries" description="generate the distribution">
+	<target name="configure" depends="init" description="Configure Liberty">
 		<copy todir="${DEST}">
-			<fileset dir="${src}"/>
+			<fileset dir="${SRC}"/>
 		</copy>
 		<chmod file="${DEST}/**" perm="a+x" maxparallel="10"/>
+		<exec executable="bash">
+			<env key="DEST" value="${DEST}"/>
+			<env key="LIBERTY_DEP_CACHE_LOCATION" value="${env.PERF_ROOT}"/>
+		    <arg value="${DEST}/scripts/bin/configure_liberty.sh"/>
+		</exec>							
 	</target>
-	<target name="configure" depends="dist" description="configure Liberty">
-		<if>
-			<available file="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/data/tradedb7/service.properties" type="file" />
-			<then>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/data/tradedb7/service.properties exists. Not configuring database." />
-			</then>
-			<else>
-				<echo message="${DEST}/libertyBinaries/${BM_VERSION}/usr/shared/resources/data/tradedb7/service.properties doesn't exist. Configuring database." />						
-				<exec executable="bash">
-					<env key="DB_SETUP" value="1"/>
-				    <arg value="${DEST}/configs/benchmark.sh"/>
-				    <arg value="${DEST}"/>
-				</exec>
-			</else>
-		</if>
-	</target>
-	<target name="archive" depends="configure" description="clean up">
-		<delete file="${BM_BIN_DIR}/${BM_VERSION}.zip"/>
-		<move file="${DEST}/libertyBinaries/${BM_VERSION}" tofile="${DEST}/libertyBinaries/wlp"/>
-		<zip destfile="${BM_BIN_DIR}/${BM_VERSION}.zip" basedir="${DEST}/libertyBinaries"/>
-		<move file="${DEST}/libertyBinaries/wlp" tofile="${DEST}/libertyBinaries/${BM_VERSION}"/>
-	</target>
-	<target name="clean" depends="archive" description="clean up">
-		<delete dir="${BM_BINARIES_ZIP}" />
-	</target>
-
 	<target name="build">
-		<antcall target="clean" inheritall="true" />
+		<antcall target="configure" inheritall="true" />
 	</target>
 </project>
