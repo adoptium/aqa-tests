@@ -38,10 +38,15 @@
 							<copy file="custom_jtreg.tar.gz" tofile="jtreg-4.2.0-tip.tar.gz"/>
 					</then>
 				<else>
-					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"/>
-					<exec executable="curl" failonerror="true">
-						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
-					</exec>
+					<var name="jtreg_link" value="https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"/>	
+					<retry retrycount="3">
+ 						<sequential>
+							<echo message="Getting Jtreg from ${jtreg_link}"/>
+							<exec executable="curl" failonerror="true">
+								<arg line="--retry 5 -OLJSks ${jtreg_link}" />
+							</exec>
+						</sequential>
+ 					</retry>
 				</else>
 				</if>
 				<exec executable="gzip" failonerror="true">
