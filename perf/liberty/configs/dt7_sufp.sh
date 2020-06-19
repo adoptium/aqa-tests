@@ -31,21 +31,13 @@ echo "JDK=${JDK}"
 export JDK_DIR="${TEST_JDK_HOME}/.."
 echo "JDK_DIR=${JDK_DIR}"
 
-######### Generated Script #########
-
-if [ -z "${DB_SETUP}" ]; then
-	#TODO: Need to do some cleanup and restructure some files for adding other configs
-	echo ""
-	echo "********** START OF NEW TESTCI BENCHMARK JOB **********"
-	echo "Benchmark Name: LibertyStartupDT Benchmark Variant: 17dev-4way-0-256-qs"
-	echo "Benchmark Product: ${JDK}"
-	echo ""
-fi
-
 #TODO: Need to tune these options. Keeping them simple for now 
 export JDK_OPTIONS="-Xmx256m"
 export COLD="0"
 export WARMUP="0"
+export RESULTS_MACHINE="$(hostname)"
+export ROOT_RESULTS_DIR="$(pwd)"
+export RESULTS_DIR="libertyResults-cleaned"
 export NO_SETUP="false"
 export SETUP_ONLY="false"
 export WARM="1"

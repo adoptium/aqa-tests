@@ -45,6 +45,14 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
     ],
+    'riscv64_linux' : [
+        'SPEC' : 'linux_riscv64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+    ],
+    'riscv64_linux_xl' : [
+        'SPEC' : 'linux_riscv64',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+    ],
     's390_linux' : [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
