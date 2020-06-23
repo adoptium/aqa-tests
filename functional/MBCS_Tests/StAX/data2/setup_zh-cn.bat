@@ -10,24 +10,24 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 @echo off
-@echo (1) GB18030 G1
-@echo    
-@echo    °¡¡î€’dñˆUà@
+rem @echo (1) GB18030 G1
+rem @echo    
+rem @echo    °¡¡î€’dñˆUà@
 set TEST_STRING1=°¡¡î’dñˆUà@
 
-@echo (2) GB18030 G2
-@echo    
-@echo    ANSIString2
+rem @echo (2) GB18030 G2
+rem @echo    
+rem @echo    ANSIString2
 set TEST_STRING2=ANSIString2
 
-@echo (3) Full angle character
-@echo    
-@echo    £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
+rem @echo (3) Full angle character
+rem @echo    
+rem @echo    £Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
 set TEST_STRING3=£Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«
 
-@echo (4) Half-angle character
-@echo    
-@echo    ABCCDE/\!
+rem @echo (4) Half-angle character
+rem @echo    
+rem @echo    ABCCDE/\!
 set TEST_STRING4=ABCCDE/\\!
 
 set TEST_STRING=°¡¡î£Á£Â£ÃÒ»¶¡Æß£¯£Ü¡«

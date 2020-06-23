@@ -108,8 +108,16 @@ fc TimeZoneTestA-%LANGTAG%-DEFAULT.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc
 if ErrorLevel 1 ( SET FLAG=1 )
 fc TimeZoneTestA-%LANGTAG%-DEFAULT.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc32.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
-if ErrorLevel 1 ( SET FLAG=1 )
+if %JAVAVERSION% LSS 11000008 (
+  fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
+  if ErrorLevel 1 ( SET FLAG=1 )
+) else (
+  if %LANGTAG% NEQ zh-TW (
+    fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
+    if ErrorLevel 1 ( SET FLAG=1 )
+  )
+)
+
 REM fc TimeZoneTestA-%LANGTAG%-HOST.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc34.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
 
