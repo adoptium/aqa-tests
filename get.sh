@@ -551,7 +551,9 @@ fi
 _java=${TEST_JDK_HOME}/bin/java
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
+	echo "=JAVA VERSION OUTPUT BEGIN="
 	${_java} -version
+	echo "=JAVA VERSION OUTPUT END="
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique
@@ -568,7 +570,9 @@ else
 
 		java_dir=$(dirname "${_javac}")
 		echo "Run: ${java_dir}/java -version"
+		echo "=JAVA VERSION OUTPUT BEGIN="
 		${java_dir}/java -version
+		echo "=JAVA VERSION OUTPUT END="
 		TEST_JDK_HOME=${java_dir}/../
 		echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 	else
