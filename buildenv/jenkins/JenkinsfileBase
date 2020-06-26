@@ -457,7 +457,7 @@ def setEnvDisplay(spec) {
 	else if (spec.startsWith('linux')) {
 		wrap([$class: 'Xvfb', autoDisplayName: true]) {
 			def DISPLAY = sh (
-				script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+				script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$10}\'',
 				returnStdout: true
 			).trim()
 			env.DISPLAY = "${DISPLAY}"
@@ -568,6 +568,11 @@ def runTest( ) {
 def post(output_name) {
 	stage('Post') {
 		timestamps{
+			if (env.DISPLAY != null) {
+				env.DISPLAY = ""
+				// Debug code
+				echo "env.DISPLAY is ${env.DISPLAY}"
+			}
 			if (output_name.contains(',')) {
 				output_name = "specifiedTarget"
 			}
