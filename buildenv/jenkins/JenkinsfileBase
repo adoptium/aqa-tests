@@ -538,13 +538,13 @@ def runTest( ) {
 			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
 				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
-				if (spec.startsWith('aix')) {
+				if (env.SPEC.startsWith('aix')) {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
 					env.DISPLAY = ":0"
 					echo "env.DISPLAY is ${env.DISPLAY}"	
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (spec.startsWith('linux')) {
+				else if (env.SPEC.startsWith('linux')) {
 					wrap([$class: 'Xvfb', autoDisplayName: true]) {
 						def DISPLAY = sh (
 							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -569,8 +569,6 @@ def post(output_name) {
 		timestamps{
 			if (env.DISPLAY != null) {
 				env.DISPLAY = ""
-				// Debug code
-				echo "env.DISPLAY is ${env.DISPLAY}"
 			}
 			if (output_name.contains(',')) {
 				output_name = "specifiedTarget"
