@@ -457,7 +457,7 @@ def setEnvDisplay(spec) {
 	else if (spec.startsWith('linux')) {
 		wrap([$class: 'Xvfb', autoDisplayName: true]) {
 			def DISPLAY = sh (
-				script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$10}\'',
+				script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
 				returnStdout: true
 			).trim()
 			env.DISPLAY = "${DISPLAY}"
