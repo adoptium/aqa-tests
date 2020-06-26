@@ -462,6 +462,7 @@ def setEnvDisplay(spec) {
 			).trim()
 			env.DISPLAY = "${DISPLAY}"
 			echo "env.DISPLAY is ${env.DISPLAY}"
+			makeTest("${RUNTEST_CMD}")
 		}
 	}
 }
@@ -558,7 +559,7 @@ def runTest( ) {
 			for (int i = 0; i < ITERATIONS; i++) {
 				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
 				setEnvDisplay(env.SPEC)
-				makeTest("${RUNTEST_CMD}")
+				// makeTest("${RUNTEST_CMD}")
 				iterationCount++
 			}
 		}
