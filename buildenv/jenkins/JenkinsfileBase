@@ -447,26 +447,6 @@ def get_sources() {
 	}
 }
 
-// Starts an X11 server and sets the DISPLAY variable. Currently only for linux and aix
-def setEnvDisplay(spec) {
-	if (spec.startsWith('aix')) {
-		sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
-		env.DISPLAY = ":0"
-		echo "env.DISPLAY is ${env.DISPLAY}"	
-	}
-	else if (spec.startsWith('linux')) {
-		wrap([$class: 'Xvfb', autoDisplayName: true]) {
-			def DISPLAY = sh (
-				script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-				returnStdout: true
-			).trim()
-			env.DISPLAY = "${DISPLAY}"
-			echo "env.DISPLAY is ${env.DISPLAY}"
-			makeTest("${RUNTEST_CMD}")
-		}
-	}
-}
-
 def make_test() {
 	// use sshagent with Jenkins credentials ID for all platforms except zOS
 	if (!env.SPEC.startsWith('zos')) {
@@ -558,8 +538,26 @@ def runTest( ) {
 			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
 				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
-				setEnvDisplay(env.SPEC)
-				// makeTest("${RUNTEST_CMD}")
+				if (spec.startsWith('aix')) {
+					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+					env.DISPLAY = ":0"
+					echo "env.DISPLAY is ${env.DISPLAY}"	
+					makeTest("${RUNTEST_CMD}")
+				}
+				else if (spec.startsWith('linux')) {
+					wrap([$class: 'Xvfb', autoDisplayName: true]) {
+						def DISPLAY = sh (
+							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
+					}
+				} 
+				else {
+					makeTest("${RUNTEST_CMD}")
+				}
 				iterationCount++
 			}
 		}
