@@ -97,13 +97,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
 	def TKG_REPO = "https://github.com/AdoptOpenJDK/TKG.git"
-
-	// zos has to use ssh
-	if (ARCH_OS.contains("zos")) {
-		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/", "git@github.com:")
-		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/", "git@github.com:")
-		TKG_REPO = TKG_REPO.replace("https://github.com/", "git@github.com:")
-	}
+	def ADOPTOPENJDK_BRANCH = "master"
 
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
@@ -145,7 +139,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					definition {
 						parameters {
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
-							stringParam('ADOPTOPENJDK_BRANCH', "master", "AdoptOpenJDK branch")
+							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
 							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
@@ -199,9 +193,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							scm {
 								git {
 									remote {
-										url(ADOPTOPENJDK_REPO)
+										url('${ADOPTOPENJDK_REPO}')
 									}
-									branch('master')
+									branch('${ADOPTOPENJDK_BRANCH}')
 									extensions {
 										relativeTargetDirectory('openjdk-tests')
 										cleanBeforeCheckout()
@@ -211,8 +205,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										}
 									}
 								}
-								scriptPath("buildenv/jenkins/openjdk_tests")
-								lightweight(true)
+								scriptPath("openjdk-tests/buildenv/jenkins/openjdk_tests")
 							}
 						}
 						logRotator {

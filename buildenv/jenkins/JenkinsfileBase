@@ -310,6 +310,11 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 		}
 	}
 
+	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
+	if (TEST_JOB_NAME.startsWith("Grinder_")) {
+		jobParams.put('BUILDS_TO_KEEP', 5)
+	}
+
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
 
 	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
@@ -622,8 +627,6 @@ def post(output_name) {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
 
-			addGrinderLink()
-
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
 				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
@@ -673,6 +676,7 @@ def testBuild() {
 		try {
 			addJobDescription()
 			setup()
+			addGrinderLink()
 			// prepare environment and compile test projects
 			if( params.PARALLEL && params.PARALLEL != "None" ) {
 				setupParallelEnv()
@@ -793,23 +797,17 @@ def uploadToArtifactory(pattern) {
 }
 
 def addGrinderLink() {
-	def	customTargetOpt = params.CUSTOM_TARGET ? "&CUSTOM_TARGET=${params.CUSTOM_TARGET}" :  ""
-	def	sdkSourceOpt = params.SDK_RESOURCE ? "&SDK_RESOURCE=${params.SDK_RESOURCE}" :  ""
-	def	sdkUrlOpt = params.CUSTOMIZED_SDK_URL ? "&CUSTOMIZED_SDK_URL=${params.CUSTOMIZED_SDK_URL}" : ""
-	def	sdkUrlCredentialOpt = params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID ? "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}" : ""
-	def	upstreamJobNameOpt = params.UPSTREAM_JOB_NAME ? "&UPSTREAM_JOB_NAME=${params.UPSTREAM_JOB_NAME}" : ""
-	def	upstreamJobNumOpt = params.UPSTREAM_JOB_NUMBER ? "&UPSTREAM_JOB_NUMBER=${params.UPSTREAM_JOB_NUMBER}" : ""
-
-	def url = "${HUDSON_URL}/job/Grinder/parambuild/?" \
-	+ "JDK_VERSION=${params.JDK_VERSION}" \
-	+ "&JDK_IMPL=${params.JDK_IMPL}" \
-	+ "&BUILD_LIST=${params.BUILD_LIST}" \
-	+ "&PLATFORM=${params.PLATFORM}" \
-	+ "&TARGET=${params.TARGET}" \
-	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}${upstreamJobNameOpt}${upstreamJobNumOpt}"
-
-	url = url.replace(" ", "%20")
-
+	def url = "${HUDSON_URL}job/Grinder/parambuild/?"
+	int i = 1;
+	params.each { key, value ->
+		url += "${key}=${value}"
+		if (i != params.size()) {
+			url += "&amp;"
+		}
+		i++;
+	}
+	url = url.replace(" ", "&#32;")
+	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
 
