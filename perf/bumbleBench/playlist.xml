@@ -603,4 +603,15 @@
 			<group>perf</group>
 		</groups>
 	</test>		
+	<test>
+		<testCaseName>bumbleBench-StringIndexOfStringBench</testCaseName>
+		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar StringIndexOfStringBench; \
+		$(TEST_STATUS)</command>		
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>perf</group>
+		</groups>
+	</test>	
 </playlist>
