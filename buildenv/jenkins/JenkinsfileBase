@@ -543,40 +543,24 @@ def runTest( ) {
 			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
 				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
-				if (env.BUILD_LIST == 'openjdk') {
-					if (env.SPEC.startsWith('linux_x86-64')) {
-						wrap([$class: 'Xvfb', autoDisplayName: true]) {
-							def DISPLAY = sh (
-								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-								returnStdout: true
-							).trim()
-							env.DISPLAY = "${DISPLAY}"
-							echo "env.DISPLAY is ${env.DISPLAY}"
-							makeTest("${RUNTEST_CMD}")
-						}
-					} else {
-						makeTest("${RUNTEST_CMD}")
-					}
-				} else if (env.BUILD_LIST.startsWith('jck')) {
-					if (env.SPEC.startsWith('linux')) {
-						wrap([$class: 'Xvfb', autoDisplayName: true]) {
-							def DISPLAY = sh (
-								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-								returnStdout: true
-							).trim()
-							env.DISPLAY = "${DISPLAY}"
-							echo "env.DISPLAY is ${env.DISPLAY}"
-							makeTest("${RUNTEST_CMD}")
-						}
-					} else if (env.SPEC.startsWith('aix')) {
-						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
-						env.DISPLAY = ":0"
+				if (env.SPEC.startsWith('aix')) {
+					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+					env.DISPLAY = ":0"
+					echo "env.DISPLAY is ${env.DISPLAY}"	
+					makeTest("${RUNTEST_CMD}")
+				}
+				else if (env.SPEC.startsWith('linux')) {
+					wrap([$class: 'Xvfb', autoDisplayName: true]) {
+						def DISPLAY = sh (
+							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
 						echo "env.DISPLAY is ${env.DISPLAY}"
 						makeTest("${RUNTEST_CMD}")
-					} else {
-						makeTest("${RUNTEST_CMD}")
 					}
-				} else {
+				} 
+				else {
 					makeTest("${RUNTEST_CMD}")
 				}
 				iterationCount++
@@ -588,6 +572,9 @@ def runTest( ) {
 def post(output_name) {
 	stage('Post') {
 		timestamps{
+			if (env.DISPLAY != null) {
+				env.DISPLAY = ""
+			}
 			if (output_name.contains(',')) {
 				output_name = "specifiedTarget"
 			}
