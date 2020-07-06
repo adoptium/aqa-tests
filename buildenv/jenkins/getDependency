@@ -35,7 +35,7 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/asm-7.3.1/asm-7.3.1.jar'
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
-				sh 'wget https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
+				sh 'curl -Os https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
 				sh 'perl ./getDependencies.pl -path . -task default'
 				archiveArtifacts '*.jar, *.zip, *.txt'
 			}
