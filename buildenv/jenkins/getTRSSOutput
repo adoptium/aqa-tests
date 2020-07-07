@@ -1,0 +1,91 @@
+#!groovy
+
+LABEL='ci.role.test&&hw.arch.x86&&sw.os.linux'
+
+stage('Queue') {
+	node("$LABEL") {
+		cleanWs()
+		getTRSSOutput()
+	}
+}
+
+def getTRSSOutput() {
+	stage('TRSS JSON') {
+		def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 30
+		timeout(time: TIME_LIMIT, unit: 'MINUTES') {
+			try {
+				def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptopenjdk.net/"
+
+				if (params.JDK_VERSIONS) {
+					JDK_VERSIONS = JDK_VERSIONS.split(',')
+				} else {
+					JDK_VERSIONS = [8, 11, 14]
+				}
+
+				if (params.JDK_IMPLS) {
+					JDK_IMPLS = JDK_IMPLS.split(',')
+				} else {
+					JDK_IMPLS = ["j9", "hs"]
+				}
+
+				if (params.GROUPS) {
+					GROUPS = GROUPS.split(',')
+				} else {
+					GROUPS = ["functional", "system", "openjdk"]
+				}
+
+				if (params.PLATFORMS) {
+					PLATFORMS = PLATFORMS.split(',')
+				} else {
+					PLATFORMS = [
+						"aarch32_linux",
+						"aarch64_linux",
+						"aarch64_linux_xl",
+						"ppc32_aix",
+						"ppc32_linux",
+						"ppc64_aix",
+						"ppc64_aix_xl",
+						"ppc64_linux",
+						"ppc64_linux_xl",
+						"ppc64le_linux",
+						"ppc64le_linux_xl",
+						"riscv64_linux",
+						"riscv64_linux_xl",
+						"s390_linux",
+						"s390_zos",
+						"s390x_linux",
+						"s390x_linux_xl",
+						"s390x_zos",
+						"s390x_zos_xl",
+						"sparcv9_solaris",
+						"x86-32_linux",
+						"x86-32_windows",
+						"x86-64_linux",
+						"x86-64_linux_xl",
+						"x86-64_mac",
+						"x86-64_mac_xl",
+						"x86-64_windows",
+						"x86-64_windows_xl" ]
+				}
+
+				JDK_VERSIONS.each { JDK_VERSION ->
+					JDK_IMPLS.each { JDK_IMPL ->
+						GROUPS.each { GROUP ->
+							PLATFORMS.each { PLATFORM ->
+								def output = "Test_openjdk${JDK_VERSION}_${JDK_IMPL}_${GROUP}_${PLATFORM}.json"
+								def url = "${TRSS_URL}/api/getTestAvgDuration?platform=${PLATFORM}&group=${GROUP}&jdkVersion=${JDK_VERSION}&impl=${JDK_IMPL}&limit=10"
+								sh "curl \'${url}\' --output ${output}"
+							}
+						}
+					}
+				}
+				sh "tar -zcvf TRSSOutput.tar.gz Test_openjdk*.json"
+				archiveArtifacts artifacts: 'TRSSOutput.tar.gz', fingerprint: true, allowEmptyArchive: false
+			} finally {
+				cleanWs()
+			}
+		}
+	}
+}
+
+return this

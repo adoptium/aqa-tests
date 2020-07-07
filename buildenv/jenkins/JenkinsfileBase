@@ -142,6 +142,14 @@ def setupParallelEnv() {
 				}
 
 				try {
+					//get cached TRSS JSON data
+					copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
+					sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+				} catch (Exception e) {
+					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
+				}
+
+				try {
 					//get pre-staged jars from test.getDependency build
 					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
 				} catch (Exception e) {
