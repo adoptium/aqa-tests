@@ -77,21 +77,21 @@
 			</then>
 		</if>
 		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<matches string="${JDK_IMPL}" pattern="openj9|ibm" />
 			<then>
 				<if>
 					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
 					<then>
 						<property name="jdkName" value="openj9-openjdk-jdk" />
-					</then>					
+					</then>
 					<else>
 						<if> <contains string="${SPEC}" substring="zos"/>
-                                        	   <then>
-							<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
-						   </then>
-						   <else>
-							<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
-						   </else>
+							<then>
+								<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
+							</then>
+							<else>
+								<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+							</else>
 						</if>
 					</else>
 				</if>
