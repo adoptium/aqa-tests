@@ -32,6 +32,9 @@ def setupEnv() {
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
 	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+	//JDK has different repo for different version, setting default as AdoptOpenJDK openjdk-jdk8u or  empty so we could parse it depends on other parameters?
+	//For Zos, user should set up right repo something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git	
+	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 	if (env.SPEC.startsWith('zos')) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
@@ -50,13 +53,15 @@ def setupEnv() {
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
 	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
-
+	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
+	env.RELEASE_TAG = params.RELEASE_TAG ? params.RELEASE_TAG : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
@@ -93,14 +98,6 @@ def setupEnv() {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
-	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
-	if( params.RELEASE_TAG ) {
-		env.RELEASE_TAG = params.RELEASE_TAG
-	}
-	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
-	if( params.OPENJDK_SHA) {
-		env.OPENJDK_SHA = params.OPENJDK_SHA
-	}
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
