@@ -32,8 +32,7 @@ def setupEnv() {
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
 	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
-	//JDK has different repo for different version, setting default as AdoptOpenJDK openjdk-jdk8u or  empty so we could parse it depends on other parameters?
-	//For Zos, user should set up right repo something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git	
+	//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 	if (env.SPEC.startsWith('zos')) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
