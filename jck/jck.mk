@@ -57,13 +57,19 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
+OTHER_OPTS=
+# if JDK_IMPL is openj9 or ibm
+ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
+ OTHER_OPTS=-Xtrace:maximal=all{level2}
+endif
+
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
 
 define JCK_CMD_TEMPLATE
 perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs;$(JCK_ROOT)$(Q) \
-	-java-args-setup=$(Q)$(JVM_OPTIONS)$(Q) \
+	-java-args-setup=$(Q)$(OTHER_OPTS) $(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=Jck 
 endef
