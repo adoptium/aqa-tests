@@ -56,27 +56,6 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
-	</test>
-	<test>
-		<testCaseName>jck-runtime-vm-jvmti-openj9</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=vm/jvmti,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-overview</testCaseName>
@@ -105,9 +84,6 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>10+</subset>
-		</subsets>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-module</testCaseName>
@@ -157,9 +133,6 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>10+</subset>
-		</subsets>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-cldc</testCaseName>
