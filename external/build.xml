@@ -34,7 +34,7 @@
 			<property name="dockerImageTag" value="nightly"/>
 		</else>
 	</if>
-	<target name="init" depends="docker_prune">
+	<target name="init">
 		<mkdir dir="${DEST_EXTERNAL}" />
 	</target>
 
@@ -57,7 +57,7 @@
 		</exec>
 	</target>
 
-	<target name="clean_image" description="clean test docker image if there is one">
+	<target name="clean_image" depends="docker_prune" description="clean test docker image if there is one">
 		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
 		<exec executable="bash">
 			<arg value="${DEST_EXTERNAL}/external.sh"/>
