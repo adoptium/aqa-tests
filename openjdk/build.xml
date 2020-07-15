@@ -136,12 +136,12 @@
 							</else>
 						</if>
 						<if>
-			                                    <contains string="${SPEC}" substring="zos"/>
-			                                    <then>
+							<contains string="${SPEC}" substring="zos"/>
+							<then>
 								<property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git" />
-			                                    </then>
-			                                    <else>
-						        	<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+							</then>
+							<else>
+								<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
 							</else>
 						</if>
 					</then>
@@ -151,9 +151,9 @@
 								<contains string="${env.SPEC}" substring="aarch64" />
 								<equals arg1="${JDK_VERSION}" arg2="8" />
 							</and>
-								<then>
-									<property name="jdkName" value="openjdk-aarch64-jdk8u" />
-								</then>
+							<then>
+								<property name="jdkName" value="openjdk-aarch64-jdk8u" />
+							</then>
 							<else>
 								<echo message="git ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
 								<exec executable="git" resultproperty="repo.exist" failonerror="false">
@@ -172,6 +172,7 @@
 						</if>
 						<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
 					</else>
+				</if>
 				<if>
 					<isset property="env.RELEASE_TAG"/>
 					<then>
@@ -185,6 +186,7 @@
 						<if>
 							<contains string="${JDK_IMPL}" substring="hotspot"/>
 							<then>
+								<!-- AdoptOpenJDK nighlty is using dev branch and default branch is master-->
 								<property name="defaultBranch" value="-b dev"/>
 							</then>
 							<else>
