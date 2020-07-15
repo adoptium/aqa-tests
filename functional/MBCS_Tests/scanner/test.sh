@@ -23,6 +23,6 @@ BASE=`dirname $0`
 . ${BASE}/check_env_unix.sh
 ${JAVA_BIN}/java -cp ${BASE}/scanner.jar ScannerTest ${TEST_STRINGS} > result 2>&1
 
-diff result ${BASE}/expected/${FULLLANG}.txt
+diff result ${BASE}/expected/${FULLLANG}.txt  > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

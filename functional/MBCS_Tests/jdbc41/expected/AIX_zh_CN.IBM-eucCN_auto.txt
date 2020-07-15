@@ -1,21 +1,11 @@
 Execute CREATE TABLE.
-java.sql.SQLSyntaxErrorException: Lexical error at line 1, column 15.  Encountered: "\u3000" (12288), after : "".
-	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.TransactionResourceImpl.wrapInSQLException(Unknown Source)
-	at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedConnection.handleException(Unknown Source)
-	at org.apache.derby.impl.jdbc.ConnectionChild.handleException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedStatement.execute(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedStatement.executeLargeUpdate(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedStatement.executeUpdate(Unknown Source)
-	at jdbc41autoclose.main(jdbc41autoclose.java:43)
-Caused by: ERROR 42X02: Lexical error at line 1, column 15.  Encountered: "\u3000" (12288), after : "".
-	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
-	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
-	at org.apache.derby.impl.sql.compile.ParserImpl.parseStatementOrSearchCondition(Unknown Source)
-	at org.apache.derby.impl.sql.compile.ParserImpl.parseStatement(Unknown Source)
-	at org.apache.derby.impl.sql.GenericStatement.prepMinion(Unknown Source)
-	at org.apache.derby.impl.sql.GenericStatement.prepare(Unknown Source)
-	at org.apache.derby.impl.sql.conn.GenericLanguageConnectionContext.prepareInternalStatement(Unknown Source)
-	... 4 more
+INSERT INTO 表名 (栏位丁七) VALUES ('啊☆')
+INSERT INTO 表名 (栏位丁七) VALUES ('ANSIString2')
+INSERT INTO 表名 (栏位丁七) VALUES ('ＡＢＣ一丁七／＼～')
+INSERT INTO 表名 (栏位丁七) VALUES ('ABCCDE/\!')
+=== AutoClose is called. ===
+Execute SELECT by jdbc41autoclose.
+1,啊☆
+2,ANSIString2
+3,ＡＢＣ一丁七／＼～
+4,ABCCDE/\!
