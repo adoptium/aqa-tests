@@ -201,6 +201,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										cleanBeforeCheckout()
 										pruneStaleBranch()
 										cloneOptions {
+											shallow(true)
 											timeout(60)
 										}
 									}
