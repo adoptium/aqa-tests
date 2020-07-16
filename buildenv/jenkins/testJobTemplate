@@ -201,8 +201,16 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										cleanBeforeCheckout()
 										pruneStaleBranch()
 										cloneOptions {
+											depth(1)
 											shallow(true)
 											timeout(60)
+										}
+									}
+									configure { git ->
+										git / 'extensions' / 'hudson.plugins.git.extensions.impl.SparseCheckoutPaths' / 'sparseCheckoutPaths' {
+											'hudson.plugins.git.extensions.impl.SparseCheckoutPath' {
+												path("buildenv/jenkins/")
+											}
 										}
 									}
 								}
