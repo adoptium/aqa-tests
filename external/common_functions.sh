@@ -20,7 +20,7 @@ supported_versions="8 9 10 11 12 13 14 15"
 supported_jvms="hotspot openj9"
 
 # Supported distros
-# Distros Note Included: windowsservercore-ltsc2016
+# Distros Not Included: windowsservercore-ltsc2016
 supported_os="alpine debian debianslim ubi ubi-minimal centos clefos ubuntu"
 
 # Supported packges
@@ -30,7 +30,6 @@ supported_packages="jdk jre"
 supported_builds="slim full"
 
 # Supported tests
-# Test Not Included: elasticsearch
 supported_tests="camel derby elasticsearch jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
