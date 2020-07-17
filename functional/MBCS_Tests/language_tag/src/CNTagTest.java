@@ -23,19 +23,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Method;
 
 public class CNTagTest{
-
-    private static Method localizedBy = null;
-    static {
-        try {
-            localizedBy = DateTimeFormatter.class
-                .getDeclaredMethod("localizedBy", Locale.class);
-        } catch (NoSuchMethodException nsme) {
-        }
-    }
-
     // NUMBER
     @Test
     public void numberTest(){
@@ -143,19 +132,11 @@ public class CNTagTest{
         assertEquals("tz-cnsha", l.getExtension('u'));
         assertEquals("cnsha", l.getUnicodeLocaleType("tz"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Shanghai", formatter.getZone().toString());
-                assertEquals("Asia/Shanghai", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Shanghai", formatter.getZone().toString());
+        assertEquals("Asia/Shanghai", zdt.format(formatter));
     }
 
     @Test
@@ -170,19 +151,11 @@ public class CNTagTest{
         assertEquals("cnsha", l.getUnicodeLocaleType("tz"));
         assertEquals("roc", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Shanghai"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 ah:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Shanghai", formatter.getZone().toString());
-                assertEquals("民国108年6月1日 下午12:00:00 Asia/Shanghai", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Shanghai"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 ah:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Shanghai", formatter.getZone().toString());
+        assertEquals("民国108年6月1日 下午12:00:00 Asia/Shanghai", zdt.format(formatter));
     }
 
     @Test
@@ -199,19 +172,11 @@ public class CNTagTest{
         assertEquals("fullwide", l.getUnicodeLocaleType("nu"));
         assertEquals("roc", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Shanghai"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 ah:mm:ss VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Shanghai", formatter.getZone().toString());
-                assertEquals("民国１０８年６月１日 下午１２:００:００ Asia/Shanghai", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Shanghai"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 ah:mm:ss VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Shanghai", formatter.getZone().toString());
+        assertEquals("民国１０８年６月１日 下午１２:００:００ Asia/Shanghai", zdt.format(formatter));
     }
 
     // FIRST DAY of WEEK

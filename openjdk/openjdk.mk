@@ -38,6 +38,9 @@ ifeq ($(CYGWIN),1)
 		| cut -d "=" -f 2-` / 1024 / 1024 \
 		)
 endif
+ifeq ($(OS),OS/390)
+	EXTRA_OPTIONS += -Dcom.ibm.tools.attach.enable=yes
+endif
 # Upstream OpenJDK, roughly, sets concurrency based on the
 # following: min(NPROCS/2, MEM_IN_GB/2).
 MEM := $(shell expr $(MEMORY_SIZE) / 2048)
@@ -45,6 +48,10 @@ CORE := $(shell expr $(NPROCS) / 2)
 CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
+endif
+# Can't determine cores on zOS, use a reasonable default
+ifeq ($(OS),OS/390)
+	CONC := 4
 endif
 JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter

@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 
+source $(dirname "$0")/test_base_functions.sh
+
 #Set up Java to be used by the functional-test
 
 if [ -d /java/bin ];then
@@ -30,7 +32,8 @@ fi
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
 export BUILD_LIST=functional
-java -version
+
+echo_setup
 
 cd /openjdk-tests
 ./get.sh -t /openjdk-tests

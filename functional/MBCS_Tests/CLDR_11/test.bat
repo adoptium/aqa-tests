@@ -17,6 +17,7 @@ SET BASE=%PWD%
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar PrintLanguageTag`) DO SET LANGTAG=%%i
+FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar JavaVersion`) DO SET JAVAVERSION=%%i
 
 SET USE_ZHTW_WORKAROUND=false
 %JAVA_BIN%\java -cp %PWD%\CLDR_11.jar CheckZHTW
@@ -107,12 +108,24 @@ fc TimeZoneTestA-%LANGTAG%-DEFAULT.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc
 if ErrorLevel 1 ( SET FLAG=1 )
 fc TimeZoneTestA-%LANGTAG%-DEFAULT.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc32.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
-fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
-if ErrorLevel 1 ( SET FLAG=1 )
+if %JAVAVERSION% LSS 11000008 (
+  fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
+  if ErrorLevel 1 ( SET FLAG=1 )
+) else (
+  if %LANGTAG% NEQ zh-TW (
+    fc TimeZoneTestA-%LANGTAG%-JRE.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc33.out 2>&1
+    if ErrorLevel 1 ( SET FLAG=1 )
+  )
+)
+
 REM fc TimeZoneTestA-%LANGTAG%-HOST.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc34.out 2>&1
 REM if ErrorLevel 1 ( SET FLAG=1 )
-fc TimeZoneTestA-%LANGTAG%-SPI.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc35.out 2>&1
-if ErrorLevel 1 ( SET FLAG=1 )
+
+if %JAVAVERSION% LSS 11000007 (
+  fc TimeZoneTestA-%LANGTAG%-SPI.log TimeZoneTestA-%LANGTAG%-CLDR,JRE.log > fc35.out 2>&1
+  if ErrorLevel 1 ( SET FLAG=1 )
+)
+
 fc TimeZoneTestA-%LANGTAG%-CLDR.log expected_TimeZoneTestA-%LANGTAG%-CLDR.log > fc36.out 2>&1
 if ErrorLevel 1 ( SET FLAG=1 )
 

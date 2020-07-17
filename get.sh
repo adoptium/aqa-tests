@@ -273,7 +273,13 @@ getBinaryOpenjdk()
 				echo "curl error code: $download_exit_code"
 				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
 				ls -ld $file
-				md5sum $file
+				
+				if [[ "$OSTYPE" == "darwin"* ]]; then
+				    md5 $file
+				 else
+				    md5sum $file
+				fi
+						
 				exit 1
 			fi
 			set -e
@@ -545,7 +551,9 @@ fi
 _java=${TEST_JDK_HOME}/bin/java
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
+	echo "=JAVA VERSION OUTPUT BEGIN="
 	${_java} -version
+	echo "=JAVA VERSION OUTPUT END="
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique
@@ -562,7 +570,9 @@ else
 
 		java_dir=$(dirname "${_javac}")
 		echo "Run: ${java_dir}/java -version"
+		echo "=JAVA VERSION OUTPUT BEGIN="
 		${java_dir}/java -version
+		echo "=JAVA VERSION OUTPUT END="
 		TEST_JDK_HOME=${java_dir}/../
 		echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 	else

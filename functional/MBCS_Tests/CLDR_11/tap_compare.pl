@@ -70,8 +70,24 @@ $t1 = 'TimeZoneTestA-';
 $f1 = $t1.$langtag.'-DEFAULT.log';
 $f2 = $t1.$langtag.'-CLDR,JRE.log';
 ok(compare($f1, $f2) == 0, $f2);
-foreach $s (('DEFAULT','JRE','SPI')) {
+foreach $s (('DEFAULT')) {
   $f = $t1.$langtag.'-'.$s.'.log';
+  ok(compare($f, $f2) == 0, 'diff '.$f.' '.$f2);
+}
+### Skip this testcase on 11.0.8 ###
+foreach $s (('JRE')) {
+  $f = $t1.$langtag.'-'.$s.'.log';
+  if ($ENV{'JAVAVERSION'} ge '11000008' && $langtag eq 'zh-TW') {
+    ok(1==1, 'Skip TimeZoneTestA DEFAULT with zh-TW on 11.0.8 or later');
+  } else {
+    ok(compare($f1, $f2) == 0, $f2);
+  }
+}
+### Skip this testcase on 11.0.7 ###
+if ($ENV{'JAVAVERSION'} ge '11000007') {
+  ok(1==1, 'Skip TimeZoneTestA SPI on 11.0.7 or later');
+} else {
+  $f = $t1.$langtag.'-SPI.log';
   ok(compare($f, $f2) == 0, 'diff '.$f.' '.$f2);
 }
 $f = $t1.$langtag.'-CLDR.log';

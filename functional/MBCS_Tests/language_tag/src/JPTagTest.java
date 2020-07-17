@@ -23,19 +23,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Method;
 
 public class JPTagTest{
-
-    private static Method localizedBy = null;
-    static {
-        try {
-            localizedBy = DateTimeFormatter.class
-                .getDeclaredMethod("localizedBy", Locale.class);
-        } catch (NoSuchMethodException nsme) {
-        }
-    }
-
     // NUMBER
     @Test
     public void numberTest(){
@@ -143,19 +132,11 @@ public class JPTagTest{
         assertEquals("tz-jptyo", l.getExtension('u'));
         assertEquals("jptyo", l.getUnicodeLocaleType("tz"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Tokyo", formatter.getZone().toString());
-                assertEquals("Asia/Tokyo", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Tokyo", formatter.getZone().toString());
+        assertEquals("Asia/Tokyo", zdt.format(formatter));
     }
 
     @Test
@@ -170,19 +151,11 @@ public class JPTagTest{
         assertEquals("jptyo", l.getUnicodeLocaleType("tz"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Tokyo"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 HH時mm分ss秒 VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Tokyo", formatter.getZone().toString());
-                assertEquals("令和1年6月1日 12時00分00秒 Asia/Tokyo", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Tokyo"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 HH時mm分ss秒 VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Tokyo", formatter.getZone().toString());
+        assertEquals("令和1年6月1日 12時00分00秒 Asia/Tokyo", zdt.format(formatter));
     }
 
     @Test
@@ -199,19 +172,11 @@ public class JPTagTest{
         assertEquals("fullwide", l.getUnicodeLocaleType("nu"));
         assertEquals("japanese", l.getUnicodeLocaleType("ca"));
 
-        try {
-            if (localizedBy != null) {
-                ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Tokyo"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 HH時mm分ss秒 VV");
-                formatter = (DateTimeFormatter) localizedBy.invoke(formatter, l);
-                assertEquals("Asia/Tokyo", formatter.getZone().toString());
-                assertEquals("令和１年６月１日 １２時００分００秒 Asia/Tokyo", zdt.format(formatter));
-            } else {
-                fail("Cannot invoke DateTimeFormatter.localizedBy(Locale)");
-            }
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ZonedDateTime zdt = ZonedDateTime.of(2019,6,1,12,0,0,0,ZoneId.of("Asia/Tokyo"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("GGGGy年M月d日 HH時mm分ss秒 VV");
+        formatter = formatter.localizedBy(l);
+        assertEquals("Asia/Tokyo", formatter.getZone().toString());
+        assertEquals("令和１年６月１日 １２時００分００秒 Asia/Tokyo", zdt.format(formatter));
     }
 
     // FIRST DAY of WEEK

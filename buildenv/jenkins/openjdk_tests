@@ -45,6 +45,14 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
     ],
+    'riscv64_linux' : [
+        'SPEC' : 'linux_riscv64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+    ],
+    'riscv64_linux_xl' : [
+        'SPEC' : 'linux_riscv64',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+    ],
     's390_linux' : [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
@@ -135,9 +143,25 @@ if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
                 def SCM_GIT_REPO = gitConfig.getUrl()
                 def SCM_GIT_BRANCH = scm.branches[0].name
                 cleanWs()
-                sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO} openjdk-tests"
+
+                // SCM_GIT_REPO value only gets expanded in sh
+                def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
+                SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
+
+                sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
             } else {
-                checkout scm
+                def gitConfig = scm.getUserRemoteConfigs().get(0)
+		
+		// Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+		ref_cache = "${env.HOME}/openjdk_cache"
+		   
+                checkout scm: [$class: 'GitSCM',
+                    branches: [[name: "${scm.branches[0].name}"]],
+                    extensions: [
+                        [$class: 'CloneOption', reference: ref_cache],
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                ]
             }
             jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
             jenkinsfile.testBuild()
