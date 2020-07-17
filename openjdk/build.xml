@@ -39,9 +39,40 @@
 					</then>
 				<else>
 					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"/>
-					<exec executable="curl" failonerror="true">
+					<exec executable="curl" failonerror="false" output="curl.download.jtreg.output.tmp.file" resultproperty="curl.download.jtreg.return.code">
 						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
 					</exec>
+					<loadfile srcfile="curl.download.jtreg.output.tmp.file" property="curl.download.jtreg.output"/>
+					<fail message="ERROR: ${curl.download.jtreg.output}">
+						<condition>
+							<and>
+								<not>
+									<equals arg1="${curl.download.jtreg.return.code}" arg2="0"/>
+								</not>
+								<not>
+									<equals arg1="${curl.download.jtreg.return.code}" arg2="18"/>
+								</not>
+							</and>
+						</condition>
+					</fail>
+					<if> <equals arg1="${curl.download.jtreg.return.code}" arg2="18"/>
+						<then>
+							<echo message="Jtreg download failed after partial download. Will attempt to retry after a 20 minute pause."/>
+							<sleep minutes="20"/>
+							<echo message="Deleting the partial jtreg download."/>
+							<delete file="jtreg-4.2.0-tip.tar.gz"/>
+							<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"/>
+							<exec executable="curl" failonerror="true">
+								<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz" />
+							</exec>
+							<echo message="Removing temporary file used to store any messages produced during the initial download attempt."/>
+							<delete file="curl.download.jtreg.output.tmp.file"/>
+						</then>
+					<else>
+						<echo message="Removing temporary file used to store any messages produced during the download."/>
+						<delete file="curl.download.jtreg.output.tmp.file"/>
+					</else>
+					</if>
 				</else>
 				</if>
 				<exec executable="gzip" failonerror="true">
