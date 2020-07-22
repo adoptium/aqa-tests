@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+source $(dirname "$0")/test_base_functions.sh
+
 # Set up Java to be used by the the quarkus openshift test
 
 if [ -d /java/jre/bin ];then
@@ -34,7 +36,7 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-java -version
+echo_setup
 
 export MAVEN_OPTS="-Xmx1g"
 

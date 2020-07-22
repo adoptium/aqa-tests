@@ -26,6 +26,7 @@ import java.lang.reflect.*;
 public class UrlClassClose{
     private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     private int errCnt = 0;
+    protected static final String packageNameTemplate = "com.example.%s.pkg";
 
     UrlClassClose(String jarName, String className, String[] values) throws MalformedURLException {
         System.out.println("jar file name is "+jarName+", class name is "+className);
@@ -33,15 +34,18 @@ public class UrlClassClose{
         String[] result = new String[values.length];
         for(int i=0 ; i<values.length ; i++){
             comp(jarName, className, values[i]);
+            String packageName = String.format(packageNameTemplate, className);
             try {
                 Thread.sleep(100);
                 URLClassLoader loader = new URLClassLoader(new URL[] {url});
-                Class<?> cl = Class.forName(className, true, loader);
+                Class<?> cl = Class.forName(packageName+"."+className, true, loader);
                 Runnable foo = (Runnable) cl.getConstructor().newInstance();
                 System.out.println("\nThe following is foo.run() result./ Count:"+ (i+1) +" times.");
                 foo.run();
-                Field field = foo.getClass().getDeclaredField("st_result");
-                result[i] = (String)field.get(null);
+                Method method = foo.getClass().getDeclaredMethod(className+"_method", (Class<?>[])null);
+                method.invoke(foo, (Object[])null);
+                Field field = foo.getClass().getDeclaredField(className+"_field");
+                result[i] = (String)field.get(foo);
                 loader.close();
                 Thread.sleep(200);
             } catch (Exception e) {
@@ -99,11 +103,15 @@ public class UrlClassClose{
     public void comp(String jarName, String className, String string){
         ArrayList<JavaFileObject> compilationUnit = new ArrayList<JavaFileObject>();
         string = string.replaceAll("\\\\","\\\\\\\\");
-        String javaSource = "public class " + className + 
-        " implements Runnable {" +
-            "public static String st_result = \"" + string + "\";" +
+        String javaSource = "package "+String.format(packageNameTemplate, className)+";\n" +
+            "public class " + className + " implements Runnable {" +
+            "public final static String st_result = \"" + string + "\";" +
+            "public String "+className+"_field;" +
+            "public void "+className+"_method (){" +
+                "System.out.println("+className+"_field);" +
+            "}" +
             "public void run(){" +
-                "System.out.println(st_result);" +
+                className+"_field = st_result;" +
             "}" +
         "}";
         compilationUnit.add(new StringJavaFileObject(className, javaSource));
@@ -115,7 +123,7 @@ public class UrlClassClose{
             JarOutputStream jarOutStream = new JarOutputStream(
                 new BufferedOutputStream(new FileOutputStream(outJarFile)));
             for(String k : fileManager.getKeys()) {
-                JarEntry entry = new JarEntry(k+".class");
+                JarEntry entry = new JarEntry(k.replaceAll("\\.","/")+".class");
                 jarOutStream.putNextEntry(entry);
                 byte[] classData = fileManager.get(k).getBytes();
                 jarOutStream.write(classData);

@@ -134,3 +134,17 @@ ifneq ($(JDK_VERSION),8)
 		endif
 	endif
 endif
+
+PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION).txt
+PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11.txt
+
+# if JDK_IMPL is openj9 or ibm
+ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
+	PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION)-openj9.txt
+	PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11-openj9.txt
+endif
+
+# if cannot find the problem list file, set to default file
+ifeq (,$(wildcard $(PROBLEM_LIST_FILE)))
+	PROBLEM_LIST_FILE:=$(PROBLEM_LIST_DEFAULT)
+endif

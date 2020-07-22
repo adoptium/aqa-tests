@@ -424,7 +424,18 @@ print_test_script() {
     local script=$3
 
     echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY ${test}/dockerfile/${script} /${script}\n" >> ${file}
+            "\nCOPY ${test}/dockerfile/${script} /${script}" \
+            "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+}
+
+print_testInfo_env() {
+    local test=$1
+    local test_tag=$2
+    local OS=$3
+    echo -e "ENV APPLICATION_NAME=${test}" \
+            "\nENV APPLICATION_TAG=${test_tag}" \
+            "\nENV OS_TAG=${OS}" \
+            "\n" >> ${file}
 }
 
 print_clone_project() {
@@ -549,6 +560,7 @@ generate_dockerfile() {
         print_test_script ${file} ${test} ${script};
     fi
 
+    print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
     print_entrypoint ${file} ${script} ${os};
 

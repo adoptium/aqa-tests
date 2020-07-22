@@ -29,14 +29,22 @@ def setupEnv() {
 
 	env.SPEC = "${SPEC}"
 
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+	//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
+	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
+	if (env.SPEC.startsWith('zos')) {
+		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
+		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
+		TKG_REPO = TKG_REPO.replace("https://github.com/","git@github.com:")
+	}
+
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/openjdk-tests.git" : "https://github.com/AdoptOpenJDK/openjdk-tests.git")
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:eclipse/openj9.git" : "https://github.com/eclipse/openj9.git")
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : (env.SPEC.startsWith('zos') ? "git@github.com:AdoptOpenJDK/TKG.git" :"https://github.com/AdoptOpenJDK/TKG.git")
 	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
 	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
@@ -44,13 +52,15 @@ def setupEnv() {
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
 	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
 	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
-
+	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
+	env.RELEASE_TAG = params.RELEASE_TAG ? params.RELEASE_TAG : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
@@ -87,14 +97,6 @@ def setupEnv() {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
-	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
-	if( params.RELEASE_TAG ) {
-		env.RELEASE_TAG = params.RELEASE_TAG
-	}
-	// Optional parameter RELEASE_TAG and it is only used in openjdk regression test
-	if( params.OPENJDK_SHA) {
-		env.OPENJDK_SHA = params.OPENJDK_SHA
-	}
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
@@ -122,10 +124,25 @@ def setupParallelEnv() {
 					childJobNum = 20
 				}
 			} else if (params.PARALLEL == "Dynamic") {
-				int numOfMachines = getNumMachines()
-				String PARALLEL_OPTIONS = "TEST=${TARGET} NUM_MACHINES=${numOfMachines}"
+				String PARALLEL_OPTIONS = "TEST=${TARGET}"
+				if (params.NUM_MACHINES) {
+					int numOfMachines = getNumMachines()
+					PARALLEL_OPTIONS += " NUM_MACHINES=${numOfMachines} TEST_TIME="
+				} else if (params.TEST_TIME) {
+					PARALLEL_OPTIONS += " TEST_TIME=${params.TEST_TIME} NUM_MACHINES="
+				} else {
+					PARALLEL_OPTIONS += " TEST_TIME= NUM_MACHINES="
+				}
 				if (params.TRSS_URL) {
 					PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
+				}
+
+				try {
+					//get cached TRSS JSON data
+					copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
+					sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+				} catch (Exception e) {
+					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
 				}
 
 				try {
@@ -151,7 +168,9 @@ def setupParallelEnv() {
 						NUM_LIST = properties.NUM_LIST.toInteger()
 					}
 				}
-				if ( NUM_LIST > 0) {
+				if (!params.NUM_MACHINES && params.TEST_TIME && NUM_LIST > getHalfSlaves()) {
+					assert false : "Build failed. TEST_TIME (${params.TEST_TIME} minutes) is not possible as there are not enough slave machines. Please provide a larger TEST_TIME."
+				} else if ( NUM_LIST > 0) {
 					childJobNum = NUM_LIST
 					echo "Saving parallelList.mk file on jenkins..."
 					dir('openjdk-tests/TKG') {
@@ -209,7 +228,7 @@ def setupParallelEnv() {
 				def childParams = []
 				// loop through all the params and change the parameters if needed
 				params.each { param ->
-					// set ITERATIONS, PARALLEL, and NUM_MACHINES to default value
+					// set ITERATIONS, PARALLEL, NUM_MACHINES and TEST_TIME to default values
 					if (param.key == "ITERATIONS") {
 						childParams << string(name: param.key, value: "1")
 					} else if (param.key == "BUILD_LIST") {
@@ -219,8 +238,10 @@ def setupParallelEnv() {
 					} else if (param.key == "PARALLEL") {
 						childParams << string(name: param.key, value: "None")
 					} else if (param.key == "NUM_MACHINES") {
-						childParams << string(name: param.key, value: "1")
-					} else {
+						childParams << string(name: param.key, value: "")
+					} else if (param.key == "TEST_TIME") {
+						childParams << string(name: param.key, value: "")
+					}else {
 						def value = param.value.toString()
 						if (value == "true" || value == "false") {
 							childParams << booleanParam(name: param.key, value: value.toBoolean())
@@ -254,17 +275,20 @@ def setupParallelEnv() {
 // num cannot be greater than slave machines / 2
 def getNumMachines(){
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
-	def slaves = nodesByLabel(LABEL).size()
-	if (slaves == 1) {
-		echo "Only 1 slave machine available. Set num to 1"
-		return slaves
-	}
-	int limit = slaves / 2
+	int limit = getHalfSlaves()
 	if (num > limit) {
-		echo "Number of slave machines is ${slaves}. Number of machines cannot be greater than ${slaves} / 2 (=${limit}). Set num to ${limit}"
+		echo "Number of machines cannot be greater than ${limit}. Set num to ${limit}"
 		num = limit
 	}
 	return num
+}
+
+def getHalfSlaves(){
+	def slaves = nodesByLabel(LABEL).size()
+	if (slaves == 1) {
+		return slaves
+	}
+	return slaves / 2
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
@@ -288,6 +312,11 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 			jobParams.put('LEVELS', level)
 			jobParams.put('GROUPS', group)
 		}
+	}
+
+	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
+	if (TEST_JOB_NAME.startsWith("Grinder_")) {
+		jobParams.put('BUILDS_TO_KEEP', 5)
 	}
 
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
@@ -518,40 +547,24 @@ def runTest( ) {
 			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 0; i < ITERATIONS; i++) {
 				echo "ITERATION: ${iterationCount}/${ITERATIONS}"
-				if (env.BUILD_LIST == 'openjdk') {
-					if (env.SPEC.startsWith('linux_x86-64')) {
-						wrap([$class: 'Xvfb', autoDisplayName: true]) {
-							def DISPLAY = sh (
-								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-								returnStdout: true
-							).trim()
-							env.DISPLAY = "${DISPLAY}"
-							echo "env.DISPLAY is ${env.DISPLAY}"
-							makeTest("${RUNTEST_CMD}")
-						}
-					} else {
-						makeTest("${RUNTEST_CMD}")
-					}
-				} else if (env.BUILD_LIST.startsWith('jck')) {
-					if (env.SPEC.startsWith('linux')) {
-						wrap([$class: 'Xvfb', autoDisplayName: true]) {
-							def DISPLAY = sh (
-								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-								returnStdout: true
-							).trim()
-							env.DISPLAY = "${DISPLAY}"
-							echo "env.DISPLAY is ${env.DISPLAY}"
-							makeTest("${RUNTEST_CMD}")
-						}
-					} else if (env.SPEC.startsWith('aix')) {
-						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
-						env.DISPLAY = ":0"
+				if (env.SPEC.startsWith('aix')) {
+					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
+					env.DISPLAY = ":0"
+					echo "env.DISPLAY is ${env.DISPLAY}"	
+					makeTest("${RUNTEST_CMD}")
+				}
+				else if (env.SPEC.startsWith('linux')) {
+					wrap([$class: 'Xvfb', autoDisplayName: true]) {
+						def DISPLAY = sh (
+							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
 						echo "env.DISPLAY is ${env.DISPLAY}"
 						makeTest("${RUNTEST_CMD}")
-					} else {
-						makeTest("${RUNTEST_CMD}")
 					}
-				} else {
+				} 
+				else {
 					makeTest("${RUNTEST_CMD}")
 				}
 				iterationCount++
@@ -563,6 +576,9 @@ def runTest( ) {
 def post(output_name) {
 	stage('Post') {
 		timestamps{
+			if (env.DISPLAY != null) {
+				env.DISPLAY = ""
+			}
 			if (output_name.contains(',')) {
 				output_name = "specifiedTarget"
 			}
@@ -601,8 +617,6 @@ def post(output_name) {
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
-
-			addGrinderLink()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -653,6 +667,7 @@ def testBuild() {
 		try {
 			addJobDescription()
 			setup()
+			addGrinderLink()
 			// prepare environment and compile test projects
 			if( params.PARALLEL && params.PARALLEL != "None" ) {
 				setupParallelEnv()
@@ -773,23 +788,17 @@ def uploadToArtifactory(pattern) {
 }
 
 def addGrinderLink() {
-	def	customTargetOpt = params.CUSTOM_TARGET ? "&CUSTOM_TARGET=${params.CUSTOM_TARGET}" :  ""
-	def	sdkSourceOpt = params.SDK_RESOURCE ? "&SDK_RESOURCE=${params.SDK_RESOURCE}" :  ""
-	def	sdkUrlOpt = params.CUSTOMIZED_SDK_URL ? "&CUSTOMIZED_SDK_URL=${params.CUSTOMIZED_SDK_URL}" : ""
-	def	sdkUrlCredentialOpt = params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID ? "&CUSTOMIZED_SDK_URL_CREDENTIAL_ID=${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}" : ""
-	def	upstreamJobNameOpt = params.UPSTREAM_JOB_NAME ? "&UPSTREAM_JOB_NAME=${params.UPSTREAM_JOB_NAME}" : ""
-	def	upstreamJobNumOpt = params.UPSTREAM_JOB_NUMBER ? "&UPSTREAM_JOB_NUMBER=${params.UPSTREAM_JOB_NUMBER}" : ""
-
-	def url = "${HUDSON_URL}/job/Grinder/parambuild/?" \
-	+ "JDK_VERSION=${params.JDK_VERSION}" \
-	+ "&JDK_IMPL=${params.JDK_IMPL}" \
-	+ "&BUILD_LIST=${params.BUILD_LIST}" \
-	+ "&PLATFORM=${params.PLATFORM}" \
-	+ "&TARGET=${params.TARGET}" \
-	+ "${sdkSourceOpt}${sdkUrlOpt}${sdkUrlCredentialOpt}${customTargetOpt}${upstreamJobNameOpt}${upstreamJobNumOpt}"
-
-	url = url.replace(" ", "%20")
-
+	def url = "${HUDSON_URL}job/Grinder/parambuild/?"
+	int i = 1;
+	params.each { key, value ->
+		url += "${key}=${value}"
+		if (i != params.size()) {
+			url += "&amp;"
+		}
+		i++;
+	}
+	url = url.replace(" ", "&#32;")
+	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
 
