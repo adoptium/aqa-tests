@@ -40,6 +40,11 @@ if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = BUILDS_TO_KEEP.toInteger()
 }
 
+if (!binding.hasVariable('DAYS_TO_KEEP')) {
+	DAYS_TO_KEEP = 60
+} else {
+	DAYS_TO_KEEP = DAYS_TO_KEEP.toInteger()
+}
 
 if (binding.hasVariable('LEVELS')) {
 	LEVELS = LEVELS.split(',')
@@ -222,6 +227,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 						logRotator {
 							numToKeep(BUILDS_TO_KEEP)
 							artifactNumToKeep(BUILDS_TO_KEEP)
+							daysToKeep(DAYS_TO_KEEP)
+							artifactDaysToKeep(DAYS_TO_KEEP)
 						}
 					}
 				}
