@@ -59,7 +59,7 @@ echo " arch_os is ${ARCH_OS_LIST.toString()}"
 JDK_VERSIONS = JDK_VERSIONS.split(',')
 JDK_IMPLS = JDK_IMPLS.split(',')
 TestJobs = [:]
-
+triggerSchedule = params.triggerSchedule ? params.triggerSchedule : ""
 TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 
 node('master') {
@@ -87,17 +87,19 @@ node('master') {
 						def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${JDK_IMPL}_${ARCH_OS}${SUFFIX}"
 						TestJobs["${TEST_JOB_NAME}"] = {
 							echo "create the job ${TEST_JOB_NAME}"
-							createJob(TEST_JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX)
+							createJob(TEST_JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX, triggerSchedule)
 							echo "runing the job $TEST_JOB_NAME}"
-							buildJob(TEST_JOB_NAME, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, OPENJ9_REPO, 
-							OPENJ9_BRANCH, CUSTOM_TARGET, JCK_GIT_REPO, SSH_AGENT_CREDENTIAL, 
-							OPENJ9_SHA, PERSONAL_BUILD, USER_CREDENTIALS_ID, 
-							JRE_IMAGE, JDK_VERSION, JDK_IMPL, JVM_OPTIONS, EXTRA_OPTIONS, 
-							EXTRA_DOCKER_ARGS, TEST_FLAG, KEEP_REPORTDIR, SDK_RESOURCE, 
-							AUTO_DETECT, ITERATIONS, JCK_ROOT, DOCKERIMAGE_TAG, 
-							IS_PARALLEL, BUILD_LIST, TARGET)
+//							buildJob("Test_openjdk8_hotspot_x86-64_linux_personal", ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, OPENJ9_REPO, 
+//							OPENJ9_BRANCH, CUSTOM_TARGET, JCK_GIT_REPO, SSH_AGENT_CREDENTIAL, 
+//							OPENJ9_SHA, PERSONAL_BUILD, USER_CREDENTIALS_ID, 
+//							JRE_IMAGE, JDK_VERSION, JDK_IMPL, JVM_OPTIONS, EXTRA_OPTIONS, 
+//							EXTRA_DOCKER_ARGS, TEST_FLAG, KEEP_REPORTDIR, SDK_RESOURCE, 
+//							AUTO_DETECT, ITERATIONS, JCK_ROOT, DOCKERIMAGE_TAG, 
+//							IS_PARALLEL, BUILD_LIST, TARGET)
+							JOB = build job: TEST_JOB_NAME
 						}
 					}
+				
 				}
 			}
 			parallel TestJobs
@@ -105,13 +107,16 @@ node('master') {
 	}
 }
 
-def createJob( JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX ) {
+def createJob( JOB_NAME, JDK_VERSION, ARCH_OS, SUFFIX, triggerSchedule ) {
     def params = [:]
 	params.put('ARCH_OS', ARCH_OS)
 	params.put('JOB_NAME', JOB_NAME)
 	params.put('SUFFIX', SUFFIX)
 	params.put('JDK_VERSION', JDK_VERSION)
-    def templatePath = 'openjdk-tests/buildenv/jenkins/JobTemplate.groovy'
+	params.put('ADOPTOPENJDK_REPO', "https://github.com/AdoptOpenJDK/openjdk-tests.git")
+	params.put('ADOPTOPENJDK_BRANCH', "master")
+	params.put('triggerSchedule', triggerSchedule)
+    def templatePath = 'buildenv/jenkins/wip/JobTemplate.groovy'
 
     create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: params
     return create

@@ -223,6 +223,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							numToKeep(BUILDS_TO_KEEP)
 							artifactNumToKeep(BUILDS_TO_KEEP)
 						}
+						triggers {
+ 							cron(triggerSchedule)
+ 						}
 					}
 				}
 			}
