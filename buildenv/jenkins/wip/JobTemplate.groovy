@@ -21,14 +21,20 @@
 if (!binding.hasVariable('ARCH_OS')) ARCH_OS = "x86-64_linux"
 if (!binding.hasVariable('SUFFIX')) SUFFIX = '_personal'
 if (!binding.hasVariable('JDK_VERSION')) JDK_VERSION = '8'
-if (!binding.hasVariable('triggerSchedule')) triggerSchedule = ""
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
 } else {
 	BUILDS_TO_KEEP = BUILDS_TO_KEEP.toInteger()
 }
 
-pipelineJob("$JOB_NAME") {
+ROOTFOLDER = "test${SUFFIX}build"
+folder("$ROOTFOLDER")
+folder("$ROOTFOLDER/jobs")
+folder("$ROOTFOLDER/jobs/$JDK_VERSION") {
+	description('Automatically generated test jobs.')
+}
+
+pipelineJob("$ROOTFOLDER/jobs/$JDK_VERSION/$JOB_NAME") {
 	description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in JobTemplate.groovy in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify JobTemplate.groovy script.</p>')
 	definition {
 		parameters {
@@ -76,15 +82,11 @@ pipelineJob("$JOB_NAME") {
 						pruneStaleBranch()
 					}
 				}
-				scriptPath("buildenv/jenkins/wip/openjdk_${ARCH_OS}")
+				scriptPath("buildenv/jenkins/openjdk_${ARCH_OS}")
 				lightweight(true)
 			}
 		}
 		concurrentBuild(false)
-		triggers {
-			cron(triggerSchedule)
-		}
-		
 		logRotator {
 			numToKeep(BUILDS_TO_KEEP)
 			artifactNumToKeep(BUILDS_TO_KEEP)
@@ -92,3 +94,19 @@ pipelineJob("$JOB_NAME") {
 	}
 }
 
+listView("test$SUFFIX") {
+	jobs {
+		name("$ROOTFOLDER/jobs/$JDK_VERSION")
+		regex("Test_openjdk.+$SUFFIX")
+	}
+	recurse(true)
+	columns {
+		status()
+		weather()
+		name()
+		lastSuccess()
+		lastFailure()
+		lastDuration()
+		buildButton()
+	}
+}
