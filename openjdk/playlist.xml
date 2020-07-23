@@ -296,6 +296,32 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>jdk_util_zip_ZipFile_TestCleaner_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)util$(D)zip$(D)ZipFile$(D)TestCleaner.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_math</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
