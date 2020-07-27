@@ -754,6 +754,30 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_foreign_native</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m --add-modules jdk.incubator.foreign $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)foreign(D)TestNative.java$(Q);
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>14+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jdk_instrument</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
