@@ -90,7 +90,8 @@
 							property="JDK_REPO_SPECIFIC"
 							input="${env.JDK_REPO}"
 							regexp="https://github.ibm.com/"
-							replace="git@github.ibm.com:"/>
+							replace="git@github.ibm.com:"
+							defaultValue="${env.JDK_REPO}"/>
 					</then>
 					<else>
 						<property name="JDK_REPO_SPECIFIC" value="${env.JDK_REPO}" />
