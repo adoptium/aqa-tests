@@ -33,6 +33,7 @@ if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
 if (!binding.hasVariable('TARGET')) TARGET = ""
 if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
+if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -230,6 +231,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							daysToKeep(DAYS_TO_KEEP)
 							artifactDaysToKeep(DAYS_TO_KEEP)
 						}
+						triggers {
+ 							cron(TRIGGER_SCHEDULE)
+ 						}
 					}
 				}
 			}
