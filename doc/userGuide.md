@@ -143,19 +143,15 @@ git push origin env_var
 
 This method is to be used when the objective is to set that environment variable for a more generic case.
 
-1.	Open the openj9/test/TKG folder 
+1.	Fork https://github.com/AdoptOpenJDK/TKG  
 
  ![test_config](/doc/diagrams/testConfig.jpg)
  
-2.	Open the testEnv.mk file
+2.	Edit the [testEnv.mk](https://github.com/AdoptOpenJDK/TKG/blob/master/testEnv.mk) file
  
  ![test_env](/doc/diagrams/testEnv.jpg)
  
-3.	Scroll to the bottom of the document 
- 
- ![bottom](/doc/diagrams/bottom.jpg)
- 
-4.	Insert the key word export, followed by your environment variable, without any single or double quotation marks, or spaces
+3.	Insert the key word export, followed by your environment variable, without any single or double quotation marks, or spaces
  
  ![export](/doc/diagrams/otherExport.jpg)
  
@@ -165,24 +161,17 @@ git add --all
 git commit -m "Added TR_Options as an environment variable in testEnv"
 git push origin env_var
 ```
-6.	Go to the Jenkins page, and open up the Grinders
+6.	Go to the Jenkins page, and open up the Grinder_TKG job
 
  ![open_grinders](/doc/diagrams/openGrinders.jpg)
  
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
  
-8.	In the OPENJ9_REPO section, put in the repository you were working from when you made those changes
-  
- ![openj9_repo](/doc/diagrams/openj9Repo.jpg)
- 
-9.	In the OPENJ9_BRANCH section, put in the branch you were on
- 
- ![openj9_branch](/doc/diagrams/openj9Branch.jpg)
- 
-10.	Scroll to the bottom and hit the Build button
+8.	Use your TKG_REPO and TKG_BRANCH where you have made your changes for those parameters instead of the default values
 
- ![build](/doc/diagrams/build.jpg)
- 
+9. 	Scroll to the bottom and hit the Build button
+
+ ![open_grinders](/doc/diagrams/build.jpg)
 
 ## Local testing via make targets on the commandline
 
