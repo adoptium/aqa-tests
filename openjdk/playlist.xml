@@ -244,7 +244,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>jdk_lang_native</testCaseName>
+		<testCaseName>jdk_lang_native_win</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -264,6 +264,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<platformRequirements>os.win</platformRequirements>
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
@@ -295,7 +296,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>jdk_lang_native_j9</testCaseName>
+		<testCaseName>jdk_lang_native_j9_win</testCaseName>
 		<variations>
 			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
 		</variations>
@@ -319,6 +320,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<platformRequirements>os.win</platformRequirements>
 		<impls>
 			<impl>openj9</impl>
 			<impl>ibm</impl>
