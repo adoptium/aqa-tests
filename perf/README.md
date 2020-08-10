@@ -21,30 +21,32 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 
 ```
 //./
-//├── micro
-//├────── idle
-//├────── bumblebench
-//├────── jmh
-//├── odm
-//├── acme_air
-//├── liberty_daytrader
+//├── bumbleBench
+//├── idle_micro
+//├── dacapo
+//├── renaissance
+//├── liberty
+
 ```
-Each subdirectory requires a build.xml file describing where to pull the benchmark suite from, and how to build and run it.  Each subdirectory also requires a playlist.xml file which describes what commands to run in order to execute a particular benchmark run.
+Each subdirectory requires a build.xml file describing where to pull the benchmark suite from, and how to build and run it.  Each subdirectory also requires a playlist.xml file which describes 1 or more benchmarks and what commands to run in order to execute a particular benchmark run.
+
 ### Microbenchmarks
 #### idle_micro
 Currently we run a single micro-benchmark called idle_micro against OpenJDK8 builds (both hotspot and openj9 variants).  
 
 #### bumblebench  
-In plan, we intend to add other microbenchmarks found in the [bumblebench repo](https://github.com/AdoptOpenJDK/bumblebench).  There are already a good variety of microbenchmarks for evaluating performance of various aspects of code, such as string, lambda, gpu, math, crypto, etc.
+Microbenchmarks found in the [bumblebench repo](https://github.com/AdoptOpenJDK/bumblebench).  There are already a good variety of microbenchmarks for evaluating performance of various aspects of code, such as string, lambda, gpu, math, crypto, etc.  Microbenches include bumbleBench-ArrayListForEachConsumerAnonymousBench, bumbleBench-ArrayListForEachConsumerFinalBench, bumbleBench-ArrayListForEachLambdaBench, bumbleBench-ArrayListForEachTradBench, bumbleBench-ArrayListRemoveIfLambdaBench, bumbleBench-ArrayListRemoveIfTradBench, bumbleBench-ArrayListSortCollectionsBench, bumbleBench-ArrayListSortComparatorBench, bumbleBench-ArrayListSortLambdaBench, bumbleBench-HashMapForEachBiConsumerAnonymousBench, bumbleBench-HashMapForEachBiConsumerFinalBench, bumbleBench-HashMapForEachLambdaBench, bumbleBench-HashMapForEachTradBench, bumbleBench-HashMapReplaceAllLambdaBench, bumbleBench-HashMapReplaceAllTradBench, bumbleBench-CipherBench, bumbleBench-DigestBench, bumbleBench-EllipticCurveBench, bumbleBench-GCMBench, bumbleBench-HMACBench, bumbleBench-KeyExchangeBench, bumbleBench-RSABench, bumbleBench-SignatureBench, bumbleBench-SSLSocketBench, bumbleBench-BitonicBench-CPU, bumbleBench-BitonicBench-GPULambda, bumbleBench-DoitgenBench-CPU, bumbleBench-DoitgenBench-GPULambda, bumbleBench-KmeansBench-CPU, bumbleBench-KmeansBench-GPULambda, bumbleBench-MatMultBench-CPU, bumbleBench-MatMultBench-GPULambda, bumbleBench-DistinctStringsEqualsBench, bumbleBench-NewStringBufferWithCapacityBench, bumbleBench-NewStringBuilderWithCapacityBench, bumbleBench-SameStringsEqualsBench, bumbleBench-DispatchBench-InnerClasses, bumbleBench-FibBench-Vanilla, bumbleBench-FibBench-InnerClass, bumbleBench-FibBench-Lambda, bumbleBench-FibBench-LocalLambda, bumbleBench-FibBench-DynamicLambda, bumbleBench-FibBench-LocalMethodReferences, bumbleBench-GroupingBench-Serial, bumbleBench-GroupingBench-Parallel, bumbleBench-SieveBench, bumbleBench-ExactBench, bumbleBench-SIMDDoubleMaxMinBench, bumbleBench-StringConversionBench, bumbleBench-StringHashBench, bumbleBench-StringIndexOfBench and bumbleBench-StringIndexOfStringBench.
 
 ### Full Benchmark Suites
 Transparency and the ability to see how the binaries are being exercised is important to us.  We will focus on running fully open-sourced benchmarks at AdoptOpenJDK so that developers have full-access to see the benchmarking code.  
 
-#### odm 
-Added, but not running regularly in builds, as some of the test materials are not yet available in the open.  
+#### dacapo
+Dacapo benchmarks from https://github.com/dacapobench/dacapobench - including dacopo-eclipse, dacapo-avrora, dacapo-fop, dacapo-h2, dacapo-jython, dacapo-luindex, dacapo-lusearch-fix, dacapo-pmd, dacapo-sunflow, dacapo-tomcat and dacapo-xalan.
 
-#### acme_air 
-In plan, benchmark material to be cloned from the [acme-air git repo](https://github.com/blueperf/acmeair-monolithic-java).
+#### liberty
+Liberty benchmarks from https://github.com/OpenLiberty - including liberty-dt7-startup and liberty-dt7-throughput
 
-#### liberty_daytrader
-In plan
+#### renaissance
+Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance - including renaissance-akka-uct, renaissance-als, renaissance-chi-square, renaissance-db-shootout, renaissance-dec-tree, renaissance-finagle-chirper, renaissance-finagle-http, renaissance-fj-kmeans, renaissance-future-genetic, renaissance-gauss-mix, renaissance-log-regression, renaissance-mnemonics, renaissance-movie-lens, renaissance-naive-bayes, renaissance-par-mnemonics, renaissance-philosophers and renaissance-scala-kmeans
+
+Additional benchmarks are being reviewed for addition and if you wish to include more, please comment in the open performance benchmarks [issue 1112](https://github.com/AdoptOpenJDK/openjdk-tests/issues/1112).
