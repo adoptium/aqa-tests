@@ -31,13 +31,16 @@ def setupEnv() {
 
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
-	TKG_REPO = params.TKG_REPO ? params.TKG_REPO : "https://github.com/AdoptOpenJDK/TKG.git"
+
+	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "AdoptOpenJDK:master", "TKG")
+	TKG_REPO = tkg[0]
+	TKG_BRANCH = tkg[1]
+
 	//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 	if (env.SPEC.startsWith('zos')) {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
-		TKG_REPO = TKG_REPO.replace("https://github.com/","git@github.com:")
 	}
 
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
@@ -45,7 +48,6 @@ def setupEnv() {
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	TKG_BRANCH = params.TKG_BRANCH ? params.TKG_BRANCH : "master"
 	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
@@ -822,6 +824,25 @@ def run_parallel_tests() {
 			}	
 		}
 	}
+}
+
+def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
+	String[] actualRepoBranch = defaultOwnerBranch.split(":")
+	if (ownerBranch) {
+		String[] tokens = ownerBranch.split(":")
+		if (tokens.size() == 2 ) {
+			actualRepoBranch = tokens;
+		}
+	}
+
+	String owner = actualRepoBranch[0].trim()
+	String repoURL = "https://github.com/${owner}/${repo}.git"
+	if (env.SPEC.startsWith('zos')) {
+		repoURL = repoURL.replace("https://github.com/","git@github.com:")
+	}
+	actualRepoBranch[0] = repoURL
+	actualRepoBranch[1] = actualRepoBranch[1].trim()
+	return actualRepoBranch
 }
 
 return this
