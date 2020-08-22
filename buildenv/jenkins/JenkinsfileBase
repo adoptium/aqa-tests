@@ -375,29 +375,24 @@ def setup() {
 			TKG_SHA_OPTION = (params.TKG_SHA) ? "--tkg_sha ${params.TKG_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
+
 			// system test repository exports to be used by system/common.xml
-			if (params.ADOPTOPENJDK_SYSTEMTEST_REPO) {
-				env.ADOPTOPENJDK_SYSTEMTEST_REPO = params.ADOPTOPENJDK_SYSTEMTEST_REPO
+			if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
+				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "AdoptOpenJDK:master", "openjdk-systemtest")
+				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
+				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
 			}
 
-			if (params.ADOPTOPENJDK_SYSTEMTEST_BRANCH) {
-				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = params.ADOPTOPENJDK_SYSTEMTEST_BRANCH
+			if (params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
+				String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
+				env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
+				env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
 			}
 
-			if (params.OPENJ9_SYSTEMTEST_REPO) {
-				env.OPENJ9_SYSTEMTEST_REPO = params.OPENJ9_SYSTEMTEST_REPO
-			}
-
-			if (params.OPENJ9_SYSTEMTEST_BRANCH) {
-				env.OPENJ9_SYSTEMTEST_BRANCH = params.OPENJ9_SYSTEMTEST_BRANCH
-			}
-
-			if (params.STF_REPO) {
-				env.STF_REPO = params.STF_REPO
-			}
-
-			if (params.STF_BRANCH) {
-				env.STF_BRANCH = params.STF_BRANCH
+			if (params.STF_OWNER_BRANCH) {
+				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "AdoptOpenJDK:master", "stf")
+				env.STF_REPO = stf[0]
+				env.STF_BRANCH = stf[1]
 			}
 
 			// vendor test
