@@ -788,6 +788,7 @@ def addGrinderLink() {
 	def url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
 	params.each { key, value ->
+		value = value.toString().replace("&", "%26")
 		url += "${key}=${value}"
 		if (i != params.size()) {
 			url += "&amp;"
