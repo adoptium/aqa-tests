@@ -552,11 +552,17 @@ if [[ $TEST_JDK_HOME == "" ]]; then
 	TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
 fi
 _java=${TEST_JDK_HOME}/bin/java
+_release=${TEST_JDK_HOME}/release
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
 	echo "=JAVA VERSION OUTPUT BEGIN="
 	${_java} -version
 	echo "=JAVA VERSION OUTPUT END="
+	if [ -e ${_release} ]; then 
+		echo "=RELEASE INFO BEGIN="
+		cat ${_release}
+		echo "=RELEASE INFO END="
+	fi
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique
