@@ -132,6 +132,10 @@ if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
     println "LABEL: ${LABEL}"
 
     stage('Queue') {
+        def nodes = nodesByLabel(LABEL).size()
+        if (nodes < 1) {
+            assert false : "Cannot find any machine that matches with the LABEL"    
+        }
         node(LABEL) {
             if (params.PLATFORM.contains('zos')) {
                 /* Ensure correct CC env */
