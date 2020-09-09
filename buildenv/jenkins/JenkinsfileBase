@@ -95,6 +95,9 @@ def setupEnv() {
 	env.JCK_ROOT = params.JCK_ROOT ? params.JCK_ROOT : ""
 	env.JCK_GIT_REPO = params.JCK_GIT_REPO ? params.JCK_GIT_REPO : ""
 
+	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
+	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
+
 	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
