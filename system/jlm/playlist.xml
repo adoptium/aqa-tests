@@ -25,7 +25,6 @@
 		</groups>
 	</test>
 	
-	<!-- Excluding the following test for Hotspot all releases and OpenJ9 all releases except jdk8 due to https://github.com/eclipse/openj9/issues/1566  -->
 	<test>
 		<testCaseName>TestJlmLocal</testCaseName>
 		<variations>
@@ -33,22 +32,14 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmLocal; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-</test>
+	</test>
 	
-	<!-- Excluding the following test for openj9 for eclipse/openj9/issues/1520  -->
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
@@ -65,8 +56,7 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
-	
-	<!--Exclude TestJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145.  Reinstating to assess whether issue is still relevant. SR: 20200908-->
+
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
 		<variations>
@@ -81,8 +71,7 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
-	<!--Exclude TestJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145.  Reinstating to assess whether issue is still relevant. SR: 20200908-->
+
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
@@ -100,7 +89,6 @@
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
 
-	<!--Exclude TestJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145.  Reinstating to assess whether issue is still relevant. SR: 20200908-->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
 		<variations>
@@ -133,8 +121,7 @@
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
 
-	<!--Exclude TestJlmRemoteThreadNoAuth for Hotspot all releases and OpenJ9 all releases except jdk8 due to https://github.com/eclipse/openj9/issues/1566  -->
-	<!--Exclude from Windows due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/208.  Reinstating to assess whether issue is still relevant. SR: 20200908 -->
+	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
 		<variations>
@@ -142,9 +129,6 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteThreadAuth; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -153,6 +137,7 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
+
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
 		<variations>
@@ -160,21 +145,14 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteThreadNoAuth; \
 	$(TEST_STATUS)</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
 		<levels>
 			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-</test>
-	
+	</test>
+
 	<!-- The following JLM tests are specific to OpenJDK-OpenJ9, they run tests from openj9.test.jlm project -->
 	<test>
 		<testCaseName>TestIBMJlmLocal</testCaseName>
