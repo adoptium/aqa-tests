@@ -125,6 +125,14 @@
 						<move file="openjdktemp" tofile="openjdk-jdk"/>
 					</else>
 				</if>
+				<if>
+					<contains string="${env.JDK_REPO}" substring="dragonwell"/>
+					<then>
+						<exec executable="bash" failonerror="true" dir="openjdk-jdk">
+							<arg line="get_source_dragonwell.sh -s github" />
+						</exec>
+					</then>
+				</if>
 			</then>
 			<else>
 				<if>
