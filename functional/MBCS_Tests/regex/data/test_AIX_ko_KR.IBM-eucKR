@@ -18,68 +18,68 @@
 #SYSENC=${LANG%.*}.`locale charmap`
 SOURCE=$1
 
-echo "------------ Pattern matching test ------------"
+echo '------------ Pattern matching test ------------'
 
-java SimpleGrep "Æ¯¼ö" ${SOURCE}
-echo "--- Confirm that the line(s) includes "Æ¯¼ö". "
-read word1?"--- Did you get the line(s) 14,23,31,43 ?"
+java SimpleGrep 'Æ¯¼ö' "${SOURCE}"
+echo '--- Confirm that the line(s) includes Æ¯¼ö. '
+#read word1?"--- Did you get the line(s) 14,23,31,43 ?"
 echo
 
-java SimpleGrep "gnome" ${SOURCE}
-echo "--- Confirm that the line(s) includes the pattern "gnome". "
-read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
+java SimpleGrep 'gnome' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern gnome. '
+#read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
 echo
 
-java SimpleGrep "^¤¡" ${SOURCE}
-echo "--- Confirm that the line(s) starts with "¤¡"."
-read word1?"--- Did you get the line(s) 98,185 ?"
+java SimpleGrep '^¤¡' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with ¤¡.'
+#read word1?"--- Did you get the line(s) 98,185 ?"
 echo
 
-java SimpleGrep ¹®Á¦ ${SOURCE}
-echo "--- Confirm that the line(s) includes "¹®Á¦". "
-read word1?"--- Did you get the line(s) 85,86,88 ?"
+java SimpleGrep '¹®Á¦' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ¹®Á¦. '
+#read word1?"--- Did you get the line(s) 85,86,88 ?"
 echo
 
-java SimpleGrep "Ê¥áÜ" ${SOURCE}
-echo "--- Confirm that the line(s) includes "Ê¥áÜ". "
-read word1?"--- Did you get the line(s) 234,235,236 ?"
+java SimpleGrep 'Ê¥áÜ' "${SOURCE}"
+echo '--- Confirm that the line(s) includes Ê¥áÜ. '
+#read word1?"--- Did you get the line(s) 234,235,236 ?"
 echo
 
-java SimpleGrep "Ê§Ê§ÓÞáÅ" ${SOURCE}
-echo "--- Confirm that the line(s) includes "Ê§Ê§ÓÞáÅ". "
-read word1?"--- Did you get the line 124 ?"
+java SimpleGrep 'Ê§Ê§ÓÞáÅ' "${SOURCE}"
+echo '--- Confirm that the line(s) includes Ê§Ê§ÓÞáÅ. '
+#read word1?"--- Did you get the line 124 ?"
 echo
 
-java SimpleGrep ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð ${SOURCE}
-echo "--- Confirm that the line(s) includes any of  ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð"
-read word1?"--- Did you get the line(s) 98  ?"
+java SimpleGrep '¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of  ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð'
+#read word1?"--- Did you get the line(s) 98  ?"
 echo
 
 echo
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest £±£²£³£´£µ£¶£·£¸£¹ Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢ ${SOURCE} -v
-echo "--- Confirm that "£±£²£³£´£µ£¶£·£¸£¹" was replaced by "Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢". "
-read word1?"--- OK ?"
+java RegexReplaceTest '£±£²£³£´£µ£¶£·£¸£¹' 'Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢' "${SOURCE}" -v
+echo '--- Confirm that £±£²£³£´£µ£¶£·£¸£¹ was replaced by Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest °¡Á¤±³»ç Ê«ïÔÎçÞÔ ${SOURCE} -v
-echo "--- Confirm that "°¡Á¤±³»ç" was replaced by "Ê«ïÔÎçÞÔ". "
-read word1?"--- OK ?"
+java RegexReplaceTest '°¡Á¤±³»ç' 'Ê«ïÔÎçÞÔ' "${SOURCE}" -v
+echo '--- Confirm that °¡Á¤±³»ç was replaced by Ê«ïÔÎçÞÔ. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "ËþÙý" "°Ë¹®" ${SOURCE} -v
-echo "--- Confirm that "ËþÙý" was replaced by "°Ë¹®". "
-read word1?"--- OK ?"
+java RegexReplaceTest 'ËþÙý' '°Ë¹®' "${SOURCE}" -v
+echo '--- Confirm that ËþÙý was replaced by °Ë¹®. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "°¡.*È£" "Ê«Ê«ûÂûÂ" ${SOURCE} -v
-echo "--- Confirm that "°¡.*È£" was replaced by "Ê«Ê«ûÂûÂ". "
-read word1?"--- OK ?"
+java RegexReplaceTest '°¡.*È£' 'Ê«Ê«ûÂûÂ' "${SOURCE}" -v
+echo '--- Confirm that °¡.*È£ was replaced by Ê«Ê«ûÂûÂ. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "Ê«Í§" "Ê«ÍªÝ­" ${SOURCE} -v
-echo "--- Confirm that "Ê«Í§" replaced by "Ê«ÍªÝ­". "
-read word1?"--- OK ?"
+java RegexReplaceTest 'Ê«Í§' 'Ê«ÍªÝ­' "${SOURCE}" -v
+echo '--- Confirm that Ê«Í§ replaced by Ê«ÍªÝ­. '
+#read word1?"--- OK ?"
 echo
 echo

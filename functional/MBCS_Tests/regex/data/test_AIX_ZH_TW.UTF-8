@@ -1,4 +1,3 @@
-#!/bin/ksh
 ################################################################################
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,62 +16,82 @@
 
 SOURCE=$1
 
-echo "------------ Pattern matching test ------------"
+echo '------------ Pattern matching test ------------'
 
-java SimpleGrep 輆輅輂 ${SOURCE}
-echo "--- Confirm that the line(s) includes "輆輅輂". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep 'あ刓佚惁邿' "${SOURCE}"
+echo '--- Confirm that the line(s) includes あ刓佚惁邿. '
+echo '--- Did you get the line(s) 11,12 and 49 ?'
+#read word1
 
-java SimpleGrep "鉬*鉏" ${SOURCE}
-echo "--- Confirm that the line(s) includes the pattern "鉬*鉏". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep 'あ.*邿' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern あ*邿. '
+echo '--- Did you get the line(s) 11,12,49,50,52 and 54 ?'
+#read word1
 
-java SimpleGrep "^澉" ${SOURCE}
-echo "--- Confirm that the line(s) starts with "澉"."
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '^襺' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with 襺.'
+echo '--- Did you get the line(s) 55,56 and 57 ?'
+#read word1
 
-java SimpleGrep "髳" ${SOURCE}
-echo "--- Confirm that the line(s) includes "髳". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '囈冥' "${SOURCE}"
+echo '--- Confirm that the line(s) includes half-width Katakana 囈冥. '
+echo '--- Did you get the line(s) 19,20 and 41 ?'
+#read word1
 
-java SimpleGrep "氀" ${SOURCE}
-echo "--- Confirm that the line(s) includes "氀". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '＃' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ＃. '
+echo '--- Did you get the line(s) 24 and 64 ?'
+#read word1
 
-java SimpleGrep "表噂十豹" ${SOURCE}
-echo "--- Confirm that the line(s) includes "表噂十豹". "
-echo "--- Did you get the line 33 ?"
-read word1
+java SimpleGrep '#' "${SOURCE}"
+echo '--- Confirm that the line(s) includes #. '
+echo '--- Did you get the line(s) 11,16,20,24,26 and 37 ?'
+#read word1
 
+java SimpleGrep '埌.*名' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern 埌.*名. '
+echo '--- Did you get the line 74 ?'
+#read word1
 
+java SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
+echo '--- Confirm that the line(s) includes あかさ. '
+echo '--- Did you get the line 33 ?'
+#read word1
+
+java SimpleGrep '[鼽☆Ж]' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of 鼽,☆ or Ж. '
+echo '--- Did you get the line(s) 62,64 and 72 ?'
+#read word1
+
+#read word1
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest 輆輅輂 aiueo ${SOURCE} -v
-echo "--- Confirm that "輆輅輂" was replaced by "aiueo". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest 'あ刓佚惁邿' 'aiueo' "${SOURCE}" -v
+echo '--- Confirm that あ刓佚惁邿 was replaced by aiueo. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest 髳 僇僞僇僫 ${SOURCE} -v
-echo "--- Confirm that "髳" was replaced by "僇僞僇僫". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '囈冥' '殑貘殑璲' "${SOURCE}" -v
+echo '--- Confirm that 囈冥 was replaced by 殑貘殑璲. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "氀" "\\\\" ${SOURCE} -v
-echo "--- Confirm that "氀" was replaced by "\\". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '＃' '#' "${SOURCE}" -v
+echo '--- Confirm that ＃ was replaced by #. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "抎駡U郂" "椷噲" ${SOURCE} -v
-echo "--- Confirm that "抎駡U郂" was replaced by "椷噲". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '埌.*名' '５ｃ漚菘嬃' "${SOURCE}" -v
+echo '--- Confirm that 埌.*名 was replaced by ５ｃ漚菘嬃. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest [仝☆Ж] 記号 ${SOURCE} -v
-echo "--- Confirm that any of "仝☆Ж" were replaced by "記号". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '\u3042\u304b\u3055' '名茗' "${SOURCE}" -v
+echo '--- Confirm that あかさ was replaced by 名茗. '
+echo '--- OK ?'
+#read word1
+
+java RegexReplaceTest '[鼽☆Ж]' '沉詏' "${SOURCE}" -v
+echo '--- Confirm that any of 鼽☆Ж were replaced by 沉詏. '
+echo '--- OK ?'
+#read word1

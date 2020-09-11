@@ -1,394 +1,86 @@
 ------------ Pattern matching test ------------
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that the line(s) includes ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡. 
---- Did you get the line(s) ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-12: ¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-18:    #java SimpleGrep "^¡¡¡¡¡¡¡¡" zh-cn.txt
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-22:    #java SimpleGrep ¡¡ zh-cn.txt
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-25:    #java SimpleGrep ¡¡ zh-cn.txt
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-28: ±í¡¡¡¡Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
-44: èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that the line(s) includes the pattern ¡¡*¡¡. 
---- Did you get the line(s) ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-12: ¡¡¡¡¡¡¡¡
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
---- Confirm that the line(s) starts with ¡¡.
---- Did you get the line(s) ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-12: ¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-18:    #java SimpleGrep "^¡¡¡¡¡¡¡¡" zh-cn.txt
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-22:    #java SimpleGrep ¡¡ zh-cn.txt
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-25:    #java SimpleGrep ¡¡ zh-cn.txt
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-28: ±í¡¡¡¡Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
-44: èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that the line(s) includes ¡¡. 
---- Did you get the line(s) ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-12: ¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-18:    #java SimpleGrep "^¡¡¡¡¡¡¡¡" zh-cn.txt
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-22:    #java SimpleGrep ¡¡ zh-cn.txt
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-25:    #java SimpleGrep ¡¡ zh-cn.txt
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-28: ±í¡¡¡¡Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
-44: èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that the line(s) includes ¡¡. 
---- Did you get the line(s) ?
-28: ±í¡¡¡¡Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that the line(s) includes ±í¡¡¡¡Ãû. 
+11:    #java SimpleGrep ¤¢òÙÄößïÍÐ EUC-JP.txt
+12: âÊ÷ùæ«ß«±ÃÆÊÞÁ¡¸¤¢òÙÄößïÍÐ¡¹ô¬Ù¿èÙØªæ«¡¢ÇîñûãÓæýµÎ¤µÁÄ»Òñû½ú¤«£¿
+49: ¤¢òÙÄößïÍÐ
+--- Confirm that the line(s) includes ¤¢òÙÄößïÍÐ. 
+--- Did you get the line(s) 11,12 and 49 ?
+11:    #java SimpleGrep ¤¢òÙÄößïÍÐ EUC-JP.txt
+12: âÊ÷ùæ«ß«±ÃÆÊÞÁ¡¸¤¢òÙÄößïÍÐ¡¹ô¬Ù¿èÙØªæ«¡¢ÇîñûãÓæýµÎ¤µÁÄ»Òñû½ú¤«£¿
+49: ¤¢òÙÄößïÍÐ
+50: ¤¢òÙÄöð¨ÍÐ
+52: ¤¢÷ää£ßïÍÐ
+54: Àø±Ü¤¢õ¡»ÒñûìûÍÐÂ¹ÏïãúÄöÉ¼ÃÂòÙ»Òòò
+--- Confirm that the line(s) includes the pattern ¤¢*ÍÐ. 
+--- Did you get the line(s) 11,12,49,50,52 and 54 ?
+55: ðÓÆÊ±ÃÆÊÞÁê¸âÌà¸Ìð
+56: ðÓ×­àí
+57: ðÓ¶ÞÜ¤ãè
+--- Confirm that the line(s) starts with ðÓ.
+--- Did you get the line(s) 55,56 and 57 ?
+19: Ø¿²ßóñ¼óóñõ©ô¬´ÐìûÏ×»Òñû÷èÄö¡£
+20:    #java SimpleGrep óñõ© EUC-JP.txt
+41: ÆÊê¸âÌâÛÆ¿à¸Ìð±ÃÆÊÞÁ¡¹÷þÇâÄöß«ðÓÆÊ÷þ±ÃÆÊÞÁÁç¡¢¡¸¤«ß«Á½¸·óñõ©Kan
+--- Confirm that the line(s) includes half-width Katakana óñõ©. 
+--- Did you get the line(s) 19,20 and 41 ?
+24:    #java SimpleGrep "££" EUC-JP.txt
+64: £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥£££¦£ª£À¡ì¡î¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+--- Confirm that the line(s) includes ££. 
+--- Did you get the line(s) 24 and 64 ?
+11:    #java SimpleGrep ¤¢òÙÄößïÍÐ EUC-JP.txt
+16:    #java SimpleGrep "^ðÓÆÊ" EUC-JP.txt
+20:    #java SimpleGrep óñõ© EUC-JP.txt
+24:    #java SimpleGrep "££" EUC-JP.txt
+26:    #java SimpleGrep "#" EUC-JP.txt
+37:      #java SimpleGrep "\u3042\u304b\u3055\u305f\u306a" EUC-JP.txt
+--- Confirm that the line(s) includes #. 
+--- Did you get the line(s) 11,16,20,24,26 and 37 ?
+74: µíïþé£äúô©íÐÓ«§¼×¤âÛàÈ½²÷¤àÁ°Óô¹Ñ×çÊÏ¼£¯îªÓ½Íú§À
+--- Confirm that the line(s) includes the pattern ïþ.*½². 
+--- Did you get the line 74 ?
+33: ß«¹¦ìûòÙ»Òòò¡£½úãúßïî¢¡¢âÊ÷ùæ«ß«¡¸¤¢¤«¤µ½úß«¡¹ô¬ Unicode ó·¼¬
+--- Confirm that the line(s) includes ¤¢¤«¤µ. 
 --- Did you get the line 33 ?
+62: ¡¡¡¢¡££¬£®Òó£º£»£¿£¡Ö½ÑÅÑþ£à¡§£Þ£þ£ßæ¶ÚÃÉ«ÔÎ¡¨Ù±¡©â´Åæ¼¬íÔåÞ£¯£Ü
+64: £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥£££¦£ª£À¡ì¡î¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+72: §¡§¢§£§¤§¥§¦§§§¨§©§ª§«§¬§­§®§¯§°§±§²§³§´§µ§¶§·§¸§¹§º§»§¼§½§¾§¿§À§Á
+--- Confirm that the line(s) includes any of Ù±,¡î or §¨. 
+--- Did you get the line(s) 62,64 and 72 ?
 ------------ Pattern replacement test ------------
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡DBCSaiueo¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-==>    #java SimpleGrep aiueo zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueoaiueo¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueoaiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+11:    #java SimpleGrep ¤¢òÙÄößïÍÐ EUC-JP.txt
+==>    #java SimpleGrep aiueo EUC-JP.txt
+12: âÊ÷ùæ«ß«±ÃÆÊÞÁ¡¸¤¢òÙÄößïÍÐ¡¹ô¬Ù¿èÙØªæ«¡¢ÇîñûãÓæýµÎ¤µÁÄ»Òñû½ú¤«£¿
+==> âÊ÷ùæ«ß«±ÃÆÊÞÁ¡¸aiueo¡¹ô¬Ù¿èÙØªæ«¡¢ÇîñûãÓæýµÎ¤µÁÄ»Òñû½ú¤«£¿
+49: ¤¢òÙÄößïÍÐ
 ==> aiueo
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueoaiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ±í¡¡¡¡Ãûaiueoaiueo¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueoaiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡øºaiueoø¼¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> aiueoø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾aiueo
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡øÁaiueo¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡øÂaiueo¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-==> aiueo¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕaiueo¡¡
---- Confirm that ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ was replaced by aiueo. 
+--- Confirm that ¤¢òÙÄößïÍÐ was replaced by aiueo. 
 --- OK ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ java.util.regex ¡¡¡¡¡¡¡¡
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-12: ¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-==>    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-18:    #java SimpleGrep "^¡¡¡¡¡¡¡¡" zh-cn.txt
-==>    #java SimpleGrep "^¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡" zh-cn.txt
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-22:    #java SimpleGrep ¡¡ zh-cn.txt
-==>    #java SimpleGrep ¡¡¡¡¡¡¡¡ zh-cn.txt
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-25:    #java SimpleGrep ¡¡ zh-cn.txt
-==>    #java SimpleGrep ¡¡¡¡¡¡¡¡ zh-cn.txt
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-28: ±í¡¡¡¡Ãû
-==> ±í¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ±í¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡¡¡¡¡¡¡
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øØ¡¡¡¡¡¡¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
-==> ¡¡¡¡¡¡¡¡èÔ¡¡¡¡¡¡¡¡èÕ¡¡¡¡¡¡¡¡èÖèÚèØèÙ¡¡¡¡¡¡¡¡è×èÛèÜ¡¡¡¡¡¡¡¡èÝèÞ¡¡¡¡¡¡¡¡èß¡¡¡¡¡¡¡¡èâèá
-44: èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that ¡¡ was replaced by ¡¡¡¡¡¡¡¡. 
+19: Ø¿²ßóñ¼óóñõ©ô¬´ÐìûÏ×»Òñû÷èÄö¡£
+==> Ø¿²ßóñ¼óÁ½ÝåÁ½¸·ô¬´ÐìûÏ×»Òñû÷èÄö¡£
+20:    #java SimpleGrep óñõ© EUC-JP.txt
+==>    #java SimpleGrep Á½ÝåÁ½¸· EUC-JP.txt
+41: ÆÊê¸âÌâÛÆ¿à¸Ìð±ÃÆÊÞÁ¡¹÷þÇâÄöß«ðÓÆÊ÷þ±ÃÆÊÞÁÁç¡¢¡¸¤«ß«Á½¸·óñõ©Kan
+==> ÆÊê¸âÌâÛÆ¿à¸Ìð±ÃÆÊÞÁ¡¹÷þÇâÄöß«ðÓÆÊ÷þ±ÃÆÊÞÁÁç¡¢¡¸¤«ß«Á½¸·Á½ÝåÁ½¸·Kan
+--- Confirm that óñõ© was replaced by Á½ÝåÁ½¸·. 
 --- OK ?
-4: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\
-5: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ ¡¡¡¡¡¡¡¡ java.util.regex ¡¡
-==> \\\\\\\\\ \\\\ java.util.regex \
-6: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\
-7: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\
-9: ¡¡¡¡¡¡¡¡¡¡¡¡DBCS¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\DBCS\\\\\\\\\\\\\\\
-10: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\
-11: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\
-12: ¡¡¡¡¡¡¡¡
-==> \\\\
-13:    #java SimpleGrep ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ zh-cn.txt
-==>    #java SimpleGrep \\\\\\\\\\\\ zh-cn.txt
-14: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\\\\\
-15: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-16: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\
-17: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\\
-18:    #java SimpleGrep "^¡¡¡¡¡¡¡¡" zh-cn.txt
-==>    #java SimpleGrep "^\\\\" zh-cn.txt
-19: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\
-20: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\
-21: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\
-22:    #java SimpleGrep ¡¡ zh-cn.txt
-==>    #java SimpleGrep \ zh-cn.txt
-23: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\
-24: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\
-25:    #java SimpleGrep ¡¡ zh-cn.txt
-==>    #java SimpleGrep \ zh-cn.txt
-26: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\
-27: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-28: ±í¡¡¡¡Ãû
-==> ±í\\Ãû
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ±í\\Ãû\\\\\\\\\\\\\\\\\\\\\\\\\\\
-33: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-34: ¡¡¡¡¡¡¡¡¡¡¡¡øº¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø¼¡¡¡¡
-==> \\\\\\øº\\\\\\\\\\\\ø¼\\
-35: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ø½¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\\\\\\ø½\\\\\\\\\
-36: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡Breaker¡¡¡¡ø¾¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\Breaker\\ø¾\\\\\\\\\\\\
-37: ¡¡ø¿¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÀ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \ø¿\\\\\\\\\øÀ\\\\\\\\\\
-38: ¡¡¡¡¡¡¡¡øÁ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\øÁ\\\\\\\\\\\\\\\\\
-39: ¡¡øÂ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \øÂ\\\\\\\\\\\\\\\\
-40: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÒ¡¡
-==> \\\\\\\\\\\\\\\\\\\øÒ\
-41: ¡¡¡¡¡¡¡¡¡¡¡¡¡¡øÕ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\\\\\øÕ\\\\\\\\\\\\\
-42: ¡¡¡¡¡¡øÖ¡¡¡¡¡¡¡¡øÔ¡¡¡¡¡¡øØ¡¡ø×¡¡¡¡¡¡¡¡¡¡¡¡
-==> \\\øÖ\\\\øÔ\\\øØ\ø×\\\\\\
-43: ¡¡èÔ¡¡èÕ¡¡èÖèÚèØèÙ¡¡è×èÛèÜ¡¡èÝèÞ¡¡èß¡¡èâèá
-==> \èÔ\èÕ\èÖèÚèØèÙ\è×èÛèÜ\èÝèÞ\èß\èâèá
-44: èà¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> èà\\\\\\\\
---- Confirm that ¡¡ was replaced by \. 
+24:    #java SimpleGrep "££" EUC-JP.txt
+==>    #java SimpleGrep "#" EUC-JP.txt
+64: £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥£££¦£ª£À¡ì¡î¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+==> £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥#£¦£ª£À¡ì¡î¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+--- Confirm that ££ was replaced by #. 
 --- OK ?
-28: ±í¡¡¡¡Ãû
-==> ¡¡¡¡
-30: ±í¡¡¡¡Ãû¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
-==> ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
---- Confirm that ±í¡¡¡¡Ãû was replaced by ¡¡¡¡. 
+74: µíïþé£äúô©íÐÓ«§¼×¤âÛàÈ½²÷¤àÁ°Óô¹Ñ×çÊÏ¼£¯îªÓ½Íú§À
+==> µí£µ£ã±ÃÆÊÞÁ÷¤àÁ°Óô¹Ñ×çÊÏ¼£¯îªÓ½Íú§À
+--- Confirm that ïþ.*½² was replaced by £µ£ã±ÃÆÊÞÁ. 
 --- OK ?
-29: 	\u628e\u99e1U\u90c2
-==> 	¡¡\u99e1U\u90c2
-31:      #java SimpleGrep \u628e\u99e1U\u90c2 zh-cn.txt
-==>      #java SimpleGrep ¡¡\u99e1U\u90c2 zh-cn.txt
---- Confirm that \u628e was replaced by ¡¡. 
+33: ß«¹¦ìûòÙ»Òòò¡£½úãúßïî¢¡¢âÊ÷ùæ«ß«¡¸¤¢¤«¤µ½úß«¡¹ô¬ Unicode ó·¼¬
+==> ß«¹¦ìûòÙ»Òòò¡£½úãúßïî¢¡¢âÊ÷ùæ«ß«¡¸½²Ï¼½úß«¡¹ô¬ Unicode ó·¼¬
+--- Confirm that ¤¢¤«¤µ was replaced by ½²Ï¼. 
 --- OK ?
---- Confirm that any of ÙÚ¡î§¨ were replaced by ¡¡ºÅ. 
+62: ¡¡¡¢¡££¬£®Òó£º£»£¿£¡Ö½ÑÅÑþ£à¡§£Þ£þ£ßæ¶ÚÃÉ«ÔÎ¡¨Ù±¡©â´Åæ¼¬íÔåÞ£¯£Ü
+==> ¡¡¡¢¡££¬£®Òó£º£»£¿£¡Ö½ÑÅÑþ£à¡§£Þ£þ£ßæ¶ÚÃÉ«ÔÎ¡¨òâÎß¡©â´Åæ¼¬íÔåÞ£¯£Ü
+64: £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥£££¦£ª£À¡ì¡î¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+==> £½¡Ù£¼£¾Ôô¶ù¡Þ¡à¡á¡â¡ã¡ä¡å¡æ£¤¡ç¡é¡ê£¥£££¦£ª£À¡ìòâÎß¡ï¡ð¡ñ¡ò¡ó¡ô¡õ¡ö
+72: §¡§¢§£§¤§¥§¦§§§¨§©§ª§«§¬§­§®§¯§°§±§²§³§´§µ§¶§·§¸§¹§º§»§¼§½§¾§¿§À§Á
+==> §¡§¢§£§¤§¥§¦§§òâÎß§©§ª§«§¬§­§®§¯§°§±§²§³§´§µ§¶§·§¸§¹§º§»§¼§½§¾§¿§À§Á
+--- Confirm that any of Ù±¡î§¨ were replaced by òâÎß. 
 --- OK ?
