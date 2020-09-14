@@ -16,62 +16,82 @@
 
 SOURCE=$1
 
-echo "------------ Pattern matching test ------------"
+echo '------------ Pattern matching test ------------'
 
-java SimpleGrep àtàxà{ ${SOURCE}
-echo "--- Confirm that the line(s) includes "àtàxà{". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep 'ÆèÉ½§HÙIÐ¹' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ÆèÉ½§HÙIÐ¹. '
+echo '--- Did you get the line(s) 11,12 and 49 ?'
+#read word1
 
-java SimpleGrep "à»*à¼" ${SOURCE}
-echo "--- Confirm that the line(s) includes the pattern "à»*à¼". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep 'Æè.*Ð¹' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern Æè*Ð¹. '
+echo '--- Did you get the line(s) 11,12,49,50,52 and 54 ?'
+#read word1
 
-java SimpleGrep "^æA" ${SOURCE}
-echo "--- Confirm that the line(s) starts with "æA"."
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '^ùI' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with ùI.'
+echo '--- Did you get the line(s) 55,56 and 57 ?'
+#read word1
 
-java SimpleGrep "èÕ" ${SOURCE}
-echo "--- Confirm that the line(s) includes "èÕ". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep 'Åm­ß' "${SOURCE}"
+echo '--- Confirm that the line(s) includes half-width Katakana Åm­ß. '
+echo '--- Did you get the line(s) 19,20 and 41 ?'
+#read word1
 
-java SimpleGrep "åö" ${SOURCE}
-echo "--- Confirm that the line(s) includes "åö". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '¡­' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ¡­. '
+echo '--- Did you get the line(s) 24 and 64 ?'
+#read word1
 
-java SimpleGrep "ªíä÷¤Q°\" ${SOURCE}
-echo "--- Confirm that the line(s) includes "ªíä÷¤Q°\". "
-echo "--- Did you get the line 33 ?"
-read word1
+java SimpleGrep '#' "${SOURCE}"
+echo '--- Confirm that the line(s) includes #. '
+echo '--- Did you get the line(s) 11,16,20,24,26 and 37 ?'
+#read word1
 
+java SimpleGrep 'ÑJ.*¦W' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern ÑJ.*¦W. '
+echo '--- Did you get the line 74 ?'
+#read word1
 
+java SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ÆèÆñÆû. '
+echo '--- Did you get the line 33 ?'
+#read word1
+
+java SimpleGrep '[ì¸¡¸Çú]' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of ì¸,¡¸ or Çú. '
+echo '--- Did you get the line(s) 62,64 and 72 ?'
+#read word1
+
+#read word1
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest àtàxà{ aiueo ${SOURCE} -v
-echo "--- Confirm that "àtàxà{" was replaced by "aiueo". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest 'ÆèÉ½§HÙIÐ¹' 'aiueo' "${SOURCE}" -v
+echo '--- Confirm that ÆèÉ½§HÙIÐ¹ was replaced by aiueo. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest èÕ ¶ÎÈþ¶ÎÈþ ${SOURCE} -v
-echo "--- Confirm that "èÕ" was replaced by "¶ÎÈþ¶ÎÈþ". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest 'Åm­ß' 'ÕÚðñÕÚíg' "${SOURCE}" -v
+echo '--- Confirm that Åm­ß was replaced by ÕÚðñÕÚíg. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "åö" "\\\\" ${SOURCE} -v
-echo "--- Confirm that "åö" was replaced by "\\". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '¡­' '#' "${SOURCE}" -v
+echo '--- Confirm that ¡­ was replaced by #. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "ÊéÈþUÈþ" "ÝìéD" ${SOURCE} -v
-echo "--- Confirm that "ÊéÈþUÈþ" was replaced by "ÝìéD". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest 'ÑJ.*¦W' '¢´¢ëâxÛpåY' "${SOURCE}" -v
+echo '--- Confirm that ÑJ.*¦W was replaced by ¢´¢ëâxÛpåY. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest [Éi¡¸Çú] °OÈþ ${SOURCE} -v
-echo "--- Confirm that any of "Éi¡¸Çú" were replaced by "°OÈþ". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '\u3042\u304b\u3055' '¦W¯ú' "${SOURCE}" -v
+echo '--- Confirm that ÆèÆñÆû was replaced by ¦W¯ú. '
+echo '--- OK ?'
+#read word1
+
+java RegexReplaceTest '[ì¸¡¸Çú]' '¨IÛä' "${SOURCE}" -v
+echo '--- Confirm that any of ì¸¡¸Çú were replaced by ¨IÛä. '
+echo '--- OK ?'
+#read word1

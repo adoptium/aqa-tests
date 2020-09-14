@@ -1,72 +1,86 @@
 ------------ Pattern matching test ------------
-5: –l–»ê£àuàtàxà{àvàzàyà~à|àw
-9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
-20: æAèÎèÏêr–ÊèĞèÑèÒBreakerèÔàtàxà{
---- Confirm that the line(s) includes àtàxà{. 
---- Did you get the line(s) ?
-9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
-12: å÷åøåöåôà»åïåõåùèµà¼åüåû
---- Confirm that the line(s) includes the pattern à»*à¼. 
---- Did you get the line(s) ?
-14: æAæ@æCæBæDæværæwætæuæq
-15: æA¢Ï¢Ğ¢Ñ¢°¢·¢¸¢±¢°³ü®Ã¨h¶L³ü¤@¤B¤C
-18: æAèZèTèSè^è_è]è\è[èdèb
-20: æAèÎèÏêr–ÊèĞèÑèÒBreakerèÔàtàxà{
---- Confirm that the line(s) starts with æA.
---- Did you get the line(s) ?
-4: åh–lãìèÕ–`–Ã•P
-21:  #java SimpleGrep èÕ zh-tw.txt
-22: èÕ
-25: êxêzêyê{ê|èÕê}ê~
---- Confirm that the line(s) includes èÕ. 
---- Did you get the line(s) ?
-6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?şÙ¬¡¯¢I
-11:   #java SimpleGrep å÷åøåöåôåïåõ zh-tw.txt
-12: å÷åøåöåôà»åïåõåùèµà¼åüåû
-16: çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åøåöåô
---- Confirm that the line(s) includes åö. 
---- Did you get the line(s) ?
-6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?şÙ¬¡¯¢I
-17:  ªíä÷¤Q°\
-19:  #java SimpleGrep ªíä÷¤Q°\ zh-tw.txt
---- Confirm that the line(s) includes ªíä÷¤Q°\. 
+11:    #java SimpleGrep ÆèÉ½§HÙIĞ¹ EUC-JP.txt
+12: èìµcô¡ğªâxÛpåY¡uÆèÉ½§HÙIĞ¹¡v°ö¨eÍøéôô¡¡B¾ûù¢¦]ÜfÊVÆû°mËiù¢®yÆñ¡H
+49: ÆèÉ½§HÙIĞ¹
+--- Confirm that the line(s) includes ÆèÉ½§HÙIĞ¹. 
+--- Did you get the line(s) 11,12 and 49 ?
+11:    #java SimpleGrep ÆèÉ½§HÙIĞ¹ EUC-JP.txt
+12: èìµcô¡ğªâxÛpåY¡uÆèÉ½§HÙIĞ¹¡v°ö¨eÍøéôô¡¡B¾ûù¢¦]ÜfÊVÆû°mËiù¢®yÆñ¡H
+49: ÆèÉ½§HÙIĞ¹
+50: ÆèÉ½§H¾cĞ¹
+52: Æè¹äñ_ÙIĞ¹
+54: ÂÛ©ÌÆèÔtËiù¢ÀúĞ¹¥ùÉá´X§H¸æÁíÉ½Ëi«¹
+--- Confirm that the line(s) includes the pattern Æè*Ğ¹. 
+--- Did you get the line(s) 11,12,49,50,52 and 54 ?
+55: ùIÛpâxÛpåYÏøÁë´Zàp
+56: ùIàiÕĞ
+57: ùIÂhùÔÃh
+--- Confirm that the line(s) starts with ùI.
+--- Did you get the line(s) 55,56 and 57 ?
+19: áúó½ÅmÛPÅm­ß°öÉ}Àú±RËiù¢Öé§H¡C
+20:    #java SimpleGrep Åm­ß EUC-JP.txt
+41: ÛpÏøÁëùkÜñ´ZàpâxÛpåY¡vËAÁ£§HğªùIÛpËAâxÛpåYÌI¡B¡uÆñğªÕÚígÅm­ßKan
+--- Confirm that the line(s) includes half-width Katakana Åm­ß. 
+--- Did you get the line(s) 19,20 and 41 ?
+24:    #java SimpleGrep "¡­" EUC-JP.txt
+64: ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H¡­¡®¡¯¢I¡±¡¸¡¹¡³¡´¡·¡º¡»¡¼¡½
+--- Confirm that the line(s) includes ¡­. 
+--- Did you get the line(s) 24 and 64 ?
+11:    #java SimpleGrep ÆèÉ½§HÙIĞ¹ EUC-JP.txt
+16:    #java SimpleGrep "^ùIÛp" EUC-JP.txt
+20:    #java SimpleGrep Åm­ß EUC-JP.txt
+24:    #java SimpleGrep "¡­" EUC-JP.txt
+26:    #java SimpleGrep "#" EUC-JP.txt
+37:      #java SimpleGrep "\u3042\u304b\u3055\u305f\u306a" EUC-JP.txt
+--- Confirm that the line(s) includes #. 
+--- Did you get the line(s) 11,16,20,24,26 and 37 ?
+74: òTÑJŞÑöı·Õåæ¶ÁÈOÓNùk¨ê¦WÑ]·êæÀ³sÃÈÕv¯ú¡ş­îÉúÔjÈS
+--- Confirm that the line(s) includes the pattern ÑJ.*¦W. 
+--- Did you get the line 74 ?
+33: ğª¬¶ÀúÉ½Ëi«¹¡C®y´XÙIÉ±¡Bèìµcô¡ğª¡uÆèÆñÆû®yğª¡v°ö Unicode â¸·¶
+--- Confirm that the line(s) includes ÆèÆñÆû. 
 --- Did you get the line 33 ?
+62: ¡@¡B¡C¡A¡D¼^¡G¡F¡H¡IÏVëÒº¡ÆØÆÙ¡Ã¡Ä³¬ßLµW³Ä¡²ì¸Æà¥ĞÏ¸·¶Ü§Ğô¡ş¢@
+64: ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H¡­¡®¡¯¢I¡±¡¸¡¹¡³¡´¡·¡º¡»¡¼¡½
+72: ÇóÇôÇõÇöÇ÷ÇøÇùÇúÇûÇüÇıÇşÈ@ÈAÈBÈCÈDÈEÈFÈGÈHÈIÈJÈKÈLÈMÈNÈOÈPÈQÈRÈSÈT
+--- Confirm that the line(s) includes any of ì¸,¡¸ or Çú. 
+--- Did you get the line(s) 62,64 and 72 ?
 ------------ Pattern replacement test ------------
-5: –l–»ê£àuàtàxà{àvàzàyà~à|àw
-==> –l–»ê£àuaiueoàvàzàyà~à|àw
-9: à¹à»à½à¼à¾à¿àtàxà{àÁàÂàÀ
-==> à¹à»à½à¼à¾à¿aiueoàÁàÂàÀ
-20: æAèÎèÏêr–ÊèĞèÑèÒBreakerèÔàtàxà{
-==> æAèÎèÏêr–ÊèĞèÑèÒBreakerèÔaiueo
---- Confirm that àtàxà{ was replaced by aiueo. 
+11:    #java SimpleGrep ÆèÉ½§HÙIĞ¹ EUC-JP.txt
+==>    #java SimpleGrep aiueo EUC-JP.txt
+12: èìµcô¡ğªâxÛpåY¡uÆèÉ½§HÙIĞ¹¡v°ö¨eÍøéôô¡¡B¾ûù¢¦]ÜfÊVÆû°mËiù¢®yÆñ¡H
+==> èìµcô¡ğªâxÛpåY¡uaiueo¡v°ö¨eÍøéôô¡¡B¾ûù¢¦]ÜfÊVÆû°mËiù¢®yÆñ¡H
+49: ÆèÉ½§HÙIĞ¹
+==> aiueo
+--- Confirm that ÆèÉ½§HÙIĞ¹ was replaced by aiueo. 
 --- OK ?
-4: åh–lãìèÕ–`–Ã•P
-==> åh–lãì¶Îş¶ÎÈ–`–Ã•P
-21:  #java SimpleGrep èÕ zh-tw.txt
-==>  #java SimpleGrep ¶Îş¶ÎÈ zh-tw.txt
-22: èÕ
-==> ¶Îş¶ÎÈ
-25: êxêzêyê{ê|èÕê}ê~
-==> êxêzêyê{ê|¶Îş¶ÎÈê}ê~
---- Confirm that èÕ was replaced by ¶Îş¶ÎÈ. 
+19: áúó½ÅmÛPÅm­ß°öÉ}Àú±RËiù¢Öé§H¡C
+==> áúó½ÅmÛPÕÚğñÕÚíg°öÉ}Àú±RËiù¢Öé§H¡C
+20:    #java SimpleGrep Åm­ß EUC-JP.txt
+==>    #java SimpleGrep ÕÚğñÕÚíg EUC-JP.txt
+41: ÛpÏøÁëùkÜñ´ZàpâxÛpåY¡vËAÁ£§HğªùIÛpËAâxÛpåYÌI¡B¡uÆñğªÕÚígÅm­ßKan
+==> ÛpÏøÁëùkÜñ´ZàpâxÛpåY¡vËAÁ£§HğªùIÛpËAâxÛpåYÌI¡B¡uÆñğªÕÚígÕÚğñÕÚígKan
+--- Confirm that Åm­ß was replaced by ÕÚğñÕÚíg. 
 --- OK ?
-6: ªíä÷¤Q°\å÷åöåô¦Ë¼Å?şÙ¬¡¯¢I
-==> ªíä÷¤Q°\å÷\åô¦Ë¼Å?şÙ¬¡¯¢I
-11:   #java SimpleGrep å÷åøåöåôåïåõ zh-tw.txt
-==>   #java SimpleGrep å÷åø\åôåïåõ zh-tw.txt
-12: å÷åøåöåôà»åïåõåùèµà¼åüåû
-==> å÷åø\åôà»åïåõåùèµà¼åüåû
-16: çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åøåöåô
-==> çuçtçxçwçvç{çzà»çyç|ç}ç~å÷åø\åô
---- Confirm that åö was replaced by \. 
+24:    #java SimpleGrep "¡­" EUC-JP.txt
+==>    #java SimpleGrep "#" EUC-JP.txt
+64: ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H¡­¡®¡¯¢I¡±¡¸¡¹¡³¡´¡·¡º¡»¡¼¡½
+==> ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H#¡®¡¯¢I¡±¡¸¡¹¡³¡´¡·¡º¡»¡¼¡½
+--- Confirm that ¡­ was replaced by #. 
 --- OK ?
---- Confirm that ÊéşU was replaced by İìéD. 
+74: òTÑJŞÑöı·Õåæ¶ÁÈOÓNùk¨ê¦WÑ]·êæÀ³sÃÈÕv¯ú¡ş­îÉúÔjÈS
+==> òT¢´¢ëâxÛpåYÑ]·êæÀ³sÃÈÕv¯ú¡ş­îÉúÔjÈS
+--- Confirm that ÑJ.*¦W was replaced by ¢´¢ëâxÛpåY. 
 --- OK ?
-29: Éi
-==> °O
-30: ¡¸
-==> °O
-31: Çú
-==> °O
---- Confirm that any of Éi¡¸Çú were replaced by °O. 
+33: ğª¬¶ÀúÉ½Ëi«¹¡C®y´XÙIÉ±¡Bèìµcô¡ğª¡uÆèÆñÆû®yğª¡v°ö Unicode â¸·¶
+==> ğª¬¶ÀúÉ½Ëi«¹¡C®y´XÙIÉ±¡Bèìµcô¡ğª¡u¦W¯ú®yğª¡v°ö Unicode â¸·¶
+--- Confirm that ÆèÆñÆû was replaced by ¦W¯ú. 
+--- OK ?
+62: ¡@¡B¡C¡A¡D¼^¡G¡F¡H¡IÏVëÒº¡ÆØÆÙ¡Ã¡Ä³¬ßLµW³Ä¡²ì¸Æà¥ĞÏ¸·¶Ü§Ğô¡ş¢@
+==> ¡@¡B¡C¡A¡D¼^¡G¡F¡H¡IÏVëÒº¡ÆØÆÙ¡Ã¡Ä³¬ßLµW³Ä¡²¨IÛäÆà¥ĞÏ¸·¶Ü§Ğô¡ş¢@
+64: ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H¡­¡®¡¯¢I¡±¡¸¡¹¡³¡´¡·¡º¡»¡¼¡½
+==> ¡×¡Ú¡Õ¡Ö¾òâa¡Û¡ï¡ñ¡ğ¢X¡¬ò¢J¢D¢C¢F¢G¢H¡­¡®¡¯¢I¡±¨IÛä¡¹¡³¡´¡·¡º¡»¡¼¡½
+72: ÇóÇôÇõÇöÇ÷ÇøÇùÇúÇûÇüÇıÇşÈ@ÈAÈBÈCÈDÈEÈFÈGÈHÈIÈJÈKÈLÈMÈNÈOÈPÈQÈRÈSÈT
+==> ÇóÇôÇõÇöÇ÷ÇøÇù¨IÛäÇûÇüÇıÇşÈ@ÈAÈBÈCÈDÈEÈFÈGÈHÈIÈJÈKÈLÈMÈNÈOÈPÈQÈRÈSÈT
+--- Confirm that any of ì¸¡¸Çú were replaced by ¨IÛä. 
 --- OK ?

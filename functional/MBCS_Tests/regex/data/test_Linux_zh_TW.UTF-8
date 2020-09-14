@@ -16,62 +16,62 @@
 
 SOURCE=$1
 
-echo "------------ Pattern matching test ------------"
+echo '------------ Pattern matching test ------------'
 
-java SimpleGrep 輆輅輂 ${SOURCE}
-echo "--- Confirm that the line(s) includes "輆輅輂". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '輆輅輂' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 輆輅輂. '
+echo '--- Did you get the line(s) ?'
+#read word1
 
-java SimpleGrep "鉬*鉏" ${SOURCE}
-echo "--- Confirm that the line(s) includes the pattern "鉬*鉏". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '鉬*鉏' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern 鉬*鉏. '
+echo '--- Did you get the line(s) ?'
+#read word1
 
-java SimpleGrep "^澉" ${SOURCE}
-echo "--- Confirm that the line(s) starts with "澉"."
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '^澉' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with 澉.'
+echo '--- Did you get the line(s) ?'
+#read word1
 
-java SimpleGrep "髳" ${SOURCE}
-echo "--- Confirm that the line(s) includes "髳". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '髳' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 髳. '
+echo '--- Did you get the line(s) ?'
+#read word1
 
-java SimpleGrep "氀" ${SOURCE}
-echo "--- Confirm that the line(s) includes "氀". "
-echo "--- Did you get the line(s) ?"
-read word1
+java SimpleGrep '氀' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 氀. '
+echo '--- Did you get the line(s) ?'
+#read word1
 
-java SimpleGrep "表噂十豹" ${SOURCE}
-echo "--- Confirm that the line(s) includes "表噂十豹". "
-echo "--- Did you get the line 33 ?"
-read word1
+java SimpleGrep '表噂十豹' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 表噂十豹. '
+echo '--- Did you get the line 33 ?'
+#read word1
 
 
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest 輆輅輂 aiueo ${SOURCE} -v
-echo "--- Confirm that "輆輅輂" was replaced by "aiueo". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '輆輅輂' aiueo "${SOURCE}" -v
+echo '--- Confirm that 輆輅輂 was replaced by aiueo. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest 髳 僇僞僇僫 ${SOURCE} -v
-echo "--- Confirm that "髳" was replaced by "僇僞僇僫". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '髳' '僇僞僇僫' "${SOURCE}" -v
+echo '--- Confirm that 髳 was replaced by 僇僞僇僫. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "氀" "\\\\" ${SOURCE} -v
-echo "--- Confirm that "氀" was replaced by "\\". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '氀' '\\' "${SOURCE}" -v
+echo '--- Confirm that 氀 was replaced by \. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest "抎駡U郂" "椷噲" ${SOURCE} -v
-echo "--- Confirm that "抎駡U郂" was replaced by "椷噲". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '抎駡U郂' '椷噲' "${SOURCE}" -v
+echo '--- Confirm that 抎駡U郂 was replaced by 椷噲. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest [仝☆Ж] 記号 ${SOURCE} -v
-echo "--- Confirm that any of "仝☆Ж" were replaced by "記号". "
-echo "--- OK ?"
-read word1
+java RegexReplaceTest '[仝☆Ж]' '記号' "${SOURCE}" -v
+echo '--- Confirm that any of 仝☆Ж were replaced by 記号. '
+echo '--- OK ?'
+#read word1

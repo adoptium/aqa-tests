@@ -14,25 +14,21 @@
 #echo off
 #echo (1) UTF-8= G1
 #echo    
-#echo    ПРЋўПЯДІШБИМнЇэюЋўјПЎоўйЎеьЇж¶
 export TEST_STRING1='ПРЋўПЯДІШБИМнЇЋўјПьЇж¶'
 
 #echo (2) UTF-8 G2
 #echo    
-#echo    Ц¬ПРЋўПЯДІШБИМнЇэюЋўјПЎоўй
 export TEST_STRING2='Ц¬ПРЋўПЯДІШБИМнЇЋўјП'
 
 #echo (3) Full angle character
 #echo    
-#echo    ¤Б¤В¤Г¤ў¤©¤Є¤Ј¤ўЮвХеЛ«віЮвДЎДЈД¤ўЯўаэю
 export TEST_STRING3='ЮвХеЛ«віЮвДЎДЈД¤'
 
 #echo (4) Half-angle character
 #echo    
-#echo    ABCCDE18921ЮвХеЛ«віЮввіЩ¶еэЗ°ЭфСрХеЛ«СЕ/\\
 export TEST_STRING4='ABCCDE18921ЮвХеЛ«віЮввіЩ¶еэЗ°ЭфСрХеЛ«СЕ'
 
 export TEST_STRING='Ц¬ПРЋўПЯДІШБИМнЇЋўјПЮвХеЛ«віЮввіЩ¶еэЗ°ЭфСрХеЛ«СЕДЎДЈД¤'
-export TEST_STRING_SED=$TEST_STRING
+export TEST_STRING_SED="$TEST_STRING"
 export TEST_STRINGS="$TEST_STRING1 $TEST_STRING2 $TEST_STRING3 $TEST_STRING4"
-export TEST_STRINGS_SED=$TEST_STRINGS
+export TEST_STRINGS_SED="$TEST_STRINGS"

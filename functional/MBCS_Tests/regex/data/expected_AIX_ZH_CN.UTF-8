@@ -1,70 +1,86 @@
 ------------ Pattern matching test ------------
-13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
-15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
-33: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
---- Confirm that the line(s) includes 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦. 
---- Did you get the line(s) ?
-13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
-15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
-27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
-33: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
---- Confirm that the line(s) includes the pattern 嘨*嘪. 
---- Did you get the line(s) ?
-5: 劚兊兌兛兝兞兟兠兡 兣兤兦內 java.util.regex 兩
-10: 劚則剈剋剎剏剓剗剘剙剚剛剝剟剠剢剣剤剦剨剫剬
-35: 劚泲嶡壡泭泩泴泬擩炈怰泹椌泿洂洀悺帥懳庻晻
---- Confirm that the line(s) starts with 劚.
---- Did you get the line(s) ?
-22:    #java SimpleGrep 噲 zh-cn.txt
---- Confirm that the line(s) includes 噲. 
---- Did you get the line(s) ?
-25:    #java SimpleGrep 椷 zh-cn.txt
-26: 埲樋壖嬄拠審樍擟椷
-27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
---- Confirm that the line(s) includes 椷. 
---- Did you get the line(s) ?
-28: 表抎駡名
-30: 表抎駡名偲側傝傑偡丅惓偟偔儅僢僠儞僌偡傞偐妋擣偟偰尒傑偟傚偆丅
---- Confirm that the line(s) includes 表抎駡名. 
+11:    #java SimpleGrep あ蛸啮唢托 EUC-JP.txt
+12: 馐鼯娅攉泵剖蘖「あ蛸啮唢托」衄倏栀鬲娅、穷覃阌纨滴さ聊灰覃晋か？
+49: あ蛸啮唢托
+--- Confirm that the line(s) includes あ蛸啮唢托. 
+--- Did you get the line(s) 11,12 and 49 ?
+11:    #java SimpleGrep あ蛸啮唢托 EUC-JP.txt
+12: 馐鼯娅攉泵剖蘖「あ蛸啮唢托」衄倏栀鬲娅、穷覃阌纨滴さ聊灰覃晋か？
+49: あ蛸啮唢托
+50: あ蛸啮皎托
+52: あ麂洌唢托
+54: 励避あ酢灰覃禧托鹿巷泮啮杉寐蛸灰蝌
+--- Confirm that the line(s) includes the pattern あ*托. 
+--- Did you get the line(s) 11,12,49,50,52 and 54 ?
+55: 鹩剖泵剖蘖旮馓喔甜
+56: 鹩篆囗
+57: 鹩掇埭汨
+--- Confirm that the line(s) starts with 鹩.
+--- Did you get the line(s) 55,56 and 57 ?
+19: 乜策篑俭篑酴衄葱禧献灰覃麒啮。
+20:    #java SimpleGrep 篑酴 EUC-JP.txt
+41: 剖旮馓廑瓶喔甜泵剖蘖」齄氢啮攉鹩剖齄泵剖蘖羚、「か攉两阜篑酴Kan
+--- Confirm that the line(s) includes half-width Katakana 篑酴. 
+--- Did you get the line(s) 19,20 and 41 ?
+24:    #java SimpleGrep "＃" EUC-JP.txt
+64: ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+--- Confirm that the line(s) includes ＃. 
+--- Did you get the line(s) 24 and 64 ?
+11:    #java SimpleGrep あ蛸啮唢托 EUC-JP.txt
+16:    #java SimpleGrep "^鹩剖" EUC-JP.txt
+20:    #java SimpleGrep 篑酴 EUC-JP.txt
+24:    #java SimpleGrep "＃" EUC-JP.txt
+26:    #java SimpleGrep "#" EUC-JP.txt
+37:      #java SimpleGrep "\u3042\u304b\u3055\u305f\u306a" EUC-JP.txt
+--- Confirm that the line(s) includes #. 
+--- Did you get the line(s) 11,16,20,24,26 and 37 ?
+74: 淀稔椋潸舂硇荧Ъ驻廑嗳讲鳏嗔坝艄炎缡霞／瞠咏旺Ю
+--- Confirm that the line(s) includes the pattern 稔.*讲. 
+--- Did you get the line 74 ?
+33: 攉功禧蛸灰蝌。晋泮唢睥、馐鼯娅攉「あかさ晋攉」衄 Unicode 蠓棘
+--- Confirm that the line(s) includes あかさ. 
 --- Did you get the line 33 ?
+62: 　、。，．殷：；？！纸雅瑶｀¨＾￣＿娑诿色晕〃俦々獯沛棘碓遛／＼
+64: ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that the line(s) includes any of 俦,☆ or Ж. 
+--- Did you get the line(s) 62,64 and 72 ?
 ------------ Pattern replacement test ------------
-13:    #java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 zh-cn.txt
-==>    #java SimpleGrep aiueo zh-cn.txt
-15: 伾伩嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
-==> 伾伩aiueo伨佺佽嚀亪佹佷佮亗佭亝亞佱佲伡伣伜佦嚈
-33: 鷫栨擋嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
-==> 鷫栨擋aiueo曪櫚鷬櫛櫝櫟櫞櫠壔杒嶛櫡憍彔嫥櫢鷭斮
---- Confirm that 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 was replaced by aiueo. 
+11:    #java SimpleGrep あ蛸啮唢托 EUC-JP.txt
+==>    #java SimpleGrep aiueo EUC-JP.txt
+12: 馐鼯娅攉泵剖蘖「あ蛸啮唢托」衄倏栀鬲娅、穷覃阌纨滴さ聊灰覃晋か？
+==> 馐鼯娅攉泵剖蘖「aiueo」衄倏栀鬲娅、穷覃阌纨滴さ聊灰覃晋か？
+49: あ蛸啮唢托
+==> aiueo
+--- Confirm that あ蛸啮唢托 was replaced by aiueo. 
 --- OK ?
-22:    #java SimpleGrep 噲 zh-cn.txt
-==>    #java SimpleGrep 僇僞僇僫 zh-cn.txt
---- Confirm that 噲 was replaced by 僇僞僇僫. 
+19: 乜策篑俭篑酴衄葱禧献灰覃麒啮。
+==> 乜策篑俭两蒎两阜衄葱禧献灰覃麒啮。
+20:    #java SimpleGrep 篑酴 EUC-JP.txt
+==>    #java SimpleGrep 两蒎两阜 EUC-JP.txt
+41: 剖旮馓廑瓶喔甜泵剖蘖」齄氢啮攉鹩剖齄泵剖蘖羚、「か攉两阜篑酴Kan
+==> 剖旮馓廑瓶喔甜泵剖蘖」齄氢啮攉鹩剖齄泵剖蘖羚、「か攉两阜两蒎两阜Kan
+--- Confirm that 篑酴 was replaced by 两蒎两阜. 
 --- OK ?
-25:    #java SimpleGrep 椷 zh-cn.txt
-==>    #java SimpleGrep \ zh-cn.txt
-26: 埲樋壖嬄拠審樍擟椷
-==> 埲樋壖嬄拠審樍擟\
-27: 鷍鷎柋嘨嘩嘪嘫嘮椷嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
-==> 鷍鷎柋嘨嘩嘪嘫嘮\嘯嘰嘳鶣鶤鶥鶦鷪彑櫑曞櫕惃櫒嬑櫓姪孧櫖櫗櫘櫙庂岡栜
---- Confirm that 椷 was replaced by \. 
+24:    #java SimpleGrep "＃" EUC-JP.txt
+==>    #java SimpleGrep "#" EUC-JP.txt
+64: ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％#＆＊＠§☆★○●◎◇◆□■
+--- Confirm that ＃ was replaced by #. 
 --- OK ?
-28: 表抎駡名
-==> 椷噲
-30: 表抎駡名偲側傝傑偡丅惓偟偔儅僢僠儞僌偡傞偐妋擣偟偰尒傑偟傚偆丅
-==> 椷噲偲側傝傑偡丅惓偟偔儅僢僠儞僌偡傞偐妋擣偟偰尒傑偟傚偆丅
---- Confirm that 表抎駡名 was replaced by 椷噲. 
+74: 淀稔椋潸舂硇荧Ъ驻廑嗳讲鳏嗔坝艄炎缡霞／瞠咏旺Ю
+==> 淀５ｃ泵剖蘖鳏嗔坝艄炎缡霞／瞠咏旺Ю
+--- Confirm that 稔.*讲 was replaced by ５ｃ泵剖蘖. 
 --- OK ?
-29: 	\u628e\u99e1U\u90c2
-==> 	噲\u99e1U\u90c2
-31:      #java SimpleGrep \u628e\u99e1U\u90c2 zh-cn.txt
-==>      #java SimpleGrep 噲\u99e1U\u90c2 zh-cn.txt
---- Confirm that \u628e was replaced by 噲. 
+33: 攉功禧蛸灰蝌。晋泮唢睥、馐鼯娅攉「あかさ晋攉」衄 Unicode 蠓棘
+==> 攉功禧蛸灰蝌。晋泮唢睥、馐鼯娅攉「讲霞晋攉」衄 Unicode 蠓棘
+--- Confirm that あかさ was replaced by 讲霞. 
 --- OK ?
-46: 仝
-==> 記号
-47: ☆
-==> 記号
-48: Ж
-==> 記号
---- Confirm that any of 仝☆Ж were replaced by 記号. 
+62: 　、。，．殷：；？！纸雅瑶｀¨＾￣＿娑诿色晕〃俦々獯沛棘碓遛／＼
+==> 　、。，．殷：；？！纸雅瑶｀¨＾￣＿娑诿色晕〃蜮芜々獯沛棘碓遛／＼
+64: ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞贼儿∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§蜮芜★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+==> АБВГДЕЁ蜮芜ЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that any of 俦☆Ж were replaced by 蜮芜. 
 --- OK ?

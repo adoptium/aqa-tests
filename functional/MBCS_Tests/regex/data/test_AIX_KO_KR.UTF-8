@@ -18,68 +18,68 @@
 #SYSENC=${LANG%.*}.`locale charmap`
 SOURCE=$1
 
-echo "------------ Pattern matching test ------------"
+echo '------------ Pattern matching test ------------'
 
-java SimpleGrep "특수" ${SOURCE}
-echo "--- Confirm that the line(s) includes "특수". "
-read word1?"--- Did you get the line(s) 14,23,31,43 ?"
+java SimpleGrep '특수' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 특수. '
+#read word1?"--- Did you get the line(s) 14,23,31,43 ?"
 echo
 
-java SimpleGrep "gnome" ${SOURCE}
-echo "--- Confirm that the line(s) includes the pattern "gnome". "
-read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
+java SimpleGrep 'gnome' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern gnome. '
+#read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
 echo
 
-java SimpleGrep "^ㄱ" ${SOURCE}
-echo "--- Confirm that the line(s) starts with "ㄱ"."
-read word1?"--- Did you get the line(s) 98,185 ?"
+java SimpleGrep '^ㄱ' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with ㄱ.'
+#read word1?"--- Did you get the line(s) 98,185 ?"
 echo
 
-java SimpleGrep 문제 ${SOURCE}
-echo "--- Confirm that the line(s) includes "문제". "
-read word1?"--- Did you get the line(s) 85,86,88 ?"
+java SimpleGrep '문제' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 문제. '
+#read word1?"--- Did you get the line(s) 85,86,88 ?"
 echo
 
-java SimpleGrep "加速" ${SOURCE}
-echo "--- Confirm that the line(s) includes "加速". "
-read word1?"--- Did you get the line(s) 234,235,236 ?"
+java SimpleGrep '加速' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 加速. '
+#read word1?"--- Did you get the line(s) 234,235,236 ?"
 echo
 
-java SimpleGrep "呵呵大笑" ${SOURCE}
-echo "--- Confirm that the line(s) includes "呵呵大笑". "
-read word1?"--- Did you get the line 124 ?"
+java SimpleGrep '呵呵大笑' "${SOURCE}"
+echo '--- Confirm that the line(s) includes 呵呵大笑. '
+#read word1?"--- Did you get the line 124 ?"
 echo
 
-java SimpleGrep ㅏㅑㅓㅕㅗㅛㅜㅠ ${SOURCE}
-echo "--- Confirm that the line(s) includes any of  ㅏㅑㅓㅕㅗㅛㅜㅠ"
-read word1?"--- Did you get the line(s) 98  ?"
+java SimpleGrep 'ㅏㅑㅓㅕㅗㅛㅜㅠ' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of  ㅏㅑㅓㅕㅗㅛㅜㅠ'
+#read word1?"--- Did you get the line(s) 98  ?"
 echo
 
 echo
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest １２３４５６７８９ ◑▒▤▥▨▧▦▩♨ ${SOURCE} -v
-echo "--- Confirm that "１２３４５６７８９" was replaced by "◑▒▤▥▨▧▦▩♨". "
-read word1?"--- OK ?"
+java RegexReplaceTest '１２３４５６７８９' '◑▒▤▥▨▧▦▩♨' "${SOURCE}" -v
+echo '--- Confirm that １２３４５６７８９ was replaced by ◑▒▤▥▨▧▦▩♨. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest 가정교사 家庭敎師 ${SOURCE} -v
-echo "--- Confirm that "가정교사" was replaced by "家庭敎師". "
-read word1?"--- OK ?"
+java RegexReplaceTest '가정교사' '家庭敎師' "${SOURCE}" -v
+echo '--- Confirm that 가정교사 was replaced by 家庭敎師. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "檢問" "검문" ${SOURCE} -v
-echo "--- Confirm that "檢問" was replaced by "검문". "
-read word1?"--- OK ?"
+java RegexReplaceTest '檢問' '검문' "${SOURCE}" -v
+echo '--- Confirm that 檢問 was replaced by 검문. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "가.*호" "家家戶戶" ${SOURCE} -v
-echo "--- Confirm that "가.*호" was replaced by "家家戶戶". "
-read word1?"--- OK ?"
+java RegexReplaceTest '가.*호' '家家戶戶' "${SOURCE}" -v
+echo '--- Confirm that 가.*호 was replaced by 家家戶戶. '
+#read word1?"--- OK ?"
 echo
 
-java RegexReplaceTest "家系" "家計簿" ${SOURCE} -v
-echo "--- Confirm that "家系" replaced by "家計簿". "
-read word1?"--- OK ?"
+java RegexReplaceTest '家系' '家計簿' "${SOURCE}" -v
+echo '--- Confirm that 家系 replaced by 家計簿. '
+#read word1?"--- OK ?"
 echo
 echo
