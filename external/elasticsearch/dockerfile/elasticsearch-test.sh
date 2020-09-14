@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 
+source $(dirname "$0")/test_base_functions.sh
+
 #Set up Java to be used by the elasticsearch-test
 
 if [ -d /java/jre/bin ];then
@@ -36,7 +38,7 @@ fi
 
 TEST_OPTIONS=$1
 
-java -version
+echo_setup
 
 # Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
