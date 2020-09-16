@@ -26,11 +26,13 @@ public class UnicodeChecker {
     blockTable.put("Low Surrogate","LOW SURROGATES");
     blockTable.put("Private Use","PRIVATE USE AREA");
     blockTable.put("Tangut Ideograph", "TANGUT");
+    blockTable.put("Tangut Ideograph Supplement", "TANGUT SUPPLEMENT");
     blockTable.put("CJK Ideograph Extension B","CJK UNIFIED IDEOGRAPHS EXTENSION B");
     blockTable.put("CJK Ideograph Extension C","CJK UNIFIED IDEOGRAPHS EXTENSION C");
     blockTable.put("CJK Ideograph Extension D","CJK UNIFIED IDEOGRAPHS EXTENSION D");
     blockTable.put("CJK Ideograph Extension E","CJK UNIFIED IDEOGRAPHS EXTENSION E");
     blockTable.put("CJK Ideograph Extension F","CJK UNIFIED IDEOGRAPHS EXTENSION F");
+    blockTable.put("CJK Ideograph Extension G","CJK UNIFIED IDEOGRAPHS EXTENSION G");
     blockTable.put("Plane 15 Private Use","SUPPLEMENTARY PRIVATE USE AREA A");
     blockTable.put("Plane 16 Private Use","SUPPLEMENTARY PRIVATE USE AREA B");
 
@@ -46,23 +48,7 @@ public class UnicodeChecker {
     if (args.length > 0) {
       vals = args;
     } else {
-      String FS = System.getProperty("file.separator");
-      String BASE = System.getenv("BASE");
-      if (null == BASE) BASE = ".";
-      long version = JavaVersion.getVersion();
-      if (version >= 13000000L) {
-        vals = new String[]{ BASE+FS+"UnicodeData-12.1.0.txt" };
-      } else if (version >= 12000001L) {
-        vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt", BASE+FS+"UnicodeData-u32FF.txt" };
-      } else if (version == 12000000L) {
-        vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt", BASE+FS+"UnicodeData-u32FF-jdk12.txt" };
-      } else if (version >= 11000003L) {
-        vals = new String[]{ BASE+FS+"UnicodeData-10.0.0.txt", BASE+FS+"UnicodeData-u32FF.txt" };
-      } else if (version >= 11000000L) {
-        vals = new String[]{ BASE+FS+"UnicodeData-10.0.0.txt" };
-      } else {
-        vals = new String[0];
-      }
+      vals = UnicodeVers.getFiles("UnicodeData");
     }
 
     for(String filename : vals) {

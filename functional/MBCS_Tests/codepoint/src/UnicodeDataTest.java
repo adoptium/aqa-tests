@@ -89,44 +89,7 @@ public class UnicodeDataTest {
         if (args.length > 0) {
             vals = args;
         } else {
-            String FS = System.getProperty("file.separator");
-            String BASE = System.getenv("BASE");
-            if (null == BASE) {
-                BASE = ".";
-                if (version >= 13000000L) {
-                    vals = new String[]{ BASE+FS+"UnicodeData-12.1.0.txt" };
-                } else if (version >= 12000001L) {
-                    vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt",
-                                         BASE+FS+"UnicodeData-u32FF.txt" };
-                } else if (version == 12000000L) {
-                    vals = new String[]{ BASE+FS+"UnicodeData-11.0.0.txt",
-                                         BASE+FS+"UnicodeData-u32FF-jdk12.txt" };
-                } else if (version >= 11000003L) {
-                    vals = new String[]{ BASE+FS+"UnicodeData-10.0.0.txt",
-                                         BASE+FS+"UnicodeData-u32FF.txt" };
-                } else if (version >= 11000000L) {
-                    vals = new String[]{ BASE+FS+"UnicodeData-10.0.0.txt" };
-                } else {
-                    vals = new String[0];
-                }
-            } else {
-                if (version >= 13000000L) {
-                    vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-12.1.0.txt" };
-                } else if (version >= 12000001L) {
-                    vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-11.0.0.txt",
-                                         BASE+FS+"data"+FS+"UnicodeData-u32FF.txt" };
-                } else if (version == 12000000L) {
-                    vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-11.0.0.txt", 
-                                         BASE+FS+"data"+FS+"UnicodeData-u32FF-jdk12.txt" };
-                } else if (version >= 11000003L) {
-                    vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-10.0.0.txt",
-                                         BASE+FS+"data"+FS+"UnicodeData-u32FF.txt" };
-                } else if (version >= 11000000L) {
-                    vals = new String[]{ BASE+FS+"data"+FS+"UnicodeData-10.0.0.txt" };
-                } else {
-                    vals = new String[0];
-                }
-            }
+            vals = UnicodeVers.getFiles("UnicodeData");
         }
 
         for(String fname : vals) {

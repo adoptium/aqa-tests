@@ -27,19 +27,7 @@ public class UnicodeScriptChecker3 {
     if (args.length > 0) {
       vals = args;
     } else {
-      String FS = System.getProperty("file.separator");
-      String BASE = System.getenv("BASE");
-      if (null == BASE) BASE = ".";
-      long version = JavaVersion.getVersion();
-      if (version >= 13000000L) {
-        vals = new String[]{ BASE+FS+"PropertyValueAliases-12.1.0.txt" };
-      } else if (version >= 12000000L) {
-        vals = new String[]{ BASE+FS+"PropertyValueAliases-11.0.0.txt" };
-      } else if (version >= 11000000L) {
-        vals = new String[]{ BASE+FS+"PropertyValueAliases-10.0.0.txt" };
-      } else {
-        vals = new String[0];
-      }
+      vals = UnicodeVers.getFiles("PropertyValueAliases");
     }
 
     for(String filename : vals) {
