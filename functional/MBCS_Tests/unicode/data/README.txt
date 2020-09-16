@@ -1,4 +1,4 @@
-Following files were downloaded from Unicode Inc.'s stde.
+Following files were downloaded from Unicode Inc.'s site.
 
 Blocks-10.0.0.txt
 https://www.unicode.org/Public/10.0.0/ucd/Blocks.txt
@@ -44,4 +44,19 @@ https://www.unicode.org/Public/12.1.0/ucd/Scripts.txt
 
 UnicodeData-12.1.0.txt
 https://www.unicode.org/Public/12.1.0/ucd/UnicodeData.txt
+
+Blocks-13.0.0.txt
+https://www.unicode.org/Public/13.0.0/ucd/Blocks.txt
+
+NormalizationTest-13.0.0.txt
+https://www.unicode.org/Public/13.0.0/ucd/NormalizationTest.txt
+
+PropertyValueAliases-13.0.0.txt
+https://www.unicode.org/Public/13.0.0/ucd/PropertyValueAliases.txt
+
+Scripts-13.0.0.txt
+https://www.unicode.org/Public/13.0.0/ucd/Scripts.txt
+
+UnicodeData-13.0.0.txt
+https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt
 
