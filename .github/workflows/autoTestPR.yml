@@ -1,0 +1,44 @@
+name: "Auto test PR"
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  autoTestPR:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.comment.body, 'auto exclude test') && github.event_name != 'pull_request'
+    steps:
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: check python version
+        run: |
+          python -V
+      - name: checkout current repo
+        uses: actions/checkout@v2
+        with:
+          path: 'tests'
+      - name: checkout TKG repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'AdoptOpenJDK/TKG.git'
+          ref: 'master'
+          path: 'TKG'
+      - name: run script
+        run: |
+          git config --list
+          python TKG/scripts/testBot/disable.py -m "${{ github.event.comment.body }}" -i "${{ github.event.comment.html_url }}" -d "$GITHUB_WORKSPACE/tests"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          path: 'tests'
+          title: '${{ github.event.comment.body }}'
+          body: |
+            related: ${{ github.event.comment.html_url }}
+            triggered by @${{ github.event.comment.user.login }}
+          commit-message: |
+            AUTO: ${{ github.event.comment.body }}
+            - related: ${{ github.event.comment.html_url }}
+          branch: 'autoTestPR'
+          branch-suffix: 'random'
+          signoff: 'true'
