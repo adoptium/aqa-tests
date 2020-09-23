@@ -115,6 +115,9 @@ def PLATFORM_MAP = [
     ]
 ]
 
+if ( !params.TARGET ) {
+    assert false : "Please provide TARGET value"
+}
 
 if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
     SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
