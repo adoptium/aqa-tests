@@ -28,66 +28,50 @@
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_openj9_jdk8</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest \
-		 "--exclude-task :core:test \
-		 --exclude-task :client:rest:test \
-		 --exclude-task :modules:reindex:test \
-		 --exclude-task :client:transport:test \
-		 --exclude-task :client:sniffer:test \
-		 --exclude-task :test:framework:test \
-		 --exclude-task :modules:lang-painless:test"; \
-			$(TEST_STATUS); \
-			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
-			docker rm -f elasticsearch-test; \
-			docker rmi -f adoptopenjdk-elasticsearch-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch --testtarget "--exclude-task :core:test --exclude-task :client:rest:test --exclude-task :modules:reindex:test --exclude-task :client:transport:test --exclude-task :client:sniffer:test --exclude-task :test:framework:test --exclude-task :modules:lang-painless:test" \
+		--reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch
 		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
-		<groups>
-			<group>external</group>
-		</groups>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
+		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1720</disabled>
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_openj9_latest</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest \
-		 "--exclude-task :client:rest:test \
-		 --exclude-task :modules:reindex:test \
-		 --exclude-task :client:transport:test \
-		 --exclude-task :client:sniffer:test \
-		 --exclude-task :test:framework:test \
-		 --exclude-task :modules:lang-painless:test"; \
-			$(TEST_STATUS); \
-			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
-			docker rm -f elasticsearch-test; \
-			docker rmi -f adoptopenjdk-elasticsearch-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch --testtarget "--exclude-task :client:rest:test --exclude-task :modules:reindex:test --exclude-task :client:transport:test --exclude-task :client:sniffer:test --exclude-task :test:framework:test --exclude-task :modules:lang-painless:test" \
+		--reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch
 		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
-		<subsets>
-			<subset>10+</subset>
-		</subsets>
 		<groups>
 			<group>external</group>
 		</groups>
+		<subsets>
+			<subset>13+</subset>
+		</subsets>
 		<impls>
 			<impl>openj9</impl>
 		</impls>
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_hotspot</testCaseName>
-		<command>docker run --name elasticsearch-test $(EXTRA_DOCKER_ARGS) adoptopenjdk-elasticsearch-test:latest; \
-			$(TEST_STATUS); \
-			docker cp elasticsearch-test:/testResults/testJunit $(REPORTDIR)/external_test_reports; \
-			docker rm -f elasticsearch-test; \
-			docker rmi -f adoptopenjdk-elasticsearch-test
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch --reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch
 		</command>
 		<levels>
 			<level>extended</level>
@@ -95,8 +79,12 @@
 		<groups>
 			<group>external</group>
 		</groups>
+		<subsets>
+			<subset>13+</subset>
+		</subsets>
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
 	</test>
 </playlist>
+
