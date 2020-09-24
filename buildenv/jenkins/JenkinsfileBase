@@ -786,17 +786,16 @@ def uploadToArtifactory(pattern) {
 }
 
 def addGrinderLink() {
-	def url = "${HUDSON_URL}job/Grinder/parambuild/?"
+	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
 	params.each { key, value ->
-		value = value.toString().replace("&", "%26")
+		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
 		if (i != params.size()) {
 			url += "&amp;"
 		}
 		i++;
 	}
-	url = url.replace(" ", "&#32;")
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
 }
