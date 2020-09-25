@@ -354,11 +354,8 @@ getBinaryOpenjdk()
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
 						mv $jar_dir_name ../j2sdk-image
-					# if native test libs folder is available, mv it under native-test-libs
-					elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-						mv $jar_dir_name ../native-test-libs
 					#The following only needed if openj9 has a different image name convention
-					elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					elif [[ "$jar_dir_name" != "j2sdk-image" ]]; then
 						mv $jar_dir_name ../j2sdk-image
 					fi
 				elif [[ "$len" > 1 ]]; then
