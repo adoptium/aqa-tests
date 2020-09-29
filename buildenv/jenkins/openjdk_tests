@@ -119,62 +119,125 @@ if ( !params.TARGET ) {
     assert false : "Please provide TARGET value"
 }
 
-if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
-    SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-    LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
-
-    if (params.DOCKER_REQUIRED) {
-        LABEL += "&&sw.tool.docker"
-    }
-
-    if (params.LABEL_ADDITION) {
-        LABEL += "&&${params.LABEL_ADDITION}"
-    }
-
-    println "SPEC: ${SPEC}"
-    println "LABEL: ${LABEL}"
-
-    stage('Queue') {
-        def nodes = nodesByLabel(LABEL).size()
-        if (nodes < 1) {
-            assert false : "Cannot find any machine that matches with the LABEL"    
-        }
-        node(LABEL) {
-            if (params.PLATFORM.contains('zos')) {
-                /* Ensure correct CC env */
-                env._CC_CCMODE = '1'
-                env._CXX_CCMODE = '1'
-                env._C89_CCMODE = '1'
-
-                def gitConfig = scm.getUserRemoteConfigs()[0]
-                def SCM_GIT_REPO = gitConfig.getUrl()
-                def SCM_GIT_BRANCH = scm.branches[0].name
-                cleanWs()
-
-                // SCM_GIT_REPO value only gets expanded in sh
-                def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
-                SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
-
-                sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
-            } else {
-                def gitConfig = scm.getUserRemoteConfigs().get(0)
-		
-		// Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
-		ref_cache = "${env.HOME}/openjdk_cache"
-		   
-                checkout scm: [$class: 'GitSCM',
-                    branches: [[name: "${scm.branches[0].name}"]],
-                    extensions: [
-                        [$class: 'CloneOption', reference: ref_cache],
-                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
-                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                ]
-            }
-            jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-            jenkinsfile.testBuild()
+if (params.PERSONAL_BUILD) {
+    node('master') {
+        // update build name if personal build
+        wrap([$class: 'BuildUser']) {
+            currentBuild.displayName = "#${BUILD_NUMBER} - ${BUILD_USER_EMAIL}"
         }
     }
-    jenkinsfile.run_parallel_tests()
-} else {
-	assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
 }
+
+def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
+def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
+def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
+
+// if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
+if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.contains("all")) {
+    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'release') {
+        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or release."
+    } else {
+        testJobs = [:]
+        PLATFORMS.each { PLATFORM ->
+            JDK_VERSIONS.each { JDK_VERSION ->
+                JDK_IMPLS.each { JDK_IMPL ->
+                    def ACTUAL_PLATFORM = PLATFORM
+                    if (PLATFORM == "all") {
+                        ACTUAL_PLATFORM = "ppc64_aix,ppc64le_linux,s390x_linux,x86-64_linux,x86-64_mac,x86-64_windows"
+                        if (JDK_IMPL == "openj9" || JDK_IMPL == "ibm"){
+                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",ppc64_aix_xl,ppc64le_linux_xl,s390x_linux_xl,x86-64_linux_xl,x86-64_mac_xl,x86-64_windows_xl"
+                        }
+                        if (JDK_VERSION == "8"){
+                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",x86-32_windows"
+                        } else {
+                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",aarch64_linux"
+                        }
+                    }
+                    def childParams = []
+                    // loop through all the params and change the parameters if needed
+                    params.each { param ->
+                        if (param.key == "PLATFORM") {
+                            childParams << string(name: param.key, value: ACTUAL_PLATFORM)
+                        } else if (param.key == "JDK_VERSION") {
+                            childParams << string(name: param.key, value: JDK_VERSION)
+                        } else if (param.key == "JDK_IMPL") {
+                            childParams << string(name: param.key, value: JDK_IMPL)
+                        } else {
+                            def value = param.value.toString()
+                            if (value == "true" || value == "false") {
+                                childParams << booleanParam(name: param.key, value: value.toBoolean())
+                            } else {
+                                childParams << string(name: param.key, value: value)
+                            }
+                        }
+                    }
+                    testJobs["openjdk${JDK_VERSION}_${JDK_IMPL}_${PLATFORM}"] = {
+                        build job: JOB_NAME, parameters: childParams
+                    }
+                }
+            }
+        }
+        parallel testJobs
+    }
+} else {
+    if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+        SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+        LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+
+        if (params.DOCKER_REQUIRED) {
+            LABEL += "&&sw.tool.docker"
+        }
+
+        if (params.LABEL_ADDITION) {
+            LABEL += "&&${params.LABEL_ADDITION}"
+        }
+
+        println "SPEC: ${SPEC}"
+        println "LABEL: ${LABEL}"
+
+        stage('Queue') {
+            def nodes = nodesByLabel(LABEL).size()
+            if (nodes < 1) {
+                assert false : "Cannot find any machine that matches with the LABEL"    
+            }
+            node(LABEL) {
+                if (params.PLATFORM.contains('zos')) {
+                    /* Ensure correct CC env */
+                    env._CC_CCMODE = '1'
+                    env._CXX_CCMODE = '1'
+                    env._C89_CCMODE = '1'
+
+                    def gitConfig = scm.getUserRemoteConfigs()[0]
+                    def SCM_GIT_REPO = gitConfig.getUrl()
+                    def SCM_GIT_BRANCH = scm.branches[0].name
+                    cleanWs()
+
+                    // SCM_GIT_REPO value only gets expanded in sh
+                    def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
+                    SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
+
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                } else {
+                    def gitConfig = scm.getUserRemoteConfigs().get(0)
+            
+                    // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+                    ref_cache = "${env.HOME}/openjdk_cache"
+            
+                    checkout scm: [$class: 'GitSCM',
+                        branches: [[name: "${scm.branches[0].name}"]],
+                        extensions: [
+                            [$class: 'CloneOption', reference: ref_cache],
+                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+                        userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                    ]
+                }
+                jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+                jenkinsfile.testBuild()
+            }
+        }
+        jenkinsfile.run_parallel_tests()
+    } else {
+        assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
+    }
+}
+
