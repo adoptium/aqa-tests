@@ -169,6 +169,7 @@
 	</test>
 	<test>
 		<testCaseName>jdk_awt</testCaseName>
+		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1982#issuecomment-701441984</disabled>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
