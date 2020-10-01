@@ -177,7 +177,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
-							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'Iteration'], "Optional. Parallel mode")
+							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'NodesByIterations'], "Optional. Parallel mode")
 							stringParam('NUM_MACHINES', "", "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
 							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")

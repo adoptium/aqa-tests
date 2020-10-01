@@ -120,12 +120,12 @@ def setupParallelEnv() {
 			def UPSTREAM_TEST_JOB_NAME = ""
 			def UPSTREAM_TEST_JOB_NUMBER = ""
 
-			if (params.PARALLEL == "Iteration") {
-				childJobNum = ITERATIONS
+			if (params.PARALLEL == "NodesByIterations") {
+				childJobNum = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 				// limit childJobNum
 				if (childJobNum > 20) {
-					echo "Due to the limited machines, ITERATIONS can only be set up to 20. Current ITERATIONS is ${ITERATIONS}."
-					echo "Reset ITERATIONS to 20..." 
+					echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
+					echo "Reset NUM_MACHINES to 20..." 
 					childJobNum = 20
 				}
 			} else if (params.PARALLEL == "Dynamic") {
@@ -213,9 +213,8 @@ def setupParallelEnv() {
 				def buildListName = env.BUILD_LIST
 				def childTest = ""
 				def childTarget = TARGET
-				if (params.PARALLEL == "Iteration") {
+				if (params.PARALLEL == "NodesByIterations") {
 					childTest = "iteration_${i}"
-					
 				} else if (params.PARALLEL == "Dynamic") {
 					childTest = "testList_${i}"
 					childTarget = "-f parallelList.mk ${childTest}"
@@ -233,10 +232,8 @@ def setupParallelEnv() {
 				def childParams = []
 				// loop through all the params and change the parameters if needed
 				params.each { param ->
-					// set ITERATIONS, PARALLEL, NUM_MACHINES and TEST_TIME to default values
-					if (param.key == "ITERATIONS") {
-						childParams << string(name: param.key, value: "1")
-					} else if (param.key == "BUILD_LIST") {
+					// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
+					if (param.key == "BUILD_LIST") {
 						childParams << string(name: param.key, value: "${buildListName}")
 					} else if (param.key == "TARGET") {
 						childParams << string(name: param.key, value: "${childTarget}")
