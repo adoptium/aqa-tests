@@ -119,15 +119,6 @@ if ( !params.TARGET ) {
     assert false : "Please provide TARGET value"
 }
 
-if (params.PERSONAL_BUILD) {
-    node('master') {
-        // update build name if personal build
-        wrap([$class: 'BuildUser']) {
-            currentBuild.displayName = "#${BUILD_NUMBER} - ${BUILD_USER_EMAIL}"
-        }
-    }
-}
-
 def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
