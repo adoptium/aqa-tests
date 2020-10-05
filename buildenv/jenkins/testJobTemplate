@@ -33,6 +33,7 @@ if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
 if (!binding.hasVariable('TARGET')) TARGET = ""
 if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
+if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -68,10 +69,10 @@ if (binding.hasVariable('GROUPS')) {
 
 
 if (binding.hasVariable('ARCH_OS_LIST')) {
-	ARCH_OS_LIST = ARCH_OS_LIST.split(',')
+	ARCH_OS_LIST = ARCH_OS_LIST.split(',')*.trim()
 } else {
 	ARCH_OS_LIST = [
-		'aarch32_linux',
+		'arm_linux',
 		'aarch64_linux',
 		'ppc64_aix',
 		'ppc64le_linux',
@@ -101,7 +102,6 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 ARCH_OS_LIST.each { ARCH_OS ->
  	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
 	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
-	def TKG_REPO = "https://github.com/AdoptOpenJDK/TKG.git"
 	def ADOPTOPENJDK_BRANCH = "master"
 
 	JDK_VERSIONS.each { JDK_VERSION ->
@@ -177,7 +177,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
-							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'Iteration'], "Optional. Parallel mode")
+							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'NodesByIterations'], "Optional. Parallel mode")
 							stringParam('NUM_MACHINES', "", "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
 							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
@@ -190,8 +190,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
 							stringParam('RELEASE_TAG', "", "SCM tag from which to run tests")
-							stringParam('TKG_REPO', TKG_REPO, "TestKitGen git repo. Please use ssh for zos.")
-							stringParam('TKG_BRANCH', "master", "TKG branch")
+							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
 							stringParam('TKG_SHA', "", "TKG sha")
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
@@ -230,6 +229,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							daysToKeep(DAYS_TO_KEEP)
 							artifactDaysToKeep(DAYS_TO_KEEP)
 						}
+						triggers {
+ 							cron(TRIGGER_SCHEDULE)
+ 						}
 					}
 				}
 			}

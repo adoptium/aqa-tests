@@ -20,28 +20,38 @@
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/renaissance" />
-	<property name="src" location="." />
+	<property name="SRC" location="." />
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
 
 	<target name="getRenaissanceSuite" depends="init">
-		<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar -o renaissance-mit.jar"/>
-		<retry retrycount="3">
- 			<sequential>
-				<echo message="curl ${curl_options}" />
-				<exec executable="curl" failonerror="true">
-					<arg line="${curl_options}" />
-				</exec>
-			</sequential>
- 		</retry>
+		<var name="FILE_NAME" value="renaissance-mit.jar"/>
+		<if>
+		    <available file="${FILE_NAME}" type="file" />
+		    <then>
+		        <echo message="${FILE_NAME} exists. Hence, not downloading it." />
+		    </then>
+		    <else>
+				<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar -o ${FILE_NAME}"/>
+				<retry retrycount="3">
+		 			<sequential>
+						<echo message="curl ${curl_options}" />
+						<exec executable="curl" failonerror="true">
+							<arg line="${curl_options}" />
+						</exec>
+					</sequential>
+		 		</retry>
+		    </else>
+		</if>
 	</target>	
 
 	<target name="dist" depends="getRenaissanceSuite" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}"/>
+			<fileset dir="${SRC}"/>
 		</copy>
+		<chmod file="${DEST}/**" perm="a+x" maxparallel="10"/>
 	</target>
 
 	<target name="build">

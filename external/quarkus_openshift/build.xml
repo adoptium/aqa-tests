@@ -2,7 +2,7 @@
 <project name="Quarkus-OpenShift-Test" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-		Build quarkus openshift test Docker image
+		Build quarkus openshift test
 	</description>
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
@@ -15,9 +15,9 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
+	<target name="dist" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
+			<fileset dir="${src}" includes="*.xml, *.mk, *.sh"/>
 		</copy>
 	</target>
 

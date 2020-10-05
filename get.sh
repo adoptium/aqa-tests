@@ -335,11 +335,14 @@ getBinaryOpenjdk()
 				echo "unzip file: $jar_name ..."
 				if [[ $jar_name == *zip || $jar_name == *jar ]]; then
 					unzip -q $jar_name -d ./tmp
+				elif [[ $jar_name == *.pax* ]]; then
+					cd ./tmp
+					pax -p xam -rzf ../$jar_name
 				else
 					gzip -cd $jar_name | tar xof - -C ./tmp
 				fi
 
-				cd ./tmp
+				cd $SDKDIR/openjdkbinary/tmp
 				jar_dirs=`ls -d */`
 				jar_dir_array=(${jar_dirs//\\n/ })
 				len=${#jar_dir_array[@]}
@@ -351,11 +354,8 @@ getBinaryOpenjdk()
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk*  &&  "$jar_dir_name" != "j2sdk-image" ]]; then
 						mv $jar_dir_name ../j2sdk-image
-					# if native test libs folder is available, mv it under native-test-libs
-					elif [[ "$jar_dir_name"  =~ native-test-libs*  &&  "$jar_dir_name" != "native-test-libs" ]]; then
-						mv $jar_dir_name ../native-test-libs
 					#The following only needed if openj9 has a different image name convention
-					elif [[ "$jar_dir_name" != "j2sdk-image"  &&  "$jar_dir_name" != "native-test-libs" ]]; then
+					elif [[ "$jar_dir_name" != "j2sdk-image" ]]; then
 						mv $jar_dir_name ../j2sdk-image
 					fi
 				elif [[ "$len" > 1 ]]; then
@@ -549,11 +549,17 @@ if [[ $TEST_JDK_HOME == "" ]]; then
 	TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
 fi
 _java=${TEST_JDK_HOME}/bin/java
+_release=${TEST_JDK_HOME}/release
 if [ -x ${_java} ]; then
 	echo "Run ${_java} -version"
 	echo "=JAVA VERSION OUTPUT BEGIN="
 	${_java} -version
 	echo "=JAVA VERSION OUTPUT END="
+	if [ -e ${_release} ]; then 
+		echo "=RELEASE INFO BEGIN="
+		cat ${_release}
+		echo "=RELEASE INFO END="
+	fi
 else
 	echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 	# Search javac as java may not be unique

@@ -1,0 +1,48 @@
+This document describes the way to create the expected results.
+
+Note: TEST_STRING will drop some characters of which Character.isJavaIdentifierStart()
+      or Character.isJavaIdentifierPart() is false.
+[Prereq]
+Set TEST_STRINGS
+Set java and javac to PATH
+
+[Windows]
+1. cd src
+2. copy ..\..\tools\ChgWord.vbs .
+3. java CheckValidData.java %TEST_STRINGS%
+(Check the result has only Java-identifier characters.)
+4. SET TS=(copy above result)
+5. Execute the following command
+cscript //nologo ChgWord.vbs TEST_STRING %TS% DefineAnnotation_org.java > DefineAnnotation.java
+cscript //nologo ChgWord.vbs TEST_STRING %TS% AnnotatedTest_org.java > AnnotatedTest.java
+javac DefineAnnotation.java AnnotatedTest.java AnnotationProcessor_base.java
+javap AnnotatedTest > cand_def.txt
+javac -processor AnnotationProcessor_base AnnotatedTest.java > cand_pro.txt
+(Ignore warnings)
+6. Verify cand_def.txt and cand_pro.txt
+   cand_def.txt uses %TS% value for each value and method.
+   Use "..\..\..\tools\n2a.bat -reverse cand_pro.txt" to decode the file.
+   It uses %TS% value for annotation and element.
+   Ignore suffix.
+7. Copy them to expected\win_(locale)_def.txt and expected\win_(locale)_pro.txt
+
+[Unix]
+1. Set TEST_STRINGS
+2. cd src
+3. Execute the following commands
+export TS=`java CheckValidData.java $TEST_STRINGS`
+echo $TS
+(Check TS has only Java-identifier characters.)
+sed "s/TEST_STRING/${TS}/g" DefineAnnotation_org.java > DefineAnnotation.java
+sed "s/TEST_STRING/${TS}/g"  AnnotatedTest_org.java >  AnnotatedTest.java
+javac DefineAnnotation.java AnnotatedTest.java AnnotationProcessor_base.java
+javap AnnotatedTest > cand_def.txt
+javac -processor AnnotationProcessor_base AnnotatedTest.java > cand_pro.txt
+(Ignore warnings)
+4. Verify cand_def.txt and cand_pro.txt
+   cand_def.txt uses $TS value for each value and method.
+   Use "../../../tools/n2a.sh -reverse cand_pro.txt" to decode the file.
+   It uses $TS value for annotation and element.
+   Ignore suffix.
+5. Copy them to expected\(OS)_(locale)_def.txt and expected\(OS)_(locale)_pro.txt
+

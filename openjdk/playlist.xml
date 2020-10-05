@@ -97,6 +97,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -118,6 +122,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -139,6 +147,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -182,6 +194,10 @@
 			<level>extended</level>
 		</levels>
 		<platformRequirements>^os.osx,^os.zos</platformRequirements>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -200,6 +216,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -244,9 +264,60 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>jdk_lang_native</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)jdk$(D)internal$(D)loader$(D)NativeLibraries$(D)Main.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>15+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_lang_native_win</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)lang$(D)ProcessBuilder$(D)checkHandles$(D)CheckHandles.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<platformRequirements>os.win</platformRequirements>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_lang_j9</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage -Xdump:system+java:events=throw,filter=java/lang/NullPointerException\#*java/lang/invoke/BruteArgumentMoverHandle.permuteArguments*</variation>
 		</variations>   
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -270,6 +341,66 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>jdk_lang_native_j9</testCaseName>
+		<variations>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)jdk$(D)internal$(D)loader$(D)NativeLibraries$(D)Main.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>15+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_lang_native_j9_win</testCaseName>
+		<variations>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)lang$(D)ProcessBuilder$(D)checkHandles$(D)CheckHandles.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<platformRequirements>os.win</platformRequirements>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_lang_ref_FinalizeOverride_j9</testCaseName>
 		<variations>
 			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
@@ -280,6 +411,32 @@
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)lang$(D)ref$(D)FinalizeOverride.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_util_zip_ZipFile_TestCleaner_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
+		</variations>   
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)util$(D)zip$(D)ZipFile$(D)TestCleaner.java$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>11+</subset>
@@ -470,11 +627,15 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
-		<test>
+	<test>
 		<testCaseName>jdk_security4</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -488,6 +649,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -610,6 +775,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -628,6 +797,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -646,6 +819,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -682,6 +859,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -754,6 +935,28 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_foreign_native</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m --add-modules jdk.incubator.foreign $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)foreign$(D)TestNative.java$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>14+</subset>
+		</subsets>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<types>
+			<type>native</type>
+		</types>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jdk_instrument</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -771,6 +974,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -843,6 +1050,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -886,6 +1097,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -907,6 +1122,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -950,6 +1169,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -971,6 +1194,10 @@
 		<levels>
 			<level>extended</level>
 		</levels>
+		<!-- temporarily disable on openj9 due to https://github.com/eclipse/openj9/issues/10757 -->
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>

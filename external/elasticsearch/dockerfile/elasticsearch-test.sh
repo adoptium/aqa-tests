@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 
+source $(dirname "$0")/test_base_functions.sh
+
 #Set up Java to be used by the elasticsearch-test
 
 if [ -d /java/jre/bin ];then
@@ -36,18 +38,21 @@ fi
 
 TEST_OPTIONS=$1
 
-java -version
+echo_setup
 
 # Initial command to trigger the execution of elasticsearch test 
 cd /elasticsearch
 
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
-./gradlew -q -g /tmp assemble
+./gradlew -q -g /tmp assemble --exclude-task :distribution:docker:buildDockerImage --exclude-task :distribution:docker:buildOssDockerImage -exclude-task :distribution:docker:docker-export:exportDockerImage -exclude-task :distribution:docker:oss-docker-export:exportOssDockerImage
 set +e
 echo "Elasticsearch Build - Successful"
-
+echo "================================"
+echo ""
 echo "Running elasticsearch tests :"
+
+echo $TEST_OPTIONS
 
 ./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
 test_exit_code=$?

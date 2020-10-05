@@ -28,16 +28,18 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_openshift_test</testCaseName>
-		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_openshift --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
-		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_openshift 
-		</command>
+		<command>bash $(TEST_RESROOT)$(D)run_test.sh $(REPORTDIR); \
+		$(TEST_STATUS)</command>
+		<platformRequirements>os.linux</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>external</group>
 		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
 		<disabled>Requires openshift cluster environment to run</disabled>
 	</test>
 </playlist>

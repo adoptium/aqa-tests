@@ -28,7 +28,7 @@ OUTPUT=result.txt
 PATH=${JAVA_BIN}:$PATH
 export PATH
 
-${SHELL} ${BASE}/test_${FULLLANG} ${BASE}/${FULLLANG}.txt 2>./error.log < ${BASE}/answer.txt > ${OUTPUT}
+${SHELL} ${BASE}/test_${FULLLANG} ${BASE}/${FULLLANG}.txt 2>./error.log > ${OUTPUT}
 
 diff ${OUTPUT} ${BASE}/expected_${FULLLANG} > /dev/null 2>&1
 RESULT=$?
