@@ -27,7 +27,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>tomee_test</testCaseName>
+		<testCaseName>tomee_test_j9</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee
@@ -35,6 +35,10 @@
 		<subsets>
 			<subset>8</subset>
 		</subsets>
+                <impls>
+                        <impl>openj9</impl>
+                        <impl>ibm</impl>
+                </impls>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -42,4 +46,24 @@
 			<group>external</group>
 		</groups>
 	</test>
+        <test>
+                <testCaseName>tomee_test_hs</testCaseName>
+                <command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+                $(TEST_STATUS); \
+                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir tomee
+                </command>
+                <subsets>
+                        <subset>8</subset>
+                </subsets>
+                <impls>
+                        <impl>hotspot</impl>
+                </impls>
+                <platformRequirements>^arch.s390x</platformRequirements>
+                <levels>
+                        <level>sanity</level>
+                </levels>
+                <groups>
+                        <group>external</group>
+                </groups>
+        </test>
 </playlist>
