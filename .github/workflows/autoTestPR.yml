@@ -28,6 +28,10 @@ jobs:
         run: |
           git config --list
           python TKG/scripts/testBot/disable.py -m "${{ github.event.comment.body }}" -i "${{ github.event.comment.html_url }}" -d "$GITHUB_WORKSPACE/tests"
+      - name: test cannot be found
+        if: failure()
+        run: |
+          curl -u github-actions:${{ secrets.GITHUB_TOKEN }} -d '{ "body":  "The specified exclude test name cannot be found. Action run: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}" }' -X POST ${{ github.event.issue.comments_url }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
