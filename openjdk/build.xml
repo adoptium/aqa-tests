@@ -109,9 +109,12 @@
 						</exec>
 					</then>
 					<else>
-						<echo message="git clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
+						<condition property="branch" value="${env.RELEASE_TAG}" else="${env.JDK_BRANCH}">
+							<isset property="env.RELEASE_TAG"/>
+						</condition>
+						<echo message="git clone --depth 1 -q -b ${branch} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						<exec executable="git" failonerror="true">
-							<arg line="clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
+							<arg line="clone --depth 1 -q -b ${branch} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						</exec>
 					</else>
 				</if>
