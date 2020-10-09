@@ -261,7 +261,7 @@ def setupParallelEnv() {
 				childParams << string(name: 'RUNTIME_NAME', value: childTest)
 
 				parallel_tests[childTest] = {
-					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
+					build job: TEST_JOB_NAME, parameters: childParams
 				}
 			}
 			parallel create_jobs
@@ -807,13 +807,12 @@ def run_parallel_tests() {
 					def buildId = jobInvocation.getNumber()
 					def name = cjob.value.getProjectName()
 					try {
-						echo "${name} #${buildId} completed with status ${cjob.value.getCurrentResult()}"
 						copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 					}
 				}
+				step([$class: "TapPublisher", testResults: "**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 			}	
 		}
 	}
