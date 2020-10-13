@@ -3,6 +3,11 @@
 LABEL='ci.role.test&&hw.arch.x86&&sw.os.linux'
 
 stage('Queue') {
+    if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
+        waitForANodeToBecomeActive("$LABEL", params.ACTIVE_NODE_TIMEOUT)
+    } else {
+        waitForANodeToBecomeActive("$LABEL", "0")
+    }
 	node("$LABEL") {
 		cleanWs()
 		getTRSSOutput()
@@ -87,5 +92,32 @@ def getTRSSOutput() {
 		}
 	}
 }
+
+def waitForANodeToBecomeActive(def label, String activeNodeTimeoutString) {
+    def nodes = nodesByLabel(label).size()
+    if (nodes < 1) {
+        // If no active node matches the label, we see if there's a timeout value set.
+        // If there is, we wait and check again periodically. If not, we fail immediately.
+
+        boolean didnt_find_node = true
+
+        int activeNodeTimeout = activeNodeTimeoutString as Integer
+
+        echo "Cannot find an active node matching this label: " + label
+        echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
+
+        while (activeNodeTimeout > 0) {
+            sleep(60 * 1000) // 1 minute sleep
+            activeNodeTimeout--
+            if (nodesByLabel(LABEL).size() > 0) {
+                echo "A node matching the aforementioned label has become active."
+                return
+            }
+        }
+
+        assert false : "Cannot find any machine that matches the LABEL: " + LABEL
+    }
+}
+
 
 return this
