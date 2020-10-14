@@ -166,6 +166,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
+							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
 							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
 							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
 							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
