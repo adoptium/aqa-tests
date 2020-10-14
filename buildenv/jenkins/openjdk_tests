@@ -195,7 +195,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 boolean didnt_find_node = true
 
                 if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-                    int activeNodeTimeout = buildConfig.ACTIVE_NODE_TIMEOUT as Integer
+                    int activeNodeTimeout = params.ACTIVE_NODE_TIMEOUT as Integer
                     echo "Cannot find an active node matching this label: " + label
                     echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
                     while (activeNodeTimeout > 0) {
@@ -203,8 +203,8 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                         activeNodeTimeout--
                         if (nodesByLabel(LABEL).size() > 0) {
                             didnt_find_node = false
-                            activeNodeTimeout = 0
                             echo "A node matching the aforementioned label has become active."
+                            break;
                         }
                     }
                 }
