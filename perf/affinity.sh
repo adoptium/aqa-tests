@@ -319,6 +319,7 @@ function setServerDBAffinities() {
 	echo "DB will be using node: DB_NODE=${DB_NODE}"
 	echo "DB affinity command is: DB_AFFINITY_CMD=${DB_AFFINITY_CMD}"
 
+	affinity_tool_install_check
 	echo "##### Setting Affinities: Done"
 }
 

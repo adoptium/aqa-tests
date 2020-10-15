@@ -16,7 +16,7 @@
 	xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>liberty-dt7-startup</testCaseName>
-		<command>bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_sufp.sh$(Q) $(TEST_RESROOT); \
+		<command>export SERVER_PHYSCPU_NUM=2; export SMT=true; bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_sufp.sh$(Q) $(TEST_RESROOT); \
 		${TEST_STATUS}
 		</command>
 		<!-- scripts are only tested on linux -->
@@ -30,7 +30,7 @@
 	</test>
 	<test>
 		<testCaseName>liberty-dt7-throughput</testCaseName>
-		<command>bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_throughput.sh$(Q) $(TEST_RESROOT); \
+		<command>export SERVER_PHYSCPU_NUM=2; export SMT=true; bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_throughput.sh$(Q) $(TEST_RESROOT); \
 		${TEST_STATUS}
 		</command>
 		<!-- scripts are only tested on linux -->

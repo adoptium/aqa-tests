@@ -32,12 +32,24 @@ configureDB()
 		if [[ "${SCENARIO}" = DayTrader7 ]]; then		
 			
 			echo "SCENARIO=${SCENARIO}"
-			DB_FILE="${LIBERTY_DIR}/usr/shared/resources/data/tradedb7/service.properties"
 			
-			if [ -e "${DB_FILE}" ]; then
+
+			#After upgrading from 19.0.0.4 to 20.0.0.10, I noticed that the DB_FILE location has changed.
+			#In 19.0.0.4, it used to be ${LIBERTY_DIR}/usr/shared/resources/data/tradedb7/service.properties irrespective of the server name.
+			#In 20.0.0.10, it depends on the server name. For example:
+			#${LIBERTY_DIR}/usr/servers/${SERVER_NAME}/tradedb7/service.properties
+			#${LIBERTY_DIR}/usr/servers/${SERVER_NAME}/DB_NAME_HERE/service.properties
+			#TODO: Need a more reliable way to find this file as location of service.properties changes according to the SERVER_NAME
+			#and we don't have that at build stage. Might need to move this to run step later. Since we're only running DayTrader7 as
+			#of now, we'll be okay since it's the same service.properties file for both startup and throughput. Once we run 
+			#other apps, then this needs to be updated.
+			
+			DB_FILE=`find ${LIBERTY_DIR} -name 'service.properties' | grep service.properties | head -n 1`
+			
+			if [ ! -z "${DB_FILE}" ]; then
 				echo "DB_FILE=${DB_FILE} exists! No need to configure database"
 			else		
-				echo "DB_FILE=${DB_FILE} doesn't exist! Need to configure database"		
+				echo "service.properties doesn't exist! Need to configure database"		
 				
 				startLibertyServer 1
 				PORT="9080"
