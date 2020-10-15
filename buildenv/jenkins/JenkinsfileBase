@@ -182,8 +182,6 @@ def setupParallelEnv() {
 						archiveArtifacts artifacts: 'parallelList.mk', fingerprint: true, allowEmptyArchive: false
 					}
 
-					UPSTREAM_TEST_JOB_NAME = JOB_NAME
-					UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 				} else {
 					assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 				}
@@ -205,6 +203,8 @@ def setupParallelEnv() {
 					assert false : "Build failed becuase childJobNum: ${childJobNum} > 20."
 				}
 			}
+			UPSTREAM_TEST_JOB_NAME = JOB_NAME
+			UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 			echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
 			parallel_tests = [:]
 			create_jobs = [:]
@@ -261,7 +261,7 @@ def setupParallelEnv() {
 				childParams << string(name: 'RUNTIME_NAME', value: childTest)
 
 				parallel_tests[childTest] = {
-					build job: TEST_JOB_NAME, parameters: childParams
+					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
 			parallel create_jobs
@@ -805,19 +805,27 @@ def run_parallel_tests() {
 			} else {
 				waitForANodeToBecomeActive("$LABEL", "0")
 			}
-			node("$LABEL") {	
+			node("$LABEL") {
+				def buildResult = ""	
 				childJobs.each {
 					cjob ->
 					def jobInvocation = cjob.value.getRawBuild()
 					def buildId = jobInvocation.getNumber()
 					def name = cjob.value.getProjectName()
+					def childResult = cjob.value.getCurrentResult()
 					try {
+						echo "${name} #${buildId} completed with status ${childResult}"
 						copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						buildResult = childResult
 					}
 				}
-				step([$class: "TapPublisher", testResults: "**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
+				if (buildResult) {
+					echo "set build status to ${buildResult}"
+					currentBuild.result = buildResult
+				}
 			}	
 		}
 	}
