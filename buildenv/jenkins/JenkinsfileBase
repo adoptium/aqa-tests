@@ -829,8 +829,6 @@ def waitForANodeToBecomeActive(def label, String activeNodeTimeoutString) {
         // If no active node matches the label, we see if there's a timeout value set.
         // If there is, we wait and check again periodically. If not, we fail immediately.
 
-        boolean didnt_find_node = true
-
         int activeNodeTimeout = activeNodeTimeoutString as Integer
 
         echo "Cannot find an active node matching this label: " + label
