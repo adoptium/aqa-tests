@@ -178,10 +178,11 @@ echoAndRunCmd "mkdir -p ${DEST} ${LIBERTY_DEP_CACHE_LOCATION}"
 ##########################
 
 unsetVars
-APP_URL="https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/2019-04-19_0642/openliberty-19.0.0.4.zip"
+#Note: We need to use "All GA Features" package as "Web Profile 8" package doesn't have all the features required for DayTrader7.
+APP_URL="https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/2020-09-15_1100/openliberty-20.0.0.10.zip"
 APP_ARCHIVE="$(basename ${APP_URL})"
 EXTRACT_ORIGINAL_NAME="wlp"
-EXTRACT_NEW_NAME="openliberty-19.0.0.4"
+EXTRACT_NEW_NAME="openliberty-20.0.0.10"
 APP_DEST="${DEST}/libertyBinaries"
 downloadDepencies
 

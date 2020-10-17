@@ -18,6 +18,18 @@ echo "***** Running Benchmark Script *****"
 
 echo "Current Dir: $(pwd)"
 
+TEST_RESROOT=${1}
+
+. "$TEST_RESROOT/../../../openjdk-tests/perf/affinity.sh" > /dev/null 2>&1
+setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
+
+export AFFINITY=${SERVER_AFFINITY_CMD}
+echo "AFFINITY=${AFFINITY}"
+
+if [ -z "${AFFINITY}" ]; then
+    echo "Warning!!! Affinity is NOT set. Affinity tool may NOT be installed/supported."
+fi
+
 #TODO: Remove these once the use of STAF has been eliminated from all the benchmark scripts
 export PATH=/usr/local/staf/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/staf/lib:$LD_LIBRARY_PATH
@@ -49,16 +61,13 @@ export REQUEST_CORE=""
 export SCENARIO="DayTrader7"
 export SERVER_NAME="LibertySUDTServer-$JDK"
 export PETERFP="false"
-export RESULTS_MACHINE="lowry1"
+export RESULTS_MACHINE="$(hostname)"
 export RESULTS_DIR="libertyResults"
 export LIBERTY_HOST="$(hostname)"
 export LAUNCH_SCRIPT="server"
-export LIBERTY_BINARIES_DIR="$1/libertyBinaries"
-export LIBERTY_VERSION="openliberty-19.0.0.4"
+export LIBERTY_BINARIES_DIR="${TEST_RESROOT}/libertyBinaries"
+export LIBERTY_VERSION="openliberty-20.0.0.10"
 export APP_VERSION="daytrader-ee7"
 export WLP_SKIP_MAXPERMSIZE="1"
 
-#TODO: Need to soft-code these configs. Need to add various affinity tools in the perf pre-reqs ()
-export AFFINITY=""
-
-bash ${1}/scripts/bin/sufp_benchmark.sh
+bash ${TEST_RESROOT}/scripts/bin/sufp_benchmark.sh

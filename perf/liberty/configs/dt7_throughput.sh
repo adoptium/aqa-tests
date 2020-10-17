@@ -18,6 +18,21 @@ echo "***** Running Benchmark Script *****"
 
 echo "Current Dir: $(pwd)"
 
+TEST_RESROOT=${1}
+
+. "$TEST_RESROOT/../../../openjdk-tests/perf/affinity.sh" > /dev/null 2>&1
+setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
+
+#TODO: We'll need to add affinity variables for client and DB in the scripts if we decide to run
+# all components (Server, Client & DB) on one machine in order to isolate them. Currently, scripts just 
+# have affinity vars for server since we always ran server on another machine before.
+export AFFINITY=${SERVER_AFFINITY_CMD}
+echo "AFFINITY=${AFFINITY}"
+
+if [ -z "${AFFINITY}" ]; then
+    echo "Warning!!! Affinity is NOT set. Affinity tool may NOT be installed/supported."
+fi
+
 #TODO: Remove these once the use of STAF has been eliminated from all the benchmark scripts
 export PATH=/usr/local/staf/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/staf/lib:$LD_LIBRARY_PATH
@@ -48,7 +63,7 @@ export CLIENT="$(hostname)"
 export DB_MACHINE="$(hostname)"
 export LIBERTY_HOST="$(hostname)"
 
-export CLIENT_WORK_DIR="${1}/liberty-client"
+export CLIENT_WORK_DIR="${TEST_RESROOT}/liberty-client"
 export DB_SERVER_WORKDIR="${CLIENT_WORK_DIR}"
 export DATABASE="derby"
 export DB2_HOME="/home/db2inst1/"
@@ -62,7 +77,7 @@ export PROFILING_TOOL=""
 export PROFILING_JAVA_OPTION=""
 export LIBERTY_PORT="9080"
 export LARGE_THREAD_POOL="true"
-export JMETER_LOC="${1}/JMeter/apache-jmeter-3.3/bin/jmeter"
+export JMETER_LOC="${TEST_RESROOT}/JMeter/apache-jmeter-3.3/bin/jmeter"
 export JMETER_INSTANCES=""
 export SERVER_XML=""
 export THROUGHPUT_DRIVER="jmeter"
@@ -75,11 +90,8 @@ export CLEAN_RUN="true"
 export SETUP_ONLY="false"
 export NO_SETUP="false"
 export LAUNCH_SCRIPT="server"
-export LIBERTY_BINARIES_DIR="$1/libertyBinaries"
-export LIBERTY_VERSION="openliberty-19.0.0.4"
+export LIBERTY_BINARIES_DIR="${TEST_RESROOT}/libertyBinaries"
+export LIBERTY_VERSION="openliberty-20.0.0.10"
 export GCMV_ENABLED="false"
 
-#TODO: Need to soft-code these configs. Need to add various affinity tools in the perf pre-reqs ()
-export AFFINITY=""
-
-bash ${1}/scripts/bin/throughput_benchmark.sh 
+bash ${TEST_RESROOT}/scripts/bin/throughput_benchmark.sh
