@@ -24,15 +24,11 @@ compare()
 
 	dirName=$1
 
-	cd $WORKDIR/JCK-$JCK_VERSION1
-	cd JCK$JCK_VERSION1*
-	cd JCK-$dirName-$VERSION_VALUE1/tests
+	cd $WORKDIR/JCK-$JCK_VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE1.lst
 	
-	cd $WORKDIR/JCK-$JCK_VERSION2
-	cd JCK$JCK_VERSION2*
-	cd JCK-$dirName-$VERSION_VALUE2/tests
+	cd $WORKDIR/JCK-$JCK_VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE2.lst
 

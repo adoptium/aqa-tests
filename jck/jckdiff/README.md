@@ -23,6 +23,6 @@ Given two JCK repos versions:
 Prerequisite: 
 
 ```
-SSH keys required to access the given JCK repositories should already be set up in the machine on which this script is run. 
+If any SSH keys are required to access the given JCK repositories, they should already be set up prior to invoking this script. 
 
 ```
