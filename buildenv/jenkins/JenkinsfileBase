@@ -800,10 +800,12 @@ def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-				waitForANodeToBecomeActive("$LABEL", params.ACTIVE_NODE_TIMEOUT)
-			} else {
-				waitForANodeToBecomeActive("$LABEL", "0")
+			if (!(params.DOCKER_REQUIRED || "$LABEL".contains("docker"))) {
+				if (params.containsKey("ACTIVE_NODE_TIMEOUT") && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
+					waitForANodeToBecomeActive("$LABEL", params.ACTIVE_NODE_TIMEOUT)
+				} else {
+					waitForANodeToBecomeActive("$LABEL", "0")
+				}
 			}
 			node("$LABEL") {	
 				childJobs.each {

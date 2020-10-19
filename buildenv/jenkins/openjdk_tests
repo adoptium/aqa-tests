@@ -188,7 +188,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
         stage('Queue') {
             def nodes = nodesByLabel(LABEL).size()
-            if (nodes < 1) {
+            if ((nodes < 1) && !(params.DOCKER_REQUIRED || LABEL.contains("docker"))) {
                 // If no active node matches the label, we see if there's a timeout value set.
                 // If there is, we wait and check again periodically. If not, we fail immediately.
                 
