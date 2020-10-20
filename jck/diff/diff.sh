@@ -6,11 +6,11 @@ setup()
 	version=$1
 	repo=$2
 	
-	if [ -d "$WORKDIR/JCK-$version" ] ; then 
-		echo "Using existing JCK $version repo at: $WORKDIR/JCK-$version"
+	if [ -d "$WORKDIR/$version" ] ; then 
+		echo "Using existing test repo at: $WORKDIR/$version"
 	else 
-		echo "Git cloning JCK materials from $repo..."
-		git clone $repo JCK-$version
+		echo "Git cloning test materials from $repo..."
+		git clone $repo $version
 		if [[ $? != 0 ]]; then 
 			exit $rc; 
 		fi
@@ -24,20 +24,20 @@ compare()
 
 	dirName=$1
 
-	cd $WORKDIR/JCK-$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
+	cd $WORKDIR/$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE1.lst
 	
-	cd $WORKDIR/JCK-$VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
+	cd $WORKDIR/$VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE2.lst
 
 
 	if cmp -s $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst; then 
-		echo "SAME : JCK$VERSION1 $dirName, JCK$VERSION2 $dirName"
+		echo "SAME : '$dirName' folder identical in both given versions: $VERSION1 & $VERSION2"
 	else 
 		diff $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst > $WORKDIR/$dirName-diff.log 
-		echo "DIFFERENT : JCK$VERSION1 $dirName and JCK$VERSION2 $dirName"
+		echo "DIFFERENT : '$dirName' folder content are different in two given versions: $VERSION1 & $VERSION2"
 		echo "Please manually investigate the following differences in the two given repositories:"
 		cat $WORKDIR/$dirName-diff.log
 	fi 
