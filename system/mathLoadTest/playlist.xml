@@ -126,6 +126,18 @@
 	
 	<test>
 		<testCaseName>MathLoadTest_all_special</testCaseName>
+		<disabled>
+			<comment>rtc 139897</comment>
+			<variation>Mode554</variation>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode555</variation>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode614</variation>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -143,13 +155,13 @@
 			<variation>Mode501</variation>
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
-			<!-- disable Mode554 until the issue is fixed rtc 139897-->
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode554</variation>
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -175,6 +187,14 @@
 
  	<test>
 		<testCaseName>MathLoadTest_autosimd_special</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode555</variation>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode614</variation>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -193,12 +213,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -224,6 +244,14 @@
 
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal_special</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode555</variation>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/pull/499</comment>
+			<variation>Mode614</variation>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -242,12 +270,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
