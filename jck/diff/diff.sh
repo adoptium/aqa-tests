@@ -3,14 +3,14 @@
 setup()
 {
 	cd $WORKDIR
-	jckVersion=$1
-	jckRepo=$2
+	version=$1
+	repo=$2
 	
-	if [ -d "$WORKDIR/JCK-$jckVersion" ] ; then 
-		echo "Using existing JCK $jckVersion repo at: $WORKDIR/JCK-$jckVersion"
+	if [ -d "$WORKDIR/JCK-$version" ] ; then 
+		echo "Using existing JCK $version repo at: $WORKDIR/JCK-$version"
 	else 
-		echo "Git cloning JCK materials from $jckRepo..."
-		git clone $jckRepo JCK-$jckVersion
+		echo "Git cloning JCK materials from $repo..."
+		git clone $repo JCK-$version
 		if [[ $? != 0 ]]; then 
 			exit $rc; 
 		fi
@@ -24,20 +24,20 @@ compare()
 
 	dirName=$1
 
-	cd $WORKDIR/JCK-$JCK_VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
+	cd $WORKDIR/JCK-$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE1.lst
 	
-	cd $WORKDIR/JCK-$JCK_VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
+	cd $WORKDIR/JCK-$VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE2.lst
 
 
 	if cmp -s $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst; then 
-		echo "SAME : JCK$JCK_VERSION1 $dirName, JCK$JCK_VERSION2 $dirName"
+		echo "SAME : JCK$VERSION1 $dirName, JCK$VERSION2 $dirName"
 	else 
 		diff $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst > $WORKDIR/$dirName-diff.log 
-		echo "DIFFERENT : JCK$JCK_VERSION1 $dirName and JCK$JCK_VERSION2 $dirName"
+		echo "DIFFERENT : JCK$VERSION1 $dirName and JCK$VERSION2 $dirName"
 		echo "Please manually investigate the following differences in the two given repositories:"
 		cat $WORKDIR/$dirName-diff.log
 	fi 
@@ -46,37 +46,37 @@ compare()
 }
 
 date
-echo "Starting auto jck materials scan.."
+echo "Starting test materials scan.."
 begin_time="$(date -u +%s)"
 
-JCK_REPO1=$1
-JCK_REPO2=$2
+REPO1=$1
+REPO2=$2
 
-JCK_VERSION1=$(echo "$JCK_REPO1" | sed 's/[^0-9]*//g')
-JCK_VERSION2=$(echo "$JCK_REPO2" | sed 's/[^0-9]*//g')
+VERSION1=$(echo "$REPO1" | sed 's/[^0-9]*//g')
+VERSION2=$(echo "$REPO2" | sed 's/[^0-9]*//g')
 
-if [[ "$JCK_VERSION1" -eq 8 ]] ; then 
-	VERSION_VALUE1="$JCK_VERSION1"c
+if [[ "$VERSION1" -eq 8 ]] ; then 
+	VERSION_VALUE1="$VERSION1"c
 else 
-	VERSION_VALUE1="$JCK_VERSION1"
+	VERSION_VALUE1="$VERSION1"
 fi 
 
-if [[ "$JCK_VERSION2" -eq 8 ]] ; then 
-	VERSION_VALUE2="$JCK_VERSION2"c
+if [[ "$VERSION2" -eq 8 ]] ; then 
+	VERSION_VALUE2="$VERSION2"c
 else 
-	VERSION_VALUE2="$JCK_VERSION2"
+	VERSION_VALUE2="$VERSION2"
 fi 
 
 WORKDIR=$(pwd)/workspace
 
 echo "WORKDIR=$WORKDIR"
-echo "JCK_REPO1=$JCK_REPO1" 
-echo "JCK_REPO2=$JCK_REPO2"
+echo "REPO1=$REPO1" 
+echo "REPO2=$REPO2"
 	
 [ ! -d "$WORKDIR" ] && mkdir -p "$WORKDIR"
 
-setup $JCK_VERSION1 $JCK_REPO1
-setup $JCK_VERSION2 $JCK_REPO2
+setup $VERSION1 $REPO1
+setup $VERSION2 $REPO2
 compare runtime 
 compare compiler
 
