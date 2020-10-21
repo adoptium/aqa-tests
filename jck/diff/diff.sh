@@ -2,11 +2,40 @@
 
 setup()
 {
+	VERSION1=$(echo "$REPO1" | sed 's/[^0-9]*//g')
+	VERSION2=$(echo "$REPO2" | sed 's/[^0-9]*//g')
+
+	if [[ "$VERSION1" -eq 8 ]] ; then 
+		VERSION_VALUE1="$VERSION1"c
+	else 
+		VERSION_VALUE1="$VERSION1"
+	fi 
+
+	if [[ "$VERSION2" -eq 8 ]] ; then 
+		VERSION_VALUE2="$VERSION2"c
+	else 
+		VERSION_VALUE2="$VERSION2"
+	fi 
+
+	WORKDIR=$(pwd)/workspace
+
+	echo "WORKDIR=$WORKDIR"
+	echo "REPO1=$REPO1" 
+	echo "REPO2=$REPO2"
+	
+	[ ! -d "$WORKDIR" ] && mkdir -p "$WORKDIR"
+	if [ ! -d "$WORKDIR/logs" ] ; then 
+		 mkdir -p "$WORKDIR/logs"
+	else 
+		rmdir "$WORKDIR/logs"
+		mkdir -p "$WORKDIR/logs"
+	fi 
+}
+
+clone()	{
 	cd $WORKDIR
-	rm -rf $WORKDIR/*.lst
 	version=$1
 	repo=$2
-	
 	if [ -d "$WORKDIR/$version" ] ; then 
 		echo "Using existing test repo at: $WORKDIR/$version"
 	else 
@@ -23,21 +52,20 @@ compare()
 	dirName=$1
 	cd $WORKDIR/$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
-	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE1.lst
+	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst
 	
 	cd $WORKDIR/$VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
-	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE2.lst
+	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst
 
-
-	if cmp -s $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst; then 
+	if cmp -s $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst; then 
 		echo "SAME : '$dirName' folder identical in both given versions: $VERSION1 & $VERSION2"
 	else 
-		diff $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst > $WORKDIR/$dirName-diff.lst 
+		diff $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst > $WORKDIR/logs/$dirName-diff.lst 
 		echo "DIFFERENT : '$dirName' folder content are different in two given versions: $VERSION1 & $VERSION2"
 		echo "Please manually investigate the following differences in the two given repositories:"
-		cat $WORKDIR/$dirName-diff.lst
-		exit 1
+		cat $WORKDIR/logs/$dirName-diff.lst
+		return 1
 	fi 
 }
 
@@ -47,37 +75,24 @@ begin_time="$(date -u +%s)"
 
 REPO1=$1
 REPO2=$2
+diffFound=0
 
-VERSION1=$(echo "$REPO1" | sed 's/[^0-9]*//g')
-VERSION2=$(echo "$REPO2" | sed 's/[^0-9]*//g')
+setup
 
-if [[ "$VERSION1" -eq 8 ]] ; then 
-	VERSION_VALUE1="$VERSION1"c
-else 
-	VERSION_VALUE1="$VERSION1"
-fi 
+clone $VERSION1 $REPO1
+clone $VERSION2 $REPO2
 
-if [[ "$VERSION2" -eq 8 ]] ; then 
-	VERSION_VALUE2="$VERSION2"c
-else 
-	VERSION_VALUE2="$VERSION2"
-fi 
-
-WORKDIR=$(pwd)/workspace
-
-echo "WORKDIR=$WORKDIR"
-echo "REPO1=$REPO1" 
-echo "REPO2=$REPO2"
-	
-[ ! -d "$WORKDIR" ] && mkdir -p "$WORKDIR"
-
-setup $VERSION1 $REPO1
-setup $VERSION2 $REPO2
 compare runtime 
+diffFound=$?
 compare compiler
+diffFound=$(( diffFound + $? ))
 
 end_time="$(date -u +%s)"
 echo "Done!"
 date 
 elapsed="$(($end_time-$begin_time))"
 echo "Total analysis took ~ $elapsed seconds."
+
+if [[ $diffFound != 0 ]]; then
+	exit 1; 
+fi
