@@ -52,19 +52,19 @@ compare()
 	dirName=$1
 	cd $WORKDIR/$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
-	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst
+	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE1.txt
 	
 	cd $WORKDIR/$VERSION2/JCK-$dirName-$VERSION_VALUE2/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
-	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst
+	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/logs/$dirName-$VERSION_VALUE2.txt
 
-	if cmp -s $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst; then 
+	if cmp -s $WORKDIR/logs/$dirName-$VERSION_VALUE1.txt $WORKDIR/logs/$dirName-$VERSION_VALUE2.txt; then 
 		echo "SAME : '$dirName' folder identical in both given versions: $VERSION1 & $VERSION2"
 	else 
-		diff $WORKDIR/logs/$dirName-$VERSION_VALUE1.lst $WORKDIR/logs/$dirName-$VERSION_VALUE2.lst > $WORKDIR/logs/$dirName-diff.lst 
+		diff $WORKDIR/logs/$dirName-$VERSION_VALUE1.txt $WORKDIR/logs/$dirName-$VERSION_VALUE2.txt > $WORKDIR/logs/$dirName-diff.txt 
 		echo "DIFFERENT : '$dirName' folder content are different in two given versions: $VERSION1 & $VERSION2"
 		echo "Please manually investigate the following differences in the two given repositories:"
-		cat $WORKDIR/logs/$dirName-diff.lst
+		cat $WORKDIR/logs/$dirName-diff.txt
 		return 1
 	fi 
 }
