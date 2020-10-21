@@ -20,11 +20,7 @@ setup()
 
 compare()
 {
-	rm -rf $WORKDIR/*.lst
-	rm -rf $WORKDIR/*.log
-
 	dirName=$1
-
 	cd $WORKDIR/$VERSION1/JCK-$dirName-$VERSION_VALUE1/tests
 	echo "Listing test directories under $dirName at: `pwd`" 
 	find . -maxdepth 2 -mindepth 2 -type d > $WORKDIR/$dirName-$VERSION_VALUE1.lst
@@ -37,10 +33,10 @@ compare()
 	if cmp -s $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst; then 
 		echo "SAME : '$dirName' folder identical in both given versions: $VERSION1 & $VERSION2"
 	else 
-		diff $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst > $WORKDIR/$dirName-diff.log 
+		diff $WORKDIR/$dirName-$VERSION_VALUE1.lst $WORKDIR/$dirName-$VERSION_VALUE2.lst > $WORKDIR/$dirName-diff.lst 
 		echo "DIFFERENT : '$dirName' folder content are different in two given versions: $VERSION1 & $VERSION2"
 		echo "Please manually investigate the following differences in the two given repositories:"
-		cat $WORKDIR/$dirName-diff.log
+		cat $WORKDIR/$dirName-diff.lst
 		exit 1
 	fi 
 }
