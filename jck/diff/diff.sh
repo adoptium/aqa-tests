@@ -32,7 +32,8 @@ setup()
 	fi 
 }
 
-clone()	{
+clone()	
+{
 	cd $WORKDIR
 	version=$1
 	repo=$2
