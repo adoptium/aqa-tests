@@ -13,8 +13,7 @@ setup()
 		echo "Git cloning test materials from $repo..."
 		git clone --depth 1 -q $repo $version
 		if [[ $? != 0 ]]; then 
-			echo "wrong repo, exit code = $?" 
-			exit $?; 
+			exit 1; 
 		fi
 	fi 
 }
