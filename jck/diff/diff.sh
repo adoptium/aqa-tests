@@ -3,6 +3,7 @@
 setup()
 {
 	cd $WORKDIR
+	rm -rf $WORKDIR/*.lst
 	version=$1
 	repo=$2
 	
@@ -10,7 +11,7 @@ setup()
 		echo "Using existing test repo at: $WORKDIR/$version"
 	else 
 		echo "Git cloning test materials from $repo..."
-		git clone $repo $version
+		git clone --depth 1 -q $repo $version
 		if [[ $? != 0 ]]; then 
 			exit $rc; 
 		fi
@@ -41,8 +42,6 @@ compare()
 		echo "Please manually investigate the following differences in the two given repositories:"
 		cat $WORKDIR/$dirName-diff.log
 	fi 
-
-	rm -rf $WORKDIR/*.lst
 }
 
 date
