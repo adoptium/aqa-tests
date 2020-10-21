@@ -13,6 +13,7 @@ setup()
 		echo "Git cloning test materials from $repo..."
 		git clone --depth 1 -q $repo $version
 		if [[ $? != 0 ]]; then 
+			echo "wrong repo, exit code = $rc" 
 			exit $rc; 
 		fi
 	fi 
@@ -41,6 +42,7 @@ compare()
 		echo "DIFFERENT : '$dirName' folder content are different in two given versions: $VERSION1 & $VERSION2"
 		echo "Please manually investigate the following differences in the two given repositories:"
 		cat $WORKDIR/$dirName-diff.log
+		exit 1
 	fi 
 }
 
