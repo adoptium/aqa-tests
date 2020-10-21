@@ -5,6 +5,11 @@ setup()
 	VERSION1=$(echo "$REPO1" | sed 's/[^0-9]*//g')
 	VERSION2=$(echo "$REPO2" | sed 's/[^0-9]*//g')
 
+	if [[ $VERSION1 == $VERSION2 ]] ; then 
+		echo "Please provide two different repositories to compare"
+		exit 1; 
+	fi 
+
 	if [[ "$VERSION1" -eq 8 ]] ; then 
 		VERSION_VALUE1="$VERSION1"c
 	else 
