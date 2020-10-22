@@ -88,237 +88,238 @@
 							<arg value="pull" />
 						</exec>
 					</else>
-
 				</if>
-				<if>
-					<isset property="isZOS" />
-					<then>
-						<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
-						<delete includeemptydirs="true" failonerror="false">
-							<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
-						</delete>
-						<mkdir dir="${JCK_ROOT_USED}/.git/info" />
-						<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-							<arg value="rm" />
-							<arg value="--cached" />
-							<arg value="-r" />
-							<arg value="-q" />
-							<arg value="." />
-						</exec>
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-							<arg value="reset" />
-							<arg value="--hard" />
-						</exec>
-					</then>
-				</if>
-				<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
+			</else>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
+				</delete>
+				<mkdir dir="${JCK_ROOT_USED}/.git/info" />
+				<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
+				</exec>
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
+				</exec>
+			</then>
+		</if>
+		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
 			This is especially needed to execute the shell scripts under devtools for JCK 8.
 		-->
-				<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
-			</target>
+		<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
+	</target>
 
-			<target name="init">
-				<mkdir dir="${DEST}" />
-				<if>
-					<not>
-						<available file="${SYSTEMTEST_BUILD_ROOT}" type="dir" />
-					</not>
-					<then>
-						<mkdir dir="${SYSTEMTEST_BUILD_ROOT}" />
-					</then>
-				</if>
-			</target>
+	<target name="init">
+		<mkdir dir="${DEST}" />
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_BUILD_ROOT}" type="dir" />
+			</not>
+			<then>
+				<mkdir dir="${SYSTEMTEST_BUILD_ROOT}" />
+			</then>
+		</if>
+	</target>
 
-			<target name="clone_stf">
-				<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-					<arg value="clone" />
-					<arg value="--depth" />
-					<arg value="1" />
-					<arg value="--single-branch" />
-					<arg value="-b"/>
-					<arg value="${stf_branch}"/>
-					<arg value="${stf_repo}"/>
+	<target name="clone_stf">
+		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="-b"/>
+			<arg value="${stf_branch}"/>
+			<arg value="${stf_repo}"/>
+		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				</delete>
+				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
 				</exec>
-				<if>
-					<isset property="isZOS" />
-					<then>
-						<delete includeemptydirs="true" failonerror="false">
-							<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-						</delete>
-						<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-						<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
-						<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-							<arg value="rm" />
-							<arg value="--cached" />
-							<arg value="-r" />
-							<arg value="-q" />
-							<arg value="." />
-						</exec>
-						<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-							<arg value="reset" />
-							<arg value="--hard" />
-						</exec>
-					</then>
-				</if>
-				<echo message="SHA of the checked out STF materials:"/>
-				<exec executable="git" failonerror="false">
-					<arg value="ls-remote" />
-					<arg value="${stf_repo}"/>
-					<arg value="${stf_branch}"/>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
 				</exec>
-			</target>
+			</then>
+		</if>
+		<echo message="SHA of the checked out STF materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${stf_repo}"/>
+			<arg value="${stf_branch}"/>
+		</exec>
+	</target>
 
-			<target name="clone_systemtest">
-				<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-					<arg value="clone" />
-					<arg value="--depth" />
-					<arg value="1" />
-					<arg value="--single-branch" />
-					<arg value="-b"/>
-					<arg value="${openjdk_systemtest_branch}"/>
-					<arg value="${openjdk_systemtest_repo}"/>
+	<target name="clone_systemtest">
+		<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />
+			<arg value="--depth" />
+			<arg value="1" />
+			<arg value="--single-branch" />
+			<arg value="-b"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+			<arg value="${openjdk_systemtest_repo}"/>
+		</exec>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+				</delete>
+				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" />
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="rm" />
+					<arg value="--cached" />
+					<arg value="-r" />
+					<arg value="-q" />
+					<arg value="." />
 				</exec>
-				<if>
-					<isset property="isZOS" />
-					<then>
-						<delete includeemptydirs="true" failonerror="false">
-							<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
-						</delete>
-						<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
-						<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" />
-						<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
-							<arg value="rm" />
-							<arg value="--cached" />
-							<arg value="-r" />
-							<arg value="-q" />
-							<arg value="." />
-						</exec>
-						<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
-							<arg value="reset" />
-							<arg value="--hard" />
-						</exec>
-					</then>
-				</if>
-				<echo message="SHA of the checked out openjdk-systemtest materials:"/>
-				<exec executable="git" failonerror="false">
-					<arg value="ls-remote" />
-					<arg value="${openjdk_systemtest_repo}"/>
-					<arg value="${openjdk_systemtest_branch}"/>
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+					<arg value="reset" />
+					<arg value="--hard" />
 				</exec>
-			</target>
+			</then>
+		</if>
+		<echo message="SHA of the checked out openjdk-systemtest materials:"/>
+		<exec executable="git" failonerror="false">
+			<arg value="ls-remote" />
+			<arg value="${openjdk_systemtest_repo}"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+		</exec>
+	</target>
 
-			<target name="check_systemtest" depends="init">
-				<if>
-					<not>
-						<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
-					</not>
-					<then>
-						<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
-						<antcall target="clone_stf" inheritall="true" />
-					</then>
-					<else>
-						<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
-					</else>
-				</if>
-				<if>
-					<not>
-						<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
-					</not>
-					<then>
-						<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
-						<antcall target="clone_systemtest" inheritall="true" />
-					</then>
-					<else>
-						<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
-					</else>
-				</if>
-			</target>
+	<target name="check_systemtest" depends="init">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
+				<antcall target="clone_stf" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
+			</else>
+		</if>
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<antcall target="clone_systemtest" inheritall="true" />
+			</then>
+			<else>
+				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+			</else>
+		</if>
+	</target>
 
-			<target name="prepare_systemtest_for_jck" depends="check_systemtest">
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="configure" inheritAll="false" />
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
-					<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version} "/>
-					<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
-				</ant>
-			</target>
+	<target name="prepare_systemtest_for_jck" depends="check_systemtest">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
+			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version} "/>
+			<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
+		</ant>
+	</target>
 
-			<target name="dist" depends="prepare_systemtest_for_jck" description="generate the distribution">
-				<if>
-					<not>
-						<available file="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest" type="dir" />
-					</not>
-					<then>
-						<copy todir="${SYSTEMTEST_BUILD_ROOT}/stf">
-							<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
-						</copy>
-						<copy todir="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest">
-							<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
-						</copy>
-						<copy todir="${SYSTEMTEST_BUILD_ROOT}/systemtest_prereqs/">
-							<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
-						</copy>
-					</then>
-				</if>
-				<copy todir="${DEST}">
-					<fileset dir="${basedir}">
-						<exclude name="jck_root/" />
-						<exclude name="README.md" />
-					</fileset>
+	<target name="dist" depends="prepare_systemtest_for_jck" description="generate the distribution">
+		<if>
+			<not>
+				<available file="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest" type="dir" />
+			</not>
+			<then>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/stf">
+					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
 				</copy>
-			</target>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest">
+					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+				</copy>
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/systemtest_prereqs/">
+					<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
+				</copy>
+			</then>
+		</if>
+		<copy todir="${DEST}">
+			<fileset dir="${basedir}">
+				<exclude name="jck_root/" />
+				<exclude name="README.md" />
+			</fileset>
+		</copy>
+	</target>
 
-			<target name="build">
-				<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
+	<target name="build">
+		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
 						please use BUILD_LIST to include test folders you want to test.">
-					<condition>
-						<not>
-							<isset property="env.JCK_GIT_REPO"/>
-						</not>
-					</condition>
-				</fail>
-				<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
-				<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
+			<condition>
+				<not>
+					<isset property="env.JCK_GIT_REPO"/>
+				</not>
+			</condition>
+		</fail>
+		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
+		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
 
-				<condition property="JCK_ROOT_RELATIVE_PATH" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
-					<isset property="env.JCK_ROOT" />
-				</condition>
+		<condition property="JCK_ROOT_RELATIVE_PATH" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
+			<isset property="env.JCK_ROOT" />
+		</condition>
 
-				<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
+		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
 
-				<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
+		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
 
+		<if>
+			<isset property="env.JCK_VERSION" />
+			<then>
+				<property name="JCK_VERSION_USED" value="${env.JCK_VERSION}" />
+			</then>
+			<else>
 				<if>
-					<isset property="env.JCK_VERSION" />
+					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<property name="JCK_VERSION_USED" value="${env.JCK_VERSION}" />
+						<property name="JCK_VERSION_USED" value="jck8c" />
 					</then>
 					<else>
-						<if>
-							<equals arg1="${JDK_VERSION}" arg2="8" />
-							<then>
-								<property name="JCK_VERSION_USED" value="jck8c" />
-							</then>
-							<else>
-								<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
-							</else>
-						</if>
+						<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
 					</else>
 				</if>
-				<echo>=== JCK_VERSION_USED is set to ${JCK_VERSION_USED} ===</echo>
+			</else>
+		</if>
+		<echo>=== JCK_VERSION_USED is set to ${JCK_VERSION_USED} ===</echo>
 
-				<propertyregex property="jck_short_version" input="${JCK_VERSION_USED}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
+		<propertyregex property="jck_short_version" input="${JCK_VERSION_USED}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
 
-				<echo>start staging jck materials</echo>
-				<antcall target="stage_jck_material" inheritall="true" />
-				<echo>start building stf, stf jck wrapper and jck itself</echo>
-				<antcall target="dist" inheritall="true" />
-			</target>
+		<echo>start staging jck materials</echo>
+		<antcall target="stage_jck_material" inheritall="true" />
+		<echo>start building stf, stf jck wrapper and jck itself</echo>
+		<antcall target="dist" inheritall="true" />
+	</target>
 
-			<target name="clean">
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"></ant>
-				<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"></ant>
-			</target>
-		</project>
+	<target name="clean">
+		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"></ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"></ant>
+	</target>
+</project>
