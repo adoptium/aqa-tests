@@ -72,6 +72,7 @@
 			<else>
 				<if>
 					<isset property="env.SKIP_JCK_GIT_UPDATE" />
+					<!-- don't want to update local JCK materials -->
 					<then>
 						<echo message="Skip Running git clean at ${JCK_ROOT_USED}. Continue." />
 					</then>
