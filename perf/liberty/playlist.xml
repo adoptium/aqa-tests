@@ -19,8 +19,8 @@
 		<command>export SERVER_PHYSCPU_NUM=2; export SMT=true; bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_sufp.sh$(Q) $(TEST_RESROOT); \
 		${TEST_STATUS}
 		</command>
-		<!-- scripts are only tested on linux -->
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<!-- TODO: Liberty benchmarks has support for zOS but we've never run Mac and aarch64. Enable zOS after testing. -->
+		<platformRequirements>bits.64,^os.zos,^os.osx,^arch.aarch64</platformRequirements>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -33,8 +33,10 @@
 		<command>export SERVER_PHYSCPU_NUM=2; export SMT=true; bash $(Q)$(TEST_RESROOT)$(D)configs$(D)dt7_throughput.sh$(Q) $(TEST_RESROOT); \
 		${TEST_STATUS}
 		</command>
-		<!-- scripts are only tested on linux -->
-		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+		<!-- TODO: Liberty benchmarks has support for non-Linux platforms (Windows/AIX/zOS) but we've never run Mac and aarch64. Also, we've 
+		used xLinux to run client and DB in the past. Hence, we'll need to test to see whether JMeter and other dependencies can run on 
+		other platforms. Enable other platform after testing. -->
+		<platformRequirements>os.linux,bits.64,^os.zos,^os.osx,^arch.aarch64</platformRequirements>
 		<levels>
 			<level>special</level>
 		</levels>

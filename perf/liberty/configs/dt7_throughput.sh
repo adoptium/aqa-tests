@@ -20,6 +20,13 @@ echo "Current Dir: $(pwd)"
 
 TEST_RESROOT=${1}
 
+if [ -z "${SERVER_PHYSCPU_NUM}" ]; then
+    SERVER_PHYSCPU_NUM=2
+fi
+if [ -z "${SMT}" ]; then
+    SMT=true
+fi
+
 . "$TEST_RESROOT/../../../openjdk-tests/perf/affinity.sh" > /dev/null 2>&1
 setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
 

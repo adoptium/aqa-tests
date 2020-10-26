@@ -379,7 +379,7 @@ function get_node_count() {
 }
 
 function get_os() {
-	echo $(uname)
+	echo "$__AFFINITY_UNAME"
 }
 
 # i.e. x86, x86_64
@@ -1381,11 +1381,11 @@ function get_cpus() {
 
 # Checks whether the affinity tool is intalled/supported
 # If the tool is not installed/supported, it unsets all the affinity variables
-# This helps in avoiding errors while running some java command with affinity when affinity is missing
+# This helps in avoiding errors while running some java command with affinity when affinity tool is missing
 
 function affinity_tool_install_check() {
 
-	${SERVER_AFFINITY_CMD} > /dev/null 2>&1
+	${SERVER_AFFINITY_CMD} java -version > /dev/null 2>&1
 	if [ $? -eq 0 ]; then
 	    echo "Affinity tool is intalled/supported."
 	else
@@ -1423,7 +1423,7 @@ function generate_cpu_set_command() {
 
 	local PLATFORM=$(get_platform)
 	case "$PLATFORM" in
-		Linux-s390)
+		Linux-s390x)
 			echo "taskset -c $__ARG_CPU_BIND"
 			;;
 		Linux-*)

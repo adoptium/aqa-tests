@@ -199,20 +199,6 @@
 		<testCaseName>renaissance-scala-kmeans</testCaseName>
 		<command>$(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans$(Q) --test_root $(TEST_ROOT); \
 		$(TEST_STATUS)</command>
-		<platformRequirements>^os.win</platformRequirements>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
-	<!-- https://github.com/AdoptOpenJDK/openjdk-tests/issues/1928 -->
-	<test>
-		<testCaseName>renaissance-scala-kmeans-windows</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans; \
-		$(TEST_STATUS)</command>
-		<platformRequirements>os.win</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
