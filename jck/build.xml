@@ -27,18 +27,18 @@
 	<condition property="isZOS" value="true">
 		<equals arg1="${os.name}" arg2="z/OS"/>
 	</condition>
-	
+
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
 	</condition>
-	
+
 	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
-	
+
 	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
@@ -57,7 +57,7 @@
 			</not>
 			<!-- jck materials don't exist, download them -->
 			<then>
-				<echo message="${JCK_ROOT_USED} does not exist, 
+				<echo message="${JCK_ROOT_USED} does not exist,
 					clone from ${JCK_GIT_REPO_USED}, ${jck_branch} branch, to ${JCK_ROOT_USED}" />
 				<mkdir dir="${JCK_ROOT_USED}/.." />
 				<exec executable="git" dir="${JCK_ROOT_USED}/.." failonerror="true">
@@ -70,26 +70,34 @@
 			</then>
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
-				<echo message="Running git clean at ${JCK_ROOT_USED}..." />
-				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-					<arg value="clean" />
-					<arg value="-d" />
-					<arg value="--force" />
-					<arg value="--quiet" />
-				</exec>
-				<echo message="Updating ${JCK_ROOT_USED} with latest..." />
-				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-					<arg value="pull" />
-				</exec>
+				<if>
+					<isset property="env.SKIP_JCK_GIT_UPDATE" />
+					<!-- don't want to update local JCK materials -->
+					<then>
+						<echo message="Skip Running git clean at ${JCK_ROOT_USED}. Continue." />
+					</then>
+					<else>
+						<echo message="Running git clean at ${JCK_ROOT_USED}..." />
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
+							<arg value="clean" />
+							<arg value="-d" />
+							<arg value="--force" />
+							<arg value="--quiet" />
+						</exec>
+						<echo message="Updating ${JCK_ROOT_USED} with latest..." />
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
+							<arg value="pull" />
+						</exec>
+					</else>
+				</if>
 			</else>
-			
 		</if>
 		<if>
 			<isset property="isZOS" />
 			<then>
 				<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
 				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
+					<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
 				</delete>
 				<mkdir dir="${JCK_ROOT_USED}/.git/info" />
 				<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
@@ -106,7 +114,7 @@
 				</exec>
 			</then>
 		</if>
-		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system. 
+		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
 			This is especially needed to execute the shell scripts under devtools for JCK 8.
 		-->
 		<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
@@ -139,10 +147,10 @@
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-				</delete>  
+					<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -179,10 +187,10 @@
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
-				</delete>  
+					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -265,7 +273,7 @@
 	</target>
 
 	<target name="build">
-		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests, 
+		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
 						please use BUILD_LIST to include test folders you want to test.">
 			<condition>
 				<not>
@@ -279,9 +287,9 @@
 		<condition property="JCK_ROOT_RELATIVE_PATH" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
 			<isset property="env.JCK_ROOT" />
 		</condition>
-		
+
 		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
-			
+
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
 
 		<if>
