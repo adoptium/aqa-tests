@@ -21,38 +21,78 @@ on:
       - '.github/*.yml'
       - 'buildenv/**'
 jobs:
-  testCI:
+  testOpenjdkWithHotspot:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04, macos-10.15, windows-2016]
-        version: [8] #[8, 11, 15]
-        impl: [hotspot] #[hotspot, openj9]
-        build_list: [openjdk] #['openjdk', 'system']
+        version: [8, 15]
     steps:
     - uses: actions/checkout@v2
     - uses: AdoptOpenJDK/install-jdk@v1
       with:
         version: ${{ matrix.version }}
-        source: 'releases'  #nightly for nightly
-        impl: ${{ matrix.impl }}
-    - name: Extract branch name
+        source: 'releases'  #nightly for nightly test builds
+    - name: Extract branch and repo name
       shell: bash
       run: |
-        if ${{ github.event_name == 'pull_request' }}; then echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF})"; \
-        else echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"; fi
+        if ${{ github.event_name == 'pull_request' }}; then
+          echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF})"
+          echo "::set-output name=repo::$(echo ${{ github.event.pull_request.head.repo.full_name }})"
+        else
+          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=repo::$(echo ${{ github.repository }})"
+        fi
       id: extract_branch
     - name: AQA
-      uses: sophia-guo/run-aqa@PR1
+      uses: AdoptOpenJDK/run-aqa@v1
       with:
-         build_list: ${{ matrix.build_list }}
-         target: '_sanity'
+         build_list: openjdk
+         target: '_jdk_custom'
          jdksource: 'install-jdk'
          version: ${{ matrix.version }}
-         openjdk_testRepo: '${{ github.repository }}:${{ steps.extract_branch.outputs.branch }}'
+         openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output
+        name: test_output_openjdk
+        path: ./**/test_output_*/
+  testSystemWithOpenj9:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        version: [8, 15]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: AdoptOpenJDK/install-jdk@v1
+      with:
+        version: ${{ matrix.version }}
+        source: 'releases'  #nightly for nightly test builds
+        impl: 'openj9'
+    - name: Extract branch name
+      shell: bash
+      run: |
+        if ${{ github.event_name == 'pull_request' }}; then
+          echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF})"
+          echo "::set-output name=repo::$(echo ${{ github.event.pull_request.head.repo.full_name }})"
+        else
+          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=repo::$(echo ${{ github.repository }})"
+        fi
+      id: extract_branch
+    - name: AQA
+      uses: AdoptOpenJDK/run-aqa@v1
+      with:
+         build_list: system
+         target: '_ClassLoadingTest'
+         jdksource: 'install-jdk'
+         version: ${{ matrix.version }}
+         openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test_output_system
         path: ./**/test_output_*/
