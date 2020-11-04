@@ -127,8 +127,7 @@ checkAndSetSUFPEnvVars()
     if [ -z "$REMOUNTSCRIPT" ]; then
         case $PLATFORM in
             AIX)
-                echo "Optional REMOUNTSCRIPT not set. Required for AIX."
-                usage
+                echo "Optional REMOUNTSCRIPT not set for AIX."
                 
                 ;;
         esac

@@ -23,3 +23,13 @@ liberty-dt7-throughput | Benchmark to measure throughput of server running Open 
 
 Please see `usage()` function in various scripts: `sufp_benchmark.sh`, `throughput_benchmark.sh`, and `configure_liberty.sh`.
 
+### Prerequisites
+
+The following prerequisites are needed in order to measure various metrics like footprint. Without these prerequisites, the benchmarks should run, but they won't produce values for some metrics, which require those prerequisites to be installed.
+
+Platform | Prerequisites |
+-- | -- | 
+All | wget, bc (only required for throughput) |
+Linux | Huge Pages (Optional) |
+Windows | vmmap |
+

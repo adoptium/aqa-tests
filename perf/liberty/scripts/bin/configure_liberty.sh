@@ -163,10 +163,10 @@ echo "OS=${OS}"
 ARCH=$(uname -m)
 echo "ARCH=${ARCH}"
 
-if [ "${OS}" = "Linux" ] && [ "${ARCH}" = "x86_64" ]; then
-	echo "Configuring Liberty since OS=${OS} and ARCH=${ARCH}, which is the only platform tested so far."
+if [ "${OS}" != "Darwin" ] && [ "${ARCH}" != "aarch64" ]; then
+	echo "Configuring Liberty since it's a tested platform: OS=${OS} and ARCH=${ARCH}"
 else
-	echo "Exiting without configuring Liberty since OS=${OS} and ARCH=${ARCH}. Linux x86_64 is the only platform tested so far."
+	echo "Exiting without configuring Liberty since it's an untested platform: OS=${OS} and ARCH=${ARCH}"
 	exit	
 fi
 	
