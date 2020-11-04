@@ -606,7 +606,7 @@ startupFootprint()
         local ServletSU=${SUTime}
         calcTime "${SERVER_DIR}/logs/${TRACE_FILE}" ${LIBERTY_START_TIME} "EJB_500" ${SERVER_NAME} NoPrint
         local HugeEJBSU=${SUTime}
-        local max=`echo "${ServletSU}\n${HugeEJB}"|sort -n|tail -1`
+        local max=`echo "${ServletSU}\n${HugeEJB}" | sort -n | tail -1`
         echo "HugeEJB: ${HugeEJBSU}"
         echo "ServletSU: ${ServletSU}"
         echo "Startup time: ${max}"

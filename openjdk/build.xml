@@ -53,12 +53,12 @@
 			<contains string="${SPEC}" substring="zos" />
 			<then>
 				<exec executable="tar" failonerror="true">
-					<arg line="xfo jtreg-4.2.0-tip.tar -C ${DEST}" />
+					<arg line="xfo jtreg-4.2.0-tip.tar" />
 				</exec>
 			</then>
 		<else>
-			<exec executable="tar" failonerror="true">
-				<arg line="xf jtreg-4.2.0-tip.tar -C ${DEST}" />
+			<exec executable="sh" failonerror="true">
+				<arg line="-c 'cat jtreg-4.2.0-tip.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
 			</exec>
 		</else>
 		</if>

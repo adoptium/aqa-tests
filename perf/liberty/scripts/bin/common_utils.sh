@@ -955,7 +955,7 @@ getPreBenchmarkHugePagesInUse()
   case ${PLATFORM} in
     Linux)
       local HPPRETOTAL=`cat /proc/meminfo | grep HugePages_Total | sed 's/HugePages.*: *//g' | head -1`
-      local HPPREFREE=`cat /proc/meminfo | grep HugePages_Free | sed 's/HugePages.*: *//g' | head -2|tail -1`
+      local HPPREFREE=`cat /proc/meminfo | grep HugePages_Free | sed 's/HugePages.*: *//g' | head -2 | tail -1`
       let HPPREINUSE=$HPPRETOTAL-$HPPREFREE
       echo "HP IN USE : " ${HPPREINUSE}
       ;;
