@@ -37,7 +37,7 @@ VM_OPTIONS_BASE="$5"
 # Try to list configuration versions of the requested size. 
 CONFIG_VERSIONS="`ls "$CONFIG_DIR"/"config_""$SIZE""_"*".xml"`" || exit 4
 # Pick the last one. 
-CONFIG="`ls $CONFIG_VERSIONS | sort -n | tail -n 1`"
+CONFIG="`ls $CONFIG_VERSIONS | sort -n | tail -1`"
 # Get the name of the configuration 
 CONFIG_NAME="${CONFIG##*/}"
 #######################################

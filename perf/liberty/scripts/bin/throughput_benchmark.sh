@@ -1716,7 +1716,7 @@ echoAndRunCmd "sleep 10"
 ###############
 
 if [ "$PLATFORM" = "OS/390" ]; then
-  NUM_CPUS=`oeconsol "d m=cpu" | grep '[0-9][0-9A-F]  +' | tail -n 1 | awk '{print ($1 + 1)}'`
+  NUM_CPUS=`oeconsol "d m=cpu" | grep '[0-9][0-9A-F]  +' | tail -1 | awk '{print ($1 + 1)}'`
   echo "AppServer is running with $NUM_CPUS CPUs online"
   restartRMF ${MAX_CLIENT_WAIT}
 fi

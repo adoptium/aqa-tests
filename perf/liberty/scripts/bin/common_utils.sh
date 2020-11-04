@@ -343,10 +343,10 @@ platformSpecificSetup()
         echo "CLIENT = $CLIENT"
         echo "DB_MACHINE = $DB_MACHINE"
         echo "LIBERTY_HOST = $LIBERTY_HOST"
-        CLIENT=`nslookup $CLIENT | grep Address | tail -n 1 | cut -d' ' -f3`
-        DB_MACHINE=`nslookup $DB_MACHINE | grep Address | tail -n 1 | cut -d' ' -f3`
-        LIBERTY_HOST=`nslookup $LIBERTY_HOST | grep Address | tail -n 1 | cut -d' ' -f3`
-        RESULTS_MACHINE=`nslookup $RESULTS_MACHINE | grep Address | tail -n 1 | cut -d' ' -f3`
+        CLIENT=`nslookup $CLIENT | grep Address | tail -1 | cut -d' ' -f3`
+        DB_MACHINE=`nslookup $DB_MACHINE | grep Address | tail -1 | cut -d' ' -f3`
+        LIBERTY_HOST=`nslookup $LIBERTY_HOST | grep Address | tail -1 | cut -d' ' -f3`
+        RESULTS_MACHINE=`nslookup $RESULTS_MACHINE | grep Address | tail -1 | cut -d' ' -f3`
         echo "CLIENT = $CLIENT"
         echo "DB_MACHINE = $DB_MACHINE"
         echo "LIBERTY_HOST = $LIBERTY_HOST"
@@ -645,20 +645,20 @@ calculateFootprint()
   # add footprint collection to end of Liberty throughput - this is a cut+paste from sufpdt.sh
   case ${PLATFORM} in
     CYGWIN)
-      # FULL_MEM=`pslist -m ${WINDOWS_PID} | tail -n 2`
+      # FULL_MEM=`pslist -m ${WINDOWS_PID} | tail -2`
       # echo "${FULL_MEM}"
       # uncomment this line if reporting on pslist throughput
-      # FOOTPRINT=`echo "${FULL_MEM}" | tail -n 1 | awk '{ print $4 }'`
+      # FOOTPRINT=`echo "${FULL_MEM}" | tail -1 | awk '{ print $4 }'`
       if [ -z ${WINDOWS_PID} ]; then
         echo "No windows PID - not running footprint tool"
       else
         echo "vmmap output:"
         vmmap -64 -PID ${WINDOWS_PID} vmmap.out
-        local VMMAP_MEM=`head -n 15 vmmap.out`
+        local VMMAP_MEM=`head -15 vmmap.out`
         echo "${VMMAP_MEM}"
         rm vmmap.out
         
-        local FOOTPRINT=`echo "${VMMAP_MEM}" | head -n 5 | tail -n 1 | awk '{print $5}' | sed "s/,//g"`
+        local FOOTPRINT=`echo "${VMMAP_MEM}" | head -5 | tail -1 | awk '{print $5}' | sed "s/,//g"`
         
         echo ""
 
@@ -671,10 +671,10 @@ calculateFootprint()
           do
             local tmpWINDOWS_PID=`ps -W | grep java | grep ${PID} | grep -v grep | awk '{ print $4 }'`
             vmmap -64 -PID ${tmpWINDOWS_PID} tmpvmmap.out
-            local tmpVMMAP_MEM=`head -n 15 tmpvmmap.out`
+            local tmpVMMAP_MEM=`head -15 tmpvmmap.out`
             echo "${tmpVMMAP_MEM}"
             rm tmpvmmap.out
-            local tmpFOOTPRINT=`echo "${VMMAP_MEM}" | head -n 5 | tail -n 1 | awk '{print $5}' | sed "s/,//"`
+            local tmpFOOTPRINT=`echo "${VMMAP_MEM}" | head -5 | tail -1 | awk '{print $5}' | sed "s/,//"`
             local tmpProcName=`ps -W |grep ${PID}| grep -v 'grep'|grep -v 'ws-server.jar'`
           
             #some logic should go here
@@ -719,8 +719,8 @@ calculateFootprint()
       # now find the footprint figure from the awk output
       local FOOTPRINT=`awk '/JTC footprint/ { print $8 }' footprintAwk.tmp`
       # TODO: Once verified, remove variables not used
-      #local free=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -n 1 | tail -c 10`
-      #active=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -n 2 | head -n 1| tail -c 10`
+      #local free=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -1 | tail -c 10`
+      #active=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -2 | head -1| tail -c 10`
       
       if [ "$SCENARIO" = "Cognos" ]; then
         local running_total=$FOOTPRINT
@@ -737,7 +737,7 @@ calculateFootprint()
           cat footprintAwk.tmp >> ${BENCHMARK_DIR}/tmp/${PID}.footprint.out
           local tmpFOOTPRINT=`awk '/JTC footprint/ { print $8 }' footprintAwk.tmp`
           # TODO: Once verified, remove variables not used
-          # local tmpfree=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -n 1 | tail -c 10`
+          # local tmpfree=`vmstat -l | sed -e 's/  */ /g' |tr ' ' '\n' | tail -1 | tail -c 10`
           #ps -ef -o pid,comm,args| grep ${PID} | grep -v 'grep'
           local tmpProcName=`ps -ef -o pid,comm,args |grep ${PID}| grep -v 'grep'|grep -v 'ws-server.jar'`
         
@@ -805,11 +805,11 @@ calculateFootprint()
       ;;
 
     *)
-      local FOOTPRINT=`ps -p ${SERVER_PID} -o rss,vsz,comm,pid | tail -n 1 | awk '{ print $1 }'`
-      local HPTOTAL=`cat /proc/meminfo | grep ^HugePages_Total | sed 's/HugePages.*: *//g' | head -n 1`
-      local HPFREE=`cat /proc/meminfo | grep ^HugePages_Free | sed 's/HugePages.*: *//g' | head -n 2 | tail -n 1`
+      local FOOTPRINT=`ps -p ${SERVER_PID} -o rss,vsz,comm,pid | tail -1 | awk '{ print $1 }'`
+      local HPTOTAL=`cat /proc/meminfo | grep ^HugePages_Total | sed 's/HugePages.*: *//g' | head -1`
+      local HPFREE=`cat /proc/meminfo | grep ^HugePages_Free | sed 's/HugePages.*: *//g' | head -2 | tail -1`
       # Once verified, confirm that HPRESVD is not used anywhere
-      local HPRESVD=`cat /proc/meminfo | grep ^HugePages_Rsvd | sed 's/HugePages.*: *//g' | head -n 3 | tail -n 1`
+      local HPRESVD=`cat /proc/meminfo | grep ^HugePages_Rsvd | sed 's/HugePages.*: *//g' | head -3 | tail -1`
       local HPINUSE
       let HPINUSE=$HPTOTAL-$HPFREE-$HPPREINUSE
       echo "HPs in use by liberty: "${HPINUSE}
@@ -823,7 +823,7 @@ calculateFootprint()
         local Other_PIDS=`ps -o pid,comm,args |grep 'jre/bin/java'|grep -v 'grep'| grep -v 'ws-server.jar'|awk '{print $1}'`
         for PID in $Other_PIDS
         do
-          local tmpFOOTPRINT=`ps -p ${PID} -o rss,vsz,comm,pid | tail -n 1 | awk '{ print $1 }'`
+          local tmpFOOTPRINT=`ps -p ${PID} -o rss,vsz,comm,pid | tail -1 | awk '{ print $1 }'`
           #ps -o pid,comm,args| grep ${PID} | grep -v 'grep'
           local tmpProcName=`ps -o pid,comm,args |grep ${PID}| grep -v 'grep'|grep -v 'ws-server.jar'`
           #some logic should go here
@@ -954,8 +954,8 @@ getPreBenchmarkHugePagesInUse()
 "
   case ${PLATFORM} in
     Linux)
-      local HPPRETOTAL=`cat /proc/meminfo | grep HugePages_Total | sed 's/HugePages.*: *//g' | head -n 1`
-      local HPPREFREE=`cat /proc/meminfo | grep HugePages_Free | sed 's/HugePages.*: *//g' | head -n 2|tail -n 1`
+      local HPPRETOTAL=`cat /proc/meminfo | grep HugePages_Total | sed 's/HugePages.*: *//g' | head -1`
+      local HPPREFREE=`cat /proc/meminfo | grep HugePages_Free | sed 's/HugePages.*: *//g' | head -2|tail -1`
       let HPPREINUSE=$HPPRETOTAL-$HPPREFREE
       echo "HP IN USE : " ${HPPREINUSE}
       ;;

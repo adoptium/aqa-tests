@@ -47,7 +47,7 @@ JMS)
 	  echo "Running $CLIENTS clients for $TIMELIMIT seconds..."
 	  ${JMETER_LOC} -n -t ${SCRIPT_JMeter} -p jmeter_nonssl.properties -JTHREADS=${CLIENTS} -JDURATION=$TIMELIMIT -JHOST=${WAS_HOST} -JPORT=9128 -JURL=JMSApp/2.0/P2P?ACTION=NonPersistent -JPAYLOAD=${PWD}/jms1KB >>resultstmp.txt
 	fi
-	summary=`cat resultstmp.txt|sed 's%<summary>%%g'|grep "summary = "|tail -n 1`
+	summary=`cat resultstmp.txt|sed 's%<summary>%%g'|grep "summary = "|tail -1`
 	throughput=`echo $summary|awk '{print $7}' | sed 's%/s%%g'`
 	responsetime=`echo $summary|awk '{print $9}' | sed 's%/s%%g'`
 	weberrors=`echo $summary|awk '{print $15}' | sed 's%/s%%g'`
@@ -90,7 +90,7 @@ DayTraderSSL | DayTrader7SSL)
 
 	for(( clientIterator=1; clientIterator<=${JMETER_INSTANCES}; clientIterator++ ))
 	do
-		summary=`cat client${clientIterator}.txt.tmp|sed 's%<summary>%%g'|grep "summary = "|tail -n 1`
+		summary=`cat client${clientIterator}.txt.tmp|sed 's%<summary>%%g'|grep "summary = "|tail -1`
 		throughput=`echo $summary|awk '{print $7}' | sed 's%/s%%g'`
 		responsetime=`echo $summary|awk '{print $9}' | sed 's%/s%%g'`
 		weberrors=`echo $summary|awk '{print $15}' | sed 's%/s%%g'`
@@ -128,7 +128,7 @@ DayTraderSSL | DayTrader7SSL)
 			  ${JMETER_LOC} -n -t ${SCRIPT_JMeter} -p jmeter_nonssl.properties -JTHREADS=${CLIENTS} -JDURATION=$TIMELIMIT -JHOST=${WAS_HOST} >>resultstmp.txt
 			fi
 			
-			summary=`cat resultstmp.txt|sed 's%<summary>%%g'|grep "summary = "|tail -n 1`
+			summary=`cat resultstmp.txt|sed 's%<summary>%%g'|grep "summary = "|tail -1`
 	                throughput=`echo $summary|awk '{print $7}' | sed 's%/s%%g'`
 		        responsetime=`echo $summary|awk '{print $9}' | sed 's%/s%%g'`
 		        weberrors=`echo $summary|awk '{print $15}' | sed 's%/s%%g'`
