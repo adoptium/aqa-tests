@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
-
 	<!--
 	We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
 	In order to save machine resources, exclude jlm subfolder in parallel mode
 	To enable it, please update excludes array in JenkinsfileBase
 	-->
-
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
@@ -24,7 +22,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>TestJlmLocal</testCaseName>
 		<variations>
@@ -39,7 +36,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
@@ -56,14 +52,13 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteClassNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -71,7 +66,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
@@ -79,7 +73,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -88,14 +82,13 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -103,7 +96,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
@@ -120,7 +112,6 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
-
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
@@ -137,7 +128,6 @@
 		</groups>
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
 		<variations>
@@ -152,7 +142,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<!-- The following JLM tests are specific to OpenJDK-OpenJ9, they run tests from openj9.test.jlm project -->
 	<test>
 		<testCaseName>TestIBMJlmLocal</testCaseName>
@@ -172,7 +161,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<!--Exclude TestIBMJlmRemoteClassAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
@@ -181,7 +169,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
 		</subsets>
@@ -195,9 +183,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.win</platformRequirements> 
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
-	
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80</testCaseName>
@@ -205,7 +192,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -221,14 +208,13 @@
 		</impls>
 		<platformRequirements>^os.linux,^os.win</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80_Linux</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -244,7 +230,6 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	
 	<!--Exclude TestIBMJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassNoAuth</testCaseName>
@@ -252,7 +237,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
 		</subsets>
@@ -273,7 +258,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -295,7 +280,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -311,7 +296,6 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	
 	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
@@ -320,7 +304,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
 		</subsets>
@@ -334,9 +318,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.win</platformRequirements> 
+		<platformRequirements>^os.win</platformRequirements>
 	</test>
-	
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80</testCaseName>
@@ -344,7 +327,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -360,14 +343,13 @@
 		</impls>
 		<platformRequirements>^os.linux,^os.win</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80_Linux</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -383,7 +365,6 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	
 	<!--Exclude TestIBMJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryNoAuth</testCaseName>
@@ -391,7 +372,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
 		</subsets>
@@ -412,7 +393,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>
@@ -434,7 +415,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryNoAuth; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>8</subset>
 		</subsets>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
 	<!-- 
@@ -17,7 +17,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
 		Reason: https://github.com/eclipse/openj9/issues/2209)-->
 	<test>
@@ -37,7 +36,6 @@
 			<impl>hotspot</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux</testCaseName>
 		<variations>
@@ -55,9 +53,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements> 
+		<platformRequirements>^os.linux</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs</testCaseName>
 		<variations>
@@ -75,9 +72,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
+		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>JdiTest</testCaseName>
 		<variations>
@@ -113,7 +109,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux_special</testCaseName>
 		<disabled>
@@ -169,10 +164,9 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements> 
+		<platformRequirements>^os.linux</platformRequirements>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs_special</testCaseName>
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2042</comment>
@@ -227,6 +221,6 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements> 
+		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
 	</test>
 </playlist>

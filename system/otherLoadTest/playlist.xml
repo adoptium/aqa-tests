@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
-
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
@@ -18,14 +17,13 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>ClassLoadingTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -33,7 +31,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>ClassLoadingTest_special</testCaseName>
 		<disabled>
@@ -78,7 +75,7 @@
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -90,14 +87,13 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>ConcurrentLoadTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ConcurrentLoadTest; \
-	$(TEST_STATUS)</command> 
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -105,7 +101,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
@@ -120,7 +115,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>LangLoadTest</testCaseName>
 		<variations>
@@ -135,7 +129,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>LockingLoadTest</testCaseName>
 		<variations>
@@ -150,7 +143,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
 	<test>
 		<testCaseName>NioLoadTest</testCaseName>
@@ -167,7 +159,6 @@
 		</groups>
 		<platformRequirements>^arch.arm</platformRequirements>
 	</test>
-
 	<test>
 		<testCaseName>NioLoadTest_special</testCaseName>
 		<variations>
@@ -187,7 +178,6 @@
 		</impls>
 		<platformRequirements>^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>UtilLoadTest</testCaseName>
 		<variations>
@@ -202,14 +192,13 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<test>
 		<testCaseName>HCRLateAttachWorkload</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=HCRLateAttachWorkload; \
-	$(TEST_STATUS)</command>	
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -220,14 +209,13 @@
 			<subset>8</subset>
 		</subsets>
 	</test>
-	
 	<test>
 		<testCaseName>HCRLateAttachWorkload_previewEnabled</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -debug-generation=$(Q)true$(Q) -java-debug-args=$(Q)--enable-preview$(Q) -java-args=$(Q)--enable-preview$(Q) -test=HCRLateAttachWorkload; \
-	$(TEST_STATUS)</command>	
+	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -238,7 +226,6 @@
 			<subset>11+</subset>
 		</subsets>
 	</test>
-	
 	<test>
 		<testCaseName>HeapHogLoadTest</testCaseName>
 		<variations>
@@ -257,7 +244,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>ObjectTreeLoadTest</testCaseName>
 		<variations>
@@ -276,7 +262,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
 	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
 		<testCaseName>ClassLoadingTest_ConcurrentScavenge</testCaseName>
@@ -297,11 +282,10 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>MixedLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation> 
+			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
 	$(TEST_STATUS)</command>
@@ -315,5 +299,4 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 </playlist>

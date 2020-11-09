@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
-
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
@@ -18,11 +17,10 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_all</testCaseName>
 		<variations>
-			<variation>NoOptions</variation> 
+			<variation>NoOptions</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
@@ -33,7 +31,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_autosimd</testCaseName>
 		<variations>
@@ -48,7 +45,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
 		<variations>
@@ -63,7 +59,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_all_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -83,7 +78,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_autosimd_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -103,7 +97,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -123,7 +116,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>MathLoadTest_all_special</testCaseName>
 		<disabled>
@@ -184,8 +176,7 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>MathLoadTest_autosimd_special</testCaseName>
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2042</comment>
@@ -241,7 +232,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
 	<test>
 		<testCaseName>MathLoadTest_bigdecimal_special</testCaseName>
 		<disabled>
