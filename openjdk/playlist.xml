@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 		<testCaseName>jdk_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -37,7 +37,7 @@
 		<testCaseName>openj9_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
@@ -318,7 +318,7 @@
 		<testCaseName>jdk_lang_j9</testCaseName>
 		<variations>
 			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage -Xdump:system+java:events=throw,filter=java/lang/NullPointerException\#*java/lang/invoke/BruteArgumentMoverHandle.permuteArguments*</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
@@ -344,7 +344,7 @@
 		<testCaseName>jdk_lang_native_j9</testCaseName>
 		<variations>
 			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
@@ -404,7 +404,7 @@
 		<testCaseName>jdk_lang_ref_FinalizeOverride_j9</testCaseName>
 		<variations>
 			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -430,7 +430,7 @@
 		<testCaseName>jdk_util_zip_ZipFile_TestCleaner_j9</testCaseName>
 		<variations>
 			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -477,7 +477,7 @@
 		<testCaseName>jdk_math_j9</testCaseName>
 		<variations>
 			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \
@@ -739,7 +739,7 @@
 		<testCaseName>jdk_util_j9</testCaseName>
 		<variations>
 			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
-		</variations>   
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q) \

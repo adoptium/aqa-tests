@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,30 +26,30 @@
 			<group>external</group>
 		</groups>
 	</test>
-    <test>
+	<test>
 		<testCaseName>sanity_system</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _sanity.system --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test
 		</command>
-        <levels>
-            <level>special</level>
-        </levels>
-        <groups>
-            <group>system</group>
-        </groups>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
-    <test>
+	<test>
 		<testCaseName>extended_system</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test --testtarget _extended.system --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir system-test
 		</command>
-        <levels>
-            <level>special</level>
-        </levels>
-        <groups>
-            <group>system</group>
-        </groups>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
 	</test>
 </playlist>
