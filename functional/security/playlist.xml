@@ -16,7 +16,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>SecurityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TESTNG)$(P)$(TEST_RESROOT)$(D)SecurityTests.jar$(Q) org.testng.TestNG -d $(REPORTDIR) $(Q)$(TEST_RESROOT)$(D)testng.xml$(Q) -testnames SecurityTests -groups $(TEST_GROUP) ; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TESTNG)$(P)$(TEST_RESROOT)$(D)SecurityTests.jar$(Q) org.testng.TestNG $(Q)$(TEST_RESROOT)$(D)testng.xml$(Q) -d $(REPORTDIR) -testnames SecurityTests -groups $(TEST_GROUP) -excludegroups $(DEFAULT_EXCLUDE); \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
