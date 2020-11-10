@@ -12,8 +12,11 @@
  * limitations under the License.
  */
 
-import org.junit.Test;
-import static org.junit.Assert.fail;
+package net.adoptopenjdk.test;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.testng.log4testng.Logger;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.HttpsURLConnection;
@@ -33,7 +36,10 @@ import java.util.Arrays;
 /**
  * Creates actual HTTPS connections to real webservers to exercise the TLS stack.
  */
+@Test(groups={ "level.extended" })
 public class DefaultTlsFunctionalTest {
+
+    private static Logger logger = Logger.getLogger(DefaultTlsFunctionalTest.class);
 
     private final static String[] TLS_HOSTS = {
             "https://www.cloudflare.com/",
@@ -42,10 +48,10 @@ public class DefaultTlsFunctionalTest {
             "https://repo1.maven.org/" // Ensure that Maven artifacts can be resolved.
     };
 
-    @Test
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         String versionString = System.getProperty("java.version");
-        System.out.println("Running on Java version: " + versionString);
+        logger.info("running DefaultTlsFunctionalTest");
+        logger.info("Running on Java version: " + versionString);
 
         SSLContext sc = SSLContext.getDefault();
 
@@ -66,7 +72,6 @@ public class DefaultTlsFunctionalTest {
                 } catch (UnknownHostException | SocketTimeoutException ex) {
                     unreachableCounter += 1;
                     ex.printStackTrace(System.err);
-                    System.err.println();
                     continue;
                 }
             }
@@ -79,7 +84,7 @@ public class DefaultTlsFunctionalTest {
         // Fail if we could not reach any host because this means we cannot say 
         // anything about the state of the TLS stack.
         if (unreachableCounter == TLS_HOSTS.length) {
-            fail("Could not reach any host");  
+            Assert.fail("Could not reach any host");  
         }
     }
 
@@ -93,19 +98,18 @@ public class DefaultTlsFunctionalTest {
 
         @Override
         public void handshakeCompleted(HandshakeCompletedEvent event) {
-            System.out.println("Connected to: " + this.host);
+            logger.info("Connected to: " + this.host);
             try {
-                System.out.println(event.getPeerPrincipal().getName());
+                logger.info(event.getPeerPrincipal().getName());
             } catch (SSLPeerUnverifiedException e) {
                 throw new RuntimeException(e);
             }
 
-            System.out.println("Protocol: " + event.getSession().getProtocol());
-            System.out.println("Supported cipher suites: " +
+            logger.info("Protocol: " + event.getSession().getProtocol());
+            logger.info("Supported cipher suites: " +
                     Arrays.toString(event.getSocket().getSupportedCipherSuites()));
-            System.out.println("Enabled cipher suites: " + Arrays.toString(event.getSocket().getEnabledCipherSuites()));
-            System.out.println("Selected cipher suite: " + event.getSession().getCipherSuite());
-            System.out.println();
+                    logger.info("Enabled cipher suites: " + Arrays.toString(event.getSocket().getEnabledCipherSuites()));
+                    logger.info("Selected cipher suite: " + event.getSession().getCipherSuite());
         }
     }
 

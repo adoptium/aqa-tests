@@ -12,8 +12,11 @@
  * limitations under the License.
  */
 
-import org.junit.Test;
-import static org.junit.Assert.fail;
+package net.adoptopenjdk.test;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.testng.log4testng.Logger;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.HttpsURLConnection;
@@ -41,6 +44,7 @@ import java.util.regex.Pattern;
  * (https://bugs.openjdk.java.net/browse/JDK-8245466). Tests are automatically skipped on versions that do not support
  * TLSv1.3.
  */
+@Test(groups={ "level.extended" })
 public class Tls13FunctionalTest {
 
     /**
@@ -50,6 +54,8 @@ public class Tls13FunctionalTest {
             "^(?<version>1\\.(?<major>[0-8]+)\\.0(_(?<update>[0-9]+)))(-(?<additional>.*)?)$"
     );
 
+    private static Logger logger = Logger.getLogger(Tls13FunctionalTest.class);
+
     private final static String[] TLS_13_HOSTS = {
             "https://enabled.tls13.com/",
             "https://www.cloudflare.com/",
@@ -58,10 +64,9 @@ public class Tls13FunctionalTest {
             "https://www.mozilla.org/"
     };
 
-    @Test
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         String versionString = System.getProperty("java.version");
-        System.out.println("Running on Java version: " + versionString);
+        logger.info("Running on Java version: " + versionString);
 
         if (!isSupportedPlatform(versionString)) {
             return;
@@ -102,8 +107,7 @@ public class Tls13FunctionalTest {
         // Fail if we could not reach any host because this means we cannot say anything about the state of the TLS
         // stack.
         if (unreachableCounter == TLS_13_HOSTS.length) {
-            //throw new AssertionError("Could not reach any host supporting TLSv1.3");
-            fail("Could not reach any host supporting TLSv1.3");
+            Assert.fail("Could not reach any host supporting TLSv1.3");
         }
     }
 
@@ -117,17 +121,17 @@ public class Tls13FunctionalTest {
             int majorVersion = Integer.parseInt(pre223Matcher.group("major"));
             int updateVersion = Integer.parseInt(pre223Matcher.group("update"));
             if (majorVersion != 8) {
-                System.out.println("Skipping tests because JDK is unsupported: " + versionString);
+                logger.warn("Skipping tests because JDK is unsupported: " + versionString);
                 isSupportedPlatform = false;
             }
             if (updateVersion < 272) {
-                System.out.println("Skipping tests because JDK is unsupported: " + versionString);
+                logger.warn("Skipping tests because JDK is unsupported: " + versionString);
                 isSupportedPlatform = false;
             }
         } else {
             int majorVersion = Integer.parseInt(versionString.substring(0, versionString.indexOf('.')));
             if (majorVersion < 11) {
-                System.out.println("Skipping tests because JDK is unsupported: " + versionString);
+                logger.warn("Skipping tests because JDK is unsupported: " + versionString);
                 isSupportedPlatform = false;
             }
         }
@@ -144,9 +148,9 @@ public class Tls13FunctionalTest {
 
         @Override
         public void handshakeCompleted(HandshakeCompletedEvent event) {
-            System.out.println("Connected to: " + this.host);
+            logger.info("Connected to: " + this.host);
             try {
-                System.out.println(event.getPeerPrincipal().getName());
+                logger.info(event.getPeerPrincipal().getName());
             } catch (SSLPeerUnverifiedException e) {
                 throw new RuntimeException(e);
             }
@@ -155,12 +159,11 @@ public class Tls13FunctionalTest {
             if (!protocol.equalsIgnoreCase("TLSv1.3")) {
                 throw new RuntimeException("Expected TLSv1.3 connection but was: " + protocol);
             }
-            System.out.println("Protocol: " + protocol);
-            System.out.println("Supported cipher suites: " +
+            logger.info("Protocol: " + protocol);
+            logger.info("Supported cipher suites: " +
                     Arrays.toString(event.getSocket().getSupportedCipherSuites()));
-            System.out.println("Enabled cipher suites: " + Arrays.toString(event.getSocket().getEnabledCipherSuites()));
-            System.out.println("Selected cipher suite: " + event.getSession().getCipherSuite());
-            System.out.println();
+                    logger.info("Enabled cipher suites: " + Arrays.toString(event.getSocket().getEnabledCipherSuites()));
+                    logger.info("Selected cipher suite: " + event.getSession().getCipherSuite());
         }
     }
 
