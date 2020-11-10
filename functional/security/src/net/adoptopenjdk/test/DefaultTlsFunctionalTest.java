@@ -48,7 +48,8 @@ public class DefaultTlsFunctionalTest {
             "https://repo1.maven.org/" // Ensure that Maven artifacts can be resolved.
     };
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    @Test
+    public void testDefaultTls() throws IOException, NoSuchAlgorithmException {
         String versionString = System.getProperty("java.version");
         logger.info("running DefaultTlsFunctionalTest");
         logger.info("Running on Java version: " + versionString);

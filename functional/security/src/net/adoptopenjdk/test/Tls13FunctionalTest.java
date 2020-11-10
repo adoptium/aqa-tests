@@ -64,7 +64,8 @@ public class Tls13FunctionalTest {
             "https://www.mozilla.org/"
     };
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+    @Test
+    public void testTls13() throws IOException, NoSuchAlgorithmException, KeyManagementException {
         String versionString = System.getProperty("java.version");
         logger.info("Running on Java version: " + versionString);
 
