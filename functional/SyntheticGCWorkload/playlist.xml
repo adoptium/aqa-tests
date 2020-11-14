@@ -155,7 +155,7 @@
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main $(TEST_RESROOT)/config/config_doubleMapStress.xml -n; \
 	${TEST_STATUS}</command>
 		<!-- Temporarily disable this test on AArch64; github.com/eclipse/openj9/issues/8034 -->
-		<platformRequirements>bits.64,os.linux,^arch.aarch64</platformRequirements>
+		<platformRequirements>bits.64,^os.aix,^os.win,^os.zos,^arch.aarch64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
