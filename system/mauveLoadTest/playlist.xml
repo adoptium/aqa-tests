@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
-
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
@@ -18,7 +17,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_OpenJ9</testCaseName>
@@ -33,7 +31,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>	
+		<impls>
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
@@ -52,11 +50,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>	
-			<impl>hotspot</impl>	
+		<impls>
+			<impl>hotspot</impl>
 		</impls>
 	</test>
-
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_OpenJ9</testCaseName>
@@ -71,7 +68,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>	
+		<impls>
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
@@ -90,11 +87,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>	
-			<impl>hotspot</impl>	
+		<impls>
+			<impl>hotspot</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
 		<variations>
@@ -109,7 +105,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -130,7 +125,6 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/75</disabled>
 	</test>
-	
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -151,7 +145,6 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/78</disabled>
 	</test>
-	
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -173,7 +166,6 @@
 		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/64</disabled>
 	</test>
 	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
-	
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_special</testCaseName>
 		<variations>
@@ -193,12 +185,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -224,8 +216,7 @@
 			<subset>8</subset>
 		</subsets>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>MauveSingleThreadLoadTest_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
@@ -244,12 +235,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -276,7 +267,6 @@
 		</subsets>
 		<disabled>https://github.com/eclipse/openj9/issues/3771</disabled>
 	</test>
-
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_special</testCaseName>
 		<variations>
@@ -296,12 +286,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>

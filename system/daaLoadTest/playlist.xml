@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<include>../systemtest.mk</include>
-
 	<!-- 
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
@@ -18,7 +17,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-
 	<!--  The following tests are specific to openj9 only -->
 	<test>
 		<testCaseName>DaaLoadTest_daa1</testCaseName>
@@ -38,7 +36,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa2</testCaseName>
 		<variations>
@@ -57,7 +54,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa3</testCaseName>
 		<variations>
@@ -76,7 +72,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_all</testCaseName>
 		<variations>
@@ -95,7 +90,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa1_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -115,7 +109,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa2_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -135,7 +128,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa3_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -155,7 +147,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_all_ConcurrentScavenge</testCaseName>
 		<variations>
@@ -175,7 +166,6 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
-	
 	<test>
 		<testCaseName>DaaLoadTest_daa1_special</testCaseName>
 		<variations>
@@ -196,12 +186,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -224,8 +214,7 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>DaaLoadTest_daa2_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
@@ -245,12 +234,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -273,8 +262,7 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>DaaLoadTest_daa3_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
@@ -294,12 +282,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -322,8 +310,7 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
- 	<test>
+	<test>
 		<testCaseName>DaaLoadTest_all_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
@@ -343,12 +330,12 @@
 			<variation>Mode551</variation>
 			<variation>Mode553</variation>
 			<variation>Mode554</variation>
-			<!-- disable Mode555 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode555</variation>
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
 			<variation>Mode610</variation>
-			<!-- disable Mode614 until the issue is fixed https://github.com/eclipse/openj9/pull/499-->
+			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
 			<variation>Mode688</variation>
@@ -371,5 +358,4 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-
 </playlist>

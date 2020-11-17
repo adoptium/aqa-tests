@@ -242,7 +242,7 @@
 	<target name="prepare_systemtest_for_jck" depends="check_systemtest">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="configure" inheritAll="false" />
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
-			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version} "/>
+			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version}"/>
 			<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
 		</ant>
 	</target>

@@ -50,6 +50,6 @@ define SYSTEMTEST_CMD_TEMPLATE
 perl $(SYSTEMTEST_RESROOT)$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)stf;$(SYSTEMTEST_RESROOT)$(D)openjdk-systemtest$(OPENJ9_PRAM)$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-	-java-args=$(Q)$(JVM_OPTIONS)$(Q) \
+	-java-args=$(SQ)$(JVM_OPTIONS)$(SQ) \
 	-results-root=$(REPORTDIR)
 endef

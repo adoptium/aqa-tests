@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>renaissance-akka-uct</testCaseName>
 		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1994#issuecomment-705633262</disabled>
@@ -53,8 +52,8 @@
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
-		<platformRequirements>^arch.ppc</platformRequirements> 
-		<levels> 
+		<platformRequirements>^arch.ppc</platformRequirements>
+		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
@@ -75,7 +74,7 @@
 	<test>
 		<testCaseName>renaissance-finagle-chirper</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
-		$(TEST_STATUS)</command>			
+		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>

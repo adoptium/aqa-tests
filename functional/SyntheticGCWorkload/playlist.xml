@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
-    <test>
+	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1k_J9</testCaseName>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
@@ -131,7 +131,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-			<command>mkdir -p $(REPORTDIR); \
+		<command>mkdir -p $(REPORTDIR); \
 	cd $(TEST_RESROOT); \
 	$(JAVA_COMMAND) $(JVM_OPTIONS) \
 	-cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main config$(D)config_1k_0.3.xml --log_file $(REPORTDIR)$(D)synthGCOutput.txt -s \
@@ -155,7 +155,7 @@
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main $(TEST_RESROOT)/config/config_doubleMapStress.xml -n; \
 	${TEST_STATUS}</command>
 		<!-- Temporarily disable this test on AArch64; github.com/eclipse/openj9/issues/8034 -->
-		<platformRequirements>bits.64,os.linux,^arch.aarch64</platformRequirements>
+		<platformRequirements>bits.64,^os.aix,^os.win,^os.zos,^arch.aarch64</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>

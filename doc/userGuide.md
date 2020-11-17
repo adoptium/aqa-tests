@@ -309,3 +309,72 @@ openjdk-tests/test-results/openjdk/report
 ```
 
 The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`
+
+## Exclude a test target
+
+#### Automatically exclude a test target
+Instead of having to manually create a PR to disable test targets, they can now be automatically disabled via Github workflow (see autoTestPR.yml). In the issue that describes the test failure, add a comment with the following format:
+
+```auto exclude test <testName>```
+
+If the testName matches the testCaseName defined in ```<testCaseName>``` element of playlist.xml, the entire test suite will be excluded. If the testName is testCaseName followed by _n, only the (n+1)th variation will be excluded. 
+
+For example:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <variations>
+      <variation>NoOptions</variation>
+      <variation>-Xmx1024m</variation>
+    <variations>
+    ...
+```
+To exclude the entire suite:
+
+```auto exclude test jdk_test```
+
+To exclude the test case with variation ```-Xmx1024m```:
+
+```auto exclude test jdk_test_1```
+
+After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
+
+#### Manually exclude a test target
+Search the test name to find its playlist.xml file. Add a ```<disabled>``` element after ```<testCaseName>``` element. The ```<disabled>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url).
+
+For example:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    </disabled>
+    ...
+```
+
+This will disable the entire test suite. The following section describes how to disable the specific test cases.
+
+##### Exclude a specific test variation:
+Add a ```<variation>``` element in the ```<disabled>``` element to specify the variation. The ```<variation>``` element must match an element defined in the ```<variations>``` element.
+
+For example, to exclude the test case with variation ```-Xmx1024m```:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <variation>-Xmx1024m</variation>
+    </disabled>
+    ...
+    <variations>
+      <variation>NoOptions</variation>
+      <variation>-Xmx1024m</variation>
+    <variations>
+    ...
+```
+
+##### Exclude multiple test variations:
+Define multiple ```<disabled>``` elements, each with a single ```<variation>``` element inside. Multiple ```<variation>``` elements inside one ```<disabled>``` element is not allowed.
