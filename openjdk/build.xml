@@ -44,7 +44,7 @@
 					</exec>
 				</else>
 				</if>
-				<exec executable="gzip" failonerror="true">
+z				<exec executable="gzip" failonerror="true">
 					<arg line="-d jtreg-4.2.0-tip.tar.gz" />
 				</exec>
 			</then>
@@ -53,12 +53,12 @@
 			<contains string="${SPEC}" substring="zos" />
 			<then>
 				<exec executable="tar" failonerror="true">
-					<arg line="xfo jtreg-4.2.0-tip.tar" />
+					<arg line="xfo ${jtregTar}" />
 				</exec>
 			</then>
 		<else>
 			<exec executable="sh" failonerror="true">
-				<arg line="-c 'cat jtreg-4.2.0-tip.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				<arg line="-c 'cat ${jtregTar} | (cd ${DEST} &amp;&amp; tar xof -)'" />
 			</exec>
 		</else>
 		</if>
