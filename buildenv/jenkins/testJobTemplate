@@ -18,6 +18,13 @@
  * A template that defines a test job.
  */
 
+def getBaseJDKImpl(JDK_IMPL) {
+	if (JDK_IMPL == "hotspot" || JDK_IMPL == "sap" || JDK_IMPL == "corretto" || JDK_IMPL == "dragonwell") {
+		return "hotspot"
+	}
+	return JDK_IMPL
+}
+
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
 if (!binding.hasVariable('ARTIFACTORY_REPO')) ARTIFACTORY_REPO = ""
@@ -88,6 +95,7 @@ if (binding.hasVariable('ARCH_OS_LIST')) {
 }
 
 JDK_IMPL_SN = JDK_IMPL
+JDK_IMPL_BASE = getBaseJDKImpl(JDK_IMPL)
 if (JDK_IMPL == "openj9") {
 	JDK_IMPL_SN = "j9"
 } else if (JDK_IMPL == "hotspot") {
@@ -151,7 +159,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_REPO', "", "JDK git repo. Please use ssh for zos.")
 							stringParam('JDK_BRANCH', "", "JDK branch")
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
-							stringParam('JDK_IMPL', JDK_IMPL, "JDK implementation, e.g. hotspot, openj9, sap")
+							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
 							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
