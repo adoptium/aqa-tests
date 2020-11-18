@@ -44,7 +44,7 @@ configureDB()
 			#of now, we'll be okay since it's the same service.properties file for both startup and throughput. Once we run 
 			#other apps, then this needs to be updated.
 			
-			DB_FILE=`find ${LIBERTY_DIR} -name 'service.properties' | grep service.properties | head -n 1`
+			DB_FILE=`find ${LIBERTY_DIR} -name 'service.properties' | grep service.properties | head -1`
 			
 			if [ ! -z "${DB_FILE}" ]; then
 				echo "DB_FILE=${DB_FILE} exists! No need to configure database"

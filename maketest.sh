@@ -12,7 +12,7 @@
 # limitations under the License.
 ######
 case `uname` in
-  AIX | *BSD )
+  AIX | SunOS | *BSD )
     MAKE=gmake
     ;;
   *)

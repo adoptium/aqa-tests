@@ -593,7 +593,7 @@ function __init_cpus_aix() {
 	# add the nodes to an array
 	__AFFINITY_NUMA_NODE_ARR=()
 	for (( i=0; i<$__AFFINITY_NUMA_NODES; i++ )); do
-		local numa_node=$(lssrad -vs $i | tail -n 1 | awk '{print $4}')
+		local numa_node=$(lssrad -vs $i | tail -1 | awk '{print $4}')
 		__AFFINITY_NUMA_NODE_ARR+=($numa_node)
 	done
 
@@ -601,7 +601,7 @@ function __init_cpus_aix() {
 	local phys_cpus_count=$(lsdev -Cc processor | grep Available | wc -l)
 
 	# get total number of cpus
-	local cpu_max=$(bindprocessor -q | tr ' ' '\n' | tail -n 1)
+	local cpu_max=$(bindprocessor -q | tr ' ' '\n' | tail -1)
 	__AFFINITY_CPUS=$(expr $cpu_max + 1)
 
 	# get threads per core
