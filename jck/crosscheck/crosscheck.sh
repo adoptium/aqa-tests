@@ -68,10 +68,6 @@ genTargetList() {
 	rm -rf $outputFile
 	
 	# If the TKG generated target list already exists don't generate it again
-	echo "TEST_ROOT=$TEST_ROOT"
-	ls -la $TEST_ROOT
-	ls -la $TEST_ROOT/TKG
-
 	if [ ! -f "$inputFile" ] ; then
 		if [ ! -d "$TEST_ROOT/TKG" ] ; then
 			echo "Can't find TKG under $TEST_ROOT/TKG"
@@ -187,11 +183,12 @@ export listOfExistingTargets=$outputdir/targetList.txt
 #mkdir $workspace
 #mkdir $workspace/output
 
-if [ "$#" -eq 2 ]; then
+if [ "$#" -eq 3 ]; then
 	# The script is running from a build which sends in two parameters version and root. 
 	# No setup() is needed in this case.   
 	export VERSION=$(echo "$1" | sed 's/[^0-9]*//g')
 	export JCK_ROOT=$2
+	export TEST_ROOT=$3
 elif [ "$#" -eq 1 ]; then
 	# We are running locally, where only one parameter is sent in: test repo. 
 	# Also, We will need setup() in this case. 
