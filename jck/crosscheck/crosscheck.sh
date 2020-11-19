@@ -68,9 +68,13 @@ genTargetList() {
 	rm -rf $outputFile
 	
 	# If the TKG generated target list already exists don't generate it again
+	echo "TEST_ROOT=$TEST_ROOT"
+	ls -la $TEST_ROOT
+	ls -la $TEST_ROOT/TKG
+
 	if [ ! -f "$inputFile" ] ; then
 		if [ ! -d "$TEST_ROOT/TKG" ] ; then
-			echo "Can't find TKG under $workspace/openjdk-tests/TKG"
+			echo "Can't find TKG under $TEST_ROOT/TKG"
 			echo "Please ensure setup was done properly"
 			exit 1
 		else 
