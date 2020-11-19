@@ -58,23 +58,24 @@ setup() {
 		fi
 	fi 
 	export JCK_ROOT=$workspace/test
+	export TEST_ROOT=$workspace/openjdk-tests
 }
 
 genTargetList() {
 
-	inputFile=$workspace/openjdk-tests/TKG/parallelList.mk
+	inputFile=$TEST_ROOT/TKG/parallelList.mk
 	outputFile=$listOfExistingTargets
 	rm -rf $outputFile
 	
 	# If the TKG generated target list already exists don't generate it again
 	if [ ! -f "$inputFile" ] ; then
-		if [ ! -d "$workspace/openjdk-tests/TKG" ] ; then
+		if [ ! -d "$TEST_ROOT/TKG" ] ; then
 			echo "Can't find TKG under $workspace/openjdk-tests/TKG"
 			echo "Please ensure setup was done properly"
-			return
+			exit 1
 		else 
 			echo "Generating list of existing playlist targets.." 
-			cd $workspace/openjdk-tests/TKG
+			cd $TEST_ROOT/TKG
 			make genParallelList NUM_MACHINES=1 TEST=jck
 		fi 
 	else 
@@ -196,6 +197,7 @@ elif [ "$#" -eq 1 ]; then
 else
 	echo "Invalid input" 
 	usage
+	exit 1
 fi
 
 genTargetList
