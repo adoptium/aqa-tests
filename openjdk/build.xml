@@ -64,7 +64,7 @@
 			<contains string="${SPEC}" substring="zos" />
 			<then>
 				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar}" />
+					<arg line="xfo ${jtregTar} -C ${DEST}" />
 				</exec>
 			</then>
 		<else>
