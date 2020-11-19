@@ -1,61 +1,18 @@
-#!/bin/bash 
-
-setup() {
-	cd $workspace
-	case "$(uname -s)" in
-		Linux)
-     			PLATFORM=x86-64_linux
-     			;;
-		Darwin)
-     			PLATFORM=x86-64_mac
-     			;;
-		
-		CYGWIN*|MINGW32*|MSYS*|MINGW*)
-     			PLATFORM=x86-64_windows
-     			;;
-		*)
-     			echo "Can't detect platform automatically. Please manually set the platform value in the call for get.sh"
-     			;;
-	esac
-
-	# Clone openjdk-tests materials if they don't already exist
-	if [ -d "$workspace/openjdk-tests" ] ; then
-		echo "Using existing test repo at: $workspace/openjdk-tests"
-	else 
-		git clone git@github.com:AdoptOpenJDK/openjdk-tests
-	fi 
-	
-	# Run get.sh to get TKG and SDK to use if it does not exist already 
-	if [ -d "$workspace/openjdkbinary/j2sdk-image" ] ; then
-		echo "Using existing SDK from $workspace/openjdkbinary/j2sdk-image"
-	else
-		$workspace/openjdk-tests/get.sh -s $workspace -t $workspace/openjdk-tests -p $PLATFORM -r nightly -j $VERSION -i openj9 --openj9_repo https://github.com/eclipse/openj9.git --openj9_branch master --tkg_repo https://github.com/AdoptOpenJDK/TKG.git --tkg_branch master --test_images_required false --debug_images_required false
-	fi 
-	
-	if [ $PLATFORM == x86-64_mac ]; then 
-		export TEST_JDK_HOME=$workspace/openjdkbinary/j2sdk-image/Contents/Home/
-	else
-		export TEST_JDK_HOME=$workspace/openjdkbinary/j2sdk-image/
-	fi 
-	chmod 777 $TEST_JDK_HOME/*
-		
-	# Download the test materials if they don't already exist in Workspace 
-	cd $workspace
-	if [ -d "$workspace/test/config" ] ; then
-		echo "Using existing test repo at: $workspace/test"
-	else 
-		echo "Git cloning test materials from $repo..."
-		git clone --depth 1 -q $repo $workspace/test
-		if [ $? != 0 ]; then 
-			exit 1
-		fi
-	fi 
-	export JCK_ROOT=$workspace/test
-	export TEST_ROOT=$workspace/openjdk-tests
-}
+#!/usr/bin/env bash
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 genTargetList() {
-
 	inputFile=$TEST_ROOT/TKG/parallelList.mk
 	outputFile=$listOfExistingTargets
 	rm -rf $outputFile
@@ -165,9 +122,65 @@ crossCheckTestFoldersIn() {
 	echo "Total new folders detected : $count"
 }
 
+# This function is only invoked in the case of local run 
+# It is skipped when the script is run from an automated job
+setup() {
+	cd $workspace
+	case "$(uname -s)" in
+		Linux)
+     			PLATFORM=x86-64_linux
+     			;;
+		Darwin)
+     			PLATFORM=x86-64_mac
+     			;;
+		
+		CYGWIN*|MINGW32*|MSYS*|MINGW*)
+     			PLATFORM=x86-64_windows
+     			;;
+		*)
+     			echo "Can't detect platform automatically. Please manually set the platform value in the call for get.sh"
+     			;;
+	esac
+
+	# Clone openjdk-tests materials if they don't already exist
+	if [ -d "$workspace/openjdk-tests" ] ; then
+		echo "Using existing test repo at: $workspace/openjdk-tests"
+	else 
+		git clone git@github.com:AdoptOpenJDK/openjdk-tests
+	fi 
+	
+	# Run get.sh to get TKG and SDK to use if it does not exist already 
+	if [ -d "$workspace/openjdkbinary/j2sdk-image" ] ; then
+		echo "Using existing SDK from $workspace/openjdkbinary/j2sdk-image"
+	else
+		$workspace/openjdk-tests/get.sh -s $workspace -t $workspace/openjdk-tests -p $PLATFORM -r nightly -j $VERSION -i openj9 --openj9_repo https://github.com/eclipse/openj9.git --openj9_branch master --tkg_repo https://github.com/AdoptOpenJDK/TKG.git --tkg_branch master --test_images_required false --debug_images_required false
+	fi 
+	
+	if [ $PLATFORM == x86-64_mac ]; then 
+		export TEST_JDK_HOME=$workspace/openjdkbinary/j2sdk-image/Contents/Home/
+	else
+		export TEST_JDK_HOME=$workspace/openjdkbinary/j2sdk-image/
+	fi 
+	chmod 777 $TEST_JDK_HOME/*
+		
+	# Download the test materials if they don't already exist in Workspace 
+	cd $workspace
+	if [ -d "$workspace/test/config" ] ; then
+		echo "Using existing test repo at: $workspace/test"
+	else 
+		echo "Git cloning test materials from $repo..."
+		git clone --depth 1 -q $repo $workspace/test
+		if [ $? != 0 ]; then 
+			exit 1
+		fi
+	fi 
+	export JCK_ROOT=$workspace/test
+	export TEST_ROOT=$workspace/openjdk-tests
+}
+
 usage() {
 	echo 'If run locally, please Use : jckchk.sh {jck-repo-name}' 
-	echo 'If run from build, please Use : jckchk.sh {jck-version} {jck-root}' 
+	echo 'If run from build, please Use : jckchk.sh {jck-version} {jck-root} {test-root}' 
 }
 
 date
