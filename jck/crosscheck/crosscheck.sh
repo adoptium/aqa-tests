@@ -38,13 +38,6 @@ setup() {
 		export TEST_JDK_HOME=$workspace/openjdkbinary/j2sdk-image/
 	fi 
 	chmod 777 $TEST_JDK_HOME/*
-
-	# Setup test materials to check 
-	if [ "$VERSION" -eq 8 ] ; then 
-		ver="$VERSION"c
-	else 
-		ver="$VERSION"
-	fi 
 		
 	# Download the test materials if they don't already exist in Workspace 
 	cd $workspace
@@ -105,6 +98,11 @@ genTargetList() {
 }
 
 genTestFolderList() {
+	if [ "$VERSION" -eq 8 ] ; then 
+		ver="$VERSION"c
+	else 
+		ver="$VERSION"
+	fi 
 	# Generate the list of folders - two step deep, so that they can be used for scanning later 
 	cd $JCK_ROOT/*-runtime-$ver/tests
 	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/runtime-dirs.txt
@@ -179,9 +177,8 @@ export workspace=`pwd`/crosscheck
 export outputdir=$workspace/output
 export listOfExistingTargets=$outputdir/targetList.txt
 
-#rm -rf $workspace 
-#mkdir $workspace
-#mkdir $workspace/output
+mkdir $workspace
+mkdir $workspace/output
 
 if [ "$#" -eq 3 ]; then
 	# The script is running from a build which sends in two parameters version and root. 
