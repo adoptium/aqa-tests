@@ -29,6 +29,20 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jck_crosscheck</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)crosscheck$(D)crosscheck.sh $(JCK_VERSION) $(JCK_ROOT); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jck-runtime-api-java_lang-instrument</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
