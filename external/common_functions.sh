@@ -30,7 +30,7 @@ supported_packages="jdk jre"
 supported_builds="slim full"
 
 # Supported tests
-supported_tests="camel derby elasticsearch jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
+supported_tests="camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
 
 function check_version() {
     version=$1
@@ -233,6 +233,21 @@ function set_test_info() {
         centos_packages="git wget make gcc unzip"
         clefos_packages="${centos_packages}"
         ubi_packages="git wget make gcc unzip"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
+    jacoco)
+        github_url="https://github.com/jacoco/jacoco.git"
+        script="jacoco-test.sh"
+        test_results="testResults"
+        tag_version="master"
+        environment_variable="MODE=\"java\""
+        debian_packages="git maven"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git maven"
+        centos_packages="git maven"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git maven"
         ubi_minimal_packages="${ubi_packages}"
         ;;
     jenkins)
