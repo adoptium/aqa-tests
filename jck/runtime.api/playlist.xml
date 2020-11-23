@@ -29,14 +29,14 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jck_crosscheck</testCaseName>
+		<testCaseName>jck_target_folder_check</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(TEST_ROOT)$(D)jck$(D)crosscheck$(D)crosscheck.sh $(JCK_VERSION) $(JCK_ROOT) $(TEST_ROOT); \
+		<command>$(TEST_ROOT)$(D)jck$(D)jck_target_folder_check$(D)jck_target_folder_check.sh $(JCK_VERSION) $(JCK_ROOT) $(TEST_ROOT); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>sanity</level>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>jck</group>
