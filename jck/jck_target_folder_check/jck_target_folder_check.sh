@@ -122,7 +122,6 @@ crossCheckTestFoldersIn() {
 }
 
 # This function is only invoked in the case of local run 
-# It is skipped when the script is run from an automated job
 setup() {
 	chmod 777 $TEST_JDK_HOME/*
 		
@@ -184,7 +183,10 @@ elif [ "$#" -eq 2 ]; then
 	elif [ ! -d "$workspace/openjdk-tests/TKG" ] ; then
 		echo "Please manually run $workspace/openjdk-tests/get.sh to set up TKG under $workspace/openjdk-tests"
 		exit 1
-	else 
+	elif [[ $TEST_JDK_HOME == "" ]] ; then 
+		echo "Please set TEST_JDK_HOME"
+		exit 1
+	else
 		setup
 		main
 	fi
