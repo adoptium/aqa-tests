@@ -141,6 +141,12 @@ setup() {
 }
 
 main() {
+	echo "VERSION = $VERSION"
+	echo "JCK_ROOT = $JCK_ROOT"
+	echo "TEST_ROOT = $TEST_ROOT"
+	echo "workspace = $workspace"
+	echo "TEST_JDK_HOME = $TEST_JDK_HOME"
+	
 	export outputdir=$workspace/output
 	mkdir $workspace/output
 	export listOfExistingTargets=$outputdir/targetList.txt
