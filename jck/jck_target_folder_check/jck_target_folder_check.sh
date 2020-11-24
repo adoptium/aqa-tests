@@ -155,8 +155,8 @@ main() {
 }
 
 usage() {
-	echo 'If run locally, please Use : jckchk.sh {jck-repo-name} {workspace-location]' 
-	echo 'If run from build, please Use : jckchk.sh {jck-version} {jck-root} {test-root}' 
+	echo 'If run locally, please Use : jck_target_folder_check.sh {jck-repo-name} {workspace-location]' 
+	echo 'If run from build, please Use : jck_target_folder_check.sh {jck-version} {jck-root} {test-root}' 
 }
 
 date

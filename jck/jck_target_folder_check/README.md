@@ -1,6 +1,6 @@
 # Overview 
 
-The jck_target_folder_check,sh script is used to cross-check if all second-level JCK folders in a given JCK repo have their corresponding playlist targets under https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/jck
+The jck_target_folder_check.sh script is used to cross-check if all second-level JCK folders in a given JCK repo have their corresponding playlist targets under https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/jck
 
 
 # How to run the script locally 
