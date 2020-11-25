@@ -29,6 +29,21 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jck_target_folder_check</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)jck_target_folder_check$(D)jck_target_folder_check.sh $(JCK_VERSION) $(JCK_ROOT) $(TEST_ROOT); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
+	</test>
+	<test>
 		<testCaseName>jck-runtime-api-java_lang-instrument</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
