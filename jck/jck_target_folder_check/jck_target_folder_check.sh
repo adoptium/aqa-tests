@@ -202,7 +202,6 @@ else
 	exit 1
 fi
 
-
 end_time="$(date -u +%s)"
 date 
 elapsed="$(($end_time-$begin_time))"
