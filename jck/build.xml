@@ -114,11 +114,12 @@
 									<arg value="pull" />
 								</exec>
 							</else>
-						</fi>
-					</fi>
+						</if>
+					</else>
 				</if>
 			</else>
 		</if>
+						
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -145,7 +146,7 @@
 							<arg value="reset" />
 							<arg value="--hard" />
 						</exec>
-					</then>
+					</else>
 				</if>
 			</then>
 		</if>
