@@ -52,6 +52,24 @@
 	<target name="stage_jck_material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
+			<available file="${JCK_ROOT_USED}" type="dir" />
+			<then>
+				<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
+				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="localSHA">
+					<arg line="rev-parse"/>
+					<arg line="HEAD"/>
+				</exec>
+				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
+					<arg line="ls-remote"/>
+					<arg line="${JCK_GIT_REPO_USED}"/>
+					<arg line="${jck_branch}"/>
+				</exec>
+				<condition property="local-material-uptodate">
+					<matches pattern="${localSHA}" string="${remoteSHA}"/>
+				</condition>
+			</then>
+		</if>	
+		<if>
 			<not>
 				<available file="${JCK_ROOT_USED}" type="dir" />
 			</not>
@@ -84,34 +102,51 @@
 							<arg value="--force" />
 							<arg value="--quiet" />
 						</exec>
-						<echo message="Updating ${JCK_ROOT_USED} with latest..." />
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-							<arg value="pull" />
-						</exec>
-					</else>
+						<if>
+							<isset property="local-material-uptodate" />
+							<then> 
+								<echo message="Local copy of JCK materials are up-to-date. Skipping update"/>
+							</then>
+							<else>
+								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
+								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
+								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
+									<arg value="pull" />
+								</exec>
+							</else>
+						</fi>
+					</fi>
 				</if>
 			</else>
 		</if>
 		<if>
 			<isset property="isZOS" />
 			<then>
-				<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
-				<delete includeemptydirs="true" failonerror="false">
-					<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${JCK_ROOT_USED}/.git/info" />
-				<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
-				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
+				<if>
+					<isset property="local-material-uptodate" />
+					<then> 
+						<echo message="Local copy of JCK materials are up-to-date. Skipping hard reset"/>
+					</then>
+					<else>
+						<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
+						<delete includeemptydirs="true" failonerror="false">
+							<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
+						</delete>
+						<mkdir dir="${JCK_ROOT_USED}/.git/info" />
+						<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+							<arg value="rm" />
+							<arg value="--cached" />
+							<arg value="-r" />
+							<arg value="-q" />
+							<arg value="." />
+						</exec>
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
+							<arg value="reset" />
+							<arg value="--hard" />
+						</exec>
+					</then>
+				</if>
 			</then>
 		</if>
 		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
