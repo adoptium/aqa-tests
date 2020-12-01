@@ -70,6 +70,15 @@
 					<matches pattern="${localSHA}" string="${remoteSHA}"/>
 				</condition>
 				<echo message="local-material-uptodate 1 = ${local-material-uptodate}"/>
+				<if>
+					<isset property="local-material-uptodate" />
+					<then>
+						<echo message="local-material-uptodate is set"/>
+					</then>
+					<else>
+						<echo message="local-material-uptodate is NOT set"/>
+					</else>
+				</if>
 			</then>
 		</if>	
 		<if>
