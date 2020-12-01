@@ -64,6 +64,8 @@
 					<arg line="${JCK_GIT_REPO_USED}"/>
 					<arg line="${jck_branch}"/>
 				</exec>
+				<echo message="localSHA = ${localSHA}"/>
+				<echo message="remoteSHA= ${remoteSHA}"/>
 				<condition property="local-material-uptodate">
 					<matches pattern="${localSHA}" string="${remoteSHA}"/>
 				</condition>
@@ -109,7 +111,6 @@
 							</then>
 							<else>
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
-								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 									<arg value="pull" />
 								</exec>
@@ -119,7 +120,6 @@
 				</if>
 			</else>
 		</if>
-						
 		<if>
 			<isset property="isZOS" />
 			<then>
