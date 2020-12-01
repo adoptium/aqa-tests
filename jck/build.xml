@@ -73,8 +73,6 @@
 						<striplinebreaks/>
 					</filterchain>
 				</loadresource>
-				<echo message="localSHA  : ${localSHATrimmed}"/>
-				<echo message="remoteSHA : ${remoteSHA}"/>
 				<condition property="local-material-uptodate">
 					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
 				</condition>
