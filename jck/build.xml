@@ -69,6 +69,7 @@
 				<condition property="local-material-uptodate">
 					<matches pattern="${localSHA}" string="${remoteSHA}"/>
 				</condition>
+				<echo message="local-material-uptodate 1 = ${local-material-uptodate}"/>
 			</then>
 		</if>	
 		<if>
@@ -104,6 +105,7 @@
 							<arg value="--force" />
 							<arg value="--quiet" />
 						</exec>
+						<echo message="local-material-uptodate 2 = ${local-material-uptodate}"/>
 						<if>
 							<isset property="local-material-uptodate" />
 							<then> 
@@ -123,6 +125,7 @@
 		<if>
 			<isset property="isZOS" />
 			<then>
+				<echo message="local-material-uptodate 3 = ${local-material-uptodate}"/>
 				<if>
 					<isset property="local-material-uptodate" />
 					<then> 
