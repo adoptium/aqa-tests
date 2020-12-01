@@ -59,6 +59,11 @@
 					<arg line="rev-parse"/>
 					<arg line="HEAD"/>
 				</exec>
+				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
+					<arg line="ls-remote"/>
+					<arg line="${JCK_GIT_REPO_USED}"/>
+					<arg line="${jck_branch}"/>
+				</exec>
 				<loadresource property="localSHATrimmed">
 					<propertyresource name="localSHA"/>
 					<filterchain>
@@ -68,15 +73,8 @@
 						<striplinebreaks/>
 					</filterchain>
 				</loadresource>
-				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
-					<arg line="ls-remote"/>
-					<arg line="${JCK_GIT_REPO_USED}"/>
-					<arg line="${jck_branch}"/>
-				</exec>
-				
-				<echo message="localSHA ==${localSHATrimmed}=="/>
-				<echo message="remoteSHA==${remoteSHA}=="/>
-				
+				<echo message="localSHA  : ${localSHATrimmed}"/>
+				<echo message="remoteSHA : ${remoteSHA}"/>
 				<condition property="local-material-uptodate">
 					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
 				</condition>
@@ -118,7 +116,7 @@
 						<if>
 							<isset property="local-material-uptodate" />
 							<then> 
-								<echo message="Local copy of JCK materials are up-to-date. Skipping update"/>
+								<echo message="Local JCK materials up-to-date. Skipping update"/>
 							</then>
 							<else>
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
@@ -137,7 +135,7 @@
 				<if>
 					<isset property="local-material-uptodate"/>
 					<then> 
-						<echo message="Local copy of JCK materials are up-to-date. Skipping hard reset"/>
+						<echo message="Local JCK materials up-to-date. Skipping hard reset"/>
 					</then>
 					<else>
 						<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
