@@ -64,10 +64,10 @@
 					<arg line="${JCK_GIT_REPO_USED}"/>
 					<arg line="${jck_branch}"/>
 				</exec>
-				<echo message="localSHA = ${localSHA}"/>
-				<echo message="remoteSHA= ${remoteSHA}"/>
+				<echo message="localSHA ==${localSHA}=="/>
+				<echo message="remoteSHA==${remoteSHA}=="/>
 				<condition property="local-material-uptodate">
-					<matches pattern="${localSHA}" string="${remoteSHA}"/>
+					<contains string="${remoteSHA}" substring="${localSHA}" />
 				</condition>
 				<echo message="local-material-uptodate 1 = ${local-material-uptodate}"/>
 				<if>
