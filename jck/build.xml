@@ -59,44 +59,27 @@
 					<arg line="rev-parse"/>
 					<arg line="HEAD"/>
 				</exec>
-				<echo message="localSHA Original ---${localSHAClean}---"/>
 				<loadresource property="localSHATrimmed">
 					<propertyresource name="localSHA"/>
 					<filterchain>
 						<tokenfilter>
 							<trim/>
 						</tokenfilter>
+						<striplinebreaks/>
 					</filterchain>
 				</loadresource>
-				<echo message="localSHA after trim --${localSHATrimmed}--"/>
-				<loadresource property="localSHAClean">
-					<propertyresource name="localSHATrimmed"/>
-						<filterchain>
-							<striplinebreaks/>
-						</filterchain>
-				</loadresource>
-				<echo message="localSHA after striplinebreaks --${localSHAClean}--"/>
-				
 				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
 					<arg line="ls-remote"/>
 					<arg line="${JCK_GIT_REPO_USED}"/>
 					<arg line="${jck_branch}"/>
 				</exec>
-				<echo message="localSHA ==${localSHAClean}=="/>
+				
+				<echo message="localSHA ==${localSHATrimmed}=="/>
 				<echo message="remoteSHA==${remoteSHA}=="/>
+				
 				<condition property="local-material-uptodate">
-					<contains string="${remoteSHA}" substring="${localSHAClean}" />
+					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
 				</condition>
-				<echo message="local-material-uptodate 1 = ${local-material-uptodate}"/>
-				<if>
-					<isset property="local-material-uptodate" />
-					<then>
-						<echo message="local-material-uptodate is set"/>
-					</then>
-					<else>
-						<echo message="local-material-uptodate is NOT set"/>
-					</else>
-				</if>
 			</then>
 		</if>	
 		<if>
@@ -132,7 +115,6 @@
 							<arg value="--force" />
 							<arg value="--quiet" />
 						</exec>
-						<echo message="local-material-uptodate 2 = ${local-material-uptodate}"/>
 						<if>
 							<isset property="local-material-uptodate" />
 							<then> 
@@ -152,9 +134,8 @@
 		<if>
 			<isset property="isZOS" />
 			<then>
-				<echo message="local-material-uptodate 3 = ${local-material-uptodate}"/>
 				<if>
-					<isset property="local-material-uptodate" />
+					<isset property="local-material-uptodate"/>
 					<then> 
 						<echo message="Local copy of JCK materials are up-to-date. Skipping hard reset"/>
 					</then>
