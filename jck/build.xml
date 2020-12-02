@@ -73,6 +73,10 @@
 						<striplinebreaks/>
 					</filterchain>
 				</loadresource>
+					
+				<echo message="LocalSHA = --${localSHATrimmed}--"/>
+				<echo message="RemoteSHA= --${remoteSHA}--"/>
+
 				<condition property="local-material-uptodate">
 					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
 				</condition>
@@ -101,22 +105,24 @@
 					<isset property="env.SKIP_JCK_GIT_UPDATE" />
 					<!-- don't want to update local JCK materials -->
 					<then>
-						<echo message="Skip Running git clean at ${JCK_ROOT_USED}. Continue." />
+						<echo message="env.SKIP_JCK_GIT_UPDATE is set. Skip Running git update at ${JCK_ROOT_USED}. Continue." />
 					</then>
 					<else>
-						<echo message="Running git clean at ${JCK_ROOT_USED}..." />
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-							<arg value="clean" />
-							<arg value="-d" />
-							<arg value="--force" />
-							<arg value="--quiet" />
-						</exec>
 						<if>
 							<isset property="local-material-uptodate" />
 							<then> 
 								<echo message="Local JCK materials up-to-date. Skipping update"/>
 							</then>
 							<else>
+								<if>
+									<available file="${JCK_ROOT_USED}/natives" type="dir" />
+									<then>
+										<echo message="Deleting ${JCK_ROOT_USED}/natives..." />
+										<delete includeEmptyDirs="true">
+  											<fileset dir="${JCK_ROOT_USED}/natives"/>
+										</delete>
+									</then>
+								</if>
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 									<arg value="pull" />
@@ -160,6 +166,7 @@
 		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
 			This is especially needed to execute the shell scripts under devtools for JCK 8.
 		-->
+		<echo message="Makeking all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system..."/>
 		<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
 	</target>
 
