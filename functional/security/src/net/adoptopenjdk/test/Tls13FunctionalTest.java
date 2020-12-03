@@ -130,7 +130,19 @@ public class Tls13FunctionalTest {
                 isSupportedPlatform = false;
             }
         } else {
-            int majorVersion = Integer.parseInt(versionString.substring(0, versionString.indexOf('.')));
+            int majorVersion = 0;
+            /* Handle versions like 11.0.9, 16-internal, 16 */
+            int dotIndex = versionString.indexOf('.');
+            if (dotIndex > 0) {
+                majorVersion = Integer.parseInt(versionString.substring(0, dotIndex));
+            } else {
+                int dashIndex = versionString.indexOf('-');
+                if (dashIndex > 0) {
+                    majorVersion = Integer.parseInt(versionString.substring(0, dashIndex));
+                } else {
+                    majorVersion = Integer.parseInt(versionString);
+                }
+            }
             if (majorVersion < 11) {
                 logger.warn("Skipping tests because JDK is unsupported: " + versionString);
                 isSupportedPlatform = false;
