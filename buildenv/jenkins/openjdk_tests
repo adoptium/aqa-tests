@@ -1,12 +1,16 @@
 #!groovy
 
-def PLATFORM_MAP = [ 
+def PLATFORM_MAP = [
     'arm_linux' : [
         'SPEC' : 'linux_arm',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch32',
     ],
     'aarch64_linux' : [
         'SPEC' : 'linux_aarch64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
+    ],
+    'aarch64_linux_mixed' : [
+        'SPEC' : 'linux_aarch64_mxdptrs',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
     ],
     'aarch64_linux_xl' : [
@@ -25,6 +29,10 @@ def PLATFORM_MAP = [
         'SPEC' : 'aix_ppc-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
     ],
+    'ppc64_aix_mixed' : [
+        'SPEC' : 'aix_ppc-64_mxdptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
+    ],
     'ppc64_aix_xl' : [
         'SPEC' : 'aix_ppc-64',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
@@ -40,6 +48,10 @@ def PLATFORM_MAP = [
     'ppc64le_linux' : [
         'SPEC' : 'linux_ppc-64_cmprssptrs_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
+    ],
+    'ppc64le_linux_mixed' : [
+        'SPEC' : 'linux_ppc-64_mxdptrs_le',
+        'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux'
     ],
     'ppc64le_linux_xl' : [
         'SPEC' : 'linux_ppc-64_le',
@@ -57,12 +69,12 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
     ],
-    's390_zos' : [
-        'SPEC' : 'zos_390',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
-    ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+    ],
+    's390x_linux_mixed' : [
+        'SPEC' : 'linux_390-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
     ],
     's390x_linux_xl' : [
@@ -75,6 +87,10 @@ def PLATFORM_MAP = [
     ],
     's390x_zos_xl' : [
         'SPEC' : 'zos_390-64',
+        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
+    ],
+    's390_zos' : [
+        'SPEC' : 'zos_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
     ],
     'sparcv9_solaris' : [
@@ -93,16 +109,20 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_x86-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
     ],
-    'x86-64_linux_xl' : [
-        'SPEC' : 'linux_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-    ],
     'x86-64_linux_mixed' : [
         'SPEC' : 'linux_x86-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
     ],
+    'x86-64_linux_xl' : [
+        'SPEC' : 'linux_x86-64',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+    ],
     'x86-64_mac' : [
         'SPEC' : 'osx_x86-64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
+    ],
+    'x86-64_mac_mixed' : [
+        'SPEC' : 'osx_x86-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
     ],
     'x86-64_mac_xl' : [
@@ -113,10 +133,14 @@ def PLATFORM_MAP = [
         'SPEC' : 'win_x86-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
     ],
+    'x86-64_windows_mixed' : [
+        'SPEC' : 'win_x86-64_mxdptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
+    ],
     'x86-64_windows_xl' : [
         'SPEC' : 'win_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
-    ]
+    ],
 ]
 
 if ( !params.TARGET ) {
@@ -195,7 +219,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
             if (nodes < 1) {
                 // If no active node matches the label, we see if there's a timeout value set.
                 // If there is, we wait and check again periodically. If not, we fail immediately.
-                
+
                 boolean didnt_find_node = true
 
                 if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
@@ -237,10 +261,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
                 } else {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
-            
+
                     // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
                     ref_cache = "${env.HOME}/openjdk_cache"
-            
+
                     checkout scm: [$class: 'GitSCM',
                         branches: [[name: "${scm.branches[0].name}"]],
                         extensions: [
@@ -258,4 +282,3 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
     }
 }
-
