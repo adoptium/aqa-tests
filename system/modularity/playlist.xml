@@ -24,7 +24,7 @@
 	</test>
 	<!-- Tests below pertain to Java 9 Modularity -->
 	<test>
-		<testCaseName>CpMpTest_CpMp</testCaseName>
+		<testCaseName>CpMp_CpMp</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -41,7 +41,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpTest_MP</testCaseName>
+		<testCaseName>CpMp_MP</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -58,7 +58,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpTest2</testCaseName>
+		<testCaseName>CpMp2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -75,7 +75,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpTest3</testCaseName>
+		<testCaseName>CpMp3</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -92,11 +92,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpModularJarTest</testCaseName>
+		<testCaseName>CpMpModJar</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModJar; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -109,11 +109,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpModularJarTest2</testCaseName>
+		<testCaseName>CpMpModJar2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest2; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModJar2; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -126,11 +126,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CpMpModularJarTest3</testCaseName>
+		<testCaseName>CpMpModJar3</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModularJarTest3; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CpMpModJar3; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -143,11 +143,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>JDKInternalAPIsTest</testCaseName>
+		<testCaseName>InternalAPIs</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JDKInternalAPIsTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=InternalAPIs; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -160,11 +160,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>AutomaticModulesTest1</testCaseName>
+		<testCaseName>AutoMod1</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=AutomaticModulesTest1$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutoModTest -test-args=$(Q)variant=AutoMod1$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -177,11 +177,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>AutomaticModulesTest2</testCaseName>
+		<testCaseName>AutoMod2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=AutomaticModulesTest2$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutoModTest -test-args=$(Q)variant=AutoMod2$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -194,11 +194,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest1</testCaseName>
+		<testCaseName>AutoMod_Impl1</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest1$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutoModTest -test-args=$(Q)variant=Impl1$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -211,11 +211,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest2</testCaseName>
+		<testCaseName>AutoMod_Impl2</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest2$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutoModTest -test-args=$(Q)variant=Impl2$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -228,11 +228,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>AutomaticModulesTest_ImpliedReadabilityTest3</testCaseName>
+		<testCaseName>AutoMod_Impl3</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutomaticModulesTest -test-args=$(Q)variant=ImpliedReadabilityTest3$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=AutoModTest -test-args=$(Q)variant=Impl3$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -246,11 +246,11 @@
 	</test>
 	<!-- Temporarily excluded due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/200 -->
 	<test>
-		<testCaseName>ExplicitModulesTest</testCaseName>
+		<testCaseName>ExplMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ExplicitModulesTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ExplMod; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9</subset>
@@ -265,11 +265,11 @@
 		<disabled>https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/200</disabled>
 	</test>
 	<test>
-		<testCaseName>ServiceLoadersTest</testCaseName>
+		<testCaseName>SLTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ServiceLoadersTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SLTest; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -283,11 +283,11 @@
 	</test>
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
 	<test>
-		<testCaseName>PatchModuleTest_PlatformMod</testCaseName>
+		<testCaseName>PatMod_PlatMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModTest -test-args=$(Q)variant=PlatMod$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -301,11 +301,11 @@
 		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>PatchModuleTest_AppMod</testCaseName>
+		<testCaseName>PatMod_AppMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=AppModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModTest -test-args=$(Q)variant=AppMod$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -318,11 +318,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>PatchModuleTest_UnexportedType</testCaseName>
+		<testCaseName>PatMod_Unex</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModTest -test-args=$(Q)variant=Unex$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -335,11 +335,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>PatchModuleTest_Advanced</testCaseName>
+		<testCaseName>PatMod_Adv</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleTest -test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModTest -test-args=$(Q)variant=Adv$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -353,11 +353,11 @@
 	</test>
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
 	<test>
-		<testCaseName>PatchModuleImgTest_PlatformMod</testCaseName>
+		<testCaseName>PatModImg_PlatMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=PlatformModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModImgTest -test-args=$(Q)variant=PlatMod$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -371,11 +371,11 @@
 		<platformRequirements>^os.aix</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>PatchModuleImgTest_AppMod</testCaseName>
+		<testCaseName>PatModImg_AppMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=AppModPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModImgTest -test-args=$(Q)variant=AppMod$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -388,11 +388,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>PatchModuleImgTest_UnexportedType</testCaseName>
+		<testCaseName>PatModImg_Unex</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=UnexportedTypePatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModImgTest -test-args=$(Q)variant=Unex$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -405,11 +405,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>PatchModuleImgTest_Advanced</testCaseName>
+		<testCaseName>PatModImg_Adv</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatchModuleImageTest -test-args=$(Q)variant=AdvancedPatchModule$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=PatModImgTest -test-args=$(Q)variant=Adv$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -422,11 +422,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>UpgradeModPathTest_ExpDir</testCaseName>
+		<testCaseName>UpgModPath_Exp</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=ExpDirModUpgrade$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgModPathTest -test-args=$(Q)variant=Exp$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -439,11 +439,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>UpgradeModPathTest_ExpDirImg</testCaseName>
+		<testCaseName>UpgModPath_ExpImg</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=ExpDirModUpgradeCRImage$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgModPathTest -test-args=$(Q)variant=ExpImg$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -456,11 +456,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>UpgradeModPathTest_Jarred</testCaseName>
+		<testCaseName>UpgModPath_Jar</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=JarredModUpgrade$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgModPathTest -test-args=$(Q)variant=Jar$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -473,11 +473,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>UpgradeModPathTest_JarredImg</testCaseName>
+		<testCaseName>UpgModPath_JarImg</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgradeModPathTest -test-args=$(Q)variant=JarredModUpgradeCRImage$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UpgModPathTest -test-args=$(Q)variant=JarImg$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -491,11 +491,11 @@
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
-		<testCaseName>JlinkTest_RequiredMod</testCaseName>
+		<testCaseName>Jlink_ReqMod</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=RequiredMod$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=ReqdMod$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -510,11 +510,11 @@
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
-		<testCaseName>JlinkTest_AddModLimitMod</testCaseName>
+		<testCaseName>Jlink_AddMLimitM</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=AddModLimitMod$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkTest -test-args=$(Q)variant=AddMLimitM$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -528,7 +528,7 @@
 		<platformRequirements>^os.win</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>CpMpJlinkTest</testCaseName>
+		<testCaseName>CpMpJlink</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -546,11 +546,11 @@
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
-		<testCaseName>JlinkPluginOpt_GenOptTest</testCaseName>
+		<testCaseName>Jlink_GenOpt</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkPluginOptionsTest -test-args=$(Q)variant=GeneralOptionsTest$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JlinkPluginTest -test-args=$(Q)variant=GenOpt$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -602,11 +602,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CLTestImage</testCaseName>
+		<testCaseName>CLTestImg</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLTestImage -test-args=$(Q)variant=CLTest$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLTestImage -test-args=$(Q)variant=Img$(Q); \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -619,7 +619,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CLLoadTest</testCaseName>
+		<testCaseName>CLLoad</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -636,11 +636,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>CLStressWithLayers</testCaseName>
+		<testCaseName>CLStressLayers</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressWithLayers; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressLayers; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
@@ -654,11 +654,11 @@
 		<disabled>https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/197</disabled>
 	</test>
 	<test>
-		<testCaseName>CLStressWithLayersCRI</testCaseName>
+		<testCaseName>CLStressCRI</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressWithLayersCRI; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=CLStressCRI; \
 	$(TEST_STATUS)</command>
 		<subsets>
 			<subset>9+</subset>
