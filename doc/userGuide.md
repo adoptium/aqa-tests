@@ -327,16 +327,28 @@ For example:
     <variations>
       <variation>NoOptions</variation>
       <variation>-Xmx1024m</variation>
-    <variations>
+    </variations>
     ...
 ```
 To exclude the entire suite:
 
 ```auto exclude test jdk_test```
 
-To exclude the test case with variation ```-Xmx1024m```:
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m```:
 
 ```auto exclude test jdk_test_1```
+
+To exclude the test for openj9 only:
+
+```auto exclude test jdk_test impl=openj9```
+
+To exclude the test for java 8 only:
+
+```auto exclude test jdk_test ver=8```
+
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against openj9 java 8 only:
+
+```auto exclude test jdk_test_1 impl=openj9 ver=8```
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
 
@@ -372,9 +384,85 @@ For example, to exclude the test case with variation ```-Xmx1024m```:
     <variations>
       <variation>NoOptions</variation>
       <variation>-Xmx1024m</variation>
-    <variations>
+    </variations>
     ...
 ```
 
-##### Exclude multiple test variations:
-Define multiple ```<disabled>``` elements, each with a single ```<variation>``` element inside. Multiple ```<variation>``` elements inside one ```<disabled>``` element is not allowed.
+##### Exclude a test against specific java implementation:
+Add a ```<impl>``` element in the ```<disabled>``` element to specify the implementation.
+
+For example, to exclude the test for openj9 only:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <impl>openj9</impl>
+    </disabled>
+    ...
+```
+
+##### Exclude a test against specific java version:
+Add a ```<subset>``` element in the ```<disabled>``` element to specify the version.
+
+For example, to exclude the test for java 11 and up:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <subset>11+</subset>
+    </disabled>
+    ...
+```
+
+##### Exclude test against multiple criteria:
+Defined a combination of ```<variation>```, ```<impl>```, and ```<subset>``` in the ```<disabled>``` element.
+
+For example, to exclude the test with variation ```-Xmx1024m``` against openj9 java 8 only:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <variation>-Xmx1024m</variation>
+      <subset>8</subset>
+      <impl>openj9</impl>
+    </disabled>
+    ...
+```
+
+Note: Same element cannot be defined multiple times inside one ```<disabled>``` element. It is because the elements inside the disable element are in AND relationship.
+
+For example, to exclude test on against hotspot and openj9. It is required to define multiple ```<disabled>``` elements, each with a single ```<impl>``` element inside:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <subset>8</subset>
+      <impl>openj9</impl>
+    </disabled>
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <subset>8</subset>
+      <impl>hotspot</impl>
+    </disabled>
+    ...
+```
+
+Or remove ```<impl>``` element to exclude test against all implementations:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <subset>8</subset>
+    </disabled>
+    ...
+```
