@@ -1,0 +1,34 @@
+How to use gen-patch-data.sh
+
+If following errors are displayed:
+=====================
+not ok 32 - diff TimeZoneTestB-ko-KR-DEFAULT.log expected_TimeZoneTestB-ko-KR-DEFAULT.log
+#   Failed test 'diff TimeZoneTestB-ko-KR-DEFAULT.log expected_TimeZoneTestB-ko-KR-DEFAULT.log'
+#   at /home/isel/svt_next2/ci/CLDR_11/tap_compare.pl line 102.
+not ok 33 - diff TimeZoneTestB-ko-KR-CLDR.log expected_TimeZoneTestB-ko-KR-CLDR.log
+#   Failed test 'diff TimeZoneTestB-ko-KR-CLDR.log expected_TimeZoneTestB-ko-KR-CLDR.log'
+#   at /home/isel/svt_next2/ci/CLDR_11/tap_compare.pl line 102.
+not ok 34 - diff TimeZoneTestB-ko-KR-JRE.log expected_TimeZoneTestB-ko-KR-JRE.log
+#   Failed test 'diff TimeZoneTestB-ko-KR-JRE.log expected_TimeZoneTestB-ko-KR-JRE.log'
+#   at /home/isel/svt_next2/ci/CLDR_11/tap_compare.pl line 102.
+=====================
+
+Change directory to CLDR_11
+Then check the difference by using "diff TimeZoneTestB-ko-KR-DEFAULT.log expected_TimeZoneTestB-ko-KR-DEFAULT.log".
+If the output is valid, please type following command
+$ bash src/gen-patch-data.sh
+src/gen-patch-data.sh Program ProviderType Locale OldPatch NewPatch
+
+Note, that
+Program should be TimeZoneTestB, in this case.
+ProviderType should be DEFAULT. CLDR/JRE/SPI
+Locale should be ko-KR. ja-JP/zh-CN/zh-TW
+OldPatch 011000009, it means 11.0.9. (3 digits for each number, cuurent version)
+NewPatch 011000010, it means 11.0.10. (3 digits for each number, tested version)
+
+$ bash src/gen-patch-data.sh TimeZoneTestB DEFAULT ko-KR 011000009 011000010 > 011000010.patch
+$ bash src/gen-patch-data.sh TimeZoneTestB CLDR ko-KR 011000009 011000010 >> 011000010.patch
+$ bash src/gen-patch-data.sh TimeZoneTestB JRE ko-KR 011000009 011000010 >> 011000010.patch
+
+Merge 011000010.patch to src/CLDR11-ko-KR.properties.
+And add "011000010" into "versions=" line.

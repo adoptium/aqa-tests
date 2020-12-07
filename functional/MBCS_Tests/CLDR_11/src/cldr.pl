@@ -22,6 +22,21 @@ while(<>) {
   }
 } 
 
+unless (defined($L{$patch})) {
+  $pdate = (split(/\./,$patch))[1];
+  foreach $i (reverse split(/,/,$L{'versions'})) {
+    $tpatch = $patch;
+    $tpatch =~ s/$pdate/$i/;
+    if ($tpatch le $patch) {
+      if (defined($L{$tpatch})) {
+        $patch = $tpatch;
+        print STDERR "Patch entry was changed to $patch\n";
+        last;
+      }
+    }
+  }
+}
+
 @a = split(/,/,$L{$patch});
 $k = $patch;
 $k =~ s/\..*$//;
