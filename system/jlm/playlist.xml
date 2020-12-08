@@ -37,6 +37,7 @@
 		</groups>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
 		<variations>
@@ -50,7 +51,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
@@ -67,6 +68,7 @@
 		</groups>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
 		<variations>
@@ -80,7 +82,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
@@ -97,6 +99,7 @@
 		</groups>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
 		<variations>
@@ -110,9 +113,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
 		<variations>
@@ -126,7 +130,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
@@ -163,6 +167,7 @@
 	</test>
 	<!--Exclude TestIBMJlmRemoteClassAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth</testCaseName>
 		<variations>
@@ -183,9 +188,10 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80</testCaseName>
 		<variations>
@@ -206,7 +212,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux,^os.win</platformRequirements>
+		<platformRequirements>^os.linux,^os.win,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80_Linux</testCaseName>
@@ -298,6 +304,7 @@
 	</test>
 	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth</testCaseName>
 		<variations>
@@ -318,9 +325,10 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80</testCaseName>
 		<variations>
@@ -341,7 +349,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux,^os.win</platformRequirements>
+		<platformRequirements>^os.linux,^os.win,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80_Linux</testCaseName>

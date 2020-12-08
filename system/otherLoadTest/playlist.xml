@@ -94,6 +94,7 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/571-->
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
@@ -107,6 +108,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>LangLoadTest</testCaseName>
@@ -137,6 +139,7 @@
 		</groups>
 	</test>
 	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
+	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
 	<test>
 		<testCaseName>NioLoadTest</testCaseName>
 		<variations>
@@ -150,7 +153,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^arch.arm</platformRequirements>
+		<platformRequirements>^arch.arm,^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>NioLoadTest_special</testCaseName>
@@ -275,6 +278,7 @@
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
+	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
 	<test>
 		<testCaseName>MixedLoadTest</testCaseName>
 		<variations>
@@ -291,5 +295,6 @@
 		<impls>
 			<impl>ibm</impl>
 		</impls>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 </playlist>
