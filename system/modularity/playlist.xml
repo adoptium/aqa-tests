@@ -264,6 +264,7 @@
 		</groups>
 		<disabled>https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/200</disabled>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>SLTest</testCaseName>
 		<variations>
@@ -280,6 +281,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
 	<test>
@@ -351,7 +353,9 @@
 			<group>system</group>
 		</groups>
 	</test>
+
 	<!-- Temporarily excluding this test from AIX due to : https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/202 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>PatModImg_PlatMod</testCaseName>
 		<variations>
@@ -368,8 +372,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.aix</platformRequirements>
+		<platformRequirements>^os.aix,^os.zos</platformRequirements>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>PatModImg_AppMod</testCaseName>
 		<variations>
@@ -386,7 +391,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>PatModImg_Unex</testCaseName>
 		<variations>
@@ -403,7 +410,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>PatModImg_Adv</testCaseName>
 		<variations>
@@ -420,6 +429,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgModPath_Exp</testCaseName>
@@ -438,6 +448,7 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>UpgModPath_ExpImg</testCaseName>
 		<variations>
@@ -454,6 +465,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>UpgModPath_Jar</testCaseName>
@@ -472,6 +484,7 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>UpgModPath_JarImg</testCaseName>
 		<variations>
@@ -488,8 +501,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>Jlink_ReqMod</testCaseName>
 		<variations>
@@ -506,9 +521,10 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>Jlink_AddMLimitM</testCaseName>
 		<variations>
@@ -525,8 +541,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win</platformRequirements>
+		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>CpMpJlink</testCaseName>
 		<variations>
@@ -543,6 +560,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<!-- Temporarily excluded from win due to : https://github.com/eclipse/openj9-systemtest/issues/68 -->
 	<test>
@@ -601,6 +619,7 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/568 -->
 	<test>
 		<testCaseName>CLTestImg</testCaseName>
 		<variations>
@@ -617,6 +636,7 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>CLLoad</testCaseName>
