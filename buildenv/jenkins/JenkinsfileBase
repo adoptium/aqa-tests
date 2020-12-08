@@ -172,7 +172,7 @@ def setupParallelEnv() {
 						NUM_LIST = properties.NUM_LIST.toInteger()
 					}
 				}
-				if (!params.NUM_MACHINES && params.TEST_TIME && NUM_LIST > getHalfSlaves()) {
+				if (!params.NUM_MACHINES && params.TEST_TIME && NUM_LIST > getMachineLimit()) {
 					assert false : "Build failed. TEST_TIME (${params.TEST_TIME} minutes) is not possible as there are not enough slave machines. Please provide a larger TEST_TIME."
 				} else if ( NUM_LIST > 0) {
 					childJobNum = NUM_LIST
@@ -273,10 +273,10 @@ def setupParallelEnv() {
 
 // Returns num
 // num = params.NUM_MACHINES. If it is not provided, the default value is 1
-// num cannot be greater than slave machines / 2
+// num cannot be greater than machines limit
 def getNumMachines(){
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
-	int limit = getHalfSlaves()
+	int limit = getMachineLimit()
 	if (num > limit) {
 		echo "Number of machines cannot be greater than ${limit}. Set num to ${limit}"
 		num = limit
@@ -284,12 +284,12 @@ def getNumMachines(){
 	return num
 }
 
-def getHalfSlaves(){
+def getMachineLimit(){
 	def slaves = nodesByLabel(LABEL).size()
 	if (slaves == 1) {
 		return slaves
 	}
-	return slaves / 2
+	return (int)(slaves * 3 / 4)
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
