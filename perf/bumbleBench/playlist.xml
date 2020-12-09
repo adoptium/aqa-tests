@@ -193,6 +193,9 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-DigestBench</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/bumblebench/issues/19</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DigestBench; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -201,7 +204,6 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/19</disabled>
 	</test>
 	<test>
 		<testCaseName>bumbleBench-EllipticCurveBench</testCaseName>
@@ -227,6 +229,9 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-HMACBench</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/bumblebench/issues/19</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar HMACBench; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -235,7 +240,6 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/19</disabled>
 	</test>
 	<test>
 		<testCaseName>bumbleBench-KeyExchangeBench</testCaseName>
@@ -272,6 +276,9 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-SSLSocketBench</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/bumblebench/issues/18</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SSLSocketBench; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -280,7 +287,6 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/bumblebench/issues/18</disabled>
 	</test>
 	<!-- GPU Benchmarks -->
 	<test>

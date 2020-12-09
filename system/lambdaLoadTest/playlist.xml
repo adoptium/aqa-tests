@@ -76,6 +76,9 @@
 	</test>
 	<test>
 		<testCaseName>JdiTest</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/63</comment>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -87,7 +90,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/63</disabled>
 	</test>
 	<!-- Temporarily excluding this test from linux ppc64le xl and linux x64 xl, ref: https://github.com/eclipse/openj9/issues/6475 -->
 	<test>

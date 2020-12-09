@@ -117,6 +117,9 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-tomcat</testCaseName>
+		<disabled>
+			<comment>https://bugs.openjdk.java.net/browse/JDK-8155588</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -125,7 +128,6 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://bugs.openjdk.java.net/browse/JDK-8155588</disabled>
 	</test>
 	<test>
 		<testCaseName>dacapo-xalan</testCaseName>

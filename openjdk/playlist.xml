@@ -659,6 +659,9 @@
 	</test>
 	<test>
 		<testCaseName>jdk_sound</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/73</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -674,10 +677,12 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/73</disabled>
 	</test>
 	<test>
 		<testCaseName>jdk_swing</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</comment>
+		</disabled>
 		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -694,7 +699,6 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</disabled>
 	</test>
 	<test>
 		<testCaseName>jdk_text</testCaseName>

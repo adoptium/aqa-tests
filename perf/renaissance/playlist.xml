@@ -15,7 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>renaissance-akka-uct</testCaseName>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1994#issuecomment-705633262</disabled>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1994#issuecomment-705633262</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)akka-uct.json$(Q) akka-uct; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -73,6 +75,9 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-finagle-chirper</testCaseName>
+		<disabled>
+			<comment>https://github.com/renaissance-benchmarks/renaissance/issues/231</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -81,7 +86,6 @@
 		<groups>
 			<group>perf</group>
 		</groups>
-		<disabled>https://github.com/renaissance-benchmarks/renaissance/issues/231</disabled>
 	</test>
 	<test>
 		<testCaseName>renaissance-finagle-http</testCaseName>
@@ -162,7 +166,9 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-naive-bayes</testCaseName>
-		<disabled>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1932#issuecomment-708781359</disabled>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1932#issuecomment-708781359</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
 		<levels>
