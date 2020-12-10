@@ -107,6 +107,9 @@
 	</test>
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_ConcurrentScavenge</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/75</comment>
+		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
@@ -123,10 +126,12 @@
 			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/75</disabled>
 	</test>
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_ConcurrentScavenge</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/78</comment>
+		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
@@ -143,10 +148,12 @@
 			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/78</disabled>
 	</test>
 	<test>
 		<testCaseName>MauveMultiThreadLoadTest_ConcurrentScavenge</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/64</comment>
+		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
@@ -163,7 +170,6 @@
 			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
-		<disabled>AdoptOpenJDK/openjdk-systemtest/issues/64</disabled>
 	</test>
 	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
@@ -218,6 +224,9 @@
 	</test>
 	<test>
 		<testCaseName>MauveSingleThreadLoadTest_special</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/3771</comment>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -265,7 +274,6 @@
 		<subsets>
 			<subset>8</subset>
 		</subsets>
-		<disabled>https://github.com/eclipse/openj9/issues/3771</disabled>
 	</test>
 	<test>
 		<testCaseName>MauveSingleInvocationLoadTest_special</testCaseName>
