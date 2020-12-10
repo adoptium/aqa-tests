@@ -18,6 +18,20 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MiniMix_5min</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>ClassLoadingTest</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
