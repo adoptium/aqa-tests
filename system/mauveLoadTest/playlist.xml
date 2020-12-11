@@ -19,11 +19,11 @@
 	</test>
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleThreadLoadTest_OpenJ9</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_J9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThreadLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -38,11 +38,11 @@
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThreadLoadTest_HotSpot</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_HS</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThreadLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -56,11 +56,11 @@
 	</test>
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleInvocationLoadTest_OpenJ9</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_J9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocationLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -75,11 +75,11 @@
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocationLoadTest_HotSpot</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_HS</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocationLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -92,11 +92,11 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest</testCaseName>
+		<testCaseName>MauveMultiThrdLoad</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThreadLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -106,14 +106,14 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThreadLoadTest_ConcurrentScavenge</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_CS</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/75</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThreadLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -128,14 +128,14 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocationLoadTest_ConcurrentScavenge</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_CS</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/78</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocationLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -150,14 +150,14 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest_ConcurrentScavenge</testCaseName>
+		<testCaseName>MauveMultiThrdLoad_CS</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/64</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThreadLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -173,7 +173,7 @@
 	</test>
 	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
-		<testCaseName>MauveMultiThreadLoadTest_special</testCaseName>
+		<testCaseName>MauveMultiThrdLoad_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -206,7 +206,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThreadTestTrc; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoadTrc; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -223,7 +223,7 @@
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThreadLoadTest_special</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_special</testCaseName>
 		<disabled>
 			<comment>https://github.com/eclipse/openj9/issues/3771</comment>
 		</disabled>
@@ -259,7 +259,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThreadTestTrc; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoadTrc; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -276,7 +276,7 @@
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocationLoadTest_special</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_special</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -309,7 +309,7 @@
 			<variation>Mode612-OSRG</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocationLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
