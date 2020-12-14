@@ -38,7 +38,7 @@ RUN apt-get update; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom"
 
 COPY ./dockerfile/tomee-test.sh /tomee-test.sh
 
