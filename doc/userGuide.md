@@ -303,7 +303,7 @@ _sanity.openjdk done
 Additional test output can be found in the following folders:
 
 ```
-openjdk-tests/test-results/openjdk/TKG/test_output_<timestamp>`
+openjdk-tests/test-results/openjdk/TKG/output_<timestamp>`
 openjdk-tests/test-results/openjdk/work
 openjdk-tests/test-results/openjdk/report
 ```

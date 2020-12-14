@@ -56,8 +56,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output_openjdk
-        path: ./**/test_output_*/
+        name: output_openjdk
+        path: ./**/output_*/
   testSystemWithOpenj9:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -94,5 +94,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output_system
-        path: ./**/test_output_*/
+        name: output_system
+        path: ./**/output_*/
