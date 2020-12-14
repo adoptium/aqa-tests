@@ -20,7 +20,8 @@
 	<test>
 		<testCaseName>MiniMix_5min</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q);\
 	$(TEST_STATUS)</command>
@@ -34,7 +35,8 @@
 	<test>
 		<testCaseName>ClassLoadingTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
 	$(TEST_STATUS)</command>
@@ -52,7 +54,6 @@
 			<variation>Mode103</variation>
 			<variation>Mode104</variation>
 			<variation>Mode107</variation>
-			<variation>Mode110</variation>
 			<variation>Mode112</variation>
 			<variation>Mode113</variation>
 			<variation>Mode121</variation>
@@ -69,7 +70,6 @@
 			<variation>Mode556</variation>
 			<variation>Mode557</variation>
 			<variation>Mode607</variation>
-			<variation>Mode610</variation>
 			<variation>Mode614</variation>
 			<variation>Mode615</variation>
 			<variation>Mode687</variation>
@@ -98,7 +98,8 @@
 	<test>
 		<testCaseName>ConcurrentLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ConcurrentLoadTest; \
 	$(TEST_STATUS)</command>
@@ -113,7 +114,8 @@
 	<test>
 		<testCaseName>DirectByteBufferLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DirectByteBufferLoadTest; \
 	$(TEST_STATUS)</command>
@@ -128,7 +130,8 @@
 	<test>
 		<testCaseName>LangLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LangLoadTest; \
 	$(TEST_STATUS)</command>
@@ -142,7 +145,8 @@
 	<test>
 		<testCaseName>LockingLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LockingLoadTest; \
 	$(TEST_STATUS)</command>
@@ -158,7 +162,8 @@
 	<test>
 		<testCaseName>NioLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest; \
 	$(TEST_STATUS)</command>
@@ -171,28 +176,10 @@
 		<platformRequirements>^arch.arm,^os.zos</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>NioLoadTest_special</testCaseName>
-		<variations>
-			<variation>Mode110</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>^arch.arm</platformRequirements>
-	</test>
-	<test>
 		<testCaseName>UtilLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UtilLoadTest; \
 	$(TEST_STATUS)</command>
@@ -206,7 +193,8 @@
 	<test>
 		<testCaseName>HCRLateAttachWorkload</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>
@@ -223,7 +211,8 @@
 	<test>
 		<testCaseName>HCRLateAttachWorkload_previewEnabled</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -debug-generation=$(Q)true$(Q) -java-debug-args=$(Q)--enable-preview$(Q) -java-args=$(Q)--enable-preview$(Q) -test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>
@@ -240,7 +229,8 @@
 	<test>
 		<testCaseName>HeapHogLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) -test=HeapHogLoadTest; \
 	$(TEST_STATUS)</command>
@@ -258,7 +248,8 @@
 	<test>
 		<testCaseName>ObjectTreeLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) -test=ObjectTreeLoadTest; \
 	$(TEST_STATUS)</command>
@@ -297,7 +288,8 @@
 	<test>
 		<testCaseName>MixedLoadTest</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
 	$(TEST_STATUS)</command>
