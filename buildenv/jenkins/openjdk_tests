@@ -268,6 +268,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     checkout scm: [$class: 'GitSCM',
                         branches: [[name: "${scm.branches[0].name}"]],
                         extensions: [
+                            [$class: 'CleanBeforeCheckout'],
                             [$class: 'CloneOption', reference: ref_cache],
                             [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
                         userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]

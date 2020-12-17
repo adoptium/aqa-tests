@@ -22,6 +22,16 @@ def makeTest(testParam) {
 }
 
 def setupEnv() {
+	env.JOBSTARTTIME = sh(script: 'date -R', returnStdout: true)
+
+	// Check what existing java processes are running
+        echo "PROCESSCATCH: Java processes which are currently on the machine:"
+	if (PLATFORM.contains("windows")) {
+		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
+	} else {
+		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
+	}
+
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
@@ -684,6 +694,9 @@ def testBuild() {
 				}
 			}
 		} finally {
+			// Terminate any left over java processes
+			terminateJavaProcesses()
+
 			if (!params.KEEP_WORKSPACE) {
 				// cleanWs() does not work in some cases, so set opts below
 				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
@@ -698,6 +711,52 @@ def testBuild() {
 			}	
 		}
 	}
+}
+
+def terminateJavaProcesses() {
+	// Attempt up to 30 times or until no more Java processes spawn...
+	for(int i=0; i<30; i++) {
+		echo 'terminateJavaProcesses iteration: '+(i+1)
+
+		// Terminate Java processes
+		if (PLATFORM.contains("windows")) {
+			// Windows code based on https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1669#issuecomment-727863096
+			echo "PROCESSCATCH: Showing java processes - one will be the jenkins agent - removing any of these created since ${env.JOBSTARTTIME}:"
+			sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
+
+			def C=sh(script:'powershell -c "(Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | measure).count" | tr -d \\\\r', returnStdout:true)
+			echo "Number of java processes = ${C}"
+			if (!C.trim().equals("0")) {
+			    echo "PROCESSCATCH: Attempting to stop the following processes:"
+			    sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
+			    def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
+			    echo "stop-process rc = ${sh_rc}"
+			} else {
+			    // No more spawned, we are done...
+			    break
+                        }
+		} else {
+			// Non-Windows code from https://ci.adoptopenjdk.net/job/SXA-processCheck
+			echo "PROCESSCATCH: Checking for any leftover java processes on the machine"
+			def sh_rc=sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
+			if (sh_rc == 0) {
+			    echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
+			    // TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
+			    // And this is likely to be replaced as part of https://github.com/AdoptOpenJDK/TKG/issues/45
+			}
+			break
+		}
+
+		// Pause between iterations in case of spawning processes
+		sleep(2)
+        }
+
+        echo "PROCESSCATCH: Removed processes - here is what is remaining:"
+        if (PLATFORM.contains("windows")) {
+		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
+        } else {
+		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus:true)
+        }
 }
 
 def getJDKImpl(jvm_version) {
