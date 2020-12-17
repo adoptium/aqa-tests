@@ -30,7 +30,7 @@ supported_packages="jdk jre"
 supported_builds="slim full"
 
 # Supported tests
-supported_tests="camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof"
+supported_tests="camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
 
 function check_version() {
     version=$1
@@ -478,6 +478,36 @@ function set_test_info() {
         centos_packages="git wget unzip zip gcc-c++"
         clefos_packages="${centos_packages}"
         ubi_packages="git wget unzip zip gcc-c++"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
+    netty)
+        github_url="https://github.com/netty/netty.git"
+        script="netty-test.sh"
+        home_path="\${WORKDIR}"
+        test_results="testResults"
+        tag_version="4.1"
+        debian_packages="git maven autoconf automake libtool make tar gcc-multilib libaio-dev"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="bash git maven"
+        centos_packages="git maven"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git maven"
+        ubi_minimal_packages="${ubi_packages}"
+        ;;
+    spring)
+        github_url="https://github.com/spring-projects/spring-boot.git"
+        script="spring-test.sh"
+        home_path="\${WORKDIR}"
+        test_results="testResults"
+        gradle_version="5.1"
+        debian_packages="git wget unzip"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="bash git wget unzip"
+        centos_packages="git wget unzip"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git wget unzip"
         ubi_minimal_packages="${ubi_packages}"
         ;;
     *)

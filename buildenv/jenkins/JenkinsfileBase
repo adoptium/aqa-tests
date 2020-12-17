@@ -114,6 +114,7 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		timestamps{
+			def maxChildJobNum = 25
 			def testSubDirs = []
 			int childJobNum = 1
 			def UPSTREAM_TEST_JOB_NAME = ""
@@ -198,8 +199,8 @@ def setupParallelEnv() {
 				}
 				
 				childJobNum = testSubDirs.size()
-				if ( childJobNum > 20) {
-					assert false : "Build failed becuase childJobNum: ${childJobNum} > 20."
+				if ( childJobNum > maxChildJobNum) {
+					assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
 				}
 			}
 			UPSTREAM_TEST_JOB_NAME = JOB_NAME
