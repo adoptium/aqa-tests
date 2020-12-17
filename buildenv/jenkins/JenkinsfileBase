@@ -22,7 +22,7 @@ def makeTest(testParam) {
 }
 
 def setupEnv() {
-	env.JOBSTARTTIME = sh(script: 'date -R', returnStdout: true)
+	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Check what existing java processes are running
         echo "PROCESSCATCH: Java processes which are currently on the machine:"
