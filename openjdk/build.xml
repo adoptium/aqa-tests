@@ -118,7 +118,7 @@
 						<exec executable="git" failonerror="true">
 							<arg line="clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						</exec>
-						<exec executable="git" failonerror="true" dir="openjdk-jdk">
+						<exec executable="git" failonerror="true" dir="openjdktemp">
 							<arg line="checkout ${env.OPENJDK_SHA}" />
 						</exec>
 					</then>
