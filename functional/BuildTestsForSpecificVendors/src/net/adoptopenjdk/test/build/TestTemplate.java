@@ -26,11 +26,15 @@ public class TestTemplate {
 
     @Test
     public void testTemplateExample() {
-        if(!rightEnvForTest()) return;
-        logger.info("Log message for the template test.");
+        if(!rightEnvForTest()) {
+        	logger.info("Wrong environment for test. Skipped!");
+            return;
+        }
+        logger.info("Test template test starting.");
         String whatWeGot = "aaa";
         String whatWeWant = "aaa";
         Assert.assertEquals(whatWeGot, whatWeWant, "Print this message if those two strings don't match.");
+        logger.info("Test completed successfully.");
     }
 
 }

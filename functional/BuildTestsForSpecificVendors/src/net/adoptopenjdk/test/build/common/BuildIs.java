@@ -147,7 +147,7 @@ public class BuildIs
         //First we turn it into a String that only has ints and dots.
         String formattedVersion = version;
         boolean hasBuildNumber = formattedVersion.contains("b") || formattedVersion.contains("+");
-        formattedVersion = formattedVersion.replaceAll("+", ".");
+        formattedVersion = formattedVersion.replaceAll("\\+", ".");
         formattedVersion = formattedVersion.replaceAll("-", ".");
         formattedVersion = formattedVersion.replaceAll("_", ".");
         formattedVersion = formattedVersion.replaceAll("b", ".");

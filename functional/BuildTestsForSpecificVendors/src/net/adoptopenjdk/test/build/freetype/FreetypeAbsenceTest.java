@@ -27,13 +27,17 @@ public class FreetypeAbsenceTest {
 
     @Test
     public void testTemplateExample() {
-        logger.info("Log message for the template test.");
-        if(!rightEnvForTest()) return;
+        if(!rightEnvForTest()) {
+        	logger.info("Wrong environment for test. Skipped!");
+        	return;
+        }
+        logger.info("Freetype Absence test starting.");
         if(BuildIs.thisMajorVersion(8)) {
             Assert.assertFalse((new File(System.getProperty("java.home") + "/jre/lib/amd64/libfreetype.so.6")).exists());
         } else {
             Assert.assertFalse((new File(System.getProperty("java.home") + "/lib/libfreetype.so")).exists());
         }
+        logger.info("Freetype Absence test completed successfully.");
     }
 
 }

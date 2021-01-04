@@ -32,7 +32,10 @@ public class CudaEnabledTest {
 
     @Test
     public void testIfCudaIsEnabled() {
-        if(!rightEnvForTest()) return;
+        if(!rightEnvForTest()) {
+        	logger.info("Wrong environment for test. Skipped!");
+        	return;
+        }
         logger.info("Starting test to see if CUDA functionality is enabled in this build.");
         
         //Stage 1: Find the location of the j9prt lib file.
@@ -79,6 +82,7 @@ public class CudaEnabledTest {
             Scanner prtFileReader = new Scanner(prtFile);
             while (prtFileReader.hasNextLine()) {
                 if(prtFileReader.nextLine().contains("cudart")) {
+                	logger.info("Test completed successfully.");
                     return; //Success!
                 }
             }
