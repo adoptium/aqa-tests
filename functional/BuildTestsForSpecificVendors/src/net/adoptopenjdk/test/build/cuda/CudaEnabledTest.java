@@ -39,29 +39,32 @@ public class CudaEnabledTest {
         logger.info("Starting test to see if CUDA functionality is enabled in this build.");
         
         //Stage 1: Find the location of the j9prt lib file.
-        String prtLibDirectory = "";
+        String prtLibDirectory = System.getProperty("java.home");
+        String jreSubdir = "";
+        if((new File(prtLibDirectory + "/jre")).exists()) {
+        	jreSubdir = "/jre"
+        }
         if("Linux".contains(System.getProperty("os.name").split(" ")[0])) {
             if(BuildIs.thisMajorVersion(8)) {
-                prtLibDirectory = "/jre/lib/amd64/compressedrefs";
+                prtLibDirectory += jreSubdir + "/lib/amd64/compressedrefs";
             } else {
-                prtLibDirectory = "/lib/compressedrefs";
+                prtLibDirectory += "/lib/compressedrefs";
             }
         }
         //windows
         if("Windows".contains(System.getProperty("os.name").split(" ")[0])) {
             if(BuildIs.thisMajorVersion(8)) {
                 //jdk8 32: 
-                prtLibDirectory = "/jre/bin/compressedrefs";
-                if(!(new File(System.getProperty("java.home") + prtLibDirectory)).exists()) {
+                prtLibDirectory += jreSubdir + "/bin/compressedrefs";
+                if(!(new File(prtLibDirectory)).exists()) {
                     //In case of a 32-bit build, or a non-cr build.
-                    prtLibDirectory = "/jre/bin/default";
+                    prtLibDirectory = System.getProperty("java.home") + jreSubdir + "/bin/default";
                 }
             } else {
-                prtLibDirectory = "/bin/compressedrefs";
+                prtLibDirectory += "/bin/compressedrefs";
             }
         }
 
-        prtLibDirectory = System.getProperty("java.home") + prtLibDirectory;
         File prtDirObject = new File(prtLibDirectory);
         Assert.assertTrue(prtDirObject.exists(), "Can't find the predicted location of the j9prt lib file. Expected location: " + prtLibDirectory);
         
