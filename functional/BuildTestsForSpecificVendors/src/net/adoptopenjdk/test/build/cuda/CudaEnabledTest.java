@@ -72,12 +72,13 @@ public class CudaEnabledTest {
         File prtFile = null;
         for(int x = 0 ; x < prtLibDirectoryFiles.length ; x++) {
         	if(prtLibDirectoryFiles[x].contains("j9prt")) {
-        	    prtFile = new File(prtLibDirectory + prtLibDirectoryFiles[x]);
+        	    prtFile = new File(prtLibDirectory + "/" + prtLibDirectoryFiles[x]);
         	    break;
         	}
         }
         Assert.assertNotNull(prtFile,"Can't find the j9prt lib file in " + prtLibDirectory);
-        Assert.assertTrue(prtFile.canRead());
+        Assert.assertTrue(prtFile.exists(), "Found the prt file, but it doesn't exist. Tautology bug.");
+        Assert.assertTrue(prtFile.canRead(), "Found the prt file, but it can't be read. Likely a permissions bug.");
         
         //Stage 2: Iterate through the j9prt lib file to find "cudart".
         //If we find it, then cuda functionality is enabled on this build.
