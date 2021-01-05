@@ -42,7 +42,7 @@ public class CudaEnabledTest {
         String prtLibDirectory = System.getProperty("java.home");
         String jreSubdir = "";
         if((new File(prtLibDirectory + "/jre")).exists()) {
-        	jreSubdir = "/jre"
+        	jreSubdir = "/jre";
         }
         if("Linux".contains(System.getProperty("os.name").split(" ")[0])) {
             if(BuildIs.thisMajorVersion(8)) {
