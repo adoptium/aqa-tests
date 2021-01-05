@@ -144,28 +144,33 @@ public class BuildIs
      */
     private static int[] turnStringVersionIntoIntArray(String version)
     {
-        //First we turn it into a String that only has ints and dots.
-        String formattedVersion = version;
-        boolean hasBuildNumber = formattedVersion.contains("b") || formattedVersion.contains("+");
-        formattedVersion = formattedVersion.replaceAll("\\+", ".");
-        formattedVersion = formattedVersion.replaceAll("-", ".");
-        formattedVersion = formattedVersion.replaceAll("_", ".");
-        formattedVersion = formattedVersion.replaceAll("b", ".");
-        formattedVersion = formattedVersion.replaceAll("\\.\\.", ".");
-        if (formattedVersion.startsWith("1.")) formattedVersion = formattedVersion.substring(2);
+    	try {
+            //First we turn it into a String that only has ints and dots.
+            String formattedVersion = version;
+            boolean hasBuildNumber = formattedVersion.contains("b") || formattedVersion.contains("+");
+	        formattedVersion = formattedVersion.replaceAll("\\+", ".");
+	        formattedVersion = formattedVersion.replaceAll("-", ".");
+	        formattedVersion = formattedVersion.replaceAll("_", ".");
+	        formattedVersion = formattedVersion.replaceAll("b", ".");
+	        formattedVersion = formattedVersion.replaceAll("\\.\\.", ".");
+	        if (formattedVersion.startsWith("1.")) formattedVersion = formattedVersion.substring(2);
         
-        //Then we turn it into an array, adding any missing zeros.
-        int[] versionArray = {0,0,0,0,0};
-        String[] formattedVersionArray = formattedVersion.split("\\.");
-        for (int x = 0; x < formattedVersionArray.length ; x++ ) {
-            if ((formattedVersionArray[x].length() > 5) || (x == (versionArray.length - 1))) break;
-            versionArray[x] = Integer.parseInt(formattedVersionArray[x]);
-        }
-        
-        if (hasBuildNumber) {
-            versionArray[versionArray.length - 1] = Integer.parseInt(formattedVersionArray[formattedVersionArray.length - 1]);
-        }
-        
-        return versionArray;
+	        //Then we turn it into an array, adding any missing zeros.
+	        int[] versionArray = {0,0,0,0,0};
+	        String[] formattedVersionArray = formattedVersion.split("\\.");
+	        for (int x = 0; x < formattedVersionArray.length ; x++ ) {
+	            if ((formattedVersionArray[x].length() > 5) || (x == (versionArray.length - 1))) break;
+	            versionArray[x] = Integer.parseInt(formattedVersionArray[x]);
+	        }
+	        
+	        if (hasBuildNumber) {
+	            versionArray[versionArray.length - 1] = Integer.parseInt(formattedVersionArray[formattedVersionArray.length - 1]);
+	        }
+	        
+	        return versionArray;
+    	} catch(Exception e) {
+    	    throw new Exception("The BuildIs class has tried and failed to parse the java version string \"" + version + "\".", e);
+    	}
+    	}
     }
 }
