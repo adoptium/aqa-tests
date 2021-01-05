@@ -169,7 +169,7 @@ public class BuildIs
 	        
 	        return versionArray;
     	} catch(Exception e) {
-    	    throw new Exception("The BuildIs class has tried and failed to parse the java version string \"" + version + "\".", e);
+    	    throw new Error("The BuildIs class has tried and failed to parse the java version string \"" + version + "\".", e);
     	}
     }
 }
