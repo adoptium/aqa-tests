@@ -171,6 +171,5 @@ public class BuildIs
     	} catch(Exception e) {
     	    throw new Exception("The BuildIs class has tried and failed to parse the java version string \"" + version + "\".", e);
     	}
-    	}
     }
 }
