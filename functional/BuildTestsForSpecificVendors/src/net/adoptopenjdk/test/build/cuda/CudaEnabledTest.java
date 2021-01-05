@@ -63,7 +63,7 @@ public class CudaEnabledTest {
 
         prtLibDirectory = System.getProperty("java.home") + prtLibDirectory;
         File prtDirObject = new File(prtLibDirectory);
-        Assert.assertTrue(prtDirObject.exists(), "Can't find the predicted location of the j9prt lib file.");
+        Assert.assertTrue(prtDirObject.exists(), "Can't find the predicted location of the j9prt lib file. Expected location: " + prtLibDirectory);
         
         String[] prtLibDirectoryFiles = prtDirObject.list();
         File prtFile = null;
