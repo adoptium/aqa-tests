@@ -169,7 +169,10 @@ public class BuildIs
 	        //any too-long numbers that are likely the build system putting the date into
 	        //the version string of nightlies.
 	        int[] returnVersionArray = {0,0,0,0,0};
-	        ArrayList<String> formattedVersionArray = new ArrayList(formattedVersion.split("\\."));
+	        ArrayList<String> formattedVersionArray = new ArrayList<String>();
+	        for (int x : formattedVersion.split("\\.")) {
+                formattedVersionArray.add(x);
+            }
 	        for (int x = 0; x < formattedVersionArray.size() ; ) {
 	        	if (formattedVersionArray.get(x).length() > 5) {
 	        	    formattedVersionArray.remove(x);
