@@ -84,6 +84,9 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-lusearch-fix</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1888#issuecomment-755015959</comment>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) lusearch-fix; \
 		$(TEST_STATUS)</command>
 		<levels>
