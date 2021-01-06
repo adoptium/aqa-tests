@@ -172,7 +172,7 @@ public class BuildIs
 	        ArrayList<String> formattedVersionArray = new ArrayList(formattedVersion.split("\\."));
 	        for (int x = 0; x < formattedVersionArray.size() ; ) {
 	        	if (formattedVersionArray.get(x).length() > 5) {
-	        	    formattedVersionArray.remove(x)
+	        	    formattedVersionArray.remove(x);
 	        	} else {
 	        	    x++;
 	        	}
