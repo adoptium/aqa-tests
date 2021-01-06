@@ -170,7 +170,7 @@ public class BuildIs
 	        //the version string of nightlies.
 	        int[] returnVersionArray = {0,0,0,0,0};
 	        ArrayList<String> formattedVersionArray = new ArrayList<String>();
-	        for (int x : formattedVersion.split("\\.")) {
+	        for (String x : formattedVersion.split("\\.")) {
                 formattedVersionArray.add(x);
             }
 	        for (int x = 0; x < formattedVersionArray.size() ; ) {
