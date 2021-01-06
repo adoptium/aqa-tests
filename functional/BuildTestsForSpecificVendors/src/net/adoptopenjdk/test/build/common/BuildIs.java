@@ -1,5 +1,6 @@
 package net.adoptopenjdk.test.build.common;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class BuildIs
@@ -153,21 +154,40 @@ public class BuildIs
 	        formattedVersion = formattedVersion.replaceAll("_", ".");
 	        formattedVersion = formattedVersion.replaceAll("b", ".");
 	        formattedVersion = formattedVersion.replaceAll("\\.\\.", ".");
-	        if (formattedVersion.startsWith("1.")) formattedVersion = formattedVersion.substring(2);
+	        
+	        //And we also need to accommodate 8's occasional lack of a minor version number between 
+	        //the major version and the maintenance version numbers.
+	        if (formattedVersion.startsWith("1.8.")) {
+	            formattedVersion = formattedVersion.substring(2);
+	        }
+	        if (formattedVersion.startsWith("8.") && !formattedVersion.startsWith("8.0.")) {
+	            formattedVersion = formattedVersion.substring(2);
+	            formattedVersion = "8.0." + formattedVersion;
+	        }
         
-	        //Then we turn it into an array, adding any missing zeros.
-	        int[] versionArray = {0,0,0,0,0};
-	        String[] formattedVersionArray = formattedVersion.split("\\.");
-	        for (int x = 0; x < formattedVersionArray.length ; x++ ) {
-	            if ((formattedVersionArray[x].length() > 5) || (x == (versionArray.length - 1))) break;
-	            versionArray[x] = Integer.parseInt(formattedVersionArray[x]);
+	        //Then we turn it into an array, adding any missing zeros and stripping out
+	        //any too-long numbers that are likely the build system putting the date into
+	        //the version string of nightlies.
+	        int[] returnVersionArray = {0,0,0,0,0};
+	        ArrayList<String> formattedVersionArray = new ArrayList(formattedVersion.split("\\."));
+	        for (int x = 0; x < formattedVersionArray.size() ; ) {
+	        	if (formattedVersionArray.get(x).length() > 5) {
+	        	    formattedVersionArray.remove(x)
+	        	} else {
+	        	    x++;
+	        	}
+	        }
+	        for (int x = 0; x < formattedVersionArray.size() ; x++ ) {
+	            if (hasBuildNumber && (x > (returnVersionArray.length - 3))) break;
+	            if (!hasBuildNumber && (x > (returnVersionArray.length - 2))) break;
+	            returnVersionArray[x] = Integer.parseInt(formattedVersionArray.get(x));
 	        }
 	        
 	        if (hasBuildNumber) {
-	            versionArray[versionArray.length - 1] = Integer.parseInt(formattedVersionArray[formattedVersionArray.length - 1]);
+	            returnVersionArray[returnVersionArray.length - 1] = Integer.parseInt(formattedVersionArray.get(formattedVersionArray.size() - 1));
 	        }
 	        
-	        return versionArray;
+	        return returnVersionArray;
     	} catch(Exception e) {
     	    throw new Error("The BuildIs class has tried and failed to parse the java version string \"" + version + "\".", e);
     	}
