@@ -49,6 +49,7 @@
 	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="master">
 		<isset property="env.JCK_GIT_BRANCH"/>
 	</condition>
+
 	<target name="stage_jck_material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
@@ -162,12 +163,7 @@
 					</else>
 				</if>
 			</then>
-		</if>
-		<!--Make all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system.
-			This is especially needed to execute the shell scripts under devtools for JCK 8.
-		-->
-		<echo message="Makeking all .sh files below ${JCK_ROOT_USED} readable and executable for anyone on a UNIX system..."/>
-		<chmod dir="${JCK_ROOT_USED}" perm="ugo+rx" includes="**/*.sh"/>
+		</if> 
 	</target>
 
 	<target name="init">
