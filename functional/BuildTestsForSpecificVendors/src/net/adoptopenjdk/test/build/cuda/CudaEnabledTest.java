@@ -84,8 +84,12 @@ public class CudaEnabledTest {
         //If we find it, then cuda functionality is enabled on this build.
         try {
             Scanner prtFileReader = new Scanner(prtFile);
+            String lineyLine = "";
+            int x = 0;
             while (prtFileReader.hasNextLine()) {
-                if(prtFileReader.nextLine().contains("cudart")) {
+                lineyLine = prtFileReader.nextLine();
+                System.out.println("Line " + x + ": " + lineyLine);
+                if(lineyLine.contains("cudart")) {
                 	logger.info("Test completed successfully.");
                     return; //Success!
                 }
