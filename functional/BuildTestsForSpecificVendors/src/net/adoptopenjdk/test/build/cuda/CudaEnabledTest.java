@@ -87,10 +87,7 @@ public class CudaEnabledTest {
         try {
             BufferedReader prtFileReader = new BufferedReader(new FileReader(prtFile));
             String oneLine = "";
-            int x = 0;
-            logger.info("Starting j9prt file read: " + prtFile);
             while ((oneLine = prtFileReader.readLine()) != null) {
-                logger.info("Line " + x + ": " + oneLine);
                 if(oneLine.contains("cudart")) {
                 	logger.info("Test completed successfully.");
                     return; //Success!
