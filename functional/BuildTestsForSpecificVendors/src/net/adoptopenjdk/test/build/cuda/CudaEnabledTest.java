@@ -1,7 +1,9 @@
 package net.adoptopenjdk.test.build.cuda;
 
+import java.io.BufferedReader
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Scanner;
 import net.adoptopenjdk.test.build.common.BuildIs;
 import org.testng.Assert;
@@ -69,28 +71,27 @@ public class CudaEnabledTest {
         Assert.assertTrue(prtDirObject.exists(), "Can't find the predicted location of the j9prt lib file. Expected location: " + prtLibDirectory);
         
         String[] prtLibDirectoryFiles = prtDirObject.list();
-        File prtFile = null;
+        String prtFile = null;
         for(int x = 0 ; x < prtLibDirectoryFiles.length ; x++) {
         	if(prtLibDirectoryFiles[x].contains("j9prt")) {
-        	    prtFile = new File(prtLibDirectory + "/" + prtLibDirectoryFiles[x]);
+        	    prtFile = prtLibDirectory + "/" + prtLibDirectoryFiles[x];
         	    break;
         	}
         }
         Assert.assertNotNull(prtFile,"Can't find the j9prt lib file in " + prtLibDirectory);
-        Assert.assertTrue(prtFile.exists(), "Found the prt file, but it doesn't exist. Tautology bug.");
-        Assert.assertTrue(prtFile.canRead(), "Found the prt file, but it can't be read. Likely a permissions bug.");
+        Assert.assertTrue((new File (prtFile)).exists(), "Found the prt file, but it doesn't exist. Tautology bug.");
+        Assert.assertTrue((new File (prtFile)).canRead(), "Found the prt file, but it can't be read. Likely a permissions bug.");
         
         //Stage 2: Iterate through the j9prt lib file to find "cudart".
         //If we find it, then cuda functionality is enabled on this build.
         try {
-            Scanner prtFileReader = new Scanner(prtFile);
-            String lineyLine = "";
+            BufferedReader prtFileReader = new BufferedReader(new FileReader(prtFile));
+            String oneLine = "";
             int x = 0;
-            logger.info("Starting j9prt file read: " + prtFile.toString());
-            while (prtFileReader.hasNextLine()) {
-                lineyLine = prtFileReader.nextLine();
-                logger.info("Line " + x + ": " + lineyLine);
-                if(lineyLine.contains("cudart")) {
+            logger.info("Starting j9prt file read: " + prtFile);
+            while ((oneLine = prtFileReader.readLine()) != null) {
+                logger.info("Line " + x + ": " + oneLine);
+                if(oneLine.contains("cudart")) {
                 	logger.info("Test completed successfully.");
                     return; //Success!
                 }
@@ -98,6 +99,8 @@ public class CudaEnabledTest {
             prtFileReader.close();
         } catch (FileNotFoundException e) {
             Assert.fail("A file that exists could not be found. This should never happen.");
+        } catch (Exception e) {
+            throw new Error(e);
         }
         Assert.fail("Cuda should be enabled on this build, but we found no evidence that this was the case.");
     }
