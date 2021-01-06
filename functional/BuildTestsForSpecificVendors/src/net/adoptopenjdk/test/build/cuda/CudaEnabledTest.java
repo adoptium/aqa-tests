@@ -86,6 +86,7 @@ public class CudaEnabledTest {
             Scanner prtFileReader = new Scanner(prtFile);
             String lineyLine = "";
             int x = 0;
+            System.out.println("Starting j9prt file read: " + prtFile.toString());
             while (prtFileReader.hasNextLine()) {
                 lineyLine = prtFileReader.nextLine();
                 System.out.println("Line " + x + ": " + lineyLine);
