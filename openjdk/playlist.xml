@@ -17,7 +17,8 @@
 	<test>
 		<testCaseName>jdk_custom</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -36,7 +37,8 @@
 	<test>
 		<testCaseName>openj9_custom</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -59,6 +61,10 @@
 	</test>
 	<test>
 		<testCaseName>hotspot_all</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -82,6 +88,10 @@
 	</test>
 	<test>
 		<testCaseName>jvm_native_sanity</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -107,6 +117,10 @@
 	</test>
 	<test>
 		<testCaseName>jvm_compiler</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -132,6 +146,10 @@
 	</test>
 	<test>
 		<testCaseName>runtime_nestmate</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -157,6 +175,10 @@
 	</test>
 	<test>
 		<testCaseName>hotspot_jre</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -181,6 +203,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_awt</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -204,6 +230,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_beans</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -226,6 +256,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_io</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -244,6 +278,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_lang</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -265,6 +303,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_lang_native</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -290,6 +332,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_lang_native_win</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -317,7 +363,8 @@
 	<test>
 		<testCaseName>jdk_lang_j9</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode150</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -343,7 +390,8 @@
 	<test>
 		<testCaseName>jdk_lang_native_j9</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode150</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -372,7 +420,8 @@
 	<test>
 		<testCaseName>jdk_lang_native_j9_win</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode150</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -XX:-JITServerTechPreviewMessage Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -404,6 +453,8 @@
 		<testCaseName>jdk_lang_ref_FinalizeOverride_j9</testCaseName>
 		<variations>
 			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -430,6 +481,8 @@
 		<testCaseName>jdk_util_zip_ZipFile_TestCleaner_j9</testCaseName>
 		<variations>
 			<variation>-Xjit:enableAggressiveLiveness -XX:-JITServerTechPreviewMessage</variation>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -454,6 +507,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_math</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -476,7 +533,8 @@
 	<test>
 		<testCaseName>jdk_math_j9</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache Mode150</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -501,6 +559,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_math_jre</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -525,6 +587,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_other</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -543,6 +609,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_net</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -561,6 +631,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_nio</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -579,6 +653,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security1</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -597,6 +675,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security2</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>		
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -615,6 +697,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security3</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -637,6 +723,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security4</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -662,6 +752,10 @@
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/73</comment>
 		</disabled>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -683,6 +777,10 @@
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</comment>
 		</disabled>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>export DISPLAY=:1; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -702,6 +800,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_text</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -720,6 +822,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_util</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -742,7 +848,8 @@
 	<test>
 		<testCaseName>jdk_util_j9</testCaseName>
 		<variations>
-			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache Mode150</variation>
+			<variation>-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache Mode650</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
@@ -767,6 +874,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_time</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -789,6 +900,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_management</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -811,6 +926,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_jmx</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -833,6 +952,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_rmi</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -851,6 +974,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_tools</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -874,6 +1001,10 @@
 	<!-- exclude jdk_jdi on openj9: https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071 -->
 	<test>
 		<testCaseName>jdk_jdi</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -898,6 +1029,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_jfr</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -919,6 +1054,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m --add-modules jdk.incubator.foreign $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -940,6 +1079,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign_native</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m --add-modules jdk.incubator.foreign $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -962,6 +1105,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_instrument</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -990,6 +1137,10 @@
 	<!-- From jdk11 jdk_jdi is part of jdk_svc_sanity -->
 	<test>
 		<testCaseName>jdk_svc_sanity</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1015,6 +1166,10 @@
 	<!-- exclude jdk_jdi on openj9: https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071 -->
 	<test>
 		<testCaseName>jdk_jdi</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1039,6 +1194,10 @@
 	</test>
 	<test>
 		<testCaseName>build</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS)  -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1064,6 +1223,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_imageio</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1086,6 +1249,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_client_sanity</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1111,6 +1278,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security_infra</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1136,6 +1307,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_native_sanity</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1157,6 +1332,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_2d</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1183,6 +1362,10 @@
 	</test>
 	<test>
 		<testCaseName>jfc_demo</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1208,6 +1391,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk11_tier1_cipher</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1229,6 +1416,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk11_tier1_buffer</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1250,6 +1441,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk11_tier1_iso8859</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -1271,6 +1466,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk11_tier1_pack200</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
