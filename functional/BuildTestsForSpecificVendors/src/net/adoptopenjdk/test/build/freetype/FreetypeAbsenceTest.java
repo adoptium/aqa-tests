@@ -26,7 +26,7 @@ public class FreetypeAbsenceTest {
     }
 
     @Test
-    public void testTemplateExample() {
+    public void testifFreetypeIsExcluded() {
         if(!rightEnvForTest()) {
         	logger.info("Wrong environment for test. Skipped!");
         	return;
