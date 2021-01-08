@@ -25,7 +25,8 @@
 	<test>
 		<testCaseName>SharedClassesAPI</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>if [[ ! $(Q)$(PLATFORM)$(Q) == *$(Q)win$(Q)* ]] ; then export original_umask_val=`umask` $(AND_IF_SUCCESS) umask 0002 $(AND_IF_SUCCESS) echo umask set to `umask`; fi; \
 	$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesAPI; \
@@ -45,7 +46,8 @@
 	<test>
 		<testCaseName>SharedClassesWorkload</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkload; \
 	$(TEST_STATUS)</command>
@@ -63,7 +65,8 @@
 	<test>
 		<testCaseName>SC_Softmx_Increase</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkloadTest_Softmx_Increase; \
 	$(TEST_STATUS)</command>
@@ -81,7 +84,8 @@
 	<test>
 		<testCaseName>SC_Softmx_UpDown</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkloadTest_Softmx_IncreaseDecrease; \
 	$(TEST_STATUS)</command>
@@ -100,7 +104,8 @@
 	<test>
 		<testCaseName>SC_Softmx_JitAot</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
@@ -119,7 +124,8 @@
 	<test>
 		<testCaseName>SC_Softmx_JitAot_Linux</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
@@ -138,7 +144,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM01.SingleCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=SingleCL$(Q); \
 	$(TEST_STATUS)</command>
@@ -156,7 +163,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM01.MultiCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiCL$(Q); \
 	$(TEST_STATUS)</command>
@@ -174,7 +182,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM01.MultiThread</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
@@ -192,7 +201,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM01.MultiThreadMultiCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThreadMultiCL$(Q); \
 	$(TEST_STATUS)</command>
@@ -210,7 +220,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM23.SingleCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=SingleCL$(Q); \
 	$(TEST_STATUS)</command>
@@ -228,7 +239,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM23.MultiCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiCL$(Q); \
 	$(TEST_STATUS)</command>
@@ -246,7 +258,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM23.MultiThread</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
@@ -264,7 +277,8 @@
 	<test>
 		<testCaseName>SharedClasses.SCM23.MultiThreadMultiCL</testCaseName>
 		<variations>
-			<variation>NoOptions</variation>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL$(Q); \
 	$(TEST_STATUS)</command>
