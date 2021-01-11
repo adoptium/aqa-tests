@@ -23,6 +23,23 @@
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED$(Q);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<subsets>
+			<subset>11+</subset>
+		</subsets>
+	</test>
+	<test>
+		<testCaseName>MiniMix_5min_jdk8</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q);\
 	$(TEST_STATUS)</command>
 		<levels>
@@ -31,6 +48,9 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<subsets>
+			<subset>8</subset>
+		</subsets>
 	</test>
 	<test>
 		<testCaseName>ClassLoadingTest</testCaseName>
