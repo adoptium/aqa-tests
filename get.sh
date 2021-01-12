@@ -143,7 +143,7 @@ parseCommandLineArgs()
 
 			"--test_images_required" )
 				TEST_IMAGES_REQUIRED="$1"; shift;;
-			
+
 			"--debug_images_required" )
 				DEBUG_IMAGES_REQUIRED="$1"; shift;;
 
@@ -171,16 +171,16 @@ getBinaryOpenjdk()
 
 	if [ "$SDK_RESOURCE" != "upstream" ]; then
 		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
-        	echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
-        	echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
-        	exit 1
-        fi
-    fi
+			echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+			echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
+			exit 1
+		fi
+	fi
 
 	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
-                # if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
-                # if supplied when run manually with --username and --password these will be seen in plaintext within job output
+		# if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
+		# if supplied when run manually with --username and --password these will be seen in plaintext within job output
 		if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
 			curl_options="--user $USERNAME:$PASSWORD"
 		fi
@@ -273,13 +273,13 @@ getBinaryOpenjdk()
 				echo "curl error code: $download_exit_code"
 				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
 				ls -ld $file
-				
+
 				if [[ "$OSTYPE" == "darwin"* ]]; then
 				    md5 $file
 				 else
 				    md5sum $file
 				fi
-						
+
 				exit 1
 			fi
 			set -e
@@ -469,11 +469,11 @@ getFunctionalTestMaterial()
 
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
-    if [ -d functional ]; then
-        mv openj9/test/functional/* functional/
-    else
-	    mv openj9/test/functional functional
-    fi
+	if [ -d functional ]; then
+		mv openj9/test/functional/* functional/
+	else
+		mv openj9/test/functional functional
+	fi
 	checkOpenJ9RepoSHA
 
 	rm -rf openj9
@@ -520,6 +520,8 @@ getFunctionalTestMaterial()
 
 			if [ "$sha" != "" ]; then
 				cd $dest
+				echo "git fetch -q --unshallow"
+				git fetch -q --unshallow
 				echo "update to $sha"
 				git checkout $sha
 				cd $TESTDIR
@@ -555,7 +557,7 @@ if [ -x ${_java} ]; then
 	echo "=JAVA VERSION OUTPUT BEGIN="
 	${_java} -version
 	echo "=JAVA VERSION OUTPUT END="
-	if [ -e ${_release} ]; then 
+	if [ -e ${_release} ]; then
 		echo "=RELEASE INFO BEGIN="
 		cat ${_release}
 		echo "=RELEASE INFO END="
