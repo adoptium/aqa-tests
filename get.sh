@@ -168,6 +168,7 @@ getBinaryOpenjdk()
 	cd $SDKDIR
 	mkdir -p openjdkbinary
 	cd openjdkbinary
+	uses_api_to_get_binary="false"
 
 	if [ "$SDK_RESOURCE" != "upstream" ]; then
 		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
@@ -220,6 +221,7 @@ getBinaryOpenjdk()
 		if [ "$SDK_RESOURCE" == "releases" ]; then
 			release_type="ga"
 		fi
+		uses_api_to_get_binary="true"
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
 
 		if [[ "$JDK_VERSION" -ge "11" ]]; then
@@ -267,6 +269,12 @@ getBinaryOpenjdk()
 				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${curl_verbosity} ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
+
+				# Checking for error messages returned from the API.
+				if [ -f "adoptopenjdk" ] && [ $uses_api_to_get_binary == "true" ]; then
+				    download_exit_code=-99
+				    break
+				fi
 			done
 
 			if [ $download_exit_code != 0 ]; then
@@ -278,6 +286,11 @@ getBinaryOpenjdk()
 				    md5 $file
 				 else
 				    md5sum $file
+				fi
+
+				if [ -f "adoptopenjdk" ] && [ $uses_api_to_get_binary == "true" ]; then
+				    echo "Since we used the API to fetch a file, and we now have an adoptopenjdk file, this may contain an error message. Printing..."
+				    cat "adoptopenjdk"
 				fi
 
 				exit 1
