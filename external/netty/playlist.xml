@@ -13,6 +13,19 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+        <test>
+                <testCaseName>MachineInfo</testCaseName>
+                <command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+                $(TEST_STATUS)</command>
+                <levels>
+                        <level>sanity</level>
+                        <level>extended</level>
+                        <level>special</level>
+                </levels>
+                <groups>
+                        <group>external</group>
+                </groups>
+        </test>
 	<test>
 		<testCaseName>netty-test</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir netty --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
