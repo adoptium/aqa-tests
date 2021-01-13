@@ -51,6 +51,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2159#issuecomment-759570887</comment>
+			<plat>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</plat>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
