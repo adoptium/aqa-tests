@@ -84,7 +84,7 @@
 
 	<target name="build_image" description="build test dockerfile">
 		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />						
-		<exec executable="bash">
+		<exec executable="bash" failonerror="true">
 			<arg value="${DEST_EXTERNAL}/external.sh"/>
 			<arg value="--build"/>
 			<arg value="--dir"/>
