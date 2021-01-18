@@ -17,10 +17,20 @@
 			<group>system</group>
 		</groups>
 	</test>
-	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
-		Reason: https://github.com/eclipse/openj9/issues/2209)-->
 	<test>
-		<testCaseName>LambdaLoadTest_Hotspot</testCaseName>
+		<testCaseName>LambdaLoadTest</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/2209</comment>
+			<variation>Mode650</variation>
+			<plat>.*linux_[xl|mixed]</plat>
+			<impl>openj9</impl>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/2209</comment>
+			<variation>Mode650</variation>
+			<plat>.*linux_[xl|mixed]</plat>
+			<impl>ibm</impl>
+		</disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -34,49 +44,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
-	</test>
-	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux</testCaseName>
-		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
-	</test>
-	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs</testCaseName>
-		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>JdiTest</testCaseName>
@@ -118,7 +85,11 @@
 		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_NonLinux_special</testCaseName>
+		<testCaseName>LambdaLoadTest_special</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/2209</comment>
+			<plat>.*linux_[xl|mixed]</plat>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -164,55 +135,5 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
-	</test>
-	<test>
-		<testCaseName>LambdaLoadTest_OpenJ9_Linux_CompressedRefs_special</testCaseName>
-		<variations>
-			<variation>Mode101</variation>
-			<variation>Mode103</variation>
-			<variation>Mode104</variation>
-			<variation>Mode107</variation>
-			<variation>Mode112</variation>
-			<variation>Mode113</variation>
-			<variation>Mode121</variation>
-			<variation>Mode122</variation>
-			<variation>Mode145</variation>
-			<variation>Mode187</variation>
-			<variation>Mode301</variation>
-			<variation>Mode351</variation>
-			<variation>Mode501</variation>
-			<variation>Mode551</variation>
-			<variation>Mode553</variation>
-			<variation>Mode554</variation>
-			<variation>Mode555</variation>
-			<variation>Mode556</variation>
-			<variation>Mode557</variation>
-			<variation>Mode607</variation>
-			<variation>Mode614</variation>
-			<variation>Mode615</variation>
-			<variation>Mode687</variation>
-			<variation>Mode688</variation>
-			<variation>Mode107-OSRG</variation>
-			<variation>Mode110-OSRG</variation>
-			<variation>Mode610-OSRG</variation>
-			<variation>Mode612-OSRG</variation>
-			<variation>Mode645</variation>
-			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
-			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LambdaLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
 	</test>
 </playlist>
