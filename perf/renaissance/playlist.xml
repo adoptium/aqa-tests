@@ -115,6 +115,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-future-genetic</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2183#issuecomment-763180051</comment>
+			<plat>.*windows.*</plat>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)future-genetic.json$(Q) future-genetic; \
 		$(TEST_STATUS)</command>
 		<levels>
