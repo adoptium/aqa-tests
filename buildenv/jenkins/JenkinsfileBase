@@ -575,7 +575,7 @@ def runTest( ) {
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (env.SPEC.startsWith('linux')) {
+				else if (env.SPEC.startsWith('linux') && !LABEL.contains('ci.agent.dynamic')) {
 					// Add an additional 10 second timeout due to issue: https://github.com/AdoptOpenJDK/openjdk-build/issues/2368#issuecomment-756683888
 					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
 						def DISPLAY = sh (
