@@ -48,9 +48,13 @@ if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
 if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
 if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
 if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
+<<<<<<< Upstream, based on upstream/master
 if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
 
 
+=======
+if (!binding.hasVariable('CLOUD_PROVIDER')) CLOUD_PROVIDER = ""
+>>>>>>> abbe96e Enable dynamic for parallel
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -246,6 +250,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
 							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
+							stringParam('CLOUD_PROVIDER', CLOUD_PROVIDER, "available cloud provider")
 						}
 						cpsScm {
 							scm {

@@ -875,9 +875,8 @@ def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-
 			node {
-				def buildResult = ""
+				def buildResult = ""	
 				childJobs.each {
 					cjob ->
 					def jobInvocation = cjob.value.getRawBuild()

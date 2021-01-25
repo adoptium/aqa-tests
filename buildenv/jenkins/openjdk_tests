@@ -115,7 +115,7 @@ def PLATFORM_MAP = [
     ],
     'x86-64_linux' : [
         'SPEC' : 'linux_x86-64_cmprssptrs',
-        'LABEL' : 'dynamic',
+        'LABEL' : 'test-ibmcloud-ubuntu1604-x64-1',
     ],
     'x86-64_linux_mixed' : [
         'SPEC' : 'linux_x86-64_mxdptrs',
@@ -223,78 +223,82 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "LABEL: ${LABEL}"
 
         stage('Queue') {
-            if (nodesByLabel(LABEL).size() < 1) {
+            String[] onlineNodes = nodesByLabel(LABEL)
+            if (onlineNodes.size() < 1) {
                 int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
-                
                 timeout(ACTIVE_NODE_TIMEOUT) {
-                    // node(LABEL) has to be used for spinning up a dynamic vm agent
+                    // If there is available node before timeout
                     node(LABEL) {
-                        echo "find the node ${env.NODE_NAME}"
-
+                        echo "find the node with label as ${env.NODE_NAME}"
                     }
                 }
-            }
-/*                
-                {
-                if (LABEL.contains('dynamic')) {
-                    // By default all dynamic agent are offline. If there is more than one cloud provider which one will be chosen first and create the agent? 
-                    // The question here is if it's handled by jenkin or we need to handle it?
-                    LABEL = 'ci.agent.dynamic'
-                }
-                else {
-                    // If no active node matches the label, we see if there's a timeout value set.
-                    // If there is, we wait and check again periodically. If not, we fail immediately.
-
-
-
-
-                    if (didnt_find_node) {
-                        assert false : "Cannot find any machine that matches the LABEL: " + LABEL
+            } else {
+                boolean isNodeIdle = false
+                node('master') {
+                    for (String onlineNode : onlineNodes) {
+                        def nodeStatus = sh(script: "curl ${${env.JENKINS_URL}}computer/${onlineNode}/api/xml?xpath=/*/idle",
+                                            returnStdout: true,
+                                            returnStatus: false
+                                            ).trim()
+                        println ("status is ${nodeStatus}")
+                        if (nodeStatus.contains("true")) {
+                            isNodeIdle = true
+                            break
+                        }
                     }
                 }
-            }
-*/
-            node(LABEL) {
-                if (params.PLATFORM.contains('zos')) {
-                    /* Ensure correct CC env */
-                    env._CC_CCMODE = '1'
-                    env._CXX_CCMODE = '1'
-                    env._C89_CCMODE = '1'
-
-                    def gitConfig = scm.getUserRemoteConfigs()[0]
-                    def SCM_GIT_REPO = gitConfig.getUrl()
-                    def SCM_GIT_BRANCH = scm.branches[0].name
-                    cleanWs()
-
-                    // SCM_GIT_REPO value only gets expanded in sh
-                    def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
-                    SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
-
-                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
-                } else {
-                    def gitConfig = scm.getUserRemoteConfigs().get(0)
-
-                    // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
-                    ref_cache = "${env.HOME}/openjdk_cache"
-
-                    checkout scm: [$class: 'GitSCM',
-                        branches: [[name: "${scm.branches[0].name}"]],
-                        extensions: [
-                            [$class: 'CleanBeforeCheckout'],
-                            [$class: 'CloneOption', reference: ref_cache],
-                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
-                        userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                    ]
+                // IF no nodes are idle we will check if there is supported virtual agent
+                // This condition should be updated according to updated supported virtual agent.
+                // For CLOUD_PRIVIDER is FRYE, we need to update what is the fyre supported platform and update it's label
+                if (!isNodeIdle && (CLOUD_PROVIDER.length()) != 0) {
+                    if (LABEL.contains('test-ibmcloud-ubuntu1604-x64-1')
+                        || ((CLOUD_PROVIDER.contains('frye') && LABEL.contains('ci.role.test&&hw.arch.x86&&sw.os.linux')))) {
+                        LABEL = 'ci.agent.dynamic'
+                    }
                 }
-                jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-                if (LABEL.contains('ci.agent.dynamic')) {
-                    
-                    docker.image('adoptopenjdk/centos6_build_image').pull()
-                    docker.image('adoptopenjdk/centos6_build_image').inside {
+
+                node(LABEL) {
+                    if (params.PLATFORM.contains('zos')) {
+                        /* Ensure correct CC env */
+                        env._CC_CCMODE = '1'
+                        env._CXX_CCMODE = '1'
+                        env._C89_CCMODE = '1'
+
+                        def gitConfig = scm.getUserRemoteConfigs()[0]
+                        def SCM_GIT_REPO = gitConfig.getUrl()
+                        def SCM_GIT_BRANCH = scm.branches[0].name
+                        cleanWs()
+
+                        // SCM_GIT_REPO value only gets expanded in sh
+                        def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
+                        SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
+
+                        sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                    } else {
+                        def gitConfig = scm.getUserRemoteConfigs().get(0)
+
+                        // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+                        ref_cache = "${env.HOME}/openjdk_cache"
+
+                        checkout scm: [$class: 'GitSCM',
+                            branches: [[name: "${scm.branches[0].name}"]],
+                            extensions: [
+                                [$class: 'CleanBeforeCheckout'],
+                                [$class: 'CloneOption', reference: ref_cache],
+                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                        ]
+                    }
+                    jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+                    if (LABEL.contains('ci.agent.dynamic')) {
+                        //adoptopenjdk/centos6_build_image works for adoptopenjdk jenkins. For openj9 ?
+                        docker.image('adoptopenjdk/centos6_build_image').pull()
+                        docker.image('adoptopenjdk/centos6_build_image').inside {
+                            jenkinsfile.testBuild()
+                        }
+                    } else {
                         jenkinsfile.testBuild()
                     }
-                } else {
-                    jenkinsfile.testBuild()
                 }
             }
         }
