@@ -33,7 +33,7 @@ jobs:
     - uses: AdoptOpenJDK/install-jdk@v1
       with:
         version: ${{ matrix.version }}
-        source: 'nightly'  #nightly for nightly test builds
+        source: 'releases'  #nightly for nightly test builds
     - name: Extract branch and repo name
       shell: bash
       run: |
