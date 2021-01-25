@@ -2,7 +2,7 @@
 
 ## TRSS Parser for Release Builds
 
-We've created a NodeJS module to parse TRSS output, convert it to Markdown so folks can paste that summary into a GitHuv issue.
+We've created a NodeJS module to parse TRSS output, convert it to Markdown so folks can paste that summary into a GitHub issue.
 
 ```bash
 npm install -g trss-parser
