@@ -629,7 +629,7 @@ def post(output_name) {
 				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
 					deleteOutputFiles: true,
 					failIfNotNew: true,
-					pattern: "**/TKG/test_output_*/**/report.xml",
+					pattern: "**/TKG/output_*/**/report.xml",
 					skipNoTestFiles: true,
 					stopProcessingIfError: true)]
 				)
@@ -638,28 +638,28 @@ def post(output_name) {
 			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
-					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
+					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
 				} else {
-					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix}"
+					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix}"
 				}
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
 			}
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
 				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
 			}
