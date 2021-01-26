@@ -41,6 +41,7 @@ if (!binding.hasVariable('TARGET')) TARGET = ""
 if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
+if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -107,11 +108,26 @@ println "JDK_VERSIONS: ${JDK_VERSIONS}"
 println "GROUPS: ${GROUPS}"
 println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 
-ARCH_OS_LIST.each { ARCH_OS ->
- 	def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
-	def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
-	def ADOPTOPENJDK_BRANCH = "master"
+def OPENJ9_REPO = "https://github.com/eclipse/openj9.git"
+def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+def ADOPTOPENJDK_BRANCH = "master"
 
+// Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
+// (See https://issues.jenkins.io/browse/JENKINS-48431)
+// Set Repository URL and Branch as build parameters by default
+// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
+def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
+def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
+def SCRIPT_PATH = "openjdk-tests/buildenv/jenkins/openjdk_tests"
+
+LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
+if (LIGHT_WEIGHT_CHECKOUT) {
+	ADOPTOPENJDK_REPO_BUILD_PARAM = ADOPTOPENJDK_REPO
+	ADOPTOPENJDK_BRANCH_BUILD_PARAM = ADOPTOPENJDK_BRANCH
+	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
+}
+
+ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
 			GROUPS.each { GROUP ->
@@ -207,9 +223,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							scm {
 								git {
 									remote {
-										url('${ADOPTOPENJDK_REPO}')
+										url(ADOPTOPENJDK_REPO_BUILD_PARAM)
 									}
-									branch('${ADOPTOPENJDK_BRANCH}')
+									branch(ADOPTOPENJDK_BRANCH_BUILD_PARAM)
 									extensions {
 										relativeTargetDirectory('openjdk-tests')
 										cleanBeforeCheckout()
@@ -220,15 +236,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 											timeout(60)
 										}
 									}
-									configure { git ->
-										git / 'extensions' / 'hudson.plugins.git.extensions.impl.SparseCheckoutPaths' / 'sparseCheckoutPaths' {
-											'hudson.plugins.git.extensions.impl.SparseCheckoutPath' {
-												path("buildenv/jenkins/")
-											}
-										}
-									}
 								}
-								scriptPath("openjdk-tests/buildenv/jenkins/openjdk_tests")
+								scriptPath(SCRIPT_PATH)
+								lightweight(LIGHT_WEIGHT_CHECKOUT)
 							}
 						}
 						logRotator {
