@@ -13,15 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="MBCS_Tests/annotation" default="build" basedir=".">
+<project name="MBCS_Tests/compact_number_format" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-	MBCS_Tests/annotation
+	MBCS_Tests/compact_number_format
 	</description>
 	<import file="${TEST_ROOT}/functional/build.xml"/>
 
 	<!-- set global properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/annotation" />
+	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/compact_number_format" />
 
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
@@ -39,20 +39,30 @@ limitations under the License.
 		<echo>===executable:			${compiler.javac}</echo>
 		<echo>===debug:				on</echo>
 		<echo>===destdir:				${DEST}</echo>
-		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
-			<src path="${src}" />
-                        <include name="SDKPath.java" />
-                        <include name="SourceVersionCheck.java" />
-                        <include name="CheckValidData.java" />
-		</javac>
+		<if>
+			<equals arg1="${JDK_VERSION}" arg2="8"/>
+			<then>
+				<echo>===skip</echo>
+			</then>
+		<elseif>
+			<equals arg1="${JDK_VERSION}" arg2="11"/>
+			<then>
+				<echo>===skip</echo>
+			</then>
+		</elseif>
+		<else>
+			<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
+				<src path="${src}" />
+			</javac>
+		</else>
+		</if>
 	</target>
 
 	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
-		<jar jarfile="${DEST}/annotation.jar" filesonly="true">
+		<jar jarfile="${DEST}/compact_number_format.jar" filesonly="true">
 			<fileset dir="${build}" />
 		</jar>
 		<copy todir="${DEST}">
-			<fileset dir="${src}/" includes="*_org.java" />
 			<fileset dir="${src}/../" includes="*.sh" />
 			<fileset dir="${src}/../" includes="*.bat" />
 			<fileset dir="../tools/" includes="*" />
