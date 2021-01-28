@@ -539,7 +539,11 @@ def runTest( ) {
 
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
-				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				if (TARGET == 'system_custom') {
+					env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
+				} else {
+					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				}
 			}
 			if (!TARGET.startsWith('-f')) {
 				TARGET="_${params.TARGET}"
