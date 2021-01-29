@@ -19,12 +19,12 @@
 	</test>
 	<!--  The following tests are specific to openj9 only -->
 	<test>
-		<testCaseName>DaaLoadTest_daa1</testCaseName>
+		<testCaseName>DaaLoadTest_daa1_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -38,12 +38,12 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa2</testCaseName>
+		<testCaseName>DaaLoadTest_daa2_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q)  -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -57,12 +57,12 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa3</testCaseName>
+		<testCaseName>DaaLoadTest_daa3_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -76,12 +76,12 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_all</testCaseName>
+		<testCaseName>DaaLoadTest_all_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest -test-args=$(Q)workload=daaAll,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -95,11 +95,11 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa1_ConcurrentScavenge</testCaseName>
+		<testCaseName>DaaLoadTest_daa1_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -114,11 +114,11 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa2_ConcurrentScavenge</testCaseName>
+		<testCaseName>DaaLoadTest_daa2_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -133,11 +133,11 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa3_ConcurrentScavenge</testCaseName>
+		<testCaseName>DaaLoadTest_daa3_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -152,11 +152,11 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_all_ConcurrentScavenge</testCaseName>
+		<testCaseName>DaaLoadTest_all_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest -test-args=$(Q)workload=daaAll,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -171,7 +171,7 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa1_special</testCaseName>
+		<testCaseName>DaaLoadTest_daa1_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -205,7 +205,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -219,7 +219,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa2_special</testCaseName>
+		<testCaseName>DaaLoadTest_daa2_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -253,7 +253,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -267,7 +267,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_daa3_special</testCaseName>
+		<testCaseName>DaaLoadTest_daa3_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -301,7 +301,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3$(Q) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -315,7 +315,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>DaaLoadTest_all_special</testCaseName>
+		<testCaseName>DaaLoadTest_all_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -349,7 +349,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest -test-args=$(Q)workload=daaAll,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
