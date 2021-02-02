@@ -17,8 +17,6 @@
 			<group>system</group>
 		</groups>
 	</test>
-	<!-- Exclude LambdaLoad test on Linux x64 non-compressedrefs sdks for OpenJ9 builds only,
-		Reason: https://github.com/eclipse/openj9/issues/2209)-->
 	<test>
 		<testCaseName>LambdaLoadTest_HS_5m</testCaseName>
 		<variations>
@@ -39,7 +37,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>LambdaLoadTest_J9_NonLinux_5m</testCaseName>
+		<testCaseName>LambdaLoadTest_J9_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -56,48 +54,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
 	</test>
-	<test>
-		<testCaseName>LambdaLoadTest_J9_Linux_CompRef_5m</testCaseName>
-		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LambdaLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
-	</test>
-	<test>
-		<testCaseName>JdiTest</testCaseName>
-		<disabled>
-			<comment>AdoptOpenJDK/openjdk-systemtest/issues/63</comment>
-		</disabled>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JdiTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<!-- Temporarily excluding this test from linux ppc64le xl and linux x64 xl, ref: https://github.com/eclipse/openj9/issues/6475 -->
 	<test>
 		<testCaseName>LambdaLoadTest_CS_5m</testCaseName>
 		<variations>
@@ -115,10 +72,10 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>bits.64,^arch.arm,^spec.linux_ppc-64_le,^spec.linux_x86-64</platformRequirements>
+		<platformRequirements>bits.64</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>LambdaLoadTest_special_J9_NonLinux_5m</testCaseName>
+		<testCaseName>LambdaLoadTest_special_J9_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -164,10 +121,66 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>^os.linux</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>LambdaLoadTest_J9_special_Linux_CompRef_5m</testCaseName>
+		<testCaseName>ParallelStreamsLoadTest_HS_5m</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ParallelStreamsLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>ParallelStreamsLoadTest_J9_5m</testCaseName>
+		<variations>
+			<variation>Mode110</variation>
+			<variation>Mode610</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ParallelStreamsLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>ParallelStreamsLoadTest_CS_5m</testCaseName>
+		<variations>
+			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ParallelStreamsLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<platformRequirements>bits.64</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>ParallelStreamsLoadTest_special_J9_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -201,7 +214,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LambdaLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ParallelStreamsLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -213,6 +226,5 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>os.linux,vm.cmprssptrs</platformRequirements>
 	</test>
 </playlist>
