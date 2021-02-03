@@ -63,7 +63,7 @@ ifeq ($(JTREG_CONC), 0)
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
 
-#Adding LIBPATH to resolve missing libaray issues
+# Adding LIBPATH to resolve missing libaray issues
 JTREG_BASIC_OPTIONS += -e:LIBPATH=/usr/lib
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
