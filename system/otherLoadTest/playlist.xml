@@ -257,6 +257,25 @@
 		</subsets>
 	</test>
 	<test>
+		<testCaseName>JdiTest</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/63</comment>
+		</disabled>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JdiTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>HeapHogLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
