@@ -15,6 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1k_J9</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/6777</comment>
+		</disabled>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -34,10 +37,12 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<disabled>https://github.com/eclipse/openj9/issues/6777</disabled>
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10k_J9</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/6777</comment>
+		</disabled>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -57,7 +62,6 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<disabled>https://github.com/eclipse/openj9/issues/6777</disabled>
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_100k_J9</testCaseName>
@@ -83,6 +87,9 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1M_J9</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/6777</comment>
+		</disabled>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -102,7 +109,6 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<disabled>https://github.com/eclipse/openj9/issues/6777</disabled>
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10M_J9</testCaseName>
@@ -128,6 +134,9 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_TestCase</testCaseName>
+		<disabled>
+			<comment>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</comment>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -145,7 +154,6 @@
 		<groups>
 			<group>functional</group>
 		</groups>
-		<disabled>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</disabled>
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
