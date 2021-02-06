@@ -1,5 +1,6 @@
 import argparse
 import json
+import sys
 
 def map_platforms(platforms):
   """ Takes in a list of platforms and translates Grinder platorms to corresponding GitHub-hosted runners.
@@ -14,22 +15,28 @@ def map_platforms(platforms):
 
   for i, platform in enumerate(platforms):
     if platform in platform_map:
-      platforms[i] = platform_map[platform]
+        platforms[i] = platform_map[platform]
 
   return platforms
 
 def main():
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    action = subparsers.add_parser('action', add_help=False)
-    # TODO: Fetch the valid choices for each parameter from somewhere instead of hard-coding them?
-    action.add_argument('--sdk_resource', default='nightly', choices=['nightly', 'releases'], nargs='+')
-    action.add_argument('--build_list', required=True, choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
-    action.add_argument('--target', required=True, nargs='+')
-    action.add_argument('--platform', required=True, nargs='+')
-    action.add_argument('--jdk_version', required=True, nargs='+')
-    action.add_argument('--jdk_impl', required=True, nargs='+')
-    args = parser.parse_args()
+
+    keyword = 'action'
+
+    # We assume the first two elements of sys.argv are the name of this python script and the command keyword respectively
+    # e.g.: [ 'action_argparse.py', 'action', ... ]
+    raw_args = sys.argv[2:]
+    assert sys.argv[1] == keyword
+
+    parser = argparse.ArgumentParser(prog=keyword, add_help=False)
+    # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
+    parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases'], nargs='+')
+    parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
+    parser.add_argument('--target', default=['jdk_math'], nargs='+')
+    parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
+    parser.add_argument('--jdk_version', default=['8'], nargs='+')
+    parser.add_argument('--jdk_impl', default=['openj9'], nargs='+')
+    args = parser.parse_args(raw_args)
 
     output = {
       'sdk_resource': args.sdk_resource,
