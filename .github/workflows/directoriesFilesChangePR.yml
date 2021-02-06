@@ -1,0 +1,129 @@
+name: 'Directories/Files Change Test PR'
+on:
+  pull_request:
+    types: [ready_for_review]
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - 'doc/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/*.yml'
+      - 'buildenv/**'
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - 'doc/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/*.yml'
+      - 'buildenv/**'
+jobs:
+  getChangeLocation:
+    runs-on: ubuntu-latest
+    outputs:
+      location: ${{ steps.get_location.outputs.location }}
+    steps:
+      - uses: jitterbit/get-changed-files@v1
+        id: get_change
+        with:
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: echo locations
+        id: get_location
+        run: |
+          echo "::set-output name=location::$(echo ${{ steps.get_change.outputs.all }})"
+  getBuildLists:
+    runs-on: ubuntu-latest
+    needs: getChangeLocation
+    outputs:
+      buildLists: ${{ steps.locations_parse.outputs.build_lists }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: parse locations
+        id: locations_parse
+        run: |
+          git config --list
+          python3 ./.github/workflows/getBuildLists.py ${{ needs.getChangeLocation.outputs.location }}
+  testChangeBasedBuildListWithHotspot:
+    runs-on: ${{ matrix.os }}
+    needs: getBuildLists
+    if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        version: [8, 15]
+        build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: ${{ matrix.version }}
+          source: 'nightly'
+      - name: Extract branch and repo name
+        shell: bash
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then
+            echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF})"
+            echo "::set-output name=repo::$(echo ${{ github.event.pull_request.head.repo.full_name }})"
+          else
+            echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+            echo "::set-output name=repo::$(echo ${{ github.repository }})"
+          fi
+        id: extract_branch
+      - name: AQA
+        uses: AdoptOpenJDK/run-aqa@v1
+        with:
+          build_list: ${{ matrix.build_list }}
+          target: '_jdk_custom'
+          jdksource: 'install-jdk'
+          version: ${{ matrix.version }}
+          openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: output_changed_based_build_list
+          path: ./**/output_*/
+  testChangeBasedBuildListWithOpenj9:
+    runs-on: ${{ matrix.os }}
+    needs: getBuildLists
+    if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        version: [8, 15]
+        build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: ${{ matrix.version }}
+          source: 'nightly'
+          impl: 'openj9'
+      - name: Extract branch name
+        shell: bash
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then
+            echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF})"
+            echo "::set-output name=repo::$(echo ${{ github.event.pull_request.head.repo.full_name }})"
+          else
+            echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+            echo "::set-output name=repo::$(echo ${{ github.repository }})"
+          fi
+        id: extract_branch
+      - name: AQA
+        uses: AdoptOpenJDK/run-aqa@v1
+        with:
+          build_list: ${{ matrix.build_list }}
+          target: '_ClassLoadingTest'
+          jdksource: 'install-jdk'
+          version: ${{ matrix.version }}
+          openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: output_changed_based_build_list
+          path: ./**/output_*/
