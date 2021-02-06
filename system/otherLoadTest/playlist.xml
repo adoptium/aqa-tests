@@ -18,6 +18,20 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>system_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) $(CUSTOM_TARGET);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MiniMix_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
