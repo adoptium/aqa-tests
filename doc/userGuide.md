@@ -342,6 +342,10 @@ To exclude the test for openj9 only:
 
 ```auto exclude test jdk_test impl=openj9```
 
+To exclude the test for adoptopenjdk vendor only:
+
+```auto exclude test jdk_test vendor=adoptopenjdk```
+
 To exclude the test for java 8 only:
 
 ```auto exclude test jdk_test ver=8```
@@ -352,9 +356,9 @@ To exclude the test for all linux platforms:
 
 plat is defined in regular expression. All platforms can be found here: https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/jenkins/openjdk_tests
 
-To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against openj9 java 8 on windows only:
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
-```auto exclude test jdk_test_1 impl=openj9 ver=8 plat=.*windows.*```
+```auto exclude test jdk_test_1 impl=openj9 vendor=adoptopenjdk ver=8 plat=.*windows.*```
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
 
@@ -409,6 +413,21 @@ For example, to exclude the test for openj9 only:
     ...
 ```
 
+##### Exclude a test against specific java vendor:
+Add a ```<vendor>``` element in the ```<disabled>``` element to specify the vendor information.
+
+For example, to exclude the test for AdoptOpenJDK only:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+    <disabled>
+      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+      <vendor>adoptopenjdk</vendor>
+    </disabled>
+    ...
+```
+
 ##### Exclude a test against specific java version:
 Add a ```<subset>``` element in the ```<disabled>``` element to specify the version.
 
@@ -444,7 +463,7 @@ For example, to exclude the test for all linux platforms:
 ##### Exclude test against multiple criteria:
 Defined a combination of ```<variation>```, ```<impl>```, ```<subset>```, and  ```<plat>``` in the ```<disabled>``` element.
 
-For example, to exclude the test with variation ```-Xmx1024m``` against openj9 java 8 on windows only:
+For example, to exclude the test with variation ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
 ```
 <test>
@@ -454,6 +473,7 @@ For example, to exclude the test with variation ```-Xmx1024m``` against openj9 j
       <variation>-Xmx1024m</variation>
       <subset>8</subset>
       <impl>openj9</impl>
+      <vendor>adoptopenjdk</vendor>
       <plat>.*windows.*</plat>
     </disabled>
     ...
