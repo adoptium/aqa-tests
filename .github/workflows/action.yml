@@ -11,7 +11,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Parse parameters
-      run: python3 .github/workflows/action_argparse.py ${{ github.event.comment.body }} 2> log.txt
+      env:
+        args: ${{ github.event.comment.body }}
+      run: python3 .github/workflows/action_argparse.py $args 2> log.txt
       id: action_argparse
     - name: Output log
       if: failure()

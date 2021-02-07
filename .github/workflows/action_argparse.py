@@ -21,12 +21,13 @@ def map_platforms(platforms):
 
 def main():
 
+    # The keyword for this command.
     keyword = 'action'
 
-    # We assume the first two elements of sys.argv are the name of this python script and the command keyword respectively
-    # e.g.: [ 'action_argparse.py', 'action', ... ]
-    raw_args = sys.argv[2:]
+    # We assume that the first argument is the keyword.
+    # e.g. sys.argv == ['action_argparse.py', 'action', ...]
     assert sys.argv[1] == keyword
+    raw_args = sys.argv[2:]
 
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
