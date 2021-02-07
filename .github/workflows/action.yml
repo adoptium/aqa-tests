@@ -93,12 +93,28 @@ jobs:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
         impl: ${{ matrix.jdk_impl }}
-    - name: Extract branch name
-      shell: bash
-      run: |
-          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
-          echo "::set-output name=repo::$(echo ${{ github.repository }})"
+    # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
+    - uses: actions/github-script@v3
+      id: get-pr
+      with:
+        script: |
+          const request = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          }
+          core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+          try {
+            const result = await github.pulls.get(request)
+            return result.data
+          } catch (err) {
+            core.setFailed(`Request failed with error ${err}`)
+          }
+    - name: Extract head repo and branch
       id: extract_branch
+      run: |
+        echo ::set-output name=repo::${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
+        echo ::set-output name=branch::${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
     - name: AQA
       uses: AdoptOpenJDK/run-aqa@v1
       with:
