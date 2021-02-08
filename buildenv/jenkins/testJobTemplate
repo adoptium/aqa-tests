@@ -42,6 +42,7 @@ if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
+if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -101,6 +102,13 @@ if (JDK_IMPL == "openj9") {
 	JDK_IMPL_SN = "j9"
 } else if (JDK_IMPL == "hotspot") {
 	JDK_IMPL_SN = "hs"
+}
+
+// If user specifies a PARALLEL_DEFAULT option, prepend it to the list so it becomes the default in the generated job(s)
+PARALLEL_LIST = ['None', 'Dynamic', 'Subdir', 'NodesByIterations']
+if (binding.hasVariable('PARALLEL_DEFAULT')) {
+	PARALLEL_LIST.remove(PARALLEL_DEFAULT)
+	PARALLEL_LIST.add(0, PARALLEL_DEFAULT)
 }
 
 println "LEVELS: ${LEVELS}"
@@ -213,8 +221,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
-							choiceParam('PARALLEL', ['None', 'Dynamic', 'Subdir', 'NodesByIterations'], "Optional. Parallel mode")
-							stringParam('NUM_MACHINES', "", "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
+							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
+							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
 							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
 							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
