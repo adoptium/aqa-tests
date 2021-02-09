@@ -77,7 +77,7 @@ jobs:
         uses: AdoptOpenJDK/run-aqa@v1
         with:
           build_list: ${{ matrix.build_list }}
-          target: '_jdk_custom'
+          target: '_sanity.${{ matrix.build_list }}'
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
           openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
@@ -118,7 +118,7 @@ jobs:
         uses: AdoptOpenJDK/run-aqa@v1
         with:
           build_list: ${{ matrix.build_list }}
-          target: '_ClassLoadingTest'
+          target: '_sanity.${{ matrix.build_list }}'
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
           openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
