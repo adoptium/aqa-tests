@@ -5,7 +5,7 @@ on:
 jobs:
   autoTestPR:
     runs-on: ubuntu-latest
-    if: startsWith(github.event.comment.body, 'auto exclude test') && github.event_name != 'pull_request'
+    if: startsWith(github.event.comment.body, 'auto exclude test')
     steps:
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -28,9 +28,11 @@ jobs:
           ref: 'master'
           path: 'TKG'
       - name: run script
+        env:
+          comment_body: ${{ github.event.comment.body }}
         run: |
           git config --list
-          python TKG/scripts/testBot/disable.py -m "${{ github.event.comment.body }}" -c "${{ github.event.comment.html_url }}" -d "$GITHUB_WORKSPACE/tests"
+          python TKG/scripts/testBot/disable.py -m "$comment_body" -c "${{ github.event.comment.html_url }}" -d "$GITHUB_WORKSPACE/tests"
       - name: test cannot be found
         if: failure()
         run: |
