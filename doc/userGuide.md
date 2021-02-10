@@ -360,7 +360,7 @@ To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` a
 
 ```auto exclude test jdk_test_1 impl=openj9 vendor=adoptopenjdk ver=8 plat=.*windows.*```
 
-After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
+After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
 #### Manually exclude a test target
 Search the test name to find its playlist.xml file. Add a ```<disabled>``` element after ```<testCaseName>``` element. The ```<disabled>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url).
