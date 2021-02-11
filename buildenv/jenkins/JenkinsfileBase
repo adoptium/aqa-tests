@@ -154,15 +154,19 @@ def setupParallelEnv() {
 
 				try {
 					//get cached TRSS JSON data
-					copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
-					sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
+						sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+					}
 				} catch (Exception e) {
 					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
 				}
 
 				try {
 					//get pre-staged jars from test.getDependency build
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+					}
 				} catch (Exception e) {
 					echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 				}
@@ -367,13 +371,15 @@ def setup() {
 			}
 
 			if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
-				dir('openjdkbinary') {
-					step([$class: 'CopyArtifact',
-						fingerprintArtifacts: true,
-						flatten: true,
-						filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z",
-						projectName: "${params.UPSTREAM_JOB_NAME}",
-						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
+				timeout(time: 1, unit: 'HOURS') {
+					dir('openjdkbinary') {
+						step([$class: 'CopyArtifact',
+							fingerprintArtifacts: true,
+							flatten: true,
+							filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z",
+							projectName: "${params.UPSTREAM_JOB_NAME}",
+							selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
+					}
 				}
 			}
 			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
@@ -489,7 +495,9 @@ def buildTest() {
 
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				try {
-					copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './openjdk-tests/TKG/'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './openjdk-tests/TKG/'
+					}
 				} catch (Exception e) {
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
 				}
@@ -497,7 +505,9 @@ def buildTest() {
 
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+				timeout(time: 1, unit: 'HOURS') {
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
@@ -505,7 +515,9 @@ def buildTest() {
 			try {
 				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
-					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+					}
 				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
@@ -518,9 +530,9 @@ def buildTest() {
 			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
 				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
-			
+
 			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", 
+				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 					make_test()
 				}
@@ -870,7 +882,7 @@ def run_parallel_tests() {
 				waitForANodeToBecomeActive("$LABEL", "0")
 			}
 			node("$LABEL") {
-				def buildResult = ""	
+				def buildResult = ""
 				childJobs.each {
 					cjob ->
 					def jobInvocation = cjob.value.getRawBuild()
@@ -879,7 +891,9 @@ def run_parallel_tests() {
 					def childResult = cjob.value.getCurrentResult()
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
-						copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						timeout(time: 1, unit: 'HOURS') {
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						}
 						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
@@ -890,7 +904,7 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
-			}	
+			}
 		}
 	}
 }
