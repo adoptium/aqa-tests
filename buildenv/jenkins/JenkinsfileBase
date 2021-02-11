@@ -25,7 +25,7 @@ def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Check what existing java processes are running
-        echo "PROCESSCATCH: Java processes which are currently on the machine:"
+		echo "PROCESSCATCH: Java processes which are currently on the machine:"
 	if (PLATFORM.contains("windows")) {
 		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
 	} else {
@@ -135,7 +135,7 @@ def setupParallelEnv() {
 				// limit childJobNum
 				if (childJobNum > 20) {
 					echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
-					echo "Reset NUM_MACHINES to 20..." 
+					echo "Reset NUM_MACHINES to 20..."
 					childJobNum = 20
 				}
 			} else if (params.PARALLEL == "Dynamic") {
@@ -211,7 +211,7 @@ def setupParallelEnv() {
 					echo "exclude the following system test subfolders: ${excludes}"
 					testSubDirs = testSubDirs - excludes
 				}
-				
+
 				childJobNum = testSubDirs.size()
 				if ( childJobNum > maxChildJobNum) {
 					assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
@@ -336,6 +336,8 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	}
 
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
+
+	jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
 
 	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
 	return create
@@ -572,7 +574,7 @@ def runTest( ) {
 				if (env.SPEC.startsWith('aix')) {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
 					env.DISPLAY = ":0"
-					echo "env.DISPLAY is ${env.DISPLAY}"	
+					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
 				else if (env.SPEC.startsWith('linux')) {
@@ -586,7 +588,7 @@ def runTest( ) {
 						echo "env.DISPLAY is ${env.DISPLAY}"
 						makeTest("${RUNTEST_CMD}")
 					}
-				} 
+				}
 				else {
 					makeTest("${RUNTEST_CMD}")
 				}
@@ -631,7 +633,7 @@ def post(output_name) {
 				failIfNoResultsValue = false
 			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
-			
+
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
@@ -719,13 +721,13 @@ def testBuild() {
 				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
 				// clean up remaining core files
 				if (PLATFORM.contains("mac")) {
-					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else if (PLATFORM.contains("windows")) {
-					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else {
 					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				}
-			}	
+			}
 		}
 	}
 }
@@ -744,36 +746,36 @@ def terminateJavaProcesses() {
 			def C=sh(script:'powershell -c "(Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | measure).count" | tr -d \\\\r', returnStdout:true)
 			echo "Number of java processes = ${C}"
 			if (!C.trim().equals("0")) {
-			    echo "PROCESSCATCH: Attempting to stop the following processes:"
-			    sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
-			    def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
-			    echo "stop-process rc = ${sh_rc}"
+				echo "PROCESSCATCH: Attempting to stop the following processes:"
+				sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
+				def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
+				echo "stop-process rc = ${sh_rc}"
 			} else {
-			    // No more spawned, we are done...
-			    break
-                        }
+				// No more spawned, we are done...
+				break
+						}
 		} else {
 			// Non-Windows code from https://ci.adoptopenjdk.net/job/SXA-processCheck
 			echo "PROCESSCATCH: Checking for any leftover java processes on the machine"
 			def sh_rc=sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
 			if (sh_rc == 0) {
-			    echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
-			    // TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
-			    // And this is likely to be replaced as part of https://github.com/AdoptOpenJDK/TKG/issues/45
+				echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
+				// TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
+				// And this is likely to be replaced as part of https://github.com/AdoptOpenJDK/TKG/issues/45
 			}
 			break
 		}
 
 		// Pause between iterations in case of spawning processes
 		sleep(2)
-        }
+		}
 
-        echo "PROCESSCATCH: Removed processes - here is what is remaining:"
-        if (PLATFORM.contains("windows")) {
+		echo "PROCESSCATCH: Removed processes - here is what is remaining:"
+		if (PLATFORM.contains("windows")) {
 		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
-        } else {
+		} else {
 		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus:true)
-        }
+		}
 }
 
 def getJDKImpl(jvm_version) {
@@ -910,27 +912,27 @@ def run_parallel_tests() {
 }
 
 def waitForANodeToBecomeActive(def label, String activeNodeTimeoutString) {
-    def nodes = nodesByLabel(label).size()
-    if (nodes < 1) {
-        // If no active node matches the label, we see if there's a timeout value set.
-        // If there is, we wait and check again periodically. If not, we fail immediately.
+	def nodes = nodesByLabel(label).size()
+	if (nodes < 1) {
+		// If no active node matches the label, we see if there's a timeout value set.
+		// If there is, we wait and check again periodically. If not, we fail immediately.
 
-        int activeNodeTimeout = activeNodeTimeoutString as Integer
+		int activeNodeTimeout = activeNodeTimeoutString as Integer
 
-        echo "Cannot find an active node matching this label: " + label
-        echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
+		echo "Cannot find an active node matching this label: " + label
+		echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
 
-        while (activeNodeTimeout > 0) {
-            sleep(60 * 1000) // 1 minute sleep
-            activeNodeTimeout--
-            if (nodesByLabel(LABEL).size() > 0) {
-                echo "A node matching the aforementioned label has become active."
-                return
-            }
-        }
+		while (activeNodeTimeout > 0) {
+			sleep(60 * 1000) // 1 minute sleep
+			activeNodeTimeout--
+			if (nodesByLabel(LABEL).size() > 0) {
+				echo "A node matching the aforementioned label has become active."
+				return
+			}
+		}
 
-        assert false : "Timed out waiting for a machine that matches the LABEL: " + LABEL + " to become active."
-    }
+		assert false : "Timed out waiting for a machine that matches the LABEL: " + LABEL + " to become active."
+	}
 }
 
 def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {

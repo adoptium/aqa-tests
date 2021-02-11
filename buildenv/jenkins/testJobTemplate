@@ -237,6 +237,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('TKG_SHA', "", "TKG sha")
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
+							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
 						}
 						cpsScm {
 							scm {
