@@ -337,7 +337,9 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
 
-	jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
+	if (params.LIGHT_WEIGHT_CHECKOUT) {
+		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
+	}
 
 	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
 	return create
