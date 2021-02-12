@@ -5,16 +5,16 @@ on:
 jobs:
   parseComment:
     runs-on: ubuntu-latest
-    if: startsWith(github.event.comment.body, 'action') && github.event.issue.pull_request
+    if: startsWith(github.event.comment.body, 'run aqa') && github.event.issue.pull_request
     outputs:
-      build_parameters: ${{ steps.action_argparse.outputs.build_parameters }}
+      build_parameters: ${{ steps.argparse.outputs.build_parameters }}
     steps:
     - uses: actions/checkout@v2
     - name: Parse parameters
       env:
         args: ${{ github.event.comment.body }}
-      run: python3 .github/workflows/action_argparse.py $args 2> log.txt
-      id: action_argparse
+      run: python3 .github/workflows/runAqaArgParse.py $args 2> log.txt
+      id: argparse
     - name: Output log
       if: failure()
       # Store the contents of log.txt into an environment variable and escape characters to preserve newlines and other symbols.
@@ -57,12 +57,12 @@ jobs:
         script: |
           comment_body = `
           @${{ github.actor }} Build(s) started with the following parameters:
-          - sdk_resource: ${{ steps.action_argparse.outputs.sdk_resource }}
-          - build_list: ${{ steps.action_argparse.outputs.build_list }}
-          - target: ${{ steps.action_argparse.outputs.target }}
-          - platform: ${{ steps.action_argparse.outputs.platform }}
-          - jdk_version: ${{ steps.action_argparse.outputs.jdk_version }}
-          - jdk_impl: ${{ steps.action_argparse.outputs.jdk_impl }}
+          - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - build_list: ${{ steps.argparse.outputs.build_list }}
+          - target: ${{ steps.argparse.outputs.target }}
+          - platform: ${{ steps.argparse.outputs.platform }}
+          - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
+          - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
@@ -74,13 +74,13 @@ jobs:
           })
     - name: Echo parameters
       run: |
-        echo build_parameters: ${{ steps.action_argparse.outputs.build_parameters }}
-        echo sdk_resource: ${{ steps.action_argparse.outputs.sdk_resource }}
-        echo build_list: ${{ steps.action_argparse.outputs.build_list }}
-        echo target: ${{ steps.action_argparse.outputs.target }}
-        echo platform: ${{ steps.action_argparse.outputs.platform }}
-        echo jdk_version: ${{ steps.action_argparse.outputs.jdk_version }}
-        echo jdk_impl: ${{ steps.action_argparse.outputs.jdk_impl }}
+        echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
+        echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+        echo build_list: ${{ steps.argparse.outputs.build_list }}
+        echo target: ${{ steps.argparse.outputs.target }}
+        echo platform: ${{ steps.argparse.outputs.platform }}
+        echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
+        echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}

@@ -33,12 +33,12 @@ def underscore_targets(targets):
 def main():
 
     # The keyword for this command.
-    keyword = 'action'
+    keyword = 'run aqa'
+    keywords = keyword.split()
 
-    # We assume that the first argument is the keyword.
-    # e.g. sys.argv == ['action_argparse.py', 'action', ...]
-    assert sys.argv[1] == keyword
-    raw_args = sys.argv[2:]
+    # We assume that the first argument is/are the keyword(s).
+    # e.g. sys.argv == ['action_argparse.py', 'run', 'aqa', ...]
+    raw_args = sys.argv[1 + len(keywords):]
 
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
