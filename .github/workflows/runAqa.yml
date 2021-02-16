@@ -128,8 +128,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output_system
-        path: ./**/test_output_*/
+        name: test_output
+        path: ./**/output_*/
 
   reportStatus:
     runs-on: ubuntu-latest
