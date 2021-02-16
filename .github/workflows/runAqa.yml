@@ -111,11 +111,6 @@ jobs:
           } catch (err) {
             core.setFailed(`Request failed with error ${err}`)
           }
-    - name: Extract head repo and branch
-      id: extract_branch
-      run: |
-        echo ::set-output name=repo::${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
-        echo ::set-output name=branch::${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
     - name: AQA
       uses: AdoptOpenJDK/run-aqa@v1
       with:
@@ -123,7 +118,7 @@ jobs:
          target: ${{ matrix.target }}
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
-         openjdk_testRepo: '${{ steps.extract_branch.outputs.repo }}:${{ steps.extract_branch.outputs.branch }}'
+         openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
