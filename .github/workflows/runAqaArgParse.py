@@ -47,7 +47,7 @@ def main():
     parser.add_argument('--target', default=['_jdk_math'], nargs='+')
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
     parser.add_argument('--jdk_version', default=['8'], nargs='+')
-    parser.add_argument('--jdk_impl', default=['openj9'], nargs='+')
+    parser.add_argument('--jdk_impl', default=['openj9'], choices=['hotspot', 'openj9'], nargs='+')
     args = parser.parse_args(raw_args)
 
     output = {
