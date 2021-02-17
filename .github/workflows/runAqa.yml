@@ -89,7 +89,6 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
-    - uses: actions/checkout@v2
     - uses: AdoptOpenJDK/install-jdk@v1
       with:
         version: ${{ matrix.jdk_version }}
@@ -113,7 +112,7 @@ jobs:
             core.setFailed(`Request failed with error ${err}`)
           }
     - name: AQA
-      uses: AdoptOpenJDK/run-aqa@v1
+      uses: sophia-guo/run-aqa@PR
       with:
          build_list: ${{ matrix.build_list }}
          target: ${{ matrix.target }}
