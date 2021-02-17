@@ -1,0 +1,187 @@
+name: "PR Comment Build Action"
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  parseComment:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.comment.body, 'run aqa') && github.event.issue.pull_request
+    outputs:
+      build_parameters: ${{ steps.argparse.outputs.build_parameters }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Parse parameters
+      env:
+        args: ${{ github.event.comment.body }}
+      run: python3 .github/workflows/runAqaArgParse.py $args 2> log.txt
+      id: argparse
+    - name: Output log
+      if: failure()
+      # Store the contents of log.txt into an environment variable and escape characters to preserve newlines and other symbols.
+      run: |
+        log=$(cat log.txt)
+        log="${log//'%'/'%25'}"
+        log="${log//$'\n'/'%0A'}"
+        log="${log//$'\r'/'%0D'}"
+        log="${log/$'`'/'\`'}"
+        echo ::set-output name=log::$log
+      id: output_log
+    - name: Create error comment
+      if: failure()
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          comment_body = `
+          @${{ github.actor }}
+          \`\`\`
+          ${{ steps.output_log.outputs.log }}
+          \`\`\`
+          No builds were started.
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment_body
+          })
+    - name: Get workflow run info
+      run: |
+        echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+        echo ::set-output name=id::$GITHUB_RUN_ID
+      id: workflow_run_info
+    - name: Create success comment
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          comment_body = `
+          @${{ github.actor }} Build(s) started with the following parameters:
+          - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - build_list: ${{ steps.argparse.outputs.build_list }}
+          - target: ${{ steps.argparse.outputs.target }}
+          - platform: ${{ steps.argparse.outputs.platform }}
+          - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
+          - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+
+          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment_body
+          })
+    - name: Echo parameters
+      run: |
+        echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
+        echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+        echo build_list: ${{ steps.argparse.outputs.build_list }}
+        echo target: ${{ steps.argparse.outputs.target }}
+        echo platform: ${{ steps.argparse.outputs.platform }}
+        echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
+        echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+
+  runBuild:
+    runs-on: ${{ matrix.platform }}
+    needs: parseComment
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
+    steps:
+    - uses: AdoptOpenJDK/install-jdk@v1
+      with:
+        version: ${{ matrix.jdk_version }}
+        source: ${{ matrix.sdk_resource }}
+        impl: ${{ matrix.jdk_impl }}
+    # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
+    - uses: actions/github-script@v3
+      id: get-pr
+      with:
+        script: |
+          const request = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          }
+          core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+          try {
+            const result = await github.pulls.get(request)
+            return result.data
+          } catch (err) {
+            core.setFailed(`Request failed with error ${err}`)
+          }
+    - name: AQA
+      uses: sophia-guo/run-aqa@PR
+      with:
+         build_list: ${{ matrix.build_list }}
+         target: ${{ matrix.target }}
+         jdksource: 'install-jdk'
+         version: ${{ matrix.jdk_version }}
+         openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test_output
+        path: ./**/output_*/
+
+  reportStatus:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: runBuild
+    steps:
+    - name: Get workflow run info
+      run: |
+        echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+        echo ::set-output name=id::$GITHUB_RUN_ID
+      id: workflow_run_info
+    - uses: martialonline/workflow-status@v2
+      id: workflow_status
+    - name: Create fail comment
+      if: steps.workflow_status.outputs.status == 'failure'
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          comment_body = `
+          @${{ github.actor }} Build(s) failed.
+          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment_body
+          })
+    - name: Create cancelled comment
+      if: steps.workflow_status.outputs.status == 'cancelled'
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          comment_body = `
+          @${{ github.actor }} Build(s) cancelled.
+          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment_body
+          })
+    - name: Create success comment
+      if: steps.workflow_status.outputs.status == 'success'
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          comment_body = `
+          @${{ github.actor }} Build(s) successful.
+          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment_body
+          })
