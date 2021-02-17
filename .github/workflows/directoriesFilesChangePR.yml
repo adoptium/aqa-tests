@@ -48,7 +48,7 @@ jobs:
         uses: AdoptOpenJDK/run-aqa@v1
         with:
           build_list: ${{ matrix.build_list }}
-          target: '_sanity.${{ matrix.build_list }}'
+          target: '_sanity.regular'
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
           openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:${GITHUB_HEAD_REF}'
