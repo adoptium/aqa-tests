@@ -1,4 +1,5 @@
 #!groovy
+
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
 	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
@@ -12,10 +13,11 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE $testParam"
 	try {
 		sh "$tearDownCmd"
-		sh "./openjdk-tests/maketest.sh $testParam"
+		sh "$makeTestCmd"
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -428,6 +430,8 @@ def setup() {
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 
+			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -473,14 +477,15 @@ def get_sources() {
 	}
 }
 
-def make_test() {
+def makeCompileTest() {
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE compile"
 	// use sshagent with Jenkins credentials ID for all platforms except zOS
 	if (!env.SPEC.startsWith('zos')) {
 		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-			sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+			sh "$makeTestCmd";
 		}
 	} else {
-		sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+		sh "$makeTestCmd";
 	}
 }
 
@@ -538,10 +543,10 @@ def buildTest() {
 			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
 				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					make_test()
+					makeCompileTest()
 				}
 			} else {
-				make_test()
+				makeCompileTest()
 			}
 		}
 	}
@@ -570,7 +575,7 @@ def runTest( ) {
 					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
 				}
 			}
-			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
+			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
 				if (env.SPEC.startsWith('aix')) {
