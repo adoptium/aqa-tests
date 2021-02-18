@@ -127,7 +127,7 @@ jobs:
 
   reportStatus:
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && startsWith(github.event.comment.body, 'run aqa') && github.event.issue.pull_request
     needs: runBuild
     steps:
     - name: Get workflow run info
