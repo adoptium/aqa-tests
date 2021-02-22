@@ -23,12 +23,6 @@ def main():
     if not flag:
         print('::set-output name=build_env::false')
     
-    if len(result) > 0:
-        print('::set-output name=test_dirs_changed::true')
-    else:
-        print('::set-output name=test_dirs_changed::false')
-        
-    
     if not result:
         result.append('skip')
     print('::set-output name=build_lists::{}'.format(json.dumps(result)))
