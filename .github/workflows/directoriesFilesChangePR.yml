@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       buildLists: ${{ steps.locations_parse.outputs.build_lists }}
-      buildEnv: ${{ steps.locations_parse.outputs.build_env}} 
-      testDirsChanged: ${{ steps.locations_parse.outputs.test_dirs_changed}} 
+      buildEnv: ${{ steps.locations_parse.outputs.build_env}}
     steps:
       - uses: actions/checkout@v2
       - uses: jitterbit/get-changed-files@v1
@@ -75,7 +74,7 @@ jobs:
         python3 ./.github/workflows/createTestList.py ${{ needs.getBuildLists.outputs.buildLists }}
     - name: trigger default job
       uses: appleboy/jenkins-action@master
-      if: ${{ needs.getBuildLists.outputs.testDirsChanged }}
+      if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       with:
         url: "https://ci.adoptopenjdk.net/"
         user: "xfxcwynlc"
@@ -83,7 +82,7 @@ jobs:
         job: "Grinder_Simple"
     - name: trigger single job
       uses: stigmelling/jenkins-action@master
-      if: ${{ !needs.getBuildLists.outputs.testDirsChanged }}
+      if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       with:
         jenkinsUrl: 'https://ci.adoptopenjdk.net/'
         username: 'xfxcwynlc'
