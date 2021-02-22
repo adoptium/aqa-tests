@@ -890,7 +890,7 @@ def run_parallel_tests() {
 			} else {
 				waitForANodeToBecomeActive("$LABEL", "0")
 			}
-			node("$LABEL") {
+			node {
 				def buildResult = ""
 				childJobs.each {
 					cjob ->
