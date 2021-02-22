@@ -23,27 +23,6 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
-	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
-	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(OPENJDK_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>openjdk</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>openj9_custom</testCaseName>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
@@ -56,10 +35,6 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<impls>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_all</testCaseName>
@@ -962,6 +937,15 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign_native</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2265#issuecomment-779731603</comment>
+			<plat>.*(ppc|arm|390).*</plat>
+		</disabled>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2218#issuecomment-770048450</comment>
+			<subset>16+</subset>
+			<impl>openj9</impl>
+		</disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1391,6 +1375,32 @@
 		</subsets>
 		<levels>
 			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jdk_vector</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_vector$(Q); \
+	$(TEST_STATUS)</command>
+		<subsets>
+			<subset>16+</subset>
+		</subsets>
+		<levels>
+			<level>extended</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
