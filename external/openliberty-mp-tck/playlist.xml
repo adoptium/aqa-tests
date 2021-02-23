@@ -32,9 +32,9 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
 		</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 		<impls>
 			<impl>openj9</impl>
 			<impl>ibm</impl>
@@ -52,9 +52,9 @@
                 $(TEST_STATUS); \
                 $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
                 </command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 		<!-- Exclude on hotspot s390x under https://github.com/AdoptOpenJDK/openjdk-tests/issues/1993 -->
 		<platformRequirements>^arch.390</platformRequirements>
 		<impls>
@@ -73,9 +73,9 @@
                 $(TEST_STATUS); \
                 $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
                 </command>
-		<subsets>
-			<subset>11+</subset>
-		</subsets>
+		<versions>
+			<version>11+</version>
+		</versions>
 		<levels>
 			<level>sanity</level>
 		</levels>

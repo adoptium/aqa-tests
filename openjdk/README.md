@@ -21,7 +21,7 @@ We already have a large set of tests defined in the playlist.xml file, but not a
 
 * testCaseName
 * command (how to run the test) - essentially the command that invokes the underlying jtreg harness
-* subset: sdk version
+* version: sdk version
 * levels: sanity, extended
 * groups: openjdk
 
