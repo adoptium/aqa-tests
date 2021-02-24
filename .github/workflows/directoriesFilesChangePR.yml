@@ -51,7 +51,7 @@ jobs:
           target: '_sanity.regular'
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
-          openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:$GITHUB_HEAD_REF'
+          openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:${{ github.head_ref }}'
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
