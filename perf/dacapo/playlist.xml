@@ -62,6 +62,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-jython</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2256#issuecomment-777850091</comment>
+			<subset>16+</subset>
+			<impl>openj9</impl>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
 		$(TEST_STATUS)</command>
 		<levels>

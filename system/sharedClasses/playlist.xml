@@ -28,9 +28,8 @@
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>if [[ ! $(Q)$(PLATFORM)$(Q) == *$(Q)win$(Q)* ]] ; then export original_umask_val=`umask` $(AND_IF_SUCCESS) umask 0002 $(AND_IF_SUCCESS) echo umask set to `umask`; fi; \
+		<command>if ! echo "$(PLATFORM)" | grep -q "win"; then export original_umask_val=`umask` $(AND_IF_SUCCESS) umask 0002 $(AND_IF_SUCCESS) echo umask set to `umask`; fi; \
 	$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesAPI; \
-	if [[ ! $(Q)$(PLATFORM)$(Q) == *$(Q)win$(Q)* ]] ; then umask $$original_umask_val $(AND_IF_SUCCESS)  echo umask set to `umask`; fi; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -185,7 +184,13 @@
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
+		<!-- Some machines may have max user processes too low by default for this test
+		 - e.g. see https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1851
+		 The command is not relevant to Windows, and ulimit cannot be modified by the Jenkins users on osx.
+		 Max user processes option is -u in bash, -p in dash (-p is pipe size in bash, so the validity of ulimit -u is used to set the correct option). -->
+		<command>echo "$(PLATFORM)" | grep -q "osx\|win" || \
+		{ MXP_FLAG=$$(test $$(ulimit -u 2>/dev/null) $(AND_IF_SUCCESS) echo "-u" || echo "-p"); REQD_MXP=2048; if [ ! "$$(ulimit $$MXP_FLAG)" = "unlimited" ] $(AND_IF_SUCCESS) [ ! $$(ulimit $$MXP_FLAG) -gt $$REQD_MXP ]; then echo Attempting to increase max user processes from $$(ulimit $$MXP_FLAG) to $$REQD_MXP; ulimit $$MXP_FLAG $$REQD_MXP; echo max user processes now $$(ulimit $$MXP_FLAG); fi; }; \
+		$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM01,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -261,7 +266,13 @@
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
+		<!-- Some machines may have max user processes too low by default for this test
+		 - e.g. see https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1851
+		 The command is not relevant to Windows, and ulimit cannot be modified by the Jenkins users on osx.
+		 Max user processes option is -u in bash, -p in dash (-p is pipe size in bash, so the validity of ulimit -u is used to set the correct option). -->
+		<command>echo "$(PLATFORM)" | grep -q "osx\|win" || \
+		{ MXP_FLAG=$$(test $$(ulimit -u 2>/dev/null) $(AND_IF_SUCCESS) echo "-u" || echo "-p"); REQD_MXP=2048; if [ ! "$$(ulimit $$MXP_FLAG)" = "unlimited" ] $(AND_IF_SUCCESS) [ ! $$(ulimit $$MXP_FLAG) -gt $$REQD_MXP ]; then echo Attempting to increase max user processes from $$(ulimit $$MXP_FLAG) to $$REQD_MXP; ulimit $$MXP_FLAG $$REQD_MXP; echo max user processes now $$(ulimit $$MXP_FLAG); fi; }; \
+		$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

@@ -18,7 +18,21 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MiniMix_5min</testCaseName>
+		<testCaseName>system_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) $(CUSTOM_TARGET);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MiniMix_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -37,7 +51,7 @@
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>MiniMix_5min_jdk8</testCaseName>
+		<testCaseName>MiniMix_jdk8_5m</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -54,13 +68,13 @@
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>ClassLoadingTest</testCaseName>
+		<testCaseName>ClassLoadingTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -70,7 +84,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>ClassLoadingTest_special</testCaseName>
+		<testCaseName>ClassLoadingTest_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -104,7 +118,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -118,13 +132,13 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>ConcurrentLoadTest</testCaseName>
+		<testCaseName>ConcurrentLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ConcurrentLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ConcurrentLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -135,13 +149,13 @@
 	</test>
 	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/571-->
 	<test>
-		<testCaseName>DirectByteBufferLoadTest</testCaseName>
+		<testCaseName>DBBLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DirectByteBufferLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DirectByteBufferLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -152,13 +166,13 @@
 		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>LangLoadTest</testCaseName>
+		<testCaseName>LangLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LangLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=LangLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -186,13 +200,13 @@
 	<!-- Temporarily exclude from Linux aarch64 for: https://github.com/eclipse/openj9/issues/3065 -->
 	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
 	<test>
-		<testCaseName>NioLoadTest</testCaseName>
+		<testCaseName>NioLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=NioLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -203,13 +217,13 @@
 		<platformRequirements>^arch.arm,^os.zos</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>UtilLoadTest</testCaseName>
+		<testCaseName>UtilLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UtilLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=UtilLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -257,12 +271,31 @@
 		</subsets>
 	</test>
 	<test>
-		<testCaseName>HeapHogLoadTest</testCaseName>
+		<testCaseName>JdiTest</testCaseName>
+		<disabled>
+			<comment>AdoptOpenJDK/openjdk-systemtest/issues/63</comment>
+		</disabled>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=JdiTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>HeapHogLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) -test=HeapHogLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) -test=HeapHogLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -276,12 +309,12 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>ObjectTreeLoadTest</testCaseName>
+		<testCaseName>ObjectTreeLoadTest_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) -test=ObjectTreeLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) -test=ObjectTreeLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -296,11 +329,11 @@
 	</test>
 	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
-		<testCaseName>ClassLoadingTest_ConcurrentScavenge</testCaseName>
+		<testCaseName>ClassLoadingTest_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=ClassloadingLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -313,25 +346,5 @@
 			<impl>ibm</impl>
 		</impls>
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
-	</test>
-	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
-	<test>
-		<testCaseName>MixedLoadTest</testCaseName>
-		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<impls>
-			<impl>ibm</impl>
-		</impls>
-		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 </playlist>
