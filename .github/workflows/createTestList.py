@@ -24,21 +24,17 @@ def getPlaylistPath(dirName):
 
 def main():
     
-    sanity_format = "sanity.{}"
-    formattedTests = []
+    dirName = sys.argv[1])
     
-    targetNames = ast.literal_eval(os.getenv('TARGET_LIST'))
-    
-    for targetName in targetNames:
-        formattedTests.append(sanity_format.format(targetName))
-        if targetName == 'openjdk' || targetName == 'system' || targetName == 'functional' || targetName == 'perf':
-            playlistPath = getPlaylistPath(targetName)
-            testCaseNames = getTestCaseNames(playlistPath)
+    if dirName == 'openjdk' || dirName == 'system' || dirName == 'functional' || dirName == 'perf':
+      playlistPath = getPlaylistPath(dirName)
+      testCaseNames = getTestCaseNames(playlistPath)
             
-            testTargets = 'TESTLIST={}'.format(allTests)
+      testTarget = 'TESTLIST={}'.format(allTests)
 
-            print(testTargets)
-            print('::set-output name=test_targets_str::{}'.format(testTargets))
+      print(testTarget)
+      print('::set-output name=test_target_str::{}'.format(testTarget))
+
 
 if __name__ == "__main__":
     main()
