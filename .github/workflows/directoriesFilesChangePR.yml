@@ -1,7 +1,7 @@
 name: 'Directories/Files Change Test PR'
 on:
   pull_request:
-    types: [ready_for_review]
+    types: [synchronize]
     paths-ignore:
       - '.gitignore'
       - '*.md'
@@ -62,8 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       test_targets_str: ${{ steps.format_test_targets_str.outputs.test_targets_str }}
-    env:
-        TARGET_LIST:  ${{ needs.getBuildLists.outputs.buildLists }}
+    strategy:
+      matrix:
+        build_lists: ${{ needs.getBuildLists.outputs.buildLists }}
     needs: getBuildLists
     if: ${{ needs.getBuildLists.outputs.buildEnv }}
     steps:
@@ -71,7 +72,7 @@ jobs:
     - name: format test targets str
       id: format_test_targets_str
       run: |
-        python3 ./.github/workflows/createTestList.py ${{ needs.getBuildLists.outputs.buildLists }}
+        python3 ./.github/workflows/createTestList.py ${{matrix.build_lists}}
     - name: trigger default job
       uses: appleboy/jenkins-action@master
       if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
@@ -88,7 +89,7 @@ jobs:
         username: 'xfxcwynlc'
         token: ${{ secrets.TOKEN }}
         job: "Grinder_Simple"
-        params: '{"TARGET": "${{ steps.format_test_targets_str.outputs.test_targets_str}}" }'
+        params: '{ "BUILD_LIST": "${{matrix.build_lists}}", "TARGET": "testList ${{ steps.format_test_targets_str.outputs.test_target_str}}" }'
   comment:
     runs-on: ubuntu-latest
     needs: getBuildLists
