@@ -266,8 +266,9 @@ $ export BUILD_ROOT=$TOP_DIR/test-results
 $ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
 $ export TEST_JDK_HOME=$OPENJDK_BUILD
 $ ./get.sh -t $TEST_DIR
-$ ./maketest.sh $TEST_DIR
-$ OPENJDK_DIR=$OPENJDK_SOURCES ./maketest.sh $TEST_DIR _sanity.openjdk
+$ cd ./TKG
+$ make compile
+$ make _sanity.openjdk
 $ popd
 $ echo "openjdk-tests located at $tmpdir/openjdk-tests"
 
@@ -303,7 +304,7 @@ _sanity.openjdk done
 Additional test output can be found in the following folders:
 
 ```
-openjdk-tests/test-results/openjdk/TKG/test_output_<timestamp>`
+openjdk-tests/test-results/openjdk/TKG/output_<timestamp>`
 openjdk-tests/test-results/openjdk/work
 openjdk-tests/test-results/openjdk/report
 ```
@@ -342,6 +343,10 @@ To exclude the test for openj9 only:
 
 ```auto exclude test jdk_test impl=openj9```
 
+To exclude the test for adoptopenjdk vendor only:
+
+```auto exclude test jdk_test vendor=adoptopenjdk```
+
 To exclude the test for java 8 only:
 
 ```auto exclude test jdk_test ver=8```
@@ -352,11 +357,11 @@ To exclude the test for all linux platforms:
 
 plat is defined in regular expression. All platforms can be found here: https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/jenkins/openjdk_tests
 
-To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against openj9 java 8 on windows only:
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
-```auto exclude test jdk_test_1 impl=openj9 ver=8 plat=.*windows.*```
+```auto exclude test jdk_test_1 impl=openj9 vendor=adoptopenjdk ver=8 plat=.*windows.*```
 
-After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
+After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
 #### Manually exclude a test target
 Search the test name to find its playlist.xml file. Add a ```<disabled>``` element after ```<testCaseName>``` element. The ```<disabled>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url).
@@ -366,10 +371,10 @@ For example:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+  </disabled>
+  ...
 ```
 
 This will disable the entire test suite. The following section describes how to disable the specific test cases.
@@ -382,16 +387,16 @@ For example, to exclude the test case with variation ```-Xmx1024m```:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <variation>-Xmx1024m</variation>
-    </disabled>
-    ...
-    <variations>
-      <variation>NoOptions</variation>
-      <variation>-Xmx1024m</variation>
-    </variations>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <variation>-Xmx1024m</variation>
+  </disabled>
+  ...
+  <variations>
+    <variation>NoOptions</variation>
+    <variation>-Xmx1024m</variation>
+  </variations>
+  ...
 ```
 
 ##### Exclude a test against specific java implementation:
@@ -402,11 +407,26 @@ For example, to exclude the test for openj9 only:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <impl>openj9</impl>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <impl>openj9</impl>
+  </disabled>
+  ...
+```
+
+##### Exclude a test against specific java vendor:
+Add a ```<vendor>``` element in the ```<disabled>``` element to specify the vendor information.
+
+For example, to exclude the test for AdoptOpenJDK only:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <vendor>adoptopenjdk</vendor>
+  </disabled>
+  ...
 ```
 
 ##### Exclude a test against specific java version:
@@ -417,11 +437,11 @@ For example, to exclude the test for java 11 and up:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>11+</subset>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <subset>11+</subset>
+  </disabled>
+  ...
 ```
 
 
@@ -433,30 +453,31 @@ For example, to exclude the test for all linux platforms:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <plat>.*linux.*</plat>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <plat>.*linux.*</plat>
+  </disabled>
+  ...
 ```
 
 
 ##### Exclude test against multiple criteria:
 Defined a combination of ```<variation>```, ```<impl>```, ```<subset>```, and  ```<plat>``` in the ```<disabled>``` element.
 
-For example, to exclude the test with variation ```-Xmx1024m``` against openj9 java 8 on windows only:
+For example, to exclude the test with variation ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <variation>-Xmx1024m</variation>
-      <subset>8</subset>
-      <impl>openj9</impl>
-      <plat>.*windows.*</plat>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <variation>-Xmx1024m</variation>
+    <subset>8</subset>
+    <impl>openj9</impl>
+    <vendor>adoptopenjdk</vendor>
+    <plat>.*windows.*</plat>
+  </disabled>
+  ...
 ```
 
 Note: Same element cannot be defined multiple times inside one ```<disabled>``` element. It is because the elements inside the disable element are in AND relationship.
@@ -466,17 +487,17 @@ For example, to exclude test on against hotspot and openj9. It is required to de
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-      <impl>openj9</impl>
-    </disabled>
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-      <impl>hotspot</impl>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <subset>8</subset>
+    <impl>openj9</impl>
+  </disabled>
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <subset>8</subset>
+    <impl>hotspot</impl>
+  </disabled>
+  ...
 ```
 
 Or remove ```<impl>``` element to exclude test against all implementations:
@@ -484,9 +505,9 @@ Or remove ```<impl>``` element to exclude test against all implementations:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
+    <subset>8</subset>
+  </disabled>
+  ...
 ```

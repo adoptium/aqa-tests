@@ -19,12 +19,12 @@
 	</test>
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleThrdLoad_J9</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_J9_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -39,13 +39,13 @@
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThrdLoad_HS</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_HS_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -59,12 +59,12 @@
 	</test>
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse/openj9/issues/4091 -->
 	<test>
-		<testCaseName>MauveSingleInvocLoad_J9</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_J9_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -79,13 +79,13 @@
 		<platformRequirements>^os.osx</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocLoad_HS</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_HS_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -98,13 +98,13 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>MauveMultiThrdLoad</testCaseName>
+		<testCaseName>MauveMultiThrdLoad_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -114,14 +114,14 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThrdLoad_CS</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_CS_5m</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/75</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -136,14 +136,14 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocLoad_CS</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_CS_5m</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/78</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -158,14 +158,14 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MauveMultiThrdLoad_CS</testCaseName>
+		<testCaseName>MauveMultiThrdLoad_CS_5m</testCaseName>
 		<disabled>
 			<comment>AdoptOpenJDK/openjdk-systemtest/issues/64</comment>
 		</disabled>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -181,7 +181,7 @@
 	</test>
 	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
-		<testCaseName>MauveMultiThrdLoad_special</testCaseName>
+		<testCaseName>MauveMultiThrdLoad_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -213,7 +213,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoadTrc; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveMultiThrdLoadTrc -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -225,12 +225,12 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
-		<testCaseName>MauveSingleThrdLoad_special</testCaseName>
+		<testCaseName>MauveSingleThrdLoad_special_5m</testCaseName>
 		<disabled>
 			<comment>https://github.com/eclipse/openj9/issues/3771</comment>
 		</disabled>
@@ -265,7 +265,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoadTrc; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleThrdLoadTrc -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -277,12 +277,12 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
-		<testCaseName>MauveSingleInvocLoad_special</testCaseName>
+		<testCaseName>MauveSingleInvocLoad_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -314,7 +314,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MauveSingleInvocLoad -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -326,8 +326,8 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 </playlist>

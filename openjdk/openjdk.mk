@@ -138,11 +138,19 @@ endif
 
 PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION).txt
 PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11.txt
+TEST_VARIATION_DUMP:=
+TEST_VARIATION_JIT_PREVIEW:=
+TEST_VARIATION_JIT_AGGRESIVE:=
+TIMEOUT_HANDLER:=
 
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION)-openj9.txt
 	PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11-openj9.txt
+	TEST_VARIATION_DUMP:=-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache
+	TEST_VARIATION_JIT_PREVIEW:=-XX:-JITServerTechPreviewMessage
+	TEST_VARIATION_JIT_AGGRESIVE:=-Xjit:enableAggressiveLiveness
+	TIMEOUT_HANDLER:=-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q)
 endif
 
 # if cannot find the problem list file, set to default file

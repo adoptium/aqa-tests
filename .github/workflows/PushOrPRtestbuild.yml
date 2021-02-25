@@ -12,7 +12,7 @@ on:
       - '.github/*.yml'
       - 'buildenv/**'
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [ready_for_review]
     paths-ignore:
       - '.gitignore'
       - '*.md'
@@ -33,7 +33,7 @@ jobs:
     - uses: AdoptOpenJDK/install-jdk@v1
       with:
         version: ${{ matrix.version }}
-        source: 'releases'  #nightly for nightly test builds
+        source: 'nightly'
     - name: Extract branch and repo name
       shell: bash
       run: |
@@ -56,8 +56,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output_openjdk
-        path: ./**/test_output_*/
+        name: output_openjdk
+        path: ./**/output_*/
   testSystemWithOpenj9:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -70,7 +70,7 @@ jobs:
     - uses: AdoptOpenJDK/install-jdk@v1
       with:
         version: ${{ matrix.version }}
-        source: 'releases'  #nightly for nightly test builds
+        source: 'nightly'
         impl: 'openj9'
     - name: Extract branch name
       shell: bash
@@ -94,5 +94,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: test_output_system
-        path: ./**/test_output_*/
+        name: output_system
+        path: ./**/output_*/
