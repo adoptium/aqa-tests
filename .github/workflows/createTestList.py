@@ -15,22 +15,34 @@ def getTestCaseName(path):
 def getPlaylistPath(dirName):
     if dirName == 'openjdk':
         return './openjdk-tests/openjdk/'
-    else if dirName == 'system':
+    elif dirName == 'system':
         return './openjdk-tests/system/daaLoadTest/'
-    else if dirName === 'functional':
+    elif dirName == 'functional':
         return './openjdk-tests/functional/SyntheticGCWorkload/'
-    else if dirName == 'perf':
+    elif dirName == 'perf':
         return './openjdk-tests/perf/bumbleBench/'
+      
+def getTestCaseNameStatic(dirName):
+  if dirName == 'openjdk':
+    return 'jdk_custom'
+  elif dirName == 'system':
+    return 'ClassLoadingTest'
+  elif dirName == 'functional':
+    return 'SyntheticGCWorkload_concurrentSlackAuto_1k_J9'
+  elif dirName == 'perf':
+    return 'dacapo-eclipse'
 
 def main():
     
-    dirName = sys.argv[1])
+    dirName = sys.argv[1]
     
-    if dirName == 'openjdk' || dirName == 'system' || dirName == 'functional' || dirName == 'perf':
-      playlistPath = getPlaylistPath(dirName)
-      testCaseNames = getTestCaseNames(playlistPath)
+    if (dirName == 'openjdk') or (dirName == 'system') or (dirName == 'functional') or (dirName == 'perf'):
+      
+#       playlistPath = getPlaylistPath(dirName)
+#       testCaseName = getTestCaseName(playlistPath)
+      testCaseName = getTestCaseNameStatic(dirName)
             
-      testTarget = 'TESTLIST={}'.format(allTests)
+      testTarget = 'TESTLIST={}'.format(testCaseName)
 
       print(testTarget)
       print('::set-output name=test_target_str::{}'.format(testTarget))
