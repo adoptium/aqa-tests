@@ -1,6 +1,6 @@
+# import os
+# import ast
 import sys
-import os
-import ast
 import xml.etree.ElementTree as ET
 
 def getTestCaseName(path):
