@@ -5,7 +5,7 @@ import json
 def main():
     print(sys.argv)
     result = []
-    # TODO: handle the change of buildenv dir
+
     flag = False
     for argument in sys.argv:
         if (argument.startswith('perf/') and ('perf' not in result)):
