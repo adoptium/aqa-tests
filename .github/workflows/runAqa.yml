@@ -10,6 +10,7 @@ jobs:
       workflow_url: ${{ steps.workflow_run_info.outputs.url }}
       workflow_id: ${{ steps.workflow_run_info.outputs.id }}
       build_parameters: ${{ steps.argparse.outputs.build_parameters }}
+      failed: ${{ steps.failure_report.outputs.failed }} # For reportStatus to check if parseComment has already reported a failure (in parsing).
     steps:
     - name: Get workflow run info
       run: |
@@ -52,6 +53,10 @@ jobs:
             repo: context.repo.repo,
             body: comment_body
           })
+    - name: Failure report
+      if: failure()
+      run: echo ::set-output name=failed::true
+      id: failure_report
     - name: Create success comment
       uses: actions/github-script@v3
       with:
@@ -129,8 +134,8 @@ jobs:
 
   reportFailure:
     runs-on: ubuntu-latest
-    if: failure()
     needs: [parseComment, runBuild]
+    if: failure() && !needs.parseComment.outputs.failed
     steps:
     - name: Create comment
       uses: actions/github-script@v3
@@ -150,8 +155,8 @@ jobs:
 
   reportCancelled:
     runs-on: ubuntu-latest
-    if: cancelled()
     needs: [parseComment, runBuild]
+    if: cancelled()
     steps:
     - name: Create comment
       uses: actions/github-script@v3
@@ -171,8 +176,8 @@ jobs:
 
   reportSuccess:
     runs-on: ubuntu-latest
-    if: success()
     needs: [parseComment, runBuild]
+    if: success()
     steps:
     - name: Create comment
       uses: actions/github-script@v3
