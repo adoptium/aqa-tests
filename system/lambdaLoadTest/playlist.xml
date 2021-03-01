@@ -181,6 +181,14 @@
 	</test>
 	<test>
 		<testCaseName>ParallelStreamsLoadTest_special_J9</testCaseName>
+		<disabled>
+			<comment>https://github.com/eclipse/openj9/issues/11904</comment>
+			<variation>Mode107-OSRG</variation>
+			<variation>Mode110-OSRG</variation>
+			<variation>Mode610-OSRG</variation>
+			<variation>Mode612-OSRG</variation>
+			<plat>.*windows.*</plat>
+		</disabled>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
