@@ -302,11 +302,7 @@ def getNumMachines(){
 }
 
 def getMachineLimit(){
-	def slaves = nodesByLabel(LABEL).size()
-	if (slaves == 1) {
-		return slaves
-	}
-	return (int)(slaves * 3 / 4)
+	return nodesByLabel(LABEL).size()
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
