@@ -75,11 +75,14 @@ java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/Adopt
 ############################################################################
 
 # jdk_net
+java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/2245 aix-all
 java/net/Inet4Address/PingThis.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1127	aix-all
 java/net/InetAddress/BadDottedIPAddress.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/593	linux-all
 java/net/InetAddress/CachedUnknownHostName.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/593	linux-all
 java/net/InetAddress/IPv4Formats.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/593	linux-all
 java/net/MulticastSocket/PromiscuousIPv6.java	https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699	linux-s390x
+java/net/Socket/SocketReadInterruptTest.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/2247 linux-all,aix-all,macosx-all
+java/net/Socket/SocketAcceptInterruptTest.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/2247 linux-all,aix-all,macosx-all
 java/net/SocketPermission/SocketPermissionCollection.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/593	linux-all
 java/net/SocketPermission/SocketPermissionTest.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1650 aix-all
 java/net/SocketPermission/Wildcard.java	https://github.com/AdoptOpenJDK/openjdk-tests/issues/593	linux-all
@@ -94,9 +97,12 @@ java/net/httpclient/http2/BadHeadersTest.java	https://github.com/AdoptOpenJDK/op
 java/net/httpclient/DigestEchoClientSSL.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/893	linux-all
 java/net/httpclient/ResponseBodyBeforeError.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/893	linux-all
 java/net/httpclient/ResponsePublisher.java	https://github.com/AdoptOpenJDK/openjdk-build/issues/893	linux-all
-java/net/MulticastSocket/Promiscuous.java               https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/Test.java                             https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x
+java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/2246 aix-all
+java/net/MulticastSocket/B6427403.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/2246 aix-all
+java/net/MulticastSocket/Promiscuous.java               https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,aix-all
+java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,aix-all
+java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/AdoptOpenJDK/openjdk-tests/issues/2246 aix-all
+java/net/MulticastSocket/Test.java                             https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699    linux-s390x,aix-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/AdoptOpenJDK/openjdk-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/AdoptOpenJDK/openjdk-tests/issues/1267 macosx-all,linux-s390x

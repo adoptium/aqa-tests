@@ -143,7 +143,12 @@ public class TWTagTest{
     public void timezoneTWCalendarTest(){
         String tag = "zh-TW-u-ca-roc-tz-twtpe";
         Locale l = Locale.forLanguageTag(tag);
-        assertEquals("中文 (台灣，民國曆，時區：台北時間)", l.getDisplayName(l));
+        long ver = JavaVersion.getVersion();
+        if (ver >= 16000000L) {
+            assertEquals("中文 (台灣，國曆，時區：台北時間)", l.getDisplayName(l));
+        } else {
+            assertEquals("中文 (台灣，民國曆，時區：台北時間)", l.getDisplayName(l));
+        }
         assertEquals("Chinese (Taiwan, Minguo Calendar, Time Zone: Taipei Time)",
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
@@ -162,8 +167,14 @@ public class TWTagTest{
     public void timezoneTWCalendarNumberTest(){
         String tag = "zh-TW-u-ca-roc-nu-fullwide-tz-twtpe";
         Locale l = Locale.forLanguageTag(tag);
-        assertEquals("中文 (台灣，民國曆，全形數字，時區：台北時間)",
-                     l.getDisplayName(l));
+        long ver = JavaVersion.getVersion();
+        if (ver >= 16000000L) {
+            assertEquals("中文 (台灣，國曆，全形數字，時區：台北時間)",
+                         l.getDisplayName(l));
+        } else {
+            assertEquals("中文 (台灣，民國曆，全形數字，時區：台北時間)",
+                         l.getDisplayName(l));
+        }
         assertEquals("Chinese (Taiwan, Minguo Calendar, Full-Width Digits, Time Zone: Taipei Time)",
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());

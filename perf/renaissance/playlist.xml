@@ -68,6 +68,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-dec-tree</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2255#issuecomment-788234331</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance-mit.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
 		<levels>

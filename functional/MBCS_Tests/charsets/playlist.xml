@@ -14,7 +14,7 @@ limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TestConfig/playlist.xsd">
 	<test>
-		<testCaseName>MBCS_Tests_charsets</testCaseName>
+		<testCaseName>MBCS_Tests_charsets8</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -28,5 +28,28 @@ limitations under the License.
 		<groups>
 			<group>functional</group>
 		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>MBCS_Tests_charsets</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) \
+	--add-opens java.base/sun.nio.cs=ALL-UNNAMED \
+	-cp $(Q)$(TEST_RESROOT)$(D)charsets.jar$(Q) \
+	CharsetsTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<versions>
+			<version>11+</version>
+		</versions>
 	</test>
 </playlist>
