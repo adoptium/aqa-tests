@@ -188,16 +188,12 @@
 								<property name="jdkName" value="openjdk-aarch64-jdk8u" />
 							</then>
 							<else>
-								<trycatch>
-									<try>
-										<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet." />
-										<echo message="git ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
-										<exec executable="git" resultproperty="repo.exist" failonerror="true" timeout="30000">
-											<env key="GIT_TERMINAL_PROMPT" value="0"/>
-											<arg line="ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
-										</exec>
-									</try>
-								</trycatch>
+								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet." />
+								<echo message="git ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
+								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
+									<env key="GIT_TERMINAL_PROMPT" value="0"/>
+									<arg line="ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
+								</exec>
 								<if>
 									<equals arg1="${repo.exist}" arg2="0" />
 									<then>
