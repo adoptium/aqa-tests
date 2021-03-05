@@ -186,6 +186,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 
 					definition {
 						parameters {
+							
+							separator(name: "TEST_REPOSITORIES", sectionHeader: "Test Repositories Parameters"),
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
