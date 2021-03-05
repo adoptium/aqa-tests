@@ -111,9 +111,9 @@ crossCheckTestFoldersIn() {
 			echo "	<groups>"
 			echo "		<group>jck</group>"
 			echo "	</groups>"
-			echo "	<subsets>"
-			echo "		<subset>$VERSION+</subset>"
-			echo "	</subsets>"
+			echo "	<versions>"
+			echo "		<version>$VERSION+</version>"
+			echo "	</versions>"
 			echo "</test>"
 			count=$((count +1))	
 		fi

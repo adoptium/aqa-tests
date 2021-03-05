@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         version: [8, 15]
         build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
         impl: [hotspot, openj9]
