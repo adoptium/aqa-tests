@@ -200,7 +200,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					}
 
 					definition {
-						parameters {
+						parameters ([
 							separator(name: "TEST_ENVIRONMENT", sectionHeader: "Test Environment",
 								separatorStyle: "border-width: 0",
 								sectionHeaderStyle: """
@@ -217,7 +217,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 								"""
 							),
 							string(name: 'ADOPTOPENJDK_REPO', defaultValue: 'https://github.com/AdoptOpenJDK/openjdk-tests.git', description: 'AdoptOpenJDK git repo. Please use ssh for zos.')
-						}
+						)]
 						cpsScm {
 							scm {
 								git {
