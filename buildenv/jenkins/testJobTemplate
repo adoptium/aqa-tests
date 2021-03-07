@@ -200,11 +200,13 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					}
 
 					definition {
-						parameterSeparatorDefinition {
-						    name('TEST_REPO_PARAMS')
-						    separatorStyle(separatorStyleCss)
-						    sectionHeader('Test Repositories Parameters')
-						    sectionHeaderStyle(sectionHeaderStyleCss)
+						parameters {
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Test Repositories Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
 						}
 						cpsScm {
 							scm {
