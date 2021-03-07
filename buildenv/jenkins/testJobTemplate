@@ -200,24 +200,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					}
 
 					definition {
-						parameters ([
-							separator(name: "TEST_ENVIRONMENT", sectionHeader: "Test Environment",
-								separatorStyle: "border-width: 0",
-								sectionHeaderStyle: """
-									background-color: #dbdb8e;
-									text-align: center;
-									padding: 4px;
-									color: #343434;
-									font-size: 22px;
-									font-weight: normal;
-									text-transform: uppercase;
-									font-family: 'Orienta', sans-serif;
-									letter-spacing: 1px;
-									font-style: italic;
-								"""
-							),
-							string(name: 'ADOPTOPENJDK_REPO', defaultValue: 'https://github.com/AdoptOpenJDK/openjdk-tests.git', description: 'AdoptOpenJDK git repo. Please use ssh for zos.')
-						])
+						parameterSeparatorDefinition {
+						    name('TEST_REPO_PARAMS'')
+						    separatorStyle(separatorStyleCss)
+						    sectionHeader('Test Repositories Parameters')
+						    sectionHeaderStyle(sectionHeaderStyleCss)
+						}
 						cpsScm {
 							scm {
 								git {
