@@ -69,7 +69,6 @@ jobs:
     if: ${{ needs.getBuildLists.outputs.buildEnv }}
     env:
         TOKEN: ${{ secrets.TOKEN }}
-        temp: "plainstring"
     steps:
     - uses: actions/checkout@v2
     - name: format test targets str
@@ -78,7 +77,7 @@ jobs:
         python3 ./.github/workflows/createTestList.py ${{matrix.build_list}}
     - name: trigger default job
       if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
-      run: echo '${{ secrets.TOKEN }}'; echo '${{ env.TOKEN }}'; echo '${{ env.temp }}'
+      run: curl -X POST -u xfxcwynlc:${{ env.TOKEN }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters/"
     - name: trigger single job
       if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       run: curl -X POST -u xfxcwynlc:${{ env.TOKEN }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters?BUILD_LIST=${{matrix.build_list}}&TARGET=testList%20${{ steps.format_test_targets_str.outputs.test_target_str}}"
