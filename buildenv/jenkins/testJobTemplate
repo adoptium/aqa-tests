@@ -188,7 +188,14 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				}
 				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
-
+					parameters {
+						parameterSeparatorDefinition {
+							name('TEST_REPO_PARAMS')
+							separatorStyle(separatorStyleCss)
+							sectionHeader('Test Repositories Parameters')
+							sectionHeaderStyle(sectionHeaderStyleCss)
+						}
+					}
 					properties {
 						pipelineTriggers {
 							triggers {
@@ -200,14 +207,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					}
 
 					definition {
-						parameters {
-							parameterSeparatorDefinition {
-							    name('TEST_REPO_PARAMS')
-							    separatorStyle(separatorStyleCss)
-							    sectionHeader('Test Repositories Parameters')
-							    sectionHeaderStyle(sectionHeaderStyleCss)
-							}
-						}
+						
 						cpsScm {
 							scm {
 								git {
