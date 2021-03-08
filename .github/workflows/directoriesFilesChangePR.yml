@@ -60,6 +60,8 @@ jobs:
   triggerGrinderTests:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      SUPER_SECRET: ${{ secrets.TOKEN }}
     outputs:
       test_targets_str: ${{ steps.format_test_targets_str.outputs.test_targets_str }}
     strategy:
@@ -67,8 +69,6 @@ jobs:
         build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
     needs: getBuildLists
     if: ${{ needs.getBuildLists.outputs.buildEnv }}
-    env:
-        jenkin_token: ${{ secrets.TOKEN }}
     steps:
     - uses: actions/checkout@v2
     - name: format test targets str
@@ -78,11 +78,13 @@ jobs:
     - name: trigger default job
       if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       shell: bash
-      run: curl -X POST -u xfxcwynlc:${{ env.jenkin_token }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters/"
+      run: |
+        curl -X POST -L --user xfxcwynlc:${{ env.SUPER_SECRET }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters/"
     - name: trigger single job
       if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       shell: bash
-      run: curl -X POST -u xfxcwynlc:${{ env.jenkin_token }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters?BUILD_LIST=${{matrix.build_list}}&TARGET=testList%20${{ steps.format_test_targets_str.outputs.test_target_str}}"
+      run: |
+        curl -X POST -u xfxcwynlc:${{ env.SUPER_SECRET }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters?BUILD_LIST=${{matrix.build_list}}&TARGET=testList%20${{ steps.format_test_targets_str.outputs.test_target_str}}"
   comment:
     runs-on: ubuntu-latest
     needs: getBuildLists
