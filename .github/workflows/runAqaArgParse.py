@@ -9,7 +9,7 @@ def map_platforms(platforms):
     
     platform_map = {
         'x86-64_windows': 'windows-latest',
-        'x86-64_mac': 'mac-latest',
+        'x86-64_mac': 'macos-latest',
         'x86-64_linux': 'ubuntu-latest'
     }
     
