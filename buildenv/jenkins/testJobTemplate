@@ -4,9 +4,7 @@
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
       https://www.apache.org/licenses/LICENSE-2.0
-
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -135,21 +133,6 @@ if (LIGHT_WEIGHT_CHECKOUT) {
 	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 }
 
-// Params separator styles
-String sectionHeaderStyleCss = '''
-    color: white;
-    background: green;
-    font-family: Roboto, sans-serif !important;
-    padding: 5px;
-    text-align: center;
-'''
-
-String separatorStyleCss = '''
-    border: 0;
-    border-bottom: 1px dashed #ccc;
-    background: #999;
-'''
-
 ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
@@ -188,6 +171,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				}
 				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
+
 					properties {
 						pipelineTriggers {
 							triggers {
@@ -252,7 +236,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
 							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
-						}						
+						}
 						cpsScm {
 							scm {
 								git {
