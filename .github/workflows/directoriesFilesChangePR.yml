@@ -77,9 +77,13 @@ jobs:
         python3 ./.github/workflows/createTestList.py ${{matrix.build_list}}
     - name: trigger default job
       if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
-      shell: bash
-      run: |
-        curl -X POST -L --user xfxcwynlc:${{ env.SUPER_SECRET }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters/"
+      uses: appleboy/jenkins-action@master
+      with:
+        url: "https://ci.adoptopenjdk.net/"
+        user: "xfxcwynlc"
+        token: ${{ secrets.TOKEN }}
+        job: "Grinder_Simple"
+
     - name: trigger single job
       if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       shell: bash
