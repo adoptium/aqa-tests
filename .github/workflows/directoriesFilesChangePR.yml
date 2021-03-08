@@ -77,7 +77,7 @@ jobs:
       env:
         TOKEN: ${{ secrets.TOKEN }}
       if: ${{contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
-      run: curl -X POST -u xfxcwynlc:${{ env.TOKEN }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters/"
+      run: echo ${{ secrets.TOKEN }}; echo ${{ env.TOKEN }}; echo "test echo token"
     - name: trigger single job
       if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
       run: curl -X POST -u xfxcwynlc:${{ env.TOKEN }} "https://ci.adoptopenjdk.net/view/all/job/Grinder_Simple/buildWithParameters?BUILD_LIST=${{matrix.build_list}}&TARGET=testList%20${{ steps.format_test_targets_str.outputs.test_target_str}}"
