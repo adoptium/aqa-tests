@@ -201,8 +201,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							parameterSeparatorDefinition {
 							    name('TEST_REPO_PARAMS_HELP_TEXT')
 							    separatorStyle(separatorHelpTextStyleCss)
-							    sectionSubHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
-							    sectionSubHeaderStyle(sectionHeaderHelpTextStyleCss)
+							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
@@ -274,9 +274,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 							
 							parameterSeparatorDefinition {
-							    name('TEST_OPTIONS_PARAMS')
+							    name('TEST_PARALLELIZATION_PARAMS')
 							    separatorStyle(separatorStyleCss)
-							    sectionHeader('Test Options Parameters')
+							    sectionHeader('Test Parallelization Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
