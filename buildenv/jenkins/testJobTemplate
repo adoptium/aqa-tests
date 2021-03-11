@@ -137,6 +137,10 @@ String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !i
 
 String separatorStyleCss = ' border: 0; border-bottom: 1px #ccc; background: #999; '
 
+String sectionHeaderHelpTextStyleCss = ' color: #444;	font-family: Roboto, sans-serif !important; outline: 0; display: block; margin-block-start: 1em; margin-block-end: 1em; font-weight: bold; '
+
+String separatorHelpTextStyleCss = ' border: 0; '
+
 ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
@@ -188,12 +192,19 @@ ARCH_OS_LIST.each { ARCH_OS ->
 
 					definition {
 						parameters {
-														parameterSeparatorDefinition {
+							parameterSeparatorDefinition {
 							    name('TEST_REPO_PARAMS')
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Test Repositories Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionSubHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
+							    sectionSubHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
