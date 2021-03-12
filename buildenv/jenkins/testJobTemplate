@@ -43,6 +43,11 @@ if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
 if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
+if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
+if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
+if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
+
+
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -224,10 +229,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
 							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
-							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
-							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
+							stringParam('VENDOR_TEST_REPOS', VENDOR_TEST_REPOS, "Optional. Addtional test repos")
+							stringParam('VENDOR_TEST_BRANCHES', VENDOR_TEST_BRANCHES, "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
-							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
+							stringParam('VENDOR_TEST_DIRS', VENDOR_TEST_DIRS, "Optional. Addtional test dirs")
 							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
