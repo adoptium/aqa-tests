@@ -135,11 +135,11 @@ if (LIGHT_WEIGHT_CHECKOUT) {
 
 String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !important; padding: 5px; font-weight: bold; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 1rem; outline: 0; '
 
-String separatorStyleCss = ' border: 0; border-bottom: 1px #ccc; background: #999; '
+String separatorStyleCss = ' border: 0; border-bottom: 1px solid #ccc; background: #999; '
 
 String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; '
 
-String separatorHelpTextStyleCss = ' border: 0; '
+String separatorHelpTextStyleCss = ' border: none; '
 
 ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
@@ -203,8 +203,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    separatorStyle(separatorHelpTextStyleCss)
 							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
-							}
-							
+							}							
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
@@ -224,17 +223,29 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Non-AQA Test Repositories')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
+							parameterSeparatorDefinition {
+							    name('NON_AQA_TEST_REPOS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test repositories that can be overlayed onto existing AQA test material for extra testing.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
 							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
 							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
 							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
-							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")			
-							
+							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
+														
 							parameterSeparatorDefinition {
 							    name('PLATFORM_AND_MACHINE')
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Platform and Machine Selection Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('PLATFORM_AND_MACHINE_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Choose which platform to run tests on, and optionally specify machine label to send the test job to a certain machine is desired.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
@@ -251,6 +262,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('JDK Selection Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
+							parameterSeparatorDefinition {
+							    name('JDK_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Specify where to pick up JDK from and provide extra details if taking from upstream or customized.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
 							stringParam('SDK_RESOURCE', SDK_RESOURCE, "Where to get sdk? upstream, nightly, releases, or customized")
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
@@ -265,16 +282,28 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Test Selection Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
-							}							
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
 							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
 							
 							parameterSeparatorDefinition {
-							    name('TSET_OPTIONS_PARAMS')
+							    name('TEST_OPTIONS_PARAMS')
 							    separatorStyle(separatorStyleCss)
-							    sectionHeader('Test Options Parameters')
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_OPTIONS_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
 							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
@@ -290,6 +319,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Test Parallelization Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
+							parameterSeparatorDefinition {
+							    name('TEST_PARALLELIZATION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test options if you wish to run in various parallel modes')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
 							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
@@ -301,6 +336,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Post Run Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('POST_RUN_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Parameters to determine what to do with post run artifacts.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
 							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
