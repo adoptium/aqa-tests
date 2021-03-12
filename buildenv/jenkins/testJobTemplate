@@ -137,7 +137,7 @@ String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !i
 
 String separatorStyleCss = ' border: 0; border-bottom: 1px #ccc; background: #999; '
 
-String sectionHeaderHelpTextStyleCss = ' color: #444;	font-family: Roboto, sans-serif !important; outline: 0; display: block; margin-block-start: 1em; margin-block-end: 1em; font-weight: bold; '
+String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; '
 
 String separatorHelpTextStyleCss = ' border: 0; '
 
@@ -212,6 +212,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
 							stringParam('JDK_REPO', "", "JDK git repo. Please use ssh for zos.")
 							stringParam('JDK_BRANCH', "", "JDK branch")
+							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
+							stringParam('TKG_SHA', "", "TKG sha")
+							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
+							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
+							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
 							
 							parameterSeparatorDefinition {
 							    name('NON_AQA_TEST_REPOS')
@@ -223,6 +228,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
 							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
+							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")			
 							
 							parameterSeparatorDefinition {
 							    name('PLATFORM_AND_MACHINE')
@@ -236,6 +242,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
 							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
 							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
+							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
+							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
 							
 							parameterSeparatorDefinition {
 							    name('JDK_SELECTION_PARAMS')
@@ -247,9 +255,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
+							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
 							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
 							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
-							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
+							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")							
 							
 							parameterSeparatorDefinition {
 							    name('TEST_SELECTION_PARAMS')
@@ -270,8 +279,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
 							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('BUILD_IDENTIFIER', "", "build identifier")	
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
+							
 							
 							parameterSeparatorDefinition {
 							    name('TEST_PARALLELIZATION_PARAMS')
@@ -292,21 +303,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderStyleCss)
 							}
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
-							
-							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
-							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")							
-							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
-							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
+							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
-							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")					
-							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
-							stringParam('BUILD_IDENTIFIER', "", "build identifier")					
-							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
-							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
-							stringParam('TKG_SHA', "", "TKG sha")
-							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
+
 						}
 						cpsScm {
 							scm {
