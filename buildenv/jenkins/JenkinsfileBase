@@ -328,11 +328,6 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 		}
 	}
 
-	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
-	if (TEST_JOB_NAME.startsWith("Grinder_")) {
-		jobParams.put('BUILDS_TO_KEEP', 5)
-	}
-
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
 
 	if (params.LIGHT_WEIGHT_CHECKOUT) {
