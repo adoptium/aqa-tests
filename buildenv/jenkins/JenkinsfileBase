@@ -116,7 +116,7 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	if ( env.SPEC.contains('sparcv')) {
+	if ( env.SPEC.contains('sunos')) {
 		sh 'env'
 	} else {
 		sh 'printenv'
