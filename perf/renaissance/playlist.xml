@@ -29,6 +29,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-als</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2253#issuecomment-799430133</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
 		<levels>

@@ -90,10 +90,13 @@
 				</exec>
 			</then>
 		</if>
+		<set-property name="JDK_REPO_ISSET" if-property-isset="env.JDK_REPO" />
+		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH" />
+		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA" />
 		<if>
 			<and>
-				<isset property="env.JDK_REPO"/>
-				<isset property="env.JDK_BRANCH"/>
+				<isset property="JDK_REPO_ISSET"/>
+				<isset property="JDK_BRANCH_ISSET"/>
 			</and>
 			<then>
 				<echo> Using user specified repo and branch</echo>
@@ -112,7 +115,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						<exec executable="git" failonerror="true">
@@ -222,7 +225,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q ${defaultBranch} ${regressionRepo}" />
 						<exec executable="git" failonerror="true">

@@ -343,7 +343,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<platformRequirements>os.win</platformRequirements>
+		<platformRequirements>os.win,bits.64</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jdk_lang_ref_FinalizeOverride_j9</testCaseName>
@@ -1092,6 +1092,11 @@
 	</test>
 	<test>
 		<testCaseName>jdk_imageio</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2327#issuecomment-799459653</comment>
+			<version>16+</version>
+			<plat>.*mac.*</plat>
+		</disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
