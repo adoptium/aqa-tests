@@ -22,7 +22,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) $(CUSTOM_TARGET);\
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(ADD_OPENS_CMD) $(CUSTOM_TARGET);\
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -38,7 +38,7 @@
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED$(Q);\
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(ADD_OPENS_CMD);\
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -46,26 +46,6 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<versions>
-			<version>11+</version>
-		</versions>
-	</test>
-	<test>
-		<testCaseName>MiniMix_jdk8_5m</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q);\
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-		<versions>
-			<version>8</version>
-		</versions>
 	</test>
 	<test>
 		<testCaseName>ClassLoadingTest_5m</testCaseName>
