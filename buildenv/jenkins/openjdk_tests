@@ -68,18 +68,22 @@ def PLATFORM_MAP = [
     's390_linux' : [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux_mixed' : [
         'SPEC' : 'linux_390-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux_xl' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_zos' : [
         'SPEC' : 'zos_390-64_cmprssptrs',
@@ -115,15 +119,18 @@ def PLATFORM_MAP = [
     ],
     'x86-64_linux' : [
         'SPEC' : 'linux_x86-64_cmprssptrs',
-        'LABEL' : 'test-ibmcloud-ubuntu1604-x64-1',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_linux_mixed' : [
         'SPEC' : 'linux_x86-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_linux_xl' : [
         'SPEC' : 'linux_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_mac' : [
         'SPEC' : 'osx_x86-64_cmprssptrs',
@@ -154,7 +161,6 @@ def PLATFORM_MAP = [
 if ( !params.TARGET ) {
     assert false : "Please provide TARGET value"
 }
-def X64Dockeimage = 'adoptopenjdk/centos6_build_image'
 def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
@@ -210,6 +216,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
     if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
         SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
         LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+        dynamicAgents = []
+        if (PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
+            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
+        }
 
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
@@ -236,11 +246,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 boolean isNodeIdle = false
                 node('master') {
                     for (String onlineNode : onlineNodes) {
-                        def nodeStatus = sh(script: "curl ${${env.JENKINS_URL}}computer/${onlineNode}/api/xml?xpath=/*/idle",
+                        def nodeStatus = sh(script: "curl ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
                                             returnStdout: true,
                                             returnStatus: false
                                             ).trim()
-                        println ("status is ${nodeStatus}")
                         if (nodeStatus.contains("true")) {
                             isNodeIdle = true
                             break
@@ -248,12 +257,11 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     }
                 }
                 // IF no nodes are idle we will check if there is supported virtual agent
-                // This condition should be updated according to updated supported virtual agent.
-                // For CLOUD_PRIVIDER is FRYE, we need to update what is the fyre supported platform and update it's label
+                // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
+                // In this case jobs will be fooled to fall back to wait local busy nodes. 
                 if (!isNodeIdle && (CLOUD_PROVIDER.length()) != 0) {
-                    if (LABEL.contains('test-ibmcloud-ubuntu1604-x64-1')
-                        || ((CLOUD_PROVIDER.contains('frye') && LABEL.contains('ci.role.test&&hw.arch.x86&&sw.os.linux')))) {
-                        LABEL = 'ci.agent.dynamic'
+                    if (CLOUD_PROVIDER in dynamicAgents) {
+                       LABEL += '&&ci.agent.dynamic'
                     }
                 }
 
@@ -290,9 +298,9 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                         ]
                     }
                     jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-                    if (LABEL.contains('ci.agent.dynamic')) {
-                        //adoptopenjdk/centos6_build_image works for adoptopenjdk jenkins. For openj9 ?
-                        docker.image('adoptopenjdk/centos6_build_image').pull()
+                    if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
+                        //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+                        docker.image('adoptopenjdk/centos6_build_image').pull() 
                         docker.image('adoptopenjdk/centos6_build_image').inside {
                             jenkinsfile.testBuild()
                         }
