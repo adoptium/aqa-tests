@@ -114,6 +114,7 @@ jobs:
         source: ${{ matrix.customized_sdk_url }}
         archiveExtension: ${{ matrix.archive_extension }}
         sourceType: 'url'
+        impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
     - uses: actions/github-script@v3
       id: get-pr
