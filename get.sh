@@ -236,7 +236,8 @@ getBinaryOpenjdk()
 			set +e
 			count=0
 			download_exit_code=-1
-			while [ $download_exit_code != 0 ] && [ $count -le 5  ]
+			# when the command is not found (code 127), do not retry
+			while [ $download_exit_code != 0 ] && [ $download_exit_code != 127 ] && [ $count -le 5  ]
 			do
 				if [ $count -gt 0 ]; then
 					sleep_time=300
