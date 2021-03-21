@@ -70,6 +70,7 @@ jobs:
           - platform: ${{ steps.argparse.outputs.platform }}
           - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
           - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+          - tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
@@ -88,6 +89,7 @@ jobs:
         echo platform: ${{ steps.argparse.outputs.platform }}
         echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
         echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+        echo tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}
@@ -126,6 +128,7 @@ jobs:
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
+         tkgRepo: ${{ matrix.tkg_repo }}
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
