@@ -43,14 +43,11 @@ def main():
     # Strip leading and trailing whitespace. Remove empty arguments that may result after stripping.
     raw_args = list(filter(lambda empty: empty, map(lambda s: s.strip(), raw_args)))
 
-    # nil value because arguments can not be empty or else github actions will complain of a missing value in the runBuild matrix job.
-    na = ['n/a']
-
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
     parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized'], nargs='+')
-    parser.add_argument('--customized_sdk_url', default=na, nargs='+')
-    parser.add_argument('--archive_extension', default=na, choices=['.zip', '.tar', '.7z'], nargs='+')
+    parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
+    parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
     parser.add_argument('--build_list', default=['openjdk'], choices=['openjdk', 'functional', 'system', 'perf', 'external'], nargs='+')
     parser.add_argument('--target', default=['_jdk_math'], nargs='+')
     parser.add_argument('--platform', default=['x86-64_linux'], nargs='+')
@@ -66,8 +63,8 @@ def main():
     args['target'] = underscore_targets(args['target'])
 
     # If 'customized' sdk_resource, then customized_sdk_url and archive_extension must be present.
-    if 'customized' in args['sdk_resource'] and (args['customized_sdk_url'] == na or args['archive_extension'] == na):
-        err_msg = '--customized_sdk_url and --archive_extension must be provided if sdk_resource is set to customized.'
+    if 'customized' in args['sdk_resource'] and args['customized_sdk_url'] == ['None']:
+        err_msg = '--customized_sdk_url must be provided if sdk_resource is set to customized.'
         print('::error ::{}'.format(err_msg))
         sys.stderr.write(err_msg)
         exit(2)
