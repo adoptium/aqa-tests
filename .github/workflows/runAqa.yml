@@ -65,6 +65,8 @@ jobs:
           comment_body = `
           @${{ github.actor }} Build(s) started with the following parameters:
           - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+          - archive_extension: ${{ steps.argparse.outputs.archive_extension }}
           - build_list: ${{ steps.argparse.outputs.build_list }}
           - target: ${{ steps.argparse.outputs.target }}
           - platform: ${{ steps.argparse.outputs.platform }}
@@ -84,6 +86,8 @@ jobs:
       run: |
         echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
         echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+        echo customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+        echo archive_extension: ${{ steps.argparse.outputs.archive_extension }}
         echo build_list: ${{ steps.argparse.outputs.build_list }}
         echo target: ${{ steps.argparse.outputs.target }}
         echo platform: ${{ steps.argparse.outputs.platform }}
@@ -99,9 +103,19 @@ jobs:
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
     - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource != 'customized'
       with:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
+        sourceType: 'buildType'
+        impl: ${{ matrix.jdk_impl }}
+    - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource == 'customized'
+      with:
+        version: ${{ matrix.jdk_version }}
+        source: ${{ matrix.customized_sdk_url }}
+        archiveExtension: ${{ matrix.archive_extension }}
+        sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
     - uses: actions/github-script@v3
