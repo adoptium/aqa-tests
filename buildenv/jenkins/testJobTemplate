@@ -224,8 +224,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
 							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
-							stringParam('JDK_REPO', "", "JDK git repo. Please use ssh for zos.")
-							stringParam('JDK_BRANCH', "", "JDK branch")
+							stringParam('JDK_REPO', JDK_REPO, "JDK git repo. Please use ssh for zos.")
+							stringParam('JDK_BRANCH', JDK_BRANCH, "JDK branch")
 							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
 							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
 							stringParam('TKG_SHA', "", "TKG sha")
@@ -244,10 +244,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Additional test repositories that can be overlayed onto existing AQA test material for extra testing.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('VENDOR_TEST_REPOS', "", "Optional. Addtional test repos")
-							stringParam('VENDOR_TEST_BRANCHES', "", "Optional. Addtional test branches")
+							stringParam('VENDOR_TEST_REPOS', VENDOR_TEST_REPOS, "Optional. Addtional test repos")
+							stringParam('VENDOR_TEST_BRANCHES', VENDOR_TEST_BRANCHES, "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
-							stringParam('VENDOR_TEST_DIRS', "", "Optional. Addtional test dirs")
+							stringParam('VENDOR_TEST_DIRS', VENDOR_TEST_DIRS, "Optional. Addtional test dirs")
 							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
 														
 							parameterSeparatorDefinition {
