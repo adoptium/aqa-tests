@@ -144,7 +144,7 @@ if (LIGHT_WEIGHT_CHECKOUT) {
 
 String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !important; padding: 5px; font-weight: bold; margin-top: 0.5rem; font-size: 1rem; outline: 0; '
 
-String separatorStyleCss = ' border: 0; border-bottom: 1px solid #ccc; background: #999; '
+String separatorStyleCss = ' border: 0; border-bottom: 1px solid #ccc; '
 
 String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; padding-left: 5px; margin-bottom: 1rem'
 
@@ -201,12 +201,6 @@ ARCH_OS_LIST.each { ARCH_OS ->
 
 					definition {
 						parameters {
-							parameterSeparatorDefinition {
-							    name('GRINDER_WIKI_LINK')
-							    separatorStyle(separatorStyleCss)
-							    sectionHeader('<p><a href="https://github.com/AdoptOpenJDK/openjdk-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins">Grinder Wiki</a></p>')
-							    sectionHeaderStyle(' border: none; margin-top: 0; margin-bottom: 0; padding-left: 5px; ')
-							}
 							parameterSeparatorDefinition {
 							    name('TEST_REPO_PARAMS')
 							    separatorStyle(separatorHelpTextStyleCss)
