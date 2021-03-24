@@ -65,11 +65,14 @@ jobs:
           comment_body = `
           @${{ github.actor }} Build(s) started with the following parameters:
           - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+          - archive_extension: ${{ steps.argparse.outputs.archive_extension }}
           - build_list: ${{ steps.argparse.outputs.build_list }}
           - target: ${{ steps.argparse.outputs.target }}
           - platform: ${{ steps.argparse.outputs.platform }}
           - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
           - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+          - tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
@@ -83,11 +86,14 @@ jobs:
       run: |
         echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
         echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+        echo customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+        echo archive_extension: ${{ steps.argparse.outputs.archive_extension }}
         echo build_list: ${{ steps.argparse.outputs.build_list }}
         echo target: ${{ steps.argparse.outputs.target }}
         echo platform: ${{ steps.argparse.outputs.platform }}
         echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
         echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+        echo tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}
@@ -97,9 +103,19 @@ jobs:
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
     - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource != 'customized'
       with:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
+        sourceType: 'buildType'
+        impl: ${{ matrix.jdk_impl }}
+    - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource == 'customized'
+      with:
+        version: ${{ matrix.jdk_version }}
+        source: ${{ matrix.customized_sdk_url }}
+        archiveExtension: ${{ matrix.archive_extension }}
+        sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
     - uses: actions/github-script@v3
@@ -126,6 +142,7 @@ jobs:
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
+         tkg_Repo: ${{ matrix.tkg_repo }}
     - uses: actions/upload-artifact@v2
       if: failure()
       with:

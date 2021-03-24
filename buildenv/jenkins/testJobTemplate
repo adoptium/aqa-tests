@@ -48,6 +48,7 @@ if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
 if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
 if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
 if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
+if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
 
 
 
@@ -242,7 +243,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('VENDOR_TEST_BRANCHES', VENDOR_TEST_BRANCHES, "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
 							stringParam('VENDOR_TEST_DIRS', VENDOR_TEST_DIRS, "Optional. Addtional test dirs")
-							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
+              stringParam('USER_CREDENTIALS_ID', USER_CREDENTIALS_ID, "Optional. User credential ID")
 														
 							parameterSeparatorDefinition {
 							    name('PLATFORM_AND_MACHINE')
