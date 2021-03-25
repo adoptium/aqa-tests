@@ -289,8 +289,12 @@
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
+		<!-- -->
 		<platformRequirements>^os.osx</platformRequirements>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -336,8 +340,10 @@
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_naming/spi,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -364,6 +370,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_applet,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -378,6 +388,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_awt,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -392,6 +406,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_beans,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -406,6 +424,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_io,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -448,6 +470,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_net,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -546,6 +571,8 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<!-- Disabled on osx due to ?. Awaiting some automation improvements, in the interim these targets will be run manually -->
+		<platformRequirements>^os.osx</platformRequirements>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_util,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -560,6 +587,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_accessibility,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -636,6 +667,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE)-test-args=$(Q)tests=api/javax_imageio,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -678,6 +713,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_naming,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -692,6 +731,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/461. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_net,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -706,6 +748,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_print,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -762,6 +808,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_sound,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -790,6 +840,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+		</disabled>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_swing,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
