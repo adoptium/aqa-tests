@@ -66,6 +66,7 @@ def setupEnv() {
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
 	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	CLOUD_PROVIDER = params.CLOUD_PROVIDER ? params.CLOUD_PROVIDER : ""
 	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
@@ -575,7 +576,7 @@ def runTest( ) {
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (env.SPEC.startsWith('linux')) {
+				else if (env.SPEC.startsWith('linux') && !LABEL.contains('ci.agent.dynamic')) {
 					// Add an additional 10 second timeout due to issue: https://github.com/AdoptOpenJDK/openjdk-build/issues/2368#issuecomment-756683888
 					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
 						def DISPLAY = sh (
@@ -875,7 +876,6 @@ def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-
 			node {
 				def buildResult = ""
 				childJobs.each {
