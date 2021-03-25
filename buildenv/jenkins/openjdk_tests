@@ -216,10 +216,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
     if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
         SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
         LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
-        dynamicAgents = []
-        if (PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
-            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
-        }
 
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
@@ -231,6 +227,11 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
         println "SPEC: ${SPEC}"
         println "LABEL: ${LABEL}"
+
+        dynamicAgents = []
+        if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
+            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
+        }
 
         stage('Queue') {
             String[] onlineNodes = nodesByLabel(LABEL)
@@ -259,7 +260,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 // IF no nodes are idle we will check if there is supported virtual agent
                 // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
                 // In this case jobs will be fooled to fall back to wait local busy nodes. 
-                if (!isNodeIdle && (CLOUD_PROVIDER.length()) != 0) {
+                if (!isNodeIdle && params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER.length() != 0 ) {
                     if (CLOUD_PROVIDER in dynamicAgents) {
                        LABEL += '&&ci.agent.dynamic'
                     }
