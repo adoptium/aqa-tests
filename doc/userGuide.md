@@ -430,7 +430,7 @@ For example, to exclude the test for AdoptOpenJDK only:
 ```
 
 ##### Exclude a test against specific java version:
-Add a ```<subset>``` element in the ```<disabled>``` element to specify the version.
+Add a ```<version>``` element in the ```<disabled>``` element to specify the version.
 
 For example, to exclude the test for java 11 and up:
 
@@ -439,7 +439,7 @@ For example, to exclude the test for java 11 and up:
   <testCaseName>jdk_test</testCaseName> 
   <disabled>
     <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    <subset>11+</subset>
+    <version>11+</version>
   </disabled>
   ...
 ```
@@ -462,7 +462,7 @@ For example, to exclude the test for all linux platforms:
 
 
 ##### Exclude test against multiple criteria:
-Defined a combination of ```<variation>```, ```<impl>```, ```<subset>```, and  ```<plat>``` in the ```<disabled>``` element.
+Defined a combination of ```<variation>```, ```<impl>```, ```<version>```, and  ```<plat>``` in the ```<disabled>``` element.
 
 For example, to exclude the test with variation ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
@@ -472,7 +472,7 @@ For example, to exclude the test with variation ```-Xmx1024m``` against adoptope
   <disabled>
     <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
     <variation>-Xmx1024m</variation>
-    <subset>8</subset>
+    <version>8</version>
     <impl>openj9</impl>
     <vendor>adoptopenjdk</vendor>
     <plat>.*windows.*</plat>
@@ -489,12 +489,12 @@ For example, to exclude test on against hotspot and openj9. It is required to de
   <testCaseName>jdk_test</testCaseName> 
   <disabled>
     <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    <subset>8</subset>
+    <version>8</version>
     <impl>openj9</impl>
   </disabled>
   <disabled>
     <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    <subset>8</subset>
+    <version>8</version>
     <impl>hotspot</impl>
   </disabled>
   ...
@@ -507,7 +507,7 @@ Or remove ```<impl>``` element to exclude test against all implementations:
   <testCaseName>jdk_test</testCaseName> 
   <disabled>
     <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    <subset>8</subset>
+    <version>8</version>
   </disabled>
   ...
 ```

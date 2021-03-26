@@ -97,6 +97,14 @@ def PLATFORM_MAP = [
         'SPEC' : 'sunos_sparcv9-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.sparcv9&&sw.os.sunos',
     ],
+    'x86-64_solaris' : [
+        'SPEC' : 'sunos_x86-64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.sunos',
+    ],
+    'x86-64_alpine-linux' : [
+        'SPEC' : 'alpine-linux',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
+    ],
     'x86-32_linux' : [
         'SPEC' : 'linux_x86',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
@@ -215,30 +223,14 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "LABEL: ${LABEL}"
 
         stage('Queue') {
-            def nodes = nodesByLabel(LABEL).size()
-            if (nodes < 1) {
-                // If no active node matches the label, we see if there's a timeout value set.
-                // If there is, we wait and check again periodically. If not, we fail immediately.
+            if (nodesByLabel(LABEL).size() < 1) {
+                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
 
-                boolean didnt_find_node = true
-
-                if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-                    int activeNodeTimeout = params.ACTIVE_NODE_TIMEOUT as Integer
-                    echo "Cannot find an active node matching this label: " + label
-                    echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
-                    while (activeNodeTimeout > 0) {
-                        sleep(60 * 1000) // 1 minute sleep
-                        activeNodeTimeout--
-                        if (nodesByLabel(LABEL).size() > 0) {
-                            didnt_find_node = false
-                            echo "A node matching the aforementioned label has become active."
-                            break;
-                        }
+                timeout(ACTIVE_NODE_TIMEOUT) {
+                    // node(LABEL) has to be used for spinning up a dynamic vm agent
+                    node(LABEL) {
+                        echo "find the node ${env.NODE_NAME}"
                     }
-                }
-
-                if (didnt_find_node) {
-                    assert false : "Cannot find any machine that matches the LABEL: " + LABEL
                 }
             }
 

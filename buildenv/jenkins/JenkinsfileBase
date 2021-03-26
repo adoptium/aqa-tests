@@ -75,7 +75,7 @@ def setupEnv() {
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
-	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
+	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : false
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
 
@@ -116,7 +116,7 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	if ( env.SPEC.contains('sparcv')) {
+	if ( env.SPEC.contains('sunos')) {
 		sh 'env'
 	} else {
 		sh 'printenv'
@@ -302,11 +302,7 @@ def getNumMachines(){
 }
 
 def getMachineLimit(){
-	def slaves = nodesByLabel(LABEL).size()
-	if (slaves == 1) {
-		return slaves
-	}
-	return (int)(slaves * 3 / 4)
+	return nodesByLabel(LABEL).size()
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
@@ -330,11 +326,6 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 			jobParams.put('LEVELS', level)
 			jobParams.put('GROUPS', group)
 		}
-	}
-
-	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
-	if (TEST_JOB_NAME.startsWith("Grinder_")) {
-		jobParams.put('BUILDS_TO_KEEP', 5)
 	}
 
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
@@ -660,7 +651,18 @@ def post(output_name) {
 				)
 			}
 
-			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+			//for performance test, archive regardless the build result
+			if (env.BUILD_LIST.startsWith('perf')) {
+				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
+				if (!params.ARTIFACTORY_SERVER) {
+					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
+					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					def pattern = "${env.WORKSPACE}/*_output.*"
+					uploadToArtifactory(pattern)
+				}
+			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
@@ -671,18 +673,6 @@ def post(output_name) {
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
-				} else {
-					def pattern = "${env.WORKSPACE}/*_output.*"
-					uploadToArtifactory(pattern)
-				}
-			}
-			//for performance test, archive regardless the build result
-			if (env.BUILD_LIST.startsWith('perf')) {
-				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
-				if (!params.ARTIFACTORY_SERVER) {
-					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
-					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
@@ -885,11 +875,7 @@ def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-				waitForANodeToBecomeActive("$LABEL", params.ACTIVE_NODE_TIMEOUT)
-			} else {
-				waitForANodeToBecomeActive("$LABEL", "0")
-			}
+
 			node {
 				def buildResult = ""
 				childJobs.each {
@@ -915,30 +901,6 @@ def run_parallel_tests() {
 				}
 			}
 		}
-	}
-}
-
-def waitForANodeToBecomeActive(def label, String activeNodeTimeoutString) {
-	def nodes = nodesByLabel(label).size()
-	if (nodes < 1) {
-		// If no active node matches the label, we see if there's a timeout value set.
-		// If there is, we wait and check again periodically. If not, we fail immediately.
-
-		int activeNodeTimeout = activeNodeTimeoutString as Integer
-
-		echo "Cannot find an active node matching this label: " + label
-		echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
-
-		while (activeNodeTimeout > 0) {
-			sleep(60 * 1000) // 1 minute sleep
-			activeNodeTimeout--
-			if (nodesByLabel(LABEL).size() > 0) {
-				echo "A node matching the aforementioned label has become active."
-				return
-			}
-		}
-
-		assert false : "Timed out waiting for a machine that matches the LABEL: " + LABEL + " to become active."
 	}
 }
 

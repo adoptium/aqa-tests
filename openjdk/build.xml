@@ -52,9 +52,9 @@
 							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.gz"/>
 					</then>
 				<else>
-					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/${jtregTar}.gz"/>
+					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz"/>
 					<exec executable="curl" failonerror="true">
-						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/${jtregTar}.gz" />
+						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz" />
 					</exec>
 				</else>
 				</if>
@@ -90,10 +90,13 @@
 				</exec>
 			</then>
 		</if>
+		<set-property name="JDK_REPO_ISSET" if-property-isset="env.JDK_REPO" />
+		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH" />
+		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA" />
 		<if>
 			<and>
-				<isset property="env.JDK_REPO"/>
-				<isset property="env.JDK_BRANCH"/>
+				<isset property="JDK_REPO_ISSET"/>
+				<isset property="JDK_BRANCH_ISSET"/>
 			</and>
 			<then>
 				<echo> Using user specified repo and branch</echo>
@@ -112,7 +115,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						<exec executable="git" failonerror="true">
@@ -188,16 +191,21 @@
 								<property name="jdkName" value="openjdk-aarch64-jdk8u" />
 							</then>
 							<else>
+								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet." />
 								<echo message="git ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
-								<exec executable="git" resultproperty="repo.exist" failonerror="false">
+								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
+									<env key="GIT_TERMINAL_PROMPT" value="0"/>
 									<arg line="ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
 								</exec>
 								<if>
 									<equals arg1="${repo.exist}" arg2="0" />
 									<then>
+										<echo message="Command passed. Setting repo name to the 'u' version." />
 										<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
 									</then>
 									<else>
+										<echo message="Command failed, or tried to ask for a username due to access restrictions. Or both." />
+										<echo message="Setting repo name to the non-'u' version." />
 										<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
 									</else>
 								</if>
@@ -217,7 +225,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q ${defaultBranch} ${regressionRepo}" />
 						<exec executable="git" failonerror="true">

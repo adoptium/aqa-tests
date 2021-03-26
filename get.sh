@@ -222,7 +222,7 @@ getBinaryOpenjdk()
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
 
-		if [[ "$JDK_VERSION" -ge "11" ]]; then
+		if [ "$JDK_VERSION" != "8" ] || [ "$JDK_IMPL" != "hotspot" ]; then
 			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
 		fi
 	else
@@ -236,7 +236,8 @@ getBinaryOpenjdk()
 			set +e
 			count=0
 			download_exit_code=-1
-			while [ $download_exit_code != 0 ] && [ $count -le 5  ]
+			# when the command is not found (code 127), do not retry
+			while [ $download_exit_code != 0 ] && [ $download_exit_code != 127 ] && [ $count -le 5  ]
 			do
 				if [ $count -gt 0 ]; then
 					sleep_time=300

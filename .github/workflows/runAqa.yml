@@ -7,8 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, 'run aqa') && github.event.issue.pull_request
     outputs:
+      workflow_url: ${{ steps.workflow_run_info.outputs.url }}
+      workflow_id: ${{ steps.workflow_run_info.outputs.id }}
       build_parameters: ${{ steps.argparse.outputs.build_parameters }}
+      failed: ${{ steps.failure_report.outputs.failed }} # For reportStatus to check if parseComment has already reported a failure (in parsing).
     steps:
+    - name: Get workflow run info
+      run: |
+        echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+        echo ::set-output name=id::$GITHUB_RUN_ID
+      id: workflow_run_info
     - uses: actions/checkout@v2
     - name: Parse parameters
       env:
@@ -45,11 +53,10 @@ jobs:
             repo: context.repo.repo,
             body: comment_body
           })
-    - name: Get workflow run info
-      run: |
-        echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
-        echo ::set-output name=id::$GITHUB_RUN_ID
-      id: workflow_run_info
+    - name: Failure report
+      if: failure()
+      run: echo ::set-output name=failed::true
+      id: failure_report
     - name: Create success comment
       uses: actions/github-script@v3
       with:
@@ -58,11 +65,14 @@ jobs:
           comment_body = `
           @${{ github.actor }} Build(s) started with the following parameters:
           - sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+          - customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+          - archive_extension: ${{ steps.argparse.outputs.archive_extension }}
           - build_list: ${{ steps.argparse.outputs.build_list }}
           - target: ${{ steps.argparse.outputs.target }}
           - platform: ${{ steps.argparse.outputs.platform }}
           - jdk_version: ${{ steps.argparse.outputs.jdk_version }}
           - jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+          - tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
@@ -76,11 +86,14 @@ jobs:
       run: |
         echo build_parameters: ${{ steps.argparse.outputs.build_parameters }}
         echo sdk_resource: ${{ steps.argparse.outputs.sdk_resource }}
+        echo customized_sdk_url: ${{ steps.argparse.outputs.customized_sdk_url }}
+        echo archive_extension: ${{ steps.argparse.outputs.archive_extension }}
         echo build_list: ${{ steps.argparse.outputs.build_list }}
         echo target: ${{ steps.argparse.outputs.target }}
         echo platform: ${{ steps.argparse.outputs.platform }}
         echo jdk_version: ${{ steps.argparse.outputs.jdk_version }}
         echo jdk_impl: ${{ steps.argparse.outputs.jdk_impl }}
+        echo tkg_repo: ${{ steps.argparse.outputs.tkg_repo }}
 
   runBuild:
     runs-on: ${{ matrix.platform }}
@@ -90,9 +103,19 @@ jobs:
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
     - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource != 'customized'
       with:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
+        sourceType: 'buildType'
+        impl: ${{ matrix.jdk_impl }}
+    - uses: AdoptOpenJDK/install-jdk@v1
+      if: matrix.sdk_resource == 'customized'
+      with:
+        version: ${{ matrix.jdk_version }}
+        source: ${{ matrix.customized_sdk_url }}
+        archiveExtension: ${{ matrix.archive_extension }}
+        sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
     - uses: actions/github-script@v3
@@ -119,33 +142,26 @@ jobs:
          jdksource: 'install-jdk'
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
+         tkg_Repo: ${{ matrix.tkg_repo }}
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
         name: test_output
         path: ./**/output_*/
 
-  reportStatus:
+  reportFailure:
     runs-on: ubuntu-latest
-    if: always() && startsWith(github.event.comment.body, 'run aqa') && github.event.issue.pull_request
-    needs: runBuild
+    needs: [parseComment, runBuild]
+    if: failure() && !needs.parseComment.outputs.failed
     steps:
-    - name: Get workflow run info
-      run: |
-        echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
-        echo ::set-output name=id::$GITHUB_RUN_ID
-      id: workflow_run_info
-    - uses: martialonline/workflow-status@v2
-      id: workflow_status
-    - name: Create fail comment
-      if: steps.workflow_status.outputs.status == 'failure'
+    - name: Create comment
       uses: actions/github-script@v3
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           comment_body = `
           @${{ github.actor }} Build(s) failed.
-          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
           github.issues.createComment({
             issue_number: context.issue.number,
@@ -153,15 +169,20 @@ jobs:
             repo: context.repo.repo,
             body: comment_body
           })
-    - name: Create cancelled comment
-      if: steps.workflow_status.outputs.status == 'cancelled'
+
+  reportCancelled:
+    runs-on: ubuntu-latest
+    needs: [parseComment, runBuild]
+    if: cancelled()
+    steps:
+    - name: Create comment
       uses: actions/github-script@v3
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           comment_body = `
           @${{ github.actor }} Build(s) cancelled.
-          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
           github.issues.createComment({
             issue_number: context.issue.number,
@@ -169,15 +190,20 @@ jobs:
             repo: context.repo.repo,
             body: comment_body
           })
-    - name: Create success comment
-      if: steps.workflow_status.outputs.status == 'success'
+
+  reportSuccess:
+    runs-on: ubuntu-latest
+    needs: [parseComment, runBuild]
+    if: success()
+    steps:
+    - name: Create comment
       uses: actions/github-script@v3
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           comment_body = `
           @${{ github.actor }} Build(s) successful.
-          Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
+          Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
           github.issues.createComment({
             issue_number: context.issue.number,

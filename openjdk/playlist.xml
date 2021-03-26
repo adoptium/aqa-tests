@@ -343,7 +343,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<platformRequirements>os.win</platformRequirements>
+		<platformRequirements>os.win,bits.64</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jdk_lang_ref_FinalizeOverride_j9</testCaseName>
@@ -706,7 +706,7 @@
 			<variation>$(TEST_VARIATION_DUMP) Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx1540m $(JVM_OPTIONS)$(Q) \
 	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
@@ -938,10 +938,6 @@
 	<test>
 		<testCaseName>jdk_foreign_native</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2265#issuecomment-779731603</comment>
-			<plat>.*(ppc|arm|390).*</plat>
-		</disabled>
-		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2218#issuecomment-770048450</comment>
 			<version>16+</version>
 			<impl>openj9</impl>
@@ -970,6 +966,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<platformRequirements>bits.64,^arch.ppc,^arch.390,^arch.riscv,^os.zos,^os.sunos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jdk_instrument</testCaseName>
@@ -1095,6 +1092,11 @@
 	</test>
 	<test>
 		<testCaseName>jdk_imageio</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2327#issuecomment-799459653</comment>
+			<version>16+</version>
+			<plat>.*mac.*</plat>
+		</disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>

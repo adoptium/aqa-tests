@@ -27,14 +27,14 @@
 	</target>
 
 	<target name="getRenaissanceSuite" depends="init">
-		<var name="FILE_NAME" value="renaissance-mit.jar"/>
+		<var name="FILE_NAME" value="renaissance.jar"/>
 		<if>
 		    <available file="${FILE_NAME}" type="file" />
 		    <then>
 		        <echo message="${FILE_NAME} exists. Hence, not downloading it." />
 		    </then>
 		    <else>
-				<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.9.0/renaissance-mit-0.9.0.jar -o ${FILE_NAME}"/>
+				<var name="curl_options" value="-Lks https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.11.0/renaissance-gpl-0.11.0.jar -o ${FILE_NAME}"/>
 				<retry retrycount="3">
 		 			<sequential>
 						<echo message="curl ${curl_options}" />
