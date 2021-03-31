@@ -81,13 +81,15 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-signaturetest</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
