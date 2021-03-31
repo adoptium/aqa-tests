@@ -272,10 +272,6 @@ def setupParallelEnv() {
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NAME', value: UPSTREAM_TEST_JOB_NAME)
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NUMBER', value: UPSTREAM_TEST_JOB_NUMBER)
 
-				//This parameter is needed because it enables many iterations of the same test (which all have same names)
-				//to have a unique variable in the array so that Jenkins will run it
-				childParams << string(name: 'RUNTIME_NAME', value: childTest)
-
 				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
