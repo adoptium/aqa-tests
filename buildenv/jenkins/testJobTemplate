@@ -165,8 +165,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				}
 
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
-				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
-					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
+				def ACTUAL_JCK_GIT_REPO = JCK_GIT_REPO ?: ""
+				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !ACTUAL_JCK_GIT_REPO) {
+					ACTUAL_JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
 				}
 
 				def DOCKER_REQUIRED = false
@@ -222,7 +223,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
 							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
 							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
-							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
+							stringParam('JCK_GIT_REPO', ACTUAL_JCK_GIT_REPO, "For JCK test only")
 							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
