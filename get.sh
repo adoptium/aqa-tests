@@ -264,8 +264,8 @@ getBinaryOpenjdk()
 						;;
 				esac
 
-				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSkf${curl_verbosity} ${curl_options} $file"
-				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSkf${curl_verbosity} ${curl_options} $file
+				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${curl_verbosity} ${curl_options} $file"
+				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${curl_verbosity} ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
@@ -285,6 +285,13 @@ getBinaryOpenjdk()
 			fi
 			set -e
 		done
+	fi
+
+	# check the download file. if the file is less than or equal to 8kb(the defualt download file's size), 
+	# it canno be a valid download, then show up error message and exit
+	if [[ `du -s | awk '{ print $1 }'` -le 8 ]]; then
+		echo "Download failure, invalid downlad links: $download_url."
+		exit 1
 	fi
 
 	jar_files=`ls`
