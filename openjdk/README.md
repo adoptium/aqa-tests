@@ -17,7 +17,7 @@ This group of tests are the set that comes from the openjdk project, often refer
 For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
 
 ## Running OpenJDK tests locally
-While you can directly use the jtreg test harnes to run these tests locally, we have also integrated them into our AQA test suite with TKG (TestKitGen) so that they can be run following the same pattern as any other AQA test:
+While you can directly use the jtreg test harness to run these tests locally, we have also integrated them into our AQA test suite with TKG (TestKitGen) so that they can be run following the same pattern as any other AQA test:
 
 0. Ensure your test machine is set up with [test prereqs](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).  For openjdk tests, you do not need Docker installed.
 
