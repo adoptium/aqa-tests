@@ -16,6 +16,22 @@ This group of tests are the set that comes from the openjdk project, often refer
 
 For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
 
+## Running OpenJDK tests locally
+While you can directly use the jtreg test harnes to run these tests locally, we have also integrated them into our AQA test suite with TKG (TestKitGen) so that they can be run following the same pattern as any other AQA test:
+
+0. Ensure your test machine is set up with [test prereqs](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).  For openjdk tests, you do not need Docker installed.
+
+1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptopenjdk.net](https://adoptopenjdk.net/)).
+1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>` 
+1. `git clone https://github.com/AdoptOpenJDK/openjdk-tests.git` 
+1. `cd openjdk-tests`
+1. `./get.sh`
+1. `cd TKG`
+1. `export BUILD_LIST=openjdk`
+1. `make compile`              (This fetches test material and compiles it, based on build.xml files in the test directories)
+1. `make _jdk_math`   (or any TARGET you wish to run, for targets you can use any `<testCaseName>` defined in the [openjdk/playlist.xml](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/playlist.xml) file and prefixed with an `_` underscore. If you wish to run all tests tagged with the sanity label, then `make _sanity.openjdk`)
+
+
 ## Add a sub group test
 We already have a large set of tests defined in the playlist.xml file, but not all of the openjdk regression test groups are presented there.  If you wish to define more, add a `<test></test>` in playlist.xml and specify:
 
