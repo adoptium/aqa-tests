@@ -287,8 +287,9 @@ getBinaryOpenjdk()
 		done
 	fi
 
-	# check the download file. if the file is less than or equal to 8kb(the defualt download file's size), 
-	# it canno be a valid download, then show up error message and exit
+	# check the download file using command du
+	# if the file is less than or equal to 8k(the defualt download file's size), 
+	# it cannot be a valid download, then show up error message and exit
 	if [[ `du -s | awk '{ print $1 }'` -le 8 ]]; then
 		echo "Download failure, invalid downlad links: $download_url."
 		exit 1
