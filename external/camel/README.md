@@ -1,6 +1,7 @@
-#External (Third Party Container) Tests
+# External (Third Party Container) Tests
 Third Party container tests help verify that the AdoptOpenJDK binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue #172 lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries. For each application, we choose to run a selection of their functional tests.
-##Running External tests locally
+
+## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
 Ensure your test machine is set up with test prereqs. For external tests, you do need Docker installed.
 
