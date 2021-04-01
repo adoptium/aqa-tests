@@ -45,6 +45,7 @@ def main():
 
     parser = argparse.ArgumentParser(prog=keyword, add_help=False)
     # Improvement: Automatically resolve the valid choices for each argument populate them below, rather than hard-coding choices.
+    parser.add_argument('--help', '-h', action='store_true')
     parser.add_argument('--sdk_resource', default=['nightly'], choices=['nightly', 'releases', 'customized'], nargs='+')
     parser.add_argument('--customized_sdk_url', default=['None'], nargs='+')
     parser.add_argument('--archive_extension', default=['.tar'], choices=['.zip', '.tar', '.7z'], nargs='+')
@@ -56,6 +57,19 @@ def main():
     parser.add_argument('--tkg_repo', default=['adoptium/TKG:master'], nargs='+')
     args = vars(parser.parse_args(raw_args))
     # All args are lists of strings
+
+    # Help was requested. The simplest way to handle this is as if it were an error
+    # because stdout is reserved for workflow commands and logs.
+    if args['help']:
+        # for some reason the first tilde in this help message does not need to be escaped
+        help_msg = '''Run AQA GitHub Action Documentation
+`\\`\\`
+https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/RunAqa.md'
+\\`\\`\\`
+Click the above link to view the documentation for the Run AQA GitHub Workflow'''
+        print('::error ::{}'.format(help_msg))
+        sys.stderr.write(help_msg)
+        exit(2)
 
     # Map grinder platform names to github runner names
     args['platform'] = map_platforms(args['platform'])
