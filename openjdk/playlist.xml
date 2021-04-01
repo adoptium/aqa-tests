@@ -66,6 +66,10 @@
 	</test>
 	<test>
 		<testCaseName>jvm_native_sanity</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -86,19 +90,16 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
 	<test>
 		<testCaseName>jvm_compiler</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -119,19 +120,16 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
 	<test>
 		<testCaseName>runtime_nestmate</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -152,13 +150,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -195,8 +186,12 @@
 	<test>
 		<testCaseName>jdk_awt</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-760598580</comment>
-		</disabled>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-760598580</comment>
+        </disabled>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -215,19 +210,16 @@
 			<level>extended</level>
 		</levels>
 		<platformRequirements>^os.osx,^os.zos</platformRequirements>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
 	<test>
 		<testCaseName>jdk_beans</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -245,13 +237,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -587,8 +572,12 @@
 	<test>
 		<testCaseName>jdk_security3</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2123#issuecomment-758367994</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2123#issuecomment-758367994</comment>
 		</disabled>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -606,13 +595,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -643,7 +625,7 @@
 	<test>
 		<testCaseName>jdk_sound</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/73</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/73</comment>
 		</disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -669,7 +651,7 @@
 	<test>
 		<testCaseName>jdk_swing</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/49</comment>
 		</disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -742,6 +724,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_time</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -759,19 +745,16 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
 	<test>
 		<testCaseName>jdk_management</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -789,19 +772,16 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
 	<test>
 		<testCaseName>jdk_jmx</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -819,13 +799,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -855,6 +828,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_tools</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -872,13 +849,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -886,9 +856,9 @@
 	<test>
 		<testCaseName>jdk_jdi_jdk8</testCaseName>
         <disabled>
-            <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
-            <impl>openj9</impl>
-         </disabled>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -968,9 +938,9 @@
 	<test>
 		<testCaseName>jdk_foreign_native</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2218#issuecomment-770048450</comment>
-			<version>16+</version>
-			<impl>openj9</impl>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2218#issuecomment-770048450</comment>
+                <version>16+</version>
+                <impl>openj9</impl>
 		</disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -1000,6 +970,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_instrument</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1021,13 +995,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -1036,8 +1003,8 @@
 	<test>
 		<testCaseName>jdk_svc_sanity</testCaseName>
         <disabled>
-            <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
-            <impl>openj9</impl>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
+                <impl>openj9</impl>
          </disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -1066,8 +1033,8 @@
 	<test>
 		<testCaseName>jdk_jdi</testCaseName>
         <disabled>
-            <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
-            <impl>openj9</impl>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1071</comment>
+                <impl>openj9</impl>
          </disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -1095,6 +1062,10 @@
 	</test>
 	<test>
 		<testCaseName>build</testCaseName>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1115,13 +1086,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -1129,9 +1093,9 @@
 	<test>
 		<testCaseName>jdk_imageio</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2327#issuecomment-799459653</comment>
-			<version>16+</version>
-			<plat>.*mac.*</plat>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2327#issuecomment-799459653</comment>
+                <version>16+</version>
+                <plat>.*mac.*</plat>
 		</disabled>
 		<variations>
 			<variation>Mode150</variation>
@@ -1161,8 +1125,12 @@
 	<test>
 		<testCaseName>jdk_client_sanity</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-759930182</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-759930182</comment>
 		</disabled>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1183,13 +1151,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -1253,8 +1214,12 @@
 	<test>
 		<testCaseName>jdk_2d</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-759938221</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2137#issuecomment-759938221</comment>
 		</disabled>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1276,13 +1241,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -1290,8 +1248,12 @@
 	<test>
 		<testCaseName>jfc_demo</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2157#issuecomment-758317252</comment>
+                <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2157#issuecomment-758317252</comment>
 		</disabled>
+        <disabled>
+                <comment>https://github.com/eclipse/openj9/issues/10757</comment>
+                <impl>openj9</impl>
+        </disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1312,13 +1274,6 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-        <disabled>
-          <comment>https://github.com/eclipse/openj9/issues/10757</comment>
-          <impl>openj9</impl>
-        </disabled>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
