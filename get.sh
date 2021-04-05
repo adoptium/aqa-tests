@@ -221,9 +221,11 @@ getBinaryOpenjdk()
 			release_type="ga"
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+		info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&page=0&page_size=10&project=jdk&vendor=adoptopenjdk"
 
 		if [ "$JDK_VERSION" != "8" ] || [ "$JDK_IMPL" != "hotspot" ]; then
 			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+			info_url+=" https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=${JDK_IMPL}&os=${os}&page=0&page_size=10&project=jdk&vendor=adoptopenjdk"
 		fi
 	else
 		download_url=""
@@ -287,12 +289,16 @@ getBinaryOpenjdk()
 		done
 	fi
 
-	# check the download file using command du
-	# if the file is less than or equal to 8k(the defualt download file's size), 
-	# it cannot be a valid download, then show up error message and exit
-	if [[ `du -s | awk '{ print $1 }'` -le 8 ]]; then
-		echo "Download failure, invalid downlad links: $download_url."
-		exit 1
+	if [ "${info_url}" != "" ]; then
+		for info in $info_url
+		do
+			release_info=$(curl -Is $info | grep "HTTP/")
+			validate=( $release_info )
+			if [[ ${validate[-2]} != 200 ]]; then
+				echo "Download failure, invalid downlad links."
+				exit 1
+			fi
+		done
 	fi
 
 	jar_files=`ls`
