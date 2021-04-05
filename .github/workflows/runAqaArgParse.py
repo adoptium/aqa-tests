@@ -64,7 +64,7 @@ def main():
         # for some reason the first tilde in this help message does not need to be escaped
         help_msg = '''Run AQA GitHub Action Documentation
 `\\`\\`
-https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/RunAqa.md'
+https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/RunAqa.md
 \\`\\`\\`
 Click the above link to view the documentation for the Run AQA GitHub Workflow'''
         print('::error ::{}'.format(help_msg))
