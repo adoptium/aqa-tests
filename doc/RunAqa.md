@@ -15,6 +15,12 @@ Most arguments are similar to their [Jenkins Grinder](https://ci.adoptopenjdk.ne
 
 All arguments allow more than one parameter. The parameters of each argument will be used to create a matrix job that will test every combination of the parameters.
 
+### --help
+
+This argument accepts no values. When this argument is supplied, a comment will be created with a link to this documentation. All other arguments will be ignored and no builds will be started.
+
+This argument is equivalently invoked by `-h`.
+
 ### --sdk_resource
 
 Supported values are:
