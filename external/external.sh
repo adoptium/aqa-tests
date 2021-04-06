@@ -16,7 +16,7 @@
 # script runs in 3 modes - build / run / clean
 
 set -e
-tag=${DOCKERIMAGE_TAG}
+tag=nightly
 docker_os=ubuntu
 build_type=full
 package=jdk
@@ -56,7 +56,13 @@ parseCommandLineArgs() {
 				fi;;
 				
 			"--tag" | "-t" )
-				tag="$1"; shift; parse_tag;;
+				if [ -z "$1" ]; then 
+					echo "No DOCKERIMAGE_TAG set, tag as default 'nightly'"; 
+				else 
+  					tag="$1";
+				fi
+				shift;
+				parse_tag;;
 
 			"--reportsrc" )
 				reportsrc="$1"; shift;;
