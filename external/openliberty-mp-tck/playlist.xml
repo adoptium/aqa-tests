@@ -28,9 +28,9 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_j9</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
 		</command>
 		<versions>
 			<version>8</version>
@@ -48,9 +48,9 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_hs</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
-                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
                 </command>
 		<versions>
 			<version>8</version>
@@ -69,9 +69,9 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
-                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
                 </command>
 		<versions>
 			<version>11+</version>
