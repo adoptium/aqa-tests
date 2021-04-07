@@ -289,6 +289,8 @@ getBinaryOpenjdk()
 		done
 	fi
 
+	# use openapi, try to get the information of the download file
+	# if it returns the status code other than 200, it means the parameters provided by user forms some invalid link, then fails early
 	if [[ -n $info_url ]]; then
 		for info in $info_url
 		do
