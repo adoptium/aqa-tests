@@ -116,7 +116,7 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	if ( env.SPEC.contains('sparcv')) {
+	if ( env.SPEC.contains('sunos')) {
 		sh 'env'
 	} else {
 		sh 'printenv'
@@ -240,9 +240,20 @@ def setupParallelEnv() {
 				}
 
 				def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
-				create_jobs[childTest] = {
-					echo "create the job ${TEST_JOB_NAME}"
-					createJob( TEST_JOB_NAME, PLATFORM)
+
+				def jobIsRunnable = false
+				try {
+					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
+					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
+				} catch (Exception e) {
+					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+				}
+				if (!jobIsRunnable) {
+					create_jobs[childTest] = {
+						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params"
+						createJob( TEST_JOB_NAME, PLATFORM)
+					}
 				}
 
 				def childParams = []
@@ -272,15 +283,14 @@ def setupParallelEnv() {
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NAME', value: UPSTREAM_TEST_JOB_NAME)
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NUMBER', value: UPSTREAM_TEST_JOB_NUMBER)
 
-				//This parameter is needed because it enables many iterations of the same test (which all have same names)
-				//to have a unique variable in the array so that Jenkins will run it
-				childParams << string(name: 'RUNTIME_NAME', value: childTest)
-
 				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
-			parallel create_jobs
+			
+			if (create_jobs) {
+				parallel create_jobs
+			}
 
 			// return to top level pipeline file in order to exit node block before running tests in parallel
 		}
@@ -326,11 +336,6 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 			jobParams.put('LEVELS', level)
 			jobParams.put('GROUPS', group)
 		}
-	}
-
-	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
-	if (TEST_JOB_NAME.startsWith("Grinder_")) {
-		jobParams.put('BUILDS_TO_KEEP', 5)
 	}
 
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
@@ -656,7 +661,18 @@ def post(output_name) {
 				)
 			}
 
-			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+			//for performance test, archive regardless the build result
+			if (env.BUILD_LIST.startsWith('perf')) {
+				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
+				if (!params.ARTIFACTORY_SERVER) {
+					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
+					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					def pattern = "${env.WORKSPACE}/*_output.*"
+					uploadToArtifactory(pattern)
+				}
+			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
@@ -667,18 +683,6 @@ def post(output_name) {
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
-				} else {
-					def pattern = "${env.WORKSPACE}/*_output.*"
-					uploadToArtifactory(pattern)
-				}
-			}
-			//for performance test, archive regardless the build result
-			if (env.BUILD_LIST.startsWith('perf')) {
-				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
-				if (!params.ARTIFACTORY_SERVER) {
-					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
-					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)

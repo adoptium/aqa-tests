@@ -31,10 +31,10 @@
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1855#issuecomment-707773303</comment>
 		</disabled>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck --testtarget "-pl testsuite/microprofile-tcks,testsuite/microprofile-tcks/config,testsuite/microprofile-tcks/fault-tolerance,testsuite/microprofile-tcks/health,testsuite/microprofile-tcks/jwt-auth,testsuite/microprofile-tcks/metrics,testsuite/microprofile-tcks/openapi,testsuite/microprofile-tcks/opentracing,testsuite/microprofile-tcks/restclient" \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck --testtarget "-pl testsuite/microprofile-tcks,testsuite/microprofile-tcks/config,testsuite/microprofile-tcks/fault-tolerance,testsuite/microprofile-tcks/health,testsuite/microprofile-tcks/jwt-auth,testsuite/microprofile-tcks/metrics,testsuite/microprofile-tcks/openapi,testsuite/microprofile-tcks/opentracing,testsuite/microprofile-tcks/restclient" \
 		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag ${DOCKERIMAGE_TAG} --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir thorntail-mp-tck
 		</command>
 		<versions>
 			<version>8</version>

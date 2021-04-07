@@ -48,6 +48,7 @@ if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
 if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
 if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
 if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
+if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
 
 
 
@@ -142,6 +143,14 @@ if (LIGHT_WEIGHT_CHECKOUT) {
 	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 }
 
+String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !important; padding: 5px; font-weight: bold; margin-top: 0.5rem; font-size: 1rem; outline: 0; '
+
+String separatorStyleCss = ' border: 0; border-bottom: 1px solid #ccc; '
+
+String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; padding-left: 5px; margin-bottom: 1rem'
+
+String separatorHelpTextStyleCss = ' border: none; margin-top: 0; margin-bottom: 0 '
+
 ARCH_OS_LIST.each { ARCH_OS ->
 	JDK_VERSIONS.each { JDK_VERSION ->
 		LEVELS.each { LEVEL ->
@@ -164,8 +173,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				}
 
 				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
-				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !JCK_GIT_REPO) {
-					JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
+				def ACTUAL_JCK_GIT_REPO = JCK_GIT_REPO ?: ""
+				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !ACTUAL_JCK_GIT_REPO) {
+					ACTUAL_JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
 				}
 
 				def DOCKER_REQUIRED = false
@@ -193,6 +203,18 @@ ARCH_OS_LIST.each { ARCH_OS ->
 
 					definition {
 						parameters {
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Test Repositories Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}							
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
@@ -200,51 +222,144 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
 							stringParam('JDK_REPO', JDK_REPO, "JDK git repo. Please use ssh for zos.")
 							stringParam('JDK_BRANCH', JDK_BRANCH, "JDK branch")
-							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
-							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
-							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
-							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
-							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
-							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
-							stringParam('SDK_RESOURCE', SDK_RESOURCE, "Where to get sdk? upstream, nightly, releases, or customized")
-							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
-							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
-							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
-							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
-							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
-							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
-							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
-							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
-							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
-							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
-							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
-							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
-							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
-							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
-							stringParam('JCK_GIT_REPO', JCK_GIT_REPO, "For JCK test only")
-							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
-							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
-							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
-							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
-							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
-							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
-							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
-							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
-							stringParam('USER_CREDENTIALS_ID', "", "Optional. User credential ID")
+							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
+							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
+							stringParam('TKG_SHA', "", "TKG sha")
+							stringParam('JCK_GIT_REPO', ACTUAL_JCK_GIT_REPO, "For JCK test only")
+							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
+							
+							parameterSeparatorDefinition {
+							    name('NON_AQA_TEST_REPOS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Non-AQA Test Repositories')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('NON_AQA_TEST_REPOS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test repositories that can be overlayed onto existing AQA test material for extra testing.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
 							stringParam('VENDOR_TEST_REPOS', VENDOR_TEST_REPOS, "Optional. Addtional test repos")
 							stringParam('VENDOR_TEST_BRANCHES', VENDOR_TEST_BRANCHES, "Optional. Addtional test branches")
 							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
 							stringParam('VENDOR_TEST_DIRS', VENDOR_TEST_DIRS, "Optional. Addtional test dirs")
-							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
-							stringParam('BUILD_IDENTIFIER', "", "build identifier")
-							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
+              stringParam('USER_CREDENTIALS_ID', USER_CREDENTIALS_ID, "Optional. User credential ID")
+														
+							parameterSeparatorDefinition {
+							    name('PLATFORM_AND_MACHINE')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Platform and Machine Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('PLATFORM_AND_MACHINE_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Choose which platform to run tests on, and optionally specify machine label to send the test job to a certain machine is desired.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
+							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
+							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
+							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
+							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
+							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
+							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
+							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
+							
+							parameterSeparatorDefinition {
+							    name('JDK_SELECTION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('JDK Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('JDK_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Specify where to pick up JDK from and provide extra details if taking from upstream or customized.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('SDK_RESOURCE', SDK_RESOURCE, "Where to get sdk? upstream, nightly, releases, or customized")
+							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
+							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
+							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
+							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
+							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
+							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
+							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")							
+							
+							parameterSeparatorDefinition {
+							    name('TEST_SELECTION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Test Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
+							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
+							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
+							
+							parameterSeparatorDefinition {
+							    name('TEST_OPTIONS_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_OPTIONS_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
+							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
+							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('BUILD_IDENTIFIER', "", "build identifier")	
+							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
-							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
-							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
-							stringParam('TKG_SHA', "", "TKG sha")
+							
+							
+							parameterSeparatorDefinition {
+							    name('TEST_PARALLELIZATION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Test Parallelization Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_PARALLELIZATION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test options if you wish to run in various parallel modes')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
+							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
+							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
-							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
+							
+							parameterSeparatorDefinition {
+							    name('POST_RUN_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Post Run Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('POST_RUN_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Parameters to determine what to do with post run artifacts.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
+							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
+							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
+							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
+							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
+
 						}
 						cpsScm {
 							scm {

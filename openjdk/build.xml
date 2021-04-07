@@ -52,9 +52,9 @@
 							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.gz"/>
 					</then>
 				<else>
-					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/${jtregTar}.gz"/>
+					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz"/>
 					<exec executable="curl" failonerror="true">
-						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/jtreg/lastSuccessfulBuild/artifact/${jtregTar}.gz" />
+						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz" />
 					</exec>
 				</else>
 				</if>
@@ -90,10 +90,13 @@
 				</exec>
 			</then>
 		</if>
+		<set-property name="JDK_REPO_ISSET" if-property-isset="env.JDK_REPO" />
+		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH" />
+		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA" />
 		<if>
 			<and>
-				<isset property="env.JDK_REPO"/>
-				<isset property="env.JDK_BRANCH"/>
+				<isset property="JDK_REPO_ISSET"/>
+				<isset property="JDK_BRANCH_ISSET"/>
 			</and>
 			<then>
 				<echo> Using user specified repo and branch</echo>
@@ -112,7 +115,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						<exec executable="git" failonerror="true">
@@ -222,7 +225,7 @@
 					</else>
 				</if>
 				<if>
-					<isset property="env.OPENJDK_SHA"/>
+					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<echo message="git clone -q ${defaultBranch} ${regressionRepo}" />
 						<exec executable="git" failonerror="true">
@@ -266,7 +269,7 @@
 	
 	<target name="dist" depends="getDependentLibsCheck, getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml,ProblemList*.txt,*.mk"/>
+			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>
 		</copy>
 	</target>
 
