@@ -269,7 +269,7 @@
 	
 	<target name="dist" depends="getDependentLibsCheck, getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml,ProblemList*.txt,*.mk"/>
+			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>
 		</copy>
 	</target>
 

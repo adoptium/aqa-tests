@@ -240,9 +240,20 @@ def setupParallelEnv() {
 				}
 
 				def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
-				create_jobs[childTest] = {
-					echo "create the job ${TEST_JOB_NAME}"
-					createJob( TEST_JOB_NAME, PLATFORM)
+
+				def jobIsRunnable = false
+				try {
+					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
+					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
+				} catch (Exception e) {
+					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+				}
+				if (!jobIsRunnable) {
+					create_jobs[childTest] = {
+						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params"
+						createJob( TEST_JOB_NAME, PLATFORM)
+					}
 				}
 
 				def childParams = []
@@ -272,15 +283,14 @@ def setupParallelEnv() {
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NAME', value: UPSTREAM_TEST_JOB_NAME)
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NUMBER', value: UPSTREAM_TEST_JOB_NUMBER)
 
-				//This parameter is needed because it enables many iterations of the same test (which all have same names)
-				//to have a unique variable in the array so that Jenkins will run it
-				childParams << string(name: 'RUNTIME_NAME', value: childTest)
-
 				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
-			parallel create_jobs
+			
+			if (create_jobs) {
+				parallel create_jobs
+			}
 
 			// return to top level pipeline file in order to exit node block before running tests in parallel
 		}

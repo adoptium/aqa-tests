@@ -15,6 +15,12 @@ Most arguments are similar to their [Jenkins Grinder](https://ci.adoptopenjdk.ne
 
 All arguments allow more than one parameter. The parameters of each argument will be used to create a matrix job that will test every combination of the parameters.
 
+### --help
+
+This argument accepts no values. When this argument is supplied, a comment will be created with a link to this documentation. All other arguments will be ignored and no builds will be started.
+
+This argument is equivalently invoked by `-h`.
+
 ### --sdk_resource
 
 Supported values are:
@@ -108,6 +114,16 @@ Supported values are:
 
 The default value is `openj9`.
 
+### --openjdk_testrepo
+
+GitHub repository and branch of the openjdk-tests to use.
+
+The format is `<repository>:<branch>`.
+
+The default value is `AdoptOpenJDK/openjdk-tests:master`.
+
+This option is unavailable in `openjdk-tests` repositories because it will always use the head repo and branch of the PR instead.
+
 ### --tkg_repo
 
 GitHub repository and branch of the TestKitGen (TKG) to use.
@@ -116,6 +132,7 @@ The format is `<repository>:<branch>`.
 
 The default value is `adoptium/TKG:master`.
 
+This option is unavailable in `TKG` repositories because it will always use the head repo and branch of the PR instead.
 
 ## Status Reports
 
