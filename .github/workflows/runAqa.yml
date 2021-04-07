@@ -1,4 +1,4 @@
-name: "PR Comment Build Action"
+name: "PR Comment Build Action for openjdk-tests"
 on:
   issue_comment:
     types: [created]
@@ -17,11 +17,22 @@ jobs:
         echo ::set-output name=url::$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
         echo ::set-output name=id::$GITHUB_RUN_ID
       id: workflow_run_info
-    - uses: actions/checkout@v2
+    # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
+    - name: Checkout current repo
+      uses: actions/checkout@v2
+      with:
+        path: 'main'
+    # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
+    - name: Checkout main TKG repo
+      uses: actions/checkout@v2
+      with:
+        repository: 'adoptium/TKG.git'
+        ref: 'master'
+        path: 'TKG'
     - name: Parse parameters
       env:
         args: ${{ github.event.comment.body }}
-      run: python3 .github/workflows/runAqaArgParse.py $args 2> log.txt
+      run: python3 TKG/scripts/testBot/runAqaArgParse.py $args 2> log.txt
       id: argparse
     - name: Output log
       if: failure()
@@ -135,7 +146,7 @@ jobs:
             core.setFailed(`Request failed with error ${err}`)
           }
     - name: AQA
-      uses: AdoptOpenJDK/run-aqa@v1
+      uses: adoptium/run-aqa@v1
       with:
          build_list: ${{ matrix.build_list }}
          target: ${{ matrix.target }}
