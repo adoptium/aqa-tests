@@ -289,14 +289,16 @@ getBinaryOpenjdk()
 		done
 	fi
 
-	if [ "${info_url}" != "" ]; then
+	if [[ -n $info_url ]]; then
 		for info in $info_url
 		do
-			release_info=$(curl -Is $info | grep "HTTP/")
-			validate=( $release_info )
-			if [[ ${validate[-2]} != 200 ]]; then
-				echo "Download failure, invalid downlad links."
-				exit 1
+			if [[ $info_url == https://api.adoptopenjdk.net* ]]; then
+				release_info=$(curl -Is $info | grep "HTTP/")
+				validate=( $release_info )
+				if [[ ${validate[-2]} != 200 ]]; then
+					echo "Download failure, invalid downlad links."
+					exit 1
+				fi
 			fi
 		done
 	fi
