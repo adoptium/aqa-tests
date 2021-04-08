@@ -46,18 +46,10 @@ endif
 
 
 ifndef JCK_VERSION
-  	// for jck builds, we need to pass in EXTRA_OPTIONS
-	def EXTRA_OPTIONS = "";
-	if (GROUP == "jck" && JDK_IMPL == "openj9") {
-				EXTRA_OPTIONS = "-Xfuture"
-				if (JDK_VERSION != "8") {
-					  	EXTRA_OPTIONS += " --enable-preview"
-				}
-				if (ARCH_OS == "s390x_zos") {
-						// zOS has Attach API disabled by default
-						EXTRA_OPTIONS += " -Dcom.ibm.tools.attach.enable=yes"
-				}
-	}
+  ifeq (8, $(JDK_VERSION))
+    export JCK_VERSION=jck8c
+  else
+    export JCK_VERSION=jck$(JDK_VERSION)
   endif
 endif
 
@@ -68,7 +60,10 @@ endif
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
- OTHER_OPTS=-Xtrace:maximal=all{level2}
+ OTHER_OPTS +=-Xtrace:maximal=all{level2} -Xfuture --enable-preview
+ ifeq ($(OS),OS/390)
+    OTHER_OPTS += -Dcom.ibm.tools.attach.enable=yes
+  endif
 endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
