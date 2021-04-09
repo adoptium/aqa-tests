@@ -61,6 +61,11 @@ OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
  OTHER_OPTS=-Xtrace:maximal=all{level2}
+ # if JDK is 8
+ if (JDK_VERSION != "8") {
+	OTHER_OPTS += " --enable-preview"
+	}
+ endif
 endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
