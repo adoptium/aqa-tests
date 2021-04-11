@@ -311,6 +311,43 @@ openjdk-tests/test-results/openjdk/report
 
 The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`
 
+
+
+### Use live_monitor feature
+TKG has a script that monitors the test progress live. It can be your only friend in darkest nights. When you run tests locally, you may want to use that feature. It shows how many tests are passed currently etc. Now let's look how to use it.You need Python installed to your machine in order to use it. Note that this feature currently works with openjdk tests only. This means you need to use:	
+
+`export BUILD_LIST=openjdk`
+
+before compiling or you need to run just openjdk tests and pipe them. Otherwise it won't work.
+
+1. You need to change verbose option of jtreg. In order to do that, you need to change 1 line of code on '/openjdk/openjdk.mk' file. Go to the Line 71 and change
+
+	`JTREG_BASIC_OPTIONS += -v:fail,error,time,nopass` line to
+	`JTREG_BASIC_OPTIONS += -v:all`
+
+2. After that, you are ready to run the scripts. Here is the example of how you can do it : 
+
+	`make _sanity.openjdk | python -u scripts/jtreg-monitor.py`
+
+
+### Count tests in a folder
+TKG has a script that counts how many test exists in a specified folder. This script currently works on just openjdk tests. It simply checks for the java files contains "@test" annotation. Here is an example of how you can use this script :
+
+`openjdk-tests/TKG# python -u scripts/count-java-tests.py ../openjdk`
+
+The output of the code above is : 
+
+```
+Counting tests in '../openjdk' ...
+
+Found 48222 java files
+
+./openjdk-jdk . 19888 
+
+
+Found 19888 java files containing @test
+```
+
 ## Exclude a test target
 
 #### Automatically exclude a test target
