@@ -5,7 +5,7 @@ Camel tests are part of the third-party application tests help verify that the A
 To run any AQA tests locally, you follow the same pattern:
 0. Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
 
-1. Download/unpack the SDK that you want test to your test machine.
+1. Download/unpack the SDK that you want to test to your test machine.
 
 2. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
 3. `git clone https://github.com/AdoptOpenJDK/openjdk-tests.git`
