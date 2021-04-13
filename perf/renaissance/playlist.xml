@@ -40,6 +40,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-chi-square</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964098</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
 		<levels>
