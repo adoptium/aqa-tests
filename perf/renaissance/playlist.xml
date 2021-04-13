@@ -157,6 +157,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964263</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
