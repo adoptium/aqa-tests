@@ -142,6 +142,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-gauss-mix</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964531</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
 		<levels>
