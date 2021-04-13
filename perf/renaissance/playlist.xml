@@ -167,6 +167,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-movie-lens</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818965117</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
 		<levels>
