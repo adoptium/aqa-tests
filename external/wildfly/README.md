@@ -1,6 +1,6 @@
 # External Wildfly Tests
 
-Wildfly tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue [#172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Wildfly tests are pulled from the [wildfly-test-suite](https://github.com/wildfly/wildfly.git) repository.
+Wildfly tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue [#172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Wildfly tests are pulled from the [wildfly](https://github.com/wildfly/wildfly.git) repository.
 
 
 ## Running wildfly tests locally
