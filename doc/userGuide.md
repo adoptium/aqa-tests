@@ -320,10 +320,14 @@ TKG has a script that monitors the test progress live. It can be your only frien
 
 before compiling or you need to run just openjdk tests and pipe them. Otherwise it won't work.
 
-1. You need to change verbose option of jtreg. In order to do that, you need to change 1 line of code on '/openjdk/openjdk.mk' file. Go to the Line 71 and change
+1. You need to change the verbose option of jtreg. In order to do that, you need to change 1 line of code in [/openjdk/openjdk.mk](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/openjdk.mk) file. 
 
-	`JTREG_BASIC_OPTIONS += -v:fail,error,time,nopass` line to
-	`JTREG_BASIC_OPTIONS += -v:all`
+    You need to change 
+
+        `JTREG_BASIC_OPTIONS += -v:fail,error,time,nopass`  
+    line to
+
+        `JTREG_BASIC_OPTIONS += -v:all`
 
 2. After that, you are ready to run the scripts. Here is the example of how you can do it : 
 
@@ -337,16 +341,16 @@ TKG has a script that counts how many test exists in a specified folder. This sc
 
 The output of the code above is : 
 
-```
-Counting tests in '../openjdk' ...
+    
+    Counting tests in '../openjdk' ...
 
-Found 48222 java files
+    Found 48222 java files
 
-./openjdk-jdk . 19888 
+    ./openjdk-jdk . 19888 
 
 
-Found 19888 java files containing @test
-```
+    Found 19888 java files containing @test
+    
 
 ## Exclude a test target
 
