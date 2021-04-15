@@ -12,8 +12,7 @@
 # limitations under the License.
 -->
 # External Payara-mp-tck Tests
-Payara Platform is cloud-native, optimized for production environments.
-payara-mp-tck test(payara MicroProfile-tck) tests are part of the third-party application tests that helps verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue #172 lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests.payara-mp-tck tests are functional tests pulled from the [payara/MicroProfile-TCK-Runners](https://github.com/payara/MicroProfile-TCK-Runners.git) repository.
+payara-mp-tck(payara MicroProfile-tck) tests are part of the third-party application tests that helps verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue #172 lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests.payara-mp-tck tests are functional tests pulled from the [payara/MicroProfile-TCK-Runners](https://github.com/payara/MicroProfile-TCK-Runners.git) repository.
 
 ## Running  External Payara-mp-tck tests locally
 To run any AQA tests locally, you follow the same pattern:
