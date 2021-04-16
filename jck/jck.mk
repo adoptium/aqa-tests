@@ -57,13 +57,13 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
-OTHER_OPTS=
+OTHER_OPTS=-Xfuture
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
- OTHER_OPTS=-Xtrace:maximal=all{level2}
+ OTHER_OPTS+=-Xtrace:maximal=all{level2}
 # if JDK_VERSION is 8
-ifneq ($(filter 8, $(JDK_VERSION)),) 
- OTHER_OPTS=--enable-preview
+ifeq ($(filter 8, $(JDK_VERSION)),) 
+ OTHER_OPTS+=--enable-preview
  endif
 endif
 
