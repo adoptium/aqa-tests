@@ -18,9 +18,9 @@
 	-->
 	<test>
 		<testCaseName>example-test</testCaseName>
-		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-example-test:latest ; \
+		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-first-test:latest ; \
 			$(TEST_STATUS); \
-			docker rmi -f adoptopenjdk-example-test
+			docker rmi -f adoptopenjdk-first-test
 		</command>
 		<levels>
 			<level>sanity</level>
@@ -31,5 +31,6 @@
 			<group>external</group>
 		</groups>
 	</test>
+	
 	
 </playlist>
