@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
+
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+
 	<!--Add entries corresponding to your test similar to the example below so that
-		TestKitGen can produce the equivalent make command lines to be executed in the build 
+	    TestKitGen can produce the equivalent make command lines to be executed in the build 
 	-->
 	<test>
-		<testCaseName>example-test</testCaseName>
+		<testCaseName>first-test</testCaseName>
 		<command>docker run --rm $(EXTRA_DOCKER_ARGS) adoptopenjdk-first-test:latest ; \
 			$(TEST_STATUS); \
 			docker rmi -f adoptopenjdk-first-test
