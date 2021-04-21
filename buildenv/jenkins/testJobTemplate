@@ -225,9 +225,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
 							stringParam('TKG_OWNER_BRANCH', "AdoptOpenJDK:master", "TestKitGen git [owner]:[branch]. Default is AdoptOpenJDK:master")
 							stringParam('TKG_SHA', "", "TKG sha")
-              stringParam('ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH', "Personal Adoptopenjdk/openjdk-systemtest repository owner:branch", "AdoptOpenJDK:master")
-              stringParam('OPENJ9_SYSTEMTEST_OWNER_BRANCH', "Personal eclipse/openj9-systemtest repository owner:branch", "eclipse:master")
-              stringParam('STF_OWNER_BRANCH', "Personal stf repo owner:branch", "AdoptOpenJDK:master")
+                                                        stringParam('ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH', "Adoptium:master", "Personal Adoptium/aqa-systemtest repository owner:branch")
+                                                        stringParam('OPENJ9_SYSTEMTEST_OWNER_BRANCH', "eclipse:master", "Personal eclipse/openj9-systemtest repository owner:branch")
+                                                        stringParam('STF_OWNER_BRANCH', "Adoptium:master", "Personal stf repo owner:branch")
 							stringParam('JCK_GIT_REPO', ACTUAL_JCK_GIT_REPO, "For JCK test only")
 							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
 
