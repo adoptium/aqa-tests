@@ -1013,6 +1013,10 @@
 	</test>
 	<test>
 		<testCaseName>jdk_jfr</testCaseName>
+		<disabled>
+			<comment>https://bugs.openjdk.java.net/browse/JDK-8203290</comment>
+			<plat>.*aix.*</plat>
+		</disabled>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1066,7 +1070,7 @@
 	<test>
 		<testCaseName>jdk_foreign_native</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2218#issuecomment-770048450</comment>
+			<comment>https://github.com/eclipse/openj9/issues/11760</comment>
 			<version>16+</version>
 			<impl>openj9</impl>
 		</disabled>
