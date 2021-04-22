@@ -165,8 +165,8 @@ def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.contains("all")) {
-    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'release') {
-        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or release."
+    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
+        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or releases."
     } else {
         testJobs = [:]
         PLATFORMS.each { PLATFORM ->
@@ -239,6 +239,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
             }
 
             node(LABEL) {
+                cleanWs()
                 if (params.PLATFORM.contains('zos')) {
                     /* Ensure correct CC env */
                     env._CC_CCMODE = '1'
@@ -248,7 +249,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     def gitConfig = scm.getUserRemoteConfigs()[0]
                     def SCM_GIT_REPO = gitConfig.getUrl()
                     def SCM_GIT_BRANCH = scm.branches[0].name
-                    cleanWs()
 
                     // SCM_GIT_REPO value only gets expanded in sh
                     def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
@@ -260,7 +260,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
                     // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
                     ref_cache = "${env.HOME}/openjdk_cache"
-
                     checkout scm: [$class: 'GitSCM',
                         branches: [[name: "${scm.branches[0].name}"]],
                         extensions: [
