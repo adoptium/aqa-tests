@@ -114,6 +114,16 @@ Supported values are:
 
 The default value is `openj9`.
 
+### --openjdk_testrepo
+
+GitHub repository and branch of the openjdk-tests to use.
+
+The format is `<repository>:<branch>`.
+
+The default value is `AdoptOpenJDK/openjdk-tests:master`.
+
+This option is unavailable in `openjdk-tests` repositories because it will always use the head repo and branch of the PR instead.
+
 ### --tkg_repo
 
 GitHub repository and branch of the TestKitGen (TKG) to use.
@@ -122,6 +132,7 @@ The format is `<repository>:<branch>`.
 
 The default value is `adoptium/TKG:master`.
 
+This option is unavailable in `TKG` repositories because it will always use the head repo and branch of the PR instead.
 
 ## Status Reports
 

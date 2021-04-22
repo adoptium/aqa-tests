@@ -30,10 +30,10 @@
 	<test>
 		<testCaseName>renaissance-als</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2253#issuecomment-799430133</comment>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964862</comment>
 			<version>16+</version>
 		</disabled>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -44,7 +44,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-chi-square</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964098</comment>
+			<version>16+</version>
+		</disabled>
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -56,10 +60,14 @@
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
 		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818965455</comment>
+			<version>16+</version>
+		</disabled>
+		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2159#issuecomment-759570887</comment>
 			<plat>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</plat>
 		</disabled>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
 		<platformRequirements>^arch.ppc</platformRequirements>
@@ -101,7 +109,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-finagle-http</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-http.json$(Q) finagle-http; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-http.json$(Q) finagle-http; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -138,7 +146,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-gauss-mix</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964531</comment>
+			<version>16+</version>
+		</disabled>
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -149,7 +161,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964263</comment>
+			<version>16+</version>
+		</disabled>
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -160,7 +176,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-mnemonics</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)mnemonics.json$(Q) mnemonics; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)mnemonics.json$(Q) mnemonics; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -171,7 +187,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-movie-lens</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818965117</comment>
+			<version>16+</version>
+		</disabled>
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -196,7 +216,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-par-mnemonics</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)par-mnemonics.json$(Q) par-mnemonics; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)par-mnemonics.json$(Q) par-mnemonics; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -207,7 +227,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-philosophers</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
