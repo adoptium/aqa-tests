@@ -353,17 +353,6 @@ def setup() {
 		timestamps{
 			setupEnv()
 
-			if (fileExists('openjdkbinary')) {
-				dir('openjdkbinary') {
-					deleteDir()
-				}
-			}
-			if (fileExists('jvmtest')) {
-				dir('jvmtest') {
-					deleteDir()
-				}
-			}
-
 			if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
@@ -640,7 +629,7 @@ def post(output_name) {
 			if (params.PARALLEL && params.PARALLEL != "None") {
 				failIfNoResultsValue = false
 			}
-			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, discardOldReports: true, failIfNoResults: failIfNoResultsValue])
+			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
@@ -899,7 +888,7 @@ def run_parallel_tests() {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", discardOldReports: true, outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
