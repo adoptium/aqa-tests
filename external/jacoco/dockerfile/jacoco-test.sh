@@ -49,5 +49,3 @@ find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 echo "Test results copied"
 
 exit $test_exit_code
-
- 

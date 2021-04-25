@@ -1,7 +1,7 @@
-Running External tests locally
+Running External Jacoco tests locally
  To run any AQA tests locally, you follow the same pattern:
 
- Ensure your test machine is set up with test prereqs. For external tests, you do need Docker installed.
+ Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
 
 1. Download/unpack the SDK that you want to test to your test machine
 
