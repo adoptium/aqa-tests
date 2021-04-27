@@ -1,6 +1,6 @@
-# External (Third Party Container) Tests
+# External Derby Tests
 
-Third Party container tests help verify that the AdoptOpenJDK binaries are *good* by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/[Issue #172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.
+Derby tests are a part of the external third-party application tests that help verify that the AdoptOpenJDK binaries are *good* by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/[Issue #172](https://github.com/AdoptOpenJDK/openjdk-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.
 
 ## Running External derby tests locally
 To run any AQA tests locally, you follow the same pattern:
