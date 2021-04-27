@@ -1,64 +1,86 @@
 ------------ Pattern matching test ------------
-14: 입력창에서 쓰이는 특수 키
-23:     특수 문자 선택창을 띄웁니다.
-31: 한자나 특수 문자 선택창
-43:     특수 문자창에서 다른 범주의 문자를 보여줍니다.
---- Confirm that the line(s) includes 특수. 
-
-11:   -gnome
-12:      gnome applet모드로 컴파일을 한 경우 panel에 들어가도록 합니다.
-49:   gnome applet으로 사용하시기를 원하면 --enable-gnome-applet옵션을
-52:   prefix가 /usr이고 gnome-applet을 만드는 경우는 옵션을
-54:   gnome-applet이 동작합니다.
-78:   - gnome applet 지원
---- Confirm that the line(s) includes the pattern gnome. 
-
-98: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㆎ ㈀㈁㈂㈃㈄㈅㈆㈎㈏㈐㈑㈒㈓
-185: ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘ
---- Confirm that the line(s) starts with ㄱ.
-
-85: 문제점:
-86:   netscape 사용도중 발생하는 문제점의 99%는 netscape에 그 원인이
-88:    죽는 문제의 상당수가 해결됩니다.
---- Confirm that the line(s) includes 문제. 
-
-234: 가속 加速 家屬
-235: 가속도 加速度
-236: 가속도병 加速度病
---- Confirm that the line(s) includes 加速. 
-
-124: 가가대소 可可大笑 呵呵大笑
---- Confirm that the line(s) includes 呵呵大笑. 
-
-98: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㆎ ㈀㈁㈂㈃㈄㈅㈆㈎㈏㈐㈑㈒㈓
---- Confirm that the line(s) includes any of  ㅏㅑㅓㅕㅗㅛㅜㅠ
-
-
+11:    #java SimpleGrep あ乷瞻새悼 EUC-JP.txt
+12: 貞浪탤꽁뾰습郵「あ乷瞻새悼」즐故敲癩탤、끔柏꿱彬墩さ輛君柏霞か？
+49: あ乷瞻새悼
+--- Confirm that the line(s) includes あ乷瞻새悼. 
+--- Did you get the line(s) 11,12 and 49 ?
+11:    #java SimpleGrep あ乷瞻새悼 EUC-JP.txt
+12: 貞浪탤꽁뾰습郵「あ乷瞻새悼」즐故敲癩탤、끔柏꿱彬墩さ輛君柏霞か？
+49: あ乷瞻새悼
+50: あ乷瞻備悼
+52: あ饍廈새悼
+54: 桭煤あ殼君柏멍悼뭇芦乫瞻禦취乷君桑
+--- Confirm that the line(s) includes the pattern あ*悼. 
+--- Did you get the line(s) 11,12,49,50,52 and 54 ?
+55: 盞습뾰습郵穩澧랭咤
+56: 盞滋否
+57: 盞굘墓及
+--- Confirm that the line(s) starts with 盞.
+--- Did you get the line(s) 55,56 and 57 ?
+19: 해瀨뉠憶뉠窈즐혜멍兇君柏페瞻。
+20:    #java SimpleGrep 뉠窈 EUC-JP.txt
+41: 습穩澧卒잊랭咤뾰습郵」脚癸瞻꽁盞습脚뾰습郵奉、「か꽁婦멈뉠窈Kan
+--- Confirm that the line(s) includes half-width Katakana 뉠窈. 
+--- Did you get the line(s) 19,20 and 41 ?
+24:    #java SimpleGrep "＃" EUC-JP.txt
+64: ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+--- Confirm that the line(s) includes ＃. 
+--- Did you get the line(s) 24 and 64 ?
+11:    #java SimpleGrep あ乷瞻새悼 EUC-JP.txt
+16:    #java SimpleGrep "^盞습" EUC-JP.txt
+20:    #java SimpleGrep 뉠窈 EUC-JP.txt
+24:    #java SimpleGrep "＃" EUC-JP.txt
+26:    #java SimpleGrep "#" EUC-JP.txt
+37:      #java SimpleGrep "\u3042\u304b\u3055\u305f\u306a" EUC-JP.txt
+--- Confirm that the line(s) includes #. 
+--- Did you get the line(s) 11,16,20,24,26 and 37 ?
+74: 頌孱暹撮匡狂폡Ъ黴卒儀찮炫캘흣台羲克癤／죔敦숄Ю
+--- Confirm that the line(s) includes the pattern 孱.*찮. 
+--- Did you get the line 74 ?
+33: 꽁陸멍乷君桑。霞乫새엉、貞浪탤꽁「あかさ霞꽁」즐 Unicode 旺싶
+--- Confirm that the line(s) includes あかさ. 
+--- Did you get the line 33 ?
+62: 　、。，．逃：；？！賤낱錦｀¨＾￣＿卨眞甛귑〃늬꽜스싶獨旦／＼
+64: ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that the line(s) includes any of 늬,☆ or Ж. 
+--- Did you get the line(s) 62,64 and 72 ?
 ------------ Pattern replacement test ------------
-182: ！＂＃＄％＆＇（）＊＋，－．／０１２３４５６７８９：；＜＝＞？＠ＡＢＣＤＥＦＧＨ
-==> ！＂＃＄％＆＇（）＊＋，－．／０◑▒▤▥▨▧▦▩♨：；＜＝＞？＠ＡＢＣＤＥＦＧＨ
---- Confirm that １２３４５６７８９ was replaced by ◑▒▤▥▨▧▦▩♨. 
-
-278: 가정교사 家庭敎師
-==> 家庭敎師 家庭敎師
---- Confirm that 가정교사 was replaced by 家庭敎師. 
-
-1101: 검문 檢問
-==> 검문 검문
---- Confirm that 檢問 was replaced by 검문. 
-
-125: 가가호호 家家戶戶
-==> 家家戶戶 家家戶戶
-222: 가산호 假珊瑚
-==> 家家戶戶 假珊瑚
-280: 가정맹어호 苛政猛於虎
-==> 家家戶戶 苛政猛於虎
-329: 가호 加護
-==> 家家戶戶 加護
---- Confirm that 가.*호 was replaced by 家家戶戶. 
-
-132: 가계 家系 家計
-==> 가계 家計簿 家計
---- Confirm that 家系 replaced by 家計簿. 
-
-
+11:    #java SimpleGrep あ乷瞻새悼 EUC-JP.txt
+==>    #java SimpleGrep aiueo EUC-JP.txt
+12: 貞浪탤꽁뾰습郵「あ乷瞻새悼」즐故敲癩탤、끔柏꿱彬墩さ輛君柏霞か？
+==> 貞浪탤꽁뾰습郵「aiueo」즐故敲癩탤、끔柏꿱彬墩さ輛君柏霞か？
+49: あ乷瞻새悼
+==> aiueo
+--- Confirm that あ乷瞻새悼 was replaced by aiueo. 
+--- OK ?
+19: 해瀨뉠憶뉠窈즐혜멍兇君柏페瞻。
+==> 해瀨뉠憶婦겔婦멈즐혜멍兇君柏페瞻。
+20:    #java SimpleGrep 뉠窈 EUC-JP.txt
+==>    #java SimpleGrep 婦겔婦멈 EUC-JP.txt
+41: 습穩澧卒잊랭咤뾰습郵」脚癸瞻꽁盞습脚뾰습郵奉、「か꽁婦멈뉠窈Kan
+==> 습穩澧卒잊랭咤뾰습郵」脚癸瞻꽁盞습脚뾰습郵奉、「か꽁婦멈婦겔婦멈Kan
+--- Confirm that 뉠窈 was replaced by 婦겔婦멈. 
+--- OK ?
+24:    #java SimpleGrep "＃" EUC-JP.txt
+==>    #java SimpleGrep "#" EUC-JP.txt
+64: ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％#＆＊＠§☆★○●◎◇◆□■
+--- Confirm that ＃ was replaced by #. 
+--- OK ?
+74: 頌孱暹撮匡狂폡Ъ黴卒儀찮炫캘흣台羲克癤／죔敦숄Ю
+==> 頌５ｃ뾰습郵炫캘흣台羲克癤／죔敦숄Ю
+--- Confirm that 孱.*찮 was replaced by ５ｃ뾰습郵. 
+--- OK ?
+33: 꽁陸멍乷君桑。霞乫새엉、貞浪탤꽁「あかさ霞꽁」즐 Unicode 旺싶
+==> 꽁陸멍乷君桑。霞乫새엉、貞浪탤꽁「찮癤霞꽁」즐 Unicode 旺싶
+--- Confirm that あかさ was replaced by 찮癤. 
+--- OK ?
+62: 　、。，．逃：；？！賤낱錦｀¨＾￣＿卨眞甛귑〃늬꽜스싶獨旦／＼
+==> 　、。，．逃：；？！賤낱錦｀¨＾￣＿卨眞甛귑〃넙礁꽜스싶獨旦／＼
+64: ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■
+==> ＝≠＜＞害壁∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§넙礁★○●◎◇◆□■
+72: АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+==> АБВГДЕЁ넙礁ЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
+--- Confirm that any of 늬☆Ж were replaced by 넙礁. 
+--- OK ?

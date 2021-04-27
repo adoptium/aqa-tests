@@ -12,73 +12,86 @@
 # limitations under the License.
 ################################################################################
 
-#javac *.java
+# javac *.java
 
-#SYSENC=${LANG%.*}.`locale charmap`
 SOURCE=$1
 
 echo '------------ Pattern matching test ------------'
 
-java SimpleGrep '특수' "${SOURCE}"
-echo '--- Confirm that the line(s) includes 특수. '
-#read word1?"--- Did you get the line(s) 14,23,31,43 ?"
-echo
+java SimpleGrep 'あ乷瞻새悼' "${SOURCE}"
+echo '--- Confirm that the line(s) includes あ乷瞻새悼. '
+echo '--- Did you get the line(s) 11,12 and 49 ?'
+#read word1
 
-java SimpleGrep 'gnome' "${SOURCE}"
-echo '--- Confirm that the line(s) includes the pattern gnome. '
-#read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
-echo
+java SimpleGrep 'あ.*悼' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern あ*悼. '
+echo '--- Did you get the line(s) 11,12,49,50,52 and 54 ?'
+#read word1
 
-java SimpleGrep '^ㄱ' "${SOURCE}"
-echo '--- Confirm that the line(s) starts with ㄱ.'
-#read word1?"--- Did you get the line(s) 98,185 ?"
-echo
+java SimpleGrep '^盞' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with 盞.'
+echo '--- Did you get the line(s) 55,56 and 57 ?'
+#read word1
 
-java SimpleGrep '문제' "${SOURCE}"
-echo '--- Confirm that the line(s) includes 문제. '
-#read word1?"--- Did you get the line(s) 85,86,88 ?"
-echo
+java SimpleGrep '뉠窈' "${SOURCE}"
+echo '--- Confirm that the line(s) includes half-width Katakana 뉠窈. '
+echo '--- Did you get the line(s) 19,20 and 41 ?'
+#read word1
 
-java SimpleGrep '加速' "${SOURCE}"
-echo '--- Confirm that the line(s) includes 加速. '
-#read word1?"--- Did you get the line(s) 234,235,236 ?"
-echo
+java SimpleGrep '＃' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ＃. '
+echo '--- Did you get the line(s) 24 and 64 ?'
+#read word1
 
-java SimpleGrep '呵呵大笑' "${SOURCE}"
-echo '--- Confirm that the line(s) includes 呵呵大笑. '
-#read word1?"--- Did you get the line 124 ?"
-echo
+java SimpleGrep '#' "${SOURCE}"
+echo '--- Confirm that the line(s) includes #. '
+echo '--- Did you get the line(s) 11,16,20,24,26 and 37 ?'
+#read word1
 
-java SimpleGrep 'ㅏㅑㅓㅕㅗㅛㅜㅠ' "${SOURCE}"
-echo '--- Confirm that the line(s) includes any of  ㅏㅑㅓㅕㅗㅛㅜㅠ'
-#read word1?"--- Did you get the line(s) 98  ?"
-echo
+java SimpleGrep '孱.*찮' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern 孱.*찮. '
+echo '--- Did you get the line 74 ?'
+#read word1
 
-echo
+java SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
+echo '--- Confirm that the line(s) includes あかさ. '
+echo '--- Did you get the line 33 ?'
+#read word1
+
+java SimpleGrep '[늬☆Ж]' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of 늬,☆ or Ж. '
+echo '--- Did you get the line(s) 62,64 and 72 ?'
+#read word1
+
+#read word1
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest '１２３４５６７８９' '◑▒▤▥▨▧▦▩♨' "${SOURCE}" -v
-echo '--- Confirm that １２３４５６７８９ was replaced by ◑▒▤▥▨▧▦▩♨. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest 'あ乷瞻새悼' 'aiueo' "${SOURCE}" -v
+echo '--- Confirm that あ乷瞻새悼 was replaced by aiueo. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '가정교사' '家庭敎師' "${SOURCE}" -v
-echo '--- Confirm that 가정교사 was replaced by 家庭敎師. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest '뉠窈' '婦겔婦멈' "${SOURCE}" -v
+echo '--- Confirm that 뉠窈 was replaced by 婦겔婦멈. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '檢問' '검문' "${SOURCE}" -v
-echo '--- Confirm that 檢問 was replaced by 검문. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest '＃' '#' "${SOURCE}" -v
+echo '--- Confirm that ＃ was replaced by #. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '가.*호' '家家戶戶' "${SOURCE}" -v
-echo '--- Confirm that 가.*호 was replaced by 家家戶戶. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest '孱.*찮' '５ｃ뾰습郵' "${SOURCE}" -v
+echo '--- Confirm that 孱.*찮 was replaced by ５ｃ뾰습郵. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '家系' '家計簿' "${SOURCE}" -v
-echo '--- Confirm that 家系 replaced by 家計簿. '
-#read word1?"--- OK ?"
-echo
-echo
+java RegexReplaceTest '\u3042\u304b\u3055' '찮癤' "${SOURCE}" -v
+echo '--- Confirm that あかさ was replaced by 찮癤. '
+echo '--- OK ?'
+#read word1
+
+java RegexReplaceTest '[늬☆Ж]' '넙礁' "${SOURCE}" -v
+echo '--- Confirm that any of 늬☆Ж were replaced by 넙礁. '
+echo '--- OK ?'
+#read word1
