@@ -294,11 +294,12 @@ getBinaryOpenjdk()
 	if [[ -n $info_url ]]; then
 		for info in $info_url
 		do
-			if [[ $info_url == https://api.adoptopenjdk.net* ]]; then
-				release_info=$(curl -Is $info | grep "HTTP/")
-				validate=( $release_info )
-				if [[ ${validate[-2]} != 200 ]]; then
-					echo "Download failure, invalid downlad links."
+			if [[ $info == https://api.adoptopenjdk.net* ]]; then
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/")
+				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
+				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
+				if [[ ${validate} != 200 ]]; then
+					echo "Download failure, invalid download link: ${info}."
 					exit 1
 				fi
 			fi
