@@ -165,8 +165,8 @@ def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.contains("all")) {
-    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'release') {
-        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or release."
+    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
+        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or releases."
     } else {
         testJobs = [:]
         PLATFORMS.each { PLATFORM ->
