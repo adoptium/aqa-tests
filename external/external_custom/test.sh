@@ -32,7 +32,7 @@ else
 	suffix="/java"
 	java_root=${java_path%$suffix}
 	export JAVA_BIN="$java_root"
-	$JAVA_BIN/java -version
+	"$JAVA_BIN"/java -version
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
@@ -40,7 +40,7 @@ echo_setup
 
 # export MAVEN_OPTS="-Xmx1g"
 
-cd /flink
+cd /custom_github_url
 pwd
 echo "Compile and run external_custom tests"
 mvn clean install

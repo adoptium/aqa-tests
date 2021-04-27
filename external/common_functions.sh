@@ -220,7 +220,7 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;;
     external_custom)
-        github_url="https://github.com/apache/flink.git"
+	      custom_github_url="https://github.com/apache/flink.git"
         script="test.sh"
         test_results="testResults"
         tag_version="master"
