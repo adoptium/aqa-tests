@@ -353,17 +353,6 @@ def setup() {
 		timestamps{
 			setupEnv()
 
-			if (fileExists('openjdkbinary')) {
-				dir('openjdkbinary') {
-					deleteDir()
-				}
-			}
-			if (fileExists('jvmtest')) {
-				dir('jvmtest') {
-					deleteDir()
-				}
-			}
-
 			if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
