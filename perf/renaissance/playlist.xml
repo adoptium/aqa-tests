@@ -29,6 +29,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-als</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964862</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -40,6 +44,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-chi-square</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964098</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -51,6 +59,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818965455</comment>
+			<version>16+</version>
+		</disabled>
 		<disabled>
 			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2159#issuecomment-759570887</comment>
 			<plat>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</plat>
@@ -134,6 +146,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-gauss-mix</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964531</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -145,6 +161,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818964263</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -167,6 +187,10 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-movie-lens</testCaseName>
+		<disabled>
+			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/2500#issuecomment-818965117</comment>
+			<version>16+</version>
+		</disabled>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
 		<levels>

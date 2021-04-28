@@ -1,4 +1,3 @@
-#!/bin/ksh
 ################################################################################
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,73 +12,86 @@
 # limitations under the License.
 ################################################################################
 
-#javac *.java
+# javac *.java
 
-#SYSENC=${LANG%.*}.`locale charmap`
 SOURCE=$1
 
 echo '------------ Pattern matching test ------------'
 
-java SimpleGrep 'Æ¯¼ö' "${SOURCE}"
-echo '--- Confirm that the line(s) includes Æ¯¼ö. '
-#read word1?"--- Did you get the line(s) 14,23,31,43 ?"
-echo
+java SimpleGrep 'ª¢ß­ô×»õÓú' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ª¢ß­ô×»õÓú. '
+echo '--- Did you get the line(s) 11,12 and 49 ?'
+#read word1
 
-java SimpleGrep 'gnome' "${SOURCE}"
-echo '--- Confirm that the line(s) includes the pattern gnome. '
-#read word1?"--- Did you get the line(s) 11,12,49,52,54,78 ?"
-echo
+java SimpleGrep 'ª¢.*Óú' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern ª¢*Óú. '
+echo '--- Did you get the line(s) 11,12,49,50,52 and 54 ?'
+#read word1
 
-java SimpleGrep '^¤¡' "${SOURCE}"
-echo '--- Confirm that the line(s) starts with ¤¡.'
-#read word1?"--- Did you get the line(s) 98,185 ?"
-echo
+java SimpleGrep '^íÓ' "${SOURCE}"
+echo '--- Confirm that the line(s) starts with íÓ.'
+echo '--- Did you get the line(s) 55,56 and 57 ?'
+#read word1
 
-java SimpleGrep '¹®Á¦' "${SOURCE}"
-echo '--- Confirm that the line(s) includes ¹®Á¦. '
-#read word1?"--- Did you get the line(s) 85,86,88 ?"
-echo
+java SimpleGrep '´·é¡' "${SOURCE}"
+echo '--- Confirm that the line(s) includes half-width Katakana ´·é¡. '
+echo '--- Did you get the line(s) 19,20 and 41 ?'
+#read word1
 
-java SimpleGrep 'Ê¥áÜ' "${SOURCE}"
-echo '--- Confirm that the line(s) includes Ê¥áÜ. '
-#read word1?"--- Did you get the line(s) 234,235,236 ?"
-echo
+java SimpleGrep '££' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ££. '
+echo '--- Did you get the line(s) 24 and 64 ?'
+#read word1
 
-java SimpleGrep 'Ê§Ê§ÓÞáÅ' "${SOURCE}"
-echo '--- Confirm that the line(s) includes Ê§Ê§ÓÞáÅ. '
-#read word1?"--- Did you get the line 124 ?"
-echo
+java SimpleGrep '#' "${SOURCE}"
+echo '--- Confirm that the line(s) includes #. '
+echo '--- Did you get the line(s) 11,16,20,24,26 and 37 ?'
+#read word1
 
-java SimpleGrep '¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð' "${SOURCE}"
-echo '--- Confirm that the line(s) includes any of  ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð'
-#read word1?"--- Did you get the line(s) 98  ?"
-echo
+java SimpleGrep 'íÏ.*Âú' "${SOURCE}"
+echo '--- Confirm that the line(s) includes the pattern íÏ.*Âú. '
+echo '--- Did you get the line 74 ?'
+#read word1
 
-echo
+java SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
+echo '--- Confirm that the line(s) includes ª¢ª«ªµ. '
+echo '--- Did you get the line 33 ?'
+#read word1
+
+java SimpleGrep '[´Ì¡Ù¬¨]' "${SOURCE}"
+echo '--- Confirm that the line(s) includes any of ´Ì,¡Ù or ¬¨. '
+echo '--- Did you get the line(s) 62,64 and 72 ?'
+#read word1
+
+#read word1
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest '£±£²£³£´£µ£¶£·£¸£¹' 'Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢' "${SOURCE}" -v
-echo '--- Confirm that £±£²£³£´£µ£¶£·£¸£¹ was replaced by Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest 'ª¢ß­ô×»õÓú' 'aiueo' "${SOURCE}" -v
+echo '--- Confirm that ª¢ß­ô×»õÓú was replaced by aiueo. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '°¡Á¤±³»ç' 'Ê«ïÔÎçÞÔ' "${SOURCE}" -v
-echo '--- Confirm that °¡Á¤±³»ç was replaced by Ê«ïÔÎçÞÔ. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest '´·é¡' 'Üþ°ÖÜþ¸Ø' "${SOURCE}" -v
+echo '--- Confirm that ´·é¡ was replaced by Üþ°ÖÜþ¸Ø. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest 'ËþÙý' '°Ë¹®' "${SOURCE}" -v
-echo '--- Confirm that ËþÙý was replaced by °Ë¹®. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest '££' '#' "${SOURCE}" -v
+echo '--- Confirm that ££ was replaced by #. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest '°¡.*È£' 'Ê«Ê«ûÂûÂ' "${SOURCE}" -v
-echo '--- Confirm that °¡.*È£ was replaced by Ê«Ê«ûÂûÂ. '
-#read word1?"--- OK ?"
-echo
+java RegexReplaceTest 'íÏ.*Âú' '£µ£ã»Ï½Àéè' "${SOURCE}" -v
+echo '--- Confirm that íÏ.*Âú was replaced by £µ£ã»Ï½Àéè. '
+echo '--- OK ?'
+#read word1
 
-java RegexReplaceTest 'Ê«Í§' 'Ê«ÍªÝ­' "${SOURCE}" -v
-echo '--- Confirm that Ê«Í§ replaced by Ê«ÍªÝ­. '
-#read word1?"--- OK ?"
-echo
-echo
+java RegexReplaceTest '\u3042\u304b\u3055' 'Âúï»' "${SOURCE}" -v
+echo '--- Confirm that ª¢ª«ªµ was replaced by Âúï». '
+echo '--- OK ?'
+#read word1
+
+java RegexReplaceTest '[´Ì¡Ù¬¨]' '³Òõ§' "${SOURCE}" -v
+echo '--- Confirm that any of ´Ì¡Ù¬¨ were replaced by ³Òõ§. '
+echo '--- OK ?'
+#read word1
