@@ -342,7 +342,7 @@ TKG has a script that counts how many test exists in a specified folder. This sc
 The output of the code above is : 
 
     
-    Counting tests in '2/openjdk-tests/openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/' ...
+    Counting tests in 'openjdk-tests/openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/' ...
 
     Found 41 java files
 
