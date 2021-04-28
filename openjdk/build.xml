@@ -26,57 +26,7 @@
 	<property environment="env" />
 	<property name="LIB" value="tohandler_simple"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-
-	<target name="getJtreg">
-		<mkdir dir="${DEST}"/>
-		<if>
-			<or>
-				<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-				<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
-			</or>
-			<then>
-				<property name="jtregTar" value="jtreg-4.2.0-tip.tar"/>
-			</then>
-			<else>
-				<property name="jtregTar" value="jtreg-5.1-b01.tar"/>
-			</else>
-		</if>
-		<if>
-			<not>
-				<available file="${jtregTar}" />
-			</not>
-			<then>
-				<if> <available file="custom_jtreg.tar.gz"/>
-					<then>
-						<echo message="Using custom_jtreg.tar.gz"/>
-							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.gz"/>
-					</then>
-				<else>
-					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz"/>
-					<exec executable="curl" failonerror="true">
-						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz" />
-					</exec>
-				</else>
-				</if>
-				<exec executable="gzip" failonerror="true">
-					<arg line="-d ${jtregTar}.gz" />				</exec>
-			</then>
-		</if>
-		<if>
-			<contains string="${SPEC}" substring="zos" />
-			<then>
-				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar} -C ${DEST}" />
-				</exec>
-			</then>
-		<else>
-			<exec executable="sh" failonerror="true">
-				<arg line="-c 'cat ${jtregTar} | (cd ${DEST} &amp;&amp; tar xof -)'" />
-
-			</exec>
-		</else>
-		</if>
-	</target>
+	
 
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
