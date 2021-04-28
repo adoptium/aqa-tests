@@ -305,8 +305,14 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							}
 							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
 							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
-							stringParam('CUSTOM_TARGET', "", "Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, etc., CUSTOM_TARGET=path to the test class to execute")
-
+							stringParam('CUSTOM_TARGET', "", '''
+								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
+								Example 1:<br>
+								TARGET=system_custom<br>
+								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"
+								Example 2:<br>
+								TARGET=jdk_custom<br>
+								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java<br>''')
 							parameterSeparatorDefinition {
 							    name('TEST_OPTIONS_PARAMS')
 							    separatorStyle(separatorStyleCss)
