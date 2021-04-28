@@ -1,0 +1,34 @@
+name: "Update External tests with latest stable releases"
+# Find the Latest Stable releases in common_functions.sh and create a draft PR
+on:
+  pull_request:
+
+jobs:
+  updateTags:
+    runs-on: ubuntu-latest
+    outputs:
+      isUpdated: $${{ steps.update_common_functions.outputs.is_updated }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update/Check Latest Releases' tags in common_functions.sh
+        id: update_common_functions
+        working-directory: ./
+        run: |
+          python3 ./.github/workflows/updatetags.py ./external/common_functions.sh
+        
+          
+  CreatePullRequest:
+    runs-on: ubuntu-latest
+    needs: updateTags
+    if: ${{ needs.updateTags.outputs.isUpdated }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: PR for Latest Stable Releases in common_functions.sh
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Latest Stable releases in common_functions.sh
+          commit-message: Update common_functions.sh with latest tags
+          branch: random
+          draft: true
+          
+          
