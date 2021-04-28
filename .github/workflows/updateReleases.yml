@@ -9,7 +9,9 @@ jobs:
     outputs:
       isUpdated: $${{ steps.update_common_functions.outputs.is_updated }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2      
+      - name: Retain commit to a new branch
+        run: git switch -c latestreleases
       - name: Update/Check Latest Releases' tags in common_functions.sh
         id: update_common_functions
         working-directory: ./
@@ -28,7 +30,7 @@ jobs:
         with:
           title: Latest Stable releases in common_functions.sh
           commit-message: Update common_functions.sh with latest tags
-          branch: random
+          branch: latestreleases
           draft: true
           
           
