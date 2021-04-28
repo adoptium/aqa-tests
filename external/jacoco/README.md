@@ -1,9 +1,9 @@
-##External Jacoco Tests
+## External Jacoco Tests
 
 Jacoco tests are part of the external third-party application tests that help verify that the Adoptium binaries are good, by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue #172 lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries. For each application, we choose to run a selection of their functional tests.
 Jacoco test material is pulled from the [Jacoco repository](https://github.com/jacoco/jacoco).
 
-##Running External Jacoco tests locally
+## Running External Jacoco tests locally
 To run any AQA tests locally, you follow the same pattern:
 
 0. Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
