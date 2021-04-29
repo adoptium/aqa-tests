@@ -264,9 +264,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
 							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
-							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required?")
-							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
-							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
+							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required? True, if BUILD_LIST contains external.")
+							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag", default: 'nightly')
+							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args", default: '-v ${TEST_JDK_HOME}:/opt/java/openjdk')
 							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
 							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
 
@@ -303,7 +303,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directory to compile, set blank for all projects to be compiled")
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", "Specific test directories to compile. This can be a comma-separated list of directories. Advisable to specify to a granularity that suits the targets you want to run. Example: if only running dacapo targets, BUILD_LIST=perf/dacapo.")
 							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", '''
 								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
