@@ -15,6 +15,12 @@ jobs:
         working-directory: ./
         run: |
           python3 ./.github/workflows/updatetags.py ./external/common_functions.sh
+      - name: Debug
+        shell: bash
+        run: |
+          git status
+          git branch
+          pwd
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
