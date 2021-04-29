@@ -15,16 +15,17 @@ jobs:
         working-directory: ./
         run: |
           python3 ./.github/workflows/updatetags.py ./external/common_functions.sh
-#       - name: Debug
-#         shell: bash
-#         run: |
-#           git status
-#           git branch
-#           pwd
-#           git config --global user.name "xfxcwynlc"
-#           git config --global user.email "xfxcwynlc@gmail.com"
-#           git add -A
-#           git commit -a -m "By myself"
+      - name: Debug
+        shell: bash
+        run: |
+          git status
+          git branch
+          pwd
+          git checkout -b patch1
+          git config --global user.name "xfxcwynlc"
+          git config --global user.email "xfxcwynlc@gmail.com"
+          git add -A
+          git commit -a -m "By myself"
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
@@ -33,4 +34,5 @@ jobs:
           title: Latest Stable releases in common_functions.sh
           commit-message: Update common_functions.sh with latest tags
           draft: true
-          
+          base: ${{ github.head_ref }}
+
