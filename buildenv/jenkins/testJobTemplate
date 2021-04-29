@@ -326,8 +326,20 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
-							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
-							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS,'''
+							Use this to append options to the commandline. In general, JVM options can be directly used. For system tests, the special characters may need to be escaped in EXTRA_OPTIONS and JVM_OPTIONS.<br> 
+                            Example 1:<br>
+                            '-Xjit:count=0,\{java/lang/reflect/Method.getParameterAnnotations*\}\(traceFull,log=getParameterAnnotations.log\)'
+                            Example 2:<br>
+                            -Xjit:\"{java/util/HashMap.*}(optlevel=noopt)\"
+							''')
+							stringParam('JVM_OPTIONS', "", '''
+							Use this to replace the test original command line options. In general, JVM options can be directly used. For system tests, the special characters may need to be escaped in EXTRA_OPTIONS and JVM_OPTIONS.<br> 
+                            Example 1:<br>
+                            '-Xjit:count=0,\{java/lang/reflect/Method.getParameterAnnotations*\}\(traceFull,log=getParameterAnnotations.log\)'
+                            Example 2:<br>
+                            -Xjit:\"{java/util/HashMap.*}(optlevel=noopt)\"						
+							''')
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
