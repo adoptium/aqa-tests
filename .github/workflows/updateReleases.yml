@@ -9,7 +9,10 @@ jobs:
     outputs:
       isUpdated: $${{ steps.update_common_functions.outputs.is_updated }}
     steps:
-      - uses: actions/checkout@v2      
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Update/Check Latest Releases' tags in common_functions.sh
         id: update_common_functions
         working-directory: ./
@@ -21,11 +24,13 @@ jobs:
           git status
           git branch
           pwd
+          git remote -v
           git checkout -b patch1
           git config --global user.name "xfxcwynlc"
           git config --global user.email "xfxcwynlc@gmail.com"
           git add -A
           git commit -a -m "By myself"
+          git remote -v
           git push origin patch1
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
