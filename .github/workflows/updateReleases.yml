@@ -21,6 +21,8 @@ jobs:
           git status
           git branch
           pwd
+          git add -A
+          git commit -a -m "By myself"
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
