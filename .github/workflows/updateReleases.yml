@@ -27,6 +27,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
+        env:
+          GITHUB_TOKEN: ${{secrets.PAT}}
         with:
           title: Latest Stable releases in common_functions.sh
           commit-message: Update common_functions.sh with latest tags
