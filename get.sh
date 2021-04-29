@@ -221,9 +221,11 @@ getBinaryOpenjdk()
 			release_type="ga"
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+		info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
 
 		if [ "$JDK_VERSION" != "8" ] || [ "$JDK_IMPL" != "hotspot" ]; then
 			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+			info_url+=" https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
 		fi
 	else
 		download_url=""
@@ -284,6 +286,23 @@ getBinaryOpenjdk()
 				exit 1
 			fi
 			set -e
+		done
+	fi
+
+	# use openapi, try to get the information of the download file
+	# if it returns the status code other than 200, it means the parameters provided by user forms some invalid link, then fails early
+	if [[ -n $info_url ]]; then
+		for info in $info_url
+		do
+			if [[ $info == https://api.adoptopenjdk.net* ]]; then
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/")
+				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
+				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
+				if [[ ${validate} != 200 ]]; then
+					echo "Download failure, invalid download link: ${info}."
+					exit 1
+				fi
+			fi
 		done
 	fi
 
