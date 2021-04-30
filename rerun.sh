@@ -132,7 +132,6 @@ export BUILD_LIST="${BUILD_LIST}"
 export TARGET="${TARGET}"
 export JDK_VERSION="${JDK_VERSION}"
 export JDK_IMPL="${JDK_IMPL}"
-export TEST_JDK_HOME=${TEST_JDK_HOME}
 
 make compile 
 make "_$TARGET"
