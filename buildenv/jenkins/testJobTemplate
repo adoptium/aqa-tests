@@ -265,8 +265,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
 							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
 							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required? True, if BUILD_LIST contains external.")
-							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag", default: 'nightly')
-							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args", default: '-v ${TEST_JDK_HOME}:/opt/java/openjdk')
+							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
+							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
 							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
 							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
 
