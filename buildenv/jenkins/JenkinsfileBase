@@ -858,6 +858,7 @@ def uploadToArtifactory(pattern) {
 def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
+	def labelValue = ""
 	params.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
@@ -865,9 +866,16 @@ def addGrinderLink() {
 			url += "&amp;"
 		}
 		i++;
+		if ( key == "LABEL" ) {
+			labelValue = "LABEL=${value}"
+		}
 	}
 	echo "Rerun in Grinder: ${url}"
-	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
+	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
+	def sameMachineUrl = url.replace(labelValue,"LABEL=${NODE_NAME}")
+	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
+	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
+	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
 def run_parallel_tests() {
