@@ -43,12 +43,6 @@ do
 	fi
 			
 done < "$sha"
-: 'for i in "${!values[@]}"
-do
-	echo "$i - ${values[$i]}"
-
-done
-exit 1'
 # This function parses the given link to obtain values such as BUILD_LIST, TARGET.
 linkParse(){
 	IFS='&'
@@ -86,7 +80,6 @@ do
 		git clone "${j[0]}"
 		cd openjdk-tests
 		git checkout "${j[1]}"
-		break
 	fi
 done
 cd ..
@@ -100,25 +93,10 @@ do
 		continue
 	elif [[ "${j[0]}" == *"openj9.git"* ]]
 	then	
-		echo "Fetching functional material..."
-		echo "git clone --depth 1 ${j[0]}"
-		git clone --depth 1 "${j[0]}" && cd "$(basename "${j[0]}" .git)"
-		git checkout "${j[1]}"
-		mv test/functional/* ../openjdk-tests/functional
-		mv test/TestConfig ../openjdk-tests/TestConfig
-		mv test/Utils ../openjdk-tests/Utils
-		cd ..
-		rm -rf openj9
+		OPENJ9_SHA="${j[1]}"
 	elif [[ "${j[0]}" == *"TKG.git"* ]] 
 	then
-		echo "Fetching TKG..."
-		cd openjdk-tests	
-		echo "git clone ${j[0]} "
-		git clone "${j[0]}" 
-		cd "$(basename "${j[0]}" .git)" 
-		git checkout "${j[1]}"
-		cd ..
-		cd ..
+		TKG_SHA="${j[1]}"
 	elif [[ "${values[$i]}" == *"openjdk-jdk"* && $BUILD_LIST == *"openjdk"* ]]
 	then
 		echo "Setting openjdk variables..."
@@ -127,7 +105,9 @@ do
 	fi		
 done
 
-cd openjdk-tests/TKG
+cd openjdk-tests
+./get.sh --openj9_sha "$OPENJ9_SHA" --tkg_sha "$TKG_SHA"
+cd TKG
 export BUILD_LIST="${BUILD_LIST}"
 export TARGET="${TARGET}"
 export JDK_VERSION="${JDK_VERSION}"
