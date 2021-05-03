@@ -1,6 +1,6 @@
 ## External Jenkins Tests
 
-Jenkins tests are part of the external third-party application tests that help verify that the AdoptOpenJDK binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/openjdk-tests/Issue #172 lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries. For each application, we choose to run a selection of their functional tests.
+Jenkins tests are part of the external third-party application tests that help verify that the AdoptOpenJDK binaries are good by running a variety of Java applications inside of Docker containers. Adoptium/aqa-tests/Issue #172 lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries. For each application, we choose to run a selection of their functional tests.
 
 Jenkins test material is pulled from` https://github.com/jenkinsci/jenkins`
 
@@ -8,7 +8,7 @@ Jenkins test material is pulled from` https://github.com/jenkinsci/jenkins`
 
 To run any AQA tests locally, you follow the same pattern:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
+0. Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/oaqa-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
 1. Download/unpack the SDK that you want to test to your test machine
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
 1. `git clone https://github.com/AdoptOpenJDK/openjdk-tests.git`
