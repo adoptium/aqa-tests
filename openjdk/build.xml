@@ -24,7 +24,34 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
 	<property environment="env" />
-	<property name="LIB" value="tohandler_simple"/>
+	
+	<if>
+		<or>
+		    	<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
+			<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
+		</or>
+	 	<then>
+	    		<property name="jtregTar" value="jtreg_4_2_0_tip"/>
+		</then>
+		<else>
+	   		 <property name="jtregTar" value="jtreg_5_1_b01"/>
+		</else>
+	</if>
+	<if>
+	 	<or>
+	    		<equals arg1="${JDK_IMPL}" arg2="ibm"  />
+	    		<equals arg1="${JDK_IMPL}" arg2="openj9" />
+		</or>
+		<then>
+		    	<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
+		</then>
+		<else>
+		 	<property name="openj9jtregtimeouthandler" value=""/>
+	       </else>
+	</if>
+	
+	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
+	
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	
 	<target name="getJtreg">
@@ -52,14 +79,14 @@
 		</if>
 		<if>
 			<not>
-				<available file="${jtregTar}" />
+				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
 			</not>
 			<then>
 				<if> 
-					<available file="custom_jtreg.tar.gz"/>
+					<available file="${jtregTar}.tar.gz"/>
 					<then>
-						<echo message="Using custom_jtreg.tar.gz"/>
-							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.gz"/>
+						<echo message="Using ${jtregTar}.tar.gz"/>
+							<copy file="${jtregTar}.tar.gz" tofile="${jtregTar}.gz"/>
 					</then>
 				</if>
 				<exec executable="gzip" failonerror="true">
@@ -258,20 +285,8 @@
 			<available file="openjdk-jdk" type="dir"/>
 		</condition>
 	</target>
-
-	<target name="getDependentLibsCheck" >
-		<if>
-			<or>
-				<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-				<equals arg1="${JDK_IMPL}" arg2="openj9" />
-			</or>
-			<then>
-				<antcall target="getDependentLibs"/>
-			</then>
-		</if>
-	</target>
 	
-	<target name="dist" depends="getDependentLibsCheck, getJtreg, getOpenjdk" description="generate the distribution">
+	<target name="dist" depends="getDependentLibs, getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>
 		</copy>
