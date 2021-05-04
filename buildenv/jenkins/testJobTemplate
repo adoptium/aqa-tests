@@ -49,7 +49,7 @@ if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
 if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
 if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
 if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
-
+if (!binding.hasVariable('GENERATE_JOBS')) GENERATE_JOBS = false
 
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
@@ -350,6 +350,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
+							booleanParam('GENERATE_JOBS', GENERATE_JOBS.toBoolean(), "Force generate child jobs?")
 
 							parameterSeparatorDefinition {
 							    name('POST_RUN_PARAMS')
