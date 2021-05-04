@@ -57,40 +57,19 @@
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>
 		<if>
-			<or>
-				<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-				<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
-			</or>
-			<then>
-				<property name="jtregTar" value="jtreg_4_2_0_tip.tar"/>
-			</then>
-			<else>
-				<property name="jtregTar" value="jtreg_5_1_b01.tar"/>
-			</else>
-		</if>
-		<if>
-			<or>
-				<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-				<equals arg1="${JDK_IMPL}" arg2="openj9" />
-			</or>
-			<then>
-				<antcall target="getDependentLibs"/>
-			</then>
-		</if>
-		<if>
 			<not>
 				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
 			</not>
 			<then>
 				<if> 
-					<available file="${jtregTar}.tar.gz"/>
+					<available file="custom_jtreg.tar.gz"/>
 					<then>
-						<echo message="Using ${jtregTar}.tar.gz"/>
-							<copy file="${jtregTar}.tar.gz" tofile="${jtregTar}.gz"/>
+						<echo message="Using custom_jtreg.tar.gz"/>
+							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
 					</then>
 				</if>
 				<exec executable="gzip" failonerror="true">
-					<arg line="-d ${jtregTar}.gz" />				
+					<arg line="-d ${jtregTar}.tar.gz />				
 				</exec>
 			</then>
 		</if>
@@ -103,7 +82,7 @@
 			</then>
 		<else>
 			<exec executable="sh" failonerror="true">
-				<arg line="-c 'cat ${jtregTar} | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
 			</exec>
 		</else>
 		</if>
