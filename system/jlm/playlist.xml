@@ -6,7 +6,7 @@
 	In order to save machine resources, exclude jlm subfolder in parallel mode
 	To enable it, please update excludes array in JenkinsfileBase
 	-->
-	<!-- 
+	<!--
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
 	<test>
@@ -38,7 +38,7 @@
 			<group>system</group>
 		</groups>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
@@ -73,7 +73,7 @@
 			<group>system</group>
 		</groups>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
@@ -108,7 +108,7 @@
 			<group>system</group>
 		</groups>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
@@ -127,7 +127,7 @@
 		</groups>
 		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
@@ -182,8 +182,8 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	<!--Exclude TestIBMJlmRemoteClassAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!--Exclude TestIBMJlmRemoteClassAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth</testCaseName>
@@ -208,7 +208,7 @@
 		</impls>
 		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80</testCaseName>
@@ -256,7 +256,7 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	<!--Exclude TestIBMJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
+	<!--Exclude TestIBMJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassNoAuth</testCaseName>
 		<variations>
@@ -325,8 +325,8 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth</testCaseName>
@@ -351,7 +351,7 @@
 		</impls>
 		<platformRequirements>^os.win,^os.zos</platformRequirements>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/AdoptOpenJDK/openjdk-systemtest/issues/198 -->
+	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryAuth_SE80</testCaseName>
@@ -399,7 +399,7 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	<!--Exclude TestIBMJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: AdoptOpenJDK/openjdk-systemtest/issues/145-->
+	<!--Exclude TestIBMJlmRemoteMemoryNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteMemoryNoAuth</testCaseName>
 		<variations>

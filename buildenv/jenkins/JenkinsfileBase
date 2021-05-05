@@ -41,7 +41,7 @@ def setupEnv() {
 
 	env.SPEC = "${SPEC}"
 
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
 
 	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "AdoptOpenJDK:master", "TKG")
@@ -287,7 +287,7 @@ def setupParallelEnv() {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
-			
+
 			if (create_jobs) {
 				parallel create_jobs
 			}
@@ -421,7 +421,7 @@ def setup() {
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
-			
+
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -757,7 +757,7 @@ def terminateJavaProcesses() {
 			if (sh_rc == 0) {
 				echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
 				// TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
-				// And this is likely to be replaced as part of https://github.com/AdoptOpenJDK/TKG/issues/45
+				// And this is likely to be replaced as part of https://github.com/adoptium/TKG/issues/45
 			}
 			break
 		}

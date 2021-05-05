@@ -6,7 +6,7 @@
 	In order to save machine resources, exclude sharedClasses subfolder in parallel mode
 	To enable it, please update excludes array in JenkinsfileBase
 	-->
-	<!-- 
+	<!--
 	Special target to get machine information. This target is in each subfolder playlist.xml.
 	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
 	<test>
@@ -99,7 +99,7 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: AdoptOpenJDK/openjdk-systemtest/issues/79 -->
+	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: adoptium/aqa-systemtest/issues/79 -->
 	<test>
 		<testCaseName>SC_Softmx_JitAot</testCaseName>
 		<variations>

@@ -25,7 +25,7 @@ CLONE_OPENJ9="true"
 OPENJ9_REPO="https://github.com/eclipse/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
-TKG_REPO="https://github.com/AdoptOpenJDK/TKG.git"
+TKG_REPO="https://github.com/adoptium/TKG.git"
 TKG_SHA=""
 TKG_BRANCH="master"
 VENDOR_REPOS=""
@@ -57,7 +57,7 @@ usage ()
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
-	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided'
+	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/adoptium/TKG.git is used if not provided'
 	echo '                [--tkg_sha ] : optional. TkG pull request sha.'
 	echo '                [--tkg_branch ] : optional. TKG branch.'
 	echo '                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories'

@@ -22,22 +22,22 @@
 	<property environment="env" />
 	<property name="DEST" value="${BUILD_ROOT}/perf/bumbleBench" />
 	<property name="SRC" location="." />
-	
+
 	<condition property="isZOS" value="true">
 		<equals arg1="${os.name}" arg2="z/OS"/>
 	</condition>
-		
+
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
-	</condition>	
-		
+	</condition>
+
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
 
 	<target name="getBumbleBench" depends="init" description="Clone the distribution">
 		<echo message="Cloning BumbleBench"/>
-		<var name="git_command" value="clone --depth 1 -b master ${git-prefix}://github.com/AdoptOpenJDK/bumblebench.git"/>
+		<var name="git_command" value="clone --depth 1 -b master ${git-prefix}://github.com/adoptium/bumblebench.git"/>
 		<echo message="git ${git_command}" />
 		<exec executable="git" failonerror="false" dir=".">
 			<arg line="${git_command}" />
@@ -48,7 +48,7 @@
 		<echo message="Building BumbleBench"/>
 		<ant antfile="${SRC}/bumblebench/build.xml" dir="${SRC}/bumblebench/" inheritAll="false"></ant>
 	</target>
-		
+
 	<target name="dist" depends="buildBumbleBench" description="Generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${SRC}"/>

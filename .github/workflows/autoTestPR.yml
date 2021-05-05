@@ -24,7 +24,7 @@ jobs:
       - name: checkout TKG repo
         uses: actions/checkout@v2
         with:
-          repository: 'AdoptOpenJDK/TKG.git'
+          repository: 'adoptium/TKG.git'
           ref: 'master'
           path: 'TKG'
       - name: run script
@@ -53,4 +53,4 @@ jobs:
           signoff: 'true'
       - name: add label
         run: |
-          curl -u github-actions:${{ secrets.GITHUB_TOKEN }} -d '{"labels":["test excluded"]}' -X POST ${{ github.event.issue.url }}/labels
+          curl -u github-actions:${{ secrets.GITHUB_TOKEN }} -d '{"labels":["test excluded"]}' -X POST ${{ github.event.issue.url }}/labelsadoptium/TKG

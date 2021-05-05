@@ -113,14 +113,14 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.parseComment.outputs.build_parameters) }}
     steps:
-    - uses: AdoptOpenJDK/install-jdk@v1
+    - uses: adoptium/install-jdk@v1
       if: matrix.sdk_resource != 'customized'
       with:
         version: ${{ matrix.jdk_version }}
         source: ${{ matrix.sdk_resource }}
         sourceType: 'buildType'
         impl: ${{ matrix.jdk_impl }}
-    - uses: AdoptOpenJDK/install-jdk@v1
+    - uses: adoptium/install-jdk@v1
       if: matrix.sdk_resource == 'customized'
       with:
         version: ${{ matrix.jdk_version }}

@@ -10,9 +10,9 @@ jobs:
     - run: echo Hello, world!
 
 ##########################################################################
-# 
+#
 # Case one :
-# Workflow: 
+# Workflow:
 #    Step 1: build-jdk-openj9 action
 #    Step 2: run-aqa action (Note: both action is temporary personal branch
 #    Step 2: upload test result if there is failure      //Note: 1. using v2-preview as wildcards is not official supported https://github.com/actions/upload-artifact/issues/11
@@ -38,7 +38,7 @@ jobs:
 #       with:
 #         version: '8'
 #     - name: AQA
-#       uses: AdoptOpenJDK/run-aqa@v1
+#       uses: adoptium/run-aqa@v1
 #       env:
 #         TEST_JDK_HOME: ${{ steps.buildOpenj9.outputs.BuildOpenJ9JDK }}
 #       with:
@@ -51,11 +51,11 @@ jobs:
 #         path: ./**/output_*/
 
 ###########################################################################
-# 
+#
 # Case two:
-# Workflow: 
+# Workflow:
 #    Step 1: wget a coustomized JDK tar file
-#    Step 2: AdoptOpenJDK/install-jdk action install JDK as a local file
+#    Step 2: adoptium/install-jdk action install JDK as a local file
 #    Step 3: run-aqa action (Note: both action is temporary personal branch
 # Test reference:
 #    https://github.com/sophia-guo/runaqaTest/runs/603152361?check_suite_focus=true
@@ -70,8 +70,8 @@ jobs:
 #     runs-on: ubuntu-latest
 #     steps:
 #     - uses: actions/checkout@v1
-#     - run: 'wget -P buildJDK https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
-#     - uses: AdoptOpenJDK/install-jdk@v1
+#     - run: 'wget -P buildJDK https://github.com/adoptium/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
+#     - uses: adoptium/install-jdk@v1
 #       with:
 #         version: '11'
 #         architecture: x64
@@ -79,7 +79,7 @@ jobs:
 #         targets: 'JDK_11'
 #         archiveExtension: '.tar'
 #     - name: AQA
-#       uses: AdoptOpenJDK/run-aqa@v1
+#       uses: adoptium/run-aqa@v1
 #       with:
 #         version: '11'
 #         jdksource: 'install-jdk'
@@ -88,10 +88,10 @@ jobs:
 
 
 ###########################################################################
-# 
+#
 # Case three:
-# Workflow: 
-#    Step 1: AdoptOpenJDK/install-jdk action install JDK by a url
+# Workflow:
+#    Step 1: adoptium/install-jdk action install JDK by a url
 #    Step 2: run-aqa action (Note: both action is temporary personal branch
 # Test reference:
 #    https://github.com/sophia-guo/runaqaTest/runs/603715783?check_suite_focus=true
@@ -106,15 +106,15 @@ jobs:
 #      runs-on: ubuntu-latest
 #      steps:
 #      - uses: actions/checkout@v1
-#      - uses: AdoptOpenJDK/install-jdk@v1
+#      - uses: adoptium/install-jdk@v1
 #        with:
 #          version: '11'
 #          architecture: x64
-#          source: 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
+#          source: 'https://github.com/adoptium/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
 #          archiveExtension: '.tar'
 #      - name: AQA
-#        uses: AdoptOpenJDK/run-aqa@v1
-#        with: 
+#        uses: adoptium/run-aqa@v1
+#        with:
 #          version: '11'
 #          jdksource: 'install-jdk'
 #          build_list: 'openjdk'
@@ -122,16 +122,16 @@ jobs:
 
 
 ###########################################################################
-# 
+#
 # Case four:
-# Workflow: 
-#    Step 1: AdoptOpenJDK/install-jdk action install JDK by nightly|releases
+# Workflow:
+#    Step 1: adoptium/install-jdk action install JDK by nightly|releases
 #    Step 2: run-aqa action
 # Test reference:
 #    https://github.com/sophia-guo/runaqaTest/runs/603730743?check_suite_focus=true
 #
 ###########################################################################
-#  name: "test jDK installed by AdoptOpenJDK/install-jdk nightly|releases"
+#  name: "test jDK installed by adoptium/install-jdk nightly|releases"
 #  on: # rebuild any PRs and main branch changes
 #    push:
 #
@@ -144,14 +144,14 @@ jobs:
 #          os: ubuntu-latest #[ubuntu-latest, macos-latest] TODO: investigate issue with  Mac
 #      steps:
 #      - uses: actions/checkout@v1
-#      - uses: AdoptOpenJDK/install-jdk@v1
+#      - uses: adoptium/install-jdk@v1
 #        with:
 #          version: '11'
 #          source: 'nightly'
 #          impl: 'openj9'
 #      - name: AQA
-#        uses: AdoptOpenJDKo/run-aqa@v1
-#        with: 
+#        uses: adoptiumo/run-aqa@v1
+#        with:
 #          version: '11'
 #          jdksource: 'install-jdk'
 #          build_list: 'openjdk'
@@ -159,15 +159,15 @@ jobs:
 
 
 ###########################################################################
-# 
+#
 # Case five:
-# Workflow: 
+# Workflow:
 #    Step 1: run-aqa action against github-hosted machine installed JDK
 # Test reference:
 #    https://github.com/sophia-guo/runaqaTest/actions/runs/83442029
 #
 ###########################################################################
-#  name: "test jDK installed by AdoptOpenJDK/install-jdk nightly|releases"
+#  name: "test jDK installed by adoptium/install-jdk nightly|releases"
 #  on: # rebuild any PRs and main branch changes
 #    push:
 #
@@ -181,7 +181,7 @@ jobs:
 #      steps:
 #      - uses: actions/checkout@v1
 #      - name: AQA
-#        uses: AdoptOpenJDK/run-aqa@v1
+#        uses: adoptium/run-aqa@v1
 #        with:
 #          version: '11'
 #          jdksource: 'github-hosted'

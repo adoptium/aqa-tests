@@ -7,30 +7,30 @@
 	<property name="SYSTEMTEST_ROOT" value="${TEST_ROOT}/system" />
 	<property name="SYSTEMTEST_DEST" value="${BUILD_ROOT}/system" />
 	<property environment="env" />
-	
+
 	<condition property="isZOS" value="true">
 		<equals arg1="${os.name}" arg2="z/OS"/>
 	</condition>
-	
+
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
 	</condition>
-	
-	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
+
+	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/adoptium/aqa-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
-	
+
 	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse/openj9-systemtest.git">
 		<isset property="env.OPENJ9_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openj9_systemtest_branch" value="${env.OPENJ9_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.OPENJ9_SYSTEMTEST_BRANCH"/>
 	</condition>
-	
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
+
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
 	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
@@ -64,9 +64,9 @@
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
 				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-				</delete>  
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -99,9 +99,9 @@
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
 				   <fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
-				</delete>  
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -117,7 +117,7 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
 	</target>
-	
+
 	<target name="clone_openj9-systemtest">
 		<echo message="Cloning from: ${openj9_systemtest_repo} -b ${openj9_systemtest_branch}"/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
@@ -133,9 +133,9 @@
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
 				   <fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
-				</delete>  
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -198,7 +198,7 @@
 			</then>
 		</if>
 	</target>
-	
+
 	<target name="configure_systemtest" depends="check_systemtest">
 		<if>
 			<or>
@@ -213,7 +213,7 @@
 			</else>
 		</if>
 	</target>
-					
+
 	<target name="common_dist" description="generate the distribution">
 		<copy todir="${SYSTEMTEST_DEST}/stf">
 			<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
@@ -248,13 +248,13 @@
 		</if>
 		<antcall target="common_dist" inheritall="false" />
 	</target>
-	
+
 	<!-- To make sure common_build target only excute once, the common_build target runs only if common_build.executed value is not set -->
 	<target name="common_build" unless="common_build.executed">
 		<echo message="target common_build is called....." />
 		<antcall target="build-dependencies" inheritall="true" />
 	</target>
-		
+
 	<target name="clean">
 		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"/>
 		<if>
@@ -265,7 +265,7 @@
 			<then>
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
 			</then>
-		</if>		
+		</if>
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"/>
 	</target>
 </project>
