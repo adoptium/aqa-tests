@@ -32,7 +32,7 @@ There are many different test jobs running at the AdoptOpenJDK project.  No matt
 - product issue - additional steps may be necessary, before raising an issue
   - rerun the test - locally or using a Grinder: see [How to Run a Grinder wiki](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins)
   - determine if the problem is occurs in other jdk versions, implementations and on other platforms
-  - if only observed against 1 implementation, raise an issue against that implementation in the correct upstream repo (typically either OpenJDK or [Eclipse OpenJ9](https://github.com/eclipse/openj9/issues) projects).
+  - if only observed against 1 implementation, raise an issue against that implementation in the correct upstream repo (typically either OpenJDK or [Eclipse OpenJ9](https://github.com/eclipse-openj9/openj9/issues) projects).
 
 ### Exclude the test
 
