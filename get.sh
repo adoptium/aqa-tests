@@ -22,7 +22,7 @@ SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
 CUSTOMIZED_SDK_SOURCE_URL=""
 CLONE_OPENJ9="true"
-OPENJ9_REPO="https://github.com/eclipse/openj9.git"
+OPENJ9_REPO="https://github.com/eclipse-openj9/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
 TKG_REPO="https://github.com/AdoptOpenJDK/TKG.git"
@@ -54,7 +54,7 @@ usage ()
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true'
-	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
+	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
 	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided'
