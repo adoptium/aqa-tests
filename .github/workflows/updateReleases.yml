@@ -10,31 +10,23 @@ jobs:
       isUpdated: $${{ steps.update_common_functions.outputs.is_updated }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{secrets.PAT}}
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Update/Check Latest Releases' tags in common_functions.sh
         id: update_common_functions
         working-directory: ./
         run: |
           python3 ./.github/workflows/updatetags.py ./external/common_functions.sh
-#       - name: Debug
-#         shell: bash
-#         run: |
-#           git status
-#           git branch
-#           pwd
-#           git remote -v
-#           git checkout -b patchtry
-#           git config --global user.name "xfxcwynlc"
-#           git config --global user.email "xfxcwynlc@gmail.com"
-#           git add -A
-#           git commit -a -m "By myself"
-#           git remote -v
-#           git push origin patchtry
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
           GITHUB_TOKEN: ${{secrets.PAT}}
         with:
           title: Latest Stable releases in common_functions.sh
-          commit-message: Update common_functions.sh with latest tags
+          commit-message: Update common_functions.sh with latest tags 
+          body: Automated changes. Please refer to the commit to see which line is changed with latest stable releases.
           base: master
           draft: true
+          delete-branch: true
