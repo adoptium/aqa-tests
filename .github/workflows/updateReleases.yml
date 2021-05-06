@@ -26,13 +26,13 @@ jobs:
           git branch
           pwd
           git remote -v
-          git checkout -b patch1
+          git checkout -b patchtry
           git config --global user.name "xfxcwynlc"
           git config --global user.email "xfxcwynlc@gmail.com"
           git add -A
           git commit -a -m "By myself"
           git remote -v
-          git push origin patch1
+          git push origin patchtry
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
