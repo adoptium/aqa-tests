@@ -10,10 +10,6 @@ jobs:
       isUpdated: $${{ steps.update_common_functions.outputs.is_updated }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{secrets.PAT}}
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Update/Check Latest Releases' tags in common_functions.sh
         id: update_common_functions
         working-directory: ./
