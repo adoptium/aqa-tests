@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{secrets.PAT}}
+          token: ${{secrets.GITHUB_TOKEN}}
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Update/Check Latest Releases' tags in common_functions.sh
@@ -22,7 +22,7 @@ jobs:
       - name: PR for Latest Stable Releases in common_functions.sh
         uses: peter-evans/create-pull-request@v3
         env:
-          GITHUB_TOKEN: ${{secrets.PAT}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           title: Latest Stable releases in common_functions.sh
           commit-message: Update common_functions.sh with latest tags 
