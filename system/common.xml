@@ -37,6 +37,25 @@
 		<isset property="env.STF_BRANCH"/>
 	</condition>
 	
+	<target name="checksvttestrepo">
+		<condition property="check_svttest_repo">
+			<contains
+				string="${env.VENDOR_TEST_REPOS}"
+				substring="SVTTestRepo" />
+		</condition>
+		<if>
+			<isset property="check_svttest_repo" />
+			<then>
+				<condition property="svttest_repo" value="${env.VENDOR_TEST_REPOS}" else="Please mention SVTTestRepo in VENDOR_TEST_REPOS field">
+					<isset property="env.VENDOR_TEST_REPOS"/>
+				</condition>
+				<condition property="svttest_repo_branch" value="${env.VENDOR_TEST_BRANCHES}" else="master">
+					<isset property="env.VENDOR_TEST_BRANCHES"/>
+				</condition>
+			</then>
+		</if>
+	</target>
+	
 	<target name="common_init">
 		<if>
 			<not>
@@ -151,6 +170,47 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 	</target>
+	
+	<target name="clone_svttestrepo" depends="checksvttestrepo" if="check_svttest_repo">
+		<echo message="Preparing SVTTestRepo to IBM-1047 format" />
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<echo message="cleaning SVTTestRepo directories"/>
+				<delete dir="${SYSTEMTEST_ROOT}/system/SVT"/>
+				<delete dir="${SYSTEMTEST_ROOT}/system/lib"/>
+				<delete dir="${SYSTEMTEST_ROOT}/system/tools"/>
+			<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+				<arg value="clone" />
+				<arg value="--depth" />
+				<arg value="1" />
+				<arg value="-b"/>
+				<arg value="${svttest_repo_branch}"/>
+				<arg value="${svttest_repo}"/>
+			</exec>
+			<delete includeemptydirs="true" failonerror="false">
+				<fileset dir="${SYSTEMTEST_ROOT}/SVTTestRepo/.git/info" includes="**/*"/>
+			</delete>  
+			<mkdir dir="${SYSTEMTEST_ROOT}/SVTTestRepo/.git/info" />
+			<move file="${SYSTEMTEST_ROOT}/SVTTestRepo/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/SVTTestRepo/.git/info/attributes" /> 
+			<exec executable="git" dir="${SYSTEMTEST_ROOT}/SVTTestRepo" failonerror="false">
+				<arg value="rm" />
+				<arg value="--cached" />
+				<arg value="-r" />
+				<arg value="-q" />
+				<arg value="." />
+			</exec>
+			<exec executable="git" dir="${SYSTEMTEST_ROOT}/SVTTestRepo" failonerror="false">
+				<arg value="reset" />
+				<arg value="--hard" />
+			</exec>
+			</then>
+		</if>
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/SVTTestRepo" />
+		<move todir="${SYSTEMTEST_ROOT}">
+			<fileset dir="${SYSTEMTEST_ROOT}/SVTTestRepo/system" includes="**"/> 
+		</move>
+	</target>
 
 	<target name="check_systemtest" depends="common_init">
 		<if>
@@ -176,6 +236,13 @@
 			<else>
 				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
 			</else>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<echo message="Clone SVTTestRepo freshly on z/OS" />
+				<antcall target="clone_svttestrepo" inheritall="true" />
+			</then>
 		</if>
 		<if>
 			<or>
@@ -227,6 +294,16 @@
 		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
 			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**" />
 		</copy>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<copy todir="${SYSTEMTEST_DEST}" failonerror="false"> 
+					<fileset dir="${SYSTEMTEST_ROOT}/SVT/" />
+					<fileset dir="${SYSTEMTEST_ROOT}/lib/" />
+					<fileset dir="${SYSTEMTEST_ROOT}/tools/" />
+				</copy>
+			</then>
+		</if>
 	</target>
 
 	<!-- target to build all projects in the repository.  -->
