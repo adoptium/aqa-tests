@@ -41,7 +41,9 @@ def setupEnv() {
 
 	env.SPEC = "${SPEC}"
 
+
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
+
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
 
 	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "AdoptOpenJDK:master", "TKG")
@@ -241,18 +243,26 @@ def setupParallelEnv() {
 
 				def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
-				def jobIsRunnable = false
-				try {
-					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
-					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
-				} catch (Exception e) {
-					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
-				}
-				if (!jobIsRunnable) {
+				// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
+				if (params.GENERATE_JOBS) {
 					create_jobs[childTest] = {
-						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params"
+						echo "GENERATE_JOBS is set to true, set test job ${TEST_JOB_NAME} params for generating the job"
 						createJob( TEST_JOB_NAME, PLATFORM)
+					}
+				} else {
+					def jobIsRunnable = false
+					try {
+						def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+						jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
+						echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
+					} catch (Exception e) {
+						echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+					}
+					if (!jobIsRunnable) {
+						create_jobs[childTest] = {
+							echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params for generating the job"
+							createJob( TEST_JOB_NAME, PLATFORM)
+						}
 					}
 				}
 

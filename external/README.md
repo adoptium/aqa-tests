@@ -32,7 +32,8 @@ Our next steps to improve and expand this set of external tests is divided into 
 - Quick compare view, easy comparison of how different implementations stack up
 - Parallel testing (to improve execution time)
 - Startup-only testing (application startup, but not full runs of app functional testing)
-- Add high-value tests that exercise the AdoptOpenJDK binaries, including but not limited to functional test suites and Microprofile compliance tests (plan to start with [Fault Tolerance TCK](https://github.com/eclipse/microprofile-fault-tolerance/blob/master/tck/running_the_tck.asciidoc) and [Metrics API TCKs](https://github.com/eclipse/microprofile-metrics/blob/master/tck/running_the_tck.asciidoc) against [GlassFish](https://javaee.github.io/glassfish/) EE reference implementation)
+- Add high-value tests that exercise the AdoptOpenJDK binaries, including but not limited to functional test suites and Microprofile compliance tests (plan to start with [Fault Tolerance TCK](https://github.com/eclipse-openj9/microprofile-fault-tolerance/blob/master/tck/running_the_tck.asciidoc) and [Metrics API TCKs](https://github.com/eclipse-openj9/microprofile-metrics/blob/master/tck/running_the_tck.asciidoc) against [GlassFish](https://javaee.github.io/glassfish/) EE reference implementation) 
+ 
 
 #### Strategic Goals
 - Engage with application communities, including the Eclipse Jakarta EE project, to:
