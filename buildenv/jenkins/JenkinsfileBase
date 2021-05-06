@@ -42,7 +42,7 @@ def setupEnv() {
 	env.SPEC = "${SPEC}"
 
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
 
 	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "AdoptOpenJDK:master", "TKG")
 	TKG_REPO = tkg[0]
@@ -241,18 +241,26 @@ def setupParallelEnv() {
 
 				def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
-				def jobIsRunnable = false
-				try {
-					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
-					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
-				} catch (Exception e) {
-					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
-				}
-				if (!jobIsRunnable) {
+				// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
+				if (params.GENERATE_JOBS) {
 					create_jobs[childTest] = {
-						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params"
+						echo "GENERATE_JOBS is set to true, set test job ${TEST_JOB_NAME} params for generating the job"
 						createJob( TEST_JOB_NAME, PLATFORM)
+					}
+				} else {
+					def jobIsRunnable = false
+					try {
+						def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+						jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
+						echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
+					} catch (Exception e) {
+						echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+					}
+					if (!jobIsRunnable) {
+						create_jobs[childTest] = {
+							echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params for generating the job"
+							createJob( TEST_JOB_NAME, PLATFORM)
+						}
 					}
 				}
 
@@ -858,6 +866,7 @@ def uploadToArtifactory(pattern) {
 def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
+	def labelValue = ""
 	params.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
@@ -865,9 +874,16 @@ def addGrinderLink() {
 			url += "&amp;"
 		}
 		i++;
+		if ( key == "LABEL" ) {
+			labelValue = "LABEL=${value}"
+		}
 	}
 	echo "Rerun in Grinder: ${url}"
-	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
+	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
+	def sameMachineUrl = url.replace(labelValue,"LABEL=${NODE_NAME}")
+	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
+	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
+	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
 def run_parallel_tests() {
