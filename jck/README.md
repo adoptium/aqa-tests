@@ -30,11 +30,11 @@
 
 4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable
 
-5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in [openjdk-tests/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/README.md).
+5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in [aqa-tests/README.md](https://github.com/adoptium/aqa-tests/blob/master/README.md).
 
 
 This test directory contains:
-  * `build.xml` file - that clones AdoptOpenJDK/stf repo to pick up a test framework
+  * `build.xml` file - that clones adoptium/stf repo to pick up a test framework
   * `<test_subset>/playlist.xml` - to allow easy inclusion of JCK tests into automated builds
   * `jck.mk` - define extra settings for running JCK tests.
 
@@ -51,7 +51,7 @@ There is one custom JCK test targets `jck-runtime-custom`. This test target is u
 
 4. If you need to add extra Java options to JCK tests, you could export `EXTRA_OPTIONS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
 
-5. Follow the steps remaining in [openjdk-tests/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/README.md)
+5. Follow the steps remaining in [aqa-tests/README.md](https://github.com/adoptium/aqa-tests/blob/master/README.md)
 
 
 # How-to Run JCK test targets within Docker container
@@ -61,9 +61,9 @@ without having environment setup problems. To utilize the advantage of
 docker-based JCK test, users can follow the step below to run JCK tests 
 locally within Docker container.
 
-1. Run the [openjdk-tests/get.sh](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/get.sh) to prepare the test framework and dependencies.
+1. Run the [aqa-tests/get.sh](https://github.com/adoptium/aqa-tests/blob/master/get.sh) to prepare the test framework and dependencies.
 
-2. Follow the readme in [openjdk-tests/buildenv/docker/README.md](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/docker/README.md) to build Docker image.
+2. Follow the readme in [aqa-tests/buildenv/docker/README.md](https://github.com/adoptium/aqa-tests/blob/master/buildenv/docker/README.md) to build Docker image.
 
 3. Prepare the JCK materials locally and mount it to the Docker container when you
    initialize the JCK docker image.
@@ -73,8 +73,8 @@ locally within Docker container.
 ## A quick start to run JCK test in docker image
 
 ```
-// clone this openjdk-tests repo
-git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+// clone this aqa-tests repo
+git clone https://github.com/adoptium/aqa-tests.git
 
 // build docker image and run it
 // the JCK_ROOT structure should be like
@@ -85,9 +85,9 @@ git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
 //├── jck8c
 //└── jck9
 
-cd openjdk-tests/buildenv/docker
+cd aqa-tests/buildenv/docker
 docker build -t openjdk-test .
-docker run -it -v <path_to_openjdk-tests_root>:/test  -v <jck_material_root>:/jck openjdk-test /bin/bash
+docker run -it -v <path_to_aqa-tests_root>:/test  -v <jck_material_root>:/jck openjdk-test /bin/bash
 
 // within docker container
 cd /test
