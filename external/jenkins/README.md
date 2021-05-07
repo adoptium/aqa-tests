@@ -8,7 +8,7 @@ Jenkins test material is pulled from` https://github.com/jenkinsci/jenkins`
 
 To run any AQA tests locally, you follow the same pattern:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/AdoptOpenJDK/oaqa-tests/blob/master/doc/Prerequisites.md). For external tests, you do need Docker installed.
+0. Ensure your test machine is set up with [test prereqs]`(https://github.com/AdoptOpenJDK/oaqa-tests/blob/master/doc/Prerequisites.md)`. For external tests, you do need Docker installed.
 1. Download/unpack the SDK that you want to test to your test machine
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
 1. `git clone https://github.com/AdoptOpenJDK/openjdk-tests.git`
