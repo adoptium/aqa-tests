@@ -72,6 +72,9 @@
 					<arg line="-d ${jtregTar}.tar.gz" />				
 				</exec>
 			</then>
+			<else>
+   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
+			</else>
 		</if>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
