@@ -19,7 +19,7 @@ For more details on how the underlying jtreg harness works, you can refer to the
 ## Running OpenJDK tests locally
 While you can directly use the jtreg test harness to run these tests locally, we have also integrated them into our AQA test suite with TKG (TestKitGen) so that they can be run following the same pattern as any other AQA test:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).  For openjdk tests, you do not need Docker installed.
+0. Ensure your test machine is set up with [test prereqs](https://github.com/eclipse-openj9/openj9/blob/master/test/docs/Prerequisites.md).  For openjdk tests, you do not need Docker installed.
 
 1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptopenjdk.net](https://adoptopenjdk.net/)).
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>` 

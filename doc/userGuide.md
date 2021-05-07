@@ -6,7 +6,7 @@ Platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
 
 Java Version: SE80 | SE90 | SE100
 
-Set up your test machine with this [set of prerequisites](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).
+Set up your test machine with this [set of prerequisites](https://github.com/eclipse-openj9/openj9/blob/master/test/docs/Prerequisites.md).
 
 ## Jenkins setup and running
 While you can [run all the tests manually](#local-testing-via-make-targets-on-the-commandline) via the make targets on the command line, you may also run the tests in Jenkins. As part of the AdoptOpenJDK continuous integration (CI), AdoptOpenJDK runs test builds against the release and nightly SDK builds.
@@ -201,7 +201,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
                 [--customizedURL|-c ] : optional. If downloading an sdk and if sdk source is set as customized, indicates sdk url 
                 [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true
-                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided
+                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided
                 [--openj9_sha ] : optional. OpenJ9 pull request sha
                 [--openj9_branch ] : optional. OpenJ9 branch
                 [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided
@@ -215,7 +215,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
 #### Set environment variables, configure, build and run tests
 
-You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
+You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse-openj9/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
 
 ##### Top-level test targets:
 - openjdk 
@@ -229,7 +229,7 @@ You can use the same approach as described in the [OpenJ9 functional tests READM
 - _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
 
 ##### Sub-targets by directory:
-Refer to these instructions for how to [run tests by directory](https://github.com/eclipse/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
+Refer to these instructions for how to [run tests by directory](https://github.com/eclipse-openj9/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
 
 ##### Sub-targets by test name:
 In each playlist.xml file in each test directory, there are tests defined.  Test targets are generated from the ```<testCaseName>``` tag, so you can use the test case name as a make target.
@@ -310,6 +310,57 @@ openjdk-tests/test-results/openjdk/report
 ```
 
 The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`
+
+
+
+### Use live_monitor feature
+TKG has a script that monitors the test progress live. It can be your only friend in darkest nights. When you run tests locally, you may want to use that feature. It shows how many tests are passed currently etc. Now let's look how to use it. You need Python3 installed on your machine in order to use it. Note that this feature currently works with openjdk tests only. This means you need to use:	
+
+`export BUILD_LIST=openjdk`
+
+before compiling or you need to run just openjdk tests and pipe them. Otherwise it won't work.
+
+1. You need to change the verbose option of jtreg. In order to do that, you need to change 1 line of code in [/openjdk/openjdk.mk](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/openjdk.mk) file. 
+
+    You need to change 
+
+        `JTREG_BASIC_OPTIONS += -v:fail,error,time,nopass`  
+    line to
+
+        `JTREG_BASIC_OPTIONS += -v:all`
+
+2. After that, you are ready to run the scripts. Here is the example of how you can do it : 
+
+	`make _sanity.openjdk | python3 -u scripts/liveMonitor_countTests/jtreg-monitor.py`
+
+
+### Count tests in a folder
+TKG has a script that counts how many test exists in a specified folder. This script currently works on just openjdk tests. It simply checks for the java files contains "@test" annotation. Here is an example of how you can use this script :
+
+`openjdk-tests/TKG# python3 -u scripts/liveMonitor_countTests/count-java-tests.py ../openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/`
+
+The output of the code above is : 
+
+    
+    Counting tests in 'openjdk-tests/openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/' ...
+
+    Found 41 java files
+
+    . ................ 11 
+    6594914 ........... 2 
+    6747671 ........... 1 
+    6885255 ........... 1 
+
+    7090499 ........... 1 
+    AuxiliaryClass .... 3 
+    NestedDeprecation . 1 
+    suppress ......... 10 
+
+
+
+    Found 30 java files containing @test
+ 
+    
 
 ## Exclude a test target
 
