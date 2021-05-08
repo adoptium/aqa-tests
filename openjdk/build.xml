@@ -73,9 +73,9 @@
    				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
 			</else>
 		</if>
-				<exec executable="gzip" failonerror="true">
-					<arg line="-d ${jtregTar}.tar.gz" />				
-				</exec>
+		<exec executable="gzip" failonerror="true">
+			<arg line="-d ${jtregTar}.tar.gz" />				
+		</exec>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
 			<then>
@@ -83,11 +83,11 @@
 					<arg line="xfo ${jtregTar} -C ${DEST}" />
 				</exec>
 			</then>
-		<else>
-			<exec executable="sh" failonerror="true">
-				<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
-			</exec>
-		</else>
+			<else>
+				<exec executable="sh" failonerror="true">
+					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				</exec>
+			</else>
 		</if>
 	</target>
 
