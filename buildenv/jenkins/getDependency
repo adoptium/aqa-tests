@@ -37,7 +37,7 @@ def testBuild() {
 			} else {
 				sh 'curl -Os https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
 				sh 'perl ./getDependencies.pl -path . -task default'
-				archiveArtifacts '*.jar, *.zip, *.txt'
+				archiveArtifacts '*.jar, *.zip, *.txt, *.gz'
 			}
 		} finally {
 			cleanWs()
