@@ -24,57 +24,70 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
 	<property environment="env" />
-	<property name="LIB" value="tohandler_simple"/>
+	
+	<if>
+		<or>
+		    	<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
+			<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
+		</or>
+	 	<then>
+	    		<property name="jtregTar" value="jtreg_4_2_0_tip"/>
+		</then>
+		<else>
+	   		 <property name="jtregTar" value="jtreg_5_1_b01"/>
+		</else>
+	</if>
+	<if>
+	 	<or>
+	    		<equals arg1="${JDK_IMPL}" arg2="ibm"  />
+	    		<equals arg1="${JDK_IMPL}" arg2="openj9" />
+		</or>
+		<then>
+		    	<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
+		</then>
+		<else>
+		 	<property name="openj9jtregtimeouthandler" value=""/>
+	       </else>
+	</if>
+	
+	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
+	
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-
+	
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>
 		<if>
-			<or>
-				<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-				<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
-			</or>
-			<then>
-				<property name="jtregTar" value="jtreg-4.2.0-tip.tar"/>
-			</then>
-			<else>
-				<property name="jtregTar" value="jtreg-5.1-b01.tar"/>
-			</else>
-		</if>
-		<if>
 			<not>
-				<available file="${jtregTar}" />
+				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
 			</not>
 			<then>
-				<if> <available file="custom_jtreg.tar.gz"/>
+				<if> 
+					<available file="custom_jtreg.tar.gz"/>
 					<then>
 						<echo message="Using custom_jtreg.tar.gz"/>
-							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.gz"/>
+							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
 					</then>
-				<else>
-					<echo message="Getting Jtreg from https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz"/>
-					<exec executable="curl" failonerror="true">
-						<arg line="--retry 5 -OLJSks https://ci.adoptopenjdk.net/job/dependency_pipeline/lastSuccessfulBuild/artifact/jtreg/${jtregTar}.gz" />
-					</exec>
-				</else>
 				</if>
-				<exec executable="gzip" failonerror="true">
-					<arg line="-d ${jtregTar}.gz" />				</exec>
 			</then>
+			<else>
+   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
+			</else>
 		</if>
+		<exec executable="gzip" failonerror="true">
+			<arg line="-d ${jtregTar}.tar.gz" />				
+		</exec>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
 			<then>
 				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar} -C ${DEST}" />
+					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
 				</exec>
 			</then>
-		<else>
-			<exec executable="sh" failonerror="true">
-				<arg line="-c 'cat ${jtregTar} | (cd ${DEST} &amp;&amp; tar xof -)'" />
-
-			</exec>
-		</else>
+			<else>
+				<exec executable="sh" failonerror="true">
+					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				</exec>
+			</else>
 		</if>
 	</target>
 
@@ -254,20 +267,8 @@
 			<available file="openjdk-jdk" type="dir"/>
 		</condition>
 	</target>
-
-	<target name="getDependentLibsCheck" >
-		<if>
-			<or>
-				<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-				<equals arg1="${JDK_IMPL}" arg2="openj9" />
-			</or>
-			<then>
-				<antcall target="getDependentLibs"/>
-			</then>
-		</if>
-	</target>
 	
-	<target name="dist" depends="getDependentLibsCheck, getJtreg, getOpenjdk" description="generate the distribution">
+	<target name="dist" depends="getDependentLibs, getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>
 		</copy>
