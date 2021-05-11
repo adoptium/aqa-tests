@@ -59,7 +59,7 @@
 			<impl>hotspot</impl>
 		</impls>
 		<!-- Exclude on hotspot s390x under https://github.com/AdoptOpenJDK/openjdk-tests/issues/1993 -->
-		<platformRequirements>^arch.390</platformRequirements>
+		<platform>^((?!390).)*$</platform>
 		<levels>
 			<level>sanity</level>
 		</levels>
