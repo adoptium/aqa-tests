@@ -137,7 +137,7 @@ setup() {
 		fi
 	fi 
 	export JCK_ROOT=$workspace/test
-	export TEST_ROOT=$workspace/openjdk-tests
+	export TEST_ROOT=$workspace/aqa-tests
 }
 
 main() {
@@ -183,11 +183,11 @@ elif [ "$#" -eq 2 ]; then
 	export repo=$1
 	export VERSION=$(echo "$repo" | sed 's/[^0-9]*//g')
 	export workspace=$2
-	if [ ! -d "$workspace/openjdk-tests" ] ; then
-		echo "Please manually check out openjdk-tests under $workspace"
+	if [ ! -d "$workspace/aqa-tests" ] ; then
+		echo "Please manually check out aqa-tests under $workspace"
 		exit 1
-	elif [ ! -d "$workspace/openjdk-tests/TKG" ] ; then
-		echo "Please manually run $workspace/openjdk-tests/get.sh to set up TKG under $workspace/openjdk-tests"
+	elif [ ! -d "$workspace/aqa-tests/TKG" ] ; then
+		echo "Please manually run $workspace/aqa-tests/get.sh to set up TKG under $workspace/aqa-tests"
 		exit 1
 	elif [[ $TEST_JDK_HOME == "" ]] ; then 
 		echo "Please set TEST_JDK_HOME"
