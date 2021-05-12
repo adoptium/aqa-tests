@@ -66,4 +66,4 @@ There are 4 common triage scenarios, with associated appropriate actions to take
 **playlist.xml** 
 - Update the name of the example test case to the actual test case of the third party application that you intend to run. 
 
-Please direct questions to the [#testing Slack channel](https://adoptopenjdk.slack.com/messages/C5219G28G).
+Please direct questions to the [#testing Slack channel](https://adoptium.slack.com/archives/C5219G28G).
