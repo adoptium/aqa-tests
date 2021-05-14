@@ -54,6 +54,7 @@
 					<xsl:element name="failure">
 						<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='messages']"/>
 						<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='out1']"/>
+						<xsl:value-of select="Sections/Section[@status='FAILED']/Output[@title='out2']"/> 
 					</xsl:element>
 				</xsl:if>
 			</xsl:element>
