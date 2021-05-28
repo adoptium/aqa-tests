@@ -63,6 +63,11 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
  OTHER_OPTS=-Xtrace:maximal=all{level2}
 endif
 
+# If testsuite is not specified, default to RUNTIME
+ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
+   override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET),testsuite=RUNTIME
+endif
+
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
 
 define JCK_CMD_TEMPLATE
