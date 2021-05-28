@@ -310,10 +310,14 @@ ARCH_OS_LIST.each { ARCH_OS ->
 								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
 								Example 1:<br>
 								TARGET=system_custom<br>
-								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"
+								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"<br>
 								Example 2:<br>
 								TARGET=jdk_custom<br>
-								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java<br>''')
+								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java<br>
+								Example 3:<br>
+								TARGET=jck_custom<br>
+								CUSTOM_TARGET=lang/INFR/....html,testsuite=COMPILER<br>
+								Note: testsuite is optional. It can be set to [RUNTIME(default) | COMPILER | DEVTOOLS]<br>''')
 							parameterSeparatorDefinition {
 							    name('TEST_OPTIONS_PARAMS')
 							    separatorStyle(separatorStyleCss)
