@@ -29,7 +29,9 @@ if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
 if (!binding.hasVariable('ARTIFACTORY_REPO')) ARTIFACTORY_REPO = ""
 if (!binding.hasVariable('ARTIFACTORY_ROOT_DIR')) ARTIFACTORY_ROOT_DIR = ""
+if (!binding.hasVariable('TEST_TIME')) TEST_TIME = ""
 if (!binding.hasVariable('TIME_LIMIT')) TIME_LIMIT = "10"
+if (!binding.hasVariable('TRSS_URL')) TRSS_URL = ""
 if (!binding.hasVariable('SUFFIX')) SUFFIX = ""
 if (!binding.hasVariable('JCK_GIT_REPO')) JCK_GIT_REPO = ""
 if (!binding.hasVariable('JCK_GIT_REPO_PREFIX')) JCK_GIT_REPO_PREFIX = ""
@@ -348,7 +350,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							}
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
 							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
-							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
+							stringParam('TEST_TIME', TEST_TIME, '''Optional. Expected overall test build execution time. Needs to be used with PARALLEL=Dynamic.<br>
+							Once TEST_TIME is provided, test pipeline will automatically run tests in parallel and try to achieve the expected TEST_TIME.<br>
+							To ensure a balanced workload in test child builds, please also provide TRSS_URL.<br>
+							If both NUM_MACHINES and TEST_TIME are provided, only NUM_MACHINES will be used.<br>''')
+							stringParam('TRSS_URL', TRSS_URL, '''Optional. Active TRSS server to fetch test execution time. Needs to be used with PARALLEL=Dynamic.<br>
+							If not provided, the default is https://trss.adoptopenjdk.net <br>''')
 							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
 							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
 							booleanParam('GENERATE_JOBS', GENERATE_JOBS.toBoolean(), "Force generate child jobs?")
@@ -370,6 +377,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
+							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 						}
 						cpsScm {
 							scm {
