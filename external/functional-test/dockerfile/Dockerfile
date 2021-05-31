@@ -22,7 +22,7 @@
 #
 # Build functionaltest: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-functional-test .`
 
- 
+
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=nightly
@@ -46,13 +46,13 @@ RUN apt-get update \
 
 ENV  JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-# This is the main script to run functional tests.  
+# This is the main script to run functional tests.
 COPY ./dockerfile/functional-test.sh /functional-test.sh
 
-# Clone the repo where the functional tests reside. 
+# Clone the repo where the functional tests reside.
 WORKDIR /
 
-RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/functional-test.sh"]
 CMD ["_sanity.functional.regular"]

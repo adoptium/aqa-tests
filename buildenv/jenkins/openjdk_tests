@@ -250,7 +250,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
             } else {
                 // IF no nodes are idle we will check if there is supported virtual agent
                 // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
-                // In this case jobs will be fooled to fall back to wait local busy nodes. 
+                // In this case jobs will be fooled to fall back to wait local busy nodes.
                 if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
                     boolean isNodeIdle = false
                     node {
@@ -291,7 +291,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     } else {
                         def gitConfig = scm.getUserRemoteConfigs().get(0)
 
-                        // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+                        // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
                         ref_cache = "${env.HOME}/openjdk_cache"
 
                         checkout scm: [$class: 'GitSCM',
@@ -306,7 +306,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
                     if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
                         //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-                        docker.image('adoptopenjdk/centos6_build_image').pull() 
+                        docker.image('adoptopenjdk/centos6_build_image').pull()
                         docker.image('adoptopenjdk/centos6_build_image').inside {
                             jenkinsfile.testBuild()
                         }

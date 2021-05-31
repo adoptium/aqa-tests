@@ -22,7 +22,7 @@
 #
 # Build system test: `docker build --build-arg IMAGE_NAME=<image_name> --build-arg IMAGE_VERSION=<image_version > -t adoptopenjdk-system-test .`
 
- 
+
 ARG SDK=openjdk8
 ARG IMAGE_NAME=adoptopenjdk/$SDK
 ARG IMAGE_VERSION=nightly
@@ -44,14 +44,14 @@ RUN apt-get update \
 	cpio \
 	gcc
 
-# This is the main script to run system tests.  
+# This is the main script to run system tests.
 COPY ./dockerfile/system-test.sh /system-test.sh
 
-# Clone the repo where the 3rd party application code and tests reside. 
+# Clone the repo where the 3rd party application code and tests reside.
 WORKDIR /
 
-# Clone AdoptOpenJDK openjdk-tests repo
-RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+# Clone adoptium aqa-tests repo
+RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/system-test.sh"]
 CMD ["_sanity.system"]

@@ -25,39 +25,39 @@ The directory structure in this openjdk-tests repository is meant to reflect the
 
 ![overview of tests](doc/diagrams/overviewOfAdoptTests.svg)
 
---- 
+---
 
-##### [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) tests - OpenJDK regression tests 
+##### [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) tests - OpenJDK regression tests
 Tests from OpenJDK
 
---- 
+---
 
-##### [system](https://ci.adoptopenjdk.net/view/Test_system/) tests - System and load tests 
+##### [system](https://ci.adoptopenjdk.net/view/Test_system/) tests - System and load tests
 Tests from the adoptium/aqa-systemtest repo
 
---- 
+---
 
 ##### [external](https://ci.adoptopenjdk.net/view/Test_external/) tests - 3rd party application tests
 Test suites from a variety of applications, along with microprofile TCKs, run in Docker containers
 ![external tests](doc/diagrams/externaltests.svg)
 
---- 
+---
 
-##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests - Performance benchmark suites 
-Performance benchmark tests (both full suites and microbenches) from different open-source projects such as Acme-Air and AdoptOpenJDK/bumblebench
+##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests - Performance benchmark suites
+Performance benchmark tests (both full suites and microbenches) from different open-source projects such as Acme-Air and adoptium/bumblebench
 ![perf tests](doc/diagrams/perftests.svg)
 
---- 
+---
 
 ##### [functional](https://ci.adoptopenjdk.net/view/Test_functional/) tests - Unit and functional tests
 Functional tests not originating from the openjdk regression suite, that include locale/language tests and a subset of implementation agnostic tests from the openj9 project.
 
---- 
+---
 
 ##### jck tests - Compliance tests
 TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement.  While this test material is currently not run at the AdoptOpenJDK project (see the [support statement](https://adoptopenjdk.net/support.html#jck) for details), those with their own OCTLA agreements may use the AdoptOpenJDK test automation infrastructure to execute their TCK test material in their own private Jenkins servers.
 
---- 
+---
 
 #### Guide to Running the Tests Yourself
 For more details on how to run the same tests that we run at AdoptOpenJDK on your laptop or in your build farm, please consult our [User Guide](doc/userGuide.md) (work in progress).
@@ -83,8 +83,8 @@ The test infrastructure in this repository allows us to lightly yoke a great var
 
 #### How can you help?
 You can:
-- browse through the [openjdk-tests issues list](https://github.com/AdoptOpenJDK/openjdk-tests/issues), select one, add a comment to claim it and ask questions
+- browse through the [openjdk-tests issues list](https://github.com/adoptium/aqa-tests/issues), select one, add a comment to claim it and ask questions
 - browse through the [aqa-systemtest issues](https://github.com/adoptium/aqa-systemtest/issues) or [stf issues](https://github.com/adoptium/stf/issues), claim one with a comment and dig right in
-- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/doc/Triage.md) for guidance
-  - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/AdoptOpenJDK/openjdk-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
-- ask questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G) 
+- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/doc/Triage.md) for guidance
+  - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/adoptium/aqa-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
+- ask questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G)
