@@ -266,7 +266,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                         }
                     }
                     if (!isNodeIdle) {
-                       LABEL = LABEL.minus("ci.role.test")
+                       LABEL = LABEL.minus("ci.role.test&&")
                        LABEL += '&&ci.agent.dynamic'
                     }
                 }
