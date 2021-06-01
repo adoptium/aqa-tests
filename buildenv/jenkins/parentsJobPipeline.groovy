@@ -3,7 +3,7 @@ def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
 def GROUPS = params.GROUPS.trim().split("\\s*,\\s*")
 def LEVELS = params.LEVELS.trim().split("\\s*,\\s*")
 
-node ("master") {
+node {
     stage("trigger the jobs") {
         keep_test_reportdir = "false"
         def jobs = [:]
