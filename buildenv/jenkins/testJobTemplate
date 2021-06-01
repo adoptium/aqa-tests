@@ -194,6 +194,21 @@ ARCH_OS_LIST.each { ARCH_OS ->
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
 
 					properties {
+						// Hide all non Temurin tests from public view
+						if (JDK_IMPL != "hotspot") {
+							authorizationMatrix {
+								inheritanceStrategy {
+									// Do not inherit permissions from global configuration
+									nonInheriting()
+								} 
+								permissions(['hudson.model.Item.Build:adoptium*adoptium-aqavit-committers',
+								'hudson.model.Item.Cancel:adoptium*adoptium-aqavit-committers',
+								'hudson.model.Item.Configure:adoptium*adoptium-aqavit-committers',
+								'hudson.model.Item.Read:adoptium*adoptium-aqavit-committers',
+								'hudson.model.Item.Workspace:adoptium*adoptium-aqavit-committers',
+								'hudson.model.Run.Update:adoptium*adoptium-aqavit-committers'])
+							}
+						}
 						pipelineTriggers {
 							triggers {
 								cron {
