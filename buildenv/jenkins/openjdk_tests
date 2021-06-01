@@ -270,26 +270,28 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                        LABEL += '&&ci.agent.dynamic'
                     }
                 }
+            }
 
-                node(LABEL) {
-                    cleanWs()
-                    if (params.PLATFORM.contains('zos')) {
-                        /* Ensure correct CC env */
-                        env._CC_CCMODE = '1'
-                        env._CXX_CCMODE = '1'
-                        env._C89_CCMODE = '1'
+            node(LABEL) {
+                cleanWs()
+                if (params.PLATFORM.contains('zos')) {
+                    /* Ensure correct CC env */
+                    env._CC_CCMODE = '1'
+                    env._CXX_CCMODE = '1'
+                    env._C89_CCMODE = '1'
 
-                        def gitConfig = scm.getUserRemoteConfigs()[0]
-                        def SCM_GIT_REPO = gitConfig.getUrl()
-                        def SCM_GIT_BRANCH = scm.branches[0].name
+                    def gitConfig = scm.getUserRemoteConfigs()[0]
+                    def SCM_GIT_REPO = gitConfig.getUrl()
+                    def SCM_GIT_BRANCH = scm.branches[0].name
 
-                        // SCM_GIT_REPO value only gets expanded in sh
-                        def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
-                        SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
+                    // SCM_GIT_REPO value only gets expanded in sh
+                    def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
+                    SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
 
-                        sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
-                    } else {
-                        def gitConfig = scm.getUserRemoteConfigs().get(0)
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                } else {
+                    def gitConfig = scm.getUserRemoteConfigs().get(0)
+
 
                         // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
                         ref_cache = "${env.HOME}/openjdk_cache"
@@ -311,8 +313,11 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                             jenkinsfile.testBuild()
                         }
                     } else {
+
                         jenkinsfile.testBuild()
                     }
+                } else {
+                    jenkinsfile.testBuild()
                 }
             }
         }
