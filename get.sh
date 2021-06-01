@@ -556,6 +556,9 @@ getFunctionalTestMaterial()
 				echo "Stage $dest/$dir to $TESTDIR/$dir"
 				# already in TESTDIR, thus copy $dir to current directory
 				cp -r $dest/$dir ./
+				if [[ "$PLATFORM" == *"zos"* ]]; then
+					cp -r $dest/.git ./$dir
+				fi
 			else
 				echo "Stage $dest to $TESTDIR"
 				# already in TESTDIR, thus copy the entire vendor repo content to current directory
