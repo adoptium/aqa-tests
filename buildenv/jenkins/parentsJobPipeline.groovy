@@ -49,7 +49,7 @@ node {
 	                                jobParams.put('ARCH_OS_LIST', arch_os)
 	                                def jobName = "Test_openjdk${jdk_version}_${variant}_${level}.${group}_${arch_os}"
 	                                jobParams.put('TEST_JOB_NAME', jobName)
-	                                def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+	                                def JobHelper = library(identifier: 'jenkins-helper@master').JobHelper
 	                                
 	                                // Create test job if job doesn't exist or is not runnable
 	                                // Will enable when external and jck jobs are more healthy
