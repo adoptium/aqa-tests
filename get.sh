@@ -295,7 +295,7 @@ getBinaryOpenjdk()
 		for info in $info_url
 		do
 			if [[ $info == https://api.adoptopenjdk.net* ]]; then
-				http_resp_info=$(curl -Is "$info" | grep "HTTP/")
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/" | tail -1)
 				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
 				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
 				if [[ ${validate} != 200 ]]; then
