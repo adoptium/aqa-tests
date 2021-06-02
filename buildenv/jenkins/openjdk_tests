@@ -288,11 +288,11 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
                     SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
 
-                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
                 } else {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
                     
-                    // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+                    // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
                     ref_cache = "${env.HOME}/openjdk_cache"
 
                     checkout scm: [$class: 'GitSCM',
