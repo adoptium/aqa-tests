@@ -63,11 +63,16 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
  OTHER_OPTS=-Xtrace:maximal=all{level2}
 endif
 
+# If testsuite is not specified, default to RUNTIME
+ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
+   override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET),testsuite=RUNTIME
+endif
+
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
 
 define JCK_CMD_TEMPLATE
 perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
-	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)openjdk-systemtest$(Q) \
+	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)aqa-systemtest$(Q) \
 	-systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs;$(JCK_ROOT)$(Q) \
 	-java-args-setup=$(Q)$(OTHER_OPTS) $(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \

@@ -1,6 +1,6 @@
 # Overview 
 
-The jck_target_folder_check.sh script is used to cross-check if all second-level JCK folders in a given JCK repo have their corresponding playlist targets under https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/jck
+The jck_target_folder_check.sh script is used to cross-check if all second-level JCK folders in a given JCK repo have their corresponding playlist targets under https://github.com/adoptium/aqa-tests/tree/master/jck
 
 
 # How to run the script locally 
@@ -8,12 +8,12 @@ The jck_target_folder_check.sh script is used to cross-check if all second-level
 
 ```
 
-- Checkout `jck_target_folder_check.sh to your local machine from https://github.com/AdoptOpenJDK/openjdk-tests/tree/master/jck
+- Checkout `jck_target_folder_check.sh to your local machine from https://github.com/adoptium/aqa-tests/tree/master/jck
 - Manually download/unpack the SDK you want to use at {someLocation}
 - export TEST_JDK_HOME={someLocation}
-- git clone https://github.com/AdoptOpenJDK/openjdk-tests.git at {somerWorkspaceLocation}
-- cd /{somerWorkspaceLocation}/openjdk-tests
-- ./get.sh //This will checkout TKG under /{somerWorkspaceLocation}/openjdk-tests
+- git clone https://github.com/adoptium/aqa-tests.git at {somerWorkspaceLocation}
+- cd /{somerWorkspaceLocation}/aqa-tests
+- ./get.sh //This will checkout TKG under /{somerWorkspaceLocation}/aqa-tests
 - Run jck_target_folder_check.sh {jck-repo-name} {somerWorkspaceLocation}
 
 ```

@@ -11,55 +11,68 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-echo ------------ Pattern matching test ------------
+@echo ------------ Pattern matching test ------------
 
-java SimpleGrep "Æ¯¼ö" %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes "Æ¯¼ö". 
-echo --- Did you get the line(s) 14,23,31,43 ?
+java SimpleGrep ª¢ß­ô×»õÓú %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes "ª¢ß­ô×»õÓú". 
+@echo --- Did you get the line(s) 11,12 and 47 ?
 
-java SimpleGrep "gnome" %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes the pattern "gnome". 
-echo --- Did you get the line(s) 11,12,49,52,54,78 ?
+java SimpleGrep "ª¢.*Óú" %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes the pattern "ª¢*Óú". 
+@echo --- Did you get the line(s) 11,12,47,48,50 and 52 ?
 
-java SimpleGrep "^¤¡" %PWD%\win_ko.txt
-echo --- Confirm that the line(s) starts with "¤¡".
-echo --- Did you get the line(s) 98,185 ?
+java SimpleGrep "^íÓ" %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) starts with "íÓ".
+@echo --- Did you get the line 53,54 and 55 ?
 
-java SimpleGrep ¹®Á¦ %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes "¹®Á¦". 
-echo --- Did you get the line(s) 85,86,88 ?
+java SimpleGrep ´·é¡ %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes half-width Katakana "´·é¡". 
+@echo --- Did you get the line 19,20 and 39 ?
 
-java SimpleGrep "Ê¥áÜ" %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes "Ê¥áÜ". 
-echo --- Did you get the line(s) 234,235,236 ?
+java SimpleGrep ¡Í %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes "¡Í" (full-width Yen symbol). 
+@echo --- Did you get the line 24 and 66 ?
 
-java SimpleGrep "\u5475\u5475\u5927\u7b11" %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes "Ê§Ê§ÓÞáÅ". "
-echo --- Did you get the line 124 ?
+java SimpleGrep \\ %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes "\" (half-width Yen symbol). 
+@echo --- Did you get the line 33 and 35 ?
 
-java SimpleGrep ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð %PWD%\win_ko.txt
-echo --- Confirm that the line(s) includes any of  ¤¿¤Á¤Ã¤Å¤Ç¤Ë¤Ì¤Ð
-echo --- Did you get the line(s) 98  ?
+java SimpleGrep "íÏ.*Âú" %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes the pattern "íÏ.*Âú". 
+@echo --- Did you get the line 81 ?
 
-echo;
-echo ------------ Pattern replacement test ------------
+java SimpleGrep ª¢ª«ªµ %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes "ª¢ª«ªµ". 
+@echo --- Did you get the line 31 ?
 
-java RegexReplaceTest £±£²£³£´£µ£¶£·£¸£¹ ¢Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢Í %PWD%\win_ko.txt -v
-echo --- Confirm that "£±£²£³£´£µ£¶£·£¸£¹" was replaced by "¢Å¢Æ¢Ç¢È¢É¢Ê¢Ë¢Ì¢Í". 
-echo --- OK ?
+java SimpleGrep [¢à¢å¨õ¥´] %PWD%\win_ko.txt
+@echo --- Confirm that the line(s) includes any of ¢à,¢å,¨õ or ¥´. 
+@echo --- Did you get the line 60,61 and 63 ?
 
-java RegexReplaceTest °¡Á¤±³»ç Ê«ïÔÎçÞÔ %PWD%\win_ko.txt -v
-echo --- Confirm that "°¡Á¤±³»ç" was replaced by "Ê«ïÔÎçÞÔ". 
-echo --- OK ?
 
-java RegexReplaceTest "ËþÙý" "°Ë¹®" %PWD%\win_ko.txt -v
-echo --- Confirm that "ËþÙý" was replaced by "°Ë¹®". 
-echo --- OK ?
+@echo\
+@echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest "°¡.*È£" "Ê«Ê«ûÂûÂ" %PWD%\win_ko.txt -v
-echo --- Confirm that "°¡.*È£" was replaced by "Ê«Ê«ûÂûÂ". 
-echo --- OK ?
+java RegexReplaceTest ª¢ß­ô×»õÓú aiueo %PWD%\win_ko.txt -v
+@echo --- Confirm that "ª¢ß­ô×»õÓú" was replaced by "aiueo". 
+@echo --- OK ?
 
-java RegexReplaceTest "\u5bb6\u7cfb" "Ê«ÍªÝ­" %PWD%\win_ko.txt -v
-echo --- Confirm that "Ê«Í§"replaced by "Ê«ÍªÝ­". 
-echo --- OK ?
+java RegexReplaceTest ´·é¡ Üþ°ÖÜþ¸Ø %PWD%\win_ko.txt -v
+@echo --- Confirm that "´·é¡" was replaced by "Üþ°ÖÜþ¸Ø". 
+@echo --- OK ?
+
+java RegexReplaceTest ¡Í \\ %PWD%\win_ko.txt -v
+@echo --- Confirm that "¡Í" was replaced by "\". 
+@echo --- OK ?
+
+java RegexReplaceTest "íÏ.*Âú" "£µ£ã»Ï½Àéè" %PWD%\win_ko.txt -v
+@echo --- Confirm that "íÏ.*Âú" was replaced by "£µ£ã»Ï½Àéè". 
+@echo --- OK ?
+
+java RegexReplaceTest ª¢ª«ªµ Âúï» %PWD%\win_ko.txt -v
+@echo --- Confirm that "ª¢ª«ªµ" was replaced by "Âúï»". 
+@echo --- OK ?
+
+java RegexReplaceTest [¢à¢å¨õ¥´] èâ½À %PWD%\win_ko.txt -v
+@echo --- Confirm that any of "¢à¢å¨õ¥´" were replaced by "èâ½À". 
+@echo --- OK ?

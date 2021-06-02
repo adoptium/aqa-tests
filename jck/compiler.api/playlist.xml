@@ -27,15 +27,15 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-			<subset>11</subset>
-			<subset>12</subset>
-			<subset>13</subset>
-			<subset>14</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+			<version>9</version>
+			<version>10</version>
+			<version>11</version>
+			<version>12</version>
+			<version>13</version>
+			<version>14</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-javax_annotation</testCaseName>
@@ -81,13 +81,16 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-signaturetest</testCaseName>
+		<disabled>
+			<comment>Temporarily disabled on aix on JDK8 for test setup issue: backlog/issues/506</comment>
+			<plat>ppc64_aix(_mixed)?</plat>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>

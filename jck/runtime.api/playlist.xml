@@ -19,7 +19,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(JCK_CUSTOM_TARGET),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(JCK_CUSTOM_TARGET),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -168,9 +168,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-module</testCaseName>
@@ -185,9 +185,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-StackWalker</testCaseName>
@@ -202,9 +202,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-Module_class</testCaseName>
@@ -219,9 +219,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-SecurityManager</testCaseName>
@@ -264,9 +264,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>12+</subset>
-		</subsets>
+		<versions>
+			<version>12+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-Class</testCaseName>
@@ -284,13 +284,15 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -311,9 +313,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
@@ -331,13 +333,15 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming-spi</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_naming/spi,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -361,6 +365,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_applet</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -375,6 +383,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+			<version>16+</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?</plat>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -389,6 +411,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_beans</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+			<version>8</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac</plat>
+			<version>16+</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -403,6 +440,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_io</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -445,6 +486,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_net</testCaseName>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>16+</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -487,6 +540,16 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_security</testCaseName>
+		<disabled>
+			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?</plat>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -543,6 +606,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util</testCaseName>
+		<disabled>
+			<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -557,6 +625,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_accessibility</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -582,9 +654,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_activity</testCaseName>
@@ -599,9 +671,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_annotation</testCaseName>
@@ -633,6 +705,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_imageio</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -675,6 +751,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -689,6 +769,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_net</testCaseName>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/461. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on all platforms due to backlog/issues/461. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -703,6 +791,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_print</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -759,6 +851,10 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_sound</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?</plat>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -787,6 +883,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_swing</testCaseName>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>11</version>
+		</disabled>
+		<disabled>
+			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>16+</version>
+			<plat>x86-64_mac</plat>
+		</disabled>
+		<disabled>
+			<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</plat>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -826,10 +936,10 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>15+</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+			<version>15+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_xml</testCaseName>
@@ -873,9 +983,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-org_w3c</testCaseName>
@@ -946,8 +1056,8 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 </playlist>

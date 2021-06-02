@@ -1,4 +1,5 @@
 #!groovy
+
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
 	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
@@ -12,10 +13,11 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "if [ `uname` = AIX ] || [ `uname` = SunOS ]; then MAKE=gmake; else MAKE=make; fi; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
+	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE $testParam"
 	try {
 		sh "$tearDownCmd"
-		sh "./openjdk-tests/maketest.sh $testParam"
+		sh "$makeTestCmd"
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -25,7 +27,7 @@ def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Check what existing java processes are running
-        echo "PROCESSCATCH: Java processes which are currently on the machine:"
+		echo "PROCESSCATCH: Java processes which are currently on the machine:"
 	if (PLATFORM.contains("windows")) {
 		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
 	} else {
@@ -40,9 +42,9 @@ def setupEnv() {
 	env.SPEC = "${SPEC}"
 
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/AdoptOpenJDK/openjdk-tests.git"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse/openj9.git"
+	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
 
-	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "AdoptOpenJDK:master", "TKG")
+	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "adoptium:master", "TKG")
 	TKG_REPO = tkg[0]
 	TKG_BRANCH = tkg[1]
 
@@ -64,6 +66,7 @@ def setupEnv() {
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
 	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
 	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
+	CLOUD_PROVIDER = params.CLOUD_PROVIDER ? params.CLOUD_PROVIDER : ""
 	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
@@ -73,7 +76,7 @@ def setupEnv() {
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
-	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : ''
+	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : false
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
 
@@ -114,7 +117,7 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	if ( env.SPEC.contains('sparcv')) {
+	if ( env.SPEC.contains('sunos')) {
 		sh 'env'
 	} else {
 		sh 'printenv'
@@ -135,7 +138,7 @@ def setupParallelEnv() {
 				// limit childJobNum
 				if (childJobNum > 20) {
 					echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
-					echo "Reset NUM_MACHINES to 20..." 
+					echo "Reset NUM_MACHINES to 20..."
 					childJobNum = 20
 				}
 			} else if (params.PARALLEL == "Dynamic") {
@@ -154,15 +157,19 @@ def setupParallelEnv() {
 
 				try {
 					//get cached TRSS JSON data
-					copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
-					sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
+						sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+					}
 				} catch (Exception e) {
 					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
 				}
 
 				try {
 					//get pre-staged jars from test.getDependency build
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+					}
 				} catch (Exception e) {
 					echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 				}
@@ -207,7 +214,7 @@ def setupParallelEnv() {
 					echo "exclude the following system test subfolders: ${excludes}"
 					testSubDirs = testSubDirs - excludes
 				}
-				
+
 				childJobNum = testSubDirs.size()
 				if ( childJobNum > maxChildJobNum) {
 					assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
@@ -234,9 +241,28 @@ def setupParallelEnv() {
 				}
 
 				def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
-				create_jobs[childTest] = {
-					echo "create the job ${TEST_JOB_NAME}"
-					createJob( TEST_JOB_NAME, PLATFORM)
+
+				// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
+				if (params.GENERATE_JOBS) {
+					create_jobs[childTest] = {
+						echo "GENERATE_JOBS is set to true, set test job ${TEST_JOB_NAME} params for generating the job"
+						createJob( TEST_JOB_NAME, PLATFORM)
+					}
+				} else {
+					def jobIsRunnable = false
+					try {
+						def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+						jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
+						echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
+					} catch (Exception e) {
+						echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+					}
+					if (!jobIsRunnable) {
+						create_jobs[childTest] = {
+							echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params for generating the job"
+							createJob( TEST_JOB_NAME, PLATFORM)
+						}
+					}
 				}
 
 				def childParams = []
@@ -266,15 +292,14 @@ def setupParallelEnv() {
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NAME', value: UPSTREAM_TEST_JOB_NAME)
 				childParams << string(name: 'UPSTREAM_TEST_JOB_NUMBER', value: UPSTREAM_TEST_JOB_NUMBER)
 
-				//This parameter is needed because it enables many iterations of the same test (which all have same names)
-				//to have a unique variable in the array so that Jenkins will run it
-				childParams << string(name: 'RUNTIME_NAME', value: childTest)
-
 				parallel_tests[childTest] = {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
-			parallel create_jobs
+			
+			if (create_jobs) {
+				parallel create_jobs
+			}
 
 			// return to top level pipeline file in order to exit node block before running tests in parallel
 		}
@@ -296,11 +321,7 @@ def getNumMachines(){
 }
 
 def getMachineLimit(){
-	def slaves = nodesByLabel(LABEL).size()
-	if (slaves == 1) {
-		return slaves
-	}
-	return (int)(slaves * 3 / 4)
+	return nodesByLabel(LABEL).size()
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
@@ -326,12 +347,11 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 		}
 	}
 
-	//Due to limited space, reduce BUILDS_TO_KEEP for Grinder_XXX
-	if (TEST_JOB_NAME.startsWith("Grinder_")) {
-		jobParams.put('BUILDS_TO_KEEP', 5)
-	}
-
 	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
+
+	if (params.LIGHT_WEIGHT_CHECKOUT) {
+		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
+	}
 
 	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
 	return create
@@ -341,17 +361,6 @@ def setup() {
 	stage('Setup') {
 		timestamps{
 			setupEnv()
-
-			if (fileExists('openjdkbinary')) {
-				dir('openjdkbinary') {
-					deleteDir()
-				}
-			}
-			if (fileExists('jvmtest')) {
-				dir('jvmtest') {
-					deleteDir()
-				}
-			}
 
 			if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
@@ -367,13 +376,15 @@ def setup() {
 			}
 
 			if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
-				dir('openjdkbinary') {
-					step([$class: 'CopyArtifact',
-						fingerprintArtifacts: true,
-						flatten: true,
-						filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z",
-						projectName: "${params.UPSTREAM_JOB_NAME}",
-						selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
+				timeout(time: 1, unit: 'HOURS') {
+					dir('openjdkbinary') {
+						step([$class: 'CopyArtifact',
+							fingerprintArtifacts: true,
+							flatten: true,
+							filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z",
+							projectName: "${params.UPSTREAM_JOB_NAME}",
+							selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
+					}
 				}
 			}
 			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
@@ -388,7 +399,7 @@ def setup() {
 
 			// system test repository exports to be used by system/common.xml
 			if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
-				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "AdoptOpenJDK:master", "openjdk-systemtest")
+				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
 				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
 			}
@@ -400,7 +411,7 @@ def setup() {
 			}
 
 			if (params.STF_OWNER_BRANCH) {
-				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "AdoptOpenJDK:master", "stf")
+				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
 				env.STF_REPO = stf[0]
 				env.STF_BRANCH = stf[1]
 			}
@@ -418,6 +429,8 @@ def setup() {
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
 			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 
+			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
+			
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -463,14 +476,15 @@ def get_sources() {
 	}
 }
 
-def make_test() {
+def makeCompileTest() {
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE compile"
 	// use sshagent with Jenkins credentials ID for all platforms except zOS
 	if (!env.SPEC.startsWith('zos')) {
 		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-			sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+			sh "$makeTestCmd";
 		}
 	} else {
-		sh "./openjdk-tests/maketest.sh ./openjdk-tests";
+		sh "$makeTestCmd";
 	}
 }
 
@@ -489,7 +503,9 @@ def buildTest() {
 
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				try {
-					copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './openjdk-tests/TKG/'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './openjdk-tests/TKG/'
+					}
 				} catch (Exception e) {
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
 				}
@@ -497,7 +513,9 @@ def buildTest() {
 
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+				timeout(time: 1, unit: 'HOURS') {
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
@@ -505,7 +523,9 @@ def buildTest() {
 			try {
 				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
-					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+					timeout(time: 1, unit: 'HOURS') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+					}
 				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
@@ -518,14 +538,14 @@ def buildTest() {
 			if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
 				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
-			
+
 			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", 
+				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					make_test()
+					makeCompileTest()
 				}
 			} else {
-				make_test()
+				makeCompileTest()
 			}
 		}
 	}
@@ -539,7 +559,11 @@ def runTest( ) {
 
 			TARGET = "${params.TARGET}";
 			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
-				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				if (TARGET == 'system_custom') {
+					env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
+				} else {
+					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				}
 			}
 			if (!TARGET.startsWith('-f')) {
 				TARGET="_${params.TARGET}"
@@ -550,17 +574,17 @@ def runTest( ) {
 					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
 				}
 			}
-			RUNTEST_CMD = "./openjdk-tests ${TARGET} ${CUSTOM_OPTION}"
+			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
 				if (env.SPEC.startsWith('aix')) {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
 					env.DISPLAY = ":0"
-					echo "env.DISPLAY is ${env.DISPLAY}"	
+					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (env.SPEC.startsWith('linux')) {
-					// Add an additional 10 second timeout due to issue: https://github.com/AdoptOpenJDK/openjdk-build/issues/2368#issuecomment-756683888
+				else if (env.SPEC.startsWith('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
+					// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
 					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
 						def DISPLAY = sh (
 							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
@@ -570,7 +594,7 @@ def runTest( ) {
 						echo "env.DISPLAY is ${env.DISPLAY}"
 						makeTest("${RUNTEST_CMD}")
 					}
-				} 
+				}
 				else {
 					makeTest("${RUNTEST_CMD}")
 				}
@@ -615,7 +639,7 @@ def post(output_name) {
 				failIfNoResultsValue = false
 			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
-			
+
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
@@ -629,37 +653,36 @@ def post(output_name) {
 				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
 					deleteOutputFiles: true,
 					failIfNotNew: true,
-					pattern: "**/TKG/test_output_*/**/report.xml",
+					pattern: "**/TKG/output_*/**/report.xml",
 					skipNoTestFiles: true,
 					stopProcessingIfError: true)]
 				)
 			}
 
-			if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+			//for performance test, archive regardless the build result
+			if (env.BUILD_LIST.startsWith('perf')) {
+				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
+				if (!params.ARTIFACTORY_SERVER) {
+					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
+					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					def pattern = "${env.WORKSPACE}/*_output.*"
+					uploadToArtifactory(pattern)
+				}
+			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
-					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
+					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
 				} else {
-					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_* ${tar_cmd_suffix}"
+					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix}"
 				}
 
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 				} else {
-					def pattern = "${env.WORKSPACE}/*_test_output.*"
-					uploadToArtifactory(pattern)
-				}
-			}
-			//for performance test, archive regardless the build result
-			if (env.BUILD_LIST.startsWith('perf')) {
-				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/test_output_*"
-				if (!params.ARTIFACTORY_SERVER) {
-					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
-					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
-				} else {
-					def pattern = "${env.WORKSPACE}/*_test_output.*"
+					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
 			}
@@ -703,13 +726,13 @@ def testBuild() {
 				cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
 				// clean up remaining core files
 				if (PLATFORM.contains("mac")) {
-					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else if (PLATFORM.contains("windows")) {
-					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true" 
+					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else {
 					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				}
-			}	
+			}
 		}
 	}
 }
@@ -728,36 +751,36 @@ def terminateJavaProcesses() {
 			def C=sh(script:'powershell -c "(Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | measure).count" | tr -d \\\\r', returnStdout:true)
 			echo "Number of java processes = ${C}"
 			if (!C.trim().equals("0")) {
-			    echo "PROCESSCATCH: Attempting to stop the following processes:"
-			    sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
-			    def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
-			    echo "stop-process rc = ${sh_rc}"
+				echo "PROCESSCATCH: Attempting to stop the following processes:"
+				sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
+				def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
+				echo "stop-process rc = ${sh_rc}"
 			} else {
-			    // No more spawned, we are done...
-			    break
-                        }
+				// No more spawned, we are done...
+				break
+						}
 		} else {
 			// Non-Windows code from https://ci.adoptopenjdk.net/job/SXA-processCheck
 			echo "PROCESSCATCH: Checking for any leftover java processes on the machine"
 			def sh_rc=sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
 			if (sh_rc == 0) {
-			    echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
-			    // TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
-			    // And this is likely to be replaced as part of https://github.com/AdoptOpenJDK/TKG/issues/45
+				echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
+				// TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
+				// And this is likely to be replaced as part of https://github.com/adoptium/TKG/issues/45
 			}
 			break
 		}
 
 		// Pause between iterations in case of spawning processes
 		sleep(2)
-        }
+		}
 
-        echo "PROCESSCATCH: Removed processes - here is what is remaining:"
-        if (PLATFORM.contains("windows")) {
+		echo "PROCESSCATCH: Removed processes - here is what is remaining:"
+		if (PLATFORM.contains("windows")) {
 		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
-        } else {
+		} else {
 		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus:true)
-        }
+		}
 }
 
 def getJDKImpl(jvm_version) {
@@ -844,6 +867,7 @@ def uploadToArtifactory(pattern) {
 def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
+	def labelValue = ""
 	params.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
@@ -851,22 +875,24 @@ def addGrinderLink() {
 			url += "&amp;"
 		}
 		i++;
+		if ( key == "LABEL" ) {
+			labelValue = "LABEL=${value}"
+		}
 	}
 	echo "Rerun in Grinder: ${url}"
-	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> TARGET can be changed to run only the failed test target"
+	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
+	def sameMachineUrl = url.replace(labelValue,"LABEL=${NODE_NAME}")
+	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
+	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
+	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
 def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-				waitForANodeToBecomeActive("$LABEL", params.ACTIVE_NODE_TIMEOUT)
-			} else {
-				waitForANodeToBecomeActive("$LABEL", "0")
-			}
-			node("$LABEL") {
-				def buildResult = ""	
+			node {
+				def buildResult = ""
 				childJobs.each {
 					cjob ->
 					def jobInvocation = cjob.value.getRawBuild()
@@ -875,7 +901,9 @@ def run_parallel_tests() {
 					def childResult = cjob.value.getCurrentResult()
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
-						copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						timeout(time: 1, unit: 'HOURS') {
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						}
 						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
@@ -886,33 +914,9 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
-			}	
+			}
 		}
 	}
-}
-
-def waitForANodeToBecomeActive(def label, String activeNodeTimeoutString) {
-    def nodes = nodesByLabel(label).size()
-    if (nodes < 1) {
-        // If no active node matches the label, we see if there's a timeout value set.
-        // If there is, we wait and check again periodically. If not, we fail immediately.
-
-        int activeNodeTimeout = activeNodeTimeoutString as Integer
-
-        echo "Cannot find an active node matching this label: " + label
-        echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
-
-        while (activeNodeTimeout > 0) {
-            sleep(60 * 1000) // 1 minute sleep
-            activeNodeTimeout--
-            if (nodesByLabel(LABEL).size() > 0) {
-                echo "A node matching the aforementioned label has become active."
-                return
-            }
-        }
-
-        assert false : "Timed out waiting for a machine that matches the LABEL: " + LABEL + " to become active."
-    }
 }
 
 def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {

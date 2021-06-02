@@ -30,6 +30,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-CLSS</testCaseName>
+		<disabled>
+			<comment>Disabled on aix due to RTC: 144784</comment>
+			<plat>ppc64_aix(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -58,6 +63,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-EXPR</testCaseName>
+		<disabled>
+			<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>ppc64le_linux(_mixed)?|x86-64_windows(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -86,6 +96,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-LMBD</testCaseName>
+		<disabled>
+			<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -209,9 +224,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-NAME</testCaseName>
@@ -271,6 +286,11 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-ANNOT</testCaseName>
+		<disabled>
+			<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<plat>x86-64_windows(_mixed)?</plat>
+			<version>11</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
