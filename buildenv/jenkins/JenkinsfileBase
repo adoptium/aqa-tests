@@ -313,6 +313,7 @@ def setupParallelEnv() {
 def getNumMachines(){
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	int limit = getMachineLimit()
+	echo "machine limit is ${limit}"
 	if (num > limit) {
 		echo "Number of machines cannot be greater than ${limit}. Set num to ${limit}"
 		num = limit
@@ -321,7 +322,12 @@ def getNumMachines(){
 }
 
 def getMachineLimit(){
-	return nodesByLabel(LABEL).size()
+	int limit = nodesByLabel(LABEL).size()
+	// Set limit for dynamic vm agents to 100
+	if (LABEL.contains('ci.agent.dynamic')) {
+		limit = 100
+	}
+	return limit
 }
 
 def createJob( TEST_JOB_NAME, ARCH_OS ) {
