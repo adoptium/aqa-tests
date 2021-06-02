@@ -51,7 +51,7 @@ COPY ./dockerfile/system-test.sh /system-test.sh
 WORKDIR /
 
 # Clone AdoptOpenJDK openjdk-tests repo
-RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/system-test.sh"]
 CMD ["_sanity.system"]
