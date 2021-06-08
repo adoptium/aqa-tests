@@ -52,7 +52,7 @@ COPY ./dockerfile/functional-test.sh /functional-test.sh
 # Clone the repo where the functional tests reside. 
 WORKDIR /
 
-RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/functional-test.sh"]
 CMD ["_sanity.functional.regular"]

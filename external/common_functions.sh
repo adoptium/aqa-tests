@@ -245,7 +245,7 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;; 
     functional-test)
-        github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
+        github_url="https://github.com/adoptium/aqa-tests.git"
         script="functional-test.sh"
         home_path=""
         tag_version="master"
@@ -413,7 +413,7 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;;
     system-test)
-        github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
+        github_url="https://github.com/adoptium/aqa-tests.git"
         script="system-test.sh"
         home_path=""
         tag_version="master"
