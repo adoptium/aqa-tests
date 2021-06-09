@@ -16,41 +16,80 @@
 
 <project name="jck" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<description>Build STF based JCK Tests </description>
+	<description>Build JCK Tests</description>
 
 	<!-- set global properties for this build -->
-	<property name="SYSTEMTEST_ROOT" value="${basedir}/../system" />
 	<property name="DEST" value="${BUILD_ROOT}/jck" />
-	<property name="SYSTEMTEST_BUILD_ROOT" value="${BUILD_ROOT}/system" />
 	<property environment="env" />
 
 	<condition property="isZOS" value="true">
-		<equals arg1="${os.name}" arg2="z/OS"/>
+		<os family="z/os" />
 	</condition>
 
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
 	</condition>
-
-	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/adoptium/aqa-systemtest.git">
-		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
+	
+	<condition property="is_windows" value="true" else="false" >
+		<os family="windows" />
 	</condition>
-	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
-		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
+	
+	<condition property="src-encoding" value="IBM-1047" else="UTF-8">
+		<isset property="isZOS"/>
 	</condition>
-
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
-		<isset property="env.STF_REPO"/>
-	</condition>
-	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
-		<isset property="env.STF_BRANCH"/>
-	</condition>
-
+	
 	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="master">
 		<isset property="env.JCK_GIT_BRANCH"/>
 	</condition>
+	
+	<property name="jtrunner_src_dir" value="${TEST_ROOT}/jck/jtrunner"/>
+	<property name="jtrunner_bin_dir" value="${jtrunner_src_dir}/bin" /> 
 
-	<target name="stage_jck_material">
+	<!-- Setup properties to allow projects to use a copy of Visual Studio for compiling native test cases.  -->
+	<!-- Look for either version 10.0 or 14.0 in the default installation location.  -->
+	<!-- To use a different location property rtb.vcvarsall_filename needs to be set on the command line for the build.  -->
+	<!-- The vcvarsall.bat file argument amd64 is added if the javac being used to compile the java classes is a 64 bit java. -->
+
+	<target name="setup-windows-compiler" unless="setup_windows_compiler_run">
+		<property name="setup_windows-compiler_run" value="true"/>
+		<property name="vs14_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat"/>
+		<available file="${vs14_vcvarsall_filename}" property="vs14_available"/>
+		<property name="vs10_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\vcvarsall.bat"/>
+		<available file="${vs10_vcvarsall_filename}" property="vs10_available"/>
+		<condition property="vcvarsall_filename" value="${vs14_vcvarsall_filename}">
+			<isset property="vs14_available"/>
+		</condition>
+		<condition property="vcvarsall_filename" value="${vs10_vcvarsall_filename}">
+			<isset property="vs10_available"/>
+		</condition>
+		<condition property="windows_native_compiler_present" value="true">
+			<isset property="vcvarsall_filename"/>
+			</condition>
+		<condition property="vcvarsall_bits_arg" value="amd64" else="">
+			<equals arg1="${java_bits}" arg2="64" trim="true"/>
+		</condition>
+		<condition property="setup_windows_build_env" value='call "${vcvarsall_filename}" ${vcvarsall_bits_arg} &amp;&amp;' else="">
+			<equals arg1="${is_windows}" arg2="true"/>
+		</condition>
+	</target>
+	
+	<condition property="can_build_jck_natives_windows" value="true">
+		<and>
+			<available file="${jck_runtimes_src_dir}" type="dir"/>
+			<equals arg1="${is_windows}" arg2="true"/>
+			<equals arg1="${windows_native_compiler_present}" arg2="true"/>
+		</and>
+	</condition>
+	<condition property="can_build_jck_natives_unix" value="true">
+		<and>
+			<available file="${jck_runtimes_src_dir}" type="dir"/>
+			<not>
+				<equals arg1="${is_windows}" arg2="true"/>
+			</not>
+		</and>
+	</condition>
+	
+	<target name="stage-jck-material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
 		<if>
 			<available file="${JCK_ROOT_USED}" type="dir" />
@@ -165,151 +204,44 @@
 			</then>
 		</if> 
 	</target>
-
-	<target name="init">
-		<mkdir dir="${DEST}" />
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_BUILD_ROOT}" type="dir" />
-			</not>
-			<then>
-				<mkdir dir="${SYSTEMTEST_BUILD_ROOT}" />
-			</then>
-		</if>
+	
+	<target name="build-jck-natives" depends="setup-windows-compiler, setup-native-build-command, build-natives-windows, build-natives-unix"> 
+	</target>
+		
+	<target name="setup-native-build-command">
+		<echo message="Building jck natives"/>
+		<property name="openjdk_test_jck_native_build_command" value='${setup_windows_build_env}make build -f ${jtrunner_src_dir}/makefile SRCDIR=${jck_runtimes_src_dir} JAVA_HOME=${TEST_JDK_HOME} OUTDIR=${JCK_ROOT_USED}/natives'/>
+		<tempfile property="openjdk_test_jck_native_build_command_file" destDir="${java.io.tmpdir}" prefix="openjdk.build.command."/>
 	</target>
 
-	<target name="clone_stf">
-		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="-b"/>
-			<arg value="${stf_branch}"/>
-			<arg value="${stf_repo}"/>
+	<target name="build-natives-windows" if="can_build_jck_natives_windows">
+		<echo message="${openjdk_test_jck_native_build_command}" file="${openjdk_test_jck_native_build_command_file}.bat"/>
+		<exec executable="${openjdk_test_jck_native_build_command_file}.bat" failonerror="true"/>
+		<delete file="${openjdk_test_jck_native_build_command_file}.bat" verbose="true"/>
+	</target>
+
+	<target name="build-natives-unix" if="can_build_jck_natives_unix">
+		<echo message="${openjdk_test_jck_native_build_command}" file="${openjdk_test_jck_native_build_command_file}.sh"/>
+		<exec executable="/bin/sh" failonerror="true">
+			<arg value="${openjdk_test_jck_native_build_command_file}.sh"/>
 		</exec>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-					<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
-		<echo message="SHA of the checked out STF materials:"/>
-		<exec executable="git" failonerror="false">
-			<arg value="ls-remote" />
-			<arg value="${stf_repo}"/>
-			<arg value="${stf_branch}"/>
-		</exec>
+		<delete file="${openjdk_test_jck_native_build_command_file}.sh" verbose="true"/>
+	</target>
+	
+	<target name="build-jtrunner" depends="build-jck-natives, create-bin-dir">
+		<javac srcdir="${jtrunner_src_dir}"
+			   destdir="${jtrunner_bin_dir}"
+			   fork="true"
+			   debug="true"
+			   encoding="ISO-8859-1"
+			   includeantruntime="false"
+			   failonerror="true">
+			<compilerarg value="-Xlint:deprecation,unchecked" />
+			<include name="**/*.java"/>
+		</javac>
 	</target>
 
-	<target name="clone_systemtest">
-		<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="-b"/>
-			<arg value="${openjdk_systemtest_branch}"/>
-			<arg value="${openjdk_systemtest_repo}"/>
-		</exec>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-					<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
-		<echo message="SHA of the checked out aqa-systemtest materials:"/>
-		<exec executable="git" failonerror="false">
-			<arg value="ls-remote" />
-			<arg value="${openjdk_systemtest_repo}"/>
-			<arg value="${openjdk_systemtest_branch}"/>
-		</exec>
-	</target>
-
-	<target name="check_systemtest" depends="init">
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
-			</not>
-			<then>
-				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
-				<antcall target="clone_stf" inheritall="true" />
-			</then>
-			<else>
-				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
-			</else>
-		</if>
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_ROOT}/aqa-systemtest" type="dir" />
-			</not>
-			<then>
-				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest does not exist, clone from GitHub" />
-				<antcall target="clone_systemtest" inheritall="true" />
-			</then>
-			<else>
-				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest exists, skip cloning" />
-			</else>
-		</if>
-	</target>
-
-	<target name="prepare_systemtest_for_jck" depends="check_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" target="configure" inheritAll="false" />
-		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" target="build" inheritAll="false">
-			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version}"/>
-			<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
-		</ant>
-	</target>
-
-	<target name="dist" depends="prepare_systemtest_for_jck" description="generate the distribution">
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_BUILD_ROOT}/aqa-systemtest" type="dir" />
-			</not>
-			<then>
-				<copy todir="${SYSTEMTEST_BUILD_ROOT}/stf">
-					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
-				</copy>
-				<copy todir="${SYSTEMTEST_BUILD_ROOT}/aqa-systemtest">
-					<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest" includes="**" />
-				</copy>
-				<copy todir="${SYSTEMTEST_BUILD_ROOT}/systemtest_prereqs/">
-					<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
-				</copy>
-			</then>
-		</if>
+	<target name="dist" depends="build-jtrunner" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${basedir}">
 				<exclude name="jck_root/" />
@@ -358,11 +290,16 @@
 		<echo>=== JCK_VERSION_USED is set to ${JCK_VERSION_USED} ===</echo>
 
 		<propertyregex property="jck_short_version" input="${JCK_VERSION_USED}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
-
+		<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version}"/>
+		
 		<echo>start staging jck materials</echo>
-		<antcall target="stage_jck_material" inheritall="true" />
-		<echo>start building stf, stf jck wrapper and jck itself</echo>
+		<antcall target="stage-jck-material" inheritall="true" />
+		<echo>start building Javatest Runner and jck natives</echo>
 		<antcall target="dist" inheritall="true" />
+	</target>
+	
+	<target name="create-bin-dir">
+		<mkdir dir="${jtrunner_bin_dir}"/>
 	</target>
 
 	<target name="clean">
