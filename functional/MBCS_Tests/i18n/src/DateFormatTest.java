@@ -34,8 +34,8 @@ public class DateFormatTest {
 			version = version.substring(index1+1, index2);
 		}
 	}
-        long ver = JavaVersion.getVersion();
-        if (ver >= 16000000L) {
+        long feature = JavaVersion.getFeature();
+        if (feature == 16L) {
 		try {
 			resource = ResourceBundle.getBundle("ResourceBundleTest_16", locale);
 		} catch (MissingResourceException e) {} // Do nothing
