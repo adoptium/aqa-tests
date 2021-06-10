@@ -13,8 +13,8 @@ def getBuildList() {
 }
 
 def makeTest(testParam) {
-	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./openjdk-tests/TKG/testEnv.mk testEnvTeardown"
-	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE $testParam"
+	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE $testParam"
 	try {
 		sh "$tearDownCmd"
 		sh "$makeTestCmd"
@@ -158,8 +158,8 @@ def setupParallelEnv() {
 				try {
 					//get cached TRSS JSON data
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'openjdk-tests/TKG/resources/TRSS'
-						sh "cd ./openjdk-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
+						copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'aqa-tests/TKG/resources/TRSS'
+						sh "cd ./aqa-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
 					}
 				} catch (Exception e) {
 					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
@@ -168,16 +168,16 @@ def setupParallelEnv() {
 				try {
 					//get pre-staged jars from test.getDependency build
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 					}
 				} catch (Exception e) {
 					echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 				}
 
-				sh "cd ./openjdk-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
+				sh "cd ./aqa-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
 
 				// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
-				def parallelList = "openjdk-tests/TKG/parallelList.mk"
+				def parallelList = "aqa-tests/TKG/parallelList.mk"
 				int NUM_LIST = -1
 				if (fileExists("${parallelList}")) {
 					if (SPEC.startsWith('zos')) {
@@ -195,7 +195,7 @@ def setupParallelEnv() {
 				} else if ( NUM_LIST > 0) {
 					childJobNum = NUM_LIST
 					echo "Saving parallelList.mk file on jenkins..."
-					dir('openjdk-tests/TKG') {
+					dir('aqa-tests/TKG') {
 						archiveArtifacts artifacts: 'parallelList.mk', fingerprint: true, allowEmptyArchive: false
 					}
 
@@ -203,7 +203,7 @@ def setupParallelEnv() {
 					assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 				}
 			} else if (params.PARALLEL == "Subdir") {
-				dir("$WORKSPACE/openjdk-tests/${env.BUILD_LIST}") {
+				dir("$WORKSPACE/aqa-tests/${env.BUILD_LIST}") {
 					testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
 				}
 
@@ -353,7 +353,7 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 		}
 	}
 
-	def templatePath = 'openjdk-tests/buildenv/jenkins/testJobTemplate'
+	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
 
 	if (params.LIGHT_WEIGHT_CHECKOUT) {
 		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
@@ -433,7 +433,7 @@ def setup() {
 			// Only set image required to false if params is set to false. In get.sh, the default value is true
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
-			GET_SH_CMD = "./openjdk-tests/get.sh -s `pwd` -t `pwd`/openjdk-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
+			GET_SH_CMD = "./aqa-tests/get.sh -s `pwd` -t `pwd`/aqa-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 			
@@ -452,7 +452,7 @@ def setup() {
 }
 
 def getJobProperties() {
-	def jobProperties = "./openjdk-tests/job.properties"
+	def jobProperties = "./aqa-tests/job.properties"
 	if (fileExists("${jobProperties}")) {
 		echo "readProperties file: ${jobProperties}"
 		def properties = readProperties file: "${jobProperties}"
@@ -483,7 +483,7 @@ def get_sources() {
 }
 
 def makeCompileTest() {
-	String makeTestCmd = "$RESOLVED_MAKE; cd ./openjdk-tests/TKG; \$MAKE compile"
+	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE compile"
 	// use sshagent with Jenkins credentials ID for all platforms except zOS
 	if (!env.SPEC.startsWith('zos')) {
 		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
@@ -510,7 +510,7 @@ def buildTest() {
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				try {
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './openjdk-tests/TKG/'
+						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './aqa-tests/TKG/'
 					}
 				} catch (Exception e) {
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
@@ -520,7 +520,7 @@ def buildTest() {
 			try {
 				//get pre-staged jars from test.getDependency build before test compilation
 				timeout(time: 1, unit: 'HOURS') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'openjdk-tests/TKG/lib'
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 				}
 			} catch (Exception e) {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
@@ -530,7 +530,7 @@ def buildTest() {
 				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'openjdk-tests'
+						copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'aqa-tests'
 					}
 				}
 			} catch (Exception e) {
@@ -574,7 +574,7 @@ def runTest( ) {
 			if (!TARGET.startsWith('-f')) {
 				TARGET="_${params.TARGET}"
 			} else if (TARGET.contains('-f parallelList.mk') && SPEC.startsWith('zos')) {
-				def parallelList = "openjdk-tests/TKG/parallelList.mk"
+				def parallelList = "aqa-tests/TKG/parallelList.mk"
 				if (fileExists("${parallelList}")) {
 					echo 'Converting parallelList.mk file from ascii to ebcdic...'
 					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
@@ -628,7 +628,7 @@ def post(output_name) {
 			def pax_opt = ""
 			if (SPEC.startsWith('zos')) {
 				echo 'Converting tap file from ebcdic to ascii...'
-				sh 'cd ./openjdk-tests/TKG'
+				sh 'cd ./aqa-tests/TKG'
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (String tapFile : tapFiles) {
 					sh "iconv -f ibm-1047 -t iso8859-1 ${tapFile} > ${tapFile}.ascii; rm ${tapFile}; mv ${tapFile}.ascii ${tapFile}"
@@ -656,7 +656,7 @@ def post(output_name) {
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
-				tools: [Custom(customXSL: "$WORKSPACE/openjdk-tests/jck/xUnit.xsl",
+				tools: [Custom(customXSL: "$WORKSPACE/aqa-tests/jck/xUnit.xsl",
 					deleteOutputFiles: true,
 					failIfNotNew: true,
 					pattern: "**/TKG/output_*/**/report.xml",
@@ -668,7 +668,7 @@ def post(output_name) {
 			//for performance test, archive regardless the build result
 			if (env.BUILD_LIST.startsWith('perf')) {
 				def benchmark_output_tar_name = "benchmark_test_output${suffix}"
-				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_*"
+				sh "${tar_cmd} ${benchmark_output_tar_name} ${pax_opt} ./aqa-tests/TKG/output_*"
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: benchmark_output_tar_name, fingerprint: true, allowEmptyArchive: true
@@ -679,9 +679,9 @@ def post(output_name) {
 			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
-					sh "${tar_cmd} - ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
+					sh "${tar_cmd} - ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
 				} else {
-					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./openjdk-tests/TKG/output_* ${tar_cmd_suffix}"
+					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix}"
 				}
 
 				if (!params.ARTIFACTORY_SERVER) {
@@ -825,7 +825,7 @@ def getJenkinsDomain() {
 }
 
 def archiveSHAFile() {
-	def shaFile = "openjdk-tests/TKG/SHA.txt";
+	def shaFile = "aqa-tests/TKG/SHA.txt";
 	if (!params.ARTIFACTORY_SERVER) {
 		echo "ARTIFACTORY_SERVER is not set. Saving SHA file on jenkins."
 		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true

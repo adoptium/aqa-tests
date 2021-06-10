@@ -136,7 +136,7 @@ def ADOPTOPENJDK_BRANCH = "master"
 // If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
 def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
 def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
-def SCRIPT_PATH = "openjdk-tests/buildenv/jenkins/openjdk_tests"
+def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
 
 LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
 if (LIGHT_WEIGHT_CHECKOUT) {
@@ -391,7 +391,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 									}
 									branch(ADOPTOPENJDK_BRANCH_BUILD_PARAM)
 									extensions {
-										relativeTargetDirectory('openjdk-tests')
+										relativeTargetDirectory('aqa-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
 										cloneOptions {

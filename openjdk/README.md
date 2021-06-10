@@ -24,7 +24,7 @@ While you can directly use the jtreg test harness to run these tests locally, we
 1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptopenjdk.net](https://adoptopenjdk.net/)).
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>` 
 1. `git clone https://github.com/adoptium/aqa-tests.git` 
-1. `cd openjdk-tests`
+1. `cd aqa-tests`
 1. `./get.sh`
 1. `cd TKG`
 1. `export BUILD_LIST=openjdk`
