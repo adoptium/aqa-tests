@@ -50,7 +50,7 @@ COPY ./dockerfile/system-test.sh /system-test.sh
 # Clone the repo where the 3rd party application code and tests reside. 
 WORKDIR /
 
-# Clone AdoptOpenJDK openjdk-tests repo
+# Clone AdoptOpenJDK aqa-tests repo
 RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/system-test.sh"]

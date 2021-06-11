@@ -74,11 +74,11 @@ for i in "${!values[@]}"
 do
 	IFS=', '
 	read -ra j<<<$i
-	if [[ "${j[0]}" == *"openjdk-tests.git"* ]]
+	if [[ "${j[0]}" == *"aqa-tests.git"* ]]
 	then
-		echo "Fetching openjdk-tests..."
+		echo "Fetching aqa-tests..."
 		git clone "${j[0]}"
-		cd openjdk-tests
+		cd aqa-tests
 		git checkout "${j[1]}"
 	fi
 done
@@ -88,7 +88,7 @@ do
 # Here it splits the keys of array then controls the contents.
 	IFS=', '
 	read -ra j<<<$i
-	if [[ "${j[0]}" == *"openjdk-tests.git"* ]]
+	if [[ "${j[0]}" == *"aqa-tests.git"* ]]
 	then
 		continue
 	elif [[ "${j[0]}" == *"openj9.git"* ]]
@@ -105,7 +105,7 @@ do
 	fi		
 done
 
-cd openjdk-tests
+cd aqa-tests
 ./get.sh --openj9_sha "$OPENJ9_SHA" --tkg_sha "$TKG_SHA"
 cd TKG
 export BUILD_LIST="${BUILD_LIST}"

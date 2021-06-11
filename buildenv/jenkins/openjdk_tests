@@ -288,7 +288,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
                     SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
 
-                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
                 } else {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
 
@@ -300,11 +300,11 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                         extensions: [
                             [$class: 'CleanBeforeCheckout'],
                             [$class: 'CloneOption', reference: ref_cache],
-                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
                         userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
                     ]
                 }
-                jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
+                jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
                 if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
                     //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
                     docker.image('adoptopenjdk/centos6_build_image').pull() 
