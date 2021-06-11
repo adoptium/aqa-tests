@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 
 We are in the process of adding more microbenchmarks (both bumblebench and jmh formats) and full open-source benchmarks to this directory. New perftest jobs are added to the [Test_perf](https://ci.adoptopenjdk.net/view/Test_perf/) view.  While we will run these benchmarks regularly at AdoptOpenJDK, the intention is to make it easy for developers to run performance testing locally.  
 
-You can follow the [same manual testing instructions](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline) to run these tests, as you do for all of the other tests we run.  The top-level make target for tests contained in this directory (openjdk-tests/perf) is "perf".  So, once you compile test material, running "make perf" will run all of the testcases defined in playlist.xml files in this directory and its subdirectories.  Each unique benchmark is housed in a 
+You can follow the [same manual testing instructions](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline) to run these tests, as you do for all of the other tests we run.  The top-level make target for tests contained in this directory (aqa-tests/perf) is "perf".  So, once you compile test material, running "make perf" will run all of the testcases defined in playlist.xml files in this directory and its subdirectories.  Each unique benchmark is housed in a 
 subdirectory and given a meaningful name.  Once the reorganization of this directory is complete, the directory structure will look like:
 
 ```

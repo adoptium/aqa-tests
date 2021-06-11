@@ -12,7 +12,7 @@ To run any AQA tests locally, you follow the same pattern:
 1. Download/unpack the SDK that you want to test to your test machine
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
 1. `git clone https://github.com/adoptium/aqa-tests.git`
-1. `cd openjdk-tests`
+1. `cd aqa-tests`
 1. `./get.sh`
 1. `cd TKG`
 1. export required environment variables, BUILD_LIST and EXTRA_DOCKER_ARGS (`export BUILD_LIST=external/jenkins> and <export EXTRA_DOCKER_ARGS="-v $TEST_JDK_HOME:/opt/java/openjdk"`)
