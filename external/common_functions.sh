@@ -219,6 +219,21 @@ function set_test_info() {
         ubi_packages="git wget unzip"
         ubi_minimal_packages="${ubi_packages}"
         ;;
+    external_custom)
+        github_url="https://github.com/apache/flink.git"
+        script="test.sh"
+        test_results="testResults"
+        tag_version="master"
+        environment_variable="MODE=\"java\""
+        debian_packages="git maven"
+        debianslim_packages="${debian_packages}"
+        ubuntu_packages="${debian_packages}"
+        alpine_packages="git maven"
+        centos_packages="git maven"
+        clefos_packages="${centos_packages}"
+        ubi_packages="git maven"
+        ubi_minimal_packages="${ubi_packages}"
+        ;; 
     functional-test)
         github_url="https://github.com/AdoptOpenJDK/openjdk-tests.git"
         script="functional-test.sh"
