@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 -->
 
 # OpenJDK regression tests
-This group of tests are the set that comes from the openjdk project, often referred to as jtreg tests, as the jtreg framework is the underlying executable used to execute them.  The entire set of openjdk regression tests is quite large.  For our nightly builds, we run only a subset of these tests (typically, those suites of tests that we 'tag' as sanity in the [playlist.xml](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/playlist.xml) file).  For release builds, we intend to run the suites tagged as sanity and extended in the playlist.  
+This group of tests are the set that comes from the openjdk project, often referred to as jtreg tests, as the jtreg framework is the underlying executable used to execute them.  The entire set of openjdk regression tests is quite large.  For our nightly builds, we run only a subset of these tests (typically, those suites of tests that we 'tag' as sanity in the [playlist.xml](https://github.com/adoptium/aqa-tests/blob/master/openjdk/playlist.xml) file).  For release builds, we intend to run the suites tagged as sanity and extended in the playlist.  
 
 For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
 
@@ -23,13 +23,13 @@ While you can directly use the jtreg test harness to run these tests locally, we
 
 1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptopenjdk.net](https://adoptopenjdk.net/)).
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>` 
-1. `git clone https://github.com/AdoptOpenJDK/openjdk-tests.git` 
-1. `cd openjdk-tests`
+1. `git clone https://github.com/adoptium/aqa-tests.git` 
+1. `cd aqa-tests`
 1. `./get.sh`
 1. `cd TKG`
 1. `export BUILD_LIST=openjdk`
 1. `make compile`              (This fetches test material and compiles it, based on build.xml files in the test directories)
-1. `make _jdk_math`   (or any TARGET you wish to run, for targets you can use any `<testCaseName>` defined in the [openjdk/playlist.xml](https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/openjdk/playlist.xml) file and prefixed with an `_` underscore. If you wish to run all tests tagged with the sanity label, then `make _sanity.openjdk`)
+1. `make _jdk_math`   (or any TARGET you wish to run, for targets you can use any `<testCaseName>` defined in the [openjdk/playlist.xml](https://github.com/adoptium/aqa-tests/blob/master/openjdk/playlist.xml) file and prefixed with an `_` underscore. If you wish to run all tests tagged with the sanity label, then `make _sanity.openjdk`)
 
 
 ## Add a sub group test

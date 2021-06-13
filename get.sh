@@ -154,9 +154,9 @@ parseCommandLineArgs()
 		esac
 	done
 
-	# Check if TESTDIR exists and points to openjdk-tests
-	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"openjdk-tests"* ]]; then
-		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under openjdk-tests. Default value current dir (pwd) is used if not provided."
+	# Check if TESTDIR exists and points to aqa-tests
+	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"aqa-tests"* ]]; then
+		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under aqa-tests. Default value current dir (pwd) is used if not provided."
 		exit 1
 	fi
 	echo "TESTDIR: $TESTDIR"
@@ -295,7 +295,7 @@ getBinaryOpenjdk()
 		for info in $info_url
 		do
 			if [[ $info == https://api.adoptopenjdk.net* ]]; then
-				http_resp_info=$(curl -Is "$info" | grep "HTTP/")
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/" | tail -1)
 				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
 				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
 				if [[ ${validate} != 200 ]]; then

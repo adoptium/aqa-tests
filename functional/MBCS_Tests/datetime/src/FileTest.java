@@ -133,8 +133,10 @@ public class FileTest{
             type.equals("xfs")
            ) {
             isEqualTimeString(ft.toString(), insplus.toString());
-        } else if (type.equals("hfs")) {
-            // HFS supports 1 second interval.
+        } else if (type.equals("hfs") ||
+                   type.equals("ZFS")) {
+            // hfs and ZFS (for ZOS; not zfs for Linux) supports
+            // 1 second interval.
             // Skip the test
         }else{
             assertEquals(ft.toInstant(), insplus);

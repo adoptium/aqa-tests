@@ -127,7 +127,7 @@ println "GROUPS: ${GROUPS}"
 println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 
 def OPENJ9_REPO = "https://github.com/eclipse-openj9/openj9.git"
-def ADOPTOPENJDK_REPO = "https://github.com/AdoptOpenJDK/openjdk-tests.git"
+def ADOPTOPENJDK_REPO = "https://github.com/adoptium/aqa-tests.git"
 def ADOPTOPENJDK_BRANCH = "master"
 
 // Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
@@ -136,7 +136,7 @@ def ADOPTOPENJDK_BRANCH = "master"
 // If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
 def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
 def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
-def SCRIPT_PATH = "openjdk-tests/buildenv/jenkins/openjdk_tests"
+def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
 
 LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
 if (LIGHT_WEIGHT_CHECKOUT) {
@@ -191,7 +191,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					}
 				}
 				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
- 					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/AdoptOpenJDK/openjdk-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
+ 					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/adoptium/aqa-tests repo. If you wish to change the job, please modify testJobTemplate script.</p>')
 
 					properties {
 						pipelineTriggers {
@@ -391,7 +391,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 									}
 									branch(ADOPTOPENJDK_BRANCH_BUILD_PARAM)
 									extensions {
-										relativeTargetDirectory('openjdk-tests')
+										relativeTargetDirectory('aqa-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
 										cloneOptions {
