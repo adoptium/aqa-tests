@@ -11,9 +11,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 -->
 
-# AdoptOpenJDK Testing
+# Adoptium Testing
 
-#### Guide to the Test Jobs at AdoptOpenJDK
+#### Guide to the Test Jobs at Adoptium
 
 For nightly and release builds, there are test jobs running as part of the AdoptOpenJDK continuous delivery pipelines.  There is a [blog post and brief presentation](https://blog.adoptopenjdk.net/2017/12/testing-java-help-count-ways) that explains what testing we run and how they fit into the overall delivery pipeline.  As the world of testing at AdoptOpenJDK is evolving and improving quickly, some documentation may fall behind the march of progress.  Please let us know and help us keep it up-to-date, and ask questions at the [AdoptOpenJDK testing Slack channel](https://adoptium.slack.com/archives/C5219G28G)!
 
