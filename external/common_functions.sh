@@ -220,7 +220,7 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;;
     external_custom)
-        github_url=${EXTERNAL_CUSTOM_TARGET}
+        github_url="${EXTERNAL_CUSTOM_TARGET}"
         script="test.sh"
         test_results="testResults"
         tag_version="master"
