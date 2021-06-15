@@ -171,6 +171,13 @@ function set_build() {
     fi
 }
 
+# Reading properties of test.properties file
+function getProperty() {
+    PROP_KEY=$1
+    PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
+    echo $PROP_VALUE
+}
+
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     test=$1
@@ -220,6 +227,10 @@ function set_test_info() {
         ubi_minimal_packages="${ubi_packages}"
         ;;
     external_custom)
+        PROPERTY_FILE=external_custom/test.properties
+        GITHUB_URL=$(getProperty "github_url")
+        SCRIPT=$(getProperty "script")
+
         github_url="${EXTERNAL_CUSTOM_TARGET}"
         script="test.sh"
         test_results="testResults"
