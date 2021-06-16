@@ -197,40 +197,40 @@
 					<else>
 						<if>
 							<and>
-								<contains string="${env.SPEC}" substring="aarch64" />
+								<contains string="${env.SPEC}" substring="arm" />
 								<equals arg1="${JDK_VERSION}" arg2="8" />
 							</and>
 							<then>
-								<property name="jdkName" value="openjdk-aarch64-jdk8u" />
+								<property name="jdkName" value="aarch32-jdk8u" />
 							</then>
 							<else>
 								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet." />
-								<echo message="git ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
+								<echo message="git ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git" />
 								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
 									<env key="GIT_TERMINAL_PROMPT" value="0"/>
-									<arg line="ls-remote -h https://github.com/AdoptOpenJDK/openjdk-jdk${JDK_VERSION}u.git" />
+									<arg line="ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git" />
 								</exec>
 								<if>
 									<equals arg1="${repo.exist}" arg2="0" />
 									<then>
 										<echo message="Command passed. Setting repo name to the 'u' version." />
-										<property name="jdkName" value="openjdk-jdk${JDK_VERSION}u" />
+										<property name="jdkName" value="jdk${JDK_VERSION}u" />
 									</then>
 									<else>
 										<echo message="Command failed, or tried to ask for a username due to access restrictions. Or both." />
 										<echo message="Setting repo name to the non-'u' version." />
-										<property name="jdkName" value="openjdk-jdk${JDK_VERSION}" />
+										<property name="jdkName" value="jdk${JDK_VERSION}" />
 									</else>
 								</if>
 							</else>
 						</if>
-						<property name="regressionRepo" value="https://github.com/AdoptOpenJDK/${jdkName}.git" />
+						<property name="regressionRepo" value="https://github.com/adoptium/${jdkName}.git" />
 					</else>
 				</if>
 				<if>
 					<contains string="${JDK_IMPL}" substring="hotspot"/>
 					<then>
-						<!-- AdoptOpenJDK nighlty is using dev branch and default branch is master-->
+						<!-- AdoptOpenJDK nightly is using dev branch and default branch is master-->
 						<property name="defaultBranch" value="-b dev"/>
 					</then>
 					<else>
