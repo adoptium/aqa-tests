@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="systemtest_common" default="build" basedir=".">
+<project name="systemtest_common" default="common_build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>Build STF based System Tests </description>
 
@@ -16,21 +16,21 @@
 		<isset property="isZOS"/>
 	</condition>
 	
-	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
+	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/adoptium/aqa-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
 	
-	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse/openj9-systemtest.git">
+	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse-openj9/openj9-systemtest.git">
 		<isset property="env.OPENJ9_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openj9_systemtest_branch" value="${env.OPENJ9_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.OPENJ9_SYSTEMTEST_BRANCH"/>
 	</condition>
 	
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
 	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
@@ -98,24 +98,24 @@
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+				   <fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
 				</delete>  
-				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" /> 
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+				<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" /> 
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
 					<arg value="-r" />
 					<arg value="-q" />
 					<arg value="." />
 				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
 					<arg value="reset" />
 					<arg value="--hard" />
 				</exec>
 			</then>
 		</if>
-		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openjdk-systemtest" />
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/aqa-systemtest" />
 	</target>
 	
 	<target name="clone_openj9-systemtest">
@@ -167,14 +167,14 @@
 		</if>
 		<if>
 			<not>
-				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+				<available file="${SYSTEMTEST_ROOT}/aqa-systemtest" type="dir" />
 			</not>
 			<then>
-				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest does not exist, clone from GitHub" />
 				<antcall target="clone_systemtest" inheritall="true" />
 			</then>
 			<else>
-				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest exists, skip cloning" />
 			</else>
 		</if>
 		<if>
@@ -209,7 +209,7 @@
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false"/>
 			</then>
 			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/" target="configure" inheritAll="false"/>
+				<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/" target="configure" inheritAll="false"/>
 			</else>
 		</if>
 	</target>
@@ -218,8 +218,8 @@
 		<copy todir="${SYSTEMTEST_DEST}/stf">
 			<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
 		</copy>
-		<copy todir="${SYSTEMTEST_DEST}/openjdk-systemtest" failonerror="false">
-			<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+		<copy todir="${SYSTEMTEST_DEST}/aqa-systemtest" failonerror="false">
+			<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest" includes="**" />
 		</copy>
 		<copy todir="${SYSTEMTEST_DEST}/openj9-systemtest" failonerror="false">
 			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest" includes="**" />
@@ -243,7 +243,7 @@
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false"/>
 			</then>
 			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false"/>
+				<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false"/>
 			</else>
 		</if>
 		<antcall target="common_dist" inheritall="false" />
@@ -256,7 +256,7 @@
 	</target>
 		
 	<target name="clean">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"/>
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false" target="clean"/>
 		<if>
 			<or>
 				<contains string="${JVM_VERSION}" substring="openj9"/>

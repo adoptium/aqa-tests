@@ -22,7 +22,7 @@ SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
 CUSTOMIZED_SDK_SOURCE_URL=""
 CLONE_OPENJ9="true"
-OPENJ9_REPO="https://github.com/eclipse/openj9.git"
+OPENJ9_REPO="https://github.com/eclipse-openj9/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
 TKG_REPO="https://github.com/AdoptOpenJDK/TKG.git"
@@ -54,7 +54,7 @@ usage ()
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true'
-	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
+	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
 	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided'
@@ -154,9 +154,9 @@ parseCommandLineArgs()
 		esac
 	done
 
-	# Check if TESTDIR exists and points to openjdk-tests
-	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"openjdk-tests"* ]]; then
-		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under openjdk-tests. Default value current dir (pwd) is used if not provided."
+	# Check if TESTDIR exists and points to aqa-tests
+	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"aqa-tests"* ]]; then
+		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under aqa-tests. Default value current dir (pwd) is used if not provided."
 		exit 1
 	fi
 	echo "TESTDIR: $TESTDIR"
@@ -295,7 +295,7 @@ getBinaryOpenjdk()
 		for info in $info_url
 		do
 			if [[ $info == https://api.adoptopenjdk.net* ]]; then
-				http_resp_info=$(curl -Is "$info" | grep "HTTP/")
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/" | tail -1)
 				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
 				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
 				if [[ ${validate} != 200 ]]; then
@@ -556,6 +556,9 @@ getFunctionalTestMaterial()
 				echo "Stage $dest/$dir to $TESTDIR/$dir"
 				# already in TESTDIR, thus copy $dir to current directory
 				cp -r $dest/$dir ./
+				if [[ "$PLATFORM" == *"zos"* ]]; then
+					cp -r $dest/.git ./$dir
+				fi
 			else
 				echo "Stage $dest to $TESTDIR"
 				# already in TESTDIR, thus copy the entire vendor repo content to current directory

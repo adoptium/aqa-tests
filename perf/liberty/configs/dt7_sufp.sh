@@ -20,7 +20,7 @@ echo "Current Dir: $(pwd)"
 
 TEST_RESROOT=${1}
 
-. "$TEST_RESROOT/../../../openjdk-tests/perf/affinity.sh" > /dev/null 2>&1
+. "$TEST_RESROOT/../../../aqa-tests/perf/affinity.sh" > /dev/null 2>&1
 setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
 
 export AFFINITY=${SERVER_AFFINITY_CMD}

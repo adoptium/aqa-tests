@@ -36,6 +36,10 @@ ifeq ($(CYGWIN),1)
 		| cut -d "=" -f 2-` / 1024 / 1024 \
 		)
 endif
+ifeq ($(OS),SunOS)	
+	NPROCS:=$(shell psrinfo | wc -l)
+	MEMORY_SIZE:=$(shell prtconf | awk '/^Memory size:/{print int($$3/1024)}')
+endif	
 ifeq ($(OS),OS/390)
 	EXTRA_OPTIONS += -Dcom.ibm.tools.attach.enable=yes
 endif

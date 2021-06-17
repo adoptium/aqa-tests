@@ -29,7 +29,7 @@ Supported values are:
 - `releases`
 - `customized`
 
-`nightly` and `releases` pull the latest from AdoptOpenJDK.
+`nightly` and `releases` pull the latest from Adoptium.
 
 If `nightly` / `releases` is specified, the values of [`--jdk_version`](#--jdk_version) and [`--jdk_impl`](#--jdk_impl) are used to determine the JDK version and implementation to pull.
 
@@ -116,13 +116,13 @@ The default value is `openj9`.
 
 ### --openjdk_testrepo
 
-GitHub repository and branch of the openjdk-tests to use.
+GitHub repository and branch of the aqa-tests to use.
 
 The format is `<repository>:<branch>`.
 
-The default value is `AdoptOpenJDK/openjdk-tests:master`.
+The default value is `adoptium/aqa-tests:master`.
 
-This option is unavailable in `openjdk-tests` repositories because it will always use the head repo and branch of the PR instead.
+This option is unavailable in `aqa-tests` repositories because it will always use the head repo and branch of the PR instead.
 
 ### --tkg_repo
 
