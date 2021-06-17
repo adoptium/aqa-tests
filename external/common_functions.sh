@@ -30,7 +30,7 @@ supported_packages="jdk jre"
 supported_builds="slim full"
 
 # Supported tests
-supported_tests="camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
+supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
 
 function check_version() {
     version=$1
@@ -229,7 +229,6 @@ function set_test_info() {
     external_custom)
         PROPERTY_FILE=external_custom/test.properties
         GITHUB_URL=$(getProperty "github_url")
-        SCRIPT=$(getProperty "script")
 
         github_url="${EXTERNAL_CUSTOM_TARGET}"
         script="test.sh"
