@@ -34,8 +34,16 @@ public class DateFormatTest {
 			version = version.substring(index1+1, index2);
 		}
 	}
-        resource = ResourceBundle.getBundle("ResourceBundleTest", locale);
+        long feature = JavaVersion.getFeature();
+        if (feature == 16L) {
+		try {
+			resource = ResourceBundle.getBundle("ResourceBundleTest_16", locale);
+		} catch (MissingResourceException e) {} // Do nothing
+        }
 	if (resource == null){
+		resource = ResourceBundle.getBundle("ResourceBundleTest", locale);
+	}
+	if (resource == null) {
 		System.err.println("Cannot get resource for "+locale);
 		System.exit(-1);
 	}

@@ -63,8 +63,11 @@ public class LocaleFilterTest2 {
         String outString = baos.toString();
         if (Boolean.valueOf(System.getProperty("result","true"))) System.out.print(outString);
         Properties prop = new Properties();
+        String suffix = "";
+        long ver = JavaVersion.getVersion();
+        if (ver >= 16000000L) suffix = "_16";
         prop.load(LocaleFilterTest2.class.
-            getResourceAsStream("LocaleFilterTest2.properties"));
+            getResourceAsStream("LocaleFilterTest2"+suffix+".properties"));
         String expected = String.format(prop.getProperty(loc.toString()));
         if (Boolean.valueOf(System.getProperty("expected","false"))) System.out.printf("--- expected ---%n"+expected);
         System.out.println("Test: "+(expected.equals(outString) ? "Passed" : "Failed"));

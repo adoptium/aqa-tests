@@ -1,17 +1,17 @@
 # Running AdoptOpenJDK Tests
 
-If you have immediate test-related questions, please post them to the [AdoptOpenJDK testing Slack channel](https://adoptopenjdk.slack.com/messages/C5219G28G).
+If you have immediate test-related questions, please post them to the [AdoptOpenJDK testing Slack channel](https://adoptium.slack.com/archives/C5219G28G).
 
 Platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
 
 Java Version: SE80 | SE90 | SE100
 
-Set up your test machine with this [set of prerequisites](https://github.com/eclipse/openj9/blob/master/test/docs/Prerequisites.md).
+Set up your test machine with this [set of prerequisites](https://github.com/eclipse-openj9/openj9/blob/master/test/docs/Prerequisites.md).
 
 ## Jenkins setup and running
 While you can [run all the tests manually](#local-testing-via-make-targets-on-the-commandline) via the make targets on the command line, you may also run the tests in Jenkins. As part of the AdoptOpenJDK continuous integration (CI), AdoptOpenJDK runs test builds against the release and nightly SDK builds.
 
-You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk-tests Jenkinsfiles by:
+You can set up your own Jenkins-based test builds using the adoptium aqa-tests Jenkinsfiles by:
 	
 - Configure a [Jenkins job with a Customized URL](#jenkins-configuration-with-customized-url)
 - Ensure your Jenkins machines are configured properly (see the [openjdk-infrastructure playbooks](https://github.com/AdoptOpenJDK/openjdk-infrastructure/blob/master/ansible/README.md) for details)
@@ -20,7 +20,7 @@ You can set up your own Jenkins-based test builds using the AdoptOpenJDK openjdk
 ### Jenkins Configuration with Customized URL
 
 1. Create Pipeline test build job using Pipeline script from SCM  
-- Repository url - :https://github.com/AdoptOpenJDK/openjdk-tests.git
+- Repository url - :https://github.com/adoptium/aqa-tests.git
 - Branches to build - */master
 - Script path - buildenv/jenkins/fileToMatchVersionAndPlatformToTest, example openjdk8_x86-64_linux
 ![pipeline from SCM](/doc/diagrams/pipelineFromSCM.jpg)
@@ -92,7 +92,7 @@ git push origin env_var
 
 This method is to be used when the objective is to set that environment variable for all test targets in the group being run. For this example, we will be looking at the systemtest.mk file. 
 
-1.	Open the openjdk-tests/system folder
+1.	Open the aqa-tests/system folder
 
  ![system_folder](/doc/diagrams/systemFolder.jpg)
  
@@ -177,9 +177,9 @@ git push origin env_var
 
 #### Clone the repo and pick up the dependencies
 ``` bash
-git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
-cd openjdk-tests
-get.sh -t openjdk-testsDIR -p platform [-j SE80] [-i hotspot] [-R latest] [-T jdk] [-s downloadBinarySDKDIR] [-r SDK_RESOURCE] [-c CUSTOMIZED_SDK_URL]
+git clone https://github.com/adoptium/aqa-tests.git
+cd aqa-tests
+get.sh -t aqa-testsDIR -p platform [-j SE80] [-i hotspot] [-R latest] [-T jdk] [-s downloadBinarySDKDIR] [-r SDK_RESOURCE] [-c CUSTOMIZED_SDK_URL]
 ```
 
 Where possible values of get.sh script are:
@@ -201,7 +201,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
                 [--customizedURL|-c ] : optional. If downloading an sdk and if sdk source is set as customized, indicates sdk url 
                 [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true
-                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided
+                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided
                 [--openj9_sha ] : optional. OpenJ9 pull request sha
                 [--openj9_branch ] : optional. OpenJ9 branch
                 [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided
@@ -215,7 +215,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
 #### Set environment variables, configure, build and run tests
 
-You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
+You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse-openj9/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you. 
 
 ##### Top-level test targets:
 - openjdk 
@@ -229,7 +229,7 @@ You can use the same approach as described in the [OpenJ9 functional tests READM
 - _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
 
 ##### Sub-targets by directory:
-Refer to these instructions for how to [run tests by directory](https://github.com/eclipse/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
+Refer to these instructions for how to [run tests by directory](https://github.com/eclipse-openj9/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
 
 ##### Sub-targets by test name:
 In each playlist.xml file in each test directory, there are tests defined.  Test targets are generated from the ```<testCaseName>``` tag, so you can use the test case name as a make target.
@@ -254,8 +254,8 @@ $ OPENJDK_SOURCES="$(pwd)/openjdk-jdk8u"
 $ OPENJDK_BUILD=$OPENJDK_SOURCES/build/linux-x86_64-normal-server-fastdebug/images/j2sdk-image
 $ tmpdir=$(mktemp -d)
 $ pushd $tmpdir
-$ git clone https://github.com/AdoptOpenJDK/openjdk-tests
-$ cd openjdk-tests
+$ git clone https://github.com/adoptium/aqa-tests
+$ cd aqa-tests
 $ TOP_DIR=$(pwd)
 $ TEST_DIR="$TOP_DIR"
 $ pushd openjdk
@@ -266,10 +266,11 @@ $ export BUILD_ROOT=$TOP_DIR/test-results
 $ export JRE_IMAGE=$OPENJDK_BUILD/../j2re-image
 $ export TEST_JDK_HOME=$OPENJDK_BUILD
 $ ./get.sh -t $TEST_DIR
-$ ./maketest.sh $TEST_DIR
-$ OPENJDK_DIR=$OPENJDK_SOURCES ./maketest.sh $TEST_DIR _sanity.openjdk
+$ cd ./TKG
+$ make compile
+$ make _sanity.openjdk
 $ popd
-$ echo "openjdk-tests located at $tmpdir/openjdk-tests"
+$ echo "aqa-tests located at $tmpdir/aqa-tests"
 
 ```
 
@@ -303,12 +304,63 @@ _sanity.openjdk done
 Additional test output can be found in the following folders:
 
 ```
-openjdk-tests/test-results/openjdk/TKG/test_output_<timestamp>`
-openjdk-tests/test-results/openjdk/work
-openjdk-tests/test-results/openjdk/report
+aqa-tests/test-results/openjdk/TKG/output_<timestamp>`
+aqa-tests/test-results/openjdk/work
+aqa-tests/test-results/openjdk/report
 ```
 
-The JTREG report HTML summary file is then located at `openjdk-tests/test-results/openjdk/report/html/index.html`
+The JTREG report HTML summary file is then located at `aqa-tests/test-results/openjdk/report/html/index.html`
+
+
+
+### Use live_monitor feature
+TKG has a script that monitors the test progress live. It can be your only friend in darkest nights. When you run tests locally, you may want to use that feature. It shows how many tests are passed currently etc. Now let's look how to use it. You need Python3 installed on your machine in order to use it. Note that this feature currently works with openjdk tests only. This means you need to use:	
+
+`export BUILD_LIST=openjdk`
+
+before compiling or you need to run just openjdk tests and pipe them. Otherwise it won't work.
+
+1. You need to change the verbose option of jtreg. In order to do that, you need to change 1 line of code in [/openjdk/openjdk.mk](https://github.com/adoptium/aqa-tests/blob/master/openjdk/openjdk.mk) file. 
+
+    You need to change 
+
+        `JTREG_BASIC_OPTIONS += -v:fail,error,time,nopass`  
+    line to
+
+        `JTREG_BASIC_OPTIONS += -v:all`
+
+2. After that, you are ready to run the scripts. Here is the example of how you can do it : 
+
+	`make _sanity.openjdk | python3 -u scripts/liveMonitor_countTests/jtreg-monitor.py`
+
+
+### Count tests in a folder
+TKG has a script that counts how many test exists in a specified folder. This script currently works on just openjdk tests. It simply checks for the java files contains "@test" annotation. Here is an example of how you can use this script :
+
+`aqa-tests/TKG# python3 -u scripts/liveMonitor_countTests/count-java-tests.py ../openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/`
+
+The output of the code above is : 
+
+    
+    Counting tests in 'aqa-tests/openjdk/openjdk-jdk/test/langtools/tools/javac/warnings/' ...
+
+    Found 41 java files
+
+    . ................ 11 
+    6594914 ........... 2 
+    6747671 ........... 1 
+    6885255 ........... 1 
+
+    7090499 ........... 1 
+    AuxiliaryClass .... 3 
+    NestedDeprecation . 1 
+    suppress ......... 10 
+
+
+
+    Found 30 java files containing @test
+ 
+    
 
 ## Exclude a test target
 
@@ -342,6 +394,10 @@ To exclude the test for openj9 only:
 
 ```auto exclude test jdk_test impl=openj9```
 
+To exclude the test for adoptopenjdk vendor only:
+
+```auto exclude test jdk_test vendor=adoptopenjdk```
+
 To exclude the test for java 8 only:
 
 ```auto exclude test jdk_test ver=8```
@@ -350,13 +406,13 @@ To exclude the test for all linux platforms:
 
 ```auto exclude test jdk_test plat=.*linux.*```
 
-plat is defined in regular expression. All platforms can be found here: https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/jenkins/openjdk_tests
+plat is defined in regular expression. All platforms can be found here: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
 
-To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against openj9 java 8 on windows only:
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
-```auto exclude test jdk_test_1 impl=openj9 ver=8 plat=.*windows.*```
+```auto exclude test jdk_test_1 impl=openj9 vendor=adoptopenjdk ver=8 plat=.*windows.*```
 
-After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details.
+After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
 #### Manually exclude a test target
 Search the test name to find its playlist.xml file. Add a ```<disabled>``` element after ```<testCaseName>``` element. The ```<disabled>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url).
@@ -366,10 +422,10 @@ For example:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+  </disabled>
+  ...
 ```
 
 This will disable the entire test suite. The following section describes how to disable the specific test cases.
@@ -382,16 +438,16 @@ For example, to exclude the test case with variation ```-Xmx1024m```:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <variation>-Xmx1024m</variation>
-    </disabled>
-    ...
-    <variations>
-      <variation>NoOptions</variation>
-      <variation>-Xmx1024m</variation>
-    </variations>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <variation>-Xmx1024m</variation>
+  </disabled>
+  ...
+  <variations>
+    <variation>NoOptions</variation>
+    <variation>-Xmx1024m</variation>
+  </variations>
+  ...
 ```
 
 ##### Exclude a test against specific java implementation:
@@ -402,61 +458,77 @@ For example, to exclude the test for openj9 only:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <impl>openj9</impl>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <impl>openj9</impl>
+  </disabled>
+  ...
+```
+
+##### Exclude a test against specific java vendor:
+Add a ```<vendor>``` element in the ```<disabled>``` element to specify the vendor information.
+
+For example, to exclude the test for AdoptOpenJDK only:
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName> 
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <vendor>adoptopenjdk</vendor>
+  </disabled>
+  ...
 ```
 
 ##### Exclude a test against specific java version:
-Add a ```<subset>``` element in the ```<disabled>``` element to specify the version.
+Add a ```<version>``` element in the ```<disabled>``` element to specify the version.
 
 For example, to exclude the test for java 11 and up:
 
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>11+</subset>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <version>11+</version>
+  </disabled>
+  ...
 ```
 
 
 ##### Exclude a test against specific platform:
-Add a ```<plat>``` element in the ```<disabled>``` element to specify the platform in regular expression. All platforms can be found here: https://github.com/AdoptOpenJDK/openjdk-tests/blob/master/buildenv/jenkins/openjdk_tests
+Add a ```<platform>``` element in the ```<disabled>``` element to specify the platform in regular expression. All platforms can be found here: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
 
 For example, to exclude the test for all linux platforms:
 
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <plat>.*linux.*</plat>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <platform>.*linux.*</platform>
+  </disabled>
+  ...
 ```
 
 
 ##### Exclude test against multiple criteria:
-Defined a combination of ```<variation>```, ```<impl>```, ```<subset>```, and  ```<plat>``` in the ```<disabled>``` element.
+Defined a combination of ```<variation>```, ```<impl>```, ```<version>```, and  ```<platform>``` in the ```<disabled>``` element.
 
-For example, to exclude the test with variation ```-Xmx1024m``` against openj9 java 8 on windows only:
+For example, to exclude the test with variation ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
 
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <variation>-Xmx1024m</variation>
-      <subset>8</subset>
-      <impl>openj9</impl>
-      <plat>.*windows.*</plat>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <variation>-Xmx1024m</variation>
+    <version>8</version>
+    <impl>openj9</impl>
+    <vendor>adoptopenjdk</vendor>
+    <platform>.*windows.*</platform>
+  </disabled>
+  ...
 ```
 
 Note: Same element cannot be defined multiple times inside one ```<disabled>``` element. It is because the elements inside the disable element are in AND relationship.
@@ -466,17 +538,17 @@ For example, to exclude test on against hotspot and openj9. It is required to de
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-      <impl>openj9</impl>
-    </disabled>
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-      <impl>hotspot</impl>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <version>8</version>
+    <impl>openj9</impl>
+  </disabled>
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <version>8</version>
+    <impl>hotspot</impl>
+  </disabled>
+  ...
 ```
 
 Or remove ```<impl>``` element to exclude test against all implementations:
@@ -484,9 +556,9 @@ Or remove ```<impl>``` element to exclude test against all implementations:
 ```
 <test>
   <testCaseName>jdk_test</testCaseName> 
-    <disabled>
-      <comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/123456</comment>
-      <subset>8</subset>
-    </disabled>
-    ...
+  <disabled>
+    <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+    <version>8</version>
+  </disabled>
+  ...
 ```

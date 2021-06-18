@@ -5,6 +5,10 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_arm',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch32',
     ],
+    'aarch64_mac' : [
+        'SPEC' : 'osx_aarch64',
+        'LABEL' : 'ci.role.test&&sw.os.osx&&hw.arch.aarch64',
+    ],
     'aarch64_linux' : [
         'SPEC' : 'linux_aarch64_cmprssptrs',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
@@ -68,18 +72,22 @@ def PLATFORM_MAP = [
     's390_linux' : [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux_mixed' : [
         'SPEC' : 'linux_390-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_linux_xl' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     's390x_zos' : [
         'SPEC' : 'zos_390-64_cmprssptrs',
@@ -97,6 +105,14 @@ def PLATFORM_MAP = [
         'SPEC' : 'sunos_sparcv9-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.sparcv9&&sw.os.sunos',
     ],
+    'x86-64_solaris' : [
+        'SPEC' : 'sunos_x86-64_cmprssptrs',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.sunos',
+    ],
+    'x86-64_alpine-linux' : [
+        'SPEC' : 'alpine-linux',
+        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
+    ],
     'x86-32_linux' : [
         'SPEC' : 'linux_x86',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
@@ -108,14 +124,17 @@ def PLATFORM_MAP = [
     'x86-64_linux' : [
         'SPEC' : 'linux_x86-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_linux_mixed' : [
         'SPEC' : 'linux_x86-64_mxdptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_linux_xl' : [
         'SPEC' : 'linux_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_mac' : [
         'SPEC' : 'osx_x86-64_cmprssptrs',
@@ -146,15 +165,14 @@ def PLATFORM_MAP = [
 if ( !params.TARGET ) {
     assert false : "Please provide TARGET value"
 }
-
 def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.contains("all")) {
-    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'release') {
-        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or release."
+    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
+        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or releases."
     } else {
         testJobs = [:]
         PLATFORMS.each { PLATFORM ->
@@ -214,35 +232,48 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "SPEC: ${SPEC}"
         println "LABEL: ${LABEL}"
 
+        dynamicAgents = []
+        if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
+            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
+        }
+
         stage('Queue') {
-            def nodes = nodesByLabel(LABEL).size()
-            if (nodes < 1) {
-                // If no active node matches the label, we see if there's a timeout value set.
-                // If there is, we wait and check again periodically. If not, we fail immediately.
-
-                boolean didnt_find_node = true
-
-                if (params.ACTIVE_NODE_TIMEOUT && params.ACTIVE_NODE_TIMEOUT.isInteger()) {
-                    int activeNodeTimeout = params.ACTIVE_NODE_TIMEOUT as Integer
-                    echo "Cannot find an active node matching this label: " + label
-                    echo "Will now wait until " + activeNodeTimeoutString + " minutes (ACTIVE_NODE_TIMEOUT) has passed, re-checking periodically."
-                    while (activeNodeTimeout > 0) {
-                        sleep(60 * 1000) // 1 minute sleep
-                        activeNodeTimeout--
-                        if (nodesByLabel(LABEL).size() > 0) {
-                            didnt_find_node = false
-                            echo "A node matching the aforementioned label has become active."
-                            break;
-                        }
+            String[] onlineNodes = nodesByLabel(LABEL)
+            if (onlineNodes.size() < 1) {
+                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
+                timeout(ACTIVE_NODE_TIMEOUT) {
+                    // If there is available node before timeout
+                    node(LABEL) {
+                        echo "find the node with label as ${env.NODE_NAME}"
                     }
                 }
-
-                if (didnt_find_node) {
-                    assert false : "Cannot find any machine that matches the LABEL: " + LABEL
+            } else {
+                // IF no nodes are idle we will check if there is supported virtual agent
+                // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
+                // In this case jobs will be fooled to fall back to wait local busy nodes. 
+                if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                    boolean isNodeIdle = false
+                    node {
+                        for (String onlineNode : onlineNodes) {
+                            def nodeStatus = sh(script: "curl -s ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
+                                                returnStdout: true,
+                                                returnStatus: false
+                                                ).trim()
+                            if (nodeStatus.contains("true")) {
+                                isNodeIdle = true
+                                break
+                            }
+                        }
+                    }
+                    if (!isNodeIdle) {
+                       LABEL = LABEL.minus("ci.role.test&&")
+                       LABEL += '&&ci.agent.dynamic'
+                    }
                 }
             }
 
             node(LABEL) {
+                cleanWs()
                 if (params.PLATFORM.contains('zos')) {
                     /* Ensure correct CC env */
                     env._CC_CCMODE = '1'
@@ -252,17 +283,16 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     def gitConfig = scm.getUserRemoteConfigs()[0]
                     def SCM_GIT_REPO = gitConfig.getUrl()
                     def SCM_GIT_BRANCH = scm.branches[0].name
-                    cleanWs()
 
                     // SCM_GIT_REPO value only gets expanded in sh
                     def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
                     SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
 
-                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} openjdk-tests"
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
                 } else {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
 
-                    // Adopt windows machines require env here https://github.com/AdoptOpenJDK/openjdk-tests/issues/1803
+                    // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
                     ref_cache = "${env.HOME}/openjdk_cache"
 
                     checkout scm: [$class: 'GitSCM',
@@ -270,12 +300,20 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                         extensions: [
                             [$class: 'CleanBeforeCheckout'],
                             [$class: 'CloneOption', reference: ref_cache],
-                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'openjdk-tests']],
+                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
                         userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
                     ]
                 }
-                jenkinsfile = load "${WORKSPACE}/openjdk-tests/buildenv/jenkins/JenkinsfileBase"
-                jenkinsfile.testBuild()
+                jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
+                if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
+                    //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+                    docker.image('adoptopenjdk/centos6_build_image').pull() 
+                    docker.image('adoptopenjdk/centos6_build_image').inside {
+                        jenkinsfile.testBuild()
+                    }
+                } else {
+                    jenkinsfile.testBuild()
+                }
             }
         }
         jenkinsfile.run_parallel_tests()
