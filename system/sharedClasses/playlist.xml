@@ -185,7 +185,7 @@
 			<variation>Mode610</variation>
 		</variations>
 		<!-- Some machines may have max user processes too low by default for this test
-		 - e.g. see https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1851
+		 - e.g. see https://github.com/adoptium/infrastructure/issues/1851
 		 The command is not relevant to Windows, and ulimit cannot be modified by the Jenkins users on osx.
 		 Max user processes option is -u in bash, -p in dash (-p is pipe size in bash, so the validity of ulimit -u is used to set the correct option). -->
 		<command>echo "$(PLATFORM)" | grep -q "osx\|win" || \
@@ -267,7 +267,7 @@
 			<variation>Mode610</variation>
 		</variations>
 		<!-- Some machines may have max user processes too low by default for this test
-		 - e.g. see https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1851
+		 - e.g. see https://github.com/adoptium/infrastructure/issues/1851
 		 The command is not relevant to Windows, and ulimit cannot be modified by the Jenkins users on osx.
 		 Max user processes option is -u in bash, -p in dash (-p is pipe size in bash, so the validity of ulimit -u is used to set the correct option). -->
 		<command>echo "$(PLATFORM)" | grep -q "osx\|win" || \

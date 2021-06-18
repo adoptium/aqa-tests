@@ -45,7 +45,7 @@ jobs:
           source: 'nightly'
           impl: ${{ matrix.impl }}
       - name: AQA
-        uses: AdoptOpenJDK/run-aqa@v1
+        uses: adoptium/run-aqa@v1
         with:
           build_list: ${{ matrix.build_list }}
           target: '_sanity.regular'

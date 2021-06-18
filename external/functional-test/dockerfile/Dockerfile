@@ -11,7 +11,7 @@
 # limitations under the License.
 
 # This Dockerfile in thirdpart_containers/functional-test/dockerfile dir is used to create an image with
-# AdoptOpenJDK jdk binary installed. Basic test dependent executions
+# Adoptium jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
 # Build functional: `docker build -t adoptopenjdk-functional-test -f Dockerfile ../.`
