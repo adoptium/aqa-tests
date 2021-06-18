@@ -27,14 +27,14 @@
 	
 	<if>
 		<or>
-		    	<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-			<matches pattern="^[1][01234]" string="${JDK_VERSION}"/>
+			<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
+			<matches pattern="^[1][0123456]" string="${JDK_VERSION}"/>
 		</or>
-	 	<then>
-	    		<property name="jtregTar" value="jtreg_4_2_0_tip"/>
+		<then>
+			<property name="jtregTar" value="jtreg_5_1_b01"/>
 		</then>
 		<else>
-	   		 <property name="jtregTar" value="jtreg_5_1_b01"/>
+			<property name="jtregTar" value="jtreg_6_1"/>
 		</else>
 	</if>
 	<if>
@@ -74,7 +74,7 @@
 			</else>
 		</if>
 		<exec executable="gzip" failonerror="true">
-			<arg line="-d ${jtregTar}.tar.gz" />				
+			<arg line="-d ${jtregTar}.tar.gz" />
 		</exec>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
