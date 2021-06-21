@@ -42,6 +42,7 @@ if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
 if (!binding.hasVariable('TARGET')) TARGET = ""
 if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
+if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
 if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
@@ -381,6 +382,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
+							stringParam('SLACK_CHANNEL', SLACK_CHANNEL, "Slack channel. e.g., #rt-jenkins")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 						}
 						cpsScm {
