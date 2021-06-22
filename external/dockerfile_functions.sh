@@ -46,7 +46,7 @@ print_adopt_test() {
     local test=$2
 
     echo -e "# This Dockerfile in external/${test}/dockerfile dir is used to create an image with" \
-          "\n# AdoptOpenJDK jdk binary installed. Basic test dependent executions" \
+          "\n# Adoptium jdk binary installed. Basic test dependent executions" \
           "\n# are installed during the building process." \
           "\n#" \
           "\n# Build example: \`docker build -t adoptopenjdk-${test}-test -f ${file} .\`" \

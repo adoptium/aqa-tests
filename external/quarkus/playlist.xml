@@ -42,7 +42,7 @@
 	<test>
 		<testCaseName>quarkus_native_test</testCaseName>
 		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-build/issues/767</comment>
+			<comment>https://github.com/adoptium/temurin-build/issues/767</comment>
 		</disabled>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
