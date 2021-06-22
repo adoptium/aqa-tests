@@ -15,7 +15,7 @@ There are many different test jobs running at the adoptium project.  No matter w
 
 ### Categorize the test failure (based on test output) into 1 of 3 general types
 
-- infra problem (machine/network)
+- infrastructure problem (machine/network)
 - test problem
 - product problem
 
