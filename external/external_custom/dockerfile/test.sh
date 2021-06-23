@@ -36,14 +36,14 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
-
 echo_setup
 
-# export MAVEN_OPTS="-Xmx1g"
-
-cd /flink
+cd /jacoco/org.jacoco.build
+pwd
+echo "Compile and run external tests"
+${EXT_TEST_CMD}
 test_exit_code=$?
-echo "Build external_custom completed"
+echo "Build jacoco completed"
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 echo "Test results copied"

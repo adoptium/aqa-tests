@@ -13,6 +13,9 @@
     <condition property="EXT_REPO_BRANCH" value="${env.EXT_REPO_BRANCH}" else="master">
 		<isset property="env.EXT_REPO_BRANCH" />
 	</condition>
+	<condition property="EXT_TEST_CMD" value="${env.EXT_TEST_CMD}" else="mvn clean install">
+		<isset property="env.EXT_TEST_CMD" />
+	</condition>
 	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
