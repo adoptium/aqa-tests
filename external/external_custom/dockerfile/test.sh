@@ -36,14 +36,12 @@ else
 	export JAVA_HOME="${java_root%/bin}"
 fi
 
+
 echo_setup
 
 # export MAVEN_OPTS="-Xmx1g"
 
 cd /flink
-pwd
-echo "Compile and run external_custom tests"
-mvn clean install
 test_exit_code=$?
 echo "Build external_custom completed"
 

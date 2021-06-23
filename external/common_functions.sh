@@ -232,7 +232,7 @@ function set_test_info() {
         github_url="${EXTERNAL_CUSTOM_TARGET}"
         script="test.sh"
         test_results="testResults"
-        tag_version="master"
+        tag_version="${EXTERNAL_REPO_BRANCH}"
         environment_variable="MODE=\"java\""
         debian_packages="git maven"
         debianslim_packages="${debian_packages}"
