@@ -38,12 +38,12 @@ fi
 
 echo_setup
 
-cd /jacoco/org.jacoco.build
+cd /external_dir
 pwd
 echo "Compile and run external tests"
 ${EXT_TEST_CMD}
 test_exit_code=$?
-echo "Build jacoco completed"
+echo "Build external_custom completed"
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 echo "Test results copied"
