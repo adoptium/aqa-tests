@@ -38,7 +38,7 @@ fi
 
 echo_setup
 
-cd /external_dir
+cd /external_test_repo
 pwd
 echo "Compile and run external tests"
 ${EXT_TEST_CMD}
