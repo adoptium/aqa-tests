@@ -233,7 +233,7 @@ function set_test_info() {
         script="test.sh"
         test_command="${EXT_TEST_CMD}"
         test_results="testResults"
-        tag_version="master"
+        tag_version="${EXT_REPO_BRANCH}"
         environment_variable="MODE=\"java\""
         debian_packages="git maven"
         debianslim_packages="${debian_packages}"
