@@ -451,7 +451,7 @@ print_clone_project() {
 
     echo -e "# Clone ${test} source" \
             "\nENV ${test_tag}=\$${test_tag}" \
-            "\nRUN git clone ${github_url}" \ external_test_repo
+            "\nRUN git clone ${github_url} external_test_repo" \
             "\nWORKDIR /${folder}/" \
             "\nRUN git checkout \$${test_tag}" \
             "\nWORKDIR /" \
