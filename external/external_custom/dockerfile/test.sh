@@ -38,16 +38,13 @@ fi
 
 echo_setup
 
-# export MAVEN_OPTS="-Xmx1g"
+external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
-cd /flink
+cd /external_test_repo
 pwd
-echo "Compile and run external_custom tests"
-mvn clean install
+echo "Compile and run external tests"
+${EXT_TEST_CMD}
 test_exit_code=$?
 echo "Build external_custom completed"
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
-
-exit $test_exit_code

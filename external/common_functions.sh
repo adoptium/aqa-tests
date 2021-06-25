@@ -229,8 +229,9 @@ function set_test_info() {
     external_custom)
         PROPERTY_FILE=external_custom/test.properties
         GITHUB_URL=$(getProperty "github_url")
-        github_url="${EXTERNAL_CUSTOM_TARGET}"
+        github_url="${EXTERNAL_CUSTOM_REPO}"
         script="test.sh"
+        test_command="${EXT_TEST_CMD}"
         test_results="testResults"
         tag_version="master"
         environment_variable="MODE=\"java\""
