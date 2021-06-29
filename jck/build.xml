@@ -127,6 +127,8 @@
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 									<arg value="pull" />
+									<arg value="${JCK_GIT_REPO_USED}" />
+									<arg value="${jck_branch}" />
 								</exec>
 							</else>
 						</if>
