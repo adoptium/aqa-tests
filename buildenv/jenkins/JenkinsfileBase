@@ -79,6 +79,9 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : false
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
+	env.EXTERNAL_CUSTOM_REPO=params.EXTERNAL_CUSTOM_REPO ? params.EXTERNAL_CUSTOM_REPO : ""
+	env.EXT_REPO_BRANCH=params.EXT_REPO_BRANCH ? params.EXT_REPO_BRANCH : "master"
+	env.EXT_TEST_CMD=params.EXT_TEST_CMD ? params.EXT_TEST_CMD : "mvn clean install"
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
