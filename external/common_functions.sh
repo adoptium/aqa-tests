@@ -231,9 +231,9 @@ function set_test_info() {
         GITHUB_URL=$(getProperty "github_url")
         github_url="${EXTERNAL_CUSTOM_REPO}"
         script="test.sh"
-        test_command="${EXT_TEST_CMD}"
+        test_command="${EXTERNAL_TEST_CMD}"
         test_results="testResults"
-        tag_version="${EXT_REPO_BRANCH}"
+        tag_version="${EXTERNAL_REPO_BRANCH}"
         environment_variable="MODE=\"java\""
         debian_packages="git maven"
         debianslim_packages="${debian_packages}"
