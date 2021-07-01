@@ -43,7 +43,7 @@ external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | s
 cd /external_test_repo
 pwd
 echo "Compile and run external tests"
-${EXT_TEST_CMD}
+${EXTERNAL_TEST_CMD}
 test_exit_code=$?
 echo "Build external_custom completed"
 
