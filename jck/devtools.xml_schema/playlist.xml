@@ -16,6 +16,11 @@
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-devtools-xml_schema-boeingData</testCaseName>
+		<disabled>
+			<comment>Disabled on x64 Linux + aarch64 + ppc64le + win32 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?|x86-32_windows(_mixed)?</platform>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -27,12 +32,17 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-devtools-xml_schema-msData</testCaseName>
+		<disabled>
+			<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+			<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -44,12 +54,17 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-devtools-xml_schema-nistData</testCaseName>
+		<disabled>
+			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -61,12 +76,17 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-devtools-xml_schema-sunData</testCaseName>
+		<disabled>
+			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+			<platform>x86-64_linux(_mixed)?||aarch64_linux(_mixed)?</platform>
+			<version>8</version>
+		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -78,8 +98,8 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 </playlist>

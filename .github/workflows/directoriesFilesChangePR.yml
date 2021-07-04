@@ -1,0 +1,59 @@
+name: 'Directories/Files Change Test PR'
+on:
+  pull_request:
+    types: [ready_for_review]
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - 'doc/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/*.yml'
+      - 'buildenv/**'
+jobs:
+  getBuildLists:
+    runs-on: ubuntu-latest
+    outputs:
+      buildLists: ${{ steps.locations_parse.outputs.build_lists }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jitterbit/get-changed-files@v1
+        id: get_change
+        continue-on-error: true
+        with:
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: parse locations
+        id: locations_parse
+        run: |
+          python3 ./.github/workflows/getBuildLists.py ${{ steps.get_change.outputs.all }}
+  testChangeBasedBuildListWithHotspotAndOpenj9:
+    runs-on: ${{ matrix.os }}
+    needs: getBuildLists
+    if: ${{!contains( fromJson(needs.getBuildLists.outputs.buildLists), 'skip')}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        version: [8, 15]
+        build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
+        impl: [hotspot, openj9]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: ${{ matrix.version }}
+          source: 'nightly'
+          impl: ${{ matrix.impl }}
+      - name: AQA
+        uses: adoptium/run-aqa@v1
+        with:
+          build_list: ${{ matrix.build_list }}
+          target: '_sanity.regular'
+          jdksource: 'install-jdk'
+          version: ${{ matrix.version }}
+          openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:${{ github.head_ref }}'
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: output_changed_based_build_list
+          path: ./**/output_*/
