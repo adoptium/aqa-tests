@@ -24,6 +24,7 @@ endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
 	MEMORY_SIZE:=$(shell expr `sysctl -n hw.memsize` / 1024 / 1024)
+	export AWT_FORCE_HEADFUL=true
 endif
 ifeq ($(OS),FreeBSD)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
