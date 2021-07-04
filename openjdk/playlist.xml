@@ -21,7 +21,7 @@
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+		<command>export AWT_FORCE_HEADFUL=true; $(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
