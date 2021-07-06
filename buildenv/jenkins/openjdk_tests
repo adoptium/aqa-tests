@@ -274,7 +274,9 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
             node(LABEL) {
                 try {
-                    cleanWs()
+                    timeout(time: 1, unit: 'HOURS') {
+                        cleanWs()
+                    }
                     if (params.PLATFORM.contains('zos')) {
                         /* Ensure correct CC env */
                         env._CC_CCMODE = '1'
