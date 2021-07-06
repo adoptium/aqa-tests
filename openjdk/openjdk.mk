@@ -121,9 +121,7 @@ CUSTOM_NATIVE_OPTIONS :=
 
 ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
-		ifneq ($(OS),OS/390)
-			JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
-		endif
+		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
 		ifeq ($(JDK_IMPL), hotspot)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
 		# else if JDK_IMPL is openj9 or ibm
