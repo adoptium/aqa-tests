@@ -676,7 +676,7 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
-			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.KEEP_REPORTDIR) {
 				def test_output_tar_name = "${output_name}_test_output${suffix}"
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
