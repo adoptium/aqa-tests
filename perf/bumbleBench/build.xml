@@ -37,7 +37,7 @@
 
 	<target name="getBumbleBench" depends="init" description="Clone the distribution">
 		<echo message="Cloning BumbleBench"/>
-		<var name="git_command" value="clone --depth 1 -b master ${git-prefix}://github.com/AdoptOpenJDK/bumblebench.git"/>
+		<var name="git_command" value="clone --depth 1 -b master ${git-prefix}://github.com/adoptium/bumblebench.git"/>
 		<echo message="git ${git_command}" />
 		<exec executable="git" failonerror="false" dir=".">
 			<arg line="${git_command}" />

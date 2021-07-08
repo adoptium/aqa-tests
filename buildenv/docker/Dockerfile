@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # This Dockerfile in buildenv/docker dir is used to create an image with
-# AdoptOpenJDK jdk binary installed. Basic test dependent executions
+# Adoptium jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
 # Build example: `docker build -t adoptopenjdk-test .`
