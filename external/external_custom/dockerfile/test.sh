@@ -40,7 +40,7 @@ echo_setup
 
 external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
-cd /external_test_repo
+cd /${external_test_repo}
 pwd
 echo "Compile and run external tests"
 ${EXTERNAL_TEST_CMD}
