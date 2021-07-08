@@ -48,6 +48,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_compiler$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -76,6 +78,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_gc$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -104,6 +108,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_runtime$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -132,6 +138,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_serviceability$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -262,6 +270,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):jre$(Q); \
 	$(TEST_STATUS)</command>

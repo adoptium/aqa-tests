@@ -177,13 +177,30 @@ getBinaryOpenjdk()
 		fi
 	fi
 
-	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+	# if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
+	# if supplied when run manually with --username and --password these will be seen in plaintext within job output
+	if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
+		curl_options="--user $USERNAME:$PASSWORD"
+	fi
+
+	if [ "$SDK_RESOURCE" == "nightly" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+		result=$(curl -k ${curl_options} ${CUSTOMIZED_SDK_URL} | grep ">[0-9]*\/<" | sed -e 's/[^0-9/ ]//g' | sed 's/\/.*$//')
+		IFS=' ' read -r -a array <<< "$result"
+		arr=(${result/ / })
+		max=${arr[0]}
+		for n in "${arr[@]}" ; do
+			((n > max)) && max=$n
+		done
+		latestBuildUrl="${CUSTOMIZED_SDK_URL}${max}/"
+		echo "downloading files from $latestBuildUrl"
+		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')	
+		arr=(${download_urls/ / })
+		download_url=()
+		for n in "${arr[@]}" ; do
+			download_url+=" ${latestBuildUrl}${n}"
+		done
+	elif [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
-		# if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
-		# if supplied when run manually with --username and --password these will be seen in plaintext within job output
-		if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
-			curl_options="--user $USERNAME:$PASSWORD"
-		fi
 		images="test-images.tar.gz debug-image.tar.gz"
 		download_urls=($download_url)
 		# for now, auto-download is enabled only if users provide one URL and filename contains OpenJ9-JDK
