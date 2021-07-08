@@ -1,6 +1,6 @@
 # External quarkus_openshift Tests
 
-Quarkus_openshift tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/aqa-tests/Issue [#172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Quarkus Openshift tests are pulled from the [quarkus-openshift-test-suite](https://github.com/quarkus-qe/quarkus-openshift-test-suite.git) repository. These tests require an Openshift cluster environment to run.
+Quarkus_openshift tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/Issue [#172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Quarkus Openshift tests are pulled from the [quarkus-openshift-test-suite](https://github.com/quarkus-qe/quarkus-openshift-test-suite.git) repository. These tests require an Openshift cluster environment to run.
 
 ## Running quarkus-openshift tests locally
 

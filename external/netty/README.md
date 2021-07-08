@@ -1,6 +1,6 @@
 # External Netty Tests
 
-Netty tests are a part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Netty test material is pulled from the [netty](https://github.com/netty/netty.git) repository.
+Netty tests are a part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Netty test material is pulled from the [netty](https://github.com/netty/netty.git) repository.
 
 ## Running External Netty tests locally
 

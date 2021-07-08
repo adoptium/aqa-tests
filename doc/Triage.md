@@ -25,7 +25,7 @@ There are many different test jobs running at the adoptium project.  No matter w
 
 ### Raise an issue if no issue exists
 
-- infra issue - raise an issue in [openjdk-infrastructure](https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues)
+- infra issue - raise an issue in [openjdk-infrastructure](https://github.com/adoptium/infrastructure/issues)
 - test issue - ideally, there are enough details to determine which test repo to raise an issue in ond of the test repositories from which test material is pulled (OpenJDK, [aqa-systemtest](https://github.com/adoptium/aqa-systemtest/issues), [aqa-tests](https://github.com/adoptium/aqa-tests/issues) or any of the various 3rd party application suites).  If in doubt, ask some questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G) and/or raise in [aqa-tests](https://github.com/adoptium/aqa-tests/issues) where it will get routed to proper repo
   - OpenJDK test issues - see [Guidance for creating OpenJDK bugs](https://github.com/adoptium/aqa-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects)
   - Additional guidance for external tests - [Triage Rules for Application tests](https://github.com/adoptium/aqa-tests/tree/master/external#triage-rules)

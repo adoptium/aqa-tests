@@ -1,6 +1,6 @@
 # External Spring Tests
 
-Spring tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/aqa-tests/Issue [#172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Spring tests are pulled from the [spring-test-suite](https://github.com/spring-projects/spring-boot.git) repository.
+Spring tests are part of the external third-party application tests that help verify that the Adoptium binaries are good by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/Issue [#172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the Adoptium binaries. For each application, we choose to run a selection of their functional tests. Spring tests are pulled from the [spring-test-suite](https://github.com/spring-projects/spring-boot.git) repository.
 
 
 ## Running spring tests locally

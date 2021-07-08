@@ -1,6 +1,6 @@
 # External (Third Party Container) Tests
 
-Third Party container tests help verify that the AdoptOpenJDK binaries are *good* by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.  
+Third Party container tests help verify that the adoptium binaries are *good* by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the adoptium binaries.  For each application, we choose to run a selection of their functional tests.  
 
 ## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
@@ -32,13 +32,13 @@ Our next steps to improve and expand this set of external tests is divided into 
 - Quick compare view, easy comparison of how different implementations stack up
 - Parallel testing (to improve execution time)
 - Startup-only testing (application startup, but not full runs of app functional testing)
-- Add high-value tests that exercise the AdoptOpenJDK binaries, including but not limited to functional test suites and Microprofile compliance tests (plan to start with [Fault Tolerance TCK](https://github.com/eclipse-openj9/microprofile-fault-tolerance/blob/master/tck/running_the_tck.asciidoc) and [Metrics API TCKs](https://github.com/eclipse-openj9/microprofile-metrics/blob/master/tck/running_the_tck.asciidoc) against [GlassFish](https://javaee.github.io/glassfish/) EE reference implementation) 
+- Add high-value tests that exercise the adoptium binaries, including but not limited to functional test suites and Microprofile compliance tests (plan to start with [Fault Tolerance TCK](https://github.com/eclipse-openj9/microprofile-fault-tolerance/blob/master/tck/running_the_tck.asciidoc) and [Metrics API TCKs](https://github.com/eclipse-openj9/microprofile-metrics/blob/master/tck/running_the_tck.asciidoc) against [GlassFish](https://javaee.github.io/glassfish/) EE reference implementation) 
  
 #### Strategic Goals
 - Engage with application communities, including the Eclipse Jakarta EE project, to:
     - report and resolve application test failures
-    - get more involvement with testing AdoptOpenJDK binaries
-    - encourage use of AdoptOpenJDK binaries, add extra OpenJDK versions and variants in their build farms
+    - get more involvement with testing adoptium binaries
+    - encourage use of adoptium binaries, add extra OpenJDK versions and variants in their build farms
 
 ### Triage Rules
 There are 4 common triage scenarios, with associated appropriate actions to take:
