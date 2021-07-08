@@ -753,7 +753,7 @@ def terminateJavaProcesses() {
 
 		// Terminate Java processes
 		if (PLATFORM.contains("windows")) {
-			// Windows code based on https://github.com/AdoptOpenJDK/openjdk-infrastructure/issues/1669#issuecomment-727863096
+			// Windows code based on https://github.com/adoptium/infrastructure/issues/1669#issuecomment-727863096
 			echo "PROCESSCATCH: Showing java processes - one will be the jenkins agent - removing any of these created since ${env.JOBSTARTTIME}:"
 			sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
 

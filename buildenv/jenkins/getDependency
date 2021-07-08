@@ -21,8 +21,8 @@ def testBuild() {
 				sh 'mkdir ${WORKSPACE}/j2sdk-image'
 				sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 1'
 				sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
-				sh 'git clone https://github.com/AdoptOpenJDK/openjdk-systemtest'
-				sh 'git clone https://github.com/AdoptOpenJDK/stf'
+				sh 'git clone https://github.com/adoptium/aqa-systemtest'
+				sh 'git clone https://github.com/adoptium/STF'
 				sh 'ant -f ./openjdk-systemtest/openjdk.build/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				sh 'ant -f ./openjdk-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				archiveArtifacts '**/systemtest_prereqs/cvsclient/org-netbeans-lib-cvsclient.jar'
@@ -35,7 +35,7 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/asm/asm.jar'
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
-				sh 'curl -Os https://raw.githubusercontent.com/AdoptOpenJDK/TKG/master/scripts/getDependencies.pl'
+				sh 'curl -Os https://raw.githubusercontent.com/adoptium/TKG/master/scripts/getDependencies.pl'
 				sh 'perl ./getDependencies.pl -path . -task default'
 				archiveArtifacts '*.jar, *.zip, *.txt, *.gz'
 			}

@@ -11,7 +11,7 @@
 # limitations under the License.
 
 # This Dockerfile in external/example-test/dockerfile dir is used to create an image with
-# AdoptOpenJDK jdk binary installed. Basic test dependent executions
+# Adoptium jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
 # Build example: `docker build -t adoptopenjdk-example-test -f Dockerfile ../.`

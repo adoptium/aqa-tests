@@ -1,6 +1,6 @@
 # External TomEE Tests
 
-Apache TomEE tests are part of the external third-party application tests that help verify that the Adoptium binaries are good... by running a variety of Java applications inside of Docker containers. AdoptOpenJDK/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the AdoptOpenJDK binaries.  For each application, we choose to run a selection of their functional tests.  
+Apache TomEE tests are part of the external third-party application tests that help verify that the Adoptium binaries are good... by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the adoptium binaries.  For each application, we choose to run a selection of their functional tests.  
 
 ## Running External TomEE tests locally
 To run any AQA tests locally, you follow the same pattern:
