@@ -39,7 +39,9 @@ fi
 echo_setup
 
 external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-
+echo ${EXTERNAL_CUSTOM_REPO}
+echo ${external_test_repo}
+echo ${EXTERNAL_TEST_CMD}
 cd /${external_test_repo}
 set -e
 pwd
