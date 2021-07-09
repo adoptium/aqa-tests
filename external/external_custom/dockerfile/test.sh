@@ -41,10 +41,11 @@ echo_setup
 external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
 cd /${external_test_repo}
+set -e
 pwd
 echo "Compile and run external tests"
 ${EXTERNAL_TEST_CMD}
 test_exit_code=$?
 echo "Build external_custom completed"
-
+set +e
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
