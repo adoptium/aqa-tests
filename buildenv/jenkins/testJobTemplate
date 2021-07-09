@@ -26,6 +26,7 @@ def getBaseJDKImpl(JDK_IMPL) {
 }
 
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
+if (!binding.hasVariable('ARCHIVE_TEST_RESULTS')) ARCHIVE_TEST_RESULTS = false
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
 if (!binding.hasVariable('ARTIFACTORY_REPO')) ARTIFACTORY_REPO = ""
 if (!binding.hasVariable('ARTIFACTORY_ROOT_DIR')) ARTIFACTORY_ROOT_DIR = ""
@@ -379,6 +380,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							}
 							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
 							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
+							booleanParam('ARCHIVE_TEST_RESULTS', ARCHIVE_TEST_RESULTS.toBoolean(), "archive the test report dir in Jenkins (or artifactory if artifactory parameters are provided)?")
 							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
 							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
