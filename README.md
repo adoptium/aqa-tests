@@ -55,8 +55,7 @@ Functional tests not originating from the openjdk regression suite, that include
 --- 
 
 ##### jck tests - Compliance tests
-TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement.  While this test material is currently not run at the Adoptium project (see the [support statement](https://adoptopenjdk.net/support.html#jck) for details), those with their own OCTLA agreements may use the Adoptium test automation infrastructure to execute their TCK test material in their own private Jenkins servers.
-
+TCK tests (under the OpenJDK Community TCK License Agreement), in compliance with the license agreement. While this test material is currently not run at the Adoptium project (see the support statement for details), those with their OCTLA agreements may use the Adoptium test automation infrastructure to execute their TCK test material on their own private Jenkins servers.
 --- 
 
 #### Guide to Running the Tests Yourself
@@ -71,10 +70,10 @@ We want:
 
 There are a great number of tests available to test a JVM, starting with the OpenJDK regression tests.  In addition to running the OpenJDK regression tests, we will increase the amount of testing and coverage by pulling in other open tests.  These new tests are not necessarily written using the jtreg format.
 
-Why the need for other testing?  The OpenJDK regression tests are a great start, but eventually you may want to be able to test how performant is your code, and whether some 3rd party applications still work.  We will begin to incorporate more types of testing, including:
+Why the need for another testing?  The OpenJDK regression tests are a great start, but eventually, you may want to be able to test how performant is your code, and whether some 3rd party applications still work.  We will begin to incorporate more types of testing, including:
 - additional API and functional tests
 - stress/load tests
-- system level tests such as 3rd party application tests
+- system-level tests such as 3rd party application tests
 - performance tests
 - TCK tests
 
@@ -83,7 +82,7 @@ The test infrastructure in this repository allows us to lightly yoke a great var
 
 #### How can you help?
 You can:
-- browse through the [aqa-tests issues list](https://github.com/adoptium/aqa-tests/issues), select one, add a comment to claim it and ask questions
+- browse through the [aqa-tests issues list](https://github.com/adoptium/aqa-tests/issues), select one, add a comment to claim it ,and ask questions
 - browse through the [aqa-systemtest issues](https://github.com/adoptium/aqa-systemtest/issues) or [stf issues](https://github.com/adoptium/stf/issues), claim one with a comment and dig right in
 - triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/doc/Triage.md) for guidance
   - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/adoptium/aqa-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
