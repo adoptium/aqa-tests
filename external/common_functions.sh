@@ -226,7 +226,7 @@ function set_test_info() {
         ubi_packages="git wget unzip"
         ubi_minimal_packages="${ubi_packages}"
         ;;
-    external_custom)
+    ${test})
         PROPERTY_FILE=external_custom/test.properties
         GITHUB_URL=$(getProperty "github_url")
         github_url="${EXTERNAL_CUSTOM_REPO}"
