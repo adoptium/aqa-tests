@@ -429,15 +429,15 @@ print_test_script() {
     do
         if [[ "${test}" == "${external_custom_test}" ]]; then
              echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY external_custom/dockerfile/${script} /${script}" \
-            "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+                     "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                     "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+        else 
+             echo -e "# This is the main script to run ${test} tests" \
+                     "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                     "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+
         fi
-    done
-
-
-    # echo -e "# This is the main script to run ${test} tests" \
-    #         "\nCOPY ${test}/dockerfile/${script} /${script}" \
-    #         "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    done    
 }
 
 print_testInfo_env() {
