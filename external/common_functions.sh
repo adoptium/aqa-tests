@@ -231,6 +231,7 @@ function set_test_info() {
         GITHUB_URL=$(getProperty "github_url")
         github_url="${EXTERNAL_CUSTOM_REPO}"
         echo "The value of the EXTERNAL_CUSTOM_REPO in common_functions.sh is ${EXTERNAL_CUSTOM_REPO}"
+        echo "The test name is ${test}"
         script="test.sh"
         test_command="${EXTERNAL_TEST_CMD}"
         echo "The value of the EXTERNAL_TEST_CMD in common_functions.sh is ${EXTERNAL_TEST_CMD}"
