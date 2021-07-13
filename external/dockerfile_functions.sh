@@ -423,9 +423,21 @@ print_test_script() {
     local test=$2
     local script=$3
 
-    echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY ${test}/dockerfile/${script} /${script}" \
+    supported_tests="zookeeper"
+
+    for external_custom_test in ${supported_tests}
+    do
+        if [[ "${test}" == "${external_custom_test}" ]]; then
+             echo -e "# This is the main script to run ${test} tests" \
+            "\nCOPY external_custom/dockerfile/${script} /${script}" \
             "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+        fi
+    done
+
+
+    # echo -e "# This is the main script to run ${test} tests" \
+    #         "\nCOPY ${test}/dockerfile/${script} /${script}" \
+    #         "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
 }
 
 print_testInfo_env() {
