@@ -40,7 +40,7 @@ parseCommandLineArgs() {
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1"; echo "test in external.sh points to ${test} "; shift;;
+				test="$1"; echo "test in external.sh points to ${test} ";echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO}" shift;;
 			
 			"--version" | "-v" )
 				version="$1"; shift;;
@@ -139,6 +139,7 @@ parseCommandLineArgs "$@"
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
+	echo "In the external --build, the test points to ${test}"
 fi
 
 if [ $command_type == "run" ]; then
@@ -146,9 +147,11 @@ if [ $command_type == "run" ]; then
 		echo "docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
+		echo "In the external --build, the test points to ${test}"
 	else
 		echo "docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
+		echo "In the external --build, the test points to ${test}"
 	fi
 fi
 
