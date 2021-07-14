@@ -144,9 +144,6 @@ fi
 
 if [ $command_type == "run" ]; then
 	if [ $reportsrc != "false" ]; then
-		if [[ '${test}'=='external_custom' ]]; then
-			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-		fi
 		echo "docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
