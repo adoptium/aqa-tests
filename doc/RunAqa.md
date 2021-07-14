@@ -124,6 +124,15 @@ The default value is `adoptium/aqa-tests:master`.
 
 This option is unavailable in `aqa-tests` repositories because it will always use the head repo and branch of the PR instead.
 
+### --openj9_repo
+GitHub repository and branch of the OpenJ9 to use.
+
+The format is `<repository>:<branch>`.
+
+The default value is `eclipse-openj9/openj9:master`.
+
+This option is unavailable in `openj9` repositories because it will always use the head repo and branch of the PR instead.
+
 ### --tkg_repo
 
 GitHub repository and branch of the TestKitGen (TKG) to use.
