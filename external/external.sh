@@ -159,6 +159,9 @@ if [ $command_type == "run" ]; then
 fi
 
 if [ $command_type == "clean" ]; then
+	if [[ '${test}'=='external_custom' ]]; then
+			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
 	if [ $reportsrc != "false" ]; then
 		docker rm -f $test-test;
 	fi
