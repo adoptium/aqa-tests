@@ -38,15 +38,15 @@ fi
 
 echo_setup
 
-external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-echo ${EXTERNAL_CUSTOM_REPO}
+external_test_repo="$(echo ${env.EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+echo ${env.EXTERNAL_CUSTOM_REPO}
 echo ${external_test_repo}
-echo ${EXTERNAL_TEST_CMD}
+echo ${env.EXTERNAL_TEST_CMD}
 cd /${external_test_repo}
 set -e
 pwd
 echo "Compile and run external tests"
-${EXTERNAL_TEST_CMD}
+${env.EXTERNAL_TEST_CMD}
 test_exit_code=$?
 echo "Build external_custom completed"
 set +e
