@@ -154,7 +154,7 @@ if [ $command_type == "run" ]; then
 	else
 		echo "docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
-		echo "In the external --run, the test points to ${test}"
+		echo "In the external --run, the test points to ${test} but $reportsrc is false"
 	fi
 fi
 
