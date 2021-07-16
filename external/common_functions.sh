@@ -32,6 +32,9 @@ supported_builds="slim full"
 # Supported tests
 supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
 
+# Tests supported for external_custom target
+supported_external_custom_tests="zookeeper"
+
 function check_version() {
     version=$1
 
@@ -176,6 +179,17 @@ function getProperty() {
     PROP_KEY=$1
     PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
     echo $PROP_VALUE
+}
+
+function check_external_custom_test(){
+    test=$1
+    for current_test in ${supported_external_custom_tests}
+        do
+            if [[ "${test}" == "${current_test}" ]]; then
+                return 1
+            fi
+        done
+
 }
 
 # Set the valid OSes for the current architectures.
