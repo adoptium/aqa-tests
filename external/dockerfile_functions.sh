@@ -423,7 +423,7 @@ print_test_script() {
     local test=$2
     local script=$3
 
-    supported_tests="zookeeper"
+    supported_tests="zookeeper netty"
    
     for external_custom_test in ${supported_tests}
        do
