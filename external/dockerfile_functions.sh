@@ -103,6 +103,11 @@ print_image_args() {
     fi
 
     echo -e "FROM \$IMAGE_NAME:\$TAG\n" >> ${file}
+
+    echo -e "ARG ENV EXTERNAL_CUSTOM_REPO=${EXTERNAL_CUSTOM_REPO}" \
+            "\nARG ENV EXTERNAL_TEST_CMD=${EXTERNAL_TEST_CMD}" \
+            "\nARG ENV EXTERNAL_REPO_BRANCH=${EXTERNAL_REPO_BRANCH}" >> ${file}
+
 }
 
 print_test_tag_arg() {
@@ -424,20 +429,20 @@ print_test_script() {
     local script=$3
 
     supported_tests="zookeeper"
-
+   
     for external_custom_test in ${supported_tests}
-    do
-        if [[ "${test}" == "${external_custom_test}" ]]; then
-             echo -e "# This is the main script to run ${test} tests" \
-                     "\nCOPY external_custom/dockerfile/${script} /${script}" \
-                     "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
-        else 
-             echo -e "# This is the main script to run ${test} tests" \
-                     "\nCOPY ${test}/dockerfile/${script} /${script}" \
-                     "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
-
-        fi
-    done    
+       do
+           if [[ "${test}" == "${external_custom_test}" ]]; then
+                echo -e "# This is the main script to run ${test} tests" \
+                        "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                        "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+           else 
+                echo -e "# This is the main script to run ${test} tests" \
+                        "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                        "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+           fi
+       done    
+    
 }
 
 print_testInfo_env() {
@@ -511,8 +516,8 @@ generate_dockerfile() {
     package=$6
     build=$7
     testtarget=$8
-    
-    if [[ '${test}'=='external_custom' ]]; then
+    echo ${test}
+    if [ ${test} == 'external_custom' ]; then
         echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO} in dockerfile_functions.sh"
         echo "EXTERNAL_CUSTOM_BRANCH points to ${EXTERNAL_REPO_BRANCH} in dockerfile_functions.sh"
         test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"

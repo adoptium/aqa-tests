@@ -539,7 +539,7 @@ function set_test_info() {
         ubi_packages="git wget unzip"
         ubi_minimal_packages="${ubi_packages}"
         ;;
-    *)
+    *)  
         echo "ERROR: Unsupported test:${test}, Exiting"
         exit 1
         ;;
