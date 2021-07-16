@@ -103,11 +103,6 @@ print_image_args() {
     fi
 
     echo -e "FROM \$IMAGE_NAME:\$TAG\n" >> ${file}
-
-    echo -e "ARG ENV EXTERNAL_CUSTOM_REPO=${EXTERNAL_CUSTOM_REPO}" \
-            "\nARG ENV EXTERNAL_TEST_CMD=${EXTERNAL_TEST_CMD}" \
-            "\nARG ENV EXTERNAL_REPO_BRANCH=${EXTERNAL_REPO_BRANCH}" >> ${file}
-
 }
 
 print_test_tag_arg() {
