@@ -154,7 +154,6 @@ parseCommandLineArgs()
 		esac
 	done
 
-
 	echo "TESTDIR: $TESTDIR"
 }
 
