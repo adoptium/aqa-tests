@@ -181,12 +181,31 @@ function getProperty() {
     echo $PROP_VALUE
 }
 
-function check_external_custom_test(){
+function set_external_custom_test_info(){
     test=$1
     for current_test in ${supported_external_custom_tests}
         do
             if [[ "${test}" == "${current_test}" ]]; then
-                return 1
+                PROPERTY_FILE=external_custom/test.properties
+                GITHUB_URL=$(getProperty "github_url")
+                github_url="${EXTERNAL_CUSTOM_REPO}"
+                echo "The value of the EXTERNAL_CUSTOM_REPO in common_functions.sh is ${EXTERNAL_CUSTOM_REPO}"
+                echo "The test name is ${test}"
+                script="test.sh"
+                test_command="${EXTERNAL_TEST_CMD}"
+                echo "The value of the EXTERNAL_TEST_CMD in common_functions.sh is ${EXTERNAL_TEST_CMD}"
+                test_results="testResults"
+                tag_version="${EXTERNAL_REPO_BRANCH}"
+                echo "The value of the EXTERNAL_REPO_BRANCH in common_functions.sh is ${EXTERNAL_REPO_BRANCH}"
+                environment_variable="MODE=\"java\""
+                debian_packages="git maven"
+                debianslim_packages="${debian_packages}"
+                ubuntu_packages="${debian_packages}"
+                alpine_packages="git maven"
+                centos_packages="git maven"
+                clefos_packages="${centos_packages}"
+                ubi_packages="git maven"
+                ubi_minimal_packages="${ubi_packages}"
             fi
         done
 
@@ -240,28 +259,6 @@ function set_test_info() {
         ubi_packages="git wget unzip"
         ubi_minimal_packages="${ubi_packages}"
         ;;
-    ${test})
-        PROPERTY_FILE=external_custom/test.properties
-        GITHUB_URL=$(getProperty "github_url")
-        github_url="${EXTERNAL_CUSTOM_REPO}"
-        echo "The value of the EXTERNAL_CUSTOM_REPO in common_functions.sh is ${EXTERNAL_CUSTOM_REPO}"
-        echo "The test name is ${test}"
-        script="test.sh"
-        test_command="${EXTERNAL_TEST_CMD}"
-        echo "The value of the EXTERNAL_TEST_CMD in common_functions.sh is ${EXTERNAL_TEST_CMD}"
-        test_results="testResults"
-        tag_version="${EXTERNAL_REPO_BRANCH}"
-        echo "The value of the EXTERNAL_REPO_BRANCH in common_functions.sh is ${EXTERNAL_REPO_BRANCH}"
-        environment_variable="MODE=\"java\""
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;   
     functional-test)
         github_url="https://github.com/adoptium/aqa-tests.git"
         script="functional-test.sh"

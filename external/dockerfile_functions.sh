@@ -533,7 +533,11 @@ generate_dockerfile() {
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    set_test_info ${test}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        set_external_custom_test_info ${test}
+    else
+        set_test_info ${test}
+    fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
 
     jhome="/opt/java/openjdk"
