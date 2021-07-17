@@ -474,14 +474,14 @@ print_clone_project() {
 print_external_custom_parameters(){
     local file=$1
 
-    echo -e "ARG EXTERNAL_CUSTOM_REPO" \
-            "\nENV EXTERNAL_CUSTOM REPO ${EXTERNAL_CUSTOM_REPO}" >> ${file}
+    echo -e "ARG EXTERNAL_CUSTOM_REPO=${EXTERNAL_CUSTOM_REPO}" \
+            "\nENV EXTERNAL_CUSTOM REPO \$EXTERNAL_CUSTOM_REPO" >> ${file}
         
-    echo -e "ARG EXTERNAL_TEST_CMD" \
-            "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" >> ${file}
+    echo -e "ARG EXTERNAL_TEST_CMD=${EXTERNAL_TEST_CMD}" \
+            "\nENV EXTERNAL_TEST_CMD \$EXTERNAL_TEST_CMD" >> ${file}
         
-    echo -e "ARG EXTERNAL_REPO_BRANCH" \
-            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+    echo -e "ARG EXTERNAL_REPO_BRANCH=${EXTERNAL_REPO_BRANCH}" \
+            "\nENV EXTERNAL_REPO_BRANCH \$EXTERNAL_REPO_BRANCH" \
             "\n" >> ${file}
 
 }
