@@ -28,9 +28,11 @@
 	</test>
 	<test>
 		<testCaseName>elasticsearch_test_openj9_jdk8</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/1720</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/1720</comment>
+			</disable>
+		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir elasticsearch --testtarget "--exclude-task :core:test --exclude-task :client:rest:test --exclude-task :modules:reindex:test --exclude-task :client:transport:test --exclude-task :client:sniffer:test --exclude-task :test:framework:test --exclude-task :modules:lang-painless:test" \
 		--reportdst $(REPORTDIR) --docker_args $(EXTRA_DOCKER_ARGS) ; \
 		$(TEST_STATUS); \
