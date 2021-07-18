@@ -16,18 +16,23 @@
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_class</testCaseName>
-		<disabled>
-			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>			
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -45,18 +50,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_dom</testCaseName>
-		<disabled>
-			<comment>Disabled on aarch64 + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on aarch64 + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -74,18 +83,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_factoryMethod</testCaseName>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -103,18 +116,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_globalBindings</testCaseName>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302, on win64 due to backlog/issues/507. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302, on win64 due to backlog/issues/507. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302, on win64 due to backlog/issues/507. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302, on win64 due to backlog/issues/507. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -132,18 +149,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_inlineBinaryData</testCaseName>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -178,17 +199,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_property</testCaseName>
-		<disabled>
-			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
 		</disabled>
-		<disabled>
-			<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
 		</disabled>
 		<variations>
 			<variation>NoOptions</variation>
@@ -207,18 +232,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema_bind-bind_schemaBindings</testCaseName>
-		<disabled>
-			<comment>Disabled on ppc64le Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>ppc64le_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on ppc64le Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>ppc64le_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on ppc64le Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>ppc64le_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on ppc64le Linux on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>ppc64le_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
