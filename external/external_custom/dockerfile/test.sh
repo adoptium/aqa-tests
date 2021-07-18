@@ -49,6 +49,7 @@ external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | s
 echo "${EXTERNAL_CUSTOM_REPO}"
 echo "${external_test_repo}"
 echo "${EXTERNAL_TEST_CMD}"
+echo "${EXTERNAL_REPO_BRANCH}"
 cd /${external_test_repo}
 
 pwd

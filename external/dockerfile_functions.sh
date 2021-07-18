@@ -475,7 +475,7 @@ print_external_custom_parameters(){
     local file=$1
 
     echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
-            "\nENV EXTERNAL_CUSTOM REPO ${EXTERNAL_CUSTOM_REPO}" \
+            "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
             "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
             "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
             "\n" >> ${file}
