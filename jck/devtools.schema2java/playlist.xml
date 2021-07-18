@@ -16,18 +16,22 @@
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-devtools-schema2java-nisttest</testCaseName>
-		<disabled>
-			<comment>Disabled on x64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on x64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on x64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -45,18 +49,22 @@
 	</test>
 	<test>
 		<testCaseName>jck-devtools-schema2java-structures</testCaseName>
-		<disabled>
-			<comment>Disabled on aarch64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on aarch64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-			<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 Linux + aarch64 on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>x86-64_linux(_mixed)?|aarch64_linux(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
