@@ -423,9 +423,16 @@ print_test_script() {
     local test=$2
     local script=$3
 
-    echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY ${test}/dockerfile/${script} /${script}" \
-            "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    else
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    fi
+    
 }
 
 print_testInfo_env() {
@@ -456,6 +463,17 @@ print_clone_project() {
             "\nRUN git checkout \$${test_tag}" \
             "\nWORKDIR /" \
             "\n" >> ${file}
+}
+
+print_external_custom_parameters(){
+    local file=$1
+
+    echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
+            "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
+            "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
+            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+            "\n" >> ${file}
+
 }
 
 print_entrypoint() {
@@ -500,7 +518,22 @@ generate_dockerfile() {
     build=$7
     testtarget=$8
 
-    set_test_info ${test}
+    check_external_custom_test=0
+
+    if [ ${test} == 'external_custom' ]; then
+        check_external_custom_test=1
+        echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO} in dockerfile_functions.sh"
+        echo "EXTERNAL_CUSTOM_BRANCH points to ${EXTERNAL_REPO_BRANCH} in dockerfile_functions.sh"
+        test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+        echo ${test}
+        tag_version=${EXTERNAL_REPO_BRANCH}
+    fi
+
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        set_external_custom_test_info ${test}
+    else
+        set_test_info ${test}
+    fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
 
     jhome="/opt/java/openjdk"
@@ -562,6 +595,11 @@ generate_dockerfile() {
 
     print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
+
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        print_external_custom_parameters ${file}
+    fi
+
     print_entrypoint ${file} ${script} ${os};
 
     if [[ ! -z ${testtarget} ]]; then
