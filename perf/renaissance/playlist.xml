@@ -274,7 +274,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-scala-kmeans</testCaseName>
-		<command>$(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans$(Q) --test_root $(TEST_ROOT); \
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
