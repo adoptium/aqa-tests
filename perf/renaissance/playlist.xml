@@ -15,9 +15,11 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>renaissance-akka-uct</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/1994#issuecomment-705633262</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/1994#issuecomment-705633262</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)akka-uct.json$(Q) akka-uct; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -29,10 +31,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-als</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964862</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964862</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -44,10 +48,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-chi-square</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964098</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964098</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -59,14 +65,18 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965455</comment>
-			<version>16+</version>
-		</disabled>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2159#issuecomment-759570887</comment>
-			<platform>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</platform>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965455</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2159#issuecomment-759570887</comment>
+				<platform>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</platform>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
@@ -80,10 +90,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-dec-tree</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2255#issuecomment-788234331</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2255#issuecomment-788234331</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -95,9 +107,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-finagle-chirper</testCaseName>
-		<disabled>
-			<comment>https://github.com/renaissance-benchmarks/renaissance/issues/231</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/renaissance-benchmarks/renaissance/issues/231</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)finagle-chirper.json$(Q) finagle-chirper; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -131,10 +145,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-future-genetic</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2183#issuecomment-763180051</comment>
-			<platform>.*windows.*</platform>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2183#issuecomment-763180051</comment>
+				<platform>.*windows.*</platform>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)future-genetic.json$(Q) future-genetic; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -146,10 +162,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-gauss-mix</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964531</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964531</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -161,10 +179,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964263</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964263</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -187,10 +207,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-movie-lens</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965117</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965117</comment>
+				<version>16+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -202,9 +224,11 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-naive-bayes</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/1932#issuecomment-708781359</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/1932#issuecomment-708781359</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
 		<levels>
