@@ -423,21 +423,15 @@ print_test_script() {
     local test=$2
     local script=$3
 
-    supported_external_custom_tests="zookeeper netty"
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
-        for external_custom_test in ${supported_external_custom_tests}
-            do
-                if [[ "${test}" == "${external_custom_test}" ]]; then
-                     echo -e "# This is the main script to run ${test} tests" \
-                             "\nCOPY external_custom/dockerfile/${script} /${script}" \
-                             "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
-                fi
-            done
-        else
-            echo -e "# This is the main script to run ${test} tests" \
-                     "\nCOPY ${test}/dockerfile/${script} /${script}" \
-                     "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
-    fi   
+    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    else
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    fi
     
 }
 
