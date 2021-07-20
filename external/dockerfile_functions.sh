@@ -522,8 +522,6 @@ generate_dockerfile() {
 
     if [ ${test} == 'external_custom' ]; then
         check_external_custom_test=1
-        echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO} in dockerfile_functions.sh"
-        echo "EXTERNAL_CUSTOM_BRANCH points to ${EXTERNAL_REPO_BRANCH} in dockerfile_functions.sh"
         test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
         echo ${test}
         tag_version=${EXTERNAL_REPO_BRANCH}

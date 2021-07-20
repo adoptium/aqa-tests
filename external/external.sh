@@ -40,7 +40,7 @@ parseCommandLineArgs() {
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1"; echo "test in external.sh points to ${test} ";echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO}"; shift;;
+				test="$1"; shift;;
 			
 			"--version" | "-v" )
 				version="$1"; shift;;
