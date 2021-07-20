@@ -29,10 +29,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-als</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964862</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964862</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -44,10 +50,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-chi-square</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964098</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964098</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -80,10 +92,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-dec-tree</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2255#issuecomment-788234331</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2255#issuecomment-788234331</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -146,10 +164,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-gauss-mix</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964531</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964531</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -161,10 +185,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964263</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964263</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -187,10 +217,16 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-movie-lens</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965117</comment>
-			<version>16+</version>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965117</comment>
+				<version>16+</version>
+			</disable>
+			<disable>
+				<comment>runtimes/infrastructure/issues/5444</comment>
+				<vendor>ibm</vendor>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -238,7 +274,7 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-scala-kmeans</testCaseName>
-		<command>$(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans$(Q) --test_root $(TEST_ROOT); \
+		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
