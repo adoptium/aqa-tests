@@ -462,7 +462,7 @@ function set_test_info() {
         github_url="https://github.com/apache/tomcat.git"
         script="tomcat-test.sh"
         home_path=""
-        tag_version="10.0.0-M5"
+        tag_version="10.0.7"
         ant_version="1.10.6"
         openssl_version="1.1.1d"
         debian_packages="git wget tar make gcc linux-libc-dev libc6-dev perl"
