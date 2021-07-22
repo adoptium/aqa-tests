@@ -217,7 +217,6 @@ function set_test_info() {
     centos_packages=$(getProperty "centos_packages")
     ubi_packages=$(getProperty "ubi_packages")
     ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
-    echo ${github_url} \ ${script} \ ${test_results} ${tag_version} \ ${environment_variable} \ ${debian_packages} \ ${centos_packages}
 }
 
 function cleanup_images() {

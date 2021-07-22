@@ -594,6 +594,12 @@ def runTest( ) {
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
+				else if (env.SPEC.startsWith('sunos')) {
+					sh "nohup /usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
+					env.DISPLAY = ":2"
+					echo "env.DISPLAY is ${env.DISPLAY}"
+					makeTest("${RUNTEST_CMD}")
+				}
 				else if (env.SPEC.startsWith('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
 					// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
 					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
