@@ -117,9 +117,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     def ACTUAL_PLATFORM = PLATFORM
                     if (PLATFORM == "all") {
                         ACTUAL_PLATFORM = "ppc64_aix,ppc64le_linux,s390x_linux,x86-64_linux,x86-64_mac,x86-64_windows"
-                        if (JDK_IMPL == "openj9" || JDK_IMPL == "ibm"){
-                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",ppc64_aix_xl,ppc64le_linux_xl,s390x_linux_xl,x86-64_linux_xl,x86-64_mac_xl,x86-64_windows_xl"
-                        }
                         if (JDK_VERSION == "8"){
                             ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",x86-32_windows"
                         } else {
