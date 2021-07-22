@@ -13,14 +13,6 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_aarch64_cmprssptrs',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
     ],
-    'aarch64_linux_mixed' : [
-        'SPEC' : 'linux_aarch64_mxdptrs',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
-    ],
-    'aarch64_linux_xl' : [
-        'SPEC' : 'linux_aarch64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
-    ],
     'ppc32_aix' : [
         'SPEC' : 'aix_ppc',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
@@ -33,32 +25,12 @@ def PLATFORM_MAP = [
         'SPEC' : 'aix_ppc-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
     ],
-    'ppc64_aix_mixed' : [
-        'SPEC' : 'aix_ppc-64_mxdptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
-    ],
-    'ppc64_aix_xl' : [
-        'SPEC' : 'aix_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
-    ],
     'ppc64_linux' : [
         'SPEC' : 'linux_ppc-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
     ],
-    'ppc64_linux_xl' : [
-        'SPEC' : 'linux_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
-    ],
     'ppc64le_linux' : [
         'SPEC' : 'linux_ppc-64_cmprssptrs_le',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
-    ],
-    'ppc64le_linux_mixed' : [
-        'SPEC' : 'linux_ppc-64_mxdptrs_le',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux'
-    ],
-    'ppc64le_linux_xl' : [
-        'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
     ],
     'riscv64_linux' : [
@@ -76,16 +48,6 @@ def PLATFORM_MAP = [
     ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64_cmprssptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
-    ],
-    's390x_linux_mixed' : [
-        'SPEC' : 'linux_390-64_mxdptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
-    ],
-    's390x_linux_xl' : [
-        'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
         'DynamicAgents' : ['fyre']
     ],
@@ -126,38 +88,12 @@ def PLATFORM_MAP = [
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
         'DynamicAgents' : ['azure', 'fyre']
     ],
-    'x86-64_linux_mixed' : [
-        'SPEC' : 'linux_x86-64_mxdptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-        'DynamicAgents' : ['azure', 'fyre']
-    ],
-    'x86-64_linux_xl' : [
-        'SPEC' : 'linux_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-        'DynamicAgents' : ['azure', 'fyre']
-    ],
     'x86-64_mac' : [
         'SPEC' : 'osx_x86-64_cmprssptrs',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
     ],
-    'x86-64_mac_mixed' : [
-        'SPEC' : 'osx_x86-64_mxdptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
-    ],
-    'x86-64_mac_xl' : [
-        'SPEC' : 'osx_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
-    ],
     'x86-64_windows' : [
         'SPEC' : 'win_x86-64_cmprssptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
-    ],
-    'x86-64_windows_mixed' : [
-        'SPEC' : 'win_x86-64_mxdptrs',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
-    ],
-    'x86-64_windows_xl' : [
-        'SPEC' : 'win_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
     ],
 ]
