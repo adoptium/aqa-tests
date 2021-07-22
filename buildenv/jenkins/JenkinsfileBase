@@ -479,13 +479,15 @@ def get_sources_with_authentication() {
 
 def get_sources() {
 	withEnv(['VERBOSE_CURL=SILENT']) {
-		if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-			// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
-			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+		dir(aqa-tests) {
+			if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+				// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
+				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+					sh "$GET_SH_CMD"
+				}
+			} else {
 				sh "$GET_SH_CMD"
 			}
-		} else {
-			sh "$GET_SH_CMD"
 		}
 	}
 }
