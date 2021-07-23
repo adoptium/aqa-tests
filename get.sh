@@ -154,11 +154,6 @@ parseCommandLineArgs()
 		esac
 	done
 
-	# Check if TESTDIR exists and points to aqa-tests
-	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"aqa-tests"* ]]; then
-		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under aqa-tests. Default value current dir (pwd) is used if not provided."
-		exit 1
-	fi
 	echo "TESTDIR: $TESTDIR"
 }
 

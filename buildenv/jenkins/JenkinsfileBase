@@ -79,6 +79,12 @@ def setupEnv() {
 	env.KEEP_REPORTDIR = params.KEEP_REPORTDIR ? params.KEEP_REPORTDIR : false
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
+	env.EXTERNAL_CUSTOM_REPO=params.EXTERNAL_CUSTOM_REPO? params.EXTERNAL_CUSTOM_REPO : ""
+	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
+	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
+	echo "EXTERNAL_CUSTOM_REPO in the JenkinsFileBase: ${env.EXTERNAL_CUSTOM_REPO}"
+	echo "EXTERNAL_REPO_BRANCH: ${env.EXTERNAL_REPO_BRANCH}"
+	echo "EXTERNAL_TEST_CMD: ${env.EXTERNAL_TEST_CMD}"
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -588,6 +594,12 @@ def runTest( ) {
 				if (env.SPEC.startsWith('aix')) {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
 					env.DISPLAY = ":0"
+					echo "env.DISPLAY is ${env.DISPLAY}"
+					makeTest("${RUNTEST_CMD}")
+				}
+				else if (env.SPEC.startsWith('sunos')) {
+					sh "nohup /usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
+					env.DISPLAY = ":2"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
