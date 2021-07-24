@@ -213,8 +213,10 @@ function set_test_info() {
     environment_variable=$(getProperty "environment_variable")
     debian_packages=$(getProperty "debian_packages")
     debianslim_packages=$(getProperty "debianslim_packages")
+    ubuntu_packages=$(getProperty "ubuntu_packages")
     alpine_packages=$(getProperty "alpine_packages")
     centos_packages=$(getProperty "centos_packages")
+    clefos_packages=$(getProperty "clefos_package")
     ubi_packages=$(getProperty "ubi_packages")
     ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
 }
