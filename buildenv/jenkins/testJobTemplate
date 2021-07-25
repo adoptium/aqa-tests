@@ -121,7 +121,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 
 				// for jck builds, we need to pass in EXTRA_OPTIONS
 				def EXTRA_OPTIONS = "";
-				if (GROUP == "jck" && JDK_IMPL == "openj9") {
+				if (GROUP == "jck") {
 					EXTRA_OPTIONS = "-Xfuture"
 					if (JDK_VERSION != "8") {
 						EXTRA_OPTIONS += " --enable-preview"
