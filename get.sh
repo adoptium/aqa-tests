@@ -38,6 +38,7 @@ TYPE="jdk"
 TEST_IMAGES_REQUIRED=true
 DEBUG_IMAGES_REQUIRED=true
 CURL_OPTS="s"
+CODE_COVERAGE=false
 
 usage ()
 {
@@ -62,6 +63,7 @@ usage ()
 	echo '                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories'
 	echo '                [--vendor_branches ] : optional. Comma separated vendor branches'
 	echo '                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources'
+	echo '                [--code_coverage ] : optional. indicate if code coverage is required'
 }
 
 parseCommandLineArgs()
@@ -138,6 +140,9 @@ parseCommandLineArgs()
 
 			"--debug_images_required" )
 				DEBUG_IMAGES_REQUIRED="$1"; shift;;
+			
+			"--code_coverage" )
+				CODE_COVERAGE="$1"; shift;;
 
 			"--curl_opts" )
 				CURL_OPTS="$1"; shift;;
@@ -573,6 +578,11 @@ testJavaVersion()
 	fi
 	_java=${TEST_JDK_HOME}/bin/java
 	_release=${TEST_JDK_HOME}/release
+	# Code_Coverage use different _java through searching javac for now, following path will be modified after refining files from BUILD
+	if [[ "$CODE_COVERAGE" == "true" ]]; then
+		_java=${TEST_JDK_HOME}/build/bin/java
+		_release=${TEST_JDK_HOME}/build/release
+	fi
 	if [ -x ${_java} ]; then
 		echo "Run ${_java} -version"
 		echo "=JAVA VERSION OUTPUT BEGIN="
@@ -584,9 +594,14 @@ testJavaVersion()
 			echo "=RELEASE INFO END="
 		fi
 	else
-		echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
 		# Search javac as java may not be unique
-		javac_path=`find ${TEST_JDK_HOME} \( -path "*/bin/javac" -o -path "*/bin/javac.exe" \)`
+		if [[ "$CODE_COVERAGE" == "true" ]]; then
+			echo "${TEST_JDK_HOME}/build/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
+			javac_path=`find ${TEST_JDK_HOME} \( -path "*/images/jdk/bin/javac" -o -path "*/images/jdk/bin/javac.exe" \)`
+		else
+			echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
+			javac_path=`find ${TEST_JDK_HOME} \( -path "*/bin/javac" -o -path "*/bin/javac.exe" \)`
+		fi
 		if [ "$javac_path" != "" ]; then
 			echo "javac_path: ${javac_path}"
 			javac_path_array=(${javac_path//\\n/ })
