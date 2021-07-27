@@ -544,6 +544,7 @@ generate_dockerfile() {
     print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
+    echo "The name of the package is ${!${!packages}}"
 
     if [[ ! -z ${ant_version} ]]; then
         print_ant_install ${file} ${ant_version} ${os};

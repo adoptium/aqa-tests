@@ -217,6 +217,7 @@ function set_test_info() {
     debian_packages=$(getProperty "debian_packages")
     debianslim_packages=$(getProperty "debianslim_packages")
     ubuntu_packages=$(getProperty "ubuntu_packages")
+    ubuntu_packages=`sed -e 's/^"//' -e 's/"$//' <<<"$ubuntu_packages"`
     alpine_packages=$(getProperty "alpine_packages")
     centos_packages=$(getProperty "centos_packages")
     clefos_packages=$(getProperty "clefos_package")
