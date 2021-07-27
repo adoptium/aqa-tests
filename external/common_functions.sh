@@ -211,6 +211,9 @@ function set_test_info() {
     tag_version=$(getProperty "tag_version")
     tag_version=`sed -e 's/^"//' -e 's/"$//' <<<"$tag_version"`
     environment_variable=$(getProperty "environment_variable")
+    if [[ ! -z "$environment_variable" ]]; then
+    environment_variable="MODE=\"java\""
+    fi
     debian_packages=$(getProperty "debian_packages")
     debianslim_packages=$(getProperty "debianslim_packages")
     ubuntu_packages=$(getProperty "ubuntu_packages")
