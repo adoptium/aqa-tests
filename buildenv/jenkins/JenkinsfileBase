@@ -921,9 +921,31 @@ def run_parallel_tests() {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
 						}
 						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
+						
+						echo " copy ${name} #${buildId} test result"
+						
+
+						timeout(time: 1, unit: "HOURS") {
+							copyArtifacts(
+								projectName: name,
+								selector: specific("${buildId}"),
+								filter: '*_test_output*',
+								fingerprintArtifacts: true,
+								target: "${name}/",
+								flatten: true
+							)
+						}
 					} catch (Exception e) {
 						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
+						echo "[ERROR] Copy artifact timeout for ${name} has been reached"
+					}
+					try {
+						timeout(time: 1, unit: "HOURS") {
+							archiveArtifacts artifacts: "target/${config.TARGET_OS}/${config.ARCHITECTURE}/${config.VARIANT}/*"
+						}
+					} catch (Exception e) {
+						echo "[ERROR] Archive artifact timeout for ${name} has been reached."
 					}
 				}
 				if (buildResult) {
