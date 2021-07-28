@@ -198,9 +198,16 @@ def setupParallelEnv() {
 					childJobNum = NUM_LIST
 					echo "Saving parallelList.mk file on jenkins..."
 					dir('aqa-tests/TKG') {
-						archiveArtifacts artifacts: 'parallelList.mk', fingerprint: true, allowEmptyArchive: false
+						def testBuild = ''
+						if (BUILD_LIST.contains('/')) {
+							testBuild = BUILD_LIST.substring(0, BUILD_LIST.indexOf('/'))
+						} else {
+							testBuild = BUILD_LIST
+						}
+						def timestamp = new Date().format("yyyy-MM-dd-HH-mm", TimeZone.getTimeZone("UTC"))
+						sh "cp parallelList.mk AQA_${testBuild}_${PLATFORM}_${JDK_VERSION}_${JDK_IMPL}_parallelList_${timestamp}.mk"
+						archiveArtifacts artifacts: "*parallelList.mk", fingerprint: true, allowEmptyArchive: false
 					}
-
 				} else {
 					assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 				}
@@ -627,9 +634,8 @@ def post(output_name) {
 			}
 			if (output_name.contains(',')) {
 				output_name = "specifiedTarget"
-			}
-			else {
-				output_name = output_name.replace("/","_")
+			} else if (output_name.contains('/')) {
+				output_name = output_name.substring(0, output_name.indexOf('/'))
 			}
 			def tar_cmd = "tar -cf"
 			// Use pigz if we can as it is faster - 2> hides fallback message
@@ -687,7 +693,18 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}
 			} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
-				def test_output_tar_name = "${output_name}_test_output${suffix}"
+				def childNameSuffix = ''
+				if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
+					if (JOB_NAME.contains('testList_') || JOB_NAME.contains('iteration_')) {
+						childNameSuffix = JOB_NAME.substring(JOB_NAME.substring(0, JOB_NAME.lastIndexOf('_')).lastIndexOf('_'))
+					} else {
+						childNameSuffix = JOB_NAME.substring(JOB_NAME.lastIndexOf("_"))
+					}
+				}
+				def timestamp = new Date().format("yyyy-MM-dd-HH-mm", TimeZone.getTimeZone("UTC"))
+				def testBuildInfor = "AQA_${output_name}_${PLATFORM}_${JDK_VERSION}_${JDK_IMPL}${childNameSuffix}"
+				def test_output_tar_name = "${testBuildInfor}_test_output_${timestamp}${suffix}"
+				
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
 				} else {
@@ -916,15 +933,8 @@ def run_parallel_tests() {
 					def name = cjob.value.getProjectName()
 					def childResult = cjob.value.getCurrentResult()
 					try {
-						echo "${name} #${buildId} completed with status ${childResult}"
-						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
-						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
-						
-						echo " copy ${name} #${buildId} test result"
-						
-
+						echo " ${name} #${buildId} completed with status ${childResult}"
+						echo " copy  ${name} #${buildId} test output"
 						timeout(time: 1, unit: "HOURS") {
 							copyArtifacts(
 								projectName: name,
@@ -935,14 +945,17 @@ def run_parallel_tests() {
 								flatten: true
 							)
 						}
+						timeout(time: 1, unit: 'HOURS') {
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+						}
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])						
 					} catch (Exception e) {
-						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						echo "[ERROR] Copy artifact timeout or copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
-						echo "[ERROR] Copy artifact timeout for ${name} has been reached"
 					}
 					try {
 						timeout(time: 1, unit: "HOURS") {
-							archiveArtifacts artifacts: "target/${config.TARGET_OS}/${config.ARCHITECTURE}/${config.VARIANT}/*"
+							archiveArtifacts artifacts: "${name}/*"
 						}
 					} catch (Exception e) {
 						echo "[ERROR] Archive artifact timeout for ${name} has been reached."
@@ -952,8 +965,41 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
+				if (ARCHIVE_TEST_RESULTS) {
+					try {
+						timeout(time: 1, unit: "HOURS") {
+							publishTestOutput()
+						}
+					} catch (Exception e) {
+						echo "[ERROR] Publish testoutput timeout"
+					}
+				}
 			}
 		}
+	}
+}
+
+def publishTestOutput() {
+	def timestamp = new Date().format("yyyy-MM-dd-HH-mm", TimeZone.getTimeZone("UTC"))
+	echo "timestamp for pushlish is ${timestamp}"
+	def testBuild = ''
+	if (BUILD_LIST.contains('/')) {
+		testBuild = BUILD_LIST.substring(0, BUILD_LIST.indexOf('/'))
+	} else {
+		testBuild = BUILD_LIST
+	}
+	
+	def tag = "AQA_${testBuild}_${PLATFORM}_${JDK_VERSION}_${JDK_IMPL}_${timestamp}"
+
+	stage("publish") {
+		build job: 'Sophia_Freestyle',
+		parameters: [
+			string(name: 'TAG', value: tag),
+			string(name: 'TIMESTAMP', value: timestamp),
+			string(name: 'UPSTREAM_JOB_NAME', value: env.JOB_NAME),
+			string(name: 'UPSTREAM_JOB_NUMBER', value: "${currentBuild.getNumber()}"),
+			string(name: 'VERSION', value: JDK_VERSION)
+		]
 	}
 }
 
