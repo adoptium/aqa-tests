@@ -533,7 +533,6 @@ generate_dockerfile() {
         set_test_info ${test}
     fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
-    echo "The ${!packages} are ${debian_packages}"
 
     jhome="/opt/java/openjdk"
 

@@ -193,16 +193,14 @@ function set_external_custom_test_info(){
     centos_packages="git maven"
     clefos_packages="${centos_packages}"
     ubi_packages="git maven"
-    ubi_minimal_packages="${ubi_packages}"            
-
+    ubi_minimal_packages="${ubi_packages}"          
 }
 
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     test=$1
-    path=$(pwd)    
-    PROPERTY_FILE=${path}/test.properties
-    echo ${PROPERTY_FILE}
+    path_to_file=$(pwd)    
+    PROPERTY_FILE=${path_to_file}/test.properties
     github_url=$(getProperty "github_url")
     github_url=`sed -e 's/^"//' -e 's/"$//' <<<"$github_url"`
     script=$(getProperty "script")
@@ -215,16 +213,15 @@ function set_test_info() {
     environment_variable="MODE=\"java\""
     fi
     debian_packages=$(getProperty "debian_packages")
-    debianslim_packages=$(getProperty "debianslim_packages")
-    ubuntu_packages=$(getProperty "ubuntu_packages")
-    # Debugging statement
-    echo "The ${ubuntu_packages} are ${debian_packages} only"
-    ubuntu_packages=`sed -e 's/^"//' -e 's/"$//' <<<"$ubuntu_packages"`
+    debian_packages=`echo "$debian_packages" | awk -F'"' '{print $2}'`
+    debianslim_packages=${debian_packages}
+    ubuntu_packages=${debian_packages}
     alpine_packages=$(getProperty "alpine_packages")
     centos_packages=$(getProperty "centos_packages")
-    clefos_packages=$(getProperty "clefos_package")
+    clefos_packages=${centos_packages}
     ubi_packages=$(getProperty "ubi_packages")
     ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
+    ubi_minimal_packages=`echo "$ubi_minimal_packages" | awk -F'"' '{print $2}'`
 }
 
 function cleanup_images() {
