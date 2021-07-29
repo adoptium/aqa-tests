@@ -181,26 +181,28 @@
 	</test>
 	<test>
 		<testCaseName>ParallelStreamsLoadTest_special_J9</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
-			<variation>Mode107-OSRG</variation>
-			<platform>.*windows.*</platform>
-		</disabled>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
-			<variation>Mode110-OSRG</variation>
-			<platform>.*windows.*</platform>
-		</disabled>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
-			<variation>Mode610-OSRG</variation>
-			<platform>.*windows.*</platform>
-		</disabled>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
-			<variation>Mode612-OSRG</variation>
-			<platform>.*windows.*</platform>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
+				<variation>Mode107-OSRG</variation>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
+				<variation>Mode110-OSRG</variation>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
+				<variation>Mode610-OSRG</variation>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
+				<variation>Mode612-OSRG</variation>
+				<platform>.*windows.*</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>

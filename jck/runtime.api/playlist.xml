@@ -284,16 +284,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -339,21 +341,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming-spi</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+                       		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                    		<platform>x86-64_mac</platform>
+  				<impl>hotspot</impl>
+    			</disable>
+            </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -382,21 +386,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_applet</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+  			<disable>
+                      		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                       	 	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+ 			</disable>
+               </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -411,50 +417,52 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac</platform>
-			<version>16+</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac</platform>
-			<version>16+</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_windows</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_windows</platform>
+                        	<impl>hotspot</impl>
+ 			</disable>
+               </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -469,47 +477,49 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_beans</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac</platform>
-			<version>16+</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
-			<version>11</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac</platform>
-			<version>16+</version>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+	                       	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -524,16 +534,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_io</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -576,36 +588,39 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_net</testCaseName>
-		<disabled>
-			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>16+</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
 			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
 			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
 			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>16+</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>8</version>
-			<impl>openj9</impl>
-</disabled>
+			</disable>
+
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -648,30 +663,32 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_security</testCaseName>
-		<disabled>
-			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>11</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -728,18 +745,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util</testCaseName>
-		<disabled>
-			<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
-			<version>11</version>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -754,21 +773,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_accessibility</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -845,16 +866,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_imageio</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -897,21 +920,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+  			</disable>
+              </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -926,18 +951,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_net</testCaseName>
-		<disabled>
-			<comment>Disabled on z/OS due to backlog/issues/461</comment>
-			<version>8</version>
-			<impl>ibm</impl>
-			<platform>.*zos.*</platform>
-		</disabled>
-		<disabled>
-			<comment>Disabled on z/OS due to backlog/issues/461</comment>
-			<version>11</version>
-			<impl>ibm</impl>
-			<platform>.*zos.*</platform>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/461</comment>
+				<version>8</version>
+				<impl>ibm</impl>
+				<platform>.*zos.*</platform>
+			</disable>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/461</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>.*zos.*</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -952,21 +979,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_print</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1023,21 +1052,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_sound</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?</platform>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+                       		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1066,50 +1097,52 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_swing</testCaseName>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>16+</version>
-			<platform>x86-64_mac</platform>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>11</version>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<version>16+</version>
-			<platform>x86-64_mac</platform>
-			<impl>openj9</impl>
-		</disabled>
-		<disabled>
-			<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-			<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
-			<version>8</version>
-			<impl>openj9</impl>
-		</disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_mac</platform>
-                        <impl>hotspot</impl>
-                </disabled>
-                <disabled>
-                        <comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-                        <platform>x86-64_windows</platform>
-                        <impl>hotspot</impl>
-                </disabled>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<platform>x86-64_mac</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<platform>x86-64_mac</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+			<disable>
+                       	 	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_windows</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>

@@ -30,14 +30,16 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
-		<disabled>
-			<comment>backlog/issues/477</comment>
-			<impl>ibm</impl>
-		</disabled>
-		<disabled>
-			<comment>backlog/issues/477</comment>
-			<impl>openj9</impl>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>

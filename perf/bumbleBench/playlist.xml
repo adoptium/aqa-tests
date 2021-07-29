@@ -193,9 +193,11 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-DigestBench</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/bumblebench/issues/19</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/bumblebench/issues/19</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar DigestBench; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -229,9 +231,11 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-HMACBench</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/bumblebench/issues/19</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/bumblebench/issues/19</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar HMACBench; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -276,9 +280,11 @@
 	</test>
 	<test>
 		<testCaseName>bumbleBench-SSLSocketBench</testCaseName>
-		<disabled>
-			<comment>https://github.com/adoptium/bumblebench/issues/18</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/bumblebench/issues/18</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(TEST_RESROOT)/bumblebench/BumbleBench.jar SSLSocketBench; \
 		$(TEST_STATUS)</command>
 		<levels>
