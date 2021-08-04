@@ -178,8 +178,9 @@ function getProperty() {
     echo $PROP_VALUE
 }
 
+# Used for external_custom tests
 function set_external_custom_test_info(){
-    test=$1    
+    test=$1
     github_url="${EXTERNAL_CUSTOM_REPO}"
     script="test.sh"
     test_command="${EXTERNAL_TEST_CMD}"
@@ -193,7 +194,7 @@ function set_external_custom_test_info(){
     centos_packages="git maven"
     clefos_packages="${centos_packages}"
     ubi_packages="git maven"
-    ubi_minimal_packages="${ubi_packages}"          
+    ubi_minimal_packages="${ubi_packages}"  
 }
 
 # Set the valid OSes for the current architectures.
@@ -206,6 +207,8 @@ function set_test_info() {
     script=$(getProperty "script")
     script=`sed -e 's/^"//' -e 's/"$//' <<<"$script"`
     test_results=$(getProperty "test_results")
+    ant_version=$(getProperty "ant_version")
+    ivy_version=$(getProperty "ivy_version")
     tag_version=$(getProperty "tag_version")
     tag_version=`sed -e 's/^"//' -e 's/"$//' <<<"$tag_version"`
     environment_variable=$(getProperty "environment_variable")
@@ -222,6 +225,7 @@ function set_test_info() {
     ubi_packages=$(getProperty "ubi_packages")
     ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
     ubi_minimal_packages=`echo "$ubi_minimal_packages" | awk -F'"' '{print $2}'`
+    
 }
 
 function cleanup_images() {

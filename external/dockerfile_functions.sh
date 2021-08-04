@@ -506,6 +506,20 @@ remove_trailing_spaces() {
     fi
 }
 
+supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
+
+function check_test() {
+    test=$1
+
+    for current_test in ${supported_tests}
+    do
+        if [[ "${test}" == "${current_test}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
+}
 
 # Generate the dockerfile for a given build
 generate_dockerfile() {
@@ -520,9 +534,16 @@ generate_dockerfile() {
 
     check_external_custom_test=0
 
+
     if [ ${test} == 'external_custom' ]; then
-        check_external_custom_test=1
         test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+        # If test is not a part of the existing test list then use external_custom
+        if (check_test ${test}); then
+            check_external_custom_test=1
+            echo "The test does not exist in supported_list and is run via external_custom"
+        else
+            echo "The test exist in supported_list and is run via pre-existing method"
+        fi
         echo ${test}
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
