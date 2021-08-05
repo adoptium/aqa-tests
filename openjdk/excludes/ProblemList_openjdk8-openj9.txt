@@ -134,6 +134,8 @@ sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/ad
 # jdk_other
 
 javax/naming/InitialContext/NoApplet.java https://github.com/eclipse-openj9/openj9/issues/12638 macosx-all
+javax/rmi/ssl/SSLSocketParametersTest.sh https://github.com/eclipse-openj9/openj9/issues/12168 macosx-all,aix-all,windows-all
+
 ############################################################################
 
 # jdk_net
@@ -182,6 +184,7 @@ java/nio/Buffer/DirectBufferAllocTest.java	https://github.com/eclipse-openj9/ope
 java/nio/Buffer/LimitDirectMemory.sh	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse-openj9/openj9/issues/4732	linux-all,windows-all,aix-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
+java/nio/channels/AsynchronousSocketChannel/CompletionHandlerRelease.java https://github.com/eclipse-openj9/openj9/issues/12167 aix-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
 java/nio/channels/DatagramChannel/SendToUnresolved.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/Selector/KeySets.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
@@ -205,7 +208,7 @@ sun/nio/cs/TestStringCodingUTF8.java	https://github.com/eclipse-openj9/openj9/is
 # jdk_rmi
 
 java/rmi/activation/ActivateFailedException/activateFails/ActivateFails.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
-java/rmi/activation/Activatable/checkActivateRef/CheckActivateRef.java	https://github.com/eclipse-openj9/openj9/issues/5049	macosx-all
+java/rmi/activation/Activatable/checkActivateRef/CheckActivateRef.java	https://github.com/eclipse-openj9/openj9/issues/5049	macosx-all,windows-all
 java/rmi/activation/Activatable/checkAnnotations/CheckAnnotations.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all
 java/rmi/activation/Activatable/createPrivateActivable/CreatePrivateActivatable.java	https://github.com/eclipse-openj9/openj9/issues/5049	macosx-all
 java/rmi/activation/Activatable/downloadParameterClass/DownloadParameterClass.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
@@ -220,6 +223,7 @@ java/rmi/activation/ActivationSystem/modifyDescriptor/ModifyDescriptor.java		htt
 java/rmi/activation/CommandEnvironment/SetChildEnv.java		https://github.com/eclipse-openj9/openj9/issues/5138	macosx-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
+java/rmi/registry/readTest/readTest.sh		https://github.com/eclipse-openj9/openj9/issues/13259	windows-all
 java/rmi/registry/serialFilter/RegistryFilterTest.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/server/UnicastRemoteObject/unexportObject/UnexportLeak.java	https://github.com/eclipse-openj9/openj9/issues/4094	generic-all
 java/rmi/server/RMISocketFactory/useSocketFactory/activatable/UseCustomSocketFactory.java	https://github.com/eclipse-openj9/openj9/issues/4685	linux-ppc64le
@@ -229,6 +233,7 @@ java/rmi/server/RemoteServer/AddrInUse.java		https://github.com/eclipse-openj9/o
 java/rmi/transport/dgcDeadLock/DGCDeadLock.java	https://github.com/adoptium/aqa-tests/issues/1259	macosx-all
 java/rmi/transport/runtimeThreadInheritanceLeak/RuntimeThreadInheritanceLeak.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 sun/rmi/server/UnicastServerRef/FilterUSRTest.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
+sun/rmi/transport/tcp/DeadCachedConnection.java		https://github.com/eclipse-openj9/openj9/issues/13259	windows-all
 
 
 ############################################################################
@@ -254,9 +259,16 @@ com/sun/crypto/provider/Cipher/AES/TestAESCiphers/TestAESWithRemoveAddProvider.j
 
 ############################################################################
 
+# jdk_security1
+
+java/security/KeyPairGenerator/FinalizeHalf.java https://github.com/eclipse-openj9/openj9/issues/8879 windows-all
+java/security/Signature/SignatureLength.java https://github.com/eclipse-openj9/openj9/issues/12083 windows-all
+
+############################################################################
 # jdk_security4
 
 sun/security/krb5/auto/ReplayCacheTestProc.java https://github.com/adoptium/aqa-tests/issues/2349 generic-all
+sun/security/krb5/auto/Unreachable.java https://github.com/eclipse-openj9/openj9/issues/13253 aix-all,macosx-all
 
 ############################################################################
 
