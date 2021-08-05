@@ -441,7 +441,7 @@ def setup() {
 			// Only set image required to false if params is set to false. In get.sh, the default value is true
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
-			GET_SH_CMD = "./get.sh -s ${WORKSPACE} -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
+			GET_SH_CMD = "./aqa-tests/get.sh -s `pwd` -t `pwd`/aqa-tests -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 			
@@ -479,15 +479,13 @@ def get_sources_with_authentication() {
 
 def get_sources() {
 	withEnv(['VERBOSE_CURL=SILENT']) {
-		dir('aqa-tests') {
-			if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-				// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
-				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					sh "$GET_SH_CMD"
-				}
-			} else {
+		if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+			// USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
+			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 				sh "$GET_SH_CMD"
 			}
+		} else {
+			sh "$GET_SH_CMD"
 		}
 	}
 }
