@@ -224,6 +224,7 @@
 		<copy todir="${SYSTEMTEST_DEST}/openj9-systemtest" failonerror="false">
 			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest" includes="**" />
 		</copy>
+		<chmod file="${SYSTEMTEST_DEST}/openj9-systemtest/openj9.test.sharedClasses.jvmti/bin/native/**" perm="755"/>
 		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
 			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**" />
 		</copy>
