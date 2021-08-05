@@ -18,6 +18,7 @@ source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
 
 if [ $# -ne 7 ]; then
+	echo "The supported tests are ${supported_tests}"
 	echo
 	echo "usage: $0 test version vm os package build check_external_custom [testtarget]"
 	echo "test    = ${supported_tests}"
@@ -30,7 +31,9 @@ if [ $# -ne 7 ]; then
 	exit -1
 fi
 
-set_test $1
+if [[ ${check_external_custom} -eq 0 ]]; then
+	set_test $1
+fi
 set_version $2
 set_vm $3
 set_os $4
@@ -63,18 +66,18 @@ function build_image() {
 }
 
 # Handle making the directory for organizing the Dockerfiles
-echo "The test name in the build_image is ${test}"
-dir="$(realpath $(dirname "$0"))/${test}/dockerfile/${version}/${package}/${os}"
+if [[ ${check_external_custom} -eq 1 ]]; then
+	dir="$(realpath $(dirname "$0"))/external_custom/dockerfile/${version}/${package}/${os}"
+else
+	dir="$(realpath $(dirname "$0"))/${test}/dockerfile/${version}/${package}/${os}"
+fi
 mkdir -p ${dir}
-path_now=$(pwd)
-echo "The directory is ${dir}"
-echo "The check_external_custom is ${check_external_custom}"
+
 # File Path to Dockerfile
-echo "Directory for ${dir} in build_image.sh"
 file="${dir}/Dockerfile.${vm}.${build}"
 
 # Generate Dockerfile
-generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${testtarget} ${check_external_custom}
+generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${check_external_custom} ${testtarget} 
 
 # Check if Dockerfile exists
 if [ ! -f ${file} ]; then

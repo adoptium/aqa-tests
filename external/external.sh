@@ -163,9 +163,7 @@ parseCommandLineArgs "$@"
 # DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "build" ]; then
-	echo "The test name is ${test} in the build"
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $check_external_custom
-	echo "The test name after calling the build_image.sh is ${test}"
 fi
 
 if [ $command_type == "run" ]; then

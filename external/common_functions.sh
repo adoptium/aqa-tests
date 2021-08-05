@@ -181,6 +181,7 @@ function getProperty() {
 # Used for external_custom tests
 function set_external_custom_test_info(){
     test=$1
+    check_external_custom_test=$2
     github_url="${EXTERNAL_CUSTOM_REPO}"
     script="test.sh"
     test_command="${EXTERNAL_TEST_CMD}"
@@ -200,7 +201,7 @@ function set_external_custom_test_info(){
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     test=$1
-    echo "test points to ${test} in common_functions.sh"
+    check_external_custom_test=$2
     cd ../
     path_to_file=$(pwd)
     echo ${path_to_file}    

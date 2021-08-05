@@ -515,23 +515,17 @@ generate_dockerfile() {
     os=$5
     package=$6
     build=$7
-    testtarget=$8
-    check_external_custom_test=$9
-
-    echo "The file is ${file} in the dockerfile_functions.sh"
-    echo "The test is ${test} in the dockerfile_functions.sh before changes"
+    check_external_custom_test=$8
+    testtarget=$9
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    echo "test is ${test}"
-    path_to_file=$(pwd)
-    echo "The present working directory in dockerfile_functions.sh is ${path_to_file}"
     if [[ ${check_external_custom_test} -eq 1 ]]; then
-        set_external_custom_test_info ${test}
+        set_external_custom_test_info ${test} ${check_external_custom_test}
     else
-        set_test_info ${test}
+        set_test_info ${test} ${check_external_custom_test}
     fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
 
