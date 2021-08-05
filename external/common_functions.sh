@@ -200,8 +200,11 @@ function set_external_custom_test_info(){
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     test=$1
-    path_to_file=$(pwd)    
-    PROPERTY_FILE=${path_to_file}/test.properties
+    echo "test points to ${test} in common_functions.sh"
+    cd ../
+    path_to_file=$(pwd)
+    echo ${path_to_file}    
+    PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
     github_url=`sed -e 's/^"//' -e 's/"$//' <<<"$github_url"`
     script=$(getProperty "script")

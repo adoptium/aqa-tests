@@ -17,9 +17,9 @@ set -o pipefail
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 7 ]; then
 	echo
-	echo "usage: $0 test version vm os package build [testtarget]"
+	echo "usage: $0 test version vm os package build check_external_custom [testtarget]"
 	echo "test    = ${supported_tests}"
 	echo "version = ${supported_versions}"
 	echo "vm      = ${supported_jvms}"
@@ -48,6 +48,7 @@ function build_image() {
     local package=$6
     local build=$7
 
+	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
 
@@ -62,14 +63,18 @@ function build_image() {
 }
 
 # Handle making the directory for organizing the Dockerfiles
+echo "The test name in the build_image is ${test}"
 dir="$(realpath $(dirname "$0"))/${test}/dockerfile/${version}/${package}/${os}"
 mkdir -p ${dir}
-
+path_now=$(pwd)
+echo "The directory is ${dir}"
+echo "The check_external_custom is ${check_external_custom}"
 # File Path to Dockerfile
+echo "Directory for ${dir} in build_image.sh"
 file="${dir}/Dockerfile.${vm}.${build}"
 
 # Generate Dockerfile
-generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${testtarget}
+generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${testtarget} ${check_external_custom}
 
 # Check if Dockerfile exists
 if [ ! -f ${file} ]; then

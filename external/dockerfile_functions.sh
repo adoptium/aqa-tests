@@ -506,21 +506,6 @@ remove_trailing_spaces() {
     fi
 }
 
-supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
-
-function check_test() {
-    test=$1
-
-    for current_test in ${supported_tests}
-    do
-        if [[ "${test}" == "${current_test}" ]]; then
-            return 1
-        fi
-    done
-
-    return 0
-}
-
 # Generate the dockerfile for a given build
 generate_dockerfile() {
     file=$1
@@ -531,23 +516,18 @@ generate_dockerfile() {
     package=$6
     build=$7
     testtarget=$8
+    check_external_custom_test=$9
 
-    check_external_custom_test=0
+    echo "The file is ${file} in the dockerfile_functions.sh"
+    echo "The test is ${test} in the dockerfile_functions.sh before changes"
 
-
-    if [ ${test} == 'external_custom' ]; then
-        test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-        # If test is not a part of the existing test list then use external_custom
-        if (check_test ${test}); then
-            check_external_custom_test=1
-            echo "The test does not exist in supported_list and is run via external_custom"
-        else
-            echo "The test exist in supported_list and is run via pre-existing method"
-        fi
-        echo ${test}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
+    echo "test is ${test}"
+    path_to_file=$(pwd)
+    echo "The present working directory in dockerfile_functions.sh is ${path_to_file}"
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         set_external_custom_test_info ${test}
     else
