@@ -150,136 +150,136 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         parallel testJobs
     }
 } else {
-    if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
-        SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-        LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+    if (!PLATFORM_MAP.containsKey(params.PLATFORM)) {
+        assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
+    }
 
-        if (params.DOCKER_REQUIRED) {
-            LABEL += "&&sw.tool.docker"
-        }
+    SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+    LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
 
-        if (params.LABEL_ADDITION) {
-            LABEL += "&&${params.LABEL_ADDITION}"
-        }
+    if (params.DOCKER_REQUIRED) {
+        LABEL += "&&sw.tool.docker"
+    }
 
-        println "SPEC: ${SPEC}"
-        println "LABEL: ${LABEL}"
+    if (params.LABEL_ADDITION) {
+        LABEL += "&&${params.LABEL_ADDITION}"
+    }
 
-        dynamicAgents = []
-        if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
-            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
-        }
+    println "SPEC: ${SPEC}"
+    println "LABEL: ${LABEL}"
 
-        stage('Queue') {
-            String[] onlineNodes = nodesByLabel(LABEL)
-            if (onlineNodes.size() < 1) {
-                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
-                timeout(ACTIVE_NODE_TIMEOUT) {
-                    // If there is available node before timeout
-                    node(LABEL) {
-                        echo "find the node with label as ${env.NODE_NAME}"
-                    }
-                }
-            } else {
-                // IF no nodes are idle we will check if there is supported virtual agent
-                // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
-                // In this case jobs will be fooled to fall back to wait local busy nodes. 
-                if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
-                    boolean isNodeIdle = false
-                    node {
-                        for (String onlineNode : onlineNodes) {
-                            def nodeStatus = sh(script: "curl -s ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
-                                                returnStdout: true,
-                                                returnStatus: false
-                                                ).trim()
-                            if (nodeStatus.contains("true")) {
-                                isNodeIdle = true
-                                break
-                            }
-                        }
-                    }
-                    if (!isNodeIdle) {
-                       LABEL = LABEL.minus("ci.role.test&&")
-                       LABEL += '&&ci.agent.dynamic'
-                    }
+    dynamicAgents = []
+    if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
+        dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
+    }
+
+    stage('Queue') {
+        String[] onlineNodes = nodesByLabel(LABEL)
+        if (onlineNodes.size() < 1) {
+            int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
+            timeout(ACTIVE_NODE_TIMEOUT) {
+                // If there is available node before timeout
+                node(LABEL) {
+                    echo "find the node with label as ${env.NODE_NAME}"
                 }
             }
-
-            node(LABEL) {
-                try {
-                    timeout(time: 1, unit: 'HOURS') {
-                        cleanWs()
-                    }
-                    if (params.PLATFORM.contains('zos')) {
-                        /* Ensure correct CC env */
-                        env._CC_CCMODE = '1'
-                        env._CXX_CCMODE = '1'
-                        env._C89_CCMODE = '1'
-
-                        def gitConfig = scm.getUserRemoteConfigs()[0]
-                        def SCM_GIT_REPO = gitConfig.getUrl()
-                        def SCM_GIT_BRANCH = scm.branches[0].name
-
-                        // SCM_GIT_REPO value only gets expanded in sh
-                        def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
-                        SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
-
-                        sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
-                    } else {
-                        def gitConfig = scm.getUserRemoteConfigs().get(0)
-
-                        // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
-                        ref_cache = "${env.HOME}/openjdk_cache"
-
-                        checkout scm: [$class: 'GitSCM',
-                            branches: [[name: "${scm.branches[0].name}"]],
-                            extensions: [
-                                [$class: 'CleanBeforeCheckout'],
-                                [$class: 'CloneOption', reference: ref_cache],
-                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                        ]
-                    }
-                    jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-                    if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
-                        //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-                        docker.image('adoptopenjdk/centos6_build_image').pull() 
-                        docker.image('adoptopenjdk/centos6_build_image').inside {
-                            jenkinsfile.testBuild()
+        } else {
+            // IF no nodes are idle we will check if there is supported virtual agent
+            // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
+            // In this case jobs will be fooled to fall back to wait local busy nodes.
+            if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                boolean isNodeIdle = false
+                node {
+                    for (String onlineNode : onlineNodes) {
+                        def nodeStatus = sh(script: "curl -s ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
+                                            returnStdout: true,
+                                            returnStatus: false
+                                            ).trim()
+                        if (nodeStatus.contains("true")) {
+                            isNodeIdle = true
+                            break
                         }
-                    } else {
+                    }
+                }
+                if (!isNodeIdle) {
+                   LABEL = LABEL.minus("ci.role.test&&")
+                   LABEL += '&&ci.agent.dynamic'
+                }
+            }
+        }
+
+        node(LABEL) {
+            try {
+                timeout(time: 1, unit: 'HOURS') {
+                    cleanWs()
+                }
+                if (params.PLATFORM.contains('zos')) {
+                    /* Ensure correct CC env */
+                    env._CC_CCMODE = '1'
+                    env._CXX_CCMODE = '1'
+                    env._C89_CCMODE = '1'
+
+                    def gitConfig = scm.getUserRemoteConfigs()[0]
+                    def SCM_GIT_REPO = gitConfig.getUrl()
+                    def SCM_GIT_BRANCH = scm.branches[0].name
+
+                    // SCM_GIT_REPO value only gets expanded in sh
+                    def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
+                    SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
+
+                    sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
+                } else {
+                    def gitConfig = scm.getUserRemoteConfigs().get(0)
+
+                    // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
+                    ref_cache = "${env.HOME}/openjdk_cache"
+
+                    checkout scm: [$class: 'GitSCM',
+                        branches: [[name: "${scm.branches[0].name}"]],
+                        extensions: [
+                            [$class: 'CleanBeforeCheckout'],
+                            [$class: 'CloneOption', reference: ref_cache],
+                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                        userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                    ]
+                }
+                jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
+                if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
+                    //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+                    docker.image('adoptopenjdk/centos6_build_image').pull()
+                    docker.image('adoptopenjdk/centos6_build_image').inside {
                         jenkinsfile.testBuild()
                     }
-                } catch (Exception e) {
-                    println("Exception: " + e.toString())
-                    // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
-                    // if there is an exception, set currentBuild.result to FAILURE
-                    currentBuild.result = 'FAILURE'
-                } finally {
-                    if (params.SLACK_CHANNEL) {
-                        timeout(time: 5, unit: 'MINUTES') {
-                            if (currentBuild.result == 'FAILURE') {
-                                println("${env.JOB_NAME} #${env.BUILD_NUMBER} result is FAILURE. Checking console log for specific errors...")
-                                // create error list and regex can be used
-                                List<String> errorList = new ArrayList<String>();
-                                errorList.add(".*There is not enough space in the file system.*");
+                } else {
+                    jenkinsfile.testBuild()
+                }
+            } catch (Exception e) {
+                println("Exception: " + e.toString())
+                // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
+                // if there is an exception, set currentBuild.result to FAILURE
+                currentBuild.result = 'FAILURE'
+            } finally {
+                if (params.SLACK_CHANNEL) {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        if (currentBuild.result == 'FAILURE') {
+                            println("${env.JOB_NAME} #${env.BUILD_NUMBER} result is FAILURE. Checking console log for specific errors...")
+                            // create error list and regex can be used
+                            List<String> errorList = new ArrayList<String>();
+                            errorList.add(".*There is not enough space in the file system.*");
 
-                                // nightly/weekly builds should not have git clone issue
-                                if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
-                                    errorList.add(".*ERROR: Error cloning remote repo.*");
-                                }
-                                checkErrors(errorList)
+                            // nightly/weekly builds should not have git clone issue
+                            if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
+                                errorList.add(".*ERROR: Error cloning remote repo.*");
                             }
+                            checkErrors(errorList)
                         }
                     }
                 }
             }
         }
-        if (currentBuild.result != 'FAILURE') {
-            jenkinsfile.run_parallel_tests()
-        }
-    } else {
-        assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
+    }
+    if (currentBuild.result != 'FAILURE') {
+        jenkinsfile.run_parallel_tests()
     }
 }
 
