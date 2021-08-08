@@ -47,7 +47,7 @@
 		</then>
 		<else>
 		 	<property name="openj9jtregtimeouthandler" value=""/>
-	       </else>
+		</else>
 	</if>
 	
 	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
@@ -77,7 +77,7 @@
 			<arg line="-d ${jtregTar}.tar.gz" />
 		</exec>
 		<if>
-			<contains string="${SPEC}" substring="zos" />
+			<equals arg="${BASE_OS}" arg2="zos" />
 			<then>
 				<exec executable="tar" failonerror="true">
 					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
@@ -96,7 +96,7 @@
 		     run the config command to allow file paths of 4096 characters 
 		-->
 		<if>
-			<contains string="${SPEC}" substring="win" />
+			<equals arg1="${BASE_OS}" arg2="windows" />
 			<then>
 				<exec executable="git" failonerror="false">
 					<arg line="config --global core.longpaths true" />
@@ -114,7 +114,7 @@
 			<then>
 				<echo> Using user specified repo and branch</echo>
 				<if>
-					<contains string="${SPEC}" substring="zos"/>
+					<equals arg1="${BASE_OS}" arg2="zos"/>
 					<then>
 						<propertyregex 
 							property="JDK_REPO_SPECIFIC"
@@ -174,7 +174,8 @@
 								<property name="jdkName" value="openj9-openjdk-jdk" />
 							</then>
 							<else>
-								<if> <contains string="${SPEC}" substring="zos"/>
+								<if>
+									<equals arg1="${BASE_OS}" arg2="zos"/>
 									<then>
 										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
 									</then>
@@ -185,7 +186,7 @@
 							</else>
 						</if>
 						<if>
-							<contains string="${SPEC}" substring="zos"/>
+							<equals arg1="${BASE_OS}" arg2="zos"/>
 							<then>
 								<property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git" />
 							</then>
@@ -197,7 +198,7 @@
 					<else>
 						<if>
 							<and>
-								<contains string="${env.SPEC}" substring="arm" />
+								<equals arg1="${PLATFORM}" arg2="arm_linux" />
 								<equals arg1="${JDK_VERSION}" arg2="8" />
 							</and>
 							<then>

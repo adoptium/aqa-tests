@@ -27,8 +27,8 @@ def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Check what existing java processes are running
-		echo "PROCESSCATCH: Java processes which are currently on the machine:"
-	if (PLATFORM.contains("windows")) {
+	echo "PROCESSCATCH: Java processes which are currently on the machine:"
+	if (BASE_OS == 'windows') {
 		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
 	} else {
 		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
@@ -39,7 +39,7 @@ def setupEnv() {
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
 	}
 
-	env.SPEC = "${SPEC}"
+	env.BASE_OS = "${BASE_OS}"
 
 	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
 	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
@@ -50,7 +50,7 @@ def setupEnv() {
 
 	//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
-	if (env.SPEC.startsWith('zos')) {
+	if (env.BASE_OS == 'zos') {
 		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 	}
@@ -123,7 +123,7 @@ def setupEnv() {
 	if( params.DOCKERIMAGE_TAG ) {
 		env.DOCKERIMAGE_TAG = params.DOCKERIMAGE_TAG
 	}
-	if ( env.SPEC.contains('sunos')) {
+	if ( env.BASE_OS == 'solaris') {
 		sh 'env'
 	} else {
 		sh 'printenv'
@@ -186,7 +186,7 @@ def setupParallelEnv() {
 				def parallelList = "aqa-tests/TKG/parallelList.mk"
 				int NUM_LIST = -1
 				if (fileExists("${parallelList}")) {
-					if (SPEC.startsWith('zos')) {
+					if (env.BASE_OS == 'zos') {
 						echo 'Converting parallelList.mk file from ebcdic to ascii...'
 						sh "iconv -f ibm-1047 -t iso8859-1 ${parallelList} > ${parallelList}.ascii; rm ${parallelList}; mv ${parallelList}.ascii ${parallelList}"
 					}
@@ -445,12 +445,12 @@ def setup() {
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 			
 			dir( WORKSPACE) {
-				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
-				if (!env.SPEC.startsWith('zos')) {
-					get_sources_with_authentication()
-				} else {
+				// use sshagent with Jenkins credentials ID for all other platforms
+				if (env.BASE_OS == 'zos') {
 					get_sources()
+				} else {
+					get_sources_with_authentication()
 				}
 				getJobProperties()
 			}
@@ -494,12 +494,12 @@ def get_sources() {
 def makeCompileTest() {
 	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE compile"
 	// use sshagent with Jenkins credentials ID for all platforms except zOS
-	if (!env.SPEC.startsWith('zos')) {
+	if (env.BASE_OS == 'zos') {
+		sh "$makeTestCmd"
+	} else {
 		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
 			sh "$makeTestCmd";
 		}
-	} else {
-		sh "$makeTestCmd";
 	}
 }
 
@@ -582,7 +582,7 @@ def runTest( ) {
 			}
 			if (!TARGET.startsWith('-f')) {
 				TARGET="_${params.TARGET}"
-			} else if (TARGET.contains('-f parallelList.mk') && SPEC.startsWith('zos')) {
+			} else if (TARGET.contains('-f parallelList.mk') && env.BASE_OS == 'zos') {
 				def parallelList = "aqa-tests/TKG/parallelList.mk"
 				if (fileExists("${parallelList}")) {
 					echo 'Converting parallelList.mk file from ascii to ebcdic...'
@@ -592,19 +592,19 @@ def runTest( ) {
 			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
-				if (env.SPEC.startsWith('aix')) {
+				if (env.BASE_OS == 'aix') {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :0 &"
 					env.DISPLAY = ":0"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (env.SPEC.startsWith('sunos')) {
+				else if (env.BASE_OS == 'solaris') {
 					sh "nohup /usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
 					env.DISPLAY = ":2"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-				else if (env.SPEC.startsWith('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
+				else if (env.BASE_OS == 'linux' && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
 					// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
 					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
 						def DISPLAY = sh (
@@ -641,7 +641,7 @@ def post(output_name) {
 			def tar_cmd_suffix = "| (pigz -9 2>/dev/null || gzip -9)"
 			def suffix = ".tar.gz"
 			def pax_opt = ""
-			if (SPEC.startsWith('zos')) {
+			if (env.BASE_OS == 'zos') {
 				echo 'Converting tap file from ebcdic to ascii...'
 				sh 'cd ./aqa-tests/TKG'
 				def tapFiles = findFiles(glob: "**/*.tap")
@@ -764,7 +764,7 @@ def terminateJavaProcesses() {
 		echo 'terminateJavaProcesses iteration: '+(i+1)
 
 		// Terminate Java processes
-		if (PLATFORM.contains("windows")) {
+		if (env.BASE_OS == 'windows') {
 			// Windows code based on https://github.com/adoptium/infrastructure/issues/1669#issuecomment-727863096
 			echo "PROCESSCATCH: Showing java processes - one will be the jenkins agent - removing any of these created since ${env.JOBSTARTTIME}:"
 			sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
@@ -951,7 +951,7 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 
 	String owner = actualRepoBranch[0].trim()
 	String repoURL = "https://github.com/${owner}/${repo}.git"
-	if (env.SPEC.startsWith('zos')) {
+	if (env.BASE_OS == 'zos') {
 		repoURL = repoURL.replace("https://github.com/","git@github.com:")
 	}
 	actualRepoBranch[0] = repoURL

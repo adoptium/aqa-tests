@@ -2,99 +2,99 @@
 
 def PLATFORM_MAP = [
     'arm_linux' : [
-        'SPEC' : 'linux_arm',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch32',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&sw.os.linux&&hw.arch.aarch32',
     ],
     'aarch64_mac' : [
-        'SPEC' : 'osx_aarch64',
-        'LABEL' : 'ci.role.test&&sw.os.osx&&hw.arch.aarch64',
+        'BASE_OS': 'osx',
+        'LABEL'  : 'ci.role.test&&sw.os.osx&&hw.arch.aarch64',
     ],
     'aarch64_linux' : [
-        'SPEC' : 'linux_aarch64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
     ],
     'ppc32_aix' : [
-        'SPEC' : 'aix_ppc',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
+        'BASE_OS': 'aix',
+        'LABEL'  : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
     ],
     'ppc32_linux' : [
-        'SPEC' : 'linux_ppc',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
     ],
     'ppc64_aix' : [
-        'SPEC' : 'aix_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
+        'BASE_OS': 'aix',
+        'LABEL'  : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
     ],
     'ppc64_linux' : [
-        'SPEC' : 'linux_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
     ],
     'ppc64le_linux' : [
-        'SPEC' : 'linux_ppc-64_le',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
     ],
     'riscv64_linux' : [
-        'SPEC' : 'linux_riscv64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
     ],
     'riscv64_linux_xl' : [
-        'SPEC' : 'linux_riscv64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
     ],
     's390_linux' : [
-        'SPEC' : 'linux_390',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
         'DynamicAgents' : ['fyre']
     ],
     's390x_linux' : [
-        'SPEC' : 'linux_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
         'DynamicAgents' : ['fyre']
     ],
     's390x_zos' : [
-        'SPEC' : 'zos_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
+        'BASE_OS': 'zos',
+        'LABEL'  : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
     ],
     's390x_zos_xl' : [
-        'SPEC' : 'zos_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
+        'BASE_OS': 'zos',
+        'LABEL'  : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
     ],
     's390_zos' : [
-        'SPEC' : 'zos_390',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
+        'BASE_OS': 'zos',
+        'LABEL'  : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
     ],
     'sparcv9_solaris' : [
-        'SPEC' : 'sunos_sparcv9-64',
-        'LABEL' : 'ci.role.test&&hw.arch.sparcv9&&sw.os.sunos',
+        'BASE_OS': 'solaris',
+        'LABEL'  : 'ci.role.test&&hw.arch.sparcv9&&sw.os.sunos',
     ],
     'x86-64_solaris' : [
-        'SPEC' : 'sunos_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.sunos',
+        'BASE_OS': 'solaris',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.sunos',
     ],
     'x86-64_alpine-linux' : [
-        'SPEC' : 'alpine-linux',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
     ],
     'x86-32_linux' : [
-        'SPEC' : 'linux_x86',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
     ],
     'x86-32_windows' : [
-        'SPEC' : 'win_x86',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
+        'BASE_OS': 'windows',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
     ],
     'x86-64_linux' : [
-        'SPEC' : 'linux_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
+        'BASE_OS': 'linux',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
         'DynamicAgents' : ['azure', 'fyre']
     ],
     'x86-64_mac' : [
-        'SPEC' : 'osx_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
+        'BASE_OS': 'osx',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.osx',
     ],
     'x86-64_windows' : [
-        'SPEC' : 'win_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
+        'BASE_OS': 'windows',
+        'LABEL'  : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
     ],
 ]
 
@@ -154,8 +154,8 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
     }
 
-    SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
     LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+    BASE_OS = PLATFORM_MAP[params.PLATFORM]['BASE_OS']
 
     if (params.DOCKER_REQUIRED) {
         LABEL += "&&sw.tool.docker"
@@ -165,7 +165,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         LABEL += "&&${params.LABEL_ADDITION}"
     }
 
-    println "SPEC: ${SPEC}"
     println "LABEL: ${LABEL}"
 
     dynamicAgents = []
@@ -213,7 +212,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 timeout(time: 1, unit: 'HOURS') {
                     cleanWs()
                 }
-                if (params.PLATFORM.contains('zos')) {
+                if (BASE_OS == 'zos') {
                     /* Ensure correct CC env */
                     env._CC_CCMODE = '1'
                     env._CXX_CCMODE = '1'
