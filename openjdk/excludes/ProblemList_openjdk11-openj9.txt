@@ -182,9 +182,10 @@ java/net/Inet4Address/PingThis.java	https://github.com/adoptium/infrastructure/i
 java/net/Inet6Address/B6206527.java https://github.com/adoptium/infrastructure/issues/1105 linux-all,macosx-all
 java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/adoptium/aqa-tests/issues/2246 aix-all,linux-s390x
 java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/net/Socket/asyncClose/AsyncClose.java	https://github.com/eclipse-openj9/openj9/issues/4560    generic-all
+java/net/SocketPermission/SocketPermissionTest.java https://github.com/eclipse-openj9/openj9/issues/12795 aix-all
 java/net/httpclient/websocket/BlowupOutputQueue.java https://github.com/eclipse-openj9/openj9/issues/4298 macosx-all
 java/net/httpclient/websocket/PendingBinaryPingClose.java https://github.com/eclipse-openj9/openj9/issues/4298 macosx-all
 java/net/httpclient/websocket/PendingBinaryPongClose.java https://github.com/eclipse-openj9/openj9/issues/4298 macosx-all
@@ -221,13 +222,15 @@ java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse-op
 java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
+java/nio/channels/DatagramChannel/BasicMulticastTests.java  https://github.com/eclipse-openj9/openj9/issues/12795   aix-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669
-java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x, macosx-all
+java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,linux-ppc64le,macosx-all,aix-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
+java/nio/file/Files/InputStreamTest.java	https://github.com/adoptium/aqa-tests/issues/2789	generic-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse-openj9/openj9/issues/4679 linux-x64,macosx-all
 java/nio/channels/Selector/OutOfBand.java https://github.com/adoptium/aqa-tests/issues/2422 z/OS-s390x
 java/nio/channels/FileChannel/directio/ReadDirect.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
@@ -244,6 +247,7 @@ java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/a
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java	https://github.com/eclipse-openj9/openj9/issues/7592	generic-all
 java/rmi/server/RMISocketFactory/useSocketFactory/unicast/TCPEndpointReadBug.java	https://github.com/eclipse-openj9/openj9/issues/8515	generic-all
+java/rmi/server/RMISocketFactory/useSocketFactory/unicast/UseCustomSocketFactory.java   https://github.com/eclipse-openj9/openj9/issues/13259   aix-all
 java/rmi/server/RemoteServer/AddrInUse.java		https://github.com/eclipse-openj9/openj9/issues/3377	generic-all
 java/rmi/server/UnicastRemoteObject/serialFilter/FilterUROTest.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
 java/rmi/server/UnicastRemoteObject/unexportObject/UnexportLeak.java https://github.com/eclipse-openj9/openj9/issues/4094 generic-all
@@ -251,11 +255,22 @@ java/rmi/server/UnicastServerRef/serialFilter/FilterUSRTest.java	https://github.
 
 ############################################################################
 
-# jdk_security
+# jdk_security1
+
+java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+java/security/KeyFactory/KeyFactoryGetKeySpecForInvalidSpec.java	https://github.com/adoptium/aqa-tests/issues/2790	generic-all
+java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+
+############################################################################
+
+# jdk_security_infra
 
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/LetsEncryptCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+
 ############################################################################
 
 # jdk_sound
