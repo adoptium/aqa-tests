@@ -3,7 +3,6 @@ import argparse
 import requests
 import json
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('path',help="Path to the file")
 args = parser.parse_args()
@@ -17,10 +16,8 @@ for f in files:
     print(filepath)
     with open(filepath) as fhand:
         line = fhand.readline()
-        cnt=0
         is_latest=False
         modified_repos = []
-
 
         while line:
             process_line = line.strip()
@@ -43,10 +40,8 @@ for f in files:
                     else:
                         line = 'tag_version="{}"\n'.format(tag_version)
                         print("tag name updated from {} to {}".format(process_line[13:-1],tag_version))
-                        updateflag=True
-                        
-                        
-                    
+                        updateflag=True                      
+                                        
                 except:
                     elem = request_url+"\n"
                     no_releases.append(elem)
@@ -54,6 +49,7 @@ for f in files:
             modified_repos.append(line)   
             line=fhand.readline()
         fhand.close()
+
     if updateflag:
         out_file=open(filepath,"w")
         for l in modified_repos:
@@ -61,7 +57,6 @@ for f in files:
         out_file.close()
       
         
-
 if no_releases:       
     print("No releases for the following:")
     for item in no_releases:
