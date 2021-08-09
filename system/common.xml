@@ -224,7 +224,15 @@
 		<copy todir="${SYSTEMTEST_DEST}/openj9-systemtest" failonerror="false">
 			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest" includes="**" />
 		</copy>
-		<chmod file="${SYSTEMTEST_DEST}/openj9-systemtest/openj9.test.sharedClasses.jvmti/bin/native/**" perm="755"/>
+		<if>
+			<or>
+				<contains string="${JVM_VERSION}" substring="openj9"/>
+				<contains string="${JVM_VERSION}" substring="ibm"/>
+			</or>
+				<then>
+					<chmod file="${SYSTEMTEST_DEST}/openj9-systemtest/openj9.test.sharedClasses.jvmti/bin/native/**" perm="755"/>
+				</then>
+		</if>
 		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
 			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**" />
 		</copy>
