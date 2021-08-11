@@ -15,9 +15,11 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1k_J9</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -40,9 +42,11 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_10k_J9</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -87,9 +91,11 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_concurrentSlackAuto_1M_J9</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/6777</comment>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xmx1g -Xms1g -Xdump:none -Xgcpolicy:gencon -Xnocompactgc -Xgcthreads16 -Xgc:tenureBytesDeviationBoost=0 -Xgc:concurrentKickoffTenuringHeadroom=0</variation>
 		</variations>
@@ -134,9 +140,11 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_TestCase</testCaseName>
-		<disabled>
-			<comment>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>TODO: create test for all impls, check for and remove any hard-coded J9 specific options</comment>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -157,10 +165,12 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse-openj9/openj9/issues/8034</comment>
-			<platform>.*aarch64.*</platform>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/8034</comment>
+				<platform>.*aarch64.*</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xmx2g -Xdump:none -Xgcpolicy:balanced -Xgc:enableArrayletDoubleMapping -verbose:gc</variation>
 		</variations>
