@@ -57,6 +57,11 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
+ifndef JRE_IMAGE
+	JRE_ROOT := $(TEST_JDK_HOME)
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
+endif
+
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
