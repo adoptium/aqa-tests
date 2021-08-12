@@ -54,7 +54,7 @@ split()
 	   for ((j=${indices[$i]}; j<${indices[$i+1]}; j++));
 	   do 
 	      if [[ ${subTests[$j]} != "index.html" ]]; then 
-	         groups[$i]+="$testPathPrefix"/"${subTests[$j]},"
+	         groups[$i]+="$testPathPrefix"/"${subTests[$j]};"
 			 totalCounted=$(($totalCounted+1))
 	      fi 
 	   done
