@@ -57,7 +57,12 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
-ifdef JRE_IMAGE 
+ifndef JRE_IMAGE
+	JRE_ROOT := $(TEST_JDK_HOME)
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
+endif
+
+ifdef USE_JRE_IMAGE 
   export JAVA_HOME=$(JRE_IMAGE)
 endif
 
