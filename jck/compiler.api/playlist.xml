@@ -56,7 +56,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -70,7 +70,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_tools,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_tools,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -98,7 +98,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
