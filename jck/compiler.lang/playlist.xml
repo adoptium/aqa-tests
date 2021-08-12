@@ -323,11 +323,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jck-compiler-lang-EXPR</testCaseName>
+	<testCaseName>jck-compiler-lang-EXPR-group1</testCaseName>
 		<disables>
 			<disable>
 				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>ppc64le_linux(_mixed)?|x86-64_windows(_mixed)?</platform>
+				<platform>ppc64le_linux|x86-64_windows</platform>
 				<version>11</version>
 				<impl>ibm</impl>
 			</disable>
@@ -341,7 +341,259 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXPR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP1),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group2</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP2),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group3</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP3),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group4</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP4),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group5</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP5),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group6</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP6),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group7</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP7),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group8</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP8),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group9</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP9),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group10</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP10),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

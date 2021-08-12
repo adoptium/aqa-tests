@@ -46,17 +46,17 @@
 		</versions>
 	</test>
 	<test>
-		<testCaseName>jck-devtools-xml_schema-msData</testCaseName>
+		<testCaseName>jck-devtools-xml_schema-msData-group1</testCaseName>
 		<disables>
 			<disable>
 				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-				<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
+				<platform>aarch64_linux|ppc64le_linux</platform>
 				<version>8</version>
 				<impl>ibm</impl>
 			</disable>
 			<disable>
 				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
-				<platform>aarch64_linux(_mixed)?|ppc64le_linux(_mixed)?</platform>
+				<platform>aarch64_linux|ppc64le_linux</platform>
 				<version>8</version>
 				<impl>openj9</impl>
 			</disable>
@@ -64,7 +64,100 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=xml_schema/msData,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(RUNTIME_DEVTOOLS_XML_SCHEMA_MSDATA_GROUP1),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>jck-devtools-xml_schema-msData-group2</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(RUNTIME_DEVTOOLS_XML_SCHEMA_MSDATA_GROUP2),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>jck-devtools-xml_schema-msData-group3</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(RUNTIME_DEVTOOLS_XML_SCHEMA_MSDATA_GROUP3),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>jck-devtools-xml_schema-msData-group4</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on aarch64 Linux + ppc64le on jdk8 due to backlog/issues/302. Awaiting potential test / setup issue resolution</comment>
+				<platform>aarch64_linux|ppc64le_linux</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(RUNTIME_DEVTOOLS_XML_SCHEMA_MSDATA_GROUP4),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
