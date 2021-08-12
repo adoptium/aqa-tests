@@ -22,10 +22,10 @@ SDK_RESOURCE="nightly"
 CUSTOMIZED_SDK_URL=""
 CUSTOMIZED_SDK_SOURCE_URL=""
 CLONE_OPENJ9="true"
-OPENJ9_REPO="https://github.com/eclipse/openj9.git"
+OPENJ9_REPO="https://github.com/eclipse-openj9/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
-TKG_REPO="https://github.com/AdoptOpenJDK/TKG.git"
+TKG_REPO="https://github.com/adoptium/TKG.git"
 TKG_SHA=""
 TKG_BRANCH="master"
 VENDOR_REPOS=""
@@ -41,8 +41,7 @@ DEBUG_IMAGES_REQUIRED=true
 
 usage ()
 {
-	echo 'Usage : get.sh  --testdir|-t optional. path to openjdktestdir. Default value current dir (pwd) is used if not provided'
-	echo '                --platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
+	echo 'Usage : get.sh -platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
 	echo '                [--jdk_version|-j ]: optional. JDK version'
 	echo '                [--jdk_impl|-i ]: optional. JDK implementation'
 	echo '                [--releases|-R ]: optional. Example: latest, jdk8u172-b00-201807161800'
@@ -54,10 +53,10 @@ usage ()
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
 	echo '                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true'
-	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse/openj9.git is used if not provided'
+	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
-	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/AdoptOpenJDK/TKG.git is used if not provided'
+	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/adoptium/TKG.git is used if not provided'
 	echo '                [--tkg_sha ] : optional. TkG pull request sha.'
 	echo '                [--tkg_branch ] : optional. TKG branch.'
 	echo '                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories'
@@ -154,11 +153,6 @@ parseCommandLineArgs()
 		esac
 	done
 
-	# Check if TESTDIR exists and points to openjdk-tests
-	if [[ ! -d "$TESTDIR" || "$TESTDIR" != *"openjdk-tests"* ]]; then
-		echo "TESTDIR: $TESTDIR is invalid. Please use --testdir|-t to set valid TESTDIR under openjdk-tests. Default value current dir (pwd) is used if not provided."
-		exit 1
-	fi
 	echo "TESTDIR: $TESTDIR"
 }
 
@@ -177,13 +171,30 @@ getBinaryOpenjdk()
 		fi
 	fi
 
-	if [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+	# if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
+	# if supplied when run manually with --username and --password these will be seen in plaintext within job output
+	if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
+		curl_options="--user $USERNAME:$PASSWORD"
+	fi
+
+	if [ "$SDK_RESOURCE" == "nightly" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+		result=$(curl -k ${curl_options} ${CUSTOMIZED_SDK_URL} | grep ">[0-9]*\/<" | sed -e 's/[^0-9/ ]//g' | sed 's/\/.*$//')
+		IFS=' ' read -r -a array <<< "$result"
+		arr=(${result/ / })
+		max=${arr[0]}
+		for n in "${arr[@]}" ; do
+			((n > max)) && max=$n
+		done
+		latestBuildUrl="${CUSTOMIZED_SDK_URL}${max}/"
+		echo "downloading files from $latestBuildUrl"
+		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')	
+		arr=(${download_urls/ / })
+		download_url=()
+		for n in "${arr[@]}" ; do
+			download_url+=" ${latestBuildUrl}${n}"
+		done
+	elif [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
-		# if these are passed through via withCredentials(CUSTOMIZED_SDK_URL_CREDENTIAL_ID) these will not be visible within job output,
-		# if supplied when run manually with --username and --password these will be seen in plaintext within job output
-		if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
-			curl_options="--user $USERNAME:$PASSWORD"
-		fi
 		images="test-images.tar.gz debug-image.tar.gz"
 		download_urls=($download_url)
 		# for now, auto-download is enabled only if users provide one URL and filename contains OpenJ9-JDK
@@ -221,9 +232,11 @@ getBinaryOpenjdk()
 			release_type="ga"
 		fi
 		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+		info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
 
-		if [[ "$JDK_VERSION" -ge "11" ]]; then
+		if [ "$JDK_VERSION" != "8" ] || [ "$JDK_IMPL" != "hotspot" ]; then
 			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
+			info_url+=" https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
 		fi
 	else
 		download_url=""
@@ -236,7 +249,8 @@ getBinaryOpenjdk()
 			set +e
 			count=0
 			download_exit_code=-1
-			while [ $download_exit_code != 0 ] && [ $count -le 5  ]
+			# when the command is not found (code 127), do not retry
+			while [ $download_exit_code != 0 ] && [ $download_exit_code != 127 ] && [ $count -le 5  ]
 			do
 				if [ $count -gt 0 ]; then
 					sleep_time=300
@@ -286,6 +300,23 @@ getBinaryOpenjdk()
 		done
 	fi
 
+	# use openapi, try to get the information of the download file
+	# if it returns the status code other than 200, it means the parameters provided by user forms some invalid link, then fails early
+	if [[ -n $info_url ]]; then
+		for info in $info_url
+		do
+			if [[ $info == https://api.adoptopenjdk.net* ]]; then
+				http_resp_info=$(curl -Is "$info" | grep "HTTP/" | tail -1)
+				# 2nd field of HTTP status line is the http response code (both HTTP/1.1 & 2)
+				validate=$(echo "${http_resp_info}" | tr -s ' ' | cut -d' ' -f2)
+				if [[ ${validate} != 200 ]]; then
+					echo "Download failure, invalid download link: ${info}."
+					exit 1
+				fi
+			fi
+		done
+	fi
+
 	jar_files=`ls`
 	jar_file_array=(${jar_files//\\n/ })
 
@@ -319,12 +350,16 @@ getBinaryOpenjdk()
 				if [ -d "$SDKDIR/openjdkbinary/j2sdk-image/jre" ]; then
 					extract_dir="./j2sdk-image/jre"
 				fi
-				echo "unzip $jar_name in $extract_dir..."
+				echo "Uncompressing $jar_name over $extract_dir..."
 				if [[ $jar_name == *zip || $jar_name == *jar ]]; then
 					unzip -q $jar_name -d $extract_dir
 				else
-					# some debug-image tar has parent folder. --strip 1 is used to remove it
-					gzip -cd $jar_name | tar xof - -C $extract_dir --strip 1
+					# some debug-image tar has parent folder ... strip it
+					if tar --version 2>&1 | grep GNU 2>&1; then
+						gzip -cd $jar_name | tar xof - -C $extract_dir --strip 1
+					else
+						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$jar_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
+					fi
 				fi
 			else
 				if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
@@ -332,7 +367,7 @@ getBinaryOpenjdk()
 				else
 					mkdir $SDKDIR/openjdkbinary/tmp
 				fi
-				echo "unzip file: $jar_name ..."
+				echo "Uncompressing file: $jar_name ..."
 				if [[ $jar_name == *zip || $jar_name == *jar ]]; then
 					unzip -q $jar_name -d ./tmp
 				elif [[ $jar_name == *.pax* ]]; then
@@ -532,6 +567,9 @@ getFunctionalTestMaterial()
 				echo "Stage $dest/$dir to $TESTDIR/$dir"
 				# already in TESTDIR, thus copy $dir to current directory
 				cp -r $dest/$dir ./
+				if [[ "$PLATFORM" == *"zos"* ]]; then
+					cp -r $dest/.git ./$dir
+				fi
 			else
 				echo "Stage $dest to $TESTDIR"
 				# already in TESTDIR, thus copy the entire vendor repo content to current directory
@@ -599,7 +637,7 @@ checkRepoSHA()
 
 checkTestRepoSHAs()
 {
-	echo "check AdoptOpenJDK repo and TKG repo SHA"
+	echo "check adoptium repo and TKG repo SHA"
 
 	output_file="$TESTDIR/TKG/SHA.txt"
 	if [ -e ${output_file} ]; then

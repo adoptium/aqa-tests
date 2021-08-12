@@ -19,7 +19,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(JCK_CUSTOM_TARGET),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(JCK_CUSTOM_TARGET),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -41,6 +41,11 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/TKG/issues/123</comment>
+			</disable>
+		</disables>
 		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 	</test>
 	<test>
@@ -168,9 +173,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-module</testCaseName>
@@ -185,9 +190,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-StackWalker</testCaseName>
@@ -202,9 +207,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-Module_class</testCaseName>
@@ -219,9 +224,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-SecurityManager</testCaseName>
@@ -264,9 +269,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>12+</subset>
-		</subsets>
+		<versions>
+			<version>12+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_lang-Class</testCaseName>
@@ -284,13 +289,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -311,9 +326,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
@@ -331,13 +346,28 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming-spi</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+                       		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                    		<platform>x86-64_mac</platform>
+  				<impl>hotspot</impl>
+    			</disable>
+            </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_naming/spi,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -361,6 +391,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_applet</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+  			<disable>
+                      		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                       	 	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+ 			</disable>
+               </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -375,6 +422,52 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, and on rest for backlog/issues/485. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win64 on jdk8 due to backlog/issues/504. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_windows</platform>
+                        	<impl>hotspot</impl>
+ 			</disable>
+               </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -389,6 +482,49 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_beans</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254; on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|ppc64_aix(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+	                       	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -403,6 +539,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_io</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -445,13 +593,46 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_net</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+			<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+			<version>8</version>
+			<impl>openj9</impl>
+			</disable>
+
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_net,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -465,7 +646,7 @@
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_nio,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -487,6 +668,32 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_security</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -543,6 +750,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_util</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx and win for backlog/issues/489. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows(_mixed)?|x86-64_mac(_mixed)?</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -557,6 +778,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_accessibility</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -582,9 +820,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_activity</testCaseName>
@@ -599,9 +837,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_annotation</testCaseName>
@@ -633,6 +871,18 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_imageio</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -675,6 +925,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+  			</disable>
+              </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -689,6 +956,20 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_net</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/461</comment>
+				<version>8</version>
+				<impl>ibm</impl>
+				<platform>.*zos.*</platform>
+			</disable>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/461</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>.*zos.*</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -703,6 +984,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_print</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -751,7 +1049,7 @@
 		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_security,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>special</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -759,6 +1057,23 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_sound</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?</platform>
+				<impl>openj9</impl>
+			</disable>
+ 			<disable>
+                       		<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -787,6 +1102,52 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_swing</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<platform>x86-64_mac</platform>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for infrastructure/issues/5254, on win for backlog/issues/487 and on others for backlog/issues/484. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<version>16+</version>
+				<platform>x86-64_mac</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on osx on jdk8 due to backlog/issues/5254 and on win32 due to backlog/issues/503. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac(_mixed)?|x86-32_windows(_mixed)?</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+                        	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_mac</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+			<disable>
+                       	 	<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
+                        	<platform>x86-64_windows</platform>
+                        	<impl>hotspot</impl>
+			</disable>
+                </disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -826,10 +1187,10 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>15+</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+			<version>15+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_xml</testCaseName>
@@ -845,7 +1206,6 @@
 			<group>jck</group>
 		</groups>
 	</test>
-	<!-- This is a "special" test that requires kerberos server set up -->
 	<test>
 		<testCaseName>jck-runtime-api-org_ietf</testCaseName>
 		<variations>
@@ -859,6 +1219,16 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<disables>
+			<disable>
+				<comment>backlog/issues/567</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>backlog/issues/567</comment>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-org_omg</testCaseName>
@@ -873,9 +1243,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-org_w3c</testCaseName>
@@ -946,8 +1316,8 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 </playlist>

@@ -32,14 +32,14 @@
 		<isset property="isZOS"/>
 	</condition>
 
-	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/openjdk-systemtest.git">
+	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/adoptium/aqa-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
 
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/AdoptOpenJDK/stf.git">
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
 	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
@@ -127,6 +127,8 @@
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 									<arg value="pull" />
+									<arg value="${JCK_GIT_REPO_USED}" />
+									<arg value="${jck_branch}" />
 								</exec>
 							</else>
 						</if>
@@ -233,24 +235,24 @@
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" includes="**/*"/>
+					<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
 				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openjdk-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openjdk-systemtest/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+				<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" />
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
 					<arg value="-r" />
 					<arg value="-q" />
 					<arg value="." />
 				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" failonerror="false">
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
 					<arg value="reset" />
 					<arg value="--hard" />
 				</exec>
 			</then>
 		</if>
-		<echo message="SHA of the checked out openjdk-systemtest materials:"/>
+		<echo message="SHA of the checked out aqa-systemtest materials:"/>
 		<exec executable="git" failonerror="false">
 			<arg value="ls-remote" />
 			<arg value="${openjdk_systemtest_repo}"/>
@@ -273,21 +275,21 @@
 		</if>
 		<if>
 			<not>
-				<available file="${SYSTEMTEST_ROOT}/openjdk-systemtest" type="dir" />
+				<available file="${SYSTEMTEST_ROOT}/aqa-systemtest" type="dir" />
 			</not>
 			<then>
-				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest does not exist, clone from GitHub" />
+				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest does not exist, clone from GitHub" />
 				<antcall target="clone_systemtest" inheritall="true" />
 			</then>
 			<else>
-				<echo message="${SYSTEMTEST_ROOT}/openjdk-systemtest exists, skip cloning" />
+				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest exists, skip cloning" />
 			</else>
 		</if>
 	</target>
 
 	<target name="prepare_systemtest_for_jck" depends="check_systemtest">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="configure" inheritAll="false" />
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" target="build" inheritAll="false">
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" target="configure" inheritAll="false" />
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" target="build" inheritAll="false">
 			<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version}"/>
 			<property name="out_dir" value="${JCK_ROOT_USED}/natives" />
 		</ant>
@@ -296,14 +298,14 @@
 	<target name="dist" depends="prepare_systemtest_for_jck" description="generate the distribution">
 		<if>
 			<not>
-				<available file="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest" type="dir" />
+				<available file="${SYSTEMTEST_BUILD_ROOT}/aqa-systemtest" type="dir" />
 			</not>
 			<then>
 				<copy todir="${SYSTEMTEST_BUILD_ROOT}/stf">
 					<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
 				</copy>
-				<copy todir="${SYSTEMTEST_BUILD_ROOT}/openjdk-systemtest">
-					<fileset dir="${SYSTEMTEST_ROOT}/openjdk-systemtest" includes="**" />
+				<copy todir="${SYSTEMTEST_BUILD_ROOT}/aqa-systemtest">
+					<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest" includes="**" />
 				</copy>
 				<copy todir="${SYSTEMTEST_BUILD_ROOT}/systemtest_prereqs/">
 					<fileset dir="${basedir}/../systemtest_prereqs/" includes="**" />
@@ -366,7 +368,7 @@
 	</target>
 
 	<target name="clean">
-		<ant antfile="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/openjdk-systemtest/openjdk.build" inheritAll="false" target="clean"></ant>
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false" target="clean"></ant>
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"></ant>
 	</target>
 </project>

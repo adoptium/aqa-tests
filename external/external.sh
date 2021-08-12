@@ -16,7 +16,7 @@
 # script runs in 3 modes - build / run / clean
 
 set -e
-tag=${DOCKERIMAGE_TAG}
+tag=nightly
 docker_os=ubuntu
 build_type=full
 package=jdk
@@ -40,7 +40,7 @@ parseCommandLineArgs() {
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1"; shift;;
+				test="$1"; echo "test in external.sh points to ${test} ";echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO}"; shift;;
 			
 			"--version" | "-v" )
 				version="$1"; shift;;
@@ -56,7 +56,13 @@ parseCommandLineArgs() {
 				fi;;
 				
 			"--tag" | "-t" )
-				tag="$1"; shift; parse_tag;;
+				if [ -z "$1" ]; then 
+					echo "No DOCKERIMAGE_TAG set, tag as default 'nightly'"; 
+				else 
+  					tag="$1";
+				fi
+				shift;
+				parse_tag;;
 
 			"--reportsrc" )
 				reportsrc="$1"; shift;;
@@ -133,20 +139,29 @@ parseCommandLineArgs "$@"
 
 if [ $command_type == "build" ]; then
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
+	echo "In the external --build, the test points to ${test}"
 fi
 
 if [ $command_type == "run" ]; then
+	if [[ ${test} == 'external_custom' ]]; then
+			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
 	if [ $reportsrc != "false" ]; then
 		echo "docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
+		echo "In the external --run, the test points to ${test}"
 	else
 		echo "docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
+		echo "In the external --run, the test points to ${test} but $reportsrc is false"
 	fi
 fi
 
 if [ $command_type == "clean" ]; then
+	if [[ ${test} == 'external_custom' ]]; then
+			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
 	if [ $reportsrc != "false" ]; then
 		docker rm -f $test-test;
 	fi

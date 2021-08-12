@@ -11,7 +11,7 @@
 # limitations under the License.
 
 # This Dockerfile in thirdpart_containers/system-test/dockerfile dir is used to create an image with
-# AdoptOpenJDK jdk binary installed. Basic test dependent executions
+# Adoptium jdk binary installed. Basic test dependent executions
 # are installed during the building process.
 #
 # Build system: `docker build -t adoptopenjdk-system-test -f Dockerfile ../.`
@@ -50,8 +50,8 @@ COPY ./dockerfile/system-test.sh /system-test.sh
 # Clone the repo where the 3rd party application code and tests reside. 
 WORKDIR /
 
-# Clone AdoptOpenJDK openjdk-tests repo
-RUN git clone https://github.com/AdoptOpenJDK/openjdk-tests.git
+# Clone adoptium aqa-tests repo
+RUN git clone https://github.com/adoptium/aqa-tests.git
 
 ENTRYPOINT ["/bin/bash", "/system-test.sh"]
 CMD ["_sanity.system"]

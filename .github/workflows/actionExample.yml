@@ -38,7 +38,7 @@ jobs:
 #       with:
 #         version: '8'
 #     - name: AQA
-#       uses: AdoptOpenJDK/run-aqa@v1
+#       uses: adoptium/run-aqa@v1
 #       env:
 #         TEST_JDK_HOME: ${{ steps.buildOpenj9.outputs.BuildOpenJ9JDK }}
 #       with:
@@ -47,8 +47,8 @@ jobs:
 #     - uses: actions/upload-artifact@v2-preview
 #       if: failure()
 #       with:
-#         name: test_output
-#         path: ./**/test_output_*/
+#         name: output
+#         path: ./**/output_*/
 
 ###########################################################################
 # 
@@ -79,7 +79,7 @@ jobs:
 #         targets: 'JDK_11'
 #         archiveExtension: '.tar'
 #     - name: AQA
-#       uses: AdoptOpenJDK/run-aqa@v1
+#       uses: adoptium/run-aqa@v1
 #       with:
 #         version: '11'
 #         jdksource: 'install-jdk'
@@ -113,7 +113,7 @@ jobs:
 #          source: 'https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz'
 #          archiveExtension: '.tar'
 #      - name: AQA
-#        uses: AdoptOpenJDK/run-aqa@v1
+#        uses: adoptium/run-aqa@v1
 #        with: 
 #          version: '11'
 #          jdksource: 'install-jdk'
@@ -150,7 +150,7 @@ jobs:
 #          source: 'nightly'
 #          impl: 'openj9'
 #      - name: AQA
-#        uses: AdoptOpenJDKo/run-aqa@v1
+#        uses: adoptium/run-aqa@v1
 #        with: 
 #          version: '11'
 #          jdksource: 'install-jdk'
@@ -181,7 +181,7 @@ jobs:
 #      steps:
 #      - uses: actions/checkout@v1
 #      - name: AQA
-#        uses: AdoptOpenJDK/run-aqa@v1
+#        uses: adoptium/run-aqa@v1
 #        with:
 #          version: '11'
 #          jdksource: 'github-hosted'

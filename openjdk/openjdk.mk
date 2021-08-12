@@ -19,9 +19,7 @@ OS:=$(shell uname -s)
 
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
-	MEMORY_SIZE:=$(shell \
-		expr `cat /proc/meminfo | grep MemTotal | awk '{print $$2}'` / 1024 \
-		)
+	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [ -r /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`; else CGMEM=`expr $${KMEMMB} \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1048576`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
@@ -38,6 +36,10 @@ ifeq ($(CYGWIN),1)
 		| cut -d "=" -f 2-` / 1024 / 1024 \
 		)
 endif
+ifeq ($(OS),SunOS)	
+	NPROCS:=$(shell psrinfo | wc -l)
+	MEMORY_SIZE:=$(shell prtconf | awk '/^Memory size:/{print int($$3/1024)}')
+endif	
 ifeq ($(OS),OS/390)
 	EXTRA_OPTIONS += -Dcom.ibm.tools.attach.enable=yes
 endif
@@ -101,16 +103,15 @@ else
 OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
+JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)langtools$(D)test
-	JDK_CUSTOM_TARGET ?= jdk/test/java/math/BigInteger/BigIntegerTest.java
 else
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)jdk
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
-	JDK_CUSTOM_TARGET ?= test/jdk/java/math/BigInteger/BigIntegerTest.java
 endif
 
 JDK_NATIVE_OPTIONS :=
@@ -119,9 +120,7 @@ CUSTOM_NATIVE_OPTIONS :=
 
 ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
-		ifneq ($(OS),OS/390)
-			JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
-		endif
+		JDK_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)jdk$(D)jtreg$(D)native"
 		ifeq ($(JDK_IMPL), hotspot)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
 		# else if JDK_IMPL is openj9 or ibm
@@ -136,8 +135,8 @@ ifneq ($(JDK_VERSION),8)
 	endif
 endif
 
-PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION).txt
-PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11.txt
+PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk$(JDK_VERSION).txt
+PROBLEM_LIST_DEFAULT:=excludes/ProblemList_openjdk11.txt
 TEST_VARIATION_DUMP:=
 TEST_VARIATION_JIT_PREVIEW:=
 TEST_VARIATION_JIT_AGGRESIVE:=
@@ -145,8 +144,8 @@ TIMEOUT_HANDLER:=
 
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
-	PROBLEM_LIST_FILE:=ProblemList_openjdk$(JDK_VERSION)-openj9.txt
-	PROBLEM_LIST_DEFAULT:=ProblemList_openjdk11-openj9.txt
+	PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk$(JDK_VERSION)-openj9.txt
+	PROBLEM_LIST_DEFAULT:=excludes/ProblemList_openjdk11-openj9.txt
 	TEST_VARIATION_DUMP:=-Xdump:system:none -Xdump:heap:none -Xdump:system:events=gpf+abort+traceassert+corruptcache
 	TEST_VARIATION_JIT_PREVIEW:=-XX:-JITServerTechPreviewMessage
 	TEST_VARIATION_JIT_AGGRESIVE:=-Xjit:enableAggressiveLiveness

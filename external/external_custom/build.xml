@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="External_custom Test" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build external_custom Docker image
+	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
+
+	<!-- set properties for this build -->
+	<property name="TEST" value="external_custom" />
+	<property environment="env" />
+	<property name="EXTERNAL_CUSTOM_REPO" value="${env.EXTERNAL_CUSTOM_REPO}" />
+	<echo message="The variable EXTERNAL_CUSTOM_REPO points to ${env.EXTERNAL_CUSTOM_REPO}" />
+    <condition property="EXTERNAL_REPO_BRANCH" value="${env.EXTERNAL_REPO_BRANCH}" else="master">
+		<isset property="env.EXTERNAL_REPO_BRANCH" />
+	</condition>
+	<echo message="EXTERNAL_REPO_BRANCH points to ${env.EXTERNAL_REPO_BRANCH}" />
+	<condition property="EXTERNAL_TEST_CMD" value="${env.EXTERNAL_TEST_CMD}" else="mvn clean install">
+		<isset property="env.EXTERNAL_TEST_CMD" />
+	</condition>
+	<echo message="EXTERNAL_TEST_CMD points to ${env.EXTERNAL_TEST_CMD}" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="src" location="." />
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>

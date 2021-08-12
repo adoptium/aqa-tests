@@ -28,9 +28,11 @@
 	</test>
 	<test>
 		<testCaseName>quarkus_openshift_test</testCaseName>
-		<disabled>
-			<comment>Requires openshift cluster environment to run</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>Requires openshift cluster environment to run</comment>
+			</disable>
+		</disables>
 		<command>bash $(TEST_RESROOT)$(D)run_test.sh $(REPORTDIR); \
 		$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
@@ -40,8 +42,8 @@
 		<groups>
 			<group>external</group>
 		</groups>
-		<subsets>
-			<subset>11+</subset>
-		</subsets>
+		<versions>
+			<version>11+</version>
+		</versions>
 	</test>
 </playlist>

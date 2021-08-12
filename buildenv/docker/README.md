@@ -1,4 +1,4 @@
-# Dockerize AdoptOpenJDK Testing
+# Dockerize Adoptium Testing
 
 ### What is our motivation?
 

@@ -17,9 +17,9 @@
 		<testCaseName>dacapo-eclipse</testCaseName>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
 		$(TEST_STATUS)</command>
-		<subsets>
-			<subset>8</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+		</versions>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -62,6 +62,13 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-jython</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11942</comment>
+				<version>16+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -84,9 +91,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-lusearch-fix</testCaseName>
-		<disabled>
-			<comment>https://github.com/AdoptOpenJDK/openjdk-tests/issues/1888#issuecomment-755015959</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/1888#issuecomment-755015959</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) lusearch-fix; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -120,9 +129,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-tomcat</testCaseName>
-		<disabled>
-			<comment>https://bugs.openjdk.java.net/browse/JDK-8155588</comment>
-		</disabled>
+		<disables>
+			<disable>
+				<comment>https://bugs.openjdk.java.net/browse/JDK-8155588</comment>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
 		$(TEST_STATUS)</command>
 		<levels>

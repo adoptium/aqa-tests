@@ -44,7 +44,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jck-runtime-lang-CLSS-AIX</testCaseName>
+		<testCaseName>jck-runtime-lang-CLSS-AIX-OPENJ9</testCaseName>
 		<variations>
 			<variation>-Xss2M -Xmso1M</variation>
 		</variations>
@@ -57,6 +57,28 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jck-runtime-lang-CLSS-AIX</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/CLSS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME$(Q); \
+	$(TEST_STATUS)</command>
+		<platformRequirements>os.aix</platformRequirements>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-lang-CONV</testCaseName>
@@ -225,9 +247,9 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-lang-NAME</testCaseName>
