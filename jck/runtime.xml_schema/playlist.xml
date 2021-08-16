@@ -103,7 +103,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>export JRE_HOME=JRE_IMAGE; $(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=xml_schema,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=xml_schema,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q),javahome-execute=$(JRE_IMAGE); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
