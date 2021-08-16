@@ -354,7 +354,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE_JRE) -test-args=$(Q)tests=lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q); \
+		<command>export JRE_HOME=JRE_IMAGE; $(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>

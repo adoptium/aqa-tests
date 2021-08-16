@@ -1320,4 +1320,18 @@
 			<version>9+</version>
 		</versions>
 	</test>
+	<test>
+		<testCaseName>jck-runtime-api-jre</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>export JRE_HOME=JRE_IMAGE; $(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/xsl,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
 </playlist>
