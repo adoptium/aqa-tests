@@ -93,11 +93,6 @@ def setupEnv() {
 		echo "JRE_IMAGE: ${env.JRE_IMAGE}"
 	}
 
-	if (JOB_NAME.endsWith("_jre")) {
-		env.USE_JRE_IMAGE = true
-		echo "setting USE_JRE_IMAGE to true"
-	}
-
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {

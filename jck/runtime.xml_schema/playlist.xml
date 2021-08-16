@@ -98,4 +98,18 @@
 			<group>jck</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>jck-runtime-xml_schema-jre</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE_JRE)-test-args=$(Q)tests=xml_schema,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
 </playlist>

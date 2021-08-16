@@ -57,15 +57,6 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
-ifndef JRE_IMAGE
-	JRE_ROOT := $(TEST_JDK_HOME)
-	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
-endif
-
-ifdef USE_JRE_IMAGE 
-  export JAVA_HOME=$(JRE_IMAGE)
-endif
-
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
@@ -79,6 +70,11 @@ endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
 
+ifndef JRE_IMAGE
+	JRE_ROOT := $(TEST_JDK_HOME)
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
+endif
+
 define JCK_CMD_TEMPLATE
 perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)aqa-systemtest$(Q) \
@@ -86,6 +82,11 @@ perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.
 	-java-args-setup=$(Q)$(OTHER_OPTS) $(JVM_OPTIONS)$(Q) \
 	-results-root=$(REPORTDIR) \
 	-test=Jck 
+endef
+
+define JCK_CMD_TEMPLATE_JRE
+  export JAVA_HOME:=$(JRE_IMAGE)
+  JCK_CMD_TEMPLATE_JRE := $(JCK_CMD_TEMPLATE)
 endef
 
 VERIFIER_INSTRUCTIONS_TESTS_GROUP1=vm/verifier/instructions/aaload;vm/verifier/instructions/aastore;vm/verifier/instructions/anewarray;vm/verifier/instructions/areturn;vm/verifier/instructions/baload;vm/verifier/instructions/bastore;vm/verifier/instructions/bipush;vm/verifier/instructions/caload;vm/verifier/instructions/castore;vm/verifier/instructions/d2f;vm/verifier/instructions/d2i;vm/verifier/instructions/d2l;vm/verifier/instructions/dadd;vm/verifier/instructions/daload;vm/verifier/instructions/dastore;vm/verifier/instructions/dcmp;vm/verifier/instructions/dconst;vm/verifier/instructions/ddiv;vm/verifier/instructions/dmul;vm/verifier/instructions/dneg;vm/verifier/instructions/drem;vm/verifier/instructions/dreturn;vm/verifier/instructions/dsub;vm/verifier/instructions/dup;vm/verifier/instructions/dup2
