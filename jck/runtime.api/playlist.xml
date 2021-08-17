@@ -1320,23 +1320,4 @@
 			<version>9+</version>
 		</versions>
 	</test>
-	<test>
-		<testCaseName>jck-runtime-api-jre</testCaseName>
-		<disables>
-			<disable>
-				<comment>New target, disabled for now</comment>
-			</disable>
-		</disables>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=RUNTIME,concurrency=cpus$(Q),javahome-execute=$(JRE_IMAGE); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>special</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-	</test>
 </playlist>
