@@ -24,6 +24,12 @@
 
 ############################################################################
 
+# jdk_imageio
+
+javax/imageio/stream/DeleteOnExitTest.sh https://github.com/eclipse-openj9/openj9/issues/12354 linux-aarch64,linux-ppc64le,linux-s390x,aix-all,windows-all
+
+############################################################################
+
 # jdk_lang
 
 java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
@@ -153,8 +159,6 @@ vm/JniInvocationTest.java	https://github.com/adoptium/temurin-build/issues/248	m
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/invoke/lambda/superProtectedMethod/SuperMethodTest.java https://github.com/eclipse-openj9/openj9/issues/11783 generic-all
 java/lang/invoke/MethodHandles/publicLookup/Driver.java https://github.com/eclipse-openj9/openj9/issues/10648 generic-all
-java/lang/invoke/MethodHandlesPermuteArgumentsTest.java https://github.com/eclipse-openj9/openj9/issues/11822 generic-all
-java/lang/invoke/VarHandles/VarHandleTestExact.java https://github.com/eclipse-openj9/openj9/issues/11256 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 ############################################################################
 
@@ -218,6 +222,9 @@ java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-
 java/net/Inet4Address/PingThis.java	https://github.com/adoptium/infrastructure/issues/1127	aix-all
 java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/B6427403.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/IPMulticastIF.java https://github.com/eclipse-openj9/openj9/issues/13309 windows-all
+java/net/MulticastSocket/JoinLeave.java https://github.com/eclipse-openj9/openj9/issues/13309 windows-all
+java/net/MulticastSocket/NoSetNetworkInterface.java https://github.com/eclipse-openj9/openj9/issues/13309 windows-all
 java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
 java/net/MulticastSocket/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699	linux-s390x
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
@@ -263,14 +270,17 @@ java/nio/MappedByteBuffer/MapSyncFail.java https://github.com/eclipse-openj9/ope
 java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
+java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/eclipse-openj9/openj9/issues/13018 windows-all
 java/nio/channels/DatagramChannel/AfterDisconnect.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
 java/nio/channels/DatagramChannel/ChangingAddress.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
+java/nio/channels/DatagramChannel/Loopback.java https://github.com/eclipse-openj9/openj9/issues/13018 windows-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
+java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/2535 aix-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse-openj9/openj9/issues/4679 linux-x64,macosx-all
@@ -295,6 +305,11 @@ java/rmi/server/UnicastServerRef/serialFilter/FilterUSRTest.java	https://github.
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/LetsEncryptCA.java	https://bugs.openjdk.java.net/browse/JDK-8270280	generic-all
+java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+
 ############################################################################
 
 # jdk_sound
@@ -336,10 +351,15 @@ java/util/logging/TestLoggerWeakRefLeak.java	https://github.com/adoptium/aqa-tes
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse-openj9/openj9/issues/4561 generic-all
 java/util/stream/boottest/java.base/java/util/stream/NodeTest.java https://github.com/eclipse-openj9/openj9/issues/4129 macosx-all
 java/util/stream/test/org/openjdk/tests/java/util/SplittableRandomTest.java https://github.com/eclipse-openj9/openj9/issues/4613 generic-all
-java/util/stream/test/org/openjdk/tests/java/util/stream/CountLargeTest.java	https://github.com/eclipse-openj9/openj9/issues/9040	linux-aarch64
 java/util/stream/test/org/openjdk/tests/java/util/stream/ToArrayOpTest.java	https://github.com/eclipse-openj9/openj9/issues/3447	generic-all
 java/util/WeakHashMap/GCDuringIteration.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/util/zip/ZipFile/TestCleaner.java	https://github.com/eclipse-openj9/openj9/issues/8872 	generic-all
+
+############################################################################
+
+# jdk_vector
+jdk/incubator/vector/Byte64VectorTests.java https://github.com/eclipse-openj9/openj9/issues/9041 linux-ppc64le
+jdk/incubator/vector/Vector64ConversionTests.java https://github.com/eclipse-openj9/openj9/issues/12190 aix-all,linux-aarch64
 
 ############################################################################
 
