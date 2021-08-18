@@ -60,7 +60,6 @@ def setupEnv() {
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
 	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	TKG_SHA = params.TKG_SHA ? params.TKG_SHA : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
 	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
@@ -407,7 +406,6 @@ def setup() {
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
 			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
 			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
-			TKG_SHA_OPTION = (params.TKG_SHA) ? "--tkg_sha ${params.TKG_SHA}" : ""
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
@@ -441,7 +439,7 @@ def setup() {
 			// Only set image required to false if params is set to false. In get.sh, the default value is true
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
-			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${TKG_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
+			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 			
 			dir( WORKSPACE) {

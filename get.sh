@@ -26,7 +26,6 @@ OPENJ9_REPO="https://github.com/eclipse-openj9/openj9.git"
 OPENJ9_SHA=""
 OPENJ9_BRANCH=""
 TKG_REPO="https://github.com/adoptium/TKG.git"
-TKG_SHA=""
 TKG_BRANCH="master"
 VENDOR_REPOS=""
 VENDOR_SHAS=""
@@ -57,7 +56,6 @@ usage ()
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
 	echo '                [--tkg_repo ] : optional. TKG git repo. Default value https://github.com/adoptium/TKG.git is used if not provided'
-	echo '                [--tkg_sha ] : optional. TkG pull request sha.'
 	echo '                [--tkg_branch ] : optional. TKG branch.'
 	echo '                [--vendor_repos ] : optional. Comma separated Git repository URLs of the vendor repositories'
 	echo '                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories'
@@ -121,9 +119,6 @@ parseCommandLineArgs()
 
 			"--tkg_repo" )
 				TKG_REPO="$1"; shift;;
-
-			"--tkg_sha" )
-				TKG_SHA="$1"; shift;;
 
 			"--tkg_branch" )
 				TKG_BRANCH="$1"; shift;;
@@ -439,24 +434,17 @@ getTestKitGen()
 	echo "get testKitGen..."
 	cd $TESTDIR
 
-	if [ "$TKG_BRANCH" != "" ]
-	then
-		TKG_BRANCH="-b $TKG_BRANCH"
+	echo "git clone -q $TKG_REPO"
+	git clone -q $TKG_REPO
+	cd TKG
+	echo "git rev-parse $TKG_BRANCH"
+	if ! tkg_sha=(`git rev-parse $TKG_BRANCH`); then
+		echo "git rev-parse origin/$TKG_BRANCH"
+		tkg_sha=(`git rev-parse origin/$TKG_BRANCH`)
 	fi
 
-	echo "git clone $TKG_BRANCH $TKG_REPO"
-	git clone -q $TKG_BRANCH $TKG_REPO
-
-	if [ "$TKG_SHA" != "" ]
-	then
-		echo "update to tkg sha: $TKG_SHA"
-		cd TKG
-		echo "git fetch -q --tags $TKG_REPO +refs/pull/*:refs/remotes/origin/pr/*"
-		git fetch -q --tags $TKG_REPO +refs/pull/*:refs/remotes/origin/pr/*
-		echo "git checkout -q $TKG_SHA"
-		git checkout -q $TKG_SHA
-		cd $TESTDIR
-	fi
+	echo "git checkout -q -f $tkg_sha"
+	git checkout -q -f $tkg_sha
 
 	checkTestRepoSHAs
 }
