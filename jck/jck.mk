@@ -70,6 +70,11 @@ endif
 
 SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../../system
 
+ifndef JRE_IMAGE
+	JRE_ROOT := $(TEST_JDK_HOME)
+	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
+endif
+
 define JCK_CMD_TEMPLATE
 perl $(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)stf;$(TEST_RESROOT)$(D)..$(D)..$(D)system$(D)aqa-systemtest$(Q) \
