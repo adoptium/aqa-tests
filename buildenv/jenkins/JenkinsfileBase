@@ -595,8 +595,8 @@ def runTest( ) {
 						script: 'date -u +"%u%M"',
 						returnStdout: true
 					).trim()
-					env.DISPLAY = ":${xSEED}"
-					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX :${xSEED} &"
+					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX --secIP 000 :${xSEED} &"
+					env.DISPLAY = "unix:${xSEED}"
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
