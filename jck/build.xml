@@ -39,7 +39,7 @@
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
 
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/STF.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
 	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
@@ -55,7 +55,7 @@
 		<if>
 			<available file="${JCK_ROOT_USED}" type="dir" />
 			<then>
-				<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
+				<!--Obtain local and remote SHA to figure out if local materials are up-to-date-->
 				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="localSHA">
 					<arg line="rev-parse"/>
 					<arg line="HEAD"/>
@@ -74,7 +74,7 @@
 						<striplinebreaks/>
 					</filterchain>
 				</loadresource>
-					
+
 				<echo message="LocalSHA = --${localSHATrimmed}--"/>
 				<echo message="RemoteSHA= --${remoteSHA}--"/>
 
@@ -82,7 +82,7 @@
 					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
 				</condition>
 			</then>
-		</if>	
+		</if>
 		<if>
 			<not>
 				<available file="${JCK_ROOT_USED}" type="dir" />
@@ -111,7 +111,7 @@
 					<else>
 						<if>
 							<isset property="local-material-uptodate" />
-							<then> 
+							<then>
 								<echo message="Local JCK materials up-to-date. Skipping update"/>
 							</then>
 							<else>
@@ -141,7 +141,7 @@
 			<then>
 				<if>
 					<isset property="local-material-uptodate"/>
-					<then> 
+					<then>
 						<echo message="Local JCK materials up-to-date. Skipping hard reset"/>
 					</then>
 					<else>
@@ -165,7 +165,7 @@
 					</else>
 				</if>
 			</then>
-		</if> 
+		</if>
 	</target>
 
 	<target name="init">
@@ -190,6 +190,7 @@
 			<arg value="-b"/>
 			<arg value="${stf_branch}"/>
 			<arg value="${stf_repo}"/>
+			<arg value="stf"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
