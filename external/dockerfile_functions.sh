@@ -506,7 +506,6 @@ remove_trailing_spaces() {
     fi
 }
 
-
 # Generate the dockerfile for a given build
 generate_dockerfile() {
     file=$1
@@ -516,23 +515,17 @@ generate_dockerfile() {
     os=$5
     package=$6
     build=$7
-    testtarget=$8
+    check_external_custom_test=$8
+    testtarget=$9
 
-    check_external_custom_test=0
-
-    if [ ${test} == 'external_custom' ]; then
-        check_external_custom_test=1
-        echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO} in dockerfile_functions.sh"
-        echo "EXTERNAL_CUSTOM_BRANCH points to ${EXTERNAL_REPO_BRANCH} in dockerfile_functions.sh"
-        test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-        echo ${test}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then
-        set_external_custom_test_info ${test}
+        set_external_custom_test_info ${test} ${check_external_custom_test}
     else
-        set_test_info ${test}
+        set_test_info ${test} ${check_external_custom_test}
     fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
 

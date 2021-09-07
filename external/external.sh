@@ -33,14 +33,39 @@ usage () {
 	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
 }
 
+supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
+
+function check_test() {
+    test=$1
+
+    for current_test in ${supported_tests}
+    do
+        if [[ "${test}" == "${current_test}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
+}
+
 parseCommandLineArgs() {
+	check_external_custom=0
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
 		shift; 
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1"; echo "test in external.sh points to ${test} ";echo "EXTERNAL_CUSTOM_REPO points to ${EXTERNAL_CUSTOM_REPO}"; shift;;
+				test="$1";
+				echo "The test here is ${test}"
+				if [ ${test} == 'external_custom' ]; then
+				    test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+					if (check_test ${test}); then
+						check_external_custom=1
+					fi
+				fi
+				echo "The directory in the external.sh is ${test}"
+				shift;;
 			
 			"--version" | "-v" )
 				version="$1"; shift;;
@@ -138,8 +163,7 @@ parseCommandLineArgs "$@"
 # DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "build" ]; then
-	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
-	echo "In the external --build, the test points to ${test}"
+	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $check_external_custom
 fi
 
 if [ $command_type == "run" ]; then
@@ -150,11 +174,9 @@ if [ $command_type == "run" ]; then
 		echo "docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
 		docker cp $test-test:$reportsrc $reportdst/external_test_reports;
-		echo "In the external --run, the test points to ${test}"
 	else
 		echo "docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
-		echo "In the external --run, the test points to ${test} but $reportsrc is false"
 	fi
 fi
 
