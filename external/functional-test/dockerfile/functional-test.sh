@@ -35,10 +35,10 @@ export BUILD_LIST=functional
 
 echo_setup
 
-cd /openjdk-tests
-./get.sh -t /openjdk-tests
+cd /aqa-tests
+./get.sh -t /aqa-tests
 
-cd /openjdk-tests/TKG
+cd /aqa-tests/TKG
 
 set -e
 

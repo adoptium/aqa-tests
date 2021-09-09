@@ -27,7 +27,7 @@ if [ -z "${SMT}" ]; then
     SMT=true
 fi
 
-. "$TEST_RESROOT/../../../openjdk-tests/perf/affinity.sh" > /dev/null 2>&1
+. "$TEST_RESROOT/../../../aqa-tests/perf/affinity.sh" > /dev/null 2>&1
 setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
 
 #TODO: We'll need to add affinity variables for client and DB in the scripts if we decide to run

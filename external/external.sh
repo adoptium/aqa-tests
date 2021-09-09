@@ -16,7 +16,7 @@
 # script runs in 3 modes - build / run / clean
 
 set -e
-tag=${DOCKERIMAGE_TAG}
+tag=nightly
 docker_os=ubuntu
 build_type=full
 package=jdk
@@ -33,14 +33,39 @@ usage () {
 	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--clean]'
 }
 
+supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
+
+function check_test() {
+    test=$1
+
+    for current_test in ${supported_tests}
+    do
+        if [[ "${test}" == "${current_test}" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
+}
+
 parseCommandLineArgs() {
+	check_external_custom=0
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
 		shift; 
 
 		case "$opt" in
 			"--dir" | "-d" )
-				test="$1"; shift;;
+				test="$1";
+				echo "The test here is ${test}"
+				if [ ${test} == 'external_custom' ]; then
+				    test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+					if (check_test ${test}); then
+						check_external_custom=1
+					fi
+				fi
+				echo "The directory in the external.sh is ${test}"
+				shift;;
 			
 			"--version" | "-v" )
 				version="$1"; shift;;
@@ -56,7 +81,13 @@ parseCommandLineArgs() {
 				fi;;
 				
 			"--tag" | "-t" )
-				tag="$1"; shift; parse_tag;;
+				if [ -z "$1" ]; then 
+					echo "No DOCKERIMAGE_TAG set, tag as default 'nightly'"; 
+				else 
+  					tag="$1";
+				fi
+				shift;
+				parse_tag;;
 
 			"--reportsrc" )
 				reportsrc="$1"; shift;;
@@ -132,10 +163,13 @@ parseCommandLineArgs "$@"
 # DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "build" ]; then
-	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type
+	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $check_external_custom
 fi
 
 if [ $command_type == "run" ]; then
+	if [[ ${test} == 'external_custom' ]]; then
+			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
 	if [ $reportsrc != "false" ]; then
 		echo "docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		docker run $docker_args --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget;
@@ -147,6 +181,9 @@ if [ $command_type == "run" ]; then
 fi
 
 if [ $command_type == "clean" ]; then
+	if [[ ${test} == 'external_custom' ]]; then
+			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
 	if [ $reportsrc != "false" ]; then
 		docker rm -f $test-test;
 	fi

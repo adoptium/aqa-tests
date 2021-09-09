@@ -46,7 +46,7 @@ print_adopt_test() {
     local test=$2
 
     echo -e "# This Dockerfile in external/${test}/dockerfile dir is used to create an image with" \
-          "\n# AdoptOpenJDK jdk binary installed. Basic test dependent executions" \
+          "\n# Adoptium jdk binary installed. Basic test dependent executions" \
           "\n# are installed during the building process." \
           "\n#" \
           "\n# Build example: \`docker build -t adoptopenjdk-${test}-test -f ${file} .\`" \
@@ -423,9 +423,16 @@ print_test_script() {
     local test=$2
     local script=$3
 
-    echo -e "# This is the main script to run ${test} tests" \
-            "\nCOPY ${test}/dockerfile/${script} /${script}" \
-            "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    else
+        echo -e "# This is the main script to run ${test} tests" \
+                "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
+    fi
+    
 }
 
 print_testInfo_env() {
@@ -458,6 +465,17 @@ print_clone_project() {
             "\n" >> ${file}
 }
 
+print_external_custom_parameters(){
+    local file=$1
+
+    echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
+            "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
+            "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
+            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+            "\n" >> ${file}
+
+}
+
 print_entrypoint() {
     local file=$1
     local script=$2
@@ -488,7 +506,6 @@ remove_trailing_spaces() {
     fi
 }
 
-
 # Generate the dockerfile for a given build
 generate_dockerfile() {
     file=$1
@@ -498,9 +515,18 @@ generate_dockerfile() {
     os=$5
     package=$6
     build=$7
-    testtarget=$8
+    check_external_custom_test=$8
+    testtarget=$9
 
-    set_test_info ${test}
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        tag_version=${EXTERNAL_REPO_BRANCH}
+    fi
+
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        set_external_custom_test_info ${test} ${check_external_custom_test}
+    else
+        set_test_info ${test} ${check_external_custom_test}
+    fi
     packages=$(echo ${os}_packages | sed 's/-/_/')
 
     jhome="/opt/java/openjdk"
@@ -562,6 +588,11 @@ generate_dockerfile() {
 
     print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
+
+    if [[ ${check_external_custom_test} -eq 1 ]]; then
+        print_external_custom_parameters ${file}
+    fi
+
     print_entrypoint ${file} ${script} ${os};
 
     if [[ ! -z ${testtarget} ]]; then

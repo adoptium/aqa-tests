@@ -7,7 +7,15 @@
 	<import file="${TEST_ROOT}/external/build.xml"/>
 
 	<!-- set properties for this build -->
-	<property name="TEST" value="derby" />
+	<property name="TEST" value="external_custom" />
+	<property environment="env" />
+	<property name="EXTERNAL_CUSTOM_REPO" value="${env.EXTERNAL_CUSTOM_REPO}" />
+    <condition property="EXTERNAL_REPO_BRANCH" value="${env.EXTERNAL_REPO_BRANCH}" else="master">
+		<isset property="env.EXTERNAL_REPO_BRANCH" />
+	</condition>
+	<condition property="EXTERNAL_TEST_CMD" value="${env.EXTERNAL_TEST_CMD}" else="mvn clean install">
+		<isset property="env.EXTERNAL_TEST_CMD" />
+	</condition>
 	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 

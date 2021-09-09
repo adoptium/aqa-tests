@@ -19,7 +19,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/BINC,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/BINC,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -29,11 +29,137 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jck-compiler-lang-CLSS</testCaseName>
+		<testCaseName>jck-compiler-lang-CLSS-Group1</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/CLSS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP1),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group2</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP2),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group3</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP3),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group4</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP4),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group5</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP5),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group6</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP6),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group7</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP7),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group8</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP8),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group9</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP9),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-CLSS-Group10</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_CLASS_TESTS_GROUP10),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -47,7 +173,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/CONV,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/CONV,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -57,11 +183,277 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jck-compiler-lang-EXPR</testCaseName>
+	<testCaseName>jck-compiler-lang-EXPR-group1</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXPR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP1),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group2</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP2),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group3</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP3),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group4</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP4),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group5</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP5),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group6</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP6),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group7</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP7),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group8</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP8),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group9</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP9),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group10</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win and ppc64le due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64le_linux|x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=$(COMPILER_LANG_EXPR_TESTS_GROUP10),jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -75,7 +467,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/INTF,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/INTF,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -86,10 +478,24 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-LMBD</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/LMBD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/LMBD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -103,7 +509,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ARR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ARR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -117,7 +523,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/DASG,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/DASG,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -131,7 +537,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXCP,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXCP,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -145,7 +551,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXEC,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/EXEC,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -159,7 +565,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/FP,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/FP,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -173,7 +579,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ICLS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ICLS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -187,7 +593,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/INFR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/INFR,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -201,7 +607,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/MOD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/MOD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -209,16 +615,16 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>9+</subset>
-		</subsets>
+		<versions>
+			<version>9+</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-NAME</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE)-test-args=$(Q)tests=lang/NAME,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE)-test-args=$(Q)tests=lang/NAME,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -232,7 +638,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/PKGS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/PKGS,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -246,7 +652,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/THRD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/THRD,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -260,7 +666,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/TYPE,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/TYPE,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -271,10 +677,24 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-lang-ANNOT</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows</platform>
+				<version>11</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on win due to backlog/issues/487. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>x86-64_windows</platform>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ANNOT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/ANNOT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -288,7 +708,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/LEX,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/LEX,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -302,7 +722,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/STMT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=lang/STMT,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

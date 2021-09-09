@@ -18,13 +18,13 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_all</testCaseName>
+		<testCaseName>MathLoadTest_all_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=math,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -34,13 +34,13 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_autosimd</testCaseName>
+		<testCaseName>MathLoadTest_autosimd_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd,timeLimit=5m$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -50,13 +50,13 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_bigdecimal</testCaseName>
+		<testCaseName>MathLoadTest_bigdecimal_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)timeLimit=5m,workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -66,11 +66,11 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_all_ConcurrentScavenge</testCaseName>
+		<testCaseName>MathLoadTest_all_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=math,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -85,11 +85,11 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_autosimd_ConcurrentScavenge</testCaseName>
+		<testCaseName>MathLoadTest_autosimd_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)timeLimit=5m,workload=autoSimd$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -104,11 +104,11 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_bigdecimal_ConcurrentScavenge</testCaseName>
+		<testCaseName>MathLoadTest_bigdecimal_CS_5m</testCaseName>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)timeLimit=5m,workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -123,11 +123,13 @@
 		<platformRequirements>bits.64,^arch.arm</platformRequirements>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_all_special</testCaseName>
-		<disabled>
-			<comment>rtc 139897</comment>
-			<variation>Mode554</variation>
-		</disabled>
+		<testCaseName>MathLoadTest_all_special_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>rtc 139897</comment>
+				<variation>Mode554</variation>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -161,7 +163,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=math,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -175,7 +177,7 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_autosimd_special</testCaseName>
+		<testCaseName>MathLoadTest_autosimd_special_5m</testCaseName>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -209,7 +211,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd$(Q) -test=MathLoadTest; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)timeLimit=5m,workload=autoSimd$(Q) -test=MathLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -223,11 +225,13 @@
 		</impls>
 	</test>
 	<test>
-		<testCaseName>MathLoadTest_bigdecimal_special</testCaseName>
-		<disabled>
-			<comment>https://github.com/eclipse/openj9/issues/9104</comment>
-			<variation>Mode614</variation>
-		</disabled>
+		<testCaseName>MathLoadTest_bigdecimal_special_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/9104</comment>
+				<variation>Mode614</variation>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -261,7 +265,7 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)workload=bigDecimal$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)timeLimit=5m,workload=bigDecimal$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>

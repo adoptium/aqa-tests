@@ -1,4 +1,4 @@
-#/bin/bash
+ #/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -38,16 +38,16 @@ fi
 
 echo_setup
 
-# export MAVEN_OPTS="-Xmx1g"
+set -e
 
-cd /flink
+external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+
+cd /${external_test_repo}
+
 pwd
-echo "Compile and run external_custom tests"
-mvn clean install
+echo "Compile and run external tests"
+${EXTERNAL_TEST_CMD}
 test_exit_code=$?
 echo "Build external_custom completed"
-
+set +e
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
-
-exit $test_exit_code

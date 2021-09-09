@@ -27,22 +27,22 @@
 		<groups>
 			<group>jck</group>
 		</groups>
-		<subsets>
-			<subset>8</subset>
-			<subset>9</subset>
-			<subset>10</subset>
-			<subset>11</subset>
-			<subset>12</subset>
-			<subset>13</subset>
-			<subset>14</subset>
-		</subsets>
+		<versions>
+			<version>8</version>
+			<version>9</version>
+			<version>10</version>
+			<version>11</version>
+			<version>12</version>
+			<version>13</version>
+			<version>14</version>
+		</versions>
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-javax_annotation</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_annotation,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_annotation,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -56,7 +56,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -70,7 +70,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_tools,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_tools,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -81,13 +81,25 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-signaturetest</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on aix on JDK8 for test setup issue: backlog/issues/506</comment>
+				<platform>ppc64_aix</platform>
+				<version>8</version>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Temporarily disabled on aix on JDK8 for test setup issue: backlog/issues/506</comment>
+				<platform>ppc64_aix</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
 	$(TEST_STATUS)</command>
-		<!-- Disabled on osx due to runtimes/infrastructure/issues/1111 -->
-		<platformRequirements>^os.osx</platformRequirements>
 		<levels>
 			<level>extended</level>
 		</levels>
