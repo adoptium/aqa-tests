@@ -212,19 +212,21 @@ sun/tools/jstat/jstatLineCounts2.sh	https://bugs.openjdk.java.net/browse/JDK-824
 sun/tools/jstat/jstatLineCounts3.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all
 sun/tools/jstat/jstatLineCounts4.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all
 tools/launcher/HelpFlagsTest.java	https://bugs.openjdk.java.net/browse/JDK-8273235 windows-x86
-tools/jpackage/share/AddLauncherTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/AppImagePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/EmptyFolderPackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/FileAssociationsTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/IconTest.java	https://github.com/adoptium/infrastructure/issues/2291 linux-aarch64
-tools/jpackage/share/InstallDirTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/LicenseTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/MultiLauncherTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/MultiNameTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/RuntimePackageTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/SimplePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/jdk/jpackage/tests/BasicTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
+# Following 14 tests under share directory failed on linux-64 for infra issue https://github.com/adoptium/infrastructure/issues/2311
+tools/jpackage/share/AddLauncherTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/AppImagePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/EmptyFolderPackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/FileAssociationsTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/IconTest.java	https://github.com/adoptium/infrastructure/issues/2291 linux-aarch64,linux-x64
+tools/jpackage/share/InstallDirTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/LicenseTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/MultiLauncherTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/MultiNameTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+#tools/jpackage/share/RuntimePackageTest.java#id0	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/share/RuntimePackageTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-64
+tools/jpackage/share/SimplePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/jdk/jpackage/tests/BasicTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
+tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-x64
 tools/jpackage/windows/WinDirChooserTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinInstallerUiTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinL10nTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -236,6 +238,15 @@ tools/jpackage/windows/WinShortcutPromptTest.java	https://github.com/adoptium/in
 tools/jpackage/windows/WinShortcutTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUpgradeUUIDTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUrlTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
+tools/jpackage/linux/AppAboutUrlTest.java#id0	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/AppCategoryTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/LinuxBundleNameTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/LinuxResourceTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/MaintainerTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/PackageDepsTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/ShortcutHintTest.java#id0	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/ReleaseTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
+tools/jpackage/linux/jdk/jpackage/tests/UsrTreeTest.java	https://github.com/adoptium/infrastructure/issues/2311	linux-x64
 tools/jlink/JLinkReproducible3Test.java	https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
 ############################################################################
 
