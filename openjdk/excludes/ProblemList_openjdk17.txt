@@ -82,7 +82,7 @@ java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adopt
 ############################################################################
 
 # jdk_management
-com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-x64,linux-s390x,linux-ppc64le
+com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-x64,linux-s390x,linux-ppc64le,linux-aarch64
 sun/management/jmxremote/startstop/JMXStartStopTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusPerfCountersTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
@@ -197,14 +197,15 @@ tools/jpackage/share/AppImagePackageTest.java	https://github.com/adoptium/infras
 tools/jpackage/share/EmptyFolderPackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/FileAssociationsTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/IconTest.java	https://github.com/adoptium/infrastructure/issues/2291 linux-aarch64
-tools/jpackage/share/InstallDirTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/LicenseTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/MultiLauncherTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/MultiNameTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/RuntimePackageTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/SimplePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/jdk/jpackage/tests/BasicTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
+#The following 8 tests under tools/jpackage/share/ excluded on linux-aarch64 the tracked issue is https://github.com/adoptium/infrastructure/issues/2291
+tools/jpackage/share/InstallDirTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/LicenseTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/MultiLauncherTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/MultiNameTwoPhaseTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/RuntimePackageTest.java#id0	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/SimplePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/jdk/jpackage/tests/BasicTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
 tools/jpackage/windows/WinDirChooserTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinInstallerUiTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinL10nTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -216,10 +217,11 @@ tools/jpackage/windows/WinShortcutPromptTest.java	https://github.com/adoptium/in
 tools/jpackage/windows/WinShortcutTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUpgradeUUIDTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUrlTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
+tools/jlink/JLinkTest.java	https://github.com/adoptium/aqa-tests/issues/2857 windows-x86
 ############################################################################
 
 # jdk_jdi
-
+com/sun/jdi/OnJcmdTest.java	https://github.com/adoptium/aqa-tests/issues/2837	windows-x86
 ############################################################################
 
 # jdk_util
@@ -290,4 +292,23 @@ compiler/graalunit/Replacements12Test.java https://github.com/adoptium/aqa-tests
 compiler/graalunit/Replacements9Test.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/ReplacementsTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
+############################################################################
 
+# jdk_jfr
+jdk/jfr/event/oldobject/TestAllocationTime.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestHeapDeep.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestG1.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/api/consumer/TestRecordedFrame.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/allocation/TestObjectAllocationInNewTLABEvent.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/gc/collection/TestG1ParallelPhases.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestListenerLeak.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestObjectAge.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestReferenceChainLimit.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/event/oldobject/TestThreadLocalLeak.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestClose.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestDelegated.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestEnableDisable.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestRemoteDump.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestRotate.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
+jdk/jfr/jmx/streaming/TestSetSettings.java	https://github.com/adoptium/aqa-tests/issues/2855 windows-x86
