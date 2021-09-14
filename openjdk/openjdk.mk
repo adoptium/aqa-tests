@@ -156,3 +156,9 @@ endif
 ifeq (,$(wildcard $(PROBLEM_LIST_FILE)))
 	PROBLEM_LIST_FILE:=$(PROBLEM_LIST_DEFAULT)
 endif
+
+# ProblemList-graal.txt file only exists in jdk11 and jdk16. Refer to the file only when it is present.
+GRAAL_PROBLEM_LIST_FILE:=
+ifneq ($(filter 11 16, $(JDK_VERSION)),)
+	GRAAL_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList-graal.txt$(Q)
+endif
