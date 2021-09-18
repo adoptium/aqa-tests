@@ -9,6 +9,10 @@ def key, value
 def should_run_grinder = false // Assume that the job should not be run again
 def map = [:]
 
+/**
+ This runs when we have found a job w/ git_issue_status = closed.
+ Collects all parameters and runs grinder 
+ */
 def run_grinder(map) {
     def jenkins_url = "https://ci.adoptopenjdk.net/view/" + 
                       "Test_grinder/job/Grinder/buildWithParameters"
