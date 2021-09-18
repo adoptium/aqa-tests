@@ -9,9 +9,12 @@ def json_parser(json_obj):
 def find_state(query_url):
     params = {'accept': 'application/vnd.github.v3+json',
               'state': 'all'}
-    response = requests.get(query_url, params=params).json()
-    json_str = json.dumps(response)
-    return json.loads(json_str)["state"]
+    try:
+        response = requests.get(query_url, params=params).json()
+        json_str = json.dumps(response)
+        return json.loads(json_str)["state"]
+    except:
+        print("An exception occurred! Url is invalid")
 
 def main():
     base_url = f'https://api.github.com/repos/'
