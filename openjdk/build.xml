@@ -68,14 +68,14 @@
 							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
 					</then>
 				</if>
+				<exec executable="gzip" failonerror="true">
+					<arg line="-d ${jtregTar}.tar.gz" />
+				</exec>
 			</then>
 			<else>
    				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
 			</else>
 		</if>
-		<exec executable="gzip" failonerror="true">
-			<arg line="-d ${jtregTar}.tar.gz" />
-		</exec>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
 			<then>
