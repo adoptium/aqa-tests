@@ -74,6 +74,9 @@
 			</then>
 			<else>
    				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
+				<exec executable="gzip" failonerror="true">
+					<arg line="-d ${jtregTar}.tar.gz" />
+				</exec>
 			</else>
 		</if>
 		<if>
