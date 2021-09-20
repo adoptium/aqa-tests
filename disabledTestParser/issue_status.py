@@ -18,7 +18,7 @@ def find_state(query_url):
 
 def main():
     base_url = f'https://api.github.com/repos/'
-    f = open('issue.json',)
+    f = open('ProblemList.json',)
     data = json.load(f)
     
     for j in data:
