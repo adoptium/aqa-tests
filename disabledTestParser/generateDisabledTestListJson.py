@@ -2,6 +2,7 @@ import itertools
 import os
 import json
 import argparse
+import re
 
 platform_map = {
     "arm-linux": ["arm_linux"],
@@ -14,21 +15,28 @@ platform_map = {
     "windows-x64": ["x86-64_windows"],
     "windows-x86": ["x86-64_windows", "x86-32_windows"],
     "x86-64_windows": ["x86-64_windows"],
-    "z/OS-s390x": ["s390x_zos", "s390x_linux"]
+    "z/OS-s390x": ["s390x_zos"],
+
+    "linux-ppc32": ["ppc32_linux"],
+    "linux-ppc64": ["ppc64_linux"],
+    "linux-riscv64": ["riscv64_linux"],
+    "linux-s390": ["s390_linux"],
+    "solaris-sparcv9": ["sparcv9_solaris"],
+    "solaris-x86-64": ["x86-64_solaris"],
+    "alpine-linux-x86-64": ["x86-64_alpine-linux"],
+    "linux-x86-32": ["x86-32_linux"]
 }
 
 
 def get_jdk_version_and_impl(exclude_list_file):
     # As of now, the ProblemList*.txt files are named in the following format:
-    # ProblemList_openjdk<JDK_VERSION >-<JDK_IMPL>.txt  # for JDK_IMPL = openj9 and sap
+    # ProblemList_openjdk<JDK_VERSION>-<JDK_IMPL>.txt  # for JDK_IMPL = openj9 and sap
     # or
-    # ProblemList_openjdk<JDK_VERSION>.txt              # for JDK_IMPL = hotspot ?
-    temp = exclude_list_file.replace("ProblemList_openjdk", "") \
-        .replace(".txt", "") \
-        .split("-")
+    # ProblemList_openjdk<JDK_VERSION>.txt              # for JDK_IMPL = hotspot
+    temp = re.search(r'ProblemList_openjdk(\d*)-?(.*).txt', exclude_list_file)
 
-    jdk_version = temp[0]
-    jdk_impl = "hotspot" if len(temp) == 1 else temp[1]
+    jdk_version = temp.group(1)
+    jdk_impl = "hotspot" if temp.group(2) == '' else temp.group(2)
     return jdk_version, jdk_impl
 
 
