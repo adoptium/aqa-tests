@@ -631,6 +631,9 @@ def post(output_name) {
 			else {
 				output_name = output_name.replace("/","_")
 			}
+			if (SPEC.startsWith('aix')) {
+				sh "VFBPID=$(ps -fu jenkins | grep vfb | awk '{print\$2}'); if [ ! -z "$VFBPID" ]; then echo Killing VFB process $VFBPID; kill $VFBPID; fi"
+			}
 			def tar_cmd = "tar -cf"
 			// Use pigz if we can as it is faster - 2> hides fallback message
 			def tar_cmd_suffix = "| (pigz -9 2>/dev/null || gzip -9)"
