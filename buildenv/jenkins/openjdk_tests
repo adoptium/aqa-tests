@@ -263,6 +263,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                                 // create error list and regex can be used
                                 List<String> errorList = new ArrayList<String>();
                                 errorList.add(".*There is not enough space in the file system.*");
+                                errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
 
                                 // nightly/weekly builds should not have git clone issue
                                 if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
