@@ -18,7 +18,8 @@ limitations under the License.
 	<description>
 	MBCS_Tests/codepoint
         </description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
+
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/codepoint" />
@@ -50,7 +51,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+	<target name="dist" depends="compile,copyData" description="generate the distribution">
 		<jar jarfile="${DEST}/codepoint.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../resources/" />
@@ -59,7 +60,7 @@ limitations under the License.
 			<fileset dir="${src}/../" includes="*.sh" />
 			<fileset dir="${src}/../" includes="*.bat" />
 			<fileset dir="${src}/../" includes="expected.txt" />
-                        <fileset dir="../tools/" includes="*" />
+			<fileset dir="../tools/" includes="*" />
 		</copy>
 		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/" />
