@@ -49,17 +49,31 @@
 	</target>
 
 	<target name="clone_stf">
-		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
+		<echo message="git clone -q ${stf_repo} "/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="-b"/>
-			<arg value="${stf_branch}"/>
+			<arg value="clone" />		
+			<arg value="-q"/>
 			<arg value="${stf_repo}"/>
-			<arg value="stf"/>
 		</exec>
+
+		<echo message="git rev-parse ${stf_branch} "/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" resultproperty="stf_sha" >
+			<arg value="rev-parse"/>
+			<arg value="${stf_branch}"/>
+		</exec>
+		<if>
+			<isset property="stf_sha"/>
+			<then>
+				<echo message="git checkout -q -f ${stf_sha} "/>
+				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" resultproperty="stf_sha" >
+					<arg value="checkout"/>
+					<arg value="-q"/>
+					<arg value="-f"/>				
+					<arg value="${stf_sha}"/>
+				</exec>
+			<then/>
+		</if>
+
 		<if>
 			<isset property="isZOS" />
 			<then>
