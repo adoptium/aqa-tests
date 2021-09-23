@@ -850,6 +850,9 @@ def uploadToArtifactory(pattern) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
+		if (artifactoryRoorDir.endsWith("/")) {
+			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
+		}
 		def artifactoryUploadDir = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
 
 		def uploadSpec = """{
