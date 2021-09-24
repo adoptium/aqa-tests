@@ -50,22 +50,28 @@
 
 	<target name="clone_stf">
 		<echo message="git clone -q ${stf_repo} "/>
-		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />		
 			<arg value="-q"/>
 			<arg value="${stf_repo}"/>
 		</exec>
 
 		<echo message="git rev-parse ${stf_branch} "/>
-		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" >
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${stf_branch}"/>
 		</exec>
 		<if>
+ 			<equals arg1="${code}" arg2="128"/>			
+			<then>
+				<echo message="the branch does not exit"/>
+			</then>
+		</if>
+		<if>
 			<isset property="stf_sha"/>
 			<then>
 				<echo message="git checkout -q -f ${stf_sha} "/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
+				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" >
 					<arg value="checkout"/>
 					<arg value="-q"/>
 					<arg value="-f"/>				
