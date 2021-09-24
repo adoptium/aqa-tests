@@ -69,12 +69,16 @@
 					<arg value="rev-parse"/>
 					<arg value="origin/${stf_branch}"/>
 				</exec>
-				<if>
- 					<equals arg1="${code2}" arg2="128"/>
-					<echo message="This branch does not exist!"/>
-				</if>
 			</then>
 		</if>
+		
+		<if>
+ 			<equals arg1="${code2}" arg2="128"/>
+			<then>
+				<echo message="This branch does not exist!"/>
+			</then>
+		</if>
+
 		<if>
 			<isset property="stf_sha"/>
 			<then>
