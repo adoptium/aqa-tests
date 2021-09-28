@@ -18,7 +18,8 @@ limitations under the License.
 	<description>
 		Build MBCS_Tests
 	</description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
+
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
 
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests" />
@@ -45,12 +46,9 @@ limitations under the License.
 		</if>
 	</target>
 	
-	<target name="dist" depends="init,dist_functional">
+	<target name="dist" depends="init,copyData">
 		<copy todir="${DEST}">
 			<fileset dir="." includes="*.mk"/>
-		</copy>
-		<copy todir="${DEST}/data">
-			<fileset dir="./data/" includes="*"/>
 		</copy>
 	</target>
 </project>

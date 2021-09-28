@@ -18,7 +18,8 @@ limitations under the License.
 	<description>
 	MBCS_Tests/text_blocks
 	</description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
+
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/text_blocks" />
@@ -44,7 +45,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+	<target name="dist" depends="compile,copyData" description="generate the distribution">
 		<jar jarfile="${DEST}/text_blocks.jar" filesonly="true">
 			<fileset dir="${build}" />
 		</jar>

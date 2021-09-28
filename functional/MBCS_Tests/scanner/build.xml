@@ -18,7 +18,6 @@ limitations under the License.
 	<description>
 	MBCS_Tests/scanner
         </description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/scanner" />
@@ -44,7 +43,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+	<target name="dist" depends="compile" description="generate the distribution">
 		<jar jarfile="${DEST}/scanner.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="../data/" includes="*.properties" />
