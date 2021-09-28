@@ -81,6 +81,7 @@ def setupEnv() {
 	env.EXTERNAL_CUSTOM_REPO=params.EXTERNAL_CUSTOM_REPO? params.EXTERNAL_CUSTOM_REPO : ""
 	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
+	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -549,13 +550,15 @@ def buildTest() {
 				env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
 			}
 
-			if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-				withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
-					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+			if (!params.DYNAMIC_COMPILE) {
+				if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+					withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
+						usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+						makeCompileTest()
+					}
+				} else {
 					makeCompileTest()
 				}
-			} else {
-				makeCompileTest()
 			}
 		}
 	}
@@ -850,6 +853,9 @@ def uploadToArtifactory(pattern) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
+		if (artifactoryRoorDir.endsWith("/")) {
+			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
+		}
 		def artifactoryUploadDir = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
 
 		def uploadSpec = """{
