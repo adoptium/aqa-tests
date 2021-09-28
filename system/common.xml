@@ -183,15 +183,48 @@
 	</target>
 
 	<target name="clone_openj9-systemtest">
-		<echo message="Cloning from: ${openj9_systemtest_repo} -b ${openj9_systemtest_branch}"/>
+		<echo message="git clone -q ${openj9_systemtest_repo} "/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="-b"/>
-			<arg value="${openj9_systemtest_branch}"/>
+			<arg value="clone" />		
+			<arg value="-q"/>
 			<arg value="${openj9_systemtest_repo}"/>
 		</exec>
+
+		<echo message="git rev-parse ${openj9_systemtest_branch} "/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha" resultproperty="code">
+			<arg value="rev-parse"/>
+			<arg value="${openj9_systemtest_branch}"/>
+		</exec>
+		<if>
+ 			<equals arg1="${code}" arg2="128"/>			
+			<then>
+				<echo message="git rev-parse origin/${openj9_systemtest_branch}"/>
+				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha" resultproperty="code2">
+					<arg value="rev-parse"/>
+					<arg value="origin/${openj9_systemtest_branch}"/>
+				</exec>
+				<if>
+					<equals arg1="${code2}" arg2="128"/>
+					<then>
+						<echo message="This branch does not exist!"/>
+					</then>
+				</if>
+			</then>
+		</if>
+		
+		<if>
+			<isset property="openj9_systemtest_sha"/>
+			<then>
+				<echo message="git checkout -q -f ${openj9_systemtest_sha} "/>
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
+					<arg value="checkout"/>
+					<arg value="-q"/>
+					<arg value="-f"/>				
+					<arg value="${openj9_systemtest_sha}"/>
+				</exec>
+			</then>
+		</if>
+
 		<if>
 			<isset property="isZOS" />
 			<then>
