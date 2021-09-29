@@ -48,7 +48,7 @@
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+	<target name="dist" depends="compile" description="generate the distribution">
 		<jar jarfile="${DEST}/SyntheticGCWorkload.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../" includes="*.properties,*.xml" />
