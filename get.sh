@@ -182,7 +182,7 @@ getBinaryOpenjdk()
 		done
 		latestBuildUrl="${CUSTOMIZED_SDK_URL}${max}/"
 		echo "downloading files from $latestBuildUrl"
-		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')	
+		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')
 		arr=(${download_urls/ / })
 		download_url=()
 		for n in "${arr[@]}" ; do
