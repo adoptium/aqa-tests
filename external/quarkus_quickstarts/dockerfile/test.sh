@@ -49,7 +49,7 @@ mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\
 !:security-openid-connect-web-authentication-quickstart,\
 !:security-openid-connect-multi-tenancy-quickstart,!:spring-data-jpa-quickstart,\
 !:vertx-quickstart,!:context-propagation-quickstart,!:getting-started-reactive-rest,\
-!:kafka-quickstart,!:neo4j-quickstart clean install
+!:kafka-quickstart,!:neo4j-quickstart,!:rest-client-quickstart,!:rest-client-multipart-quickstart clean install
 test_exit_code=$?
 echo "Build quarkus_quickstarts completed"
 
