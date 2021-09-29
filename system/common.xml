@@ -47,89 +47,74 @@
 			</then>
 		</if>
 	</target>
-
 	<target name="clone_stf">
-		<echo message="git clone -q ${stf_repo} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />		
-			<arg value="-q"/>
-			<arg value="${stf_repo}"/>
-		</exec>
+			<echo message="git clone -q ${stf_repo} "/>
+			<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+				<arg value="clone" />		
+				<arg value="-q"/>
+				<arg value="${stf_repo}"/>
+			</exec>
 
-		<echo message="git rev-parse ${stf_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha1" resultproperty="code">
-			<arg value="rev-parse"/>
-			<arg value="${stf_branch}"/>
-		</exec>
-		<if>
- 			<equals arg1="${code}" arg2="128"/>			
-			<then>
-				<echo message="git rev-parse origin/${stf_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha2" resultproperty="code2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${stf_branch}"/>
-				</exec>
-				<if>
-					<equals arg1="${code2}" arg2="128"/>
-					<then>
-						<echo message="This branch does not exist!"/>
-					</then>
-				</if>
-				<if>
-					<isset property="stf_sha2"/>
-					<then>
-						<echo message="git checkout -q -f ${stf_sha2} "/>
-						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
-							<arg value="checkout"/>
-							<arg value="-q"/>
-							<arg value="-f"/>				
-							<arg value="${stf_sha2}"/>
-						</exec>
-					</then>
-				</if>
-			</then>
-			<else>
-				<if>
-					<isset property="stf_sha1"/>
-					<then>
-						<echo message="git checkout -q -f ${stf_sha1} "/>
-						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
-							<arg value="checkout"/>
-							<arg value="-q"/>
-							<arg value="-f"/>				
-							<arg value="${stf_sha1}"/>
-						</exec>
-					</then>
-				</if>
-			</else>
-		</if>
-		
-		
+			<echo message="git rev-parse ${stf_branch} "/>
+			<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code">
+				<arg value="rev-parse"/>
+				<arg value="${stf_branch}"/>
+			</exec>
+			<if>
+				<equals arg1="${code}" arg2="128"/>			
+				<then>
+					<echo message="git rev-parse origin/${stf_branch}"/>
+					<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code2">
+						<arg value="rev-parse"/>
+						<arg value="origin/${stf_branch}"/>
+					</exec>
+					<if>
+						<equals arg1="${code2}" arg2="128"/>
+						<then>
+							<echo message="This branch does not exist!"/>
+						</then>
+					</if>
+				</then>
+			</if>
+			
+			<if>
+				<isset property="stf_sha"/>
+				<then>
+					<echo message="git checkout -q -f ${stf_sha} "/>
+					<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
+						<arg value="checkout"/>
+						<arg value="-q"/>
+						<arg value="-f"/>				
+						<arg value="${stf_sha}"/>
+					</exec>
+				</then>
+			</if>
 
 
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
-		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
-	</target>
+			<if>
+				<isset property="isZOS" />
+				<then>
+					<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+					</delete>
+					<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
+					<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
+					<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+						<arg value="rm" />
+						<arg value="--cached" />
+						<arg value="-r" />
+						<arg value="-q" />
+						<arg value="." />
+					</exec>
+					<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+						<arg value="reset" />
+						<arg value="--hard" />
+					</exec>
+				</then>
+			</if>
+			<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
+		</target>
+
 
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
