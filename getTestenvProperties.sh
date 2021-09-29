@@ -155,7 +155,7 @@ timestamp() {
   date +"%Y%m%d-%H%M%S"
 }
 
-getSHA()
+writeTestenvProperties()
 {
 	OUTPUT_FILE="testenv.properties"
 	echo "Check sha in $REPO_DIR and store the info in $OUTPUT_FILE"
@@ -164,13 +164,11 @@ getSHA()
 		touch $OUTPUT_FILE
 	fi
 
-	echo $1
 	# append the info into $OUTPUT_FILE
 	for key in "${!vars[@]}"
 	do
 		echo "$key=${vars[$key]}" | tee -a $OUTPUT_FILE
 	done
-	# { echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $REPO_DIR"; echo "git repo: "; git remote show origin -n | grep "Fetch URL:"; echo "sha:"; git rev-parse HEAD; }  2>&1 | tee -a $OUTPUT_FILE
 }
 parseCommandLineArgs "$@"
-getSHA
+writeTestenvProperties
