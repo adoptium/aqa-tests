@@ -116,6 +116,7 @@
 		</target>
 
 
+
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
@@ -125,7 +126,7 @@
 		</exec>
 
 		<echo message="git rev-parse ${openjdk_systemtest_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
@@ -133,7 +134,7 @@
  			<equals arg1="${code}" arg2="128"/>			
 			<then>
 				<echo message="git rev-parse origin/${openjdk_systemtest_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha" resultproperty="code2">
+				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2" resultproperty="code2">
 					<arg value="rev-parse"/>
 					<arg value="origin/${openjdk_systemtest_branch}"/>
 				</exec>
@@ -143,21 +144,36 @@
 						<echo message="This branch does not exist!"/>
 					</then>
 				</if>
+				<if>
+					<isset property="openjdk_systemtest_sha2"/>
+					<then>
+						<echo message="git checkout -q -f ${openjdk_systemtest_sha2} "/>
+						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
+							<arg value="checkout"/>
+							<arg value="-q"/>
+							<arg value="-f"/>				
+							<arg value="${openjdk_systemtest_sha2}"/>
+						</exec>
+					</then>
+				</if>
 			</then>
+			<else>
+				<if>
+					<isset property="openjdk_systemtest_sha1"/>
+					<then>
+						<echo message="git checkout -q -f ${openjdk_systemtest_sha1} "/>
+						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
+							<arg value="checkout"/>
+							<arg value="-q"/>
+							<arg value="-f"/>				
+							<arg value="${openjdk_systemtest_sha1}"/>
+						</exec>
+					</then>
+				</if>
+			</else>
 		</if>
 		
-		<if>
-			<isset property="openjdk_systemtest_sha"/>
-			<then>
-				<echo message="git checkout -q -f ${openjdk_systemtest_sha} "/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
-					<arg value="checkout"/>
-					<arg value="-q"/>
-					<arg value="-f"/>				
-					<arg value="${openjdk_systemtest_sha}"/>
-				</exec>
-			</then>
-		</if>
+
 
 		<if>
 			<isset property="isZOS" />
@@ -192,7 +208,7 @@
 		</exec>
 
 		<echo message="git rev-parse ${openj9_systemtest_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${openj9_systemtest_branch}"/>
 		</exec>
@@ -200,7 +216,7 @@
  			<equals arg1="${code}" arg2="128"/>			
 			<then>
 				<echo message="git rev-parse origin/${openj9_systemtest_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha" resultproperty="code2">
+				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha2" resultproperty="code2">
 					<arg value="rev-parse"/>
 					<arg value="origin/${openj9_systemtest_branch}"/>
 				</exec>
@@ -210,22 +226,34 @@
 						<echo message="This branch does not exist!"/>
 					</then>
 				</if>
+				<if>
+					<isset property="openj9_systemtest_sha2"/>
+					<then>
+						<echo message="git checkout -q -f ${openj9_systemtest_sha2} "/>
+						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
+							<arg value="checkout"/>
+							<arg value="-q"/>
+							<arg value="-f"/>				
+							<arg value="${openj9_systemtest_sha2}"/>
+						</exec>
+					</then>
+				</if>
 			</then>
-		</if>
-		
-		<if>
-			<isset property="openj9_systemtest_sha"/>
-			<then>
-				<echo message="git checkout -q -f ${openj9_systemtest_sha} "/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
-					<arg value="checkout"/>
-					<arg value="-q"/>
-					<arg value="-f"/>				
-					<arg value="${openj9_systemtest_sha}"/>
-				</exec>
-			</then>
-		</if>
-
+			<else>
+				<if>
+					<isset property="openj9_systemtest_sha1"/>
+					<then>
+						<echo message="git checkout -q -f ${openj9_systemtest_sha1} "/>
+						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
+							<arg value="checkout"/>
+							<arg value="-q"/>
+							<arg value="-f"/>				
+							<arg value="${openj9_systemtest_sha1}"/>
+						</exec>
+					</then>
+				</if>
+			</else>
+		</if>	
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -249,7 +277,7 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 	</target>
-
+	
 	<target name="check_systemtest" depends="common_init">
 		<if>
 			<not>
