@@ -91,35 +91,6 @@
 			</then>
 		</if>
 
-		<if>
- 			<equals arg1="${code}" arg2="128"/>			
-			<then>
-				<echo message="git rev-parse origin/${stf_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${stf_branch}"/>
-				</exec>
-				<if>
-					<equals arg1="${code2}" arg2="128"/>
-					<then>
-						<echo message="This branch does not exist!"/>
-					</then>
-				</if>
-			</then>
-		</if>
-		
-		<if>
-			<isset property="stf_sha"/>
-			<then>
-				<echo message="git checkout -q -f ${stf_sha} "/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
-					<arg value="checkout"/>
-					<arg value="-q"/>
-					<arg value="-f"/>				
-					<arg value="${stf_sha}"/>
-				</exec>
-			</then>
-		</if>
 
 		<if>
 			<isset property="isZOS" />
