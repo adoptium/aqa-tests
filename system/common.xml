@@ -69,7 +69,7 @@
 					<arg value="rev-parse"/>
 					<arg value="origin/${stf_branch}"/>
 				</exec>
-				<property property="stf_sha" value="${stf_sha2}"/>
+				<property name="stf_sha" value="${stf_sha2}"/>
 			</then>	
 		</if>
 		<if>
@@ -77,7 +77,7 @@
 				<isset property="stf_sha"/>
 			</not>
 			<then>
-				<property property="stf_sha" value="${stf_sha1}"/>
+				<property name="stf_sha" value="${stf_sha1}"/>
 			</then>
 		</if>
 		<echo message="git checkout -q -f ${stf_sha} "/>
