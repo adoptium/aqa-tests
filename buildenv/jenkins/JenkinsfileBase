@@ -1,17 +1,5 @@
 #!groovy
 
-def getBuildList() {
-	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
-	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
-	String fullTarget="${TARGET}"
-	String[] levelTargets = fullTarget.split('\\.')
-	String groupTarget = levelTargets[-1]
-	String[] partsTarget = groupTarget.split('_|-')
-	String simpleTarget = partsTarget[0]
-	def TESTPROJECT = TESTPROJECTS[simpleTarget]
-	return TESTPROJECT
-}
-
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
 	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE $testParam"
@@ -82,6 +70,7 @@ def setupEnv() {
 	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
+	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -93,11 +82,6 @@ def setupEnv() {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
 		env.JDK_IMPL = getJDKImpl(params.JVM_VERSION)
-	}
-	if( params.BUILD_LIST ) {
-		env.BUILD_LIST = params.BUILD_LIST
-	} else {
-		env.BUILD_LIST = "${getBuildList()}"
 	}
 
 	if( params.PERF_ROOT ) {
