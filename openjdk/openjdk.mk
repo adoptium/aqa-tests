@@ -112,7 +112,6 @@ endif
 
 JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
 LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
-
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
