@@ -60,17 +60,13 @@ endif
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
-  String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; padding-left: 5px; margin-bottom: 1rem'
- String separatorHelpTextStyleCss = ' border: none; margin-top: 0; margin-bottom: 0 '
-ARCH_OS_LIST.each { ARCH_OS ->
-	JDK_VERSIONS.each { JDK_VERSION ->
-		LEVELS.each { LEVEL ->
-			GROUPS.each { GROUP ->
-				def ACTUAL_TEST_JOB_NAME = TEST_JOB_NAME ? TEST_JOB_NAME : "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
-				def ACTUAL_TARGET = TARGET ? TARGET : "${LEVEL}.${GROUP}"
-				def ACTUAL_BUILD_LIST = BUILD_LIST ? BUILD_LIST : GROUP
-
-
+ OTHER_OPTS=" -Xtrace:maximal=all{level2} -Xfuture "
+ ifeq ($(OS),OS/390)
+     OTHER_OPTS +=" -Dcom.ibm.tools.attach.enable=yes"
+  endif
+  ifneq (8, $(JDK_VERSION))
+    OTHER_OPTS += " --enable-preview"
+  else
 endif
 
 # If testsuite is not specified, default to RUNTIME
