@@ -36,7 +36,6 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
-	<!-- change -->
 	<test>
 		<testCaseName>hotspot_custom</testCaseName>
 		<variations>
@@ -50,7 +49,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)$(HOTSPOT_CUSTOM_TARGET)$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -59,7 +58,6 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
-	<!-- change -->
 	<test>
 		<testCaseName>hotspot_compiler</testCaseName>
 		<variations>
