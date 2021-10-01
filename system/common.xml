@@ -126,7 +126,7 @@
 		</exec>
 
 		<echo message="git rev-parse ${openjdk_systemtest_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
@@ -134,46 +134,27 @@
  			<equals arg1="${code}" arg2="128"/>			
 			<then>
 				<echo message="git rev-parse origin/${openjdk_systemtest_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2" resultproperty="code2">
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2">
 					<arg value="rev-parse"/>
 					<arg value="origin/${openjdk_systemtest_branch}"/>
 				</exec>
-				<if>
-					<equals arg1="${code2}" arg2="128"/>
-					<then>
-						<echo message="This branch does not exist!"/>
-					</then>
-				</if>
-				<if>
-					<isset property="openjdk_systemtest_sha2"/>
-					<then>
-						<echo message="git checkout -q -f ${openjdk_systemtest_sha2} "/>
-						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
-							<arg value="checkout"/>
-							<arg value="-q"/>
-							<arg value="-f"/>				
-							<arg value="${openjdk_systemtest_sha2}"/>
-						</exec>
-					</then>
-				</if>
+				<property name="openjdk_sha" value="${openjdk_systemtest_sha2}"/>
 			</then>
-			<else>
-				<if>
-					<isset property="openjdk_systemtest_sha1"/>
-					<then>
-						<echo message="git checkout -q -f ${openjdk_systemtest_sha1} "/>
-						<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
-							<arg value="checkout"/>
-							<arg value="-q"/>
-							<arg value="-f"/>				
-							<arg value="${openjdk_systemtest_sha1}"/>
-						</exec>
-					</then>
-				</if>
-			</else>
+		<if>
+			<not>
+				<isset property="openjdk_sha"/>
+			</not>
+			<then>
+				<property name="openjdk_sha" value="${openjdk_systemtest_sha1}"/>
+			</then>
 		</if>
-		
-
+		<echo message="git checkout -q -f ${openjdk_sha} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>				
+			<arg value="${openjdk_sha}"/>
+		</exec>
 
 		<if>
 			<isset property="isZOS" />
