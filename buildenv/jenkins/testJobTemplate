@@ -264,7 +264,21 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Choose which platform to run tests on, and optionally specify machine label to send the test job to a certain machine is desired.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('PLATFORM', "${ARCH_OS}", "Platform to be tested")
+							stringParam('PLATFORM', "${ARCH_OS}", '''Platform to be tested:
+                                <br>aarch64_linux
+                                <br>ppc64_aix
+                                <br>ppc64le_linux
+                                <br>s390x_linux
+                                <br>s390x_zos
+                                <br>x86-64_linux
+                                <br>x86-64_mac
+                                <br>x86-64_windows
+                                <br>x86-32_windows
+                                <br>sparcv9_solaris
+                                <br>riscv64_linux
+                                <br>multiple platforms (comma separated values): x86-64_linux,x86-64_mac
+                                <br>all platforms: all (actual platforms will change based on JDK_VERSION/JDK_IMPL)
+                                <br>Please refer to PLATFORM_MAP in https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests<br>''')
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
 							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
 							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required? True, if BUILD_LIST contains external.")
