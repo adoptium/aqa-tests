@@ -300,7 +300,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Specify where to pick up JDK from and provide extra details if taking from upstream or customized.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('SDK_RESOURCE', SDK_RESOURCE, "Where to get sdk? upstream, nightly, releases, or customized")
+							stringParam('SDK_RESOURCE', SDK_RESOURCE, '''Where to get sdk? nightly|releases|customized|upstream<br/>
+							nightly & releases pull the lastest from https://api.adoptium.net/ <br/>
+							If nightly / releases is selected, please provide JDK_VERSION and JDK_IMPL <br/>
+							If customized is selected, please provide CUSTOMIZED_SDK_URL (and CUSTOMIZED_SDK_URL_CREDENTIAL_ID if the URL has restricted access)<br/>
+							If upstream is selected, please provide UPSTREAM_JOB_NAME and UPSTREAM_JOB_NUMBER <br/>''')
 							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
