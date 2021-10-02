@@ -111,6 +111,7 @@ OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
 JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
+HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
