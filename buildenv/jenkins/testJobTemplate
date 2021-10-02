@@ -325,11 +325,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", '"Specific test directories to compile. This can be a comma-separated list of directories. <br/>
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", '''Specific test directories to compile. This can be a comma-separated list of directories. <br/>
 							Advisable to specify to a granularity that suits the targets you want to run. BUILD_LIST value can be the following:<br/>
 							top level folder: openjdk|system|perf|jck|external|functional<br/>
 							sub-folder: functional/Java8andUp|perf/dacapo<br/>
-							multiple folders: system,functional<br/>"')
+							multiple folders: system,functional<br/>''')
 							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
 							stringParam('CUSTOM_TARGET', "", '''
 								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
