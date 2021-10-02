@@ -309,11 +309,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
 							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
-							stringParam('BUILD_LIST', "", "Specific test directories to compile. This can be a comma-separated list of directories. <br/>
+							stringParam('BUILD_LIST', "", '"Specific test directories to compile. This can be a comma-separated list of directories. <br/>
 							Advisable to specify to a granularity that suits the targets you want to run. BUILD_LIST value can be the following:<br/>
 							top level folder: openjdk|system|perf|jck|external|functional<br/>
 							sub-folder: functional/Java8andUp|perf/dacapo<br/>
-							multiple folders: system,functional<br/>")
+							multiple folders: system,functional<br/>"')
 							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
 							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
 							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
