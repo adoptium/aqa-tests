@@ -5,16 +5,15 @@ import argparse
 import re
 
 platform_map = {
-    "arm-linux": ["arm_linux"],
     "linux-aarch64": ["aarch64_linux"],
-    "linux-arm": ["arm_linux"],
     "linux-ppc64le": ["ppc64le_linux"],
+    "linux-arm": ["arm_linux"],
     "linux-s390x": ["s390x_linux"],
     "linux-x64": ["x86-64_linux"],
     "macosx-x64": ["x86-64_mac", "aarch64_mac"],
     "windows-x64": ["x86-64_windows"],
-    "windows-x86": ["x86-64_windows", "x86-32_windows"],
     "x86-64_windows": ["x86-64_windows"],
+    "windows-x86": ["x86-32_windows"],
     "z/OS-s390x": ["s390x_zos"],
 
     "linux-ppc32": ["ppc32_linux"],
