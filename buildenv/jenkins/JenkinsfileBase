@@ -843,7 +843,7 @@ def archiveTestenvFile() {
 		echo "ARTIFACTORY_SERVER is not set. Saving properties file on jenkins."
 		archiveArtifacts artifacts: testenvFile, fingerprint: true, allowEmptyArchive: true
 	} else {
-		def pattern = "${env.WORKSPACE}/${shaFile}"
+		def pattern = "${env.WORKSPACE}/${testenvFile}"
 		uploadToArtifactory(pattern)
 	}
 }
