@@ -36,6 +36,30 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+
+	<test>
+		<testCaseName>langtools_custom</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_LANGTOOLS_TEST_DIR)$(D)$(LANGTOOLS_CUSTOM_TARGET)$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	
 	<test>
 		<testCaseName>hotspot_compiler</testCaseName>
 		<variations>
@@ -154,6 +178,38 @@
 		<impls>
 			<impl>hotspot</impl>
 		</impls>
+	</test>
+	<test>
+		<testCaseName>ASGCTBaseTest</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/AsyncGetCallTrace/MyPackage/ASGCTBaseTest.java$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>16+</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<!-- Currently only supported on Linux x86-64 -->
+		<platformRequirements>os.linux,arch.x86,bits.64</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jvm_native_sanity</testCaseName>
@@ -1052,6 +1108,10 @@
 			<disable>
 				<comment>https://bugs.openjdk.java.net/browse/JDK-8203290</comment>
 				<platform>.*aix.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2919#issuecomment-932201837</comment>
+				<platform>.*x86-64_solaris.*</platform>
 			</disable>
 		</disables>
 		<variations>

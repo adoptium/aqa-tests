@@ -72,9 +72,6 @@ parseCommandLineArgs()
 			"--sdkdir" | "-s" )
 				SDKDIR="$1"; shift;;
 
-			"--testdir" | "-t" )
-				TESTDIR="$1"; shift;;
-
 			"--platform" | "-p" )
 				PLATFORM="$1"; shift;;
 
