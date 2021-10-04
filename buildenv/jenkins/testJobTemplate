@@ -355,7 +355,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
-							stringParam('ITERATIONS',"1", "Number of times to repeat execution of test target")
+							stringParam('ITERATIONS',"1", '''Optional. Number of times to repeat execution of make target. <br/>
+								Use ITERATIONS with PARALLEL=None, run the same test(s) in a loop on one machine <br/>
+								Use ITERATIONS and NUM_MACHINES with PARALLEL=NodesByIterations, run the same test(s) in x (NUM_MACHINES) parallel runs with y (ITERATIONS) in each run<br/>''')
 							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
 
 
