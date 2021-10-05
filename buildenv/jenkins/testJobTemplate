@@ -309,8 +309,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
 							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
-							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
-							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
+							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK. e.g., UploadFile<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NUMBER <br/>")
+							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK. e.g., 40<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NAME <br/>")
 							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
 
 							parameterSeparatorDefinition {
