@@ -374,7 +374,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
-							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
+							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. It has to be used with PARALLEL=Dynamic or PARALLEL=NodesByIterations<br/>
+							Use with PARALLEL=Dynamic, NUM_MACHINES cannot be greater than the number of matched nodes on Jenkins<br/>
+							Use with PARALLEL=NodesByIterations, NUM_MACHINES cannot be greater than 20<br/>")
 							stringParam('TEST_TIME', TEST_TIME, '''Optional. Expected overall test build execution time. Needs to be used with PARALLEL=Dynamic.<br>
 							Once TEST_TIME is provided, test pipeline will automatically run tests in parallel and try to achieve the expected TEST_TIME.<br>
 							To ensure a balanced workload in test child builds, please also provide TRSS_URL.<br>
