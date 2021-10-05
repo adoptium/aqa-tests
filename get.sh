@@ -462,7 +462,6 @@ getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
 	cd $TESTDIR
-
 	if [ "$OPENJ9_BRANCH" != "" ]
 	then
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
@@ -639,6 +638,19 @@ checkOpenJ9RepoSHA()
 	echo "check OpenJ9 Repo sha"
 	checkRepoSHA "$TESTDIR/openj9"
 }
+#read testenv.properties file
+function prop {
+	echo "reading the testenv.properties"
+    grep "${1}" $TESTDIR/testenv/testenv.properties|cut -d'=' -f2
+}
+setEnv() {
+	if [$USE_TESTENV_PROPERTIES]
+	then
+		$TKG_REPO = $(prop 'TKG_REPO')
+		echo "the Tkg repo is $TKG_REPO"
+	fi
+}
+setEnv
 
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then

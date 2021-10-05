@@ -41,6 +41,7 @@ def setupEnv() {
 	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 
 	env.SPEC = "${SPEC}"
+	env.USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES
 	if(!params.USE_TESTENV_PROPERTIES){
 		ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
 		OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
