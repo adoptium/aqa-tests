@@ -43,7 +43,7 @@ function prop {
     grep "${1}" $TESTDIR/testenv/testenv.properties|cut -d'=' -f2
 }
 setEnv() {
-	if [["$USE_TESTENV_PROPERTIES" == true]];
+	if ["$USE_TESTENV_PROPERTIES" =true];
 	then
 		$TKG_REPO = $(prop 'TKG_REPO')
 		echo "the Tkg repo is $TKG_REPO"
