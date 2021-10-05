@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
+
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,16 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="DateTime" parallel="none" verbose="2">
-	<test name="dateTest11">
-		<classes>
-			<class name="JapaneseChronoTest"/>
-			<class name="FormatTest_ja_jp"/>
-			<class name="FormatTest_ko_kr"/>
-			<class name="FormatTest_zh_tw"/>
-			<class name="FormatTest_zh_cn"/>
-			<class name="FormatterBuilderTest_ja_jp"/>
-		</classes>
-	</test>
-</suite>
+<project name="MBCS_Tests_buildDependencies" default="copyData" basedir=".">
+	<target name="copyData" description="copy data">
+		<subant target="build">
+			<fileset dir="${TEST_ROOT}/functional/MBCS_Tests/data/" includes="build.xml" />
+		</subant>
+	</target>
+</project>

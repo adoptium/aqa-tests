@@ -90,6 +90,13 @@ JTREG_XML_OPTION = -xml:verify
 JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 # Add any extra options
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
+JTREG_KEY_OPTIONS :=
+VMOPTION_HEADLESS :=
+ifneq ($(PLATFORM),x86-64_alpine-linux) 
+	JTREG_KEY_OPTIONS := -k:'!headful'
+	VMOPTION_HEADLESS := -Djava.awt.headless=true
+endif
+JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
 ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
@@ -104,6 +111,8 @@ OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
 JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
+HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
+LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test

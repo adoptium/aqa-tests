@@ -50,14 +50,14 @@
 
 	<target name="clone_stf">
 		<echo message="git clone -q ${stf_repo} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />		
 			<arg value="-q"/>
 			<arg value="${stf_repo}"/>
 		</exec>
 
 		<echo message="git rev-parse ${stf_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${stf_branch}"/>
 		</exec>
@@ -65,31 +65,30 @@
  			<equals arg1="${code}" arg2="128"/>			
 			<then>
 				<echo message="git rev-parse origin/${stf_branch}"/>
-				<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha" resultproperty="code2">
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha2" resultproperty="code2">
 					<arg value="rev-parse"/>
 					<arg value="origin/${stf_branch}"/>
 				</exec>
-				<if>
-					<equals arg1="${code2}" arg2="128"/>
-					<then>
-						<echo message="This branch does not exist!"/>
-					</then>
-				</if>
-			</then>
+				<property name="stf_sha" value="${stf_sha2}"/>
+			</then>	
 		</if>
-		
 		<if>
-			<isset property="stf_sha"/>
+			<not>
+				<isset property="stf_sha"/>
+			</not>
 			<then>
-				<echo message="git checkout -q -f ${stf_sha} "/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
-					<arg value="checkout"/>
-					<arg value="-q"/>
-					<arg value="-f"/>				
-					<arg value="${stf_sha}"/>
-				</exec>
+				<property name="stf_sha" value="${stf_sha1}"/>
 			</then>
 		</if>
+		<echo message="git checkout -q -f ${stf_sha} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>				
+			<arg value="${stf_sha}"/>
+		</exec>
+	
+
 
 		<if>
 			<isset property="isZOS" />
@@ -114,7 +113,7 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
 	</target>
-
+	
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
@@ -248,6 +247,7 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" />
 	</target>
+
 
 	<target name="check_systemtest" depends="common_init">
 		<if>

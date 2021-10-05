@@ -74,7 +74,7 @@
 			</else>
 		</if>
 		<exec executable="gzip" failonerror="true">
-			<arg line="-d ${jtregTar}.tar.gz" />
+			<arg line="-df ${jtregTar}.tar.gz" />
 		</exec>
 		<if>
 			<contains string="${SPEC}" substring="zos" />
