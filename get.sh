@@ -37,7 +37,19 @@ RELEASES="latest"
 TYPE="jdk"
 TEST_IMAGES_REQUIRED=true
 DEBUG_IMAGES_REQUIRED=true
-
+#read testenv.properties file
+function prop {
+	echo "reading the testenv.properties"
+    grep "${1}" $TESTDIR/testenv/testenv.properties|cut -d'=' -f2
+}
+setEnv() {
+	if [["$USE_TESTENV_PROPERTIES" == true]];
+	then
+		$TKG_REPO = $(prop 'TKG_REPO')
+		echo "the Tkg repo is $TKG_REPO"
+	fi
+}
+setEnv
 usage ()
 {
 	echo 'Usage : get.sh -platform|-p x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux | ppc64_aix'
@@ -638,19 +650,7 @@ checkOpenJ9RepoSHA()
 	echo "check OpenJ9 Repo sha"
 	checkRepoSHA "$TESTDIR/openj9"
 }
-#read testenv.properties file
-function prop {
-	echo "reading the testenv.properties"
-    grep "${1}" $TESTDIR/testenv/testenv.properties|cut -d'=' -f2
-}
-setEnv() {
-	if [$USE_TESTENV_PROPERTIES]
-	then
-		$TKG_REPO = $(prop 'TKG_REPO')
-		echo "the Tkg repo is $TKG_REPO"
-	fi
-}
-setEnv
+
 
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
