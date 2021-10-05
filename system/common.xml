@@ -115,14 +115,14 @@
 	</target>
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />		
 			<arg value="-q"/>
 			<arg value="${openjdk_systemtest_repo}"/>
 		</exec>
 
 		<echo message="git rev-parse ${openjdk_systemtest_branch} "/>
-		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
@@ -179,13 +179,13 @@
 
 	<target name="clone_openj9-systemtest">
 		<echo message="git clone -q ${openj9_systemtest_repo} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
 			<arg value="clone" />		
 			<arg value="-q"/>
 			<arg value="${openj9_systemtest_repo}"/>
 		</exec>
 		<echo message="git rev-parse ${openj9_systemtest_branch} "/>
-		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha1" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${openj9_systemtest_branch}"/>
 		</exec>
