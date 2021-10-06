@@ -160,7 +160,7 @@ getSHA()
 	# append the info into $OUTPUT_FILE
 	for i in "${!map[@]}"
 	do
-		{ echo "$i=${array[$i]}" } | tee -a $OUTPUT_FILE
+		echo "$i=${array[$i]}" | tee -a $OUTPUT_FILE;
 	done
 
 
