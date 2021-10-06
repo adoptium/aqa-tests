@@ -615,7 +615,7 @@ fi
 
 checkRepoSHA()
 {
-	output_file="$TESTDIR/TKG/SHA.txt"
+	output_file="$TESTDIR/testenv.properties"
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file
 }
