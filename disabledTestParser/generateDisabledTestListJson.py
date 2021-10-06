@@ -64,8 +64,8 @@ def resolve_platform(platform_string):
                 print(f"Could not resolve the '{unresolved_platform_name}' to any of the valid platform names")
                 exit(3)
 
-            revolved_platform_list.append([platform_map[unresolved_platform_name]])
-
+            #revolved_platform_list.append([platform_map[unresolved_platform_name]])
+            revolved_platform_list.append([[unresolved_platform_name.split('-')[1]+"_"+unresolved_platform_name.split('-')[0]]])
     # flatten list of lists of lists to a set of unique values
     resolved_platforms = set(itertools.chain(*itertools.chain(*revolved_platform_list)))
     return ','.join(resolved_platforms)
