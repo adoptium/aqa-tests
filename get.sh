@@ -462,7 +462,6 @@ getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
 	cd $TESTDIR
-	echo "openJ9_branch is $OPENJ9_BRANCH"
 
 	if [ "$OPENJ9_BRANCH" != "" ]
 	then
