@@ -616,8 +616,32 @@ fi
 checkRepoSHA()
 {
 	output_file="$TESTDIR/testenv.properties"
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file"
-	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file
+	args="--repo_dir $1 --output_file $output_file \
+	--sdkdir $SDKDIR \
+	--platform $PLATFORM \
+	--jdk_version $JDK_VERSION \
+	--jdk_impl $JDK_IMPL \
+	--releases $RELEASES \
+	--type $TYPE \
+	--sdk_resource $SDK_RESOURCE \
+	--customizedURL $CUSTOMIZED_SDK_URL \
+	--customized_sourceURL $CUSTOMIZED_SDK_SOURCE_URL \
+	--username $USERNAME \
+	--password $PASSWORD \
+	--clone_openj9 $CLONE_OPENJ9 \
+	--openj9_repo $OPENJ9_REPO \
+	--openj9_sha $OPENJ9_SHA \
+	--openj9_branch $OPENJ9_BRANCH \
+	--tkg_repo $TKG_REPO \
+	--tkg_branch $TKG_BRANCH \
+	--vendor_repos $VENDOR_REPOS \
+	--vendor_shas $VENDOR_SHAS \
+	--vendor_branches $VENDOR_BRANCHES \
+	--vendor_dirs $VENDOR_DIRS \
+	--test_images_required $TEST_IMAGES_REQUIRED \
+	--debug_images_required $DEBUG_IMAGES_REQUIRED"
+	echo "$TESTDIR/getTestenvProperties.sh $args"
+	$TESTDIR/getTestenvProperties.sh $args
 }
 
 checkTestRepoSHAs()
