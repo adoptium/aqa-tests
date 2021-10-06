@@ -381,12 +381,14 @@ def setup() {
 					}
 				}
 			}
+			if(!params.USE_TESTENV_PROPERTIES){
+				OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
+				OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
+				TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
+				TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
+			}
 			CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
-			OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
-			OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
 			OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
-			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
-			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
 			JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
