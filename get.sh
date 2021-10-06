@@ -640,6 +640,8 @@ checkOpenJ9RepoSHA()
 	checkRepoSHA "$TESTDIR/openj9"
 }
 
+source ./testenv/testenv.properties
+
 parseCommandLineArgs "$@"
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk

@@ -28,25 +28,25 @@ def setupEnv() {
 	}
 
 	env.SPEC = "${SPEC}"
+	if(!params.USE_TESTENV_PROPERTIES){
+		ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
+		OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
+		String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "adoptium:master", "TKG")
+		TKG_REPO = tkg[0]
+		TKG_BRANCH = tkg[1]
+		//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
+		env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
+		if (env.SPEC.startsWith('zos')) {
+			ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
+			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
+		}
+		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 
-	ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
-	OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
-
-	String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "adoptium:master", "TKG")
-	TKG_REPO = tkg[0]
-	TKG_BRANCH = tkg[1]
-
-	//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
-	env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
-	if (env.SPEC.startsWith('zos')) {
-		ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
-		OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 	}
 
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
 	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
-	OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
 	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
@@ -392,24 +392,27 @@ def setup() {
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
 			// system test repository exports to be used by system/common.xml
-			if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
-				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
-				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
-				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
+			if(!params.USE_TESTENV_PROPERTIES){
+				if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
+					String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
+					env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
+					env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
+				}
+
+				if (params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
+					String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
+					env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
+					env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
+				}
+				if (params.STF_OWNER_BRANCH) {
+					String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
+					env.STF_REPO = stf[0]
+					env.STF_BRANCH = stf[1]
+				}
+
 			}
 
-			if (params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
-				String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
-				env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
-				env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
-			}
-
-			if (params.STF_OWNER_BRANCH) {
-				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
-				env.STF_REPO = stf[0]
-				env.STF_BRANCH = stf[1]
-			}
-
+			
 			// vendor test
 			// expect VENDOR_TEST_* to be comma separated string parameters
 			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
