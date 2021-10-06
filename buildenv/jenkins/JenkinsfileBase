@@ -1,5 +1,6 @@
 #!groovy
 
+
 def getBuildList() {
 	// This map is created in case of BUILD_LIST is not provided. Once we match all sub-folders with top-level test targets, this map can be simplified.
 	def TESTPROJECTS = [system:'system', perf:'perf', jck:'jck', external:'external', functional: 'functional', openjdk:'openjdk', jdk:'openjdk', runtest:'', sanity:'', extended:'']
@@ -11,7 +12,17 @@ def getBuildList() {
 	def TESTPROJECT = TESTPROJECTS[simpleTarget]
 	return TESTPROJECT
 }
-
+def getenvroperties() {
+	def envProperties = "./aqa-tests/testenv/testenv.properties"
+	if (fileExists("${envProperties}")) {
+		echo "readProperties file: ${envProperties}"
+		def properties = readProperties file: "${envProperties}"
+		return properties
+	}
+	else {
+		echo "property file not found"
+	}
+}
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
 	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE $testParam"
@@ -54,6 +65,40 @@ def setupEnv() {
 			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 		}
 		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
+	}
+	else{
+		properties = getenvroperties()
+		if (properties.TKG_REPO) {
+			env.TKG_REPO = properties.TKG_REPO
+		}
+		if (properties.TKG_BRANCH){
+			env.TKG_BRANCH = properties.TKG_BRANCH
+		}
+		if (properties.OPENJ9_REPO) {
+			env.OPENJ9_REPO = properties.OPENJ9_REPO
+		}
+		if (properties.OPENJ9_BRANCH){
+			env.OPENJ9_BRANCH = properties.OPENJ9_BRANCH
+		}
+		if (properties.STF_REPO) {
+			env.STF_REPO = properties.STF_REPO
+		}
+		if (properties.STF_BRANCH){
+			env.STF_BRANCH = properties.STF_BRANCH
+		}
+		if (properties.OPENJ9_SYSTEMTEST_REPO){
+			env.OPENJ9_SYSTEMTEST_REPO = properties.OPENJ9_SYSTEMTEST_REPO
+		}
+		if (properties.OPENJ9_SYSTEMTEST_BRANCH){
+			env.OPENJ9_SYSTEMTEST_BRANCH = properties.OPENJ9_SYSTEMTEST_BRANCH
+		}
+		if (properties.ADOPTOPENJDK_SYSTEMTEST_REPO){
+			env.ADOPTOPENJDK_SYSTEMTEST_REPO = properties.ADOPTOPENJDK_SYSTEMTEST_REPO
+		}
+		if (properties.ADOPTOPENJDK_SYSTEMTEST_BRANCH){
+			env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = properties.ADOPTOPENJDK_SYSTEMTEST_BRANCH
+		}
+		
 	}
 	
 
