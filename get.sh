@@ -641,7 +641,7 @@ checkRepoSHA()
 	--test_images_required $TEST_IMAGES_REQUIRED \
 	--debug_images_required $DEBUG_IMAGES_REQUIRED"
 	echo "$TESTDIR/getTestenvProperties.sh $args"
-	bash $TESTDIR/getTestenvProperties.sh $args
+	$TESTDIR/getTestenvProperties.sh $args
 }
 
 checkTestRepoSHAs()
