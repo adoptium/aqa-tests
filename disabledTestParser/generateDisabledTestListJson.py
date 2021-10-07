@@ -3,7 +3,7 @@ import os
 import json
 import argparse
 import re
-
+new_platform_map={}
 platform_map = {
     "linux-aarch64": ["aarch64_linux"],
     "linux-ppc64le": ["ppc64le_linux"],
@@ -47,26 +47,34 @@ def get_tests_from_exclude_file(exclude_list_file):
 
 def resolve_platform(platform_string):
     revolved_platform_list = []
+    l=[]
+    
     list_of_unresolved_platform_names = [s.strip() for s in platform_string.split(",") if s.strip() not in '']
     for unresolved_platform_name in list_of_unresolved_platform_names:
+        if(unresolved_platform_name!="generic-all" and unresolved_platform_name!="linux-all" and unresolved_platform_name!="macosx-all" and unresolved_platform_name!="windows-all" and unresolved_platform_name!="aix-all"):
+            for ss in unresolved_platform_name.split(","):
+                if ss.strip() not in '':
+                    new_platform_map[ss]=[ss.split('-')[1]+"_"+ss.split('-')[0]]
         if unresolved_platform_name == "generic-all":
             return "all"
         elif unresolved_platform_name == "linux-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "linux" in s])
+            revolved_platform_list.append([new_platform_map[s] for s in new_platform_map.keys() if "linux" in s])
         elif unresolved_platform_name == "macosx-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "macosx" in s])
+            revolved_platform_list.append([new_platform_map[s] for s in new_platform_map.keys() if "macosx" in s])
         elif unresolved_platform_name == "windows-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "windows" in s])
+            revolved_platform_list.append([new_platform_map[s] for s in new_platform_map.keys() if "windows" in s])
         elif unresolved_platform_name == "aix-all":
             revolved_platform_list.append([["ppc32_aix", "ppc64_aix"]])
         else:
             if unresolved_platform_name not in platform_map:
                 print(f"Could not resolve the '{unresolved_platform_name}' to any of the valid platform names")
                 exit(3)
-
-            #revolved_platform_list.append([platform_map[unresolved_platform_name]])
-            revolved_platform_list.append([[unresolved_platform_name.split('-')[1]+"_"+unresolved_platform_name.split('-')[0]]])
-    # flatten list of lists of lists to a set of unique values
+    
+            revolved_platform_list.append([new_platform_map[unresolved_platform_name]])
+            #revolved_platform_list.append([[unresolved_platform_name.split('-')[1]+"_"+unresolved_platform_name.split('-')[0]]])
+    #flatten list of lists of lists to a set of unique values
+    print(revolved_platform_list)
+    #print(new_platform_list,len(l),type(unresolved_platform_name))
     resolved_platforms = set(itertools.chain(*itertools.chain(*revolved_platform_list)))
     return ','.join(resolved_platforms)
 
