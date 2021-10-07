@@ -484,12 +484,14 @@ def get_sources() {
 }
 def exportEnv(){
 	String makeTestCmd = "./complie.sh ${USE_TESTENV_PROPERTIES}"
-	if (!env.SPEC.startsWith('zos')) {
-		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+	dir('aqa-tests') {
+		if (!env.SPEC.startsWith('zos')) {
+			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+				sh "$makeTestCmd";
+			}
+		} else {
 			sh "$makeTestCmd";
 		}
-	} else {
-		sh "$makeTestCmd";
 	}
 }
 def makeCompileTest() {
