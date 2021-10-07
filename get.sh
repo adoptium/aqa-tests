@@ -616,32 +616,38 @@ fi
 checkRepoSHA()
 {
 	output_file="$TESTDIR/testenv.properties"
-	args="--repo_dir $1 --output_file $output_file \
-	--sdkdir $SDKDIR \
-	--platform $PLATFORM \
-	--jdk_version $JDK_VERSION \
-	--jdk_impl $JDK_IMPL \
-	--releases $RELEASES \
-	--type $TYPE \
-	--sdk_resource $SDK_RESOURCE \
-	--customizedURL $CUSTOMIZED_SDK_URL \
-	--customized_sourceURL $CUSTOMIZED_SDK_SOURCE_URL \
-	--username $USERNAME \
-	--password $PASSWORD \
-	--clone_openj9 $CLONE_OPENJ9 \
-	--openj9_repo $OPENJ9_REPO \
-	--openj9_sha $OPENJ9_SHA \
-	--openj9_branch $OPENJ9_BRANCH \
-	--tkg_repo $TKG_REPO \
-	--tkg_branch $TKG_BRANCH \
-	--vendor_repos $VENDOR_REPOS \
-	--vendor_shas $VENDOR_SHAS \
-	--vendor_branches $VENDOR_BRANCHES \
-	--vendor_dirs $VENDOR_DIRS \
-	--test_images_required $TEST_IMAGES_REQUIRED \
-	--debug_images_required $DEBUG_IMAGES_REQUIRED"
-	echo "$TESTDIR/getTestenvProperties.sh $args"
-	$TESTDIR/getTestenvProperties.sh $args
+
+	# This needs to be refactored to be more maintainable
+	declare -A map
+	map["SDKDIR"]=$SDKDIR
+	map["TESTDIR"]=$TESTDIR
+	map["PLATFORM"]=$PLATFORM
+	map["JVMVERSION"]=$JVMVERSION
+	map["SDK_RESOURCE"]=$SDK_RESOURCE
+	map["CUSTOMIZED_SDK_URL"]=$CUSTOMIZED_SDK_URL
+	map["CUSTOMIZED_SDK_SOURCE_URL"]=$CUSTOMIZED_SDK_SOURCE_URL
+	map["CLONE_OPENJ9"]=$CLONE_OPENJ9
+	map["OPENJ9_REPO"]=$OPENJ9_REPO
+	map["OPENJ9_SHA"]=$OPENJ9_SHA
+	map["OPENJ9_BRANCH"]=$OPENJ9_BRANCH
+	map["TKG_REPO"]=$TKG_REPO
+	map["TKG_BRANCH"]=$TKG_BRANCH
+	map["VENDOR_REPOS"]=$VENDOR_REPOS
+	map["VENDOR_SHAS"]=$VENDOR_SHAS
+	map["VENDOR_BRANCHES"]=$VENDOR_BRANCHES
+	map["VENDOR_DIRS"]=$VENDOR_DIRS
+	map["JDK_VERSION"]=$JDK_VERSION
+	map["JDK_IMPL"]=$JDK_IMPL
+	map["RELEASES"]=$RELEASES
+	map["TYPE"]=$TYPE
+	map["TEST_IMAGES_REQUIRED"]=$TEST_IMAGES_REQUIRED
+	map["DEBUG_IMAGES_REQUIRED"]=$DEBUG_IMAGES_REQUIRED
+
+	echo "writing testenv.properties file"
+	for key in "${!map[@]}"
+	do
+		echo "$key" | tee -a $output_file;
+	done
 }
 
 checkTestRepoSHAs()
