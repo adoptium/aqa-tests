@@ -381,6 +381,10 @@ def setup() {
 					}
 				}
 			}
+			OPENJ9_REPO_OPTION = ""
+			OPENJ9_BRANCH_OPTION = ""
+			TKG_REPO_OPTION = ""
+			TKG_BRANCH_OPTION = ""
 			if(!params.USE_TESTENV_PROPERTIES){
 				OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
 				OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
@@ -393,23 +397,22 @@ def setup() {
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
 			// system test repository exports to be used by system/common.xml
-			if(!params.USE_TESTENV_PROPERTIES){
-				if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
-					String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
-					env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
-					env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
-				}
-
-				if (params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
-					String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
-					env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
-					env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
-				}
-				if (params.STF_OWNER_BRANCH) {
-					String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
-					env.STF_REPO = stf[0]
-					env.STF_BRANCH = stf[1]
-				}
+			if(!params.USE_TESTENV_PROPERTIES && params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH){
+				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
+				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
+				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
+			}
+				
+			if (!params.USE_TESTENV_PROPERTIES && params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
+				String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
+				env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
+				env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
+			}
+			if (!params.USE_TESTENV_PROPERTIES && params.STF_OWNER_BRANCH) {
+				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
+				env.STF_REPO = stf[0]
+				env.STF_BRANCH = stf[1]
+			}
 
 			}
 
@@ -426,13 +429,9 @@ def setup() {
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
 		
-			if(!params.USE_TESTENV_PROPERTIES){
-				GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
-			}
-			else{
-				GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_SHA_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
-
-			}
+			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
+			
+			
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 			
 			dir( WORKSPACE) {
