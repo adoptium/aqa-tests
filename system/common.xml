@@ -79,17 +79,24 @@
 				<property name="stf_sha" value="${stf_sha1}"/>
 			</then>
 		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="stf_sha"
+					input="${stf_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
+			</then>
+		</if>
 		<echo message="git checkout -q -f ${stf_sha} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
 			<arg value="checkout"/>
 			<arg value="-q"/>
-			<arg value="-f"/>				
+			<arg value="-f"/>
 			<arg value="${stf_sha}"/>
 		</exec>
-	
-
-
-
 		<if>
 			<isset property="isZOS" />
 			<then>
