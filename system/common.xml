@@ -152,6 +152,17 @@
 				<property name="openjdk_sha" value="${openjdk_systemtest_sha1}"/>
 			</then>
 		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="openjdk_sha"
+					input="${openjdk_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
+			</then>
+		</if>
 		<echo message="git checkout -q -f ${openjdk_sha} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
 			<arg value="checkout"/>
@@ -213,6 +224,17 @@
 			</not>
 			<then>
 				<property name="openj9_sha" value="${openj9_systemtest_sha1}"/>
+			</then>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="openj9_sha"
+					input="${openj9_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
 			</then>
 		</if>
 		<echo message="git checkout -q -f ${openj9_sha} "/>
