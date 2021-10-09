@@ -613,7 +613,7 @@ else
 fi
 }
 
-checkRepoSHA()
+getTestenvProperties()
 {
 	output_file="$TESTDIR/testenv/testenv.properties"
 
@@ -629,10 +629,10 @@ checkRepoSHA()
 	map["OPENJ9_SYSTEMTEST_BRANCH"]="master"
 	map["ADOPTOPENJDK_SYSTEMTEST_REPO"]="https://github.com/adoptium/aqa-systemtest.git"
 	map["ADOPTOPENJDK_SYSTEMTEST_BRANCH"]="master"
-	map["JDK$JDK_VERSION\_REPO"]="https://github.com/adoptium/jdk$JDK_VERSION\.git"
-	map["JDK$JDK_VERSION\_BRANCH"]="master"
-	map["JDK$JDK_VERSION\_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk$JDK_VERSION\.git"
-	map["JDK$JDK_VERSION\_OPENJ9_BRANCH"]="master"
+	map["JDK${JDK_VERSION}_REPO"]="https://github.com/adoptium/jdk${JDK_VERSION}.git"
+	map["JDK${JDK_VERSION}_BRANCH"]="master"
+	map["JDK${JDK_VERSION}_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git"
+	map["JDK${JDK_VERSION}_OPENJ9_BRANCH"]="master"
 
 	echo "clearing testenv.properties file $JDK_VERSION, $JDK_IMPL"
 	> $output_file
@@ -641,26 +641,6 @@ checkRepoSHA()
 	do
 		echo "$key=${map[$key]}" | tee -a $output_file;
 	done
-}
-
-checkTestRepoSHAs()
-{
-	echo "check adoptium repo and TKG repo SHA"
-
-	output_file="$TESTDIR/TKG/SHA.txt"
-	if [ -e ${output_file} ]; then
-		echo "rm $output_file"
-		rm ${output_file}
-	fi
-
-	checkRepoSHA "$TESTDIR"
-	checkRepoSHA "$TESTDIR/TKG"
-}
-
-checkOpenJ9RepoSHA()
-{
-	echo "check OpenJ9 Repo sha"
-	checkRepoSHA "$TESTDIR/openj9"
 }
 
 parseCommandLineArgs "$@"
@@ -683,3 +663,5 @@ fi
 if [ $CLONE_OPENJ9 != "false" ]; then
 	getFunctionalTestMaterial
 fi
+
+getTestenvProperties
