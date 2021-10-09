@@ -646,7 +646,7 @@ checkRepoSHA()
 	echo "writing testenv.properties file"
 	for key in "${!map[@]}"
 	do
-		echo "$key=${map[$i]}" | tee -a $output_file;
+		echo "$key=${map[$key]}" | tee -a $output_file;
 	done
 }
 
