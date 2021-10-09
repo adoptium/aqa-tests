@@ -629,11 +629,13 @@ checkRepoSHA()
 	map["OPENJ9_SYSTEMTEST_BRANCH"]="master"
 	map["ADOPTOPENJDK_SYSTEMTEST_REPO"]="https://github.com/adoptium/aqa-systemtest.git"
 	map["ADOPTOPENJDK_SYSTEMTEST_BRANCH"]="master"
-	map["JDK$VERSION\_REPO"]="https://github.com/adoptium/jdk$VERSION\.git"
-	map["JDK$VERSION\_BRANCH"]="master"
-	map["JDK$VERSION\_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk$VERSION\.git"
-	map["JDK$VERSION\_OPENJ9_BRANCH"]="master"
+	map["JDK$JDK_VERSION\_REPO"]="https://github.com/adoptium/jdk$JDK_VERSION\.git"
+	map["JDK$JDK_VERSION\_BRANCH"]="master"
+	map["JDK$JDK_VERSION\_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk$JDK_VERSION\.git"
+	map["JDK$JDK_VERSION\_OPENJ9_BRANCH"]="master"
 
+	echo "clearing testenv.properties file $JDK_VERSION, $JDK_IMPL"
+	> $output_file
 	echo "writing testenv.properties file"
 	for key in "${!map[@]}"
 	do
