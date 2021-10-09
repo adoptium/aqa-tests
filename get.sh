@@ -615,33 +615,24 @@ fi
 
 checkRepoSHA()
 {
-	output_file="$TESTDIR/testenv.properties"
+	output_file="$TESTDIR/testenv/testenv.properties"
 
 	# This needs to be refactored to be more maintainable
 	declare -A map
-	map["SDKDIR"]=$SDKDIR
-	map["TESTDIR"]=$TESTDIR
-	map["PLATFORM"]=$PLATFORM
-	map["JVMVERSION"]=$JVMVERSION
-	map["SDK_RESOURCE"]=$SDK_RESOURCE
-	map["CUSTOMIZED_SDK_URL"]=$CUSTOMIZED_SDK_URL
-	map["CUSTOMIZED_SDK_SOURCE_URL"]=$CUSTOMIZED_SDK_SOURCE_URL
-	map["CLONE_OPENJ9"]=$CLONE_OPENJ9
-	map["OPENJ9_REPO"]=$OPENJ9_REPO
-	map["OPENJ9_SHA"]=$OPENJ9_SHA
-	map["OPENJ9_BRANCH"]=$OPENJ9_BRANCH
 	map["TKG_REPO"]=$TKG_REPO
 	map["TKG_BRANCH"]=$TKG_BRANCH
-	map["VENDOR_REPOS"]=$VENDOR_REPOS
-	map["VENDOR_SHAS"]=$VENDOR_SHAS
-	map["VENDOR_BRANCHES"]=$VENDOR_BRANCHES
-	map["VENDOR_DIRS"]=$VENDOR_DIRS
-	map["JDK_VERSION"]=$JDK_VERSION
-	map["JDK_IMPL"]=$JDK_IMPL
-	map["RELEASES"]=$RELEASES
-	map["TYPE"]=$TYPE
-	map["TEST_IMAGES_REQUIRED"]=$TEST_IMAGES_REQUIRED
-	map["DEBUG_IMAGES_REQUIRED"]=$DEBUG_IMAGES_REQUIRED
+	map["OPENJ9_REPO"]=$OPENJ9_REPO
+	map["OPENJ9_SHA"]=$OPENJ9_SHA
+	map["STF_REPO"]="https://github.com/adoptium/STF.git"
+	map["STF_BRANCH"]="master"
+	map["OPENJ9_SYSTEMTEST_REPO"]="https://github.com/eclipse-openj9/openj9-systemtest.git"
+	map["OPENJ9_SYSTEMTEST_BRANCH"]="master"
+	map["ADOPTOPENJDK_SYSTEMTEST_REPO"]="https://github.com/adoptium/aqa-systemtest.git"
+	map["ADOPTOPENJDK_SYSTEMTEST_BRANCH"]="master"
+	map["JDK$VERSION\_REPO"]="https://github.com/adoptium/jdk$VERSION\.git"
+	map["JDK$VERSION\_BRANCH"]="master"
+	map["JDK$VERSION\_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk$VERSION\.git"
+	map["JDK$VERSION\_OPENJ9_BRANCH"]="master"
 
 	echo "writing testenv.properties file"
 	for key in "${!map[@]}"
