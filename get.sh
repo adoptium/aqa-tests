@@ -632,7 +632,15 @@ getTestenvProperties()
 	map["JDK${JDK_VERSION}_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git"
 	map["JDK${JDK_VERSION}_OPENJ9_BRANCH"]="master"
 
-	echo "clearing testenv.properties file $JDK_VERSION, $JDK_IMPL"
+	# Get openj9 SHA if not already set
+	if [ -z $OPENJ9_SHA ]; then
+		cd "$TESTDIR/openj9"
+		$OPENJ9_SHA=$(echo git rev-parse HEAD)
+		map["OPENJ9_SHA"]=$OPENJ9_SHA
+		cd "$TESTDIR"
+	fi
+
+	echo "clearing testenv.properties file"
 	> $output_file
 	echo "writing testenv.properties file"
 	for key in "${!map[@]}"
