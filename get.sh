@@ -494,6 +494,13 @@ getFunctionalTestMaterial()
 		mv openj9/test/functional functional
 	fi
 
+	# Get openj9 SHA if not already set
+	if [ -z $OPENJ9_SHA ]; then
+		cd "$TESTDIR/openj9"
+		$OPENJ9_SHA=$(echo git rev-parse HEAD)
+		cd "$TESTDIR"
+	fi
+
 	rm -rf openj9
 
 	if [ "$VENDOR_REPOS" != "" ]; then
@@ -632,13 +639,6 @@ getTestenvProperties()
 	map["JDK${JDK_VERSION}_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git"
 	map["JDK${JDK_VERSION}_OPENJ9_BRANCH"]="master"
 
-	# Get openj9 SHA if not already set
-	if [ -z $OPENJ9_SHA ]; then
-		cd "$TESTDIR/openj9"
-		$OPENJ9_SHA=$(echo git rev-parse HEAD)
-		map["OPENJ9_SHA"]=$OPENJ9_SHA
-		cd "$TESTDIR"
-	fi
 
 	echo "clearing testenv.properties file"
 	> $output_file
