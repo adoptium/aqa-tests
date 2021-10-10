@@ -497,7 +497,7 @@ getFunctionalTestMaterial()
 	# Get openj9 SHA if not already set
 	if [ -z $OPENJ9_SHA ]; then
 		cd "$TESTDIR/openj9"
-		$OPENJ9_SHA=$(echo git rev-parse HEAD)
+		$OPENJ9_SHA=$(git rev-parse HEAD)
 		cd "$TESTDIR"
 	fi
 
