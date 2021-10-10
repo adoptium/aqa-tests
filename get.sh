@@ -443,7 +443,6 @@ getTestKitGen()
 	echo "git checkout -q -f $tkg_sha"
 	git checkout -q -f $tkg_sha
 
-	checkTestRepoSHAs
 }
 
 getCustomJtreg()
@@ -494,7 +493,6 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-	checkOpenJ9RepoSHA
 
 	rm -rf openj9
 
