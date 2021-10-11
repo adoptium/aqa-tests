@@ -875,14 +875,17 @@ def addGrinderLink() {
 	int i = 1;
 	def labelValue = ""
 	params.each { key, value ->
-		value = URLEncoder.encode(value.toString(), "UTF-8")
-		url += "${key}=${value}"
-		if (i != params.size()) {
+		if ( value instanceof String)
+		{
+			value = URLEncoder.encode(value.toString(), "UTF-8")
+			url += "${key}=${value}"
+			if (i != params.size()) {
 			url += "&amp;"
-		}
-		i++;
-		if ( key == "LABEL" ) {
+			}
+			i++;
+			if ( key == "LABEL" ) {
 			labelValue = "LABEL=${value}"
+			}
 		}
 	}
 	echo "Rerun in Grinder: ${url}"
