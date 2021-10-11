@@ -1,6 +1,7 @@
 #!groovy
 
-def json = readJSON file: "disabledTestParser/output.json."
+def json_path = args.size() ? args[0] : "disabledTestParser/output.json."
+def json = readJSON file: json_path
 def jenkins_url = "https://ci.adoptopenjdk.net/job/Grinder/buildWithParameters"
 
 /**
