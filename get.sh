@@ -622,31 +622,26 @@ getTestenvProperties()
 {
 	output_file="$TESTDIR/testenv/testenv.properties"
 
-	# This needs to be refactored to be more maintainable
-	declare -A map
-	map["TKG_REPO"]=$TKG_REPO
-	map["TKG_BRANCH"]=$TKG_BRANCH
-	map["OPENJ9_REPO"]=$OPENJ9_REPO
-	map["OPENJ9_SHA"]=$OPENJ9_SHA
-	map["STF_REPO"]="https://github.com/adoptium/STF.git"
-	map["STF_BRANCH"]="master"
-	map["OPENJ9_SYSTEMTEST_REPO"]="https://github.com/eclipse-openj9/openj9-systemtest.git"
-	map["OPENJ9_SYSTEMTEST_BRANCH"]="master"
-	map["ADOPTOPENJDK_SYSTEMTEST_REPO"]="https://github.com/adoptium/aqa-systemtest.git"
-	map["ADOPTOPENJDK_SYSTEMTEST_BRANCH"]="master"
-	map["JDK${JDK_VERSION}_REPO"]="https://github.com/adoptium/jdk${JDK_VERSION}.git"
-	map["JDK${JDK_VERSION}_BRANCH"]="master"
-	map["JDK${JDK_VERSION}_OPENJ9_REPO"]="https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git"
-	map["JDK${JDK_VERSION}_OPENJ9_BRANCH"]="master"
-
-
 	echo "clearing testenv.properties file"
 	> $output_file
 	echo "writing testenv.properties file"
-	for key in "${!map[@]}"
-	do
-		echo "$key=${map[$key]}" | tee -a $output_file;
-	done
+	{
+		echo "TKG_REPO=$TKG_REPO";
+		echo "TKG_BRANCH=$TKG_BRANCH";
+		echo "OPENJ9_REPO=$OPENJ9_REPO";
+		echo "OPENJ9_SHA=$OPENJ9_SHA";
+		echo "STF_REPO=https://github.com/adoptium/STF.git";
+		echo "STF_BRANCH=master";
+		echo "OPENJ9_SYSTEMTEST_REPO=https://github.com/eclipse-openj9/openj9-systemtest.git";
+		echo "OPENJ9_SYSTEMTEST_BRANCH=master";
+		echo "ADOPTOPENJDK_SYSTEMTEST_REPO=https://github.com/adoptium/aqa-systemtest.git";
+		echo "ADOPTOPENJDK_SYSTEMTEST_BRANCH=master";
+		echo "JDK${JDK_VERSION}_REPO=https://github.com/adoptium/jdk${JDK_VERSION}.git";
+		echo "JDK${JDK_VERSION}_BRANCH=master";
+		echo "JDK${JDK_VERSION}_OPENJ9_REPO=https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git";
+		echo "JDK${JDK_VERSION}_OPENJ9_BRANCH=master";
+	} | tee -a $output_file
+
 }
 
 parseCommandLineArgs "$@"
