@@ -375,10 +375,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Additional test options if you wish to run in various parallel modes')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode: <br/>None // run test(s) in serial <br/>
+							choiceParam('PARALLEL', PARALLEL_LIST, '''Optional. Parallel mode: <br/>None // run test(s) in serial <br/>
 							Dynamic // dynamically divides tests according to NUM_MACHINES and runs them in parallel. Please also provide NUM_MACHINES. <br/>
 							NodesByIterations // run the same test(s) in parallel according to NUM_MACHINES. You can also provide ITERATIONS. This is mainly for debugging intermittent issues. <br/>
-							Subdir // run tests in parallel according to subdir. This is mainly for external tests.")
+							Subdir // run tests in parallel according to subdir. This is mainly for external tests.''')
 							stringParam('NUM_MACHINES', NUM_MACHINES, '''Optional. It has to be used with PARALLEL=Dynamic or PARALLEL=NodesByIterations<br/>
 							Use with PARALLEL=Dynamic, NUM_MACHINES cannot be greater than the number of matched nodes on Jenkins<br/>
 							Use with PARALLEL=NodesByIterations, NUM_MACHINES cannot be greater than 20<br/>''')
