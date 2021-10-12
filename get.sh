@@ -236,6 +236,7 @@ download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${rel
 info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=adoptopenjdk https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=adoptopenjdk"
 fi
 
+
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
