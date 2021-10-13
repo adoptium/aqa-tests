@@ -176,6 +176,9 @@ function getProperty() {
     PROP_KEY=$1
     PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f2`
     echo $PROP_VALUE
+    script=`sed -e 's/^"//' -e 's/"$//' <<<"$script"`
+    github_url=`sed -e 's/^"//' -e 's/"$//' <<<"$github_url"`
+    tag_version=`sed -e 's/^"//' -e 's/"$//' <<<"$tag_version"`
 }
 
 # Used for external_custom tests
@@ -207,14 +210,11 @@ function set_test_info() {
     echo ${path_to_file}    
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
-    github_url=`sed -e 's/^"//' -e 's/"$//' <<<"$github_url"`
     script=$(getProperty "script")
-    script=`sed -e 's/^"//' -e 's/"$//' <<<"$script"`
     test_results=$(getProperty "test_results")
     ant_version=$(getProperty "ant_version")
     ivy_version=$(getProperty "ivy_version")
     tag_version=$(getProperty "tag_version")
-    tag_version=`sed -e 's/^"//' -e 's/"$//' <<<"$tag_version"`
     environment_variable=$(getProperty "environment_variable")
     if [[ ! -z "$environment_variable" ]]; then
     environment_variable="MODE=\"java\""
