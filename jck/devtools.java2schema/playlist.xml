@@ -5,7 +5,6 @@
 # You may obtain a copy of the License at
 #
 #      https://www.apache.org/licenses/LICENSE-2.0
-#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +18,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=java2schema/CustomizedMapping,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=java2schema/CustomizedMapping jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=DEVTOOLS; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -36,7 +35,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=java2schema/DefaultMapping,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=DEVTOOLS,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=java2schema/DefaultMapping jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=DEVTOOLS; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
