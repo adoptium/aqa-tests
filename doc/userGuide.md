@@ -406,11 +406,15 @@ To exclude the test for all linux platforms:
 
 ```auto exclude test jdk_test plat=.*linux.*```
 
+To exclude the test for AOT testing:
+
+```auto exclude test jdk_test testflag=AOT```
+
 plat is defined in regular expression. All platforms can be found here: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
 
-To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
+To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` against eclipse openj9 java 8 on windows for AOT testing only:
 
-```auto exclude test jdk_test_1 impl=openj9 vendor=adoptopenjdk ver=8 plat=.*windows.*```
+```auto exclude test jdk_test_1 impl=openj9 vendor=eclipse ver=8 plat=.*windows.* testflag=AOT```
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
@@ -524,10 +528,27 @@ For example, to exclude the test for all linux platforms:
 ```
 
 
-##### Exclude test against multiple criteria:
-Defined a combination of ```<variation>```, ```<impl>```, ```<version>```, and  ```<platform>``` in the ```<disable>``` element.
+##### Exclude a test against specific TEST_FLAG environment variable:
+Add a ```<testflag>``` element in the ```<disable>``` element to specify the TEST_FLAG.
 
-For example, to exclude the test with variation ```-Xmx1024m``` against adoptopenjdk openj9 java 8 on windows only:
+For example, to exclude the test for testing AOT (i.e.,TEST_FLAG=AOT):
+
+```
+<test>
+  <testCaseName>jdk_test</testCaseName>
+  <disables>
+    <disable>
+      <comment>https://github.com/adoptium/aqa-tests/issues/123456</comment>
+      <testflag>AOT</testflag>
+    </disable>
+  </disables>
+  ...
+```
+
+##### Exclude test against multiple criteria:
+Defined a combination of ```<variation>```, ```<impl>```, ```<version>```, ```<platform>```, and ```<testflag>``` in the ```<disable>``` element.
+
+For example, to exclude the test with variation ```-Xmx1024m``` against eclipse openj9 java 8 on windows for AOT testing only:
 
 ```
 <test>
@@ -538,8 +559,9 @@ For example, to exclude the test with variation ```-Xmx1024m``` against adoptope
       <variation>-Xmx1024m</variation>
       <version>8</version>
       <impl>openj9</impl>
-      <vendor>adoptopenjdk</vendor>
+      <vendor>eclipse</vendor>
       <platform>.*windows.*</platform>
+      <testflag>AOT</testflag>
     </disable>
   </disables>
   ...
