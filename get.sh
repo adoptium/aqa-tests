@@ -642,7 +642,9 @@ checkOpenJ9RepoSHA()
 
 
 parseCommandLineArgs "$@"
-source ./testenv/testenv.properties
+if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
+	source ./testenv/testenv.properties
+fi
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
