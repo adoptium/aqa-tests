@@ -875,7 +875,7 @@ def addGrinderLink() {
 	int i = 1;
 	def labelValue = ""
 	params.each { key, value ->
-		if ( value.getClass() != ParameterSEeparatorValue )
+		if ( value.getClass() != ParameterSeparatorValue )
 		{
 			value = URLEncoder.encode(value.toString(), "UTF-8")
 			url += "${key}=${value}"
