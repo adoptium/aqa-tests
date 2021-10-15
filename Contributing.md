@@ -8,8 +8,6 @@ aqa-tests is the central project for AQAvit and contains the definition files fo
 
 * https://github.com/adoptium/aqa-tests
 
-Sainamercy
-
 ## Developer resources
 
 The project maintains the following source code repositories
