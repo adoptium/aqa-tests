@@ -622,6 +622,11 @@ getTestenvProperties()
 {
 	output_file="$TESTDIR/testenv/testenv.properties"
 
+	if [ -z $JDK_BRANCH ]; then
+		echo "JDK_BRANCH is not set"
+		exit 1;
+	fi
+
 	echo "clearing testenv.properties file"
 	> $output_file
 	echo "writing testenv.properties file"
@@ -637,9 +642,9 @@ getTestenvProperties()
 		echo "ADOPTOPENJDK_SYSTEMTEST_REPO=https://github.com/adoptium/aqa-systemtest.git";
 		echo "ADOPTOPENJDK_SYSTEMTEST_BRANCH=master";
 		echo "JDK${JDK_VERSION}_REPO=https://github.com/adoptium/jdk${JDK_VERSION}.git";
-		echo "JDK${JDK_VERSION}_BRANCH=master";
+		echo "JDK${JDK_VERSION}_BRANCH=${JDK_BRANCH}";
 		echo "JDK${JDK_VERSION}_OPENJ9_REPO=https://github.com/ibmruntimes/openj9-openjdk-jdk${JDK_VERSION}.git";
-		echo "JDK${JDK_VERSION}_OPENJ9_BRANCH=master";
+		echo "JDK${JDK_VERSION}_OPENJ9_BRANCH=${JDK_BRANCH}";
 	} | tee -a $output_file
 
 }
