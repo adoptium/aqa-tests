@@ -622,11 +622,6 @@ getTestenvProperties()
 {
 	output_file="$TESTDIR/testenv/testenv.properties"
 
-	if [ -z $JDK_BRANCH ]; then
-		echo "JDK_BRANCH is not set"
-	fi
-	exit 1
-
 	echo "clearing testenv.properties file"
 	> $output_file
 	echo "writing testenv.properties file"
