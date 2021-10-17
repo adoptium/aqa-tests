@@ -430,7 +430,10 @@ getTestKitGen()
 {
 	echo "get testKitGen..."
 	cd $TESTDIR
-
+	if [ "$TKG_REPO" == "" ]
+	then
+		TKG_REPO="https://github.com/adoptium/TKG.git"
+	fi
 	echo "git clone -q $TKG_REPO"
 	git clone -q $TKG_REPO
 	cd TKG
