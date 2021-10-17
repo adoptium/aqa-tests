@@ -131,7 +131,6 @@
 		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH" />
 		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA" />
 		<if>
-			<echo> Using user specified repo and branch from property file</echo>
 			<equals arg1="${env.USE_TESTENV_PROPERTIES}" arg2="true" />		
 			<then>
 				<if>
