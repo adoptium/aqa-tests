@@ -109,13 +109,14 @@
 				<if>
 					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<var name="jdkrepo" value="env.JDK8_REPO" />
-						<var name="jdkbranch" value="env.JDK8_BRANCH" />
+						<var name="jdkrepo" value="${env.JDK8_REPO}" />
+						<var name="jdkbranch" value="${env.JDK8_BRANCH}" />
 						<if>
 							<equals arg1="${JDK_IMPL}" arg2="openj9" />
 							<then>
-								<var name="jdkrepo" value="env.JDK8_OPENJ9_REPO" />
-								<var name="jdkbranch" value="env.JDK8_OPENJ9_BRANCH" />
+								<var name="jdkrepo" value="${env.JDK8_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK8_OPENJ9_BRANCH}" />
+								
 								<echo> Using openj9 jdk8</echo>
 							</then>
 						</if>
@@ -307,10 +308,7 @@
 							<property name="regressionRepo" value="https://github.com/adoptium/${jdkName}.git" />
 						</else>
 					</if>
-			</else>
-		</if>
-		
-				<if>
+					<if>
 					<contains string="${JDK_IMPL}" substring="hotspot"/>
 					<then>
 						<!-- Adoptium nightly is using dev branch and default branch is master-->
@@ -342,6 +340,7 @@
 				</if>
 			</else>
 		</if>
+		
 		<checkGitRepoSha repoDir="openjdk-jdk" />
 	</target>
 	
