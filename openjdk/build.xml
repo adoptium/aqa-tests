@@ -109,8 +109,8 @@
 				<if>
 					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<var name="jdkrepo" value="${env.JDK8_REPO}" />
-						<var name="jdkbranch" value="${env.JDK8_BRANCH}" />
+						<property name="jdkrepo" value="${env.JDK8_REPO}" />
+						<property name="jdkbranch" value="${env.JDK8_BRANCH}" />
 						<if>
 							<equals arg1="${JDK_IMPL}" arg2="openj9" />
 							<then>
@@ -124,7 +124,7 @@
 				</if>
 			</then>
 			<else>
-				<var name="jdkbranch" value="${env.JDK_BRANCH}}" />
+				<property name="jdkbranch" value="${env.JDK_BRANCH}}" />
 			</else>
 		</if>
 		
