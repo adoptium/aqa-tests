@@ -354,7 +354,7 @@ def setup() {
 	stage('Setup') {
 		timestamps{
 			setupEnv()
-			sh "echo JDK_BRANCH=$JDK_BRANCH"
+			sh "echo JDK_BRANCH=" + env.JDK_BRANCH
 			if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
 			} else if (params.CUSTOMIZED_SDK_URL) {
