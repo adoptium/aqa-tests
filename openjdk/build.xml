@@ -103,8 +103,7 @@
 				</exec>
 			</then>
 		</if>
-		<property environment="env" />
-		<echo message="the jdk9 repo is ${env.JDK_REPO}"/>
+		<echo message="the jdk repo is ${env.JDK_REPO}"/>
 
 		<if>
 			<equals arg1="${env.USE_TESTENV_PROPERTIES}" arg2="true" />
@@ -112,8 +111,8 @@
 				<if>
 					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<var name="jdkrepo" value="${env.JDK_REPO}" />
-						<var name="jdkbranch" value="${env.JDK_BRANCH}" />
+						<var name="jdkrepo" value="${env.JDK8_REPO}" />
+						<var name="jdkbranch" value="${env.JDK8_BRANCH}" />
 						<if>
 							<equals arg1="${JDK_IMPL}" arg2="openj9" />
 							<then>
