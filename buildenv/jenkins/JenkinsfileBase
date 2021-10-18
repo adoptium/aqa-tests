@@ -510,7 +510,6 @@ def buildTest() {
 	stage('Build') {
 		timestamps{
 			echo 'Building tests...'
-			exportEnv()
 
 			if ( params.PERF_CREDENTIALS_ID ) {
 				withCredentials([usernamePassword(credentialsId: "$params.PERF_CREDENTIALS_ID",
@@ -562,10 +561,10 @@ def buildTest() {
 				if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
 					withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 						usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-						makeCompileTest()
+						exportEnv()
 					}
 				} else {
-					makeCompileTest()
+					exportEnv()
 				}
 			}
 		}
