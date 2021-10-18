@@ -8,3 +8,5 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
         export $line
     done < ./testenv/testenv.properties
 fi
+cd ./aqa-tests/TKG;
+$MAKE compile
