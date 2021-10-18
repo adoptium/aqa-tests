@@ -71,7 +71,8 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
-
+	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
+	
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (params.JRE_IMAGE) {
