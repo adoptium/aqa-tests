@@ -405,7 +405,7 @@ def setup() {
 			}
 
 			if (params.STF_OWNER_BRANCH) {
-				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "stf")
+				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 				env.STF_REPO = stf[0]
 				env.STF_BRANCH = stf[1]
 			}
