@@ -4,7 +4,7 @@ import requests
 
 def json_parser(json_obj):
     jsonLoad = json.loads(json_obj)
-    return jsonLoad["ISSUE_TRACKER"]
+    return jsonLoad["GIT_ISSUE"]
 
 def find_state(query_url):
     params = {'accept': 'application/vnd.github.v3+json',
@@ -27,7 +27,7 @@ def main():
         repo_issueUrl = git_issue_url.replace("https://github.com/", "")
         final_url = base_url + repo_issueUrl
         state = find_state(final_url)
-        j["ISSUE_TRACKER_STATUS"] = state
+        j["GIT_ISSUE_STATUS"] = state  
     
     with open('output.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)

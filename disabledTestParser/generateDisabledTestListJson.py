@@ -76,7 +76,7 @@ def get_test_details(test):
     test_tokens = test.split()
     test_details_dict["TARGET"] = "jdk_custom"
     test_details_dict["CUSTOM_TARGET"] = test_tokens[0]
-    test_details_dict["ISSUE_TRACKER"] = test_tokens[1]
+    test_details_dict["GIT_ISSUE"] = test_tokens[1]
     test_details_dict["PLATFORM"] = resolve_platform(test_tokens[2])
     return test_details_dict
 
