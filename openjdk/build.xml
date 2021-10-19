@@ -117,9 +117,38 @@
 							<equals arg1="${JDK_IMPL}" arg2="openj9" />
 							<then>
 								<var name="jdkrepo" value="${env.JDK8_OPENJ9_REPO}" />
-								<var name="jdkbranch" value="${env.JDK8_OPENJ9_BRANCH}" />
-								
+								<var name="jdkbranch" value="${env.JDK8_OPENJ9_BRANCH}" />	
 								<echo> Using openj9 jdk8</echo>
+							</then>
+						</if>
+					</then>
+				</if>
+				<if>
+					<equals arg1="${JDK_VERSION}" arg2="11" />
+					<then>
+						<var name="jdkrepo" value="${env.JDK11_REPO}" />
+						<var name="jdkbranch" value="${env.JDK11_BRANCH}" />
+						<if>
+							<equals arg1="${JDK_IMPL}" arg2="openj9" />
+							<then>
+								<var name="jdkrepo" value="${env.JDK11_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK11_OPENJ9_BRANCH}" />	
+								<echo> Using openj9 jdk11</echo>
+							</then>
+						</if>
+					</then>
+				</if>
+				<if>
+					<equals arg1="${JDK_VERSION}" arg2="17" />
+					<then>
+						<var name="jdkrepo" value="${env.JDK17_REPO}" />
+						<var name="jdkbranch" value="${env.JDK17_BRANCH}" />
+						<if>
+							<equals arg1="${JDK_IMPL}" arg2="openj9" />
+							<then>
+								<var name="jdkrepo" value="${env.JDK17_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK17_OPENJ9_BRANCH}" />	
+								<echo> Using openj9 jdk17</echo>
 							</then>
 						</if>
 					</then>
