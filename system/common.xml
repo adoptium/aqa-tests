@@ -7,36 +7,36 @@
 	<property name="SYSTEMTEST_ROOT" value="${TEST_ROOT}/system" />
 	<property name="SYSTEMTEST_DEST" value="${BUILD_ROOT}/system" />
 	<property environment="env" />
-	
+
 	<condition property="isZOS" value="true">
 		<equals arg1="${os.name}" arg2="z/OS"/>
 	</condition>
-	
+
 	<condition property="git-prefix" value="git" else="https">
 		<isset property="isZOS"/>
 	</condition>
-	
+
 	<condition property="openjdk_systemtest_repo" value="${env.ADOPTOPENJDK_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/adoptium/aqa-systemtest.git">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openjdk_systemtest_branch" value="${env.ADOPTOPENJDK_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.ADOPTOPENJDK_SYSTEMTEST_BRANCH"/>
 	</condition>
-	
+
 	<condition property="openj9_systemtest_repo" value="${env.OPENJ9_SYSTEMTEST_REPO}" else="${git-prefix}://github.com/eclipse-openj9/openj9-systemtest.git">
 		<isset property="env.OPENJ9_SYSTEMTEST_REPO"/>
 	</condition>
 	<condition property="openj9_systemtest_branch" value="${env.OPENJ9_SYSTEMTEST_BRANCH}" else="master">
 		<isset property="env.OPENJ9_SYSTEMTEST_BRANCH"/>
 	</condition>
-	
-	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/stf.git">
+
+	<condition property="stf_repo" value="${env.STF_REPO}" else="${git-prefix}://github.com/adoptium/STF.git">
 		<isset property="env.STF_REPO"/>
 	</condition>
 	<condition property="stf_branch" value="${env.STF_BRANCH}" else="master">
 		<isset property="env.STF_BRANCH"/>
 	</condition>
-	
+
 	<target name="common_init">
 		<if>
 			<not>
@@ -47,26 +47,64 @@
 			</then>
 		</if>
 	</target>
-
 	<target name="clone_stf">
-		<echo message="Cloning from: ${stf_repo} -b ${stf_branch}"/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="-b"/>
-			<arg value="${stf_branch}"/>
+		<echo message="git clone -q ${stf_repo} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />		
+			<arg value="-q"/>
 			<arg value="${stf_repo}"/>
+		</exec>
+
+		<echo message="git rev-parse ${stf_branch} "/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha1" resultproperty="code">
+			<arg value="rev-parse"/>
+			<arg value="${stf_branch}"/>
+		</exec>
+		<if>
+			<equals arg1="${code}" arg2="128"/>			
+			<then>
+				<echo message="git rev-parse origin/${stf_branch}"/>
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha2" resultproperty="code2">
+					<arg value="rev-parse"/>
+					<arg value="origin/${stf_branch}"/>
+				</exec>
+				<property name="stf_sha" value="${stf_sha2}"/>
+			</then>	
+		</if>
+		<if>
+			<not>
+				<isset property="stf_sha"/>
+			</not>
+			<then>
+				<property name="stf_sha" value="${stf_sha1}"/>
+			</then>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="stf_sha"
+					input="${stf_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
+			</then>
+		</if>
+		<echo message="git checkout -q -f ${stf_sha} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>
+			<arg value="${stf_sha}"/>
 		</exec>
 		<if>
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
-				</delete>  
+				<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -82,26 +120,65 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
 	</target>
-
 	<target name="clone_systemtest">
-		<echo message="Cloning from: ${openjdk_systemtest_repo} -b ${openjdk_systemtest_branch}"/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="--single-branch" />
-			<arg value="-b"/>
-			<arg value="${openjdk_systemtest_branch}"/>
+		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />		
+			<arg value="-q"/>
 			<arg value="${openjdk_systemtest_repo}"/>
 		</exec>
+
+		<echo message="git rev-parse ${openjdk_systemtest_branch} "/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha1" resultproperty="code">
+			<arg value="rev-parse"/>
+			<arg value="${openjdk_systemtest_branch}"/>
+		</exec>
+		<if>
+ 			<equals arg1="${code}" arg2="128"/>			
+			<then>
+				<echo message="git rev-parse origin/${openjdk_systemtest_branch}"/>
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2">
+					<arg value="rev-parse"/>
+					<arg value="origin/${openjdk_systemtest_branch}"/>
+				</exec>
+				<property name="openjdk_systemtest_sha" value="${openjdk_systemtest_sha2}"/>
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="openjdk_systemtest_sha"/>
+			</not>
+			<then>
+				<property name="openjdk_systemtest_sha" value="${openjdk_systemtest_sha1}"/>
+			</then>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="openjdk_systemtest_sha"
+					input="${openjdk_systemtest_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
+			</then>
+		</if>
+		<echo message="git checkout -q -f ${openjdk_systemtest_sha} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>				
+			<arg value="${openjdk_systemtest_sha}"/>
+		</exec>
+
 		<if>
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
 				   <fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
-				</delete>  
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -117,25 +194,65 @@
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/aqa-systemtest" />
 	</target>
-	
+
 	<target name="clone_openj9-systemtest">
-		<echo message="Cloning from: ${openj9_systemtest_repo} -b ${openj9_systemtest_branch}"/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />
-			<arg value="--depth" />
-			<arg value="1" />
-			<arg value="-b"/>
-			<arg value="${openj9_systemtest_branch}"/>
+		<echo message="git clone -q ${openj9_systemtest_repo} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
+			<arg value="clone" />		
+			<arg value="-q"/>
 			<arg value="${openj9_systemtest_repo}"/>
 		</exec>
+		<echo message="git rev-parse ${openj9_systemtest_branch} "/>
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha1" resultproperty="code">
+			<arg value="rev-parse"/>
+			<arg value="${openj9_systemtest_branch}"/>
+		</exec>
+		<if>
+			<equals arg1="${code}" arg2="128"/>			
+			<then>
+				<echo message="git rev-parse origin/${openj9_systemtest_branch}"/>
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha2">
+					<arg value="rev-parse"/>
+					<arg value="origin/${openj9_systemtest_branch}"/>
+				</exec>
+				<property name="openj9_systemtest_sha" value="${openj9_systemtest_sha2}"/>
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="openj9_systemtest_sha"/>
+			</not>
+			<then>
+				<property name="openj9_systemtest_sha" value="${openj9_systemtest_sha1}"/>
+			</then>
+		</if>
+		<if>
+			<isset property="isZOS" />
+			<then>
+				<propertyregex 
+					property="openj9_systemtest_sha"
+					input="${openj9_systemtest_sha}"
+					regexp="\n"
+					replace=""
+					override="true"/>
+			</then>
+		</if>
+		<echo message="git checkout -q -f ${openj9_systemtest_sha} "/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>				
+			<arg value="${openj9_systemtest_sha}"/>
+		</exec>
+			
 		<if>
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
 				   <fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
-				</delete>  
+				</delete>
 				<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" /> 
+				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" />
 				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
@@ -198,7 +315,7 @@
 			</then>
 		</if>
 	</target>
-	
+
 	<target name="configure_systemtest" depends="check_systemtest">
 		<if>
 			<or>
@@ -213,7 +330,7 @@
 			</else>
 		</if>
 	</target>
-					
+
 	<target name="common_dist" description="generate the distribution">
 		<copy todir="${SYSTEMTEST_DEST}/stf">
 			<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
@@ -257,13 +374,13 @@
 		</if>
 		<antcall target="common_dist" inheritall="false" />
 	</target>
-	
+
 	<!-- To make sure common_build target only excute once, the common_build target runs only if common_build.executed value is not set -->
 	<target name="common_build" unless="common_build.executed">
 		<echo message="target common_build is called....." />
 		<antcall target="build-dependencies" inheritall="true" />
 	</target>
-		
+
 	<target name="clean">
 		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false" target="clean"/>
 		<if>
@@ -274,7 +391,7 @@
 			<then>
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
 			</then>
-		</if>		
+		</if>
 		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"/>
 	</target>
 </project>

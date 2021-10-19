@@ -40,16 +40,8 @@ echo_setup
 
 set -e
 
-if [[ $# -eq 0 ]]; then
-	echo "No parameters are passed"
-else
-	echo $@
-fi
 external_test_repo="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
-echo "${EXTERNAL_CUSTOM_REPO}"
-echo "${external_test_repo}"
-echo "${EXTERNAL_TEST_CMD}"
-echo "${EXTERNAL_REPO_BRANCH}"
+
 cd /${external_test_repo}
 
 pwd

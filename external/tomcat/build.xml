@@ -22,6 +22,17 @@
 	</target>
 
 	<target name="build">
-		<antcall target="dist" inheritall="true" />
+		<!-- Temporarily disable for openj9 and ibm due to ibm_git/runtimes/infrastructure/issues/6056 -->
+		<if>
+			<not>
+				<or>
+					<equals arg1="${JDK_IMPL}" arg2="ibm"  />
+					<equals arg1="${JDK_IMPL}" arg2="openj9" />
+				</or>
+			</not>
+			<then>
+				<antcall target="dist" inheritall="true" />
+			</then>
+		</if>
 	</target>
 </project>

@@ -18,7 +18,8 @@ limitations under the License.
 	<description>
 	MBCS_Tests/property_utf8
 	</description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
+
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/property_utf8" />
@@ -47,7 +48,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,dist_functional" description="generate the distribution">
+	<target name="dist" depends="compile,copyData" description="generate the distribution">
 		<jar jarfile="${DEST}/property_utf8.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<!--fileset dir="resources/" includes="*.properties" /-->

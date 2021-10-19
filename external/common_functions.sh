@@ -32,9 +32,6 @@ supported_builds="slim full"
 # Supported tests
 supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
 
-# Tests supported for external_custom target
-supported_external_custom_tests="zookeeper netty"
-
 function check_version() {
     version=$1
 
@@ -181,380 +178,58 @@ function getProperty() {
     echo $PROP_VALUE
 }
 
+# Used for external_custom tests
 function set_external_custom_test_info(){
     test=$1
-    for current_test in ${supported_external_custom_tests}
-        do
-            if [[ "${test}" == "${current_test}" ]]; then
-                PROPERTY_FILE=external_custom/test.properties
-                GITHUB_URL=$(getProperty "github_url")
-                github_url="${EXTERNAL_CUSTOM_REPO}"
-                echo "The value of the EXTERNAL_CUSTOM_REPO in common_functions.sh is ${EXTERNAL_CUSTOM_REPO}"
-                echo "The test name is ${test}"
-                script="test.sh"
-                test_command="${EXTERNAL_TEST_CMD}"
-                echo "The value of the EXTERNAL_TEST_CMD in common_functions.sh is ${EXTERNAL_TEST_CMD}"
-                test_results="testResults"
-                tag_version="${EXTERNAL_REPO_BRANCH}"
-                echo "The value of the EXTERNAL_REPO_BRANCH in common_functions.sh is ${EXTERNAL_REPO_BRANCH}"
-                environment_variable="MODE=\"java\""
-                debian_packages="git maven"
-                debianslim_packages="${debian_packages}"
-                ubuntu_packages="${debian_packages}"
-                alpine_packages="git maven"
-                centos_packages="git maven"
-                clefos_packages="${centos_packages}"
-                ubi_packages="git maven"
-                ubi_minimal_packages="${ubi_packages}"
-            fi
-        done
-
+    check_external_custom_test=$2
+    github_url="${EXTERNAL_CUSTOM_REPO}"
+    script="test.sh"
+    test_command="${EXTERNAL_TEST_CMD}"
+    test_results="testResults"
+    tag_version="${EXTERNAL_REPO_BRANCH}"
+    environment_variable="MODE=\"java\""
+    debian_packages="git maven"
+    debianslim_packages="${debian_packages}"
+    ubuntu_packages="${debian_packages}"
+    alpine_packages="git maven"
+    centos_packages="git maven"
+    clefos_packages="${centos_packages}"
+    ubi_packages="git maven"
+    ubi_minimal_packages="${ubi_packages}"  
 }
 
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     test=$1
-    case ${test} in
-    camel)
-        github_url="https://github.com/apache/camel-quarkus.git"
-        script="camel-test.sh"
-        test_results="testResults"
-        tag_version="master"
-        environment_variable="MODE=\"java\""
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    derby)
-        github_url="https://github.com/apache/derby.git"
-        script="derby-test.sh"
-        home_path="\${WORKDIR}/derby"
-        tag_version="trunk"
-        ant_version="1.10.6"
-        debian_packages="git wget tar"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget tar"
-        centos_packages="git wget tar"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    elasticsearch)
-        github_url="https://github.com/elastic/elasticsearch.git"
-        script="elasticsearch-test.sh"
-        tag_version="v7.6.2"
-        test_results="testResults"
-        debian_packages="git wget unzip"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="git wget unzip"
-        centos_packages="git wget unzip"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget unzip"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    functional-test)
-        github_url="https://github.com/adoptium/aqa-tests.git"
-        script="functional-test.sh"
-        home_path=""
-        tag_version="master"
-        ant_version="1.10.6"
-        ant_contrib_version="1.0b3"
-        debian_packages="git wget make gcc unzip"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget make gcc unzip"
-        centos_packages="git wget make gcc unzip"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget make gcc unzip"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    jacoco)
-        github_url="https://github.com/jacoco/jacoco.git"
-        script="jacoco-test.sh"
-        test_results="testResults"
-        tag_version="master"
-        environment_variable="MODE=\"java\""
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    jenkins)
-        github_url="https://github.com/jenkinsci/jenkins.git"
-        script="jenkins-test.sh"
-        home_path=""
-        test_results="testResults"
-        tag_version="jenkins-2.235"
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    kafka)
-        github_url="https://github.com/apache/kafka.git"
-        script="kafka-test.sh"
-        home_path=""
-        tag_version="2.5.0"
-        gradle_version="5.1"
-        debian_packages="git wget unzip"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget unzip"
-        centos_packages="git wget unzip"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget unzip"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    lucene-solr)
-        github_url="https://github.com/apache/lucene-solr.git"
-        script="lucene-solr-test.sh"
-        home_path="\${WORKDIR}"
-        tag_version="releases/lucene-solr/8.5.1"
-        ant_version="1.10.6"
-        ivy_version="2.5.0"
-        debian_packages="git wget tar"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget tar"
-        centos_packages="git wget tar"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    openliberty-mp-tck)
-        github_url="https://github.com/OpenLiberty/open-liberty.git"
-        script="openliberty-mp-tck.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        tag_version="gm-20.0.0.4"
-        ant_version="1.10.6"
-        debian_packages="git wget tar maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget tar maven"
-        centos_packages="git wget tar maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    payara-mp-tck)
-        github_url="https://github.com/payara/MicroProfile-TCK-Runners.git"
-        script="payara-mp-tck.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        tag_version="2.0"
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    quarkus)
-        github_url="https://github.com/quarkusio/quarkus.git"
-        script="quarkus-test.sh"
-        test_results="testResults"
-        tag_version="1.3.2.Final"
-        environment_variable="MODE=\"java\""
-        debian_packages="git wget"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget"
-        centos_packages="git wget"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    quarkus_openshift)
-        github_url="https://github.com/quarkus-qe/quarkus-openshift-test-suite.git"
-        script="test.sh"
-        test_results="testResults"
-        tag_version="1.3.2.Final"
-        environment_variable="MODE=\"java\""
-        debian_packages="git wget"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget"
-        centos_packages="git wget"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    quarkus_quickstarts)
-        github_url="https://github.com/quarkusio/quarkus-quickstarts.git"
-        script="test.sh"
-        test_results="testResults"
-        tag_version="1.3.2.Final"
-        environment_variable="MODE=\"java\""
-        debian_packages="git wget maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget maven"
-        centos_packages="git wget maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    scala)
-        github_url="https://github.com/scala/scala.git"
-        script="scala-test.sh"
-        home_path=""
-        tag_version="v2.13.2"
-        sbt_version="1.2.8"
-        debian_packages="git wget tar curl gpg gpg-agent"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget tar curl gnupg"
-        centos_packages="git wget tar curl gpg"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar curl gpg"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    system-test)
-        github_url="https://github.com/adoptium/aqa-tests.git"
-        script="system-test.sh"
-        home_path=""
-        tag_version="master"
-        ant_version="1.10.6"
-        ant_contrib_version="1.0b3"
-        debian_packages="git wget make gcc unzip"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget make gcc unzip"
-        centos_packages="git wget make gcc unzip"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget make gcc unzip"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    thorntail-mp-tck)
-        github_url="https://github.com/thorntail/thorntail.git"
-        script="thorntail-mp-tck.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        tag_version="2.6.0.Final"
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    tomcat)
-        github_url="https://github.com/apache/tomcat.git"
-        script="tomcat-test.sh"
-        home_path=""
-        tag_version="10.0.7"
-        ant_version="1.10.6"
-        openssl_version="1.1.1d"
-        debian_packages="git wget tar make gcc linux-libc-dev libc6-dev perl"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget tar make gcc libc-dev perl linux-headers"
-        centos_packages="git wget tar make gcc glibc-devel perl"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget tar make gcc glibc-devel"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    tomee)
-        github_url="https://github.com/apache/tomee.git"
-        script="tomee-test.sh"
-        home_path=""
-        test_results="testResults"
-        tag_version="tomee-8.0.2"
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    wildfly)
-        github_url="https://github.com/wildfly/wildfly.git"
-        script="wildfly-test.sh"
-        home_path=""
-        test_results=""
-        tag_version="19.1.0.Final"
-        debian_packages="git maven"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    wycheproof)
-        github_url="https://github.com/google/wycheproof.git"
-        script="wycheproof.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        tag_version="master"
-        bazel_version="1.2.1"
-        debian_packages="git wget unzip zip g++"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget unzip zip g++ bash"
-        centos_packages="git wget unzip zip gcc-c++"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget unzip zip gcc-c++"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    netty)
-        github_url="https://github.com/netty/netty.git"
-        script="netty-test.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        tag_version="4.1"
-        debian_packages="git maven autoconf automake libtool make tar gcc-multilib libaio-dev"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git maven"
-        centos_packages="git maven"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git maven"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    spring)
-        github_url="https://github.com/spring-projects/spring-boot.git"
-        script="spring-test.sh"
-        home_path="\${WORKDIR}"
-        test_results="testResults"
-        gradle_version="5.1"
-        debian_packages="git wget unzip"
-        debianslim_packages="${debian_packages}"
-        ubuntu_packages="${debian_packages}"
-        alpine_packages="bash git wget unzip"
-        centos_packages="git wget unzip"
-        clefos_packages="${centos_packages}"
-        ubi_packages="git wget unzip"
-        ubi_minimal_packages="${ubi_packages}"
-        ;;
-    *)  
-        echo "ERROR: Unsupported test:${test}, Exiting"
-        exit 1
-        ;;
-    esac
+    check_external_custom_test=$2
+    cd ../
+    path_to_file=$(pwd)
+    echo ${path_to_file}    
+    PROPERTY_FILE=${path_to_file}/${test}/test.properties
+    github_url=$(getProperty "github_url")
+    github_url=`sed -e 's/^"//' -e 's/"$//' <<<"$github_url"`
+    script=$(getProperty "script")
+    script=`sed -e 's/^"//' -e 's/"$//' <<<"$script"`
+    test_results=$(getProperty "test_results")
+    ant_version=$(getProperty "ant_version")
+    ivy_version=$(getProperty "ivy_version")
+    tag_version=$(getProperty "tag_version")
+    tag_version=`sed -e 's/^"//' -e 's/"$//' <<<"$tag_version"`
+    environment_variable=$(getProperty "environment_variable")
+    if [[ ! -z "$environment_variable" ]]; then
+    environment_variable="MODE=\"java\""
+    fi
+    debian_packages=$(getProperty "debian_packages")
+    debian_packages=`echo "$debian_packages" | awk -F'"' '{print $2}'`
+    debianslim_packages=${debian_packages}
+    ubuntu_packages=${debian_packages}
+    alpine_packages=$(getProperty "alpine_packages")
+    centos_packages=$(getProperty "centos_packages")
+    clefos_packages=${centos_packages}
+    ubi_packages=$(getProperty "ubi_packages")
+    ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
+    ubi_minimal_packages=`echo "$ubi_minimal_packages" | awk -F'"' '{print $2}'`
+    
 }
 
 function cleanup_images() {
