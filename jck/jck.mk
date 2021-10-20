@@ -15,6 +15,10 @@ ifndef JCK_CUSTOM_TARGET
 JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
+ifndef CONFIG_ALT_PATH
+export CONFIG_ALT_PATH=jtrunner/config/default/jcktest.properties
+endif
+
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
 # Set our own macro to indicate we're running under cygwin.
 ifndef CYGWIN
@@ -75,10 +79,10 @@ endif
 ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
 	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
-  JRE_COMMAND := $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 endif
 
 define JCK_CMD_TEMPLATE_JRE
+JRE_COMMAND := $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 $(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
 endef
 
@@ -87,7 +91,7 @@ $(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) 
 endef
 
 ifeq ($(USE_JRE),1)
-  JCK_CMD_TEMPLATE := $(JCK_CMD_TEMPLATE_JRE)
+JCK_CMD_TEMPLATE := $(JCK_CMD_TEMPLATE_JRE)
 endif
 
 VERIFIER_INSTRUCTIONS_TESTS_GROUP1=$(Q)vm/verifier/instructions/aaload;vm/verifier/instructions/aastore;vm/verifier/instructions/anewarray;vm/verifier/instructions/areturn;vm/verifier/instructions/baload;vm/verifier/instructions/bastore;vm/verifier/instructions/bipush;vm/verifier/instructions/caload;vm/verifier/instructions/castore;vm/verifier/instructions/d2f;vm/verifier/instructions/d2i;vm/verifier/instructions/d2l;vm/verifier/instructions/dadd;vm/verifier/instructions/daload;vm/verifier/instructions/dastore;vm/verifier/instructions/dcmp;vm/verifier/instructions/dconst;vm/verifier/instructions/ddiv;vm/verifier/instructions/dmul;vm/verifier/instructions/dneg;vm/verifier/instructions/drem;vm/verifier/instructions/dreturn;vm/verifier/instructions/dsub;vm/verifier/instructions/dup;vm/verifier/instructions/dup2$(Q)
