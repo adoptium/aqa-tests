@@ -836,7 +836,6 @@ public class JavaTestRunner {
 			}
 
 			long timeout = 24;
-			int chmodRC = -1;
 			int jckRC = -1;
 			boolean endedWithinTimeLimit = false;
 			
@@ -846,14 +845,8 @@ public class JavaTestRunner {
 				timeout = 4;
 			}
 
-			if (!platform.equals("win")) {
-				List<String> chmodCmd = new ArrayList<>();
-				chmodCmd.add("bash");
-				chmodCmd.add("-c"); 
-				chmodCmd.add("chmod 777 "+ javatestJarFullPath); 
-				Process chmod = startSubProcess("chmod", chmodCmd);
-				chmodRC = chmod.waitFor();
-			}
+			File f = new File (javatestJarFullPath); 
+			f.setReadable(true); 
 
 			List<String> jckCmd = new ArrayList<>();
 			jckCmd.add(pathToJava);
@@ -907,10 +900,7 @@ public class JavaTestRunner {
 			}
 			
 			boolean result;
-			if ( chmodRC != 0 && !platform.equals("win")) {
-				System.out.println("chmod command failed");
-				result = false;
-			} else if (jckRC != 0) {
+			if (jckRC != 0) {
 				System.out.println("JCK subprocess returned a non-zero value");
 				result = false; 
 			} else if (!endedWithinTimeLimit) {
