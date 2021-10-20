@@ -392,19 +392,19 @@ def setup() {
 			JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
 			// system test repository exports to be used by system/common.xml
-			if (params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
+			if (!params.USE_TESTENV_PROPERTIES &&params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH) {
 				String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
 				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
 			}
 
-			if (params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
+			if (!params.USE_TESTENV_PROPERTIES &&params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
 				String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
 				env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
 				env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
 			}
 
-			if (params.STF_OWNER_BRANCH) {
+			if (!params.USE_TESTENV_PROPERTIES &&params.STF_OWNER_BRANCH) {
 				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 				env.STF_REPO = stf[0]
 				env.STF_BRANCH = stf[1]
