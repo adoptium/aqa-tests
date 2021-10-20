@@ -71,7 +71,6 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
-
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (params.JRE_IMAGE) {
@@ -96,6 +95,7 @@ def setupEnv() {
 
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
+	env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}\_${env.JDK_IMPL}\_${params.TARGET}\_${PLATFORM}.tap"
 
 	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
@@ -908,11 +908,11 @@ def run_parallel_tests() {
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
 						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/${env.TAP_NAME}", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/${env.TAP_NAME}", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
-						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						echo "Cannot copy ${env.TAP_NAME} from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
 					}
 				}
