@@ -87,7 +87,6 @@ $(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) 
 endef
 
 ifeq ($(USE_JRE),1)
-  echo "USE_JRE $(JCK_CMD_TEMPLATE_JRE)" 
   JCK_CMD_TEMPLATE := $(JCK_CMD_TEMPLATE_JRE)
 endif
 

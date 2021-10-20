@@ -72,12 +72,15 @@ def setupEnv() {
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	
+
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (params.JRE_IMAGE) {
 		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
 	}
+	if (params.USE_JRE) {
+        env.USE_JRE = 1
+    }
 
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
