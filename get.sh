@@ -223,13 +223,20 @@ getBinaryOpenjdk()
 		if [ "$SDK_RESOURCE" == "releases" ]; then
 			release_type="ga"
 		fi
-		download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptopenjdk"
-		info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
+		download_url="https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
+info_url="https://api.adoptium.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=eclipse"
 
-		if [ "$JDK_VERSION" != "8" ] || [ "$JDK_IMPL" != "hotspot" ]; then
-			download_url+=" https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptopenjdk"
-			info_url+=" https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=adoptopenjdk"
-		fi
+if [ "$JDK_VERSION" != "8" ] && [ "$JDK_IMPL" != "openj9" ]; then
+    download_url+=" https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
+    info_url+=" https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
+fi
+
+if [ "$JDK_IMPL" == "openj9" ]; then
+download_url="https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/openj9/${heap_size}/adoptopenjdk https://api.adoptopenjdk.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/openj9/${heap_size}/adoptopenjdk"
+info_url="https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=adoptopenjdk https://api.adoptopenjdk.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=adoptopenjdk"
+fi
+
+
 	else
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
@@ -430,7 +437,10 @@ getTestKitGen()
 {
 	echo "get testKitGen..."
 	cd $TESTDIR
-
+	if [ "$TKG_REPO" == "" ]
+	then
+		TKG_REPO="https://github.com/adoptium/TKG.git"
+	fi
 	echo "git clone -q $TKG_REPO"
 	git clone -q $TKG_REPO
 	cd TKG
@@ -640,7 +650,12 @@ checkOpenJ9RepoSHA()
 	checkRepoSHA "$TESTDIR/openj9"
 }
 
+
 parseCommandLineArgs "$@"
+if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
+	source ./testenv/testenv.properties
+fi
+
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 	testJavaVersion
