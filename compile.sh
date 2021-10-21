@@ -8,7 +8,7 @@ usage ()
     echo '                [--JDK_IMPL ]: JDK implementation'
 
 }
-
+if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi
 if [ $USE_TESTENV_PROPERTIES == true ];then
     while read line; do
         export $line
