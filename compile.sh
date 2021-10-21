@@ -16,11 +16,12 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     if [ $JDK_VERSION == "8" ];then
         if [ $JDK_IMPL == "openj9" ] 
         then
-            export JDK_REPO = $JDK8_REPO
-            export JDK_BRANCH = $JDK8_BRANCH
-        else
             export JDK_REPO = $JDK8_OPENJ9_REPO
             export JDK_BRANCH = $JDK8_OPENJ9_BRANCH
+           
+        else
+            export JDK_REPO = $JDK8_REPO
+            export JDK_BRANCH = $JDK8_BRANCH
         fi
     fi
 
