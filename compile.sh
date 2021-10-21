@@ -21,8 +21,8 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
         eval export JDK_BRANCH=${JDK${JDK_VERSION}_OPENJ9_BRANCH}
         
     else
-        eval export JDK_REPO=${JDK{$JDK_VERSION}_REPO}
-        eval export JDK_BRANCH=${JDK{$JDK_VERSION}_BRANCH}
+        eval export JDK_REPO=${JDK${JDK_VERSION}_REPO}
+        eval export JDK_BRANCH=${JDK${JDK_VERSION}_BRANCH}
     fi
 
 fi
