@@ -81,8 +81,11 @@ ifndef JRE_IMAGE
 	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
 endif
 
+define JRE_COMMAND
+$(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
+endef
+
 define JCK_CMD_TEMPLATE_JRE
-JRE_COMMAND := $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 $(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
 endef
 
