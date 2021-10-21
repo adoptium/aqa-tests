@@ -108,17 +108,48 @@
 		<if>
 			<equals arg1="${env.USE_TESTENV_PROPERTIES}" arg2="true" />
 			<then>
-				<var name="jdkrepo" value="env.JDK${JDK_VERSION}_REPO" />
-				<var name="jdkbranch" value="env.JDK${JDK_VERSION}_BRANCH" />
 				<if>
-					<equals arg1="${JDK_IMPL}" arg2="openj9" />
+					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<var name="jdkrepo" value="env.JDK${JDK_VERSION}_OPENJ9_REPO" />
-						<var name="jdkbranch" value="env.JDK${JDK_VERSION}_OPENJ9_BRANCH" />	
+						<var name="jdkrepo" value="${env.JDK8_REPO}" />
+						<var name="jdkbranch" value="${env.JDK8_BRANCH}" />
+						<if>
+							<equals arg1="${JDK_IMPL}" arg2="openj9" />
+							<then>
+								<var name="jdkrepo" value="${env.JDK8_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK8_OPENJ9_BRANCH}" />	
+							</then>
+						</if>
 					</then>
 				</if>
-
-				
+				<if>
+					<equals arg1="${JDK_VERSION}" arg2="11" />
+					<then>
+						<var name="jdkrepo" value="${env.JDK11_REPO}" />
+						<var name="jdkbranch" value="${env.JDK11_BRANCH}" />
+						<if>
+							<equals arg1="${JDK_IMPL}" arg2="openj9" />
+							<then>
+								<var name="jdkrepo" value="${env.JDK11_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK11_OPENJ9_BRANCH}" />	
+							</then>
+						</if>
+					</then>
+				</if>
+				<if>
+					<equals arg1="${JDK_VERSION}" arg2="17" />
+					<then>
+						<var name="jdkrepo" value="${env.JDK17_REPO}" />
+						<var name="jdkbranch" value="${env.JDK17_BRANCH}" />
+						<if>
+							<equals arg1="${JDK_IMPL}" arg2="openj9" />
+							<then>
+								<var name="jdkrepo" value="${env.JDK17_OPENJ9_REPO}" />
+								<var name="jdkbranch" value="${env.JDK17_OPENJ9_BRANCH}" />	
+							</then>
+						</if>
+					</then>
+				</if>
 			</then>
 		</if>
 		
