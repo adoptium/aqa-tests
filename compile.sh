@@ -11,16 +11,18 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     while read line; do
         export $line
     done < ./testenv/testenv.properties
-    if [ $JDK_VERSION == "8" ];then
-        if [ $JDK_IMPL == "openj9" ] 
-        then
-            export JDK_REPO=$JDK8_OPENJ9_REPO
-            export JDK_BRANCH=$JDK8_OPENJ9_BRANCH
-           
-        else
-            export JDK_REPO=$JDK8_REPO
-            export JDK_BRANCH=$JDK8_BRANCH
-        fi
+    openj9_repo="JDK${JDK_VERSION}_OPENJ9_REPO"
+    openj9_branch="JDK${JDK_VERSION}_OPENJ9_BRANCH"
+    repo="JDK{$JDK_VERSION}_REPO"
+    branch="JDK{$JDK_VERSION}_BRANCH"
+    if [ $JDK_IMPL == "openj9" ]
+    then
+        export JDK_REPO=${!openj9_repo}
+        export JDK_BRANCH=${!openj9_branch}
+        
+    else
+        export JDK_REPO=${!repo}
+        export JDK_BRANCH=${!branch}
     fi
 
 fi
