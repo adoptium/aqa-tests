@@ -482,7 +482,7 @@ def get_sources() {
 		}
 	}
 }
-def exportEnv(){
+def makeCompileTest(){
 	String makeTestCmd = "bash ./compile.sh ${USE_TESTENV_PROPERTIES}"
 	dir('aqa-tests') {
 		if (!env.SPEC.startsWith('zos')) {
@@ -494,17 +494,7 @@ def exportEnv(){
 		}
 	}
 }
-def makeCompileTest() {
-	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE compile"
-	// use sshagent with Jenkins credentials ID for all platforms except zOS
-	if (!env.SPEC.startsWith('zos')) {
-		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-			sh "$makeTestCmd";
-		}
-	} else {
-		sh "$makeTestCmd";
-	}
-}
+
 
 def buildTest() {
 	stage('Build') {
@@ -561,10 +551,10 @@ def buildTest() {
 				if(params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
 					withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}",
 						usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-						exportEnv()
+						makeCompileTest()
 					}
 				} else {
-					exportEnv()
+					makeCompileTest()
 				}
 			}
 		}
