@@ -108,13 +108,13 @@
 		<if>
 			<equals arg1="${env.USE_TESTENV_PROPERTIES}" arg2="true" />
 			<then>
-				<var name="jdkrepo" value="${env.JDK${JDK_VERSION}_REPO}" />
-				<var name="jdkbranch" value="${env.JDK${JDK_VERSION}_BRANCH}" />
+				<var name="jdkrepo" value="env.JDK${JDK_VERSION}_REPO" />
+				<var name="jdkbranch" value="env.JDK${JDK_VERSION}_BRANCH" />
 				<if>
 					<equals arg1="${JDK_IMPL}" arg2="openj9" />
 					<then>
-						<var name="jdkrepo" value="${env.JDK${JDK_VERSION}_OPENJ9_REPO}" />
-						<var name="jdkbranch" value="${env.JDK${JDK_VERSION}_OPENJ9_BRANCH}" />	
+						<var name="jdkrepo" value="env.JDK${JDK_VERSION}_OPENJ9_REPO" />
+						<var name="jdkbranch" value="env.JDK${JDK_VERSION}_OPENJ9_BRANCH" />	
 					</then>
 				</if>
 
