@@ -18,7 +18,7 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     eval openj9_repo2='$'$openj9_repo
     eval openj9_branch2='$'$openj9_branch
     eval repo2='$'$repo
-    eval branch2='$'$repo
+    eval branch2='$'$branch
 
     if [ $JDK_IMPL == "openj9" ]
     then
