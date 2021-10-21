@@ -25,7 +25,7 @@ def setupEnv() {
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
-	} 
+	}
 	env.USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES
 
 	env.SPEC = "${SPEC}"
@@ -283,7 +283,7 @@ def setupParallelEnv() {
 					build job: TEST_JOB_NAME, parameters: childParams, propagate: false
 				}
 			}
-			
+
 			if (create_jobs) {
 				parallel create_jobs
 			}
@@ -403,7 +403,7 @@ def setup() {
 				env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 				env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
 			}
-				
+
 			if (!params.USE_TESTENV_PROPERTIES && params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
 				String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
 				env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
@@ -415,9 +415,9 @@ def setup() {
 				env.STF_BRANCH = stf[1]
 			}
 
-			
 
-			
+
+
 			// vendor test
 			// expect VENDOR_TEST_* to be comma separated string parameters
 			VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
@@ -429,12 +429,12 @@ def setup() {
 			// Only set image required to false if params is set to false. In get.sh, the default value is true
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
-		
+
 			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED}"
-			
-			
+
+
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
-			
+
 			dir( WORKSPACE) {
 				// use sshagent with Jenkins credentials ID for all platforms except zOS
 				// on zOS use the user's ssh key
@@ -661,6 +661,7 @@ def post(output_name) {
 
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
+			archiveTestenvFile()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -830,6 +831,17 @@ def getJenkinsDomain() {
 		domainName = match
 	}
 	return domainName
+}
+
+def archiveTestenvFile() {
+	def testenvFile = "aqa-tests/testenv/testenv.properties";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving testenv.properties file on jenkins."
+		archiveArtifacts artifacts: testenvFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${testenvFile}"
+		uploadToArtifactory(pattern)
+	}
 }
 
 def archiveSHAFile() {
