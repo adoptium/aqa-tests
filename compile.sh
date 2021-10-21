@@ -2,7 +2,6 @@
 usage ()
 {
 	echo '                [--USE_TESTENV_PROPERTIES ]: use testenv.properties or not'
-    echo '                [--MAKE ]: make command'
     echo '                [--JDK_VERSION ]: JDK Version'
     echo '                [--JDK_IMPL ]: JDK implementation'
 
@@ -15,12 +14,12 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     if [ $JDK_VERSION == "8" ];then
         if [ $JDK_IMPL == "openj9" ] 
         then
-            export JDK_REPO = $JDK8_OPENJ9_REPO
-            export JDK_BRANCH = $JDK8_OPENJ9_BRANCH
+            export JDK_REPO=$JDK8_OPENJ9_REPO
+            export JDK_BRANCH=$JDK8_OPENJ9_BRANCH
            
         else
-            export JDK_REPO = $JDK8_REPO
-            export JDK_BRANCH = $JDK8_BRANCH
+            export JDK_REPO=$JDK8_REPO
+            export JDK_BRANCH=$JDK8_BRANCH
         fi
     fi
 
