@@ -3,7 +3,6 @@ usage ()
 {
 	echo '                [--USE_TESTENV_PROPERTIES ]: use testenv.properties or not'
     echo '                [--MAKE ]: make command'
-
     echo '                [--JDK_VERSION ]: JDK Version'
     echo '                [--JDK_IMPL ]: JDK implementation'
 

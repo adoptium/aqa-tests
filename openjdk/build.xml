@@ -90,6 +90,7 @@
 			</else>
 		</if>
 	</target>
+	<echo message="JDK REPO is ${env.JDK_REPO} "/>
 
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
