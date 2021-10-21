@@ -410,7 +410,7 @@ def setup() {
 				env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
 			}
 
-			if (!params.USE_TESTENV_PROPERTIES &&params.STF_OWNER_BRANCH) {
+			if (!params.USE_TESTENV_PROPERTIES && params.STF_OWNER_BRANCH) {
 				String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 				env.STF_REPO = stf[0]
 				env.STF_BRANCH = stf[1]
