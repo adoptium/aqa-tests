@@ -13,8 +13,8 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     done < ./testenv/testenv.properties
     openj9_repo=JDK${JDK_VERSION}_OPENJ9_REPO
     openj9_branch=JDK${JDK_VERSION}_OPENJ9_BRANCH
-    repo=JDK{$JDK_VERSION}_REPO
-    branch=JDK{$JDK_VERSION}_BRANCH
+    repo=JDK${JDK_VERSION}_REPO
+    branch=JDK${JDK_VERSION}_BRANCH
     if [ $JDK_IMPL == "openj9" ]
     then
         eval export JDK_REPO=\$openj9_repo
