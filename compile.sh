@@ -17,12 +17,12 @@ if [ $USE_TESTENV_PROPERTIES == true ];then
     branch="JDK{$JDK_VERSION}_BRANCH"
     if [ $JDK_IMPL == "openj9" ]
     then
-        eval export JDK_REPO=JDK${JDK_VERSION}_OPENJ9_REPO
-        eval export JDK_BRANCH=JDK${JDK_VERSION}_OPENJ9_BRANCH
+        eval export JDK_REPO=${JDK${JDK_VERSION}_OPENJ9_REPO}
+        eval export JDK_BRANCH=${JDK${JDK_VERSION}_OPENJ9_BRANCH}
         
     else
-        eval export JDK_REPO=JDK{$JDK_VERSION}_REPO
-        eval export JDK_BRANCH=JDK{$JDK_VERSION}_BRANCH
+        eval export JDK_REPO=${JDK{$JDK_VERSION}_REPO}
+        eval export JDK_BRANCH=${JDK{$JDK_VERSION}_BRANCH}
     fi
 
 fi
