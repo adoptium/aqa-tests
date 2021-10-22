@@ -33,7 +33,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -jar $(JCK_ROOT)$(D)lib$(D)javatest.jar -verbose -tests $(CUSTOM_TARGET) \
+		<command>$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -jar $(JCK_ROOT)$(D)JCK-runtime-$(JDK_VERSION)$(D)lib$(D)javatest.jar -verbose -tests $(CUSTOM_TARGET) \
 		-workdir -create $(TEST_ROOT)$(D)tmp$(D)myworkdir -config $(JTI_FILE) \
 		-runtests -writereport $(REPORTDIR); $(TEST_STATUS)</command>
 		<levels>
