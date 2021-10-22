@@ -79,6 +79,7 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/adoptium/infrastructure/issues/1118	linux-aarch64
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
+java/lang/String/StringRepeat.java#id1 https://bugs.openjdk.java.net/browse/JDK-8221400 windows-x86
 ############################################################################
 
 # jdk_management
@@ -133,6 +134,7 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/adoptium/aqa-tests/issues/602
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all	
 java/nio/file/spi/SetDefaultProvider.java	https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
+java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 linux-s390x
 ############################################################################
 
 # jdk_io
@@ -324,41 +326,9 @@ jdk/incubator/vector/Byte64VectorTests.java	https://github.com/adoptium/aqa-test
 jdk/incubator/vector/ByteMaxVectorTests.java	https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
 jdk/incubator/vector/Int64VectorTests.java	https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
 jdk/incubator/vector/IntMaxVectorTests.java	https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
+jdk/incubator/vector/Byte256VectorLoadStoreTests.java https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
+jdk/incubator/vector/ByteMaxVectorLoadStoreTests.java https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
 jdk/incubator/vector/Short64VectorTests.java	https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
 jdk/incubator/vector/ShortMaxVectorTests.java	https://github.com/adoptium/aqa-tests/issues/2874 linux-arm
 ############################################################################
 
-# jvm_compiler
-
-compiler/arraycopy/TestCloneAccess.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/arraycopy/TestCloneAccessStressGCM.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestByteVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestDoubleVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestFloatVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestIntVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestIntVectRotate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestLongVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestLongVectRotate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/cr6340864/TestShortVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/TestReplaceEquivPhis.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/TestShiftRightAndAccumulate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/codegen/TestCharVect2.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopopts/superword/Vec_MulAddS2I.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopopts/TestUnswitchCloneSkeletonPredicates.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopstripmining/AntiDependentLoadInOuterStripMinedLoop.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopstripmining/LoadDependsOnIfIdenticalToLoopExit.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopstripmining/TestConservativeAntiDep.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopstripmining/TestEliminatedLoadPinnedOnBackedge.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/rangechecks/RangeCheckEliminationScaleNotOne.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/types/TestSubTypeCheckMacroNodeWrongMem.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/vectorization/TestVectorsNotSavedAtSafepoint.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/codegen/ClearArrayTest.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/c2/TestJumpTable.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/loopstripmining/TestPinnedUseInOuterLSMUnusedBySfpt.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-compiler/vectorapi/TestNoInline.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
-
-=======
-#runtime_nestmate
-runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://bugs.openjdk.java.net/browse/JDK-8269135 windows-x86
-
->>>>>>> master
