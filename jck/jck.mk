@@ -82,7 +82,7 @@ ifndef JRE_IMAGE
 endif
 
 define JTI_FILE
-$(JCK_ROOT)$(D)jck$(D)linux$(D)multiJVMgroup-agent-Linux-RI.jti
+$(JCK_ROOT)$(D)JCK-runtime-11$(D)linux$(D)multiJVM-agent-Linux-RI.jti
 endef
 
 define JRE_COMMAND
