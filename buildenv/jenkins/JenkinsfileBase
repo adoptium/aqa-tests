@@ -95,7 +95,11 @@ def setupEnv() {
 
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
-	env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}_${env.JDK_IMPL}_${params.TARGET}_${PLATFORM}.tap"
+	if (params.TARGET.contains('testList')) {
+		env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}_${env.JDK_IMPL}_testList_${PLATFORM}.tap"
+	} else {
+		env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}_${env.JDK_IMPL}_${params.TARGET}_${PLATFORM}.tap"
+	}
 
 	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
