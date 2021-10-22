@@ -29,6 +29,26 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>direct_javatest_cmd_test</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -jar $(JCK_ROOT)$(D)lib$(D)javatest.jar -verbose -tests $(CUSTOM_TARGET) \
+		-workdir -create /tmp/myworkdir -config $(JCK_ROOT)$(D)my.jti -set $(JCK_ARGS) \
+		-runtests -writereport $(REPORTDIR); $(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<disables>
+			<disable>
+				<comment>Run only in Grinders</comment>
+			</disable>
+		</disables>
+	</test>
+	<test>
 		<testCaseName>jck_target_folder_check</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
@@ -622,7 +642,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/java_nio jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME configAltPath=$(CONFIG_ALT_PATH); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/java_nio jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME configAltPath=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
