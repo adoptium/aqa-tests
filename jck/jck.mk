@@ -81,6 +81,10 @@ ifndef JRE_IMAGE
 	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
 endif
 
+define JTI_FILE
+$(JCK_ROOT)$(D)jck$(D)linux$(D)multiJVMgroup-agent-Linux-RI.jti
+endef
+
 define JRE_COMMAND
 $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 endef
