@@ -16,7 +16,7 @@ JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
 ifndef CONFIG_ALT_PATH
-export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jtrunner$(D)config$(D)default
+export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
