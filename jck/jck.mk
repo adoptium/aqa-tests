@@ -16,7 +16,7 @@ JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
 ifndef CONFIG_ALT_PATH
-export CONFIG_ALT_PATH=jtrunner/config/default
+export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jtrunner$(D)config$(D)default
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
@@ -80,6 +80,10 @@ ifndef JRE_IMAGE
 	JRE_ROOT := $(TEST_JDK_HOME)
 	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
 endif
+
+define JTI_FILE
+$(JCK_ROOT)$(D)jck$(D)linux$(D)multiJVMgroup-agent-Linux-RI.jti
+endef
 
 define JRE_COMMAND
 $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
