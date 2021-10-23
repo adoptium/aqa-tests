@@ -399,12 +399,6 @@ fi
 			fi
 		done
 
-	output_file="$TESTDIR/TKG/SHA.txt"
-	if [ -e ${output_file} ]; then
-		echo "rm $output_file"
-		rm ${output_file}
-	fi
-
 	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
 
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
@@ -633,6 +627,12 @@ fi
 
 checkRepoSHA()
 {
+	output_file="$TESTDIR/TKG/SHA.txt"
+	if [ -e ${output_file} ]; then
+		echo "rm $output_file"
+		rm ${output_file}
+	fi
+
 	sha_file="$TESTDIR/TKG/SHA.txt"
 	testenv_file="$TESTDIR/testenv/testenv.properties"
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
@@ -671,12 +671,13 @@ if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 	testJavaVersion
 fi
-if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
-	getOpenJDKSources
-fi
 
 if [ ! -d "$TESTDIR/TKG" ]; then
 	getTestKitGen
+fi
+
+if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
+	getOpenJDKSources
 fi
 
 if [[ $JTREG_URL != "" ]]; then
