@@ -399,6 +399,12 @@ fi
 			fi
 		done
 
+	output_file="$TESTDIR/TKG/SHA.txt"
+	if [ -e ${output_file} ]; then
+		echo "rm $output_file"
+		rm ${output_file}
+	fi
+
 	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
 
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
@@ -641,12 +647,6 @@ checkRepoSHA()
 checkTestRepoSHAs()
 {
 	echo "check adoptium repo and TKG repo SHA"
-
-	output_file="$TESTDIR/TKG/SHA.txt"
-	if [ -e ${output_file} ]; then
-		echo "rm $output_file"
-		rm ${output_file}
-	fi
 
 	checkRepoSHA "$TESTDIR" "ADOPTIUM"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
