@@ -14,6 +14,7 @@
 
 REPO_DIR=""
 OUTPUT_FILE="../SHA.txt"
+REPO_NAME=""
 
 
 usage ()
@@ -36,6 +37,9 @@ parseCommandLineArgs()
 
 			"--output_file" | "-o" )
 				OUTPUT_FILE="$1"; shift;;
+
+			"--repo_name" | "-n" )
+				REPO_NAME="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -64,7 +68,9 @@ getSHA()
 
 	cd $REPO_DIR
 	# append the info into $OUTPUT_FILE
-	{ echo "================================================"; echo "timestamp: $(timestamp)"; echo "repo dir: $REPO_DIR"; echo "git repo: "; git remote show origin -n | grep "Fetch URL:"; echo "sha:"; git rev-parse HEAD; }  2>&1 | tee -a $OUTPUT_FILE
+	{	echo "${REPO_NAME}_REPO=$(git remote show origin -n | grep -Po '(?<=Fetch URL: ).*')";
+		echo "${REPO_NAME}_BRANCH=$(git rev-parse HEAD)";
+	}  2>&1 | tee -a $OUTPUT_FILE
 }
 parseCommandLineArgs "$@"
 getSHA

@@ -179,7 +179,7 @@ getBinaryOpenjdk()
 		done
 		latestBuildUrl="${CUSTOMIZED_SDK_URL}${max}/"
 		echo "downloading files from $latestBuildUrl"
-		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')	
+		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')
 		arr=(${download_urls/ / })
 		download_url=()
 		for n in "${arr[@]}" ; do
@@ -625,9 +625,15 @@ fi
 
 checkRepoSHA()
 {
-	output_file="$TESTDIR/TKG/SHA.txt"
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file"
-	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file
+	sha_file="$TESTDIR/TKG/SHA.txt"
+	testenv_file="$TESTDIR/testenv/testenv.properties"
+	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
+	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
+
+	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
+	$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $sha_file --repo_name $2
+
+
 }
 
 checkTestRepoSHAs()
@@ -640,14 +646,14 @@ checkTestRepoSHAs()
 		rm ${output_file}
 	fi
 
-	checkRepoSHA "$TESTDIR"
-	checkRepoSHA "$TESTDIR/TKG"
+	checkRepoSHA "$TESTDIR" "ADOPTIUM"
+	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
 
 checkOpenJ9RepoSHA()
 {
 	echo "check OpenJ9 Repo sha"
-	checkRepoSHA "$TESTDIR/openj9"
+	checkRepoSHA "$TESTDIR/openj9" "OPENJ9"
 }
 
 
