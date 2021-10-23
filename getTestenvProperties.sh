@@ -54,12 +54,7 @@ parseCommandLineArgs()
 	fi
 }
 
-timestamp() {
-  date +"%Y%m%d-%H%M%S"
-}
-
-getSHA()
-{
+getSHA() {
 	echo "Check sha in $REPO_DIR and store the info in $OUTPUT_FILE"
 	if [ ! -e ${OUTPUT_FILE} ]; then
 		echo "touch $OUTPUT_FILE"
@@ -72,5 +67,6 @@ getSHA()
 		echo "${REPO_NAME}_BRANCH=$(git rev-parse HEAD)";
 	}  2>&1 | tee -a $OUTPUT_FILE
 }
+
 parseCommandLineArgs "$@"
 getSHA
