@@ -646,6 +646,10 @@ checkTestRepoSHAs()
 		rm ${output_file}
 	fi
 
+	echo "Clearing testenv.properties"
+	testenv_file="$TESTDIR/testenv/testenv.properties"
+	> $testenv_file
+
 	checkRepoSHA "$TESTDIR" "ADOPTIUM"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
