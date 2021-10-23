@@ -630,8 +630,8 @@ checkRepoSHA()
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
-	$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $sha_file --repo_name $2
+	echo "$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 
 
 }
