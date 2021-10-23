@@ -399,6 +399,8 @@ fi
 			fi
 		done
 
+	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
+
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
 	fi
@@ -646,10 +648,6 @@ checkTestRepoSHAs()
 		rm ${output_file}
 	fi
 
-	echo "Clearing testenv.properties"
-	testenv_file="$TESTDIR/testenv/testenv.properties"
-	> $testenv_file
-
 	checkRepoSHA "$TESTDIR" "ADOPTIUM"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
@@ -665,6 +663,9 @@ parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
 fi
+
+echo "Clearing testenv.properties"
+> ./testenv/testenv.properties
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
