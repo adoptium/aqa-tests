@@ -667,13 +667,13 @@ fi
 echo "Clearing testenv.properties"
 > ./testenv/testenv.properties
 
+if [ ! -d "$TESTDIR/TKG" ]; then
+	getTestKitGen
+fi
+
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 	testJavaVersion
-fi
-
-if [ ! -d "$TESTDIR/TKG" ]; then
-	getTestKitGen
 fi
 
 if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
