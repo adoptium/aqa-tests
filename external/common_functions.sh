@@ -223,8 +223,8 @@ function set_test_info() {
     centos_packages=$(getProperty "centos_packages")
     clefos_packages=${centos_packages}
     ubi_packages=$(getProperty "ubi_packages")
-    ubi_minimal_packages=$(getProperty "ubi_minimal_packages")
-     ubi_minimal_packages=`echo "$ubi_minimal_packages" | awk -F'"' '{print $2}'`
+    ubi_minimal_packages=$(ubi_packages)
+     
     
     
 }
