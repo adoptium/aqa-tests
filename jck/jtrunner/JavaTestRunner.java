@@ -317,6 +317,32 @@ public class JavaTestRunner {
 			bw.flush();
 			bw.close();
 		}
+		
+		if ( tests.contains("api/javax_xml") ) {
+			// Requires SHA1 enabling
+			secPropsFile = resultDir + File.separator + "security.properties";
+			System.out.println("Custom security properties to be stored in: " + secPropsFile);
+			String secPropsContents = "jdk.xml.dsig.secureValidationPolicy=\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/2001/04/xmldsig-more#rsa-md5,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/2001/04/xmldsig-more#hmac-md5,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/2001/04/xmldsig-more#md5,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1,\\" + "\n";
+			secPropsContents += "disallowAlg http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1,\\" + "\n";
+			secPropsContents += "maxTransforms 5,\\" + "\n";
+			secPropsContents += "maxReferences 30,\\" + "\n";
+			secPropsContents += "disallowReferenceUriSchemes file http https,\\" + "\n";
+			secPropsContents += "minKeySize RSA 1024,\\" + "\n";
+			secPropsContents += "minKeySize DSA 1024,\\" + "\n";
+			secPropsContents += "minKeySize EC 224,\\" + "\n";
+			secPropsContents += "noDuplicateIds,\\" + "\n";
+			secPropsContents += "noRetrievalMethodLoops";
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile))); 
+			bw.write(secPropsContents); 
+			bw.flush();
+			bw.close();
+		}
 
 		// Some tests provoke out of memory exceptions.
 		// If we're testing a J9 VM that will result in dumps being taken and a non-zero return code
@@ -640,8 +666,8 @@ public class JavaTestRunner {
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
 				fileContent += "set jck.env.testPlatform.systemRoot " + System.getenv("WINDIR") + ";\n";
-			} else if (platform.equals("zos") || platform.equals("aix")) {
-				// On z/OS and AIX set the testplatform.os Current system
+			} else if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
+				// On jck11+ z/OS and AIX set the testplatform.os Current system
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.testPlatform.os \"Current system\";\n";
 				cmdAsStringOrFile = "cmdAsFile";
@@ -673,8 +699,8 @@ public class JavaTestRunner {
 			
 			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + pathToJava + "\"" + ";\n";
 
-			if (platform.equals("zos") || platform.equals("aix")) {
-				// On z/OS and AIX set the compRefExecute file and path separators
+			if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
+				// On jck11+ z/OS and AIX set the compRefExecute file and path separators
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.compiler.compRefExecute.fileSep \"/\";\n";
 				fileContent += "set jck.env.compiler.compRefExecute.pathSep \":\";\n";
@@ -731,11 +757,14 @@ public class JavaTestRunner {
 				return false; 
 			}
 			
+			// bash/ksh required to run schema scripts (cannot be standard sh)
 			if (platform.equals("linux")) {
-				// bash required to run schema scripts on linux (cannot be standard sh)
 				xjcCmd = "bash "+xjcCmd;
 				jxcCmd = "bash "+jxcCmd;
-            }
+			} else if (platform.equals("solaris")) {
+				xjcCmd = "ksh "+xjcCmd;
+				jxcCmd = "ksh "+jxcCmd;
+			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
 			fileContent += "timeoutfactor 1" + ";\n";							// All Devtools tests take less than 1h to finish.
@@ -1094,7 +1123,7 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml")) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
