@@ -223,10 +223,7 @@ function set_test_info() {
     centos_packages=$(getProperty "centos_packages")
     clefos_packages=${centos_packages}
     ubi_packages=$(getProperty "ubi_packages")
-    ubi_minimal_packages=$(ubi_packages)
-     
-    
-    
+    ubi_minimal_packages=${ubi_packages}  
 }
 
 function cleanup_images() {
