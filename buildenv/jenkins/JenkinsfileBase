@@ -531,7 +531,7 @@ def buildTest() {
 			}
 
 			try {
-				if (env.BUILD_LIST.startsWith('system') || env.BUILD_LIST.startsWith('jck')) {
+				if (env.BUILD_LIST.startsWith('system')) {
 					//get pre-staged test jars from systemtest.getDependency build before system test compilation
 					timeout(time: 1, unit: 'HOURS') {
 						copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'aqa-tests'

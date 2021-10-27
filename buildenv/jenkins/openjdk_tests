@@ -253,8 +253,13 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 } catch (Exception e) {
                     println("Exception: " + e.toString())
                     // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
-                    // if there is an exception, set currentBuild.result to FAILURE
-                    currentBuild.result = 'FAILURE'
+                    // if there is an exception, set currentBuild.result to ABORTED/FAILURE
+                    if (e.toString().contains("FlowInterruptedException")) {
+                        currentBuild.result = 'ABORTED'
+                    } else {
+                        currentBuild.result = 'FAILURE'
+                    }
+
                 } finally {
                     if (params.SLACK_CHANNEL) {
                         timeout(time: 5, unit: 'MINUTES') {
