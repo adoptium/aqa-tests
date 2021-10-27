@@ -220,7 +220,7 @@ function set_test_info() {
     environment_variable="MODE=\"java\""
     fi
     debian_packages=$(getProperty "debian_packages")
-    debian_packages=`echo "$debian_packages" | awk -F'"' '{print $2}'`
+    debian_packages=`sed -e 's/^"//' -e 's/"$//' <<<"$debian_packages"`
     debianslim_packages=${debian_packages}
     ubuntu_packages=${debian_packages}
     alpine_packages=$(getProperty "alpine_packages")
