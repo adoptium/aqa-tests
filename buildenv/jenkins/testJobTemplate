@@ -309,8 +309,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
 							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
-							stringParam('UPSTREAM_JOB_NAME', "", "Upstream job name from the same Jenkins server to download JDK")
-							stringParam('UPSTREAM_JOB_NUMBER', "", "Upstream job number from the same Jenkins server to download JDK.")
+							stringParam('UPSTREAM_JOB_NAME', "", '''Upstream job name from the same Jenkins server to download JDK. e.g., UploadFile<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NUMBER <br/>''')
+							stringParam('UPSTREAM_JOB_NUMBER', "", '''Upstream job number from the same Jenkins server to download JDK. e.g., 40<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NAME <br/>''')
 							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
 
 							parameterSeparatorDefinition {
@@ -326,7 +328,14 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", '''Specific test directories to compile. This can be a comma-separated list of directories. <br/>Advisable to specify to a granularity that suits the targets you want to run. BUILD_LIST value can be the following:<br/>top level folder: openjdk|system|perf|jck|external|functional<br/>sub-folder: functional/Java8andUp|perf/dacapo<br/>multiple folders: system,functional<br/>''')
-							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
+							stringParam('TARGET', "${ACTUAL_TARGET}", 
+								    '''Test TARGET to execute, you can also select sub-targets such as:<br/>
+                                                                       different level: sanity|extended|special<br/>
+                                                                       different group: openjdk|system|jck|functional|perf|external<br/>
+                                                                       level.group: sanity.functional<br/>
+                                                                       individual test in playlist.xml: floatSanityTests|MiniMix_5m|jdk_math|jdk_beans_0|jdk_custom<br/>
+                                                                       a list of tests: testList TESTLIST=jit_jitt,jit_recognizedMethod_1,testSCCMLTests2_1<br/>
+                                                                       Note: please do not use level, group or type (i.e., functional, sanity, etc) in the TESTLIST<br/>''')
 							stringParam('CUSTOM_TARGET', "", '''
 								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
 								Example 1:<br>
@@ -374,7 +383,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							choiceParam('PARALLEL', PARALLEL_LIST, "Optional. Parallel mode")
-							stringParam('NUM_MACHINES', NUM_MACHINES, "Optional. Number of machines to run in parallel. Need to be used with PARALLEL=Dynamic")
+							stringParam('NUM_MACHINES', NUM_MACHINES, '''Optional. It has to be used with PARALLEL=Dynamic or PARALLEL=NodesByIterations<br/>
+							Use with PARALLEL=Dynamic, NUM_MACHINES cannot be greater than the number of matched nodes on Jenkins<br/>
+							Use with PARALLEL=NodesByIterations, NUM_MACHINES cannot be greater than 20<br/>''')
 							stringParam('TEST_TIME', TEST_TIME, '''Optional. Expected overall test build execution time. Needs to be used with PARALLEL=Dynamic.<br>
 							Once TEST_TIME is provided, test pipeline will automatically run tests in parallel and try to achieve the expected TEST_TIME.<br>
 							To ensure a balanced workload in test child builds, please also provide TRSS_URL.<br>

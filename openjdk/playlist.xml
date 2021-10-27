@@ -81,6 +81,9 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_compiler</testCaseName>
@@ -565,6 +568,35 @@
 		</versions>
 		<levels>
 			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_lang_VarHandleTest_j9</testCaseName>
+		<!-- This test with jit option is a temporary solution for https://github.com/eclipse-openj9/openj9/issues/13368 -->
+		<variations>
+			<variation>$(TEST_VARIATION_JIT_AGGRESIVE) $(TEST_VARIATION_JIT_PREVIEW) -Xjit:scratchSpaceFactorWhenJSR292Workload=1 Mode150</variation>
+			<variation>$(TEST_VARIATION_JIT_AGGRESIVE) $(TEST_VARIATION_JIT_PREVIEW) -Xjit:scratchSpaceFactorWhenJSR292Workload=1 Mode650</variation>
+			<variation>$(TEST_VARIATION_JIT_AGGRESIVE) $(TEST_VARIATION_JIT_PREVIEW) -Xjit:scratchSpaceFactorWhenJSR292Workload=1 Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)/test/jdk/java/lang/invoke/VarHandles$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>17</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
