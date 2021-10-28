@@ -71,6 +71,8 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
+	env.TAP_NAME = UPSTREAM_JOB_NAME ? UPSTREAM_JOB_NAME : ""
+
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (params.JRE_IMAGE) {
@@ -95,11 +97,6 @@ def setupEnv() {
 
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
-	if (params.TARGET.contains('testList')) {
-		env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}_${env.JDK_IMPL}_testList_${PLATFORM}.tap"
-	} else {
-		env.TAP_NAME=params.TAP_NAME ? params.TAP_NAME : "Test_openjdk${env.JDK_VERSION}_${env.JDK_IMPL}_${params.TARGET}_${PLATFORM}.tap"
-	}
 
 	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
