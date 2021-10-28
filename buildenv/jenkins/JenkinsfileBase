@@ -921,11 +921,11 @@ def run_parallel_tests() {
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
 						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/${env.TAP_NAME}", target:"${name}/${buildId}")
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/${env.TAP_NAME}", outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
-						echo "Cannot copy ${env.TAP_NAME} from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
 					}
 				}
