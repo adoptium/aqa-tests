@@ -71,7 +71,11 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
+<<<<<<< HEAD
 	env.TAP_NAME = JOB_NAME ? JOB_NAME : ""
+=======
+	env.TAP_NAME = UPSTREAM_JOB_NAME ? UPSTREAM_JOB_NAME : ""
+>>>>>>> 3d1982c177e8bd7ee88e79860b9dca093a62a34f
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
