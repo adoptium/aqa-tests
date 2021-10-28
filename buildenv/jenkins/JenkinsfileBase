@@ -71,7 +71,7 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
-	env.TAP_NAME = UPSTREAM_JOB_NAME
+	env.TAP_NAME = "$UPSTREAM_JOB_NAME\.tap"
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -906,7 +906,7 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
-def run_parallel_tests() {
+def run_parallel_tests(tapName) {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
@@ -921,11 +921,11 @@ def run_parallel_tests() {
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
 						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/${env.TAP_NAME}", target:"${name}/${buildId}")
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/${tapName}", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/${env.TAP_NAME}", outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/${tapName}", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
-						echo "Cannot copy ${env.TAP_NAME} from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						echo "Cannot copy ${tapName} from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
 					}
 				}
