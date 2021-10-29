@@ -29,6 +29,10 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
         export JDK_REPO=$repo2
         export JDK_BRANCH=$branch2
     fi
+    echo "Set values based on ./testenv/testenv.properties:"
+    cat ./testenv/testenv.properties
+    echo "JDK_REPO=${JDK_REPO}"
+    echo "JDK_BRANCH=${JDK_BRANCH}"
 
 fi
 cd ./TKG
