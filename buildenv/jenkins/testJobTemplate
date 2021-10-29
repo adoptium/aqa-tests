@@ -454,3 +454,451 @@ ARCH_OS_LIST.each { ARCH_OS ->
 		}
 	}
 }
+#!groovy
+
+/*
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+/**
+ * A template that defines a test job.
+ */
+
+def getBaseJDKImpl(JDK_IMPL) {
+	if (JDK_IMPL == "hotspot" || JDK_IMPL == "sap" || JDK_IMPL == "corretto" || JDK_IMPL == "dragonwell" || JDK_IMPL == "bisheng") {
+		return "hotspot"
+	}
+	return JDK_IMPL
+}
+
+if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
+if (!binding.hasVariable('ARCHIVE_TEST_RESULTS')) ARCHIVE_TEST_RESULTS = false
+if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
+if (!binding.hasVariable('ARTIFACTORY_REPO')) ARTIFACTORY_REPO = ""
+if (!binding.hasVariable('ARTIFACTORY_ROOT_DIR')) ARTIFACTORY_ROOT_DIR = ""
+if (!binding.hasVariable('TEST_TIME')) TEST_TIME = ""
+if (!binding.hasVariable('TIME_LIMIT')) TIME_LIMIT = "10"
+if (!binding.hasVariable('TRSS_URL')) TRSS_URL = ""
+if (!binding.hasVariable('SUFFIX')) SUFFIX = ""
+if (!binding.hasVariable('JCK_GIT_REPO')) JCK_GIT_REPO = ""
+if (!binding.hasVariable('JCK_GIT_REPO_PREFIX')) JCK_GIT_REPO_PREFIX = ""
+if (!binding.hasVariable('SSH_AGENT_CREDENTIAL')) SSH_AGENT_CREDENTIAL = ""
+if (!binding.hasVariable('KEEP_REPORTDIR')) KEEP_REPORTDIR = "true"
+if (!binding.hasVariable('AUTO_DETECT')) AUTO_DETECT = true
+if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
+if (!binding.hasVariable('TARGET')) TARGET = ""
+if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
+if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
+if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
+if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
+if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
+if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
+if (!binding.hasVariable('JDK_REPO')) JDK_REPO = ""
+if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
+if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
+if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
+if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = ""
+if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
+if (!binding.hasVariable('GENERATE_JOBS')) GENERATE_JOBS = false
+if (!binding.hasVariable('CLOUD_PROVIDER')) CLOUD_PROVIDER = ""
+
+if (!binding.hasVariable('BUILDS_TO_KEEP')) {
+	BUILDS_TO_KEEP = 10
+} else {
+	BUILDS_TO_KEEP = BUILDS_TO_KEEP.toInteger()
+}
+
+if (!binding.hasVariable('DAYS_TO_KEEP')) {
+	DAYS_TO_KEEP = 60
+} else {
+	DAYS_TO_KEEP = DAYS_TO_KEEP.toInteger()
+}
+
+if (binding.hasVariable('LEVELS')) {
+	LEVELS = LEVELS.split(',')
+} else {
+	// 'sanity','extended','special'
+	LEVELS = ['sanity']
+}
+
+if (binding.hasVariable('JDK_VERSIONS')) {
+	JDK_VERSIONS = JDK_VERSIONS.split(',')
+} else {
+	JDK_VERSIONS = [8]
+}
+
+if (binding.hasVariable('GROUPS')) {
+	GROUPS = GROUPS.split(',')
+} else {
+	// 'functional','system','openjdk', 'perf', 'external', 'jck'
+	GROUPS = ['functional']
+}
+
+
+if (binding.hasVariable('ARCH_OS_LIST')) {
+	ARCH_OS_LIST = ARCH_OS_LIST.split(',')*.trim()
+} else {
+	ARCH_OS_LIST = [
+		'arm_linux',
+		'aarch64_linux',
+		'ppc64_aix',
+		'ppc64le_linux',
+		's390x_linux',
+		's390x_zos',
+		'x86-32_windows',
+		'x86-64_linux',
+		'x86-64_linux_xl',
+		'x86-64_mac',
+		'x86-64_mac_xl',
+		'x86-64_windows'
+	]
+}
+
+JDK_IMPL_SN = JDK_IMPL
+JDK_IMPL_BASE = getBaseJDKImpl(JDK_IMPL)
+if (JDK_IMPL == "openj9") {
+	JDK_IMPL_SN = "j9"
+} else if (JDK_IMPL == "hotspot") {
+	JDK_IMPL_SN = "hs"
+}
+
+// If user specifies a PARALLEL_DEFAULT option, prepend it to the list so it becomes the default in the generated job(s)
+PARALLEL_LIST = ['None', 'Dynamic', 'Subdir', 'NodesByIterations']
+if (binding.hasVariable('PARALLEL_DEFAULT')) {
+	PARALLEL_LIST.remove(PARALLEL_DEFAULT)
+	PARALLEL_LIST.add(0, PARALLEL_DEFAULT)
+}
+
+println "LEVELS: ${LEVELS}"
+println "JDK_VERSIONS: ${JDK_VERSIONS}"
+println "GROUPS: ${GROUPS}"
+println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
+
+def OPENJ9_REPO = "https://github.com/eclipse-openj9/openj9.git"
+def ADOPTOPENJDK_REPO = "https://github.com/adoptium/aqa-tests.git"
+def ADOPTOPENJDK_BRANCH = "master"
+
+// Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
+// (See https://issues.jenkins.io/browse/JENKINS-48431)
+// Set Repository URL and Branch as build parameters by default
+// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
+def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
+def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
+def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
+
+LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
+if (LIGHT_WEIGHT_CHECKOUT) {
+	ADOPTOPENJDK_REPO_BUILD_PARAM = ADOPTOPENJDK_REPO
+	ADOPTOPENJDK_BRANCH_BUILD_PARAM = ADOPTOPENJDK_BRANCH
+	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
+}
+
+String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !important; padding: 5px; font-weight: bold; margin-top: 0.5rem; font-size: 1rem; outline: 0; '
+
+String separatorStyleCss = ' border: 0; border-bottom: 1px solid #ccc; '
+
+String sectionHeaderHelpTextStyleCss = ' color: #444; font-family: Roboto, sans-serif !important; outline: 0; display: block; font-weight: bold; padding-left: 5px; margin-bottom: 1rem'
+
+String separatorHelpTextStyleCss = ' border: none; margin-top: 0; margin-bottom: 0 '
+
+ARCH_OS_LIST.each { ARCH_OS ->
+	JDK_VERSIONS.each { JDK_VERSION ->
+		LEVELS.each { LEVEL ->
+			GROUPS.each { GROUP ->
+				def ACTUAL_TEST_JOB_NAME = TEST_JOB_NAME ? TEST_JOB_NAME : "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
+				def ACTUAL_TARGET = TARGET ? TARGET : "${LEVEL}.${GROUP}"
+				def ACTUAL_BUILD_LIST = BUILD_LIST ? BUILD_LIST : GROUP
+
+				// for jck builds, we need to pass in EXTRA_OPTIONS
+				def EXTRA_OPTIONS = "";
+				if (GROUP == "jck") {
+					EXTRA_OPTIONS = "-Xfuture"
+					if (JDK_VERSION != "8") {
+						EXTRA_OPTIONS += " --enable-preview"
+					}
+					if (ARCH_OS == "s390x_zos") {
+						// zOS has Attach API disabled by default
+						EXTRA_OPTIONS += " -Dcom.ibm.tools.attach.enable=yes"
+					}
+				}
+
+				// for jck builds, if JCK_GIT_REPO_PREFIX is set, set JCK_GIT_REPO if it is not set
+				def ACTUAL_JCK_GIT_REPO = JCK_GIT_REPO ?: ""
+				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !ACTUAL_JCK_GIT_REPO) {
+					ACTUAL_JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
+				}
+
+				def DOCKER_REQUIRED = false
+				def DOCKERIMAGE_TAG = ""
+				def EXTRA_DOCKER_ARGS = ""
+				if (GROUP == "external") {
+					DOCKER_REQUIRED = true
+					DOCKERIMAGE_TAG = "nightly"
+					if (LEVEL == "sanity" || LEVEL == "extended") {
+						EXTRA_DOCKER_ARGS = '-v ${TEST_JDK_HOME}:/opt/java/openjdk'
+					}
+				}
+				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
+ 					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><p>This job is defined in testJobTemplate in the https://github.com/adoptium/aqa-tests repo. If you wish to change the job, please modify testJobTemplate script. For more information about job parameters, refer https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins.</p>')
+
+					properties {
+						pipelineTriggers {
+							triggers {
+								cron {
+									spec(TRIGGER_SCHEDULE)
+								}
+							}
+						}
+					}
+
+					definition {
+						parameters {
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Test Repositories Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_REPO_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
+							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
+							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
+							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
+							stringParam('OPENJ9_SHA', "", "OpenJ9 sha")
+							stringParam('JDK_REPO', JDK_REPO, "JDK git repo. Please use ssh for zos.")
+							stringParam('JDK_BRANCH', JDK_BRANCH, "JDK branch")
+							stringParam('OPENJDK_SHA', "", "OpenJDK SHA from which to run tests")
+							stringParam('TKG_OWNER_BRANCH', "adoptium:master", "TestKitGen git [owner]:[branch]. Default is adoptium:master")
+							stringParam('ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH', "adoptium:master", "Personal Adoptium/aqa-systemtest repository owner:branch")
+							stringParam('OPENJ9_SYSTEMTEST_OWNER_BRANCH', "eclipse:master", "Personal eclipse-openj9/openj9-systemtest repository owner:branch")
+							stringParam('STF_OWNER_BRANCH', "adoptium:master", "Personal stf repo owner:branch")
+							stringParam('JCK_GIT_REPO', ACTUAL_JCK_GIT_REPO, "For JCK test only")
+							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), "Optional. Default is false for Grinders")
+
+							parameterSeparatorDefinition {
+							    name('NON_AQA_TEST_REPOS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Non-AQA Test Repositories')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('NON_AQA_TEST_REPOS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test repositories that can be overlayed onto existing AQA test material for extra testing.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('VENDOR_TEST_REPOS', VENDOR_TEST_REPOS, "Optional. Addtional test repos")
+							stringParam('VENDOR_TEST_BRANCHES', VENDOR_TEST_BRANCHES, "Optional. Addtional test branches")
+							stringParam('VENDOR_TEST_SHAS', "", "Optional. Addtional test shas")
+							stringParam('VENDOR_TEST_DIRS', VENDOR_TEST_DIRS, "Optional. Addtional test dirs")
+              stringParam('USER_CREDENTIALS_ID', USER_CREDENTIALS_ID, "Optional. User credential ID")
+
+							parameterSeparatorDefinition {
+							    name('PLATFORM_AND_MACHINE')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Platform and Machine Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('PLATFORM_AND_MACHINE_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Choose which platform to run tests on, and optionally specify machine label to send the test job to a certain machine is desired.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('PLATFORM', "${ARCH_OS}", '''Platform to be tested:
+                                <br/>aarch64_linux
+                                <br/>ppc64_aix
+                                <br/>ppc64le_linux
+                                <br/>s390x_linux
+                                <br/>s390x_zos
+                                <br/>x86-64_linux
+                                <br/>x86-64_mac
+                                <br/>x86-64_windows
+                                <br/>x86-32_windows
+                                <br/>sparcv9_solaris
+                                <br/>riscv64_linux
+                                <br/>multiple platforms (comma separated values): x86-64_linux,x86-64_mac
+                                <br/>all platforms: all (actual platforms will change based on JDK_VERSION/JDK_IMPL)
+                                <br/>Please refer to PLATFORM_MAP in https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests<br/>''')
+							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
+							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
+							booleanParam('DOCKER_REQUIRED', DOCKER_REQUIRED, "Is docker required? True, if BUILD_LIST contains external.")
+							stringParam('DOCKERIMAGE_TAG', DOCKERIMAGE_TAG, "Docker image tag")
+							stringParam('EXTRA_DOCKER_ARGS', EXTRA_DOCKER_ARGS, "Extra docker args")
+							stringParam('SSH_AGENT_CREDENTIAL', SSH_AGENT_CREDENTIAL, "Optional. Only use when ssh credentials are needed")
+							stringParam('ACTIVE_NODE_TIMEOUT', "", "Number of minutes we will wait for a label-matching node to become active.")
+							stringParam('CLOUD_PROVIDER', CLOUD_PROVIDER, "Available cloud provider, e.g. azure, fyre")
+
+							parameterSeparatorDefinition {
+							    name('JDK_SELECTION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('JDK Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('JDK_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Specify where to pick up JDK from and provide extra details if taking from upstream or customized.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('SDK_RESOURCE', SDK_RESOURCE, '''Where to get sdk? nightly|releases|customized|upstream<br/>
+							nightly & releases pull the lastest from https://api.adoptium.net/ <br/>
+							If nightly / releases is selected, please provide JDK_VERSION and JDK_IMPL <br/>
+							If customized is selected, please provide CUSTOMIZED_SDK_URL (and CUSTOMIZED_SDK_URL_CREDENTIAL_ID if the URL has restricted access)<br/>
+							If upstream is selected, please provide UPSTREAM_JOB_NAME and UPSTREAM_JOB_NUMBER <br/>''')
+							stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
+							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
+							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
+							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', "", "Only use this if you are pulling an JDK from a site that needs credential")
+							stringParam('UPSTREAM_JOB_NAME', "", '''Upstream job name from the same Jenkins server to download JDK. e.g., UploadFile<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NUMBER <br/>''')
+							stringParam('UPSTREAM_JOB_NUMBER', "", '''Upstream job number from the same Jenkins server to download JDK. e.g., 40<br/>
+							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NAME <br/>''')
+							booleanParam('AUTO_DETECT', AUTO_DETECT.toBoolean(), "Optional. Default is to enable AUTO_DETECT")
+
+							parameterSeparatorDefinition {
+							    name('TEST_SELECTION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Test Selection Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_SELECTION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", '''Specific test directories to compile. This can be a comma-separated list of directories. <br/>Advisable to specify to a granularity that suits the targets you want to run. BUILD_LIST value can be the following:<br/>top level folder: openjdk|system|perf|jck|external|functional<br/>sub-folder: functional/Java8andUp|perf/dacapo<br/>multiple folders: system,functional<br/>''')
+							stringParam('TARGET', "${ACTUAL_TARGET}", "Test TARGET to execute")
+							stringParam('CUSTOM_TARGET', "", '''
+								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
+								Example 1:<br>
+								TARGET=system_custom<br>
+								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"<br>
+								Example 2:<br>
+								TARGET=jdk_custom<br>
+								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java<br>
+								Example 3:<br>
+								TARGET=jck_custom<br>
+								CUSTOM_TARGET=lang/INFR/....html,testsuite=COMPILER<br>
+								Note: testsuite is optional. It can be set to [RUNTIME(default) | COMPILER | DEVTOOLS]<br>''')
+							parameterSeparatorDefinition {
+							    name('TEST_OPTIONS_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Provide parameters for which test material to build and which test targets to run.')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_OPTIONS_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
+							stringParam('EXTRA_OPTIONS', EXTRA_OPTIONS, "Use this to append options to the test command")
+							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('BUILD_IDENTIFIER', "", "build identifier")
+							stringParam('ITERATIONS',"1", '''Optional. Number of times to repeat execution of make target. <br/>
+								Use ITERATIONS with PARALLEL=None, run the same test(s) in a loop on one machine <br/>
+								Use ITERATIONS and NUM_MACHINES with PARALLEL=NodesByIterations, run the same test(s) in x (NUM_MACHINES) parallel runs with y (ITERATIONS) in each run<br/>''')
+							stringParam('TIME_LIMIT', TIME_LIMIT, "time limit")
+
+							parameterSeparatorDefinition {
+							    name('TEST_PARALLELIZATION_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Test Parallelization Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('TEST_PARALLELIZATION_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Additional test options if you wish to run in various parallel modes')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							choiceParam('PARALLEL', PARALLEL_LIST, '''Optional. Parallel mode: <br/>None // run test(s) in serial <br/>
+							Dynamic // dynamically divides tests according to NUM_MACHINES and runs them in parallel. Please also provide NUM_MACHINES. <br/>
+							NodesByIterations // run the same test(s) in parallel according to NUM_MACHINES. You can also provide ITERATIONS. This is mainly for debugging intermittent issues. <br/>
+							Subdir // run tests in parallel according to subdir. This is mainly for external tests.''')
+							stringParam('NUM_MACHINES', NUM_MACHINES, '''Optional. It has to be used with PARALLEL=Dynamic or PARALLEL=NodesByIterations<br/>
+							Use with PARALLEL=Dynamic, NUM_MACHINES cannot be greater than the number of matched nodes on Jenkins<br/>
+							Use with PARALLEL=NodesByIterations, NUM_MACHINES cannot be greater than 20<br/>''')
+							stringParam('TEST_TIME', TEST_TIME, '''Optional. Expected overall test build execution time. Needs to be used with PARALLEL=Dynamic.<br>
+							Once TEST_TIME is provided, test pipeline will automatically run tests in parallel and try to achieve the expected TEST_TIME.<br>
+							To ensure a balanced workload in test child builds, please also provide TRSS_URL.<br>
+							If both NUM_MACHINES and TEST_TIME are provided, only NUM_MACHINES will be used.<br>''')
+							stringParam('TRSS_URL', TRSS_URL, '''Optional. Active TRSS server to fetch test execution time. Needs to be used with PARALLEL=Dynamic.<br>
+							If not provided, the default is https://trss.adoptopenjdk.net <br>''')
+							stringParam('UPSTREAM_TEST_JOB_NAME', "", "Auto-populated. Upstream test job name. It will be used together with PARALLEL=Dynamic")
+							stringParam('UPSTREAM_TEST_JOB_NUMBER', "", "Auto-populated. Upstream test job number. It will be used together with PARALLEL=Dynamic")
+							booleanParam('GENERATE_JOBS', GENERATE_JOBS.toBoolean(), "Force generate child jobs?")
+
+							parameterSeparatorDefinition {
+							    name('POST_RUN_PARAMS')
+							    separatorStyle(separatorStyleCss)
+							    sectionHeader('Post Run Parameters')
+							    sectionHeaderStyle(sectionHeaderStyleCss)
+							}
+							parameterSeparatorDefinition {
+							    name('POST_RUN_PARAMS_HELP_TEXT')
+							    separatorStyle(separatorHelpTextStyleCss)
+							    sectionHeader('Parameters to determine what to do with post run artifacts.')
+							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
+							}
+							booleanParam('KEEP_WORKSPACE', false, "Keep workspace on the machine")
+							stringParam('KEEP_REPORTDIR', KEEP_REPORTDIR, "Keep the test report dir if the test passes?")
+							booleanParam('ARCHIVE_TEST_RESULTS', ARCHIVE_TEST_RESULTS.toBoolean(), "archive the test report dir in Jenkins (or artifactory if artifactory parameters are provided)?")
+							stringParam('ARTIFACTORY_SERVER', ARTIFACTORY_SERVER, "Optional. Default is to upload test output (failed build) onto artifactory only. By unset this value, test output will be archived to Jenkins")
+							stringParam('ARTIFACTORY_REPO', ARTIFACTORY_REPO, "Optional. It should be used with ARTIFACTORY_SERVER")
+							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
+							stringParam('SLACK_CHANNEL', SLACK_CHANNEL, "Slack channel. e.g., #rt-jenkins")
+							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
+						}
+						cpsScm {
+							scm {
+								git {
+									remote {
+										url(ADOPTOPENJDK_REPO_BUILD_PARAM)
+									}
+									branch(ADOPTOPENJDK_BRANCH_BUILD_PARAM)
+									extensions {
+										relativeTargetDirectory('aqa-tests')
+										cleanBeforeCheckout()
+										pruneStaleBranch()
+										cloneOptions {
+											depth(1)
+											shallow(true)
+											timeout(60)
+										}
+									}
+								}
+								scriptPath(SCRIPT_PATH)
+								lightweight(LIGHT_WEIGHT_CHECKOUT)
+							}
+						}
+						logRotator {
+							numToKeep(BUILDS_TO_KEEP)
+							artifactNumToKeep(BUILDS_TO_KEEP)
+							daysToKeep(DAYS_TO_KEEP)
+							artifactDaysToKeep(DAYS_TO_KEEP)
+						}
+					}
+				}
+			}
+		}
+	}
+}
