@@ -23,8 +23,8 @@ define CONFIG_ALT_PATH
   export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
 endef
 
-ifeq (adoptium, $(JDK_VENDOR))
-  CONFIG_ALT_PATH_ARG := configAltPath\=$(CONFIG_ALT_PATH)
+ifneq (,$(findstring Adoptium,$(JDK_VENDOR)))
+    CONFIG_ALT_PATH_ARG := configAltPath\=$(CONFIG_ALT_PATH)
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
