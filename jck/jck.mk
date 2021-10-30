@@ -16,7 +16,7 @@ JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
 define CONFIG_ALT_PATH_ARG
-  CONFIG_ALT_PATH_ARG := ""
+  export CONFIG_ALT_PATH_ARG := ""
 endef
 
 define CONFIG_ALT_PATH
@@ -24,7 +24,7 @@ define CONFIG_ALT_PATH
 endef
 
 ifneq (,$(findstring Adoptium,$(JDK_VENDOR)))
-    CONFIG_ALT_PATH_ARG := configAltPath\=$(CONFIG_ALT_PATH)
+    export CONFIG_ALT_PATH_ARG := configAltPath\=$(CONFIG_ALT_PATH)
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
