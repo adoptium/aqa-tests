@@ -399,7 +399,7 @@ fi
 			fi
 		done
 
-	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
+	checkOpenJDKBinSha
 
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
@@ -658,6 +658,11 @@ checkOpenJ9RepoSHA()
 	checkRepoSHA "$TESTDIR/openj9" "OPENJ9"
 }
 
+checkOpenJDKBinSha()
+{
+	echo "check openjdkbinary Repo sha"
+	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
+}
 
 parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
