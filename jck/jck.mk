@@ -15,13 +15,13 @@ ifndef JCK_CUSTOM_TARGET
 JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
-define CONFIG_ALT_PATH_ARG
+ifndef CONFIG_ALT_PATH_ARG
   export CONFIG_ALT_PATH_ARG=""
-endef
+endif
 
-define CONFIG_ALT_PATH
+ifndef CONFIG_ALT_PATH
   export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
-endef
+endif
 
 ifneq (,$(findstring Adoptium,$(JDK_VENDOR)))
     export CONFIG_ALT_PATH_ARG=configAltPath\=$(CONFIG_ALT_PATH)
