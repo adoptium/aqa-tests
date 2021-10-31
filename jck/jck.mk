@@ -16,15 +16,15 @@ JCK_CUSTOM_TARGET ?=api/java_math
 endif
 
 ifndef CONFIG_ALT_PATH_ARG
-  export CONFIG_ALT_PATH_ARG=""
+  export CONFIG_ALT_PATH_ARG:=""
 endif
 
 ifndef CONFIG_ALT_PATH
-  export CONFIG_ALT_PATH=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
+  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
 endif
 
 ifneq (,$(findstring Adoptium,$(JDK_VENDOR)))
-    export CONFIG_ALT_PATH_ARG=configAltPath\=$(CONFIG_ALT_PATH)
+    export CONFIG_ALT_PATH_ARG:=configAltPath\=$(CONFIG_ALT_PATH)
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
