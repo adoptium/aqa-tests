@@ -34,7 +34,15 @@
 			<property name="jtregTar" value="jtreg_5_1_b01"/>
 		</then>
 		<else>
-			<property name="jtregTar" value="jtreg_6_1"/>
+			<if> 
+				<equals arg1="${JDK_VERSION}" arg2="17" />
+				<then>
+					<property name="jtregTar" value="jtreg_6_1"/>
+				</then>
+				<else>
+					<property name="jtregTar" value="jtreg_6_1_1"/>
+				</else>
+			</if>
 		</else>
 	</if>
 	<if>
