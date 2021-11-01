@@ -31,7 +31,7 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
     fi
     echo "Set values based on ./testenv/testenv.properties:"
     cat ./testenv/testenv.properties
-    echo "JDK_REPO=${JDK_REPO}"
+    echo "\nJDK_REPO=${JDK_REPO}"
     echo "JDK_BRANCH=${JDK_BRANCH}"
 
 fi
