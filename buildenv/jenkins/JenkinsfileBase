@@ -179,7 +179,7 @@ def setupParallelEnv() {
 					}
 				}
 				if (!params.NUM_MACHINES && params.TEST_TIME && NUM_LIST > getMachineLimit()) {
-					assert false : "Build failed. TEST_TIME (${params.TEST_TIME} minutes) is not possible as there are not enough slave machines. Please provide a larger TEST_TIME."
+					assert false : "Build failed. TEST_TIME (${params.TEST_TIME} minutes) is not possible as there are not enough worker machines. Please provide a larger TEST_TIME."
 				} else if ( NUM_LIST > 0) {
 					childJobNum = NUM_LIST
 					echo "Saving parallelList.mk file on jenkins..."
