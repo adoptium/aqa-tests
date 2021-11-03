@@ -71,6 +71,7 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
+	env.TAP_NAME = "${JOB_NAME}.tap"
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -482,18 +483,19 @@ def get_sources() {
 		}
 	}
 }
-
-def makeCompileTest() {
-	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE compile"
-	// use sshagent with Jenkins credentials ID for all platforms except zOS
-	if (!env.SPEC.startsWith('zos')) {
-		sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+def makeCompileTest(){
+	String makeTestCmd = "bash ./compile.sh ${USE_TESTENV_PROPERTIES}"
+	dir('aqa-tests') {
+		if (!env.SPEC.startsWith('zos')) {
+			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+				sh "$makeTestCmd";
+			}
+		} else {
 			sh "$makeTestCmd";
 		}
-	} else {
-		sh "$makeTestCmd";
 	}
 }
+
 
 def buildTest() {
 	stage('Build') {
@@ -920,11 +922,11 @@ def run_parallel_tests() {
 					try {
 						echo "${name} #${buildId} completed with status ${childResult}"
 						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/TestTargetResult.tap", target:"${name}/${buildId}")
+							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/TestTargetResult.tap", outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: false])
 					} catch (Exception e) {
-						echo "Cannot copy TestTargetResult.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+						echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
 					}
 				}

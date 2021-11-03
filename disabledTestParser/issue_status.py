@@ -27,7 +27,7 @@ def main():
         repo_issueUrl = git_issue_url.replace("https://github.com/", "")
         final_url = base_url + repo_issueUrl
         state = find_state(final_url)
-        j["ISSUE_TRACKER_STATUS"] = state
+        j["ISSUE_TRACKER_STATUS"] = state 
     
     with open('output.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
