@@ -656,8 +656,8 @@ if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
 fi
 
-> $TEST_DIR/testenv/testenv.properties
-> $TEST_DIR/TKG/SHA.txt
+> ./testenv/testenv.properties
+> ./TKG/SHA.txt
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
