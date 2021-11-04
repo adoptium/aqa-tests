@@ -532,6 +532,11 @@ public class JavaTestRunner {
 				keyword += "&!robot";
 			}
 
+			if ( !platform.equals("win32") &&
+                             (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
+				fileContent += "set jck.env.testPlatform.xWindows \"No\"" + ";\n";
+			}
+
 			fileContent += "set jck.env.runtime.testExecute.cmdAsString \"" + pathToJava + "\"" + ";\n";
 
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") ||
@@ -767,7 +772,7 @@ public class JavaTestRunner {
 			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 1" + ";\n";							// All Devtools tests take less than 1h to finish.
+			fileContent += "timeoutfactor 4" + ";\n";							// All Devtools tests take less than 1h to finish.
 
 			if (platform.equals("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
@@ -1100,11 +1105,11 @@ public class JavaTestRunner {
 
 	private static boolean testsRequireDisplay (String tests) {
 		if (tests.equals("api") ||
-			tests.contains("api/java_applet") || tests.contains("api/java_io") ||
+			tests.contains("api/java_applet") || 
 			tests.contains("api/javax_swing") || tests.contains("api/javax_sound") ||
 			tests.contains("api/java_awt")  || tests.contains("api/javax_print") ||
 			tests.contains("api/java_beans") || tests.contains("api/javax_accessibility") ||
-			tests.contains("api/javax_naming") || tests.contains("api/signaturetest")) {
+			tests.contains("api/javax_naming")) {
 			return true;
 		}
 		return false;
