@@ -13,7 +13,7 @@
 # limitations under the License.
 
 REPO_DIR=""
-OUTPUT_FILE="../SHA.txt"
+OUTPUT_FILE="../testenv.properties"
 REPO_NAME=""
 
 
