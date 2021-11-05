@@ -56,7 +56,7 @@
 		</exec>
 
 		<echo message="git rev-parse ${stf_branch} "/>
-		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha1" resultproperty="code">
+		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha1" resultproperty="code">
 			<arg value="rev-parse"/>
 			<arg value="${stf_branch}"/>
 		</exec>
@@ -64,7 +64,7 @@
 			<equals arg1="${code}" arg2="128"/>			
 			<then>
 				<echo message="git rev-parse origin/${stf_branch}"/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" outputproperty="stf_sha2" resultproperty="code2">
+				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha2" resultproperty="code2">
 					<arg value="rev-parse"/>
 					<arg value="origin/${stf_branch}"/>
 				</exec>
@@ -91,7 +91,7 @@
 			</then>
 		</if>
 		<echo message="git checkout -q -f ${stf_sha} "/>
-		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/stf" >
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" >
 			<arg value="checkout"/>
 			<arg value="-q"/>
 			<arg value="-f"/>
@@ -101,24 +101,24 @@
 			<isset property="isZOS" />
 			<then>
 				<delete includeemptydirs="true" failonerror="false">
-				<fileset dir="${SYSTEMTEST_ROOT}/stf/.git/info" includes="**/*"/>
+				<fileset dir="${SYSTEMTEST_ROOT}/STF/.git/info" includes="**/*"/>
 				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/stf/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/stf/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/stf/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+				<mkdir dir="${SYSTEMTEST_ROOT}/STF/.git/info" />
+				<move file="${SYSTEMTEST_ROOT}/STF/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/STF/.git/info/attributes" />
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false">
 					<arg value="rm" />
 					<arg value="--cached" />
 					<arg value="-r" />
 					<arg value="-q" />
 					<arg value="." />
 				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/stf" failonerror="false">
+				<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false">
 					<arg value="reset" />
 					<arg value="--hard" />
 				</exec>
 			</then>
 		</if>
-		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/stf" />
+		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/STF" />
 	</target>
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
@@ -272,14 +272,14 @@
 	<target name="check_systemtest" depends="common_init">
 		<if>
 			<not>
-				<available file="${SYSTEMTEST_ROOT}/stf" type="dir" />
+				<available file="${SYSTEMTEST_ROOT}/STF" type="dir" />
 			</not>
 			<then>
-				<echo message="${SYSTEMTEST_ROOT}/stf does not exist, clone from GitHub" />
+				<echo message="${SYSTEMTEST_ROOT}/STF does not exist, clone from GitHub" />
 				<antcall target="clone_stf" inheritall="true" />
 			</then>
 			<else>
-				<echo message="${SYSTEMTEST_ROOT}/stf exists, skip cloning" />
+				<echo message="${SYSTEMTEST_ROOT}/STF exists, skip cloning" />
 			</else>
 		</if>
 		<if>
@@ -332,8 +332,8 @@
 	</target>
 
 	<target name="common_dist" description="generate the distribution">
-		<copy todir="${SYSTEMTEST_DEST}/stf">
-			<fileset dir="${SYSTEMTEST_ROOT}/stf" includes="**" />
+		<copy todir="${SYSTEMTEST_DEST}/STF">
+			<fileset dir="${SYSTEMTEST_ROOT}/STF" includes="**" />
 		</copy>
 		<copy todir="${SYSTEMTEST_DEST}/aqa-systemtest" failonerror="false">
 			<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest" includes="**" />
@@ -392,6 +392,6 @@
 				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
 			</then>
 		</if>
-		<ant antfile="${SYSTEMTEST_ROOT}/stf/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/stf/stf.build" inheritAll="false" target="clean"/>
+		<ant antfile="${SYSTEMTEST_ROOT}/STF/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/STF/stf.build" inheritAll="false" target="clean"/>
 	</target>
 </project>
