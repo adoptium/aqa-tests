@@ -140,9 +140,65 @@
 					</then>
 					<else>
 						<echo message="git clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
-						<exec executable="git" failonerror="true">
+						<exec executable="git" failonerror="false" resultproperty="failCode">
 							<arg line="clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
 						</exec>
+						<if>
+							<equals arg1="${failCode}" arg2="128"/>			
+							<then>
+								<echo message="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp "/>
+								<exec executable="git" failonerror="true" >
+									<arg value="clone" />		
+									<arg value="-q"/>
+									<arg value="${JDK_REPO_SPECIFIC}"/>
+									<arg value="openjdktemp"/>
+								</exec>
+
+								<echo message="git rev-parse ${env.JDK_BRANCH} "/>
+								<exec executable="git" failonerror="false" dir="openjdktemp" outputproperty="jdk_sha1" resultproperty="code">
+									<arg value="rev-parse"/>
+									<arg value="${env.JDK_BRANCH}"/>
+								</exec>
+								<if>
+									<equals arg1="${code}" arg2="128"/>			
+									<then>
+										<echo message="git rev-parse origin/${env.JDK_BRANCH}"/>
+										<exec executable="git" failonerror="true" dir="openjdktemp" outputproperty="jdk_sha2" resultproperty="code2">
+											<arg value="rev-parse"/>
+											<arg value="origin/${env.JDK_BRANCH}"/>
+										</exec>
+										<property name="jdk_sha" value="${jdk_sha2}"/>
+									</then>	
+								</if>
+								<if>
+									<not>
+										<isset property="jdk_sha"/>
+									</not>
+									<then>
+										<property name="jdk_sha" value="${jdk_sha1}"/>
+									</then>
+								</if>
+								<if>
+									<isset property="isZOS" />
+									<then>
+										<propertyregex 
+											property="jdk_sha"
+											input="${jdk_sha}"
+											regexp="\n"
+											replace=""
+											override="true"/>
+									</then>
+								</if>
+								<echo message="git checkout -q -f ${jdk_sha} "/>
+								<exec executable="git" failonerror="true" dir="openjdktemp" >
+									<arg value="checkout"/>
+									<arg value="-q"/>
+									<arg value="-f"/>
+									<arg value="${jdk_sha}"/>
+								</exec>
+							</then>	
+						</if>		
+								
 					</else>
 				</if>
 				<if>
