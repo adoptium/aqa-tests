@@ -657,7 +657,11 @@ if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 fi
 
 > ./testenv/testenv.properties
-> ./TKG/SHA.txt
+
+output_file="$TESTDIR/TKG/SHA.txt"
+if [ -e ${output_file} ]; then
+	> ${output_file}
+fi
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
