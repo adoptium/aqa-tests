@@ -37,10 +37,6 @@ RELEASES="latest"
 TYPE="jdk"
 TEST_IMAGES_REQUIRED=true
 DEBUG_IMAGES_REQUIRED=true
-ADOPTOPENJDK_SYSTEMTEST_REPO=""
-ADOPTOPENJDK_SYSTEMTEST_BRANCH=""
-OPENJ9_SYSTEMTEST_REPO=""
-OPENJ9_SYSTEMTEST_BRANCH=""
 
 usage ()
 {
@@ -141,18 +137,6 @@ parseCommandLineArgs()
 
 			"--debug_images_required" )
 				DEBUG_IMAGES_REQUIRED="$1"; shift;;
-
-			"--adoptopenjdk_systemtest_repo" )
-				ADOPTOPENJDK_SYSTEMTEST_REPO="$1"; shift;;
-
-			"--adoptopenjdk_systemtest_branch" )
-				ADOPTOPENJDK_SYSTEMTEST_BRANCH="$1"; shift;;
-
-			"--openj9_systemtest_repo" )
-				OPENJ9_SYSTEMTEST_REPO="$1"; shift;;
-
-			"--openj9_systemtest_repo" )
-				OPENJ9_SYSTEMTEST_BRANCH="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -673,11 +657,6 @@ if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 fi
 
 > ./testenv/testenv.properties
-
-echo "ADOPTOPENJDK_SYSTEMTEST_REPO=${ADOPTOPENJDK_SYSTEMTEST_REPO}"
-echo "ADOPTOPENJDK_SYSTEMTEST_BRANCH=${ADOPTOPENJDK_SYSTEMTEST_BRANCH}"
-echo "OPENJ9_SYSTEMTEST_REPO=${OPENJ9_SYSTEMTEST_REPO}"
-echo "OPENJ9_SYSTEMTEST_BRANCH=${OPENJ9_SYSTEMTEST_BRANCH}"
 
 output_file="$TESTDIR/TKG/SHA.txt"
 if [ -e ${output_file} ]; then
