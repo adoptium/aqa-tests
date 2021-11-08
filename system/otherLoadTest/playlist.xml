@@ -48,6 +48,25 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MiniMix_3h</testCaseName>
+		<variations>
+			<variation>Mode551</variation>
+			<variation>Mode110-CS</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=3h$(Q) -java-args-execute-initial=$(ADD_OPENS_CMD);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>ClassLoadingTest_5m</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
