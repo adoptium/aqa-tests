@@ -37,6 +37,7 @@ RELEASES="latest"
 TYPE="jdk"
 TEST_IMAGES_REQUIRED=true
 DEBUG_IMAGES_REQUIRED=true
+CURL_OPTS="s"
 
 usage ()
 {
@@ -137,6 +138,9 @@ parseCommandLineArgs()
 
 			"--debug_images_required" )
 				DEBUG_IMAGES_REQUIRED="$1"; shift;;
+
+			"--curl_opts" )
+				CURL_OPTS="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -264,20 +268,8 @@ fi
 					fi
 				fi
 
-				case "$VERBOSE_CURL" in
-					VERBOSE)
-						curl_verbosity="v"
-						;;
-					NORMAL)
-						curl_verbosity=''
-						;;
-					*)
-						curl_verbosity="s"
-						;;
-				esac
-
-				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${curl_verbosity} ${curl_options} $file"
-				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${curl_verbosity} ${curl_options} $file
+				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
+				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file
 				download_exit_code=$?
 				count=$(( $count + 1 ))
 			done
