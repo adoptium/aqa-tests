@@ -631,10 +631,8 @@ checkRepoSHA()
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
-	$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
-
-
+	echo "$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
 
 checkTestRepoSHAs()
@@ -657,6 +655,9 @@ if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 fi
 
 > ./testenv/testenv.properties
+
+echo "Current state of dir:"
+ls
 
 output_file="$TESTDIR/TKG/SHA.txt"
 if [ -e ${output_file} ]; then
