@@ -16,6 +16,16 @@
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-compiler-api-java_rmi</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
