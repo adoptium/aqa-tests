@@ -17,7 +17,7 @@
 supported_versions="8 11 17"
 
 # Supported JVMs
-supported_jvms="hotspot"
+supported_jvms="hotspot openj9"
 
 # Supported distros
 # Distros Not Included: windowsservercore-ltsc2016
