@@ -656,9 +656,6 @@ fi
 
 > ./testenv/testenv.properties
 
-echo "Current state of dir:"
-ls
-
 output_file="$TESTDIR/TKG/SHA.txt"
 if [ -e ${output_file} ]; then
 	> ${output_file}
