@@ -399,8 +399,6 @@ fi
 			fi
 		done
 
-	checkRepoSHA "$SDKDIR/openjdkbinary" "JDK${JDK_VERSION}"
-
 	if [[ "$PLATFORM" == "s390x_zos" ]]; then
 		chmod -R 755 j2sdk-image
 	fi
@@ -627,28 +625,21 @@ fi
 
 checkRepoSHA()
 {
-	output_file="$TESTDIR/TKG/SHA.txt"
-	if [ -e ${output_file} ]; then
-		echo "rm $output_file"
-		rm ${output_file}
-	fi
-
 	sha_file="$TESTDIR/TKG/SHA.txt"
 	testenv_file="$TESTDIR/testenv/testenv.properties"
+
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
-	$TESTDIR/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
-
-
+	echo "$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
 
 checkTestRepoSHAs()
 {
 	echo "check adoptium repo and TKG repo SHA"
 
-	checkRepoSHA "$TESTDIR" "ADOPTIUM"
+	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
 
@@ -658,17 +649,16 @@ checkOpenJ9RepoSHA()
 	checkRepoSHA "$TESTDIR/openj9" "OPENJ9"
 }
 
-
 parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
 fi
 
-echo "Clearing testenv.properties"
 > ./testenv/testenv.properties
 
-if [ ! -d "$TESTDIR/TKG" ]; then
-	getTestKitGen
+output_file="$TESTDIR/TKG/SHA.txt"
+if [ -e ${output_file} ]; then
+	> ${output_file}
 fi
 
 if [[ "$SDKDIR" != "" ]]; then
@@ -678,6 +668,10 @@ fi
 
 if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
 	getOpenJDKSources
+fi
+
+if [ ! -d "$TESTDIR/TKG" ]; then
+	getTestKitGen
 fi
 
 if [[ $JTREG_URL != "" ]]; then

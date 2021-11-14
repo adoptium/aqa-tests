@@ -98,11 +98,6 @@ ifneq ($(PLATFORM),x86-64_alpine-linux)
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
-ifndef JRE_IMAGE
-	JRE_ROOT := $(TEST_JDK_HOME)
-	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
-endif
-
 ifdef OPENJDK_DIR 
 # removing "
 OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
