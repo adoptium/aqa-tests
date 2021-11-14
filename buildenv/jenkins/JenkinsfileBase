@@ -837,7 +837,7 @@ def getJenkinsDomain() {
 }
 
 def archiveTestenvFile() {
-	def testenvFile = "aqa-tests/testenv/testenv.properties";
+	def testenvFile = "aqa-tests/TKG/testenv.properties";
 	if (!params.ARTIFACTORY_SERVER) {
 		echo "ARTIFACTORY_SERVER is not set. Saving testenv.properties file on jenkins."
 		archiveArtifacts artifacts: testenvFile, fingerprint: true, allowEmptyArchive: true
