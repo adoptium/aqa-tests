@@ -50,7 +50,7 @@
 	<target name="clone_stf">
 		<echo message="git clone -q ${stf_repo} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />		
+			<arg value="clone" />
 			<arg value="-q"/>
 			<arg value="${stf_repo}"/>
 		</exec>
@@ -61,7 +61,7 @@
 			<arg value="${stf_branch}"/>
 		</exec>
 		<if>
-			<equals arg1="${code}" arg2="128"/>			
+			<equals arg1="${code}" arg2="128"/>
 			<then>
 				<echo message="git rev-parse origin/${stf_branch}"/>
 				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha2" resultproperty="code2">
@@ -69,7 +69,7 @@
 					<arg value="origin/${stf_branch}"/>
 				</exec>
 				<property name="stf_sha" value="${stf_sha2}"/>
-			</then>	
+			</then>
 		</if>
 		<if>
 			<not>
@@ -82,7 +82,7 @@
 		<if>
 			<isset property="isZOS" />
 			<then>
-				<propertyregex 
+				<propertyregex
 					property="stf_sha"
 					input="${stf_sha}"
 					regexp="\n"
@@ -119,11 +119,12 @@
 			</then>
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/STF" />
+		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/STF" repoName="STF"/>
 	</target>
 	<target name="clone_systemtest">
 		<echo message="git clone -q ${openjdk_systemtest_repo} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />		
+			<arg value="clone" />
 			<arg value="-q"/>
 			<arg value="${openjdk_systemtest_repo}"/>
 		</exec>
@@ -134,7 +135,7 @@
 			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
 		<if>
- 			<equals arg1="${code}" arg2="128"/>			
+ 			<equals arg1="${code}" arg2="128"/>
 			<then>
 				<echo message="git rev-parse origin/${openjdk_systemtest_branch}"/>
 				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2">
@@ -155,7 +156,7 @@
 		<if>
 			<isset property="isZOS" />
 			<then>
-				<propertyregex 
+				<propertyregex
 					property="openjdk_systemtest_sha"
 					input="${openjdk_systemtest_sha}"
 					regexp="\n"
@@ -167,7 +168,7 @@
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
 			<arg value="checkout"/>
 			<arg value="-q"/>
-			<arg value="-f"/>				
+			<arg value="-f"/>
 			<arg value="${openjdk_systemtest_sha}"/>
 		</exec>
 
@@ -193,12 +194,13 @@
 			</then>
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/aqa-systemtest" />
+		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/aqa-systemtest" repoName="AQA_SYSTEMTEST" />
 	</target>
 
 	<target name="clone_openj9-systemtest">
 		<echo message="git clone -q ${openj9_systemtest_repo} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}">
-			<arg value="clone" />		
+			<arg value="clone" />
 			<arg value="-q"/>
 			<arg value="${openj9_systemtest_repo}"/>
 		</exec>
@@ -208,7 +210,7 @@
 			<arg value="${openj9_systemtest_branch}"/>
 		</exec>
 		<if>
-			<equals arg1="${code}" arg2="128"/>			
+			<equals arg1="${code}" arg2="128"/>
 			<then>
 				<echo message="git rev-parse origin/${openj9_systemtest_branch}"/>
 				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha2">
@@ -229,7 +231,7 @@
 		<if>
 			<isset property="isZOS" />
 			<then>
-				<propertyregex 
+				<propertyregex
 					property="openj9_systemtest_sha"
 					input="${openj9_systemtest_sha}"
 					regexp="\n"
@@ -241,10 +243,10 @@
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
 			<arg value="checkout"/>
 			<arg value="-q"/>
-			<arg value="-f"/>				
+			<arg value="-f"/>
 			<arg value="${openj9_systemtest_sha}"/>
 		</exec>
-			
+
 		<if>
 			<isset property="isZOS" />
 			<then>
@@ -267,6 +269,7 @@
 			</then>
 		</if>
 		<checkGitRepoSha repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" />
+		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" repoName="OPENJ9_SYSTEMTEST"/>
 	</target>
 
 	<target name="check_systemtest" depends="common_init">
