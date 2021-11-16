@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+	<include>../systemtest.mk</include>
+	<!-- 
+	Special target to get machine information. This target is in each subfolder playlist.xml.
+	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
+	<test>
+		<testCaseName>MachineInfo</testCaseName>
+		<command>$(JAVA_COMMAND) -cp $(JVM_TEST_ROOT)$(D)TKG$(D)bin$(D)TestKitGen.jar org.openj9.envInfo.EnvDetector MachineInfo; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+			<level>extended</level>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<!--
+	We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
+	In order to save machine resources, exclude sharedClasses subfolder in parallel mode
+	To enable it, please update excludes array in JenkinsfileBase
+	-->
+	<!-- 
+	Special target to get machine information. This target is in each subfolder playlist.xml.
+	To avoid test target duplication, this belongs to sanity, extended and special. Regular test should only belong to one level -->
+	<test>
+		<testCaseName>OAuthTest</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/13892</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/13892</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=OAuthTest; $(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+</playlist>
