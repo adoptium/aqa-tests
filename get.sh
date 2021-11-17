@@ -631,13 +631,19 @@ checkRepoSHA()
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
-	$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
+	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
 
 checkTestRepoSHAs()
 {
 	echo "check adoptium repo and TKG repo SHA"
+
+	output_file="$TESTDIR/TKG/SHA.txt"
+	if [ -e ${output_file} ]; then
+		echo "rm $output_file"
+		rm
+	fi
 
 	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
@@ -655,11 +661,6 @@ if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 fi
 
 > ./testenv/testenv.properties
-
-output_file="$TESTDIR/TKG/SHA.txt"
-if [ -e ${output_file} ]; then
-	> ${output_file}
-fi
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
