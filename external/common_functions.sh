@@ -14,20 +14,20 @@
 #
 
 # Supported versions
-supported_versions="8 9 10 11 12 13 14 15 16 17"
+supported_versions="8 11 17"
 
 # Supported JVMs
 supported_jvms="hotspot openj9"
 
 # Supported distros
 # Distros Not Included: windowsservercore-ltsc2016
-supported_os="alpine debian debianslim ubi ubi-minimal centos clefos ubuntu"
+supported_os="ubuntu"
 
 # Supported packges
 supported_packages="jdk jre"
 
 # Supported builds
-supported_builds="slim full"
+supported_builds="full"
 
 # Supported tests
 supported_tests="external_custom camel derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test thorntail-mp-tck tomcat tomee wildfly wycheproof netty spring"
@@ -188,14 +188,7 @@ function set_external_custom_test_info(){
     test_results="testResults"
     tag_version="${EXTERNAL_REPO_BRANCH}"
     environment_variable="MODE=\"java\""
-    debian_packages="git maven"
-    debianslim_packages="${debian_packages}"
-    ubuntu_packages="${debian_packages}"
-    alpine_packages="git maven"
-    centos_packages="git maven"
-    clefos_packages="${centos_packages}"
-    ubi_packages="git maven"
-    ubi_minimal_packages="${ubi_packages}"  
+    ubuntu_packages="git maven" 
 }
 
 # Set the valid OSes for the current architectures.
@@ -216,14 +209,7 @@ function set_test_info() {
     if [[ ! -z "$environment_variable" ]]; then
     environment_variable="MODE=\"java\""
     fi
-    debian_packages=$(getProperty "debian_packages")
-    debianslim_packages=${debian_packages}
-    ubuntu_packages=${debian_packages}
-    alpine_packages=$(getProperty "alpine_packages")
-    centos_packages=$(getProperty "centos_packages")
-    clefos_packages=${centos_packages}
-    ubi_packages=$(getProperty "ubi_packages")
-    ubi_minimal_packages=${ubi_packages}  
+    ubuntu_packages=$(getProperty "ubuntu_packages") 
 }
 
 function cleanup_images() {
