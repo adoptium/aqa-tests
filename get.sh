@@ -642,7 +642,7 @@ checkTestRepoSHAs()
 	output_file="$TESTDIR/TKG/SHA.txt"
 	if [ -e ${output_file} ]; then
 		echo "rm $output_file"
-		rm
+		rm ${output_file}
 	fi
 
 	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
