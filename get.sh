@@ -631,9 +631,11 @@ checkRepoSHA()
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
-	ls ${TESTDIR}/TKG/scripts
-	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
+	if [[ "$USE_TESTENV_PROPERTIES" != true  ]]; then
+		echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+		$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
+	fi
+
 }
 
 checkTestRepoSHAs()
@@ -659,9 +661,9 @@ checkOpenJ9RepoSHA()
 parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
+else
+	> ./testenv/testenv.properties
 fi
-
-> ./testenv/testenv.properties
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
