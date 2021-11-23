@@ -497,6 +497,8 @@ getFunctionalTestMaterial()
 		cd $TESTDIR
 	fi
 
+	checkOpenJ9RepoSHA
+
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	if [ -d functional ]; then
@@ -504,7 +506,6 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-	checkOpenJ9RepoSHA
 
 	rm -rf openj9
 
