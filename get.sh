@@ -489,6 +489,8 @@ getFunctionalTestMaterial()
 		cd $TESTDIR
 	fi
 
+	checkOpenJ9RepoSHA
+
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	if [ -d functional ]; then
@@ -496,7 +498,6 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-	checkOpenJ9RepoSHA
 
 	rm -rf openj9
 
@@ -623,13 +624,19 @@ checkRepoSHA()
 	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
 	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
-	echo "$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
-	$TESTDIR/TKG/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
+	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
 
 checkTestRepoSHAs()
 {
 	echo "check adoptium repo and TKG repo SHA"
+
+	output_file="$TESTDIR/TKG/SHA.txt"
+	if [ -e ${output_file} ]; then
+		echo "rm $output_file"
+		rm ${output_file}
+	fi
 
 	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
 	checkRepoSHA "$TESTDIR/TKG" "TKG"
@@ -644,6 +651,8 @@ checkOpenJ9RepoSHA()
 parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
+else
+	> ./testenv/testenv.properties
 fi
 
 > ./testenv/testenv.properties

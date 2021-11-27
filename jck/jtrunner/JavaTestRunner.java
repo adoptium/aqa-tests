@@ -830,12 +830,14 @@ public class JavaTestRunner {
 				javatestAgentCmd.add(pathToJava);
 				javatestAgentCmd.add("-Djavatest.security.allowPropertiesAccess=true");
 				javatestAgentCmd.add("-Djava.security.policy=" + jckPolicyFileFullPath);
-				javatestAgentCmd.add(addModules);
-				javatestAgentCmd.add("-classpath");
+				if (!addModules.equals("")) {
+					javatestAgentCmd.add(addModules);
+				}
+				javatestAgentCmd.add("-classpath"); 
 				javatestAgentCmd.add(classPath);
 				javatestAgentCmd.add("com.sun.javatest.agent.AgentMain");
-				javatestAgentCmd.add(" -passive");
-				javatestAgent = startSubProcess("javatestAgent",javatestAgentCmd);
+				javatestAgentCmd.add("-passive");
+				javatestAgent = startSubProcess("com.sun.javatest.agent.AgentMain",javatestAgentCmd);
 
 				// We only need RMI registry and RMI activation daemon processes for tests under api/java_rmi
 				if (tests.contains("api/java_rmi") && 
