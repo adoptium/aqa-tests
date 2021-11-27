@@ -183,7 +183,7 @@ getBinaryOpenjdk()
 		done
 		latestBuildUrl="${CUSTOMIZED_SDK_URL}${max}/"
 		echo "downloading files from $latestBuildUrl"
-		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')	
+		download_urls=$(curl -k ${curl_options} ${latestBuildUrl} | grep -E ">.*pax<|>.*tar.gz<|>.*zip<" | sed 's/^.*">//' | sed 's/<\/a>.*//')
 		arr=(${download_urls/ / })
 		download_url=()
 		for n in "${arr[@]}" ; do
@@ -489,6 +489,8 @@ getFunctionalTestMaterial()
 		cd $TESTDIR
 	fi
 
+	checkOpenJ9RepoSHA
+
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	if [ -d functional ]; then
@@ -496,7 +498,6 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-	checkOpenJ9RepoSHA
 
 	rm -rf openj9
 
@@ -617,9 +618,14 @@ fi
 
 checkRepoSHA()
 {
-	output_file="$TESTDIR/TKG/SHA.txt"
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file"
-	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $output_file
+	sha_file="$TESTDIR/TKG/SHA.txt"
+	testenv_file="$TESTDIR/testenv/testenv.properties"
+
+	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
+	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
+
+	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
+	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
 
 checkTestRepoSHAs()
@@ -632,26 +638,28 @@ checkTestRepoSHAs()
 		rm ${output_file}
 	fi
 
-	checkRepoSHA "$TESTDIR"
-	checkRepoSHA "$TESTDIR/TKG"
+	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
+	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
 
 checkOpenJ9RepoSHA()
 {
 	echo "check OpenJ9 Repo sha"
-	checkRepoSHA "$TESTDIR/openj9"
+	checkRepoSHA "$TESTDIR/openj9" "OPENJ9"
 }
-
 
 parseCommandLineArgs "$@"
 if [[ "$USE_TESTENV_PROPERTIES" == true  ]]; then
 	source ./testenv/testenv.properties
+else
+	> ./testenv/testenv.properties
 fi
 
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 	testJavaVersion
 fi
+
 if [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_SOURCE_URL" != "" ]; then
 	getOpenJDKSources
 fi
