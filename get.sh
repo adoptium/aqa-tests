@@ -655,13 +655,6 @@ else
 	> ./testenv/testenv.properties
 fi
 
-> ./testenv/testenv.properties
-
-output_file="$TESTDIR/TKG/SHA.txt"
-if [ -e ${output_file} ]; then
-	> ${output_file}
-fi
-
 if [[ "$SDKDIR" != "" ]]; then
 	getBinaryOpenjdk
 	testJavaVersion
