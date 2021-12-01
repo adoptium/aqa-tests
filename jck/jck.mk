@@ -61,10 +61,15 @@ ifndef JCK_ROOT
   export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
 endif
 
+ifndef CONFIG_ALT_PATH
+  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
+endif
+
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
  OTHER_OPTS=-Xtrace:maximal=all{level2}
+ export CONFIG_ALT_PATH:=$(JCK_ROOT)$(D)config$(D)default
 endif
 
 # If testsuite is not specified, default to RUNTIME
