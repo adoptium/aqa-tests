@@ -238,7 +238,7 @@
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -debug-generation=$(Q)true$(Q) -java-debug-args=$(Q)--enable-preview --add-exports java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED$(Q) -java-args=$(Q)--enable-preview --add-exports java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED$(Q) -test=HCRLateAttachWorkload; \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -debug-generation=$(Q)true$(Q) -java-debug-args=$(Q)--enable-preview --add-exports java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED$(Q) -java-args-execute-initial=$(Q)--enable-preview --add-exports java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED$(Q) -test=HCRLateAttachWorkload; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -277,7 +277,7 @@
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xdisableexcessivegc$(Q) -test=HeapHogLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(Q)-Xdisableexcessivegc$(Q) -test=HeapHogLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -296,7 +296,7 @@
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args=$(Q)$(JVM_OPTIONS) -Xnoclassgc$(Q) -test=ObjectTreeLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(Q)-Xnoclassgc$(Q) -test=ObjectTreeLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
