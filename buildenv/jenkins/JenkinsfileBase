@@ -75,6 +75,12 @@ def setupEnv() {
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
+	if (params.CODE_COVERAGE) {
+		// GCOV strips # num from folder path in BUILD pipeline, e.g., /home/jenkins/workspace/Build_JDK11_x86-64_linux_Personal/build/linux-x86_64-normal-server-release/vm
+		env.GCOV_PREFIX_STRIP = 1
+		env.GCOV_PREFIX = env.TEST_JDK_HOME
+	}
+
 	if (params.JRE_IMAGE) {
 		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
 	}
@@ -431,12 +437,12 @@ def setup() {
 			// Only set image required to false if params is set to false. In get.sh, the default value is true
 			TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 			DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
+			CODE_COVERAGE_OPTION = params.CODE_COVERAGE ? "--code_coverage true" : ""
 
 			CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
 
-			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CURL_OPTS}"
 
-
+			GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
 			RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 
 			dir( WORKSPACE) {
@@ -558,6 +564,11 @@ def buildTest() {
 					makeCompileTest()
 				}
 			}
+
+			if (params.CODE_COVERAGE) {
+				echo "Clean gcda files before generating new Code Coverage info"
+				sh "find ${WORKSPACE}/openjdkbinary/j2sdk-image -name '*.gcda' -type f -delete"
+			}
 		}
 	}
 }
@@ -614,6 +625,16 @@ def runTest( ) {
 				}
 				else {
 					makeTest("${RUNTEST_CMD}")
+				}
+			}
+
+			if (params.CODE_COVERAGE) {
+				echo 'Generating Code Coverage Reports...'
+				dir("$WORKSPACE/openjdkbinary/j2sdk-image") {
+					// Current lcov generates "Cannot open source file" info, but does not affect results, since Build and Test paths difference are corrected after summary.
+					sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => /home/jenkins/workspace/Grinder/openjdkbinary/j2sdk-image/jenkins/workspace/'"
+					sh "lcov --quiet --output-file codeCoverageInfoFinal.info --remove codeCoverageInfoOrigin.info '/usr/include/*' '/usr/local/*' '/home/*/attrlookup.gperf'"
+					sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 				}
 			}
 		}
@@ -703,6 +724,25 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
+			}
+
+			if (params.CODE_COVERAGE) {
+				echo "Archive Code Coverage Report"
+				def code_coverage_report_tar_name = "${output_name}_code_coverage_report${suffix}"
+				dir("${WORKSPACE}/openjdkbinary/j2sdk-image") {
+					if (tar_cmd.startsWith('tar')) {
+						sh "${tar_cmd} - ${pax_opt} codeCoverageInfoFinal.info code_coverage_report ${tar_cmd_suffix} > ${code_coverage_report_tar_name}"
+					} else {
+						sh "${tar_cmd} ${code_coverage_report_tar_name} ${pax_opt} codeCoverageInfoFinal.info code_coverage_report ${tar_cmd_suffix}"
+					}
+				}
+				if (!params.ARTIFACTORY_SERVER) {
+					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
+					archiveArtifacts artifacts: code_coverage_report_tar_name, fingerprint: true, allowEmptyArchive: true
+				} else {
+					def pattern = "${env.WORKSPACE}/*_code_coverage_report.*"
+					uploadToArtifactory(pattern)
+				}				
 			}
 		}
 	}
