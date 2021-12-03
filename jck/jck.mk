@@ -72,10 +72,6 @@ ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
    override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET) testsuite=RUNTIME
 endif
 
-define JRE_COMMAND
-$(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
-endef
-
 define JCK_CMD_TEMPLATE_JRE
 $(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
 endef
