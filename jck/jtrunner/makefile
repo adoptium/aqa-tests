@@ -212,6 +212,7 @@ ifeq ($(OS),win)
 	IFLAGS=/I. /I"$(JAVA_HOME)/../include" /I"$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D)include$(D)win32" /I"$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D)include$(D)windows" /I"$(SRCDIR)" /I"$(SRCDIR)$(D)src" /I"$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D)include" /I"$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jvmti$(D)include"
 	CFLAGS=/DWIN32 /D_AMD64_ /D_WINDOWS /LD /MD $(IFLAGS)
 	LFLAGS=/NOLOGO /DLL /INCREMENTAL:NO /NODEFAULTLIB:LIBCMTD /OUT:
+	LDFLAGS=
 	LINK_CMD=$(CMD_PREFIX) link
 	CC=cl
 	LIBPREF=
@@ -261,8 +262,9 @@ help:
 
 build:createdir $(OBJS) installjmx
 
+# We need the extra include for 16+
 ifeq ($(OS),win)
-ifneq (,$(findstring 16,$(SRCDIR)))
+ifeq ($(shell test $(JDK_VERSION) -gt 15; echo $$?),0)
 EXTRAJCKJNIDEP=$(SRCDIR)\src\share\lib\jni\include\windows\jckjni_md.h-DIST
 
 $(EXTRAJCKJNIDEP):
