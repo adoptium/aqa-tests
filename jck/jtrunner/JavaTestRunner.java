@@ -224,13 +224,13 @@ public class JavaTestRunner {
 
 		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
 		jckBase = jckRoot + File.separator + testSuiteFolder; 
-		jckPolicyFileFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "jck.policy";
-		javatestJarFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "javatest.jar";
-		jtliteJarFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "jtlite.jar"; 
-		classesFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "classes";
+		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
+		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
+		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
+		classesFullPath = jckBase + File.separator + "classes";
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
 		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + testSuiteFolder + "/testsuite.jtt";
+		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
 		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
