@@ -62,7 +62,7 @@ ifndef JCK_ROOT
 endif
 
 ifndef CONFIG_ALT_PATH
-  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
+  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)jtrunner$(D)config$(D)default
 endif
 
 OTHER_OPTS=
