@@ -247,16 +247,11 @@ public class JavaTestRunner {
 		}
 
 		// Look for an update to the initial excludes file
-		if (jckVersion.contains("jck6") || jckVersion.contains("jck7")) {
-			jtxRelativePath = "excludes/jdk" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jdk" + jckVersionNo + ".kfl";
-		} else {
-			jtxRelativePath = "excludes/jck" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jck" + jckVersionNo + ".kfl";
-		}
-		
+		jtxRelativePath = "excludes/" + jckVersion + ".jtx";
+		kflRelativePath = "excludes/" + jckVersion + ".kfl";
+
 		jtxFullPath = jckRoot + File.separator + jtxRelativePath; 
-		File jtxFile = new File(jtxFullPath); 
+		File jtxFile = new File(jtxFullPath);
 		
 		if (jtxFile.exists()) {
 			System.out.println("Using additional excludes list file " + jtxFullPath);
@@ -267,7 +262,7 @@ public class JavaTestRunner {
 
 		// Look for a known failures list file
 		kflFullPath = jckRoot + File.separator + kflRelativePath;
-		File kflFile = new File(kflFullPath); 
+		File kflFile = new File(kflFullPath);
 		
 		if (kflFile.exists()) { 
 			System.out.println("Using known failures list file " + kflFullPath);
