@@ -237,29 +237,32 @@ public class JavaTestRunner {
 		// A known failures list (.kfl) file is optional.
 		// The automation here adds any files found (initial or updates) as 'custom' files. 
 		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
+		File initialJtxFile = new File(initialJtxFullPath);
+
+		if (initialJtxFile.exists()) {
+			System.out.println("Using initial excludes list file " + initialJtxFullPath);
+		} else {
+			System.out.println("Unable to find initial excludes list file " + initialJtxFullPath);
+			initialJtxFullPath = "";
+		}
 
 		// Look for an update to the initial excludes file
-		if (jckVersion.contains("jck6") || jckVersion.contains("jck7")) {
-			jtxRelativePath = "excludes/jdk" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jdk" + jckVersionNo + ".kfl";
-		} else {
-			jtxRelativePath = "excludes/jck" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jck" + jckVersionNo + ".kfl";
-		}
-		
+		jtxRelativePath = "excludes/" + jckVersion + ".jtx";
+		kflRelativePath = "excludes/" + jckVersion + ".kfl";
+
 		jtxFullPath = jckRoot + File.separator + jtxRelativePath; 
-		File jtxFile = new File(jtxFullPath); 
+		File jtxFile = new File(jtxFullPath);
 		
-		if (jtxFile.exists()) { 
-			System.out.println("Using excludes list file " + jtxFullPath);
+		if (jtxFile.exists()) {
+			System.out.println("Using additional excludes list file " + jtxFullPath);
 		} else {
-			System.out.println("Unable to find excludes list file " + jtxFullPath);
+			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
 			jtxFullPath = "";
 		}
 
 		// Look for a known failures list file
 		kflFullPath = jckRoot + File.separator + kflRelativePath;
-		File kflFile = new File(kflFullPath); 
+		File kflFile = new File(kflFullPath);
 		
 		if (kflFile.exists()) { 
 			System.out.println("Using known failures list file " + kflFullPath);
