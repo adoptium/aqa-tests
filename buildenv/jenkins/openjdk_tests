@@ -32,6 +32,7 @@ def PLATFORM_MAP = [
     'ppc64le_linux' : [
         'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
+        'DynamicAgents' : ['fyre']
     ],
     'riscv64_linux' : [
         'SPEC' : 'linux_riscv64',
@@ -44,12 +45,10 @@ def PLATFORM_MAP = [
     's390_linux' : [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
-        'DynamicAgents' : ['fyre']
     ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
     ],
     's390x_zos' : [
         'SPEC' : 'zos_390-64',
@@ -165,11 +164,6 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "SPEC: ${SPEC}"
         println "LABEL: ${LABEL}"
 
-        dynamicAgents = []
-        if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
-            dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]
-        }
-
         stage('Queue') {
             String[] onlineNodes = nodesByLabel(LABEL)
             if (onlineNodes.size() < 1) {
@@ -184,7 +178,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 // IF no nodes are idle we will check if there is supported virtual agent
                 // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
                 // In this case jobs will be fooled to fall back to wait local busy nodes. 
-                if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
+                println "dynamicAgents: ${dynamicAgents}"
+
+                if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents && LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"]) {
                     boolean isNodeIdle = false
                     node {
                         for (String onlineNode : onlineNodes) {
