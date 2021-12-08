@@ -152,7 +152,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 } else {
     if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
         SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-        LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+        LABEL = BUILD_LIST.contains("perf") ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
 
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
