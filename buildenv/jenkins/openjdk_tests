@@ -152,8 +152,15 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 } else {
     if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
         SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-        LABEL = BUILD_LIST.contains("perf") ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
-
+      if (params.LABEL) {
+          LABEL = params.LABEL
+} else {
+  LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
+  if (params.BUILD_LIST.contains("perf")) {
+     LABEL = LABEL.minus("ci.role.test&&")
+     LABEL += '&&ci.role.perf'
+  }
+}
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
         }
