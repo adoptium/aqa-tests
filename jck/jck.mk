@@ -62,7 +62,7 @@ ifndef JCK_ROOT
 endif
 
 ifndef CONFIG_ALT_PATH
-  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)/jtrunner/config/default
+  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)jtrunner$(D)config$(D)default
 endif
 
 OTHER_OPTS=
@@ -75,12 +75,6 @@ endif
 # If testsuite is not specified, default to RUNTIME
 ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
    override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET) testsuite=RUNTIME
-endif
-
-ifndef JRE_IMAGE
-	JRE_ROOT := $(TEST_JDK_HOME)
-	JRE_IMAGE := $(subst j2sdk-image,j2re-image,$(JRE_ROOT))
-  JRE_COMMAND := $(Q)$(JRE_IMAGE)$(D)bin$(D)java$(Q)
 endif
 
 define JCK_CMD_TEMPLATE_JRE
