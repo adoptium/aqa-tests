@@ -16,10 +16,20 @@
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-compiler-api-java_rmi</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/java_rmi,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/java_rmi jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -42,7 +52,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_annotation,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_annotation jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -56,7 +66,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_lang,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_lang jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -70,7 +80,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/javax_tools,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_tools jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -98,7 +108,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests=api/signaturetest,jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite=COMPILER,concurrency=cpus$(Q); \
+		<command>$(JCK_CMD_TEMPLATE) tests=api/signaturetest jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

@@ -5,16 +5,15 @@ import argparse
 import re
 
 platform_map = {
-    "arm-linux": ["arm_linux"],
     "linux-aarch64": ["aarch64_linux"],
-    "linux-arm": ["arm_linux"],
     "linux-ppc64le": ["ppc64le_linux"],
+    "linux-arm": ["arm_linux"],
     "linux-s390x": ["s390x_linux"],
     "linux-x64": ["x86-64_linux"],
     "macosx-x64": ["x86-64_mac", "aarch64_mac"],
     "windows-x64": ["x86-64_windows"],
-    "windows-x86": ["x86-64_windows", "x86-32_windows"],
     "x86-64_windows": ["x86-64_windows"],
+    "windows-x86": ["x86-32_windows"],
     "z/OS-s390x": ["s390x_zos"],
 
     "linux-ppc32": ["ppc32_linux"],
@@ -77,7 +76,7 @@ def get_test_details(test):
     test_tokens = test.split()
     test_details_dict["TARGET"] = "jdk_custom"
     test_details_dict["CUSTOM_TARGET"] = test_tokens[0]
-    test_details_dict["GIT_ISSUE"] = test_tokens[1]
+    test_details_dict["ISSUE_TRACKER"] = test_tokens[1]
     test_details_dict["PLATFORM"] = resolve_platform(test_tokens[2])
     return test_details_dict
 
