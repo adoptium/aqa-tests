@@ -224,42 +224,45 @@ public class JavaTestRunner {
 
 		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
 		jckBase = jckRoot + File.separator + testSuiteFolder; 
-		jckPolicyFileFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "jck.policy";
-		javatestJarFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "javatest.jar";
-		jtliteJarFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "lib" + File.separator + "jtlite.jar"; 
-		classesFullPath = jckRoot + File.separator + testSuiteFolder + File.separator + "classes";
+		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
+		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
+		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
+		classesFullPath = jckBase + File.separator + "classes";
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
 		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + testSuiteFolder + "/testsuite.jtt";
+		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
 		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
 		// A known failures list (.kfl) file is optional.
 		// The automation here adds any files found (initial or updates) as 'custom' files. 
 		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
+		File initialJtxFile = new File(initialJtxFullPath);
+
+		if (initialJtxFile.exists()) {
+			System.out.println("Using initial excludes list file " + initialJtxFullPath);
+		} else {
+			System.out.println("Unable to find initial excludes list file " + initialJtxFullPath);
+			initialJtxFullPath = "";
+		}
 
 		// Look for an update to the initial excludes file
-		if (jckVersion.contains("jck6") || jckVersion.contains("jck7")) {
-			jtxRelativePath = "excludes/jdk" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jdk" + jckVersionNo + ".kfl";
-		} else {
-			jtxRelativePath = "excludes/jck" + jckVersionNo + ".jtx";
-			kflRelativePath = "excludes/jck" + jckVersionNo + ".kfl";
-		}
-		
+		jtxRelativePath = "excludes/" + jckVersion + ".jtx";
+		kflRelativePath = "excludes/" + jckVersion + ".kfl";
+
 		jtxFullPath = jckRoot + File.separator + jtxRelativePath; 
-		File jtxFile = new File(jtxFullPath); 
+		File jtxFile = new File(jtxFullPath);
 		
-		if (jtxFile.exists()) { 
-			System.out.println("Using excludes list file " + jtxFullPath);
+		if (jtxFile.exists()) {
+			System.out.println("Using additional excludes list file " + jtxFullPath);
 		} else {
-			System.out.println("Unable to find excludes list file " + jtxFullPath);
+			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
 			jtxFullPath = "";
 		}
 
 		// Look for a known failures list file
 		kflFullPath = jckRoot + File.separator + kflRelativePath;
-		File kflFile = new File(kflFullPath); 
+		File kflFile = new File(kflFullPath);
 		
 		if (kflFile.exists()) { 
 			System.out.println("Using known failures list file " + kflFullPath);
