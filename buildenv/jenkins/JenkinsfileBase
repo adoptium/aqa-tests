@@ -85,10 +85,6 @@ def setupEnv() {
 		env.JRE_IMAGE = "${WORKSPACE}/${params.JRE_IMAGE}"
 	}
 
-	if (params.USE_JRE) {
-        env.USE_JRE = 1
-	}
-
 	if (params.JDK_IMPL) {
 		env.JDK_IMPL = params.JDK_IMPL
 	} else if (params.JVM_VERSION) {
@@ -746,7 +742,7 @@ def post(output_name) {
 				} else {
 					def pattern = "${env.WORKSPACE}/*_code_coverage_report.*"
 					uploadToArtifactory(pattern)
-				}
+				}				
 			}
 		}
 	}

@@ -39,12 +39,10 @@ if (!binding.hasVariable('JCK_GIT_REPO_PREFIX')) JCK_GIT_REPO_PREFIX = ""
 if (!binding.hasVariable('SSH_AGENT_CREDENTIAL')) SSH_AGENT_CREDENTIAL = ""
 if (!binding.hasVariable('KEEP_REPORTDIR')) KEEP_REPORTDIR = "true"
 if (!binding.hasVariable('AUTO_DETECT')) AUTO_DETECT = true
-if (!binding.hasVariable('USE_JRE')) USE_JRE = false
 if (!binding.hasVariable('TEST_JOB_NAME')) TEST_JOB_NAME = ""
 if (!binding.hasVariable('TARGET')) TARGET = ""
 if (!binding.hasVariable('BUILD_LIST')) BUILD_LIST = ""
 if (!binding.hasVariable('SDK_RESOURCE')) SDK_RESOURCE = "upstream"
-if (!binding.hasVariable('CUSTOMIZED_SDK_URL_CREDENTIAL_ID')) CUSTOMIZED_SDK_URL_CREDENTIAL_ID = ""
 if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
@@ -334,7 +332,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 								When DYNAMIC_COMPILE is on: <br/>
 								- if there is no BUILD_LIST input, DYNAMIC_COMPILE will automatically figure out which test material to compile based on the test target.<br/>
 								- if there is BUILD_LIST input, the BUILD_LIST will be further refined based on the test target.''')
-							stringParam('TARGET', "${ACTUAL_TARGET}",
+							stringParam('TARGET', "${ACTUAL_TARGET}", 
 								    '''Test TARGET to execute, you can also select sub-targets such as:<br/>
                                                                        different level: sanity|extended|special<br/>
                                                                        different group: openjdk|system|jck|functional|perf|external<br/>
