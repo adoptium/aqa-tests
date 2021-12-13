@@ -12,7 +12,7 @@
 # limitations under the License.
 ##############################################################################
 ifndef JCK_CUSTOM_TARGET
-JCK_CUSTOM_TARGET ?=api/java_math
+JCK_CUSTOM_TARGET ?=api/java_math/BigInteger
 endif
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
