@@ -155,7 +155,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                   LABEL = params.LABEL
                 } else {
                       LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-                       if (params.BUILD_LIST.contains("perf")) && areNodesWithLabelOnline(LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")){
+                       if (params.BUILD_LIST.contains("perf") && areNodesWithLabelOnline(LABEL.minus("ci.role.test&&").concat("&&ci.role.perf"))){
                          LABEL = LABEL.minus("ci.role.test&&")
                           LABEL += '&&ci.role.perf'
                         }
