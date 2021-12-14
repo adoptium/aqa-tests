@@ -22,7 +22,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(ADD_OPENS_CMD) $(CUSTOM_TARGET);\
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q) $(CUSTOM_TARGET);\
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
@@ -38,7 +38,19 @@
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(ADD_OPENS_CMD);\
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MiniMix_aot_5m</testCaseName>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -debug-generation -java-debug-args=$(Q)-Xmx3g -Xms3g$(Q) -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx3g -Xms3g$(Q); \
+	$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx2g -Xms2g$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -53,7 +65,7 @@
 			<variation>Mode551</variation>
 			<variation>Mode110-CS</variation>
 		</variations>
-		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=3h$(Q) -java-args-execute-initial=$(ADD_OPENS_CMD);\
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=3h$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q);\
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>special</level>
