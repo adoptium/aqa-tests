@@ -150,27 +150,27 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         parallel testJobs
     }
 } else {
-    if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
-        SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-      if (params.LABEL) {
-          LABEL = params.LABEL
-} else {
-  LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-  if (params.BUILD_LIST.contains("perf")) {
-     LABEL = LABEL.minus("ci.role.test&&")
-     LABEL += '&&ci.role.perf'
-  }
-}
+           if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+              SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+                if (params.LABEL) {
+                  LABEL = params.LABEL
+                } else {
+                      LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
+                       if (params.BUILD_LIST.contains("perf")) && areNodesWithLabelOnline(LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")){
+                         LABEL = LABEL.minus("ci.role.test&&")
+                          LABEL += '&&ci.role.perf'
+                        }
+                    }
         if (params.DOCKER_REQUIRED) {
-            LABEL += "&&sw.tool.docker"
+          LABEL += "&&sw.tool.docker"
         }
 
         if (params.LABEL_ADDITION) {
-            LABEL += "&&${params.LABEL_ADDITION}"
+          LABEL += "&&${params.LABEL_ADDITION}"
         }
 
         println "SPEC: ${SPEC}"
-        println "LABEL: ${LABEL}"
+         println "LABEL: ${LABEL}"
 
         dynamicAgents = []
         if (LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"] && PLATFORM_MAP[params.PLATFORM].containsKey('DynamicAgents')) {
@@ -178,8 +178,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         }
 
         stage('Queue') {
-            String[] onlineNodes = nodesByLabel(LABEL)
-            if (onlineNodes.size() < 1) {
+            if (areNodesWithLabelOnline(LABEL)) {
                 int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
                 timeout(ACTIVE_NODE_TIMEOUT) {
                     // If there is available node before timeout
@@ -292,9 +291,17 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
             jenkinsfile.run_parallel_tests()
         }
     } else {
-        assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
-    }
+          assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
+        }     
 }
+
+  def areNodesWithLabelOnline(labelToCheck) {
+            String[] onlineNodes = nodesByLabel(labelToCheck)
+            if (onlineNodes.size() < 1) {
+                return false
+            } 
+            return true
+        }   
 
 def checkErrors(errorList) {
     def foundError = ""
