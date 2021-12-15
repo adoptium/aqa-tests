@@ -191,6 +191,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents && LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"]) {
                     boolean isNodeIdle = false
                     node {
+                        String[] onlineNodes = nodesByLabel(LABEL)
                         for (String onlineNode : onlineNodes) {
                             def nodeStatus = sh(script: "curl -s ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
                                                 returnStdout: true,
