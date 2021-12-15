@@ -394,12 +394,6 @@
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
 		<disables>
 			<disable>
-				<comment>Temporarily disabled on z/OS for backlog/issues/667</comment>
-				<platform>.*zos.*</platform>
-				<impl>ibm</impl>
-				<version>11</version>
-			</disable>
-			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
@@ -662,6 +656,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_math</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
