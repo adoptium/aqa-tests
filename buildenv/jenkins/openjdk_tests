@@ -151,7 +151,17 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 } else {
     if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
         SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-        LABEL = params.LABEL ? params.LABEL : PLATFORM_MAP[params.PLATFORM]["LABEL"]
+        if (params.LABEL) {
+            LABEL = params.LABEL
+        } else {
+             LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
+                if (params.BUILD_LIST.contains("perf")) {
+                    def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
+                    if (areNodesWithLabelOnline(perfLabel)) {
+                       LABEL = perfLabel
+                    }
+                }
+            }
 
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
@@ -165,8 +175,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "LABEL: ${LABEL}"
 
         stage('Queue') {
-            String[] onlineNodes = nodesByLabel(LABEL)
-            if (onlineNodes.size() < 1) {
+            if (!areNodesWithLabelOnline(LABEL)) {
                 int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
                 timeout(ACTIVE_NODE_TIMEOUT) {
                     // If there is available node before timeout
@@ -184,6 +193,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents && LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"]) {
                     boolean isNodeIdle = false
                     node {
+                        String[] onlineNodes = nodesByLabel(LABEL)
                         for (String onlineNode : onlineNodes) {
                             def nodeStatus = sh(script: "curl -s ${env.JENKINS_URL}computer/${onlineNode}/api/xml?xpath=/*/idle",
                                                 returnStdout: true,
@@ -285,6 +295,15 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
     }
 }
+
+def areNodesWithLabelOnline(labelToCheck) {
+            String[] onlineNodes = nodesByLabel(labelToCheck)
+            if (onlineNodes.size() < 1) {
+                return false
+            } 
+            return true
+        }   
+
 
 def checkErrors(errorList) {
     def foundError = ""
