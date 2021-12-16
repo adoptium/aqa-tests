@@ -157,8 +157,9 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
              LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
                 if (params.BUILD_LIST.contains("perf") {
                     def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
-                    if (areNodesWithLabelOnline(perfLabel))
-                    {  LABEL = perfLabel }
+                    if (areNodesWithLabelOnline(perfLabel)){
+                       ( LABEL = perfLabel )
+                    }
                 }
             }
 
