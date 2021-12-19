@@ -77,6 +77,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-javax_tools</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>

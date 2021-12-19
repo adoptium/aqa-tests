@@ -31,6 +31,7 @@ java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/
 java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
 java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse-openj9/openj9/issues/5225	generic-all
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse-openj9/openj9/issues/6668	macosx-x64
+java/lang/ClassLoader/deadlock/DelegateTest.java	https://github.com/eclipse-openj9/openj9/issues/14133	generic-all
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
 java/lang/ClassLoader/ExtDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
 java/lang/ClassLoader/LibraryPathProperty.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
@@ -38,9 +39,12 @@ java/lang/ClassLoader/RecursiveSystemLoader.java	https://github.com/eclipse-open
 java/lang/ClassLoader/nativeLibrary/NativeLibraryTest.java	https://github.com/adoptium/temurin-build/issues/248	generic-all
 java/lang/Enum/ConstantDirectoryOptimalCapacity.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/ModuleLayer/BasicLayerTest.java	https://github.com/eclipse-openj9/openj9/issues/6462	generic-all
+java/lang/Object/FinalizationOption.java	https://github.com/eclipse-openj9/openj9/issues/14131	generic-all
+java/lang/Object/InvalidFinalizationOption.java	https://github.com/eclipse-openj9/openj9/issues/14131	generic-all
 java/lang/ProcessBuilder/Basic.java		https://github.com/eclipse-openj9/openj9/issues/10921	linux-ppc64le
 java/lang/ProcessBuilder/SkipTest.java https://github.com/eclipse-openj9/openj9/issues/4124 windows-all
 java/lang/StackTraceElement/PublicConstructor.java	https://github.com/eclipse-openj9/openj9/issues/6659	generic-all
+java/lang/StackTraceElement/WithClassLoaderName.java	https://github.com/eclipse-openj9/openj9/issues/14132	generic-all
 java/lang/StackTraceElement/SerialTest.java	https://github.com/eclipse-openj9/openj9/issues/6659	generic-all
 java/lang/StackWalker/Basic.java		https://github.com/eclipse-openj9/openj9/issues/6698	generic-all
 java/lang/StackWalker/DumpStackTest.java	https://github.com/eclipse-openj9/openj9/issues/6680	generic-all
@@ -135,10 +139,24 @@ jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-te
 java/util/stream/test/org/openjdk/tests/java/util/stream/SpliteratorTest.java https://github.com/eclipse-openj9/openj9/issues/11135 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/lang/annotation/LoaderLeakTest.java https://github.com/eclipse-openj9/openj9/issues/13201 generic-all
+java/lang/reflect/exeCallerAccessTest/CallerAccessTest.java https://github.com/eclipse-openj9/openj9/issues/14079 generic-all
+java/lang/reflect/classInitialization/ExceptionInClassInitialization.java https://github.com/eclipse-openj9/openj9/issues/14080 generic-all
+java/lang/reflect/MethodHandleAccessorsTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/14084 generic-all
+java/lang/reflect/MethodHandleAccessorsTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/14084 generic-all
+java/lang/StringBuilder/HugeCapacity.java https://github.com/eclipse-openj9/openj9/issues/14091 generic-all
+java/lang/System/AllowSecurityManager.java https://github.com/eclipse-openj9/openj9/issues/14092 generic-all
+java/lang/System/FileEncodingTest.java https://github.com/eclipse-openj9/openj9/issues/14093 generic-all
+java/lang/System/SecurityManagerWarnings.java https://github.com/eclipse-openj9/openj9/issues/14094 generic-all
+java/lang/Thread/UncaughtExceptionsTest.java https://github.com/eclipse-openj9/openj9/issues/14095 generic-all
+
 ############################################################################
 
 # jdk_internal
 jdk/internal/loader/NativeLibraries/Main.java  https://github.com/eclipse-openj9/openj9/issues/9018  generic-all
+jdk/internal/reflect/Reflection/GetCallerClassTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
+jdk/internal/reflect/Reflection/GetCallerClassTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
+jdk/internal/reflect/Reflection/GetCallerClassTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
+jdk/internal/reflect/Reflection/GetCallerClassTest.java#id3 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
 
 ############################################################################
 
@@ -314,6 +332,7 @@ java/util/WeakHashMap/GCDuringIteration.java	https://github.com/adoptium/aqa-tes
 java/util/zip/ZipFile/TestCleaner.java	https://github.com/eclipse-openj9/openj9/issues/8872 	generic-all
 java/util/Random/RandomTestChiSquared.java	https://github.com/eclipse-openj9/openj9/issues/13202	generic-all
 java/util/Random/RandomTestBsi1999.java		https://github.com/eclipse-openj9/openj9/issues/13202	generic-all
+java/util/Spliterator/SpliteratorTraversingAndSplittingTest.java https://github.com/eclipse-openj9/openj9/issues/14178 generic-all
 
 ############################################################################
 
@@ -373,36 +392,21 @@ java/foreign/stackwalk/TestStackWalk.java#zgc https://github.com/eclipse-openj9/
 
 java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/14002 generic-all
 
-java/lang/invoke/7157574/Test7157574.java https://github.com/eclipse-openj9/openj9/issues/13996 generic-all
-java/lang/invoke/lambda/InheritedMethodTest.java https://github.com/eclipse-openj9/openj9/issues/13996 generic-all
-java/lang/reflect/DefaultStaticTest/DefaultStaticInvokeTest.java https://github.com/eclipse-openj9/openj9/issues/13996 generic-all
+java/foreign/TestMemoryAccess.java https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/TestNulls.java https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/TestSegmentAllocators.java https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/channels/TestAsyncSocketChannels.java https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/TestUpcall.java#async https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/TestUpcall.java#no_scope https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/TestUpcall.java#scope https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
+java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/openj9/issues/14134 generic-all
 
-java/lang/annotation/typeAnnotations/TestExecutableGetAnnotatedType.java https://github.com/eclipse-openj9/openj9/issues/13997 generic-all
-java/lang/annotation/typeAnnotations/GetAnnotatedOwnerType.java https://github.com/eclipse-openj9/openj9/issues/13997 generic-all
-java/lang/annotation/typeAnnotations/TestObjectMethods.java https://github.com/eclipse-openj9/openj9/issues/13997 generic-all
-java/lang/reflect/Parameter/InnerClassToString.java https://github.com/eclipse-openj9/openj9/issues/13997 generic-all
+java/foreign/loaderLookup/TestLoaderLookup.java https://github.com/eclipse-openj9/openj9/issues/14135 generic-all
 
-jdk/internal/reflect/Reflection/GetCallerClassTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/13998 generic-all
-jdk/internal/reflect/Reflection/GetCallerClassTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/13998 generic-all
-jdk/internal/reflect/Reflection/GetCallerClassTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/13998 generic-all
-jdk/internal/reflect/Reflection/GetCallerClassTest.java#id3 https://github.com/eclipse-openj9/openj9/issues/13998 generic-all
+java/foreign/TestHandshake.java https://github.com/eclipse-openj9/openj9/issues/14148 generic-all
+java/foreign/TestSegmentCopy.java https://github.com/eclipse-openj9/openj9/issues/14148 generic-all
 
-java/lang/reflect/exeCallerAccessTest/CallerAccessTest.java https://github.com/eclipse-openj9/openj9/issues/14079 generic-all
-
-java/lang/reflect/classInitialization/ExceptionInClassInitialization.java https://github.com/eclipse-openj9/openj9/issues/14080 generic-all
-
-java/lang/reflect/MethodHandleAccessorsTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/14084 generic-all
-java/lang/reflect/MethodHandleAccessorsTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/14084 generic-all
-
-java/lang/StringBuilder/HugeCapacity.java https://github.com/eclipse-openj9/openj9/issues/14091 generic-all
-
-java/lang/System/AllowSecurityManager.java https://github.com/eclipse-openj9/openj9/issues/14092 generic-all
-
-java/lang/System/FileEncodingTest.java https://github.com/eclipse-openj9/openj9/issues/14093 generic-all
-
-java/lang/System/SecurityManagerWarnings.java https://github.com/eclipse-openj9/openj9/issues/14094 generic-all
-
-java/lang/Thread/UncaughtExceptionsTest.java https://github.com/eclipse-openj9/openj9/issues/14095 generic-all
+############################################################################
 
 # com_sun_crypto
 

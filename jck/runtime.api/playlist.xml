@@ -347,21 +347,6 @@
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>x86-64_mac</platform>
-				<impl>ibm</impl>
-			</disable>
-			<disable>
-				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>x86-64_mac</platform>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>x86-64_mac</platform>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/679</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
@@ -408,12 +393,6 @@
 	<test>
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
 		<disables>
-			<disable>
-				<comment>Temporarily disabled on z/OS for backlog/issues/667</comment>
-				<platform>.*zos.*</platform>
-				<impl>ibm</impl>
-				<version>11</version>
-			</disable>
 			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
 				<platform>.*zos.*</platform>
@@ -635,16 +614,6 @@
 		<testCaseName>jck-runtime-api-java_io</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>x86-64_mac</platform>
-				<impl>ibm</impl>
-			</disable>
-			<disable>
-				<comment>Disabled on osx for infrastructure/issues/5254. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
-				<platform>x86-64_mac</platform>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
 				<comment>Temporarily disabled on z/OS for backlog/issues/679</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
@@ -687,6 +656,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-java_math</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
