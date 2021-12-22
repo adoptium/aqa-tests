@@ -35,9 +35,15 @@ public class CheckZHTW {
       tset.add("Asia/Taipei");
     }
   }
+  private static void setIgnoreVers(Set<String> tset) {
+    if (JavaVersion.getVersion() >= 11000014L) {
+      tset.add("Pacific/Kanton");
+    }
+  }
   public static Set<String> getDataInstance() {
     TreeSet<String> tset = new TreeSet<String>();
     if (result) setIgnoreData(tset);
+    setIgnoreVers(tset);
     return tset;
   }
 }
