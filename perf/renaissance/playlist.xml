@@ -183,7 +183,7 @@
 				<version>16+</version>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
+		<command>$(JAVA_COMMAND) -jvmArgs -Xms2500M -jvmArgs -Xmx2500m   $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
