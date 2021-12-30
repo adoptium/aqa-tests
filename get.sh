@@ -484,7 +484,13 @@ getFunctionalTestMaterial()
 			echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
 			git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*
 			echo "git checkout -q $OPENJ9_SHA"
-			git checkout -q $OPENJ9_SHA
+			if ! git checkout $OPENJ9_SHA; then
+				echo "SHA not yet found. Continue fetching all the branches on origin..."
+				echo "git fetch -q --tags $OPENJ9_REPO +refs/heads/*:refs/remotes/origin/*"
+				git fetch -q --tags $OPENJ9_REPO +refs/heads/*:refs/remotes/origin/*
+				echo "git checkout -q $OPENJ9_SHA"
+				git checkout $OPENJ9_SHA
+			fi
 		fi
 		cd $TESTDIR
 	fi
