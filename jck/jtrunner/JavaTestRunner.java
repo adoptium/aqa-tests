@@ -535,7 +535,7 @@ public class JavaTestRunner {
 				keyword += "&!robot";
 			}
 
-			if ( !platform.equals("win32") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
+			if ( !platform.equals("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
 				fileContent += "set jck.env.testPlatform.xWindows \"No\"" + ";\n";
 			}
 
