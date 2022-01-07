@@ -58,7 +58,7 @@ public class JavaTestRunner {
 
 	private static String testSuite;
 	private static String jckBase;
-	private static String jtiFile;
+	private static String jtiFile; 
 	private static String nativesLoc;
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
@@ -959,7 +959,13 @@ public class JavaTestRunner {
 			String reportXML = reportDir + File.separator + "xml" + File.separator + "report.xml"; 
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse (new File(reportXML));
+			try { 
+				Document doc = docBuilder.parse (new File(reportXML));
+			} catch (FileNotFoundException e) {
+				System.out.println("No XML report generated due to test not completing normally");
+				e.printStackTrace(); 
+				return false; 
+			}
 			doc.getDocumentElement ().normalize ();
 			NodeList listOfTestResults = doc.getElementsByTagName("TestResult");
 			String testPath = ""; 
