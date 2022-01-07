@@ -41,6 +41,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.io.FileNotFoundException;
 
 public class JavaTestRunner {
 	private static String testJdk;
@@ -999,6 +1000,11 @@ public class JavaTestRunner {
 			fw.close();
 			System.out.println(resultSummary.toString());
 			return true; 
+		} catch (FileNotFoundException e) {
+			System.out.println("No javatest XML result file found. Please check if the "
+					+ "test failed before generating the XML report");
+			e.printStackTrace(); 
+			return false; 
 		} catch (SAXParseException err) {
 			System.out.println ("Error processing XML JCK output report" + err.getMessage ());
 			err.printStackTrace();
