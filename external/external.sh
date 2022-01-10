@@ -133,20 +133,7 @@ function parse_tag() {
 	esac
 	# set DOCKER_OS
 	case $tag in
-   		*alpine*) 
-	   		docker_os=alpine;;
-   		*debianslim*) 
-	   		docker_os=debianslim;;
-		*debian*) 
-	   		docker_os=debian;;
-		*centos*) 
-	   		docker_os=centos;;
-		*clefos*) 
-	   		docker_os=clefos;;
-		*ubi-minimal*) 
-	   		docker_os=ubi-minimal;;
-		*ubi*) 
-	   		docker_os=ubi;;
+	
 		*ubuntu*|*latest*|*nightly*) 
 	   		docker_os=ubuntu;;
    		*) echo "Unable to recognize DOCKER_OS from DOCKERIMAGE_TAG = $tag!";;
