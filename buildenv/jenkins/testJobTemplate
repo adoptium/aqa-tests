@@ -133,6 +133,7 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 def OPENJ9_REPO = "https://github.com/eclipse-openj9/openj9.git"
 def ADOPTOPENJDK_REPO = "https://github.com/adoptium/aqa-tests.git"
 def ADOPTOPENJDK_BRANCH = "master"
+def USE_TESTENV_PROPERTIES = false
 
 // Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
 // (See https://issues.jenkins.io/browse/JENKINS-48431)
@@ -427,6 +428,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							stringParam('SLACK_CHANNEL', SLACK_CHANNEL, "Slack channel. e.g., #rt-jenkins")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
+							booleanParam('USE_TESTENV_PROPERTIES', USE_TESTENV_PROPERTIES.toBoolean(), "use properties defined in the testenv.properties")
 						}
 						cpsScm {
 							scm {
