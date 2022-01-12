@@ -125,12 +125,7 @@ function parse_tag() {
     		package=jre
 		;;
 	esac
-	# set BUILD_TYPE
-	case $tag in
-   		*-slim*|*_slim*) 
-   			build_type=slim
-   		;;
-	esac
+	
 	# set DOCKER_OS
 	case $tag in
 	
