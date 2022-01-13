@@ -368,8 +368,8 @@ print_bazel_install() {
           "\nENV BAZEL_VERSION=\$BAZEL_VERSION" \
           "\nENV BAZEL_HOME /opt/bazel" \
           "\n\n# Install Bazel" \
-          "\nRUN  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh \\" \
-          "\n\t&&  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh.sha256 \\" >> ${file}
+          "\nRUN  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh \\" \
+          "\n\t&&  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh.sha256 \\" >> ${file}
 
     # Alpine sha512sum requires two spaces https://github.com/gliderlabs/docker-alpine/issues/174
     if [[ "${os}" = "alpine" ]]; then
