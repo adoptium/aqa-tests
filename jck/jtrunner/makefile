@@ -167,7 +167,7 @@ ifeq ($(OS),sunos)
 endif
 
 ifeq ($(OS),aix)
-	CC=/opt/IBM/xlC/13.1.3/bin/xlc
+	CC=/opt/IBM/xlC/16.1.0/bin/xlc
 	CFLAGS=-qstaticinline -q$(BitMode) -I$(UNIX_PATH) -I$(OSX_PATH) -I$(SRC_PATH)
 	LDFLAGS=-G -q$(BitMode)
 endif
