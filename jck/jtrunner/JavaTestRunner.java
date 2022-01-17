@@ -523,7 +523,7 @@ public class JavaTestRunner {
 					fileContent += "set jck.env.runtime.testExecute.otherEnvVars LIBPATH=/usr/lpp/tcpip/X11R66/lib" + ";\n";
 				} else if (platform.contains("alpine-linux")) {
 					// Run only headless tests on Alpine Linux
-					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
+					fileContent += "set jck.env.testPlatform.isHeadless Yes" + ";\n";
 				} else {
 					if ( !platform.equals("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
