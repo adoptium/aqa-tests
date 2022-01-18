@@ -51,14 +51,8 @@
 		<testCaseName>MiniMix_aot_5m</testCaseName>
 		<disables>
 			<disable>
-				<comment>eclipse-openj9/openj9/issues/14165</comment>
+				<comment>eclipse-openj9/openj9/issues/14165，https://github.com/adoptium/aqa-tests/issues/3230</comment>
 				<platform>x86-32_windows</platform>
-				<impl>ibm</impl>
-			</disable>
-			<disable>
-				<comment>eclipse-openj9/openj9/issues/14165</comment>
-				<platform>x86-32_windows</platform>
-				<impl>openj9</impl>
 			</disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -debug-generation -java-debug-args=$(Q)-Xmx3g -Xms3g$(Q) -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx3g -Xms3g$(Q); \
