@@ -94,7 +94,7 @@
 				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
