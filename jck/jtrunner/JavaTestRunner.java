@@ -514,7 +514,6 @@ public class JavaTestRunner {
 			if ( testsRequireDisplay(tests) ) {
 				if (platform.equals("zos")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
-					fileContent += "set jck.env.runtime.testExecute.otherEnvVars LIBPATH=/usr/lpp/tcpip/X11R66/lib" + ";\n";
 				}
 				else {
 					if ( !platform.equals("win") ) {
