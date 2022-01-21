@@ -36,6 +36,10 @@
 				<comment>https://github.com/eclipse-openj9/openj9/issues/13892</comment>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-systemtest/issues/474</comment>
+				<version>17+</version>
+			</disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=OAuthTest; $(TEST_STATUS)</command>
 		<levels>

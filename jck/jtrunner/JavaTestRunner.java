@@ -775,7 +775,7 @@ public class JavaTestRunner {
 			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 4" + ";\n";							// All Devtools tests take less than 1h to finish.
+			fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
 
 			if (platform.equals("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
