@@ -3,7 +3,7 @@ node {
   stage('readJSON')
   {
     // def json_path = "disabledTestParser/output.json"
-    def json = readJSON file: "disabledTestParser/output.json"
+    def json = readJSON file: "output.json"
   }
   /**
   Get each of the key-value pairs for each json value.
