@@ -1,7 +1,7 @@
 #!groovy
 
 // def json_path = "disabledTestParser/output.json"
-def json = readJSON file: "output.json"
+def json = readJSON file: 'output.json'
 
 /**
  This runs when we have found a job w/ git_issue_status = closed.
