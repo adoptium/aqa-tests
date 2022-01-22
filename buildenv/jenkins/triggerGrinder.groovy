@@ -1,19 +1,10 @@
 #!groovy
 stage('read file and run grinder')
 {
+  steps {
   def json_path = "disabledTestParser/output.json"
   def json = readJSON file: json_path
-
-  /**
-  Get each of the key-value pairs for each json value.
-  If the issue for a job is closed, run grinder on it.
-  Otherwise ignore it */
-  json.eachWithIndex { dict, _ ->
-    if (dict["GIT_ISSUE_STATUS"] == "closed") {
-      run_grinder(dict)
-    }
   }
-}
 
 /**
   This runs when we have found a job w/ git_issue_status = closed.
@@ -38,3 +29,12 @@ def run_grinder(map) {
     build job: Grinder, parameters: childParams, propagate: false
   }
 }
+
+/**
+Get each of the key-value pairs for each json value.
+If the issue for a job is closed, run grinder on it.
+Otherwise ignore it */
+json.eachWithIndex { dict, _ ->
+  if (dict["GIT_ISSUE_STATUS"] == "closed") {
+    run_grinder(dict)
+  }
