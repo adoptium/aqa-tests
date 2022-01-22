@@ -1,6 +1,6 @@
 #!groovy
 
-def json_path = args.size() ? args[0] : "disabledTestParser/output.json"
+def json_path = "disabledTestParser/output.json"
 def json = readJSON file: json_path
 
 /**
