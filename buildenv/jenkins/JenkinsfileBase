@@ -945,10 +945,14 @@ def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
 	def labelValue = ""
-	params.each { key, value ->
+	def urlParams = params.findAll {
+		// Exclude separator and help text parameters from url
+		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
+	}
+	urlParams.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
-		if (i != params.size()) {
+		if (i != urlParams.size()) {
 			url += "&amp;"
 		}
 		i++;
