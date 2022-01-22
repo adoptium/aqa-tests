@@ -5,7 +5,7 @@ stage('read file and run grinder')
   def json_path = "disabledTestParser/output.json"
   def json = readJSON file: json_path
   }
-
+}
 /**
   This runs when we have found a job w/ git_issue_status = closed.
   Collects all parameters and runs grinder
