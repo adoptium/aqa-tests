@@ -945,8 +945,8 @@ def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
 	def labelValue = ""
-	List<String> separators = [
-	        'TEST_REPO_PARAMS',
+	List<String> separatorAndHelpParameterKeys = [
+			'TEST_REPO_PARAMS',
 			'TEST_REPO_PARAMS_HELP_TEXT',
 			'NON_AQA_TEST_REPOS',
 			'NON_AQA_TEST_REPOS_HELP_TEXT',
@@ -964,7 +964,7 @@ def addGrinderLink() {
 			'POST_RUN_PARAMS_HELP_TEXT'
 	]
 	params.findAll {
-		!separators.contains(it.key)
+		!separatorAndHelpParameterKeys.contains(it.key)
 	}.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
