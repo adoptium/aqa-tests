@@ -2,6 +2,7 @@
 node {
   stage('readJSON')
   {
+    println("${WORKSPACE}")
     def json_path = readFile("${WORKSPACE}/aqa-tests/disabledTestParser/?output.json")
     def json = readJSON file: json_path
   }
