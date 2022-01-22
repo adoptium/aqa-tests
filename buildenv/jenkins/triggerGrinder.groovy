@@ -38,3 +38,4 @@ json.eachWithIndex { dict, _ ->
   if (dict["GIT_ISSUE_STATUS"] == "closed") {
     run_grinder(dict)
   }
+}
