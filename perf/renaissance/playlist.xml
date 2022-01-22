@@ -261,6 +261,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-scala-kmeans</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3244</comment>
+				<platform>x86-64_solaris|sparcv9_solaris</platform>
+			</disable>
+		</disables>
 		<command>$(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans$(Q) --test_root $(TEST_ROOT); \
 		$(TEST_STATUS)</command>
 		<levels>
