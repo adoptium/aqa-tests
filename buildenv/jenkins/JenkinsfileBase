@@ -678,9 +678,6 @@ def post(output_name) {
 			}
 
 			boolean failIfNoResultsValue = true
-			if (params.PARALLEL && params.PARALLEL != "None") {
-				failIfNoResultsValue = false
-			}
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
