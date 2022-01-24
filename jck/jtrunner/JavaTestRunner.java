@@ -20,6 +20,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -480,7 +483,12 @@ public class JavaTestRunner {
 			if (platform.contains("win")) {
 				libPath = "PATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("linux"))  {
+			} else if (platform.contains("alpine-linux")) {
+				libPath = "LD_LIBRARY_PATH";
+				robotAvailable = "Yes";
+				// Run only headless tests on Alpine Linux
+				keyword += "&!headful";
+			} else if (platform.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 			} else if (platform.contains("aix")) {
@@ -1221,6 +1229,14 @@ public class JavaTestRunner {
 		// set the shortname to the osName if the current system is Linux
 		// or AIX this is all that is needed
 		String osShortName = osName;
+
+		// We need to determine if the platform is Alpine Linux or not
+		if (osName.equals("linux")) {
+			Path alpine = Paths.get("/etc/alpine-release");
+			if (Files.exists(alpine)) {
+				osShortName = "alpine-linux";
+			}
+		}
 
 		// if we are on z/OS remove the slash
 		if (osName.equals("z/os")) {
