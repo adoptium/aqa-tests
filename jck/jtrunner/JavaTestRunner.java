@@ -230,6 +230,10 @@ public class JavaTestRunner {
 		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
 		classesFullPath = jckBase + File.separator + "classes";
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
+		// Solaris natives are in /natives/sunos
+		if (platform.equals("solaris")) {
+			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
+		}
 		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
 		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
