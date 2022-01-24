@@ -304,21 +304,19 @@
 				<if>
 					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
-						<echo message="git clone -q ${defaultBranch} ${regressionRepo}" />
+						<echo message="git clone -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
 						<exec executable="git" failonerror="true">
-							<arg line="clone -q ${defaultBranch} ${regressionRepo}" />
+							<arg line="clone -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
 						</exec>
-						<move file="${jdkName}" tofile="openjdk-jdk"/>
 						<exec executable="git" failonerror="true" dir="openjdk-jdk">
 							<arg line="checkout ${env.OPENJDK_SHA}" />
 						</exec>
 					</then>
 					<else>
-						<echo message="git clone --depth 1 -q ${defaultBranch} ${regressionRepo}" />
+						<echo message="git clone --depth 1 -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
 						<exec executable="git" failonerror="true">
-							<arg line="clone --depth 1 -q ${defaultBranch} ${regressionRepo}" />
+							<arg line="clone --depth 1 -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
 						</exec>
-						<move file="${jdkName}" tofile="openjdk-jdk"/>
 					</else>
 				</if>
 			</else>
