@@ -483,7 +483,7 @@ public class JavaTestRunner {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 				// Run only headless tests on Alpine Linux
-				keyword += " !headful";
+				keyword += ",!headful";
 			} else if (platform.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
