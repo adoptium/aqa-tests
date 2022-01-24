@@ -481,7 +481,9 @@ public class JavaTestRunner {
 				robotAvailable = "Yes";
 			} else if (platform.contains("alpine-linux")) {
 				libPath = "LD_LIBRARY_PATH";
-				robotAvailable = "No";
+				robotAvailable = "Yes";
+				// Run only headless tests on Alpine Linux
+				keyword += " !headful";
 			} else if (platform.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
@@ -521,9 +523,6 @@ public class JavaTestRunner {
 				if (platform.equals("zos")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
 					fileContent += "set jck.env.runtime.testExecute.otherEnvVars LIBPATH=/usr/lpp/tcpip/X11R66/lib" + ";\n";
-				} else if (platform.contains("alpine-linux")) {
-					// Run only headless tests on Alpine Linux
-					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
 				} else {
 					if ( !platform.equals("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
