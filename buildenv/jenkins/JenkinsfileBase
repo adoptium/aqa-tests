@@ -637,7 +637,7 @@ def runTest( ) {
 				echo 'Generating Code Coverage Reports...'
 				dir("$WORKSPACE/openjdkbinary/j2sdk-image") {
 					// Current lcov generates "Cannot open source file" info, but does not affect results, since Build and Test paths difference are corrected after summary.
-					sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => /home/jenkins/workspace/Grinder/openjdkbinary/j2sdk-image/jenkins/workspace/'"
+					sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => ${WORKSPACE}/openjdkbinary/j2sdk-image/jenkins/workspace/'"
 					sh "lcov --quiet --output-file codeCoverageInfoFinal.info --remove codeCoverageInfoOrigin.info '/usr/include/*' '/usr/local/*' '/home/*/attrlookup.gperf'"
 					sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 				}
@@ -945,10 +945,14 @@ def addGrinderLink() {
 	String url = "${HUDSON_URL}job/Grinder/parambuild/?"
 	int i = 1;
 	def labelValue = ""
-	params.each { key, value ->
+	def urlParams = params.findAll {
+		// Exclude separator and help text parameters from url
+		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
+	}
+	urlParams.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
 		url += "${key}=${value}"
-		if (i != params.size()) {
+		if (i != urlParams.size()) {
 			url += "&amp;"
 		}
 		i++;

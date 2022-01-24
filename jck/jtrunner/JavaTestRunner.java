@@ -233,6 +233,10 @@ public class JavaTestRunner {
 		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
 		classesFullPath = jckBase + File.separator + "classes";
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
+		// Solaris natives are in /natives/sunos
+		if (platform.equals("solaris")) {
+			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
+		}
 		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
 		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
@@ -496,6 +500,9 @@ public class JavaTestRunner {
 				robotAvailable = "No";
 			} else if (platform.contains("osx")) {
 				libPath = "DYLD_LIBRARY_PATH";
+				robotAvailable = "Yes";
+			} else if (platform.contains("solaris")) {
+				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 			} else {
 				System.out.println("Unknown platform:: " + platform);
@@ -761,7 +768,7 @@ public class JavaTestRunner {
 				jxcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (platform.equals("zos")) {
+			} else if (platform.equals("zos") || platform.equals("solaris")) {
 				pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 				xjcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "schemagen.sh";
@@ -782,7 +789,7 @@ public class JavaTestRunner {
 			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 4" + ";\n";							// All Devtools tests take less than 1h to finish.
+			fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
 
 			if (platform.equals("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not

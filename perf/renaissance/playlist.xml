@@ -13,6 +13,7 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+	<include>../perf.mk</include>
 	<test>
 		<testCaseName>renaissance-akka-uct</testCaseName>
 		<disables>
@@ -33,8 +34,8 @@
 		<testCaseName>renaissance-als</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964862</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)als.json$(Q) als; \
@@ -50,8 +51,8 @@
 		<testCaseName>renaissance-chi-square</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964098</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
@@ -90,11 +91,11 @@
 		<testCaseName>renaissance-dec-tree</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2255#issuecomment-788234331</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
+		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)dec-tree.json$(Q) dec-tree; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -162,8 +163,8 @@
 		<testCaseName>renaissance-gauss-mix</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964531</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
@@ -179,8 +180,8 @@
 		<testCaseName>renaissance-log-regression</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818964263</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)log-regression.json$(Q) log-regression; \
@@ -207,8 +208,8 @@
 		<testCaseName>renaissance-movie-lens</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965117</comment>
-				<version>16+</version>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
+				<platform>x86-32_windows|arm_linux</platform>
 			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)movie-lens.json$(Q) movie-lens; \
@@ -260,6 +261,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-scala-kmeans</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3244</comment>
+				<platform>x86-64_solaris|sparcv9_solaris</platform>
+			</disable>
+		</disables>
 		<command>$(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)scala-kmeans.json$(Q) scala-kmeans$(Q) --test_root $(TEST_ROOT); \
 		$(TEST_STATUS)</command>
 		<levels>

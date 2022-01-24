@@ -133,6 +133,7 @@ println "ARCH_OS_LIST: ${ARCH_OS_LIST}"
 def OPENJ9_REPO = "https://github.com/eclipse-openj9/openj9.git"
 def ADOPTOPENJDK_REPO = "https://github.com/adoptium/aqa-tests.git"
 def ADOPTOPENJDK_BRANCH = "master"
+def USE_TESTENV_PROPERTIES = false
 
 // Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
 // (See https://issues.jenkins.io/browse/JENKINS-48431)
@@ -236,7 +237,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JCK_GIT_REPO', ACTUAL_JCK_GIT_REPO, "For JCK test only")
 
 							parameterSeparatorDefinition {
-							    name('NON_AQA_TEST_REPOS')
+							    name('NON_AQA_TEST_REPOS_PARAMS')
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Non-AQA Test Repositories')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
@@ -254,7 +255,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('USER_CREDENTIALS_ID', USER_CREDENTIALS_ID, "Optional. User credential ID")
 
 							parameterSeparatorDefinition {
-							    name('PLATFORM_AND_MACHINE')
+							    name('PLATFORM_AND_MACHINE_PARAMS')
 							    separatorStyle(separatorStyleCss)
 							    sectionHeader('Platform and Machine Selection Parameters')
 							    sectionHeaderStyle(sectionHeaderStyleCss)
@@ -278,7 +279,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
                                 <br/>sparcv9_solaris
                                 <br/>riscv64_linux
                                 <br/>multiple platforms (comma separated values): x86-64_linux,x86-64_mac
-                                <br/>all platforms: all (actual platforms will change based on JDK_VERSION/JDK_IMPL)
+                                <br/>all platforms: all (this set actually excludes some secondary platforms and varies based on JDK_VERSION/JDK_IMPL selected)
                                 <br/>Please refer to PLATFORM_MAP in https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests<br/>''')
 							stringParam('LABEL', "", "Jenkins node label to run on. Leave this blank for the default value specified in PLATFORM_MAP. Set to node name to run on a particular machine.")
 							stringParam('LABEL_ADDITION', "", "Additional label(s) to append to LABEL. Usually when you want to add a label to the default value.")
@@ -427,6 +428,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('ARTIFACTORY_ROOT_DIR', ARTIFACTORY_ROOT_DIR, "Optional. It should be used with ARTIFACTORY_SERVER and ARTIFACTORY_REPO. Default is to set root dir to be the same as the current Jenkins domain")
 							stringParam('SLACK_CHANNEL', SLACK_CHANNEL, "Slack channel. e.g., #rt-jenkins")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
+							booleanParam('USE_TESTENV_PROPERTIES', USE_TESTENV_PROPERTIES.toBoolean(), "use properties defined in the testenv.properties")
 						}
 						cpsScm {
 							scm {

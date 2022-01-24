@@ -45,7 +45,7 @@ There is a custom JCK test target `jck_custom`. This is used to run custom JCK t
 
 1. Follow the Steps 1 - 4 mentioned above. 
 
-2. Export `JCK_CUSTOM_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_CUSTOM_TARGET=api/java_math`. If a testsuite other than the default is needed, provide that in JCK_CUSTOM_TARGET (e.g., JCK_CUSTOM_TARGET=lang/INFR/....html,testsuite=COMPILER).
+2. Export `JCK_CUSTOM_TARGET=<jck_test_subset>` as an environment variable or pass it in when run as a make command. For example `export JCK_CUSTOM_TARGET=api/java_math`. If a testsuite other than the default is needed, provide that in JCK_CUSTOM_TARGET (e.g., JCK_CUSTOM_TARGET=lang/INFR/....html testsuite=COMPILER).
 
 3. Make sure the JCK test subset is available in JCK test material folder, a.k.a. `$(JCK_ROOT)`.
 
