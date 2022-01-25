@@ -529,8 +529,10 @@ public class JavaTestRunner {
 			if ( testsRequireDisplay(tests) ) {
 				if (platform.equals("zos")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
-				}
-				else {
+				} else if (platform.equals("alpine-linux")) {
+					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
+					// fileContent += "set jck.env.testPlatform.xWindows No" + ";\n";
+				} else {
 					if ( !platform.equals("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
 						fileContent += "set jck.env.testPlatform.xWindows Yes" + ";\n";
