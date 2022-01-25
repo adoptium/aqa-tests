@@ -485,7 +485,7 @@ public class JavaTestRunner {
 				robotAvailable = "Yes";
 			} else if (platform.contains("alpine-linux")) {
 				libPath = "LD_LIBRARY_PATH";
-				robotAvailable = "Yes";
+				robotAvailable = "No";
 				// Run only headless tests on Alpine Linux
 				keyword += "&!headful";
 			} else if (platform.contains("linux")) {
@@ -527,7 +527,7 @@ public class JavaTestRunner {
 			}
 
 			if ( testsRequireDisplay(tests) ) {
-				if (platform.equals("zos")) {
+				if (platform.equals("zos") || platform.equals("alpine-linux")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
 				}
 				else {
@@ -649,7 +649,9 @@ public class JavaTestRunner {
 
 			// The jplisLivePhase and Robot available settings are rejected if placed higher up in the .jtb file
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				fileContent += "set jck.env.runtime.awt.robotAvailable " + robotAvailable + ";\n";
+				if ( robotAvailable == "Yes" ) {
+					fileContent += "set jck.env.runtime.awt.robotAvailable " + robotAvailable + ";\n";
+				}
 			}
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.jplis.jplisLivePhase Yes;\n";
