@@ -8,7 +8,7 @@ node {
   //                               [$class: 'CloneOption', reference: ref_cache],
   //                               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
   //                           userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                        ]
+                        // ]
   stage('readJSON')
   {
     def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
