@@ -13,14 +13,14 @@ node {
   {
     def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
     def json = readJSON file: json_path
-  }
-  /**
-  Get each of the key-value pairs for each json value.
-  If the issue for a job is closed, run grinder on it.
-  Otherwise ignore it */
-  json.eachWithIndex { dict, _ ->
-    if (dict["GIT_ISSUE_STATUS"] == "closed") {
-      run_grinder(dict)
+    /**
+    Get each of the key-value pairs for each json value.
+    If the issue for a job is closed, run grinder on it.
+    Otherwise ignore it */
+    json.eachWithIndex { dict, _ ->
+      if (dict["GIT_ISSUE_STATUS"] == "closed") {
+        run_grinder(dict)
+      }
     }
   }
 }
