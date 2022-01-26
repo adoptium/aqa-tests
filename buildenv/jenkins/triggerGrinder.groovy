@@ -1,5 +1,13 @@
 #!groovy
 node {
+   checkout scm: [$class: 'GitSCM',
+                            branches: [[name: "${scm.branches[0].name}"]],
+                            extensions: [
+                                [$class: 'CleanBeforeCheckout'],
+                                [$class: 'CloneOption', reference: ref_cache],
+                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                        ]
   stage('readJSON')
   {
     def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
@@ -14,14 +22,6 @@ node {
       run_grinder(dict)
     }
   }
-  checkout scm: [$class: 'GitSCM',
-                            branches: [[name: "${scm.branches[0].name}"]],
-                            extensions: [
-                                [$class: 'CleanBeforeCheckout'],
-                                [$class: 'CloneOption', reference: ref_cache],
-                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                        ]
 }
 /**
   This runs when we have found a job w/ git_issue_status = closed.
