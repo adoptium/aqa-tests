@@ -677,7 +677,6 @@ def post(output_name) {
 				tar_cmd_suffix = ""
 			}
 
-			boolean failIfNoResultsValue = true
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: failIfNoResultsValue])
 
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
