@@ -369,11 +369,12 @@ def setup() {
 
 			if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+			} else if (params.SDK_RESOURCE != 'customized'){
+				CUSTOMIZED_SDK_URL_OPTION = ""
 			} else if (params.CUSTOMIZED_SDK_URL) {
-				SDK_RESOURCE = "customized"
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
 			} else {
-				CUSTOMIZED_SDK_URL_OPTION = ""
+				error("For customized sdk resource, please provide the sdk url as CUSTOMIZED_SDK_URL")
 			}
 			if (params.CUSTOMIZED_SDK_SOURCE_URL) {
 				SDK_RESOURCE = "customized"
