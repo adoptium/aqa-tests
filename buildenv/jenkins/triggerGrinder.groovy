@@ -1,12 +1,13 @@
 #!groovy
 node {
-   checkout scm: [$class: 'GitSCM',
-                            branches: [[name: "${scm.branches[0].name}"]],
-                            extensions: [
-                                [$class: 'CleanBeforeCheckout'],
-                                [$class: 'CloneOption', reference: ref_cache],
-                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+   checkout scm
+  //  : [$class: 'GitSCM',
+  //                           branches: [[name: "${scm.branches[0].name}"]],
+  //                           extensions: [
+  //                               [$class: 'CleanBeforeCheckout'],
+  //                               [$class: 'CloneOption', reference: ref_cache],
+  //                               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+  //                           userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
                         ]
   stage('readJSON')
   {
