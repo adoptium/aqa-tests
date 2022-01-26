@@ -29,18 +29,21 @@ node {
   Collects all parameters and runs grinder
   */
 def run_grinder(map) {
-  def childParams = []
-  def queryString
+  stage("running grinder")
+  {
+    def childParams = []
+    def queryString
 
-  map.each { k, v ->
-    if (k!="ISSUE_TRACKER_STATUS" && k!="ISSUE_TRACKER") {
-        childParams << string(name: "${k}", value: "${v}")
+    map.each { k, v ->
+      if (k!="ISSUE_TRACKER_STATUS" && k!="ISSUE_TRACKER") {
+          childParams << string(name: "${k}", value: "${v}")
+      }
     }
-  }
 
-  for (e in childparams) {
-    println e
-  }
+    for (e in childparams) {
+      println e
+    }
 
-  build job: Grinder, parameters: childParams, propagate: false
+    build job: Grinder, parameters: childParams, propagate: false
+  }
 }
