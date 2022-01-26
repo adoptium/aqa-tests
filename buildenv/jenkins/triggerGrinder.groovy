@@ -14,14 +14,7 @@ node {
       run_grinder(dict)
     }
   }
-  checkout scm: [$class: 'GitSCM',
-                            branches: [[name: "${scm.branches[0].name}"]],
-                            extensions: [
-                                [$class: 'CleanBeforeCheckout'],
-                                [$class: 'CloneOption', reference: ref_cache],
-                                [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                            userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                        ]
+  checkout scm: [$class: 'GitSCM']
 }
 /**
   This runs when we have found a job w/ git_issue_status = closed.
