@@ -466,6 +466,10 @@ public class JavaTestRunner {
 			concurrency = Runtime.getRuntime().availableProcessors() + 1;
 			concurrencyString = String.valueOf(concurrency);
 		}
+		
+		if (platform.contains("zos")) {
+			extraJvmOptions += " -Dfile.encoding=UTF-8";
+		}
 
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
 		// If 'other' is specified when executing on Windows, then Windows specific settings such
