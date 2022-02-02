@@ -468,7 +468,7 @@ public class JavaTestRunner {
 		}
 		
 		if (platform.contains("zos")) {
-			extraJvmOptions += " -Dfile.encoding=UTF-8";
+			extraJvmOptions += " -Dfile.encoding=US-ASCII";
 		}
 
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
