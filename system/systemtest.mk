@@ -46,6 +46,17 @@ ifeq (,$(findstring $(JDK_IMPL),hotspot))
 	OPENJ9_PRAM=;$(SYSTEMTEST_RESROOT)$(D)openj9-systemtest
 endif
 
+# In JDK18+, java.security.manager == null behaves as -Djava.security.manager=disallow.
+# In JDK17-, java.security.manager == null behaves as -Djava.security.manager=allow.
+# In case of system tests, the base infra (STF) which is used to launch tests utilizes
+# the security manager in net.adoptopenjdk.loadTest.LoadTest.overrideSecurityManager.
+# For system tests to work as expected, -Djava.security.manager=allow behaviour is
+# needed in JDK18+.
+# Related: https://github.com/eclipse-openj9/openj9/issues/14412
+ifeq ($(filter 8 9 10 11 12 13 14 15 16 17, $(JDK_VERSION)),)
+	JVM_OPTIONS:=-Djava.security.manager=allow $(JVM_OPTIONS)
+endif
+
 define SYSTEMTEST_CMD_TEMPLATE
 perl $(SYSTEMTEST_RESROOT)$(D)STF$(D)stf.core$(D)scripts$(D)stf.pl \
 	-test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)STF;$(SYSTEMTEST_RESROOT)$(D)aqa-systemtest$(OPENJ9_PRAM)$(Q) \
