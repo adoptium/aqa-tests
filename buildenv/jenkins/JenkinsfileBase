@@ -601,6 +601,22 @@ def runTest( ) {
 					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
 				}
 			}
+
+			echo "about to check if TARGET equals IdleMicrobenchmark_HS and if params.RELATED_NODES exist"
+			if (params.TARGET == 'IdleMicrobenchmark_HS' && params.RELATED_NODES ) {
+				// assume for now params.RELATED_NODES contains a single hostname 
+				// or label (not comma-separated list for now)
+				echo "About to trigger the Machine-Reservation job"
+			 timeout(time: 45, unit: "MINUTES"){
+					build job: 'Machine-Reservation', parameters: [
+					string(name: 'NODE', value: "${params.RELATED_NODES}"),
+					string(name: 'RESERVATION_LENGTH', value: "${params.TIME_LIMIT}")] 
+					propagate: true
+					wait: true	
+				}
+			}
+			echo "after launching M-R job"
+
 			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
@@ -729,6 +745,7 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
+				def result = getjobStatus()
 			}
 
 			if (params.CODE_COVERAGE) {
@@ -752,6 +769,18 @@ def post(output_name) {
 		}
 	}
 }
+
+def getjobStatus(){
+	steps {
+		script {
+			def job = jenkins.model.Jenkins.instance.getItemByFullName("Machine-Reservation")
+			def result = job.getLastBuild().getResult().toString()
+			//env.result = result
+			return result 
+		}
+	}
+}
+
 
 def testBuild() {
 	TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
