@@ -691,6 +691,7 @@ def post(output_name) {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 			archiveSHAFile()
 			archiveTestenvFile()
+			archiveAQACertFile()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -899,6 +900,17 @@ def archiveSHAFile() {
 		archiveArtifacts artifacts: shaFile, fingerprint: true, allowEmptyArchive: true
 	} else {
 		def pattern = "${env.WORKSPACE}/${shaFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
+def archiveAQACertFile() {
+	def AQACertFile = "aqa-tests/TKG/AQACert.log";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving AQACert file on jenkins."
+		archiveArtifacts artifacts: AQACertFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${AQACertFile}"
 		uploadToArtifactory(pattern)
 	}
 }
