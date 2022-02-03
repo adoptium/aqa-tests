@@ -113,15 +113,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         PLATFORMS.each { PLATFORM ->
             JDK_VERSIONS.each { JDK_VERSION ->
                 JDK_IMPLS.each { JDK_IMPL ->
-                    def ACTUAL_PLATFORM = PLATFORM
-                    if (PLATFORM == "all") {
-                        ACTUAL_PLATFORM = "ppc64_aix,ppc64le_linux,s390x_linux,x86-64_linux,x86-64_mac,x86-64_windows"
-                        if (JDK_VERSION == "8"){
-                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",x86-32_windows"
-                        } else {
-                            ACTUAL_PLATFORM = ACTUAL_PLATFORM + ",aarch64_linux"
-                        }
-                    }
+                    def ACTUAL_PLATFORM = resolvePlatform(PLATFORM, JDK_VERSION)
                     def childParams = []
                     // loop through all the params and change the parameters if needed
                     params.each { param ->
@@ -294,6 +286,31 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
     } else {
         assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
     }
+}
+
+private String resolvePlatform(PLATFORM, JDK_VERSION) {
+    println "RESOLVING PLATFORM=$PLATFORM JDK_VERSION=$JDK_VERSION"
+    List<String> all_platforms = ["ppc64_aix", "ppc64le_linux", "s390x_linux", "x86-64_linux", "x86-64_mac", "x86-64_windows"]
+    if (JDK_VERSION == "8") {
+        all_platforms <<= "x86-32_windows"
+    } else {
+        all_platforms <<= "aarch64_linux"
+    }
+
+    if (PLATFORM == "all") {
+        return all_platforms.join(",")
+    }
+
+    // if platform matches "all_{os}" pattern, return all platforms of that OS
+    def match = PLATFORM =~ /(?i)all_(?<os>\w+)/
+    if (match && match.groupCount() > 0) {
+        String matched_os = match.group("os")
+        println "matched_os=$matched_os"
+        return all_platforms.findAll { it.contains(matched_os) }.join(",")
+    }
+
+    // otherwise, return the platform we received as input (no expansion needed)
+    return PLATFORM
 }
 
 def areNodesWithLabelOnline(labelToCheck) {
