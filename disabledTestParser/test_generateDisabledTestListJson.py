@@ -20,6 +20,9 @@ platform_map = {
     "solaris-x86-64": "x86-64_solaris",
     "alpine-linux-x86-64": "x86-64_alpine-linux",
     "linux-x86-32": "x86-32_linux",
+
+    "linux-all": "all_linux",
+    "macosx-all": "all_mac",
 }
 
 
@@ -27,7 +30,3 @@ class Test(TestCase):
     def test_transform_platform_with_map(self):
         for k, v in platform_map.items():
             self.assertEqual(transform_platform(k), v)
-
-    def test_transform_platform_raises_on_arch_all(self):
-        self.assertRaises()
-
