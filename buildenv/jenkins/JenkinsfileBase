@@ -607,7 +607,7 @@ def runTest( ) {
 				// assume for now params.RELATED_NODES contains a single hostname 
 				// or label (not comma-separated list for now)
 				echo "About to trigger the Machine-Reservation job"
-			 timeout(time: 45, unit: "MINUTES"){
+			 timeout(time: 30, unit: 'MINUTES'){
 					build job: 'Machine-Reservation', parameters: [
 					string(name: 'NODE', value: "${params.RELATED_NODES}"),
 					string(name: 'RESERVATION_LENGTH', value: "${params.TIME_LIMIT}")] 
