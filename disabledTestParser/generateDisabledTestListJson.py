@@ -87,7 +87,6 @@ def resolve_platform(platform_string, line_number, exclude_list_file):
         else:
             revolved_platform_list.append(transform_platform(plat))
 
-    # flatten list of lists of lists to a set of unique values
     resolved_platforms = set(revolved_platform_list)
     return ','.join(resolved_platforms)
 
