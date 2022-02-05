@@ -993,7 +993,7 @@ def run_parallel_tests() {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: false])
+						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 					} catch (Exception e) {
 						echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 						buildResult = childResult
