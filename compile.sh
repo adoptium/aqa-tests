@@ -9,10 +9,14 @@ else
     MAKE=make
 fi
 if [ $USE_TESTENV_PROPERTIES == true ]; then
+    testenv_file="./testenv/testenv.properties"
+    if [[ "$PLATFORM" == *"zos"* ]]; then
+        testenv_file="./testenv/testenv_zos.properties"
+    fi
     while read line; do
         export $line
-    done <./testenv/testenv.properties
-    if [ $JDK_IMPL == "openj9" ]; then
+    done <$testenv_file
+    if [ $JDK_IMPL == "openj9" ] || [ $JDK_IMPL == "ibm" ]; then
         repo=JDK${JDK_VERSION}_OPENJ9_REPO
         branch=JDK${JDK_VERSION}_OPENJ9_BRANCH
     else
@@ -25,8 +29,8 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
 
     export JDK_REPO=$repo2
     export JDK_BRANCH=$branch2
-    echo "Set values based on ./testenv/testenv.properties:"
-    cat ./testenv/testenv.properties
+    echo "Set values based on ${testenv_file}:"
+    cat $testenv_file
     echo ""
     echo "JDK_REPO=${JDK_REPO}"
     echo "JDK_BRANCH=${JDK_BRANCH}"

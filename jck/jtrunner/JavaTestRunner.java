@@ -20,6 +20,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -230,6 +233,10 @@ public class JavaTestRunner {
 		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
 		classesFullPath = jckBase + File.separator + "classes";
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
+		// Solaris natives are in /natives/sunos
+		if (platform.equals("solaris")) {
+			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
+		}
 		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
 		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
@@ -459,6 +466,10 @@ public class JavaTestRunner {
 			concurrency = Runtime.getRuntime().availableProcessors() + 1;
 			concurrencyString = String.valueOf(concurrency);
 		}
+		
+		if (platform.contains("zos")) {
+			extraJvmOptions += " -Dfile.encoding=US-ASCII";
+		}
 
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
 		// If 'other' is specified when executing on Windows, then Windows specific settings such
@@ -476,7 +487,12 @@ public class JavaTestRunner {
 			if (platform.contains("win")) {
 				libPath = "PATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("linux"))  {
+			} else if (platform.contains("alpine-linux")) {
+				libPath = "LD_LIBRARY_PATH";
+				robotAvailable = "No";
+				// Run only headless tests on Alpine Linux
+				keyword += "&!headful";
+			} else if (platform.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 			} else if (platform.contains("aix")) {
@@ -488,6 +504,9 @@ public class JavaTestRunner {
 				robotAvailable = "No";
 			} else if (platform.contains("osx")) {
 				libPath = "DYLD_LIBRARY_PATH";
+				robotAvailable = "Yes";
+			} else if (platform.contains("solaris")) {
+				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 			} else {
 				System.out.println("Unknown platform:: " + platform);
@@ -512,9 +531,8 @@ public class JavaTestRunner {
 			}
 
 			if ( testsRequireDisplay(tests) ) {
-				if (platform.equals("zos")) {
+				if (platform.equals("zos") || platform.equals("alpine-linux")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
-					fileContent += "set jck.env.runtime.testExecute.otherEnvVars LIBPATH=/usr/lpp/tcpip/X11R66/lib" + ";\n";
 				}
 				else {
 					if ( !platform.equals("win") ) {
@@ -635,7 +653,9 @@ public class JavaTestRunner {
 
 			// The jplisLivePhase and Robot available settings are rejected if placed higher up in the .jtb file
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				fileContent += "set jck.env.runtime.awt.robotAvailable " + robotAvailable + ";\n";
+				if ( robotAvailable == "Yes" ) {
+					fileContent += "set jck.env.runtime.awt.robotAvailable " + robotAvailable + ";\n";
+				}
 			}
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.jplis.jplisLivePhase Yes;\n";
@@ -754,7 +774,7 @@ public class JavaTestRunner {
 				jxcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (platform.equals("zos")) {
+			} else if (platform.equals("zos") || platform.equals("solaris")) {
 				pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 				xjcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "schemagen.sh";
@@ -1215,6 +1235,14 @@ public class JavaTestRunner {
 		// set the shortname to the osName if the current system is Linux
 		// or AIX this is all that is needed
 		String osShortName = osName;
+
+		// We need to determine if the platform is Alpine Linux or not
+		if (osName.equals("linux")) {
+			Path alpine = Paths.get("/etc/alpine-release");
+			if (Files.exists(alpine)) {
+				osShortName = "alpine-linux";
+			}
+		}
 
 		// if we are on z/OS remove the slash
 		if (osName.equals("z/os")) {

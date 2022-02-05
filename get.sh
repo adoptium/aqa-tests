@@ -666,7 +666,13 @@ checkOpenJ9RepoSHA()
 
 parseCommandLineArgs "$@"
 if [ "$USE_TESTENV_PROPERTIES" = true ]; then
-	source ./testenv/testenv.properties
+	if [[ "$PLATFORM" == *"zos"* ]]; then
+		echo "load ./testenv/testenv_zos.properties"
+		source ./testenv/testenv_zos.properties
+	else
+		echo "load ./testenv/testenv.properties"
+		source ./testenv/testenv.properties
+	fi
 else
 	> ./testenv/testenv.properties
 fi
