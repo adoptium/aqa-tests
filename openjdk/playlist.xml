@@ -36,7 +36,6 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
-
 	<test>
 		<testCaseName>langtools_custom</testCaseName>
 		<variations>
@@ -59,7 +58,6 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
-	
 	<test>
 		<testCaseName>hotspot_custom</testCaseName>
 		<variations>
@@ -1107,6 +1105,10 @@
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
 				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3232#issuecomment-1032587426</comment>
+				<platform>x86-64_alpine-linux</platform>
 			</disable>
 		</disables>
 		<variations>
