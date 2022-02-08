@@ -1,30 +1,58 @@
-import itertools
 import os
 import json
 import argparse
 import re
+import logging
 
-platform_map = {
-    "linux-aarch64": ["aarch64_linux"],
-    "linux-ppc64le": ["ppc64le_linux"],
-    "linux-arm": ["arm_linux"],
-    "linux-s390x": ["s390x_linux"],
-    "linux-x64": ["x86-64_linux"],
-    "macosx-x64": ["x86-64_mac", "aarch64_mac"],
-    "windows-x64": ["x86-64_windows"],
-    "x86-64_windows": ["x86-64_windows"],
-    "windows-x86": ["x86-32_windows"],
-    "z/OS-s390x": ["s390x_zos"],
+logging.basicConfig(
+    format="%(levelname)s - %(message)s"
+)
+LOG = logging.getLogger()
 
-    "linux-ppc32": ["ppc32_linux"],
-    "linux-ppc64": ["ppc64_linux"],
-    "linux-riscv64": ["riscv64_linux"],
-    "linux-s390": ["s390_linux"],
-    "solaris-sparcv9": ["sparcv9_solaris"],
-    "solaris-x86-64": ["x86-64_solaris"],
-    "alpine-linux-x86-64": ["x86-64_alpine-linux"],
-    "linux-x86-32": ["x86-32_linux"]
+OS_EXCEPTIONS = {
+    "macosx": "mac",
+    "z/os": "zos",
+    "sunos": "solaris",
 }
+
+ARCH_EXCEPTIONS = {
+    "x64": "x86-64",
+    "x86": "x86-32",
+}
+
+
+def transform_platform(os_arch_platform: str) -> str:
+    """
+    Transforms an "os-arch"-formatted platform into
+    an "arch_os"-formatted platform, suitable for consumption by Jenkins.
+
+    :param os_arch_platform: the "os-arch"-formatted platform
+    :return: a Jenkins-suitable platform name
+    """
+
+    # only deal in lower case
+    os_arch_platform = os_arch_platform.lower()
+
+    # split over a dash
+    # EXCEPT if it is preceded by "x86" (because of "x86-32" and "x86-64")
+    # or if it is preceded by "alpine" (because of linux distros like "alpine-linux")
+    split_pattern = re.compile(r"(?<!x86)(?<!alpine)-")
+    split_list = split_pattern.split(os_arch_platform)
+
+    if len(split_list) != 2:
+        raise ValueError(f"Cannot split {os_arch_platform!r} over regex pattern {split_pattern.pattern!r}")
+
+    os_name, arch_name = split_list
+
+    # rename OS if needed
+    if os_name in OS_EXCEPTIONS:
+        os_name = OS_EXCEPTIONS[os_name]
+
+    # rename Arch if needed
+    if arch_name in ARCH_EXCEPTIONS:
+        arch_name = ARCH_EXCEPTIONS[arch_name]
+
+    return f"{arch_name}_{os_name}"
 
 
 def get_jdk_version_and_impl(exclude_list_file):
@@ -42,42 +70,34 @@ def get_jdk_version_and_impl(exclude_list_file):
 def get_tests_from_exclude_file(exclude_list_file):
     # 'exclude tests' are lines that are not empty AND do not start with #
     with open(exclude_list_file, mode='r') as f:
-        return [line for line in f.readlines() if line.strip() not in '' and not line.strip().startswith("#")]
+        return [(ln_num, line) for ln_num, line in enumerate(f.readlines(), 1) if line.strip() not in '' and not line.strip().startswith("#")]
 
 
-def resolve_platform(platform_string):
+def resolve_platform(platform_string, line_number, exclude_list_file):
     revolved_platform_list = []
-    list_of_unresolved_platform_names = [s.strip() for s in platform_string.split(",") if s.strip() not in '']
-    for unresolved_platform_name in list_of_unresolved_platform_names:
-        if unresolved_platform_name == "generic-all":
+    list_of_unresolved_platform_names = [s.strip() for s in platform_string.split(",") if s.strip()]
+    for plat in list_of_unresolved_platform_names:
+        if plat == "generic-all":
             return "all"
-        elif unresolved_platform_name == "linux-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "linux" in s])
-        elif unresolved_platform_name == "macosx-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "macosx" in s])
-        elif unresolved_platform_name == "windows-all":
-            revolved_platform_list.append([platform_map[s] for s in platform_map.keys() if "windows" in s])
-        elif unresolved_platform_name == "aix-all":
-            revolved_platform_list.append([["ppc32_aix", "ppc64_aix"]])
+
+        if "_" in plat:
+            LOG.warning(f'{exclude_list_file}:{line_number} : '
+                        f'assuming {plat!r} already formatted to ARCH_OS; continuing without transformation')
+            revolved_platform_list.append(plat)
         else:
-            if unresolved_platform_name not in platform_map:
-                print(f"Could not resolve the '{unresolved_platform_name}' to any of the valid platform names")
-                exit(3)
+            revolved_platform_list.append(transform_platform(plat))
 
-            revolved_platform_list.append([platform_map[unresolved_platform_name]])
-
-    # flatten list of lists of lists to a set of unique values
-    resolved_platforms = set(itertools.chain(*itertools.chain(*revolved_platform_list)))
+    resolved_platforms = set(revolved_platform_list)
     return ','.join(resolved_platforms)
 
 
-def get_test_details(test):
+def get_test_details(test, line_number, exclude_list_file):
     test_details_dict = {}
-    test_tokens = test.split()
+    test_tokens = test.split(maxsplit=2)  # platform list may include spaces; split from the left 2 times max
     test_details_dict["TARGET"] = "jdk_custom"
     test_details_dict["CUSTOM_TARGET"] = test_tokens[0]
     test_details_dict["ISSUE_TRACKER"] = test_tokens[1]
-    test_details_dict["PLATFORM"] = resolve_platform(test_tokens[2])
+    test_details_dict["PLATFORM"] = resolve_platform(test_tokens[2], line_number, exclude_list_file)
     return test_details_dict
 
 
@@ -107,8 +127,8 @@ def main():
     for exclude_list_file in os.listdir(exclude_dir):
         test_list = get_tests_from_exclude_file(os.path.join(exclude_dir, exclude_list_file))
         if len(test_list) > 0:
-            for test in test_list:
-                test_details = get_test_details(test)
+            for line_number, test in test_list:
+                test_details = get_test_details(test, line_number, exclude_list_file)
                 test_details["JDK_VERSION"], test_details["JDK_IMPL"] = get_jdk_version_and_impl(exclude_list_file)
                 problem_list_details.append(test_details)
 
