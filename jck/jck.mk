@@ -68,13 +68,13 @@ endif
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
-  OTHER_OPTS=" -Xtrace:maximal=all{level2} -Xfuture "
+  OTHER_OPTS= -Xtrace:maximal=all{level2} -Xfuture
   export CONFIG_ALT_PATH:=$(JCK_ROOT)$(D)config$(D)default
-  ifeq ($(OS), OS/390)
-    OTHER_OPTS += " -Dcom.ibm.tools.attach.enable=yes "
+  ifneq (,$(findstring zos, $(SPEC)))
+    OTHER_OPTS += -Dcom.ibm.tools.attach.enable=yes
   endif
   ifneq (8, $(JDK_VERSION))
-    OTHER_OPTS += " --enable-preview "
+    OTHER_OPTS += --enable-preview
   endif
 endif
 
