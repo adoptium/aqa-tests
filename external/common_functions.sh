@@ -205,6 +205,10 @@ function set_test_info() {
     ant_version=$(getProperty "ant_version")
     ivy_version=$(getProperty "ivy_version")
     tag_version=$(getProperty "tag_version")
+    gradle_version=$(getProperty "gradle_version")
+    sbt_version=$(getProperty "sbt_version")
+    bazel_version=$(getProperty "bazel_version")
+    openssl_version=$(getProperty "openssl_version")
     environment_variable=$(getProperty "environment_variable")
     if [[ ! -z "$environment_variable" ]]; then
     environment_variable="MODE=\"java\""
