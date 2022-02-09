@@ -698,7 +698,6 @@ def post(output_name) {
 				archiveFile("$entry.key", "$entry.value")
 			}
 
-
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
 						tools: [Custom(customXSL: "$WORKSPACE/aqa-tests/jck/xUnit.xsl",
