@@ -687,16 +687,15 @@ def post(output_name) {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 
-			//defining a hashMap with filenames->keys and filePaths->values
-			def map = [
-					[filename: "testenv.properties", filePath: "aqa-tests/testenv/testenv.properties"],
-					[filename: "SHA", filePath: "aqa-tests/TKG/SHA.txt"],
-					[filename: "AQACert", filePath: "aqa-tests/TKG/AQACert.log"]
-			] as java.lang.Object
+            //Defining the files to be archived
+            def testenvFile = "aqa-tests/testenv/testenv.properties"
+            def shaFile = "aqa-tests/TKG/SHA.txt"
+            def AQACertFile = "aqa-tests/TKG/AQACert.log"
 
-			for(entry in map){
-				archiveFile("$entry.key", "$entry.value")
-			}
+            //call the archive function for each file
+            archiveFile(testenvFile)
+			archiveFile(shaFile)
+            archiveFile(AQACertFile)
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -887,15 +886,14 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def archiveFile(filename, filePath){
+def archiveFile(filename){
 	if(!params.ARTIFACTORY_SERVER){
 		echo "ARTIFACTORY_SERVER is not set. Saving ${filename} file on jenkins."
-		archiveArtifacts artifacts: filePath, fingerprint: true, allowEmptyArchive: true
+		archiveArtifacts artifacts: filename, fingerprint: true, allowEmptyArchive: true
 	} else {
-		def pattern = "${env.WORKSPACE}/${filePath}"
+		def pattern = "${env.WORKSPACE}/${filename}"
 		uploadToArtifactory(pattern)
 	}
-
 }
 
 def uploadToArtifactory(pattern) {
