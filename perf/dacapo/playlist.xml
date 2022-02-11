@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
 	<test>
 		<testCaseName>dacapo-eclipse</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
 		$(TEST_STATUS)</command>
 		<versions>
 			<version>8</version>
@@ -29,7 +29,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-avrora</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) avrora; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) avrora; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -40,7 +40,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-fop</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) fop; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) fop; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -51,7 +51,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-h2</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -69,7 +69,7 @@
 				<impl>openj9</impl>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -80,7 +80,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-luindex</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -96,7 +96,7 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/1888#issuecomment-755015959</comment>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) lusearch-fix; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) lusearch-fix; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -107,7 +107,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-pmd</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) pmd; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) pmd; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -118,7 +118,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-sunflow</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) sunflow; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) sunflow; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -134,7 +134,7 @@
 				<comment>https://bugs.openjdk.java.net/browse/JDK-8155588</comment>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -145,7 +145,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-xalan</testCaseName>
-		<command>$(JAVA_COMMAND) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) xalan; \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) xalan; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
