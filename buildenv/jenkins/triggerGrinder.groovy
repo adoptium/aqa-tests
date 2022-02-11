@@ -10,7 +10,10 @@ node {
   }
 }
 
-launch_grinders(json)
+stage('Launch Grinder Jobs')
+{
+  launch_grinders(json)
+}
 
 def launch_grinders(List<Map<String, Object>> json) {
   /**
