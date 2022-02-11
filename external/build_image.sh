@@ -16,8 +16,9 @@ set -o pipefail
 
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
+buildArg=""
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 8 ] && [ $# -ne 7 ]; then
 	echo "The supported tests are ${supported_tests}"
 	echo
 	echo "usage: $0 test version vm os package build check_external_custom [testtarget]"
@@ -30,7 +31,10 @@ if [ $# -ne 7 ]; then
 	echo "testtarget" = "Optional: CMD to pass to ENTRYPOINT script from Dockerfile"
 	exit -1
 fi
-
+if [ $# -eq 8 ]; then
+	buildArg="--build-arg IMAGE=$8"
+	echo "buildArg is $buildArg"
+fi
 if [[ ${check_external_custom} -eq 0 ]]; then
 	set_test $1
 fi
@@ -50,15 +54,17 @@ function build_image() {
     local os=$5
     local package=$6
     local build=$7
+    local buildArg=$8
+    
 
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
 
 	echo "#####################################################"
-	echo "INFO: docker build --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
+	echo "INFO: docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
 	echo "#####################################################"
-	docker build --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
+	docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
 	if [ $? != 0 ]; then
 		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
 		exit 1
@@ -86,4 +92,4 @@ if [ ! -f ${file} ]; then
 fi
 
 # Build Dockerfile that was generated
-build_image ${file} ${test} ${version} ${vm} ${os} ${package} ${build}
+build_image ${file} ${test} ${version} ${vm} ${os} ${package} ${build} "${buildArg}"
