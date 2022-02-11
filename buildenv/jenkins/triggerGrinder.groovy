@@ -10,6 +10,12 @@ node {
   }
 }
 
+stage('check for JDK_VERSION and JDK_IMPL')
+{
+  println params.JDK_VERSION
+  println params.JDK_IMPL
+}
+
 stage('Launch Grinder Jobs')
 {
   launch_grinders(json)
