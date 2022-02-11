@@ -8,10 +8,9 @@ node {
     def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
     json = readJSON(file: json_path) as List<Map<String, Object>>
   }
-  stage('Launch Grinder Jobs') {
-    launch_grinders(json)
-  }
 }
+
+launch_grinders(json)
 
 def launch_grinders(List<Map<String, Object>> json) {
   /**
