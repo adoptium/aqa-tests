@@ -12,8 +12,8 @@ node {
 
 stage('check for JDK_VERSION and JDK_IMPL')
 {
-  def JDK_VERSION = params.JDK_VERSION '**/*.sln'
-  def JDK_IMPL =  params.JDK_IMPL '**/*.sln'
+  def JDK_VERSION = params.JDK_VERSION.split(",")
+  def JDK_IMPL =  params.JDK_IMPL.split(",")
 }
 
 stage('Launch Grinder Jobs')
