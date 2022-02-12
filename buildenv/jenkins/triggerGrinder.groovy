@@ -18,7 +18,7 @@ stage('Launch Grinder Jobs')
   launch_grinders(json, jdk_version, jdk_imp)
 }
 
-def launch_grinders(List<Map<String, Object>> json, String[] jdk_ver, String[], jdk_imp) {
+def launch_grinders(List<Map<String, Object>> json, String[] jdk_ver, String[] jdk_imp) {
   /**
    Get each of the key-value pairs for each json value.
    If the issue for a job is closed, run grinder on it.
