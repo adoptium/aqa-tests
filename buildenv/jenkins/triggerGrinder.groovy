@@ -12,19 +12,19 @@ node {
 
 stage('check for JDK_VERSION and JDK_IMPL')
 {
-  def JDK_VERSION = params.JDK_VERSION.split(',')
-  String [] JDK_IMPL =  params.JDK_IMPL.split(',')
+  def jdk_ver = params.JDK_VERSION.split(',')
+  def jdk_imp =  params.JDK_IMPL.split(',')
 }
 
 stage('Launch Grinder Jobs')
 {
-  for (int i = 0; i < JDK_VERSION.size(); i++)
+  for (int i = 0; i < jdk_ver.size(); i++)
   {
-    println JDK_VERSION[i]
+    println jdk_ver[i]
   }
-  for (int i = 0; i < JDK_IMPL.size(); i++)
+  for (int i = 0; i < jdk_imp.size(); i++)
   {
-    println JDK_IMPL[i]
+    println jdk_imp[i]
   }
   launch_grinders(json)
 }
