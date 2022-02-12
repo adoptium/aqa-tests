@@ -25,7 +25,7 @@ def launch_grinders(List<Map<String, Object>> json, String[] jdk_ver, String[] j
    Otherwise ignore it
    */
   json.eachWithIndex { dict, _ ->
-    if (dict["ISSUE_TRACKER_STATUS"] == "closed" && jdk_ver.contains(toString(dict["JDK_VERSION"])) && jdk_imp.contains(dict["JDK_IMPL"])) {
+    if (dict["ISSUE_TRACKER_STATUS"] == "closed" && jdk_ver.contains(dict["JDK_VERSION"].toString()) && jdk_imp.contains(dict["JDK_IMPL"])) {
       run_grinder(dict)
     }
   }
