@@ -12,14 +12,20 @@ node {
 
 stage('check for JDK_VERSION and JDK_IMPL')
 {
-  List<String> JDK_VERSION = Arrays.asList(params.JDK_VERSION.split("\\s*,\\s*"))
-  List<String> JDK_IMPL = Arrays.asList(params.JDK_IMPL.split("\\s*,\\s*"))
+  def JDK_VERSION = params.JDK_VERSION 'D:\jobs', '**/*.sln'
+  def JDK_IMPL = Arrays.asList(params.JDK_IMPL.split("\\s*,\\s*"))
 }
 
 stage('Launch Grinder Jobs')
 {
-  println JDK_VERSION[0]
-  println JDK_IMPL[1]
+  for (int i = 0; i < JDK_VERSION.size(); i++)
+  {
+    println JDK_VERSION[i]
+  }
+  for (int i = 0; i < JDK_IMPL.size(); i++)
+  {
+    println JDK_IMPL[i]
+  }
   launch_grinders(json)
 }
 
