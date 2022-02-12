@@ -14,26 +14,18 @@ stage('Launch Grinder Jobs')
 {
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
-  
-  for (int i = 0; i < jdk_ver.size(); i++)
-  {
-    println jdk_ver[i]
-  }
-  for (int i = 0; i < jdk_imp.size(); i++)
-  {
-    println jdk_imp[i]
-  }
-  launch_grinders(json)
+
+  launch_grinders(json, jdk_version, jdk_imp)
 }
 
-def launch_grinders(List<Map<String, Object>> json) {
+def launch_grinders(List<Map<String, Object>> json, String[] jdk_ver, String[], jdk_imp) {
   /**
    Get each of the key-value pairs for each json value.
    If the issue for a job is closed, run grinder on it.
    Otherwise ignore it
    */
   json.eachWithIndex { dict, _ ->
-    if (dict["ISSUE_TRACKER_STATUS"] == "closed") {
+    if (dict["ISSUE_TRACKER_STATUS"] == "closed" && jdk_ver.contains(dict["JDK_VERSION"]) && jdk_imp.contains(dict["JDK_IMPL"])) {
       run_grinder(dict)
     }
   }
