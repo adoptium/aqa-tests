@@ -12,8 +12,8 @@ node {
 
 stage('check for JDK_VERSION and JDK_IMPL')
 {
-  def JDK_VERSION = params.JDK_VERSION 'D:\jobs', '**/*.sln'
-  def JDK_IMPL = Arrays.asList(params.JDK_IMPL.split("\\s*,\\s*"))
+  def JDK_VERSION = params.JDK_VERSION '**/*.sln'
+  def JDK_IMPL =  params.JDK_IMPL '**/*.sln'
 }
 
 stage('Launch Grinder Jobs')
