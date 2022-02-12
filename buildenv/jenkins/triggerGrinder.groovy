@@ -10,14 +10,11 @@ node {
   }
 }
 
-stage('check for JDK_VERSION and JDK_IMPL')
+stage('Launch Grinder Jobs')
 {
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
-}
-
-stage('Launch Grinder Jobs')
-{
+  
   for (int i = 0; i < jdk_ver.size(); i++)
   {
     println jdk_ver[i]
