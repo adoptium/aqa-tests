@@ -15,7 +15,7 @@ stage('Launch Grinder Jobs')
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
 
-  launch_grinders(json, jdk_version, jdk_imp)
+  launch_grinders(json, jdk_ver, jdk_imp)
 }
 
 def launch_grinders(List<Map<String, Object>> json, String[] jdk_ver, String[] jdk_imp) {
