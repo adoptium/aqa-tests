@@ -737,6 +737,12 @@
 				<version>11</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/732</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -831,6 +837,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_crypto</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/730</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
