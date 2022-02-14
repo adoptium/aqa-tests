@@ -490,10 +490,6 @@ public class JavaTestRunner {
 			} else if (platform.contains("alpine-linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "No";
-				// Run only headless tests on Alpine Linux (Flag applies to JCK17+)
-				if ( !jckVersion.contains("jck8") && !jckVersion.contains("jck11")) {
-					keyword += "&!headful";
-				}
 			} else if (platform.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
