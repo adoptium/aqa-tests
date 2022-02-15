@@ -4,6 +4,11 @@ List<Map<String, Object>> json = []
 
 node {
   checkout scm
+  stage('Triggering python script')
+  {
+    sh "python ${WORKSPACE}/aqa-tests/disabledTestParser/test_generateDisabledTestList.py"
+    sh "python ${WORKSPACE}/aqa-tests/disabledTestParser/issue_status.py"
+  }
   stage('readJSON') {
     def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
     json = readJSON(file: json_path) as List<Map<String, Object>>
