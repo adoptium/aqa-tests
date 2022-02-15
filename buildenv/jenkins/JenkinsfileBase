@@ -604,10 +604,6 @@ def runTest( ) {
 			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
-				//if (PLATFORM.contains("mac")) {
-				//	env.AWT_FORCE_HEADFUL=true
-				//	echo "env.AWT_FORCE_HEADFUL is ${env.AWT_FORCE_HEADFUL}"
-				//} else 
 				if (env.SPEC.startsWith('aix')) {
 					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX -secIP 000 :0 &"
 					env.DISPLAY = "unix:0"

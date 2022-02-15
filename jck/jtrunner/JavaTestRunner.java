@@ -536,7 +536,7 @@ public class JavaTestRunner {
 					if ( !platform.equals("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
 						fileContent += "set jck.env.testPlatform.xWindows Yes" + ";\n";
-						if ( !platform.equals("osx") ) {
+						if ( !platform.equals("osx") ) { 
 							String display = System.getenv("DISPLAY");
 							if ( display == null ) {
 								System.out.println("Error: DISPLAY must be set to run tests " + tests + " on " + platform);
