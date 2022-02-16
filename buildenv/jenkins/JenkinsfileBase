@@ -1,4 +1,7 @@
 #!groovy
+import org.tap4j.consumer.TapConsumer
+import org.tap4j.model.TestResult
+import org.tap4j.model.TestSet
 
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
@@ -73,7 +76,7 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TEST = ""
+	env.FAIL_TEST = "testList TESTLIST= "
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -746,6 +749,13 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_code_coverage_report.*"
 					uploadToArtifactory(pattern)
 				}				
+			}
+
+			echo "Fetaching Tap files..."
+			def tapFiles = findFiles(glob: "**/*.tap")
+			for (def tapFile: tapFiles) {
+				echo "Tap file found: ${tapFile}"
+				def fileContent = readFile(file: "${tapFile}") 
 			}
 			
 			if (currentBuild.result == 'FAILURE') {
