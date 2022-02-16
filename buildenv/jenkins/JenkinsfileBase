@@ -73,7 +73,8 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TEST = "testList TESTLIST= "
+	env.FAIL_TESTLIST = "testList TESTLIST= "
+	env.RERUN = ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -990,7 +991,7 @@ def addGrinderLink() {
 	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 	if (currentBuild.result == 'FAILURE') {
-		def failedTestUrl = url.replace(targetValue, "TARGET=${FAIL_TEST}"
+		def failedTestUrl = url.replace(targetValue, "TARGET=${FAIL_TEST}")
 		echo "Rerun failed tests in Grinder: ${FAIL_TEST}"
 		currentBuild.description += "<br><a href=${failedTestUrl}> Return in Grinder with failed tests </a> Change TARGET to run the failed test list"
 	}
