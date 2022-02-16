@@ -915,6 +915,18 @@ def archiveAQACertFile() {
 	}
 }
 
+def archiveTap() {
+	def AQACertFile = "aqa-tests/TKG/TAP.zip";
+	archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving AQACert file on jenkins."
+		archiveArtifacts artifacts: AQACertFile, fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${AQACertFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
 def uploadToArtifactory(pattern) {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
