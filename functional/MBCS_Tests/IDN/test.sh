@@ -31,7 +31,7 @@ do
         j=${i##/*/}
 	echo
 	echo ${j}
-	${JAVA_BIN}/java IDNFromFile $i
+	${JAVA_BIN}/java ${JAVA_OPTIONS} IDNFromFile $i
         RESULT=$?
 	if [ ${RESULT} != 0 ]; then 
             exit ${RESULT}
@@ -50,7 +50,7 @@ done
 . ${BASE}/setup_${FULLLANG}
 echo "URL=http://${TEST_HOSTNAME}" >> ${OUTPUT}
 echo "converting URL from UNICODE to ACE..." >> ${OUTPUT}
-TOASCII=`${JAVA_BIN}/java IDNtoASCII ${TEST_HOSTNAME}`
+TOASCII=`${JAVA_BIN}/java ${JAVA_OPTIONS} IDNtoASCII ${TEST_HOSTNAME}`
 echo "ACE=http://${TOASCII}"  >> ${OUTPUT}
 echo "converting URL from ACE to UNICODE..."  >> ${OUTPUT}
 TOUNICODE=`${JAVA_BIN}/java IDNtoUNICODE ${TOASCII}`

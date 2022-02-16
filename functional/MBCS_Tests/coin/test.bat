@@ -20,31 +20,31 @@ IF "%TEST_STRINGS_SED%" == "\=\\" SET TEST_STRINGS_SED=%TEST_STRINGS:\=\\%
 IF "%TEST_STRINGS_SED%" == "" SET TEST_STRINGS_SED=%TEST_STRINGS:\=\\%
 
 SET CLASSPATH=%PWD%\coin.jar
-%JAVA_BIN%\java SwitchTest > SwitchTest.code
+%JAVA_BIN%\java %JAVA_OPTIONS% SwitchTest > SwitchTest.code
 SET CLASSPATH=
-%JAVA_BIN%\java SwitchTestCode > SwitchTest.log 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% SwitchTestCode > SwitchTest.log 2>&1
 
 SET CLASSPATH=%PWD%\coin.jar
-%JAVA_BIN%\java BinaryIntegralTest > BinaryIntegralTest.log 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% BinaryIntegralTest > BinaryIntegralTest.log 2>&1
 
-%JAVA_BIN%\java ExceptionTest > ExceptionTest.code
+%JAVA_BIN%\java %JAVA_OPTIONS% ExceptionTest > ExceptionTest.code
 SET CLASSPATH=
-%JAVA_BIN%\java ExceptionTestCode > ExceptionTest.log 2>&1
-
-SET CLASSPATH=%PWD%\coin.jar
-%JAVA_BIN%\java DiamondTest > DiamondTest.code
-SET CLASSPATH=
-%JAVA_BIN%\java DiamondTestCode > DiamondTest.log 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% ExceptionTestCode > ExceptionTest.log 2>&1
 
 SET CLASSPATH=%PWD%\coin.jar
-%JAVA_BIN%\java TryWithResourcesTest > TryWithResourcesTest.code
+%JAVA_BIN%\java %JAVA_OPTIONS% DiamondTest > DiamondTest.code
 SET CLASSPATH=
-%JAVA_BIN%\java TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% DiamondTestCode > DiamondTest.log 2>&1
 
 SET CLASSPATH=%PWD%\coin.jar
-%JAVA_BIN%\java SimplifiedVarargsTest > SimplifiedVarargsTest.code
+%JAVA_BIN%\java %JAVA_OPTIONS% TryWithResourcesTest > TryWithResourcesTest.code
 SET CLASSPATH=
-%JAVA_BIN%\java SimplifiedVarargsTestCode > SimplifiedVarargsTest.log
+%JAVA_BIN%\java %JAVA_OPTIONS% TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
+
+SET CLASSPATH=%PWD%\coin.jar
+%JAVA_BIN%\java %JAVA_OPTIONS% SimplifiedVarargsTest > SimplifiedVarargsTest.code
+SET CLASSPATH=
+%JAVA_BIN%\java %JAVA_OPTIONS% SimplifiedVarargsTestCode > SimplifiedVarargsTest.log
 
 C:\Strawberry\perl\bin\perl %PWD%\resultCheck.pl
 exit %errorlevel%

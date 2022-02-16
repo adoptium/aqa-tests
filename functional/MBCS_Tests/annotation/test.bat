@@ -33,16 +33,16 @@ cscript //nologo ChgWord.vbs TEST_STRING %TS% AnnotatedTest_org.java > Annotated
 FOR /F "usebackq" %%j IN (`%JAVA_BIN%\java %CP% SDKPath`) DO set SDKPATH=%%j
 
 @echo compiling...
-%SDKPATH%\javac DefineAnnotation.java AnnotatedTest.java
+%SDKPATH%\javac %JAVAC_OPTIONS% DefineAnnotation.java AnnotatedTest.java
 
 @echo execute javap
-%SDKPATH%\javap AnnotatedTest > javap.txt 2>&1
+%SDKPATH%\javap %JAVAC_OPTIONS% AnnotatedTest > javap.txt 2>&1
 fc javap.txt %PWD%\expected\win_%LOCALE%.def.txt > fc.txt 2>&1
 if ErrorLevel 1 (
 copy fc.txt diff.txt > nul 2>&1
 )
 
-%JAVA_BIN%\java %CP% SourceVersionCheck %PWD%\expected\win_%LOCALE%.pro.txt 2>> diff.txt
+%JAVA_BIN%\java %JAVA_OPTIONS% %CP% SourceVersionCheck %PWD%\expected\win_%LOCALE%.pro.txt 2>> diff.txt
 
 for %%F in (diff.txt) do (
   if %%~zF==0 (

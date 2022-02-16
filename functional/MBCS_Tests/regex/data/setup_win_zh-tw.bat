@@ -13,27 +13,27 @@ rem limitations under the License.
 
 @echo ------------ Pattern matching test ------------
 
-java SimpleGrep ечешецефепех %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep ечешецефепех %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) includes "ечешецефепех". 
 @echo --- Did you get the line(s)?
 
-java SimpleGrep "еч*еф" %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep "еч*еф" %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) includes the pattern "еч*еф". 
 @echo --- Did you get the line(s) ?
 
-java SimpleGrep "^жA" %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep "^жA" %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) starts with "жA".
 @echo --- Did you get the line ?
 
-java SimpleGrep иХ %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep иХ %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) includes "иХ". 
 @echo --- Did you get the line ?
 
-java SimpleGrep кz %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep кz %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) includes "кz". 
 @echo --- Did you get the line?
 
-java SimpleGrep \u8868\u5642\u5341\u8c79 %PWD%\win_zh-tw.txt
+java %JAVA_OPTIONS% SimpleGrep \u8868\u5642\u5341\u8c79 %PWD%\win_zh-tw.txt
 @echo --- Confirm that the line(s) includes "іь®ГЁh". 
 @echo --- Did you get the line ?
 
@@ -41,19 +41,19 @@ java SimpleGrep \u8868\u5642\u5341\u8c79 %PWD%\win_zh-tw.txt
 @echo\
 @echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest ечешецефепех aiueo %PWD%\win_zh-tw.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest ечешецефепех aiueo %PWD%\win_zh-tw.txt -v
 @echo --- Confirm that "ечешецефепех" was replaced by "aiueo". 
 @echo --- OK ?
 
-java RegexReplaceTest иХ а·аёає %PWD%\win_zh-tw.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest иХ а·аёає %PWD%\win_zh-tw.txt -v
 @echo --- Confirm that "иХ" was replaced by "а·аёає". 
 @echo --- OK ?
 
-java RegexReplaceTest кz \\ %PWD%\win_zh-tw.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest кz \\ %PWD%\win_zh-tw.txt -v
 @echo --- Confirm that "кz" was replaced by "\". 
 @echo --- OK ?
 
-java RegexReplaceTest \u8868\u5642\u5341\u8c79 ¤B¤C %PWD%\win_zh-tw.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest \u8868\u5642\u5341\u8c79 ¤B¤C %PWD%\win_zh-tw.txt -v
 @echo --- Confirm that "Єндч¤Q°\" was replaced by "¤B¤C". 
 @echo --- OK ?
 

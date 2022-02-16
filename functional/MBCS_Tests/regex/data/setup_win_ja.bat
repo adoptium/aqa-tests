@@ -13,39 +13,39 @@ rem limitations under the License.
 
 @echo ------------ Pattern matching test ------------
 
-java SimpleGrep ‚ ‚¢‚¤‚¦‚¨ %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep ‚ ‚¢‚¤‚¦‚¨ %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes "‚ ‚¢‚¤‚¦‚¨". 
 @echo --- Did you get the line(s) 11,12 and 47 ?
 
-java SimpleGrep "‚ .*‚¨" %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep "‚ .*‚¨" %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes the pattern "‚ *‚¨". 
 @echo --- Did you get the line(s) 11,12,47,48,50 and 52 ?
 
-java SimpleGrep "^Š¿" %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep "^Š¿" %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) starts with "Š¿".
 @echo --- Did you get the line 53,54 and 55 ?
 
-java SimpleGrep ¶Å %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep ¶Å %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes half-width Katakana "¶Å". 
 @echo --- Did you get the line 19,20 and 39 ?
 
-java SimpleGrep  %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep  %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes "" (full-width Yen symbol). 
 @echo --- Did you get the line 24 and 66 ?
 
-java SimpleGrep \\ %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep \\ %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes "\" (half-width Yen symbol). 
 @echo --- Did you get the line 33 and 35 ?
 
-java SimpleGrep "•@.*ƒ\" %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep "•@.*ƒ\" %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes the pattern "•@.*ƒ\". 
 @echo --- Did you get the line 81 ?
 
-java SimpleGrep \u3042\u304b\u3055 %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep \u3042\u304b\u3055 %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes "‚ ‚©‚³". 
 @echo --- Did you get the line 31 ?
 
-java SimpleGrep [‡‡‡‡~‡S‡X] %PWD%\win_ja.txt
+java %JAVA_OPTIONS% SimpleGrep [‡‡‡‡~‡S‡X] %PWD%\win_ja.txt
 @echo --- Confirm that the line(s) includes any of ‡,‡,‡,‡~,‡S or ‡X. 
 @echo --- Did you get the line 60,61 and 63 ?
 
@@ -53,26 +53,26 @@ java SimpleGrep [‡‡‡‡~‡S‡X] %PWD%\win_ja.txt
 @echo\
 @echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest ‚ ‚¢‚¤‚¦‚¨ aiueo %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest ‚ ‚¢‚¤‚¦‚¨ aiueo %PWD%\win_ja.txt -v
 @echo --- Confirm that "‚ ‚¢‚¤‚¦‚¨" was replaced by "aiueo". 
 @echo --- OK ?
 
-java RegexReplaceTest ¶Å ƒJƒ^ƒJƒi %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest ¶Å ƒJƒ^ƒJƒi %PWD%\win_ja.txt -v
 @echo --- Confirm that "¶Å" was replaced by "ƒJƒ^ƒJƒi". 
 @echo --- OK ?
 
-java RegexReplaceTest  \\ %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest  \\ %PWD%\win_ja.txt -v
 @echo --- Confirm that "" was replaced by "\". 
 @echo --- OK ?
 
-java RegexReplaceTest "•@.*ƒ\" "‚T‚ƒ•¶š—ñ" %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest "•@.*ƒ\" "‚T‚ƒ•¶š—ñ" %PWD%\win_ja.txt -v
 @echo --- Confirm that "•@.*ƒ\" was replaced by "‚T‚ƒ•¶š—ñ". 
 @echo --- OK ?
 
-java RegexReplaceTest \u3042\u304b\u3055 ƒ\ç^ %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest \u3042\u304b\u3055 ƒ\ç^ %PWD%\win_ja.txt -v
 @echo --- Confirm that "‚ ‚©‚³" was replaced by "ƒ\ç^". 
 @echo --- OK ?
 
-java RegexReplaceTest [‡‡‡‡~‡S‡X] ŠOš %PWD%\win_ja.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest [‡‡‡‡~‡S‡X] ŠOš %PWD%\win_ja.txt -v
 @echo --- Confirm that any of "‡‡‡‡~‡S‡X" were replaced by "ŠOš". 
 @echo --- OK ?

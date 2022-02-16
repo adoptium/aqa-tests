@@ -19,7 +19,7 @@ SET OUTPUT=output.txt
 call %PWD%\check_env_windows.bat
 if exist %OUTPUT% (del %OUTPUT%)
 for %%i in (%PWD%\win_%LOCALE%_*_txt) do (
-    %JAVA_BIN%\java IDNFromFile %%i
+    %JAVA_BIN%\java %JAVA_OPTIONS% IDNFromFile %%i
     type toAscii.txt >> %OUTPUT%
     type toUnicode.txt >> %OUTPUT%
 )

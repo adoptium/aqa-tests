@@ -18,47 +18,47 @@ SOURCE=$1
 
 echo '------------ Pattern matching test ------------'
 
-java SimpleGrep 'ÆèÉ½§HÙIÐ¹' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep 'ÆèÉ½§HÙIÐ¹' "${SOURCE}"
 echo '--- Confirm that the line(s) includes ÆèÉ½§HÙIÐ¹. '
 echo '--- Did you get the line(s) 11,12 and 49 ?'
 #read word1
 
-java SimpleGrep 'Æè.*Ð¹' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep 'Æè.*Ð¹' "${SOURCE}"
 echo '--- Confirm that the line(s) includes the pattern Æè*Ð¹. '
 echo '--- Did you get the line(s) 11,12,49,50,52 and 54 ?'
 #read word1
 
-java SimpleGrep '^ùI' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep '^ùI' "${SOURCE}"
 echo '--- Confirm that the line(s) starts with ùI.'
 echo '--- Did you get the line(s) 55,56 and 57 ?'
 #read word1
 
-java SimpleGrep 'Åm­ß' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep 'Åm­ß' "${SOURCE}"
 echo '--- Confirm that the line(s) includes half-width Katakana Åm­ß. '
 echo '--- Did you get the line(s) 19,20 and 41 ?'
 #read word1
 
-java SimpleGrep '¡­' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep '¡­' "${SOURCE}"
 echo '--- Confirm that the line(s) includes ¡­. '
 echo '--- Did you get the line(s) 24 and 64 ?'
 #read word1
 
-java SimpleGrep '#' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep '#' "${SOURCE}"
 echo '--- Confirm that the line(s) includes #. '
 echo '--- Did you get the line(s) 11,16,20,24,26 and 37 ?'
 #read word1
 
-java SimpleGrep 'ÑJ.*¦W' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep 'ÑJ.*¦W' "${SOURCE}"
 echo '--- Confirm that the line(s) includes the pattern ÑJ.*¦W. '
 echo '--- Did you get the line 74 ?'
 #read word1
 
-java SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep '\u3042\u304b\u3055' "${SOURCE}"
 echo '--- Confirm that the line(s) includes ÆèÆñÆû. '
 echo '--- Did you get the line 33 ?'
 #read word1
 
-java SimpleGrep '[ì¸¡¸Çú]' "${SOURCE}"
+java ${JAVA_OPTIONS} SimpleGrep '[ì¸¡¸Çú]' "${SOURCE}"
 echo '--- Confirm that the line(s) includes any of ì¸,¡¸ or Çú. '
 echo '--- Did you get the line(s) 62,64 and 72 ?'
 #read word1
@@ -66,32 +66,32 @@ echo '--- Did you get the line(s) 62,64 and 72 ?'
 #read word1
 echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest 'ÆèÉ½§HÙIÐ¹' 'aiueo' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest 'ÆèÉ½§HÙIÐ¹' 'aiueo' "${SOURCE}" -v
 echo '--- Confirm that ÆèÉ½§HÙIÐ¹ was replaced by aiueo. '
 echo '--- OK ?'
 #read word1
 
-java RegexReplaceTest 'Åm­ß' 'ÕÚðñÕÚíg' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest 'Åm­ß' 'ÕÚðñÕÚíg' "${SOURCE}" -v
 echo '--- Confirm that Åm­ß was replaced by ÕÚðñÕÚíg. '
 echo '--- OK ?'
 #read word1
 
-java RegexReplaceTest '¡­' '#' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest '¡­' '#' "${SOURCE}" -v
 echo '--- Confirm that ¡­ was replaced by #. '
 echo '--- OK ?'
 #read word1
 
-java RegexReplaceTest 'ÑJ.*¦W' '¢´¢ëâxÛpåY' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest 'ÑJ.*¦W' '¢´¢ëâxÛpåY' "${SOURCE}" -v
 echo '--- Confirm that ÑJ.*¦W was replaced by ¢´¢ëâxÛpåY. '
 echo '--- OK ?'
 #read word1
 
-java RegexReplaceTest '\u3042\u304b\u3055' '¦W¯ú' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest '\u3042\u304b\u3055' '¦W¯ú' "${SOURCE}" -v
 echo '--- Confirm that ÆèÆñÆû was replaced by ¦W¯ú. '
 echo '--- OK ?'
 #read word1
 
-java RegexReplaceTest '[ì¸¡¸Çú]' '¨IÛä' "${SOURCE}" -v
+java ${JAVA_OPTIONS} RegexReplaceTest '[ì¸¡¸Çú]' '¨IÛä' "${SOURCE}" -v
 echo '--- Confirm that any of ì¸¡¸Çú were replaced by ¨IÛä. '
 echo '--- OK ?'
 #read word1
