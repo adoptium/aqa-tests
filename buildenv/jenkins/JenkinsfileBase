@@ -607,15 +607,14 @@ def runTest( ) {
 				// assume for now params.RELATED_NODES contains a single hostname 
 				// or label (not comma-separated list for now)
 				echo "About to trigger the Machine-Reservation job"
-			 timeout(time: 30, unit: 'MINUTES'){
-					build job: 'Machine-Reservation', parameters: [
-					string(name: 'NODE', value: "${params.RELATED_NODES}"),
-					string(name: 'RESERVATION_LENGTH', value: "${params.TIME_LIMIT}")] 
-					propagate: true
-					wait: true	
-				}
+				build job: 'Machine-Reservation', parameters: [
+				string(name: 'NODE', value: "${params.RELATED_NODES}"),
+				string(name: 'RESERVATION_LENGTH', value: "${params.TIME_LIMIT}")] 
+				propagate: true
+				wait: false	
+				echo "after launching M-R job"
 			}
-			echo "after launching M-R job"
+			
 
 			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 			for (int i = 1; i <= ITERATIONS; i++) {
@@ -745,7 +744,6 @@ def post(output_name) {
 					def pattern = "${env.WORKSPACE}/*_output.*"
 					uploadToArtifactory(pattern)
 				}
-				def result = getjobStatus()
 			}
 
 			if (params.CODE_COVERAGE) {
@@ -769,18 +767,6 @@ def post(output_name) {
 		}
 	}
 }
-
-def getjobStatus(){
-	steps {
-		script {
-			def job = jenkins.model.Jenkins.instance.getItemByFullName("Machine-Reservation")
-			def result = job.getLastBuild().getResult().toString()
-			//env.result = result
-			return result 
-		}
-	}
-}
-
 
 def testBuild() {
 	TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
