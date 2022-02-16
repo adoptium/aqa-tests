@@ -916,13 +916,13 @@ def archiveAQACertFile() {
 }
 
 def archiveTap() {
-	def AQACertFile = "aqa-tests/TKG/TAP.zip";
-	archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
+	def TAPzipFile = "aqa-tests/TKG/TAP.zip";
 	if (!params.ARTIFACTORY_SERVER) {
-		echo "ARTIFACTORY_SERVER is not set. Saving AQACert file on jenkins."
-		archiveArtifacts artifacts: AQACertFile, fingerprint: true, allowEmptyArchive: true
+		echo "ARTIFACTORY_SERVER is not set. Saving TAPzipFile on jenkins."
+		// TODO Copy to parents
+		archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
 	} else {
-		def pattern = "${env.WORKSPACE}/${AQACertFile}"
+		def pattern = "${env.WORKSPACE}/${TAPzipFile}"
 		uploadToArtifactory(pattern)
 	}
 }
