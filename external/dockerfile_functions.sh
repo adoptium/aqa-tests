@@ -81,28 +81,23 @@ print_image_args() {
     local package=$5
     local build=$6
 
-    sdk="openjdk${version}"
+image_name="eclipse-temurin"
+    tag=""
+    if [[ "${package}" == "jre" ]]; then
+        tag="${version}-jre"
+    else 
+        tag="${version}-jdk"
+    fi
     if [[ "${vm}" == "openj9" ]]; then
-        sdk="${sdk}-openj9"
+        image_name="ibm-semeru-runtimes"
+        tag=open-${tag}
     fi
 
-    echo -e "ARG SDK=${sdk}" \
-          "\nARG IMAGE_NAME=adoptopenjdk/\$SDK" \
+    echo -e "ARG IMAGE_NAME=${image_name}" \
           "\nARG OS=${os}" \
-          "\nARG IMAGE_VERSION=nightly" >> ${file}
-
-
-    if [[ "${package}" == "jre" && "${build}" == "slim" ]]; then
-        echo -e "ARG TAG=\$OS-jre-\$IMAGE_VERSION-slim\n" >> ${file}
-    elif [[ "${package}" == "jre" && "${build}" == "full" ]]; then
-        echo -e "ARG TAG=\$OS-jre-\$IMAGE_VERSION\n" >> ${file}
-    elif [[ "${build}" == "slim" ]]; then
-        echo -e "ARG TAG=\$OS-\$IMAGE_VERSION-slim\n" >> ${file}
-    else
-        echo -e "ARG TAG=\$OS-\$IMAGE_VERSION\n" >> ${file}
-    fi
-
-    echo -e "FROM \$IMAGE_NAME:\$TAG\n" >> ${file}
+          "\nARG IMAGE_VERSION=nightly" \
+          "\nARG TAG=${tag}" \
+          "\nFROM \$IMAGE_NAME:\$TAG\n" >> ${file}
 }
 
 print_test_tag_arg() {
