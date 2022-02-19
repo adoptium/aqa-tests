@@ -18,7 +18,7 @@ Scripts which parse various formats of lists, containing disabled JDK tests, int
 
 ### Prerequisites
 
-Python 3.7+
+Python 3.8+
 
 ### Installation
 

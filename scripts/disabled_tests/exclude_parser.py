@@ -7,7 +7,7 @@ import logging
 import sys
 from typing import Set, List, ClassVar, Optional
 
-from disabled_tests.common.models import Scheme
+from common.models import Scheme
 
 DEFAULT_TARGET = "jdk_custom"
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from generateDisabledTestListJson import transform_platform
+from exclude_parser import transform_platform
 
 platform_map = {
     "linux-aarch64": "aarch64_linux",
