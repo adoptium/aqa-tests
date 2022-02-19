@@ -44,7 +44,7 @@ class TestExclusionProcessingException(Exception):
 
 @datacls.dataclass
 class JdkInfo:
-    version: int
+    version: str
     implementation: str
 
 
@@ -64,14 +64,14 @@ class ExcludeFileInfo:
         # ProblemList_openjdk<JDK_VERSION>-<JDK_IMPL>.txt  # for JDK_IMPL = openj9 and sap
         # or
         # ProblemList_openjdk<JDK_VERSION>.txt              # for JDK_IMPL = hotspot
-        temp = cls.FILE_PATTERN.search(filename)
-        if temp is None:
+        match = cls.FILE_PATTERN.search(filename)
+        if match is None:
             raise ExclusionFileProcessingException(
                 f'filename of {exclude_path!r} does not match regex pattern {cls.FILE_PATTERN.pattern!r}')
 
         return JdkInfo(
-            version=int(temp.group('jdk_version')),
-            implementation=temp.group('jdk_impl') or "hotspot"
+            version=match.group('jdk_version'),
+            implementation=match.group('jdk_impl') or "hotspot"
         )
 
     @classmethod
