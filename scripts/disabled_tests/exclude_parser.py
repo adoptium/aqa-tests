@@ -139,7 +139,7 @@ class TestExclusionSplitLine(TestExclusionRawLine):
 @datacls.dataclass
 class TestExclusion(TestExclusionSplitLine):
     """Test exclusion line with raw platform expanded to a set of concrete platform names"""
-    platforms: Set[str]
+    platforms: List[str]
 
     @classmethod
     def from_split_line(cls, test_excl: TestExclusionSplitLine):
@@ -197,19 +197,19 @@ def transform_platform(os_arch_platform: str) -> str:
     return f"{arch_name}_{os_name}"
 
 
-def resolve_platforms(split: TestExclusionSplitLine) -> Set[str]:
-    revolved_platforms = set()
+def resolve_platforms(split: TestExclusionSplitLine) -> List[str]:
+    revolved_platforms = []
     list_of_unresolved_platform_names = [s.strip() for s in split.raw_platform.split(",") if s.strip()]
     for plat in list_of_unresolved_platform_names:
         if plat == "generic-all":
-            return {"all"}
+            return ["all"]
 
         if "_" in plat:
             LOG.warning(f'{split.origin_file.path}:{split.line_number} : '
                         f'assuming {plat!r} already formatted to ARCH_OS; continuing without transformation')
-            revolved_platforms.add(plat)
+            revolved_platforms.append(plat)
         else:
-            revolved_platforms.add(transform_platform(plat))
+            revolved_platforms.append(transform_platform(plat))
 
     return revolved_platforms
 
