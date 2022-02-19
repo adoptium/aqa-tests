@@ -24,9 +24,36 @@ Python 3.7+
 
 No dependencies to install
 
+## `exclude_parser.py`
+### Usage
 
-## Usage
+```
+usage: exclude_parser.py [-h] [--exclude_dir EXCLUDE_DIR] [--json_out JSON_OUT] [--verbose]
 
+Generate disabled test list JSON file from exclude/ProblemList*.txt files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --exclude_dir EXCLUDE_DIR
+                        Source directory containing ProblemList*.txt files. Defaults to lines passed from stdin
+  --json_out JSON_OUT   Destination path of the generated JSON file. Defaults to printing to stdout
+  --verbose, -v         Enable logging debug mode
+```
+
+#### Output to file
 ```shell
-ls -1q
+ls -1dq openjdk/excludes/* |
+python scripts/disabled_tests/exclude_parser.py > problem_list.json
+```
+
+#### Output to file and save log
+```shell
+ls -1dq openjdk/excludes/* |
+python scripts/disabled_tests/exclude_parser.py > problem_list.json 2> errors.log
+```
+
+#### Dry run to see errors and warnings
+```shell
+ls -1dq openjdk/excludes/* |
+python scripts/disabled_tests/exclude_parser.py -v > /dev/null
 ```
