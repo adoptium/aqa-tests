@@ -1,8 +1,15 @@
+import dataclasses as datacls
 import os
 import json
 import argparse
 import re
 import logging
+import sys
+from typing import Set, List, ClassVar, Optional
+
+from disabled_tests.common.models import Scheme
+
+DEFAULT_TARGET = "jdk_custom"
 
 logging.basicConfig(
     format="%(levelname)s - %(message)s"
@@ -19,6 +26,141 @@ ARCH_EXCEPTIONS = {
     "x64": "x86-64",
     "x86": "x86-32",
 }
+
+
+def to_shallow_dict(dt) -> dict:
+    return {field.name: getattr(dt, field.name) for field in datacls.fields(dt)}
+
+
+class ExclusionFileProcessingException(Exception):
+    pass
+
+
+class TestExclusionProcessingException(Exception):
+    def __init__(self, message: str, test_excl=None, *args):
+        self.test_excl = test_excl
+        super().__init__(message, *args)
+
+
+@datacls.dataclass
+class JdkInfo:
+    version: int
+    implementation: str
+
+
+@datacls.dataclass
+class ExcludeFileInfo:
+    """Information extracted from an 'exclude' file"""
+    jdk_info: JdkInfo
+    path: os.PathLike
+    lines: List['TestExclusionRawLine']
+
+    FILE_PATTERN: ClassVar = re.compile(r'ProblemList_openjdk(?P<jdk_version>\d+)-?(?P<jdk_impl>.*).txt')
+
+    @classmethod
+    def get_jdk_info(cls, exclude_path):
+        filename = os.path.basename(exclude_path)
+        # As of now, the ProblemList*.txt files are named in the following format:
+        # ProblemList_openjdk<JDK_VERSION>-<JDK_IMPL>.txt  # for JDK_IMPL = openj9 and sap
+        # or
+        # ProblemList_openjdk<JDK_VERSION>.txt              # for JDK_IMPL = hotspot
+        temp = cls.FILE_PATTERN.search(filename)
+        if temp is None:
+            raise ExclusionFileProcessingException(
+                f'filename of {exclude_path!r} does not match regex pattern {cls.FILE_PATTERN.pattern!r}')
+
+        return JdkInfo(
+            version=int(temp.group('jdk_version')),
+            implementation=temp.group('jdk_impl') or "hotspot"
+        )
+
+    @classmethod
+    def from_path(cls, exclude_path):
+        if not os.path.isfile(exclude_path):
+            raise ExclusionFileProcessingException(f'{exclude_path!r} is not a file')
+
+        jdk_info = cls.get_jdk_info(exclude_path)
+
+        # 'exclude tests' are lines that are not empty AND do not start with #
+        with open(exclude_path, mode='r') as f:
+            raw_lines = [
+                TestExclusionRawLine(
+                    line_number=(i + 1),
+                    raw_line=line.rstrip(),
+                    origin_file=None,  # populated right below
+                )
+                for i, line in enumerate(f.readlines())
+                if line.strip() not in '' and not line.strip().startswith("#")
+            ]
+
+        file_info = cls(
+            jdk_info=jdk_info,
+            path=exclude_path,
+            lines=raw_lines,
+        )
+
+        # populate back reference to file for each line
+        for line in file_info.lines:
+            line.origin_file = file_info
+
+        return file_info
+
+
+@datacls.dataclass
+class TestExclusionRawLine:
+    """Raw test exclusion line from a 'exclude' file"""
+    line_number: int
+    raw_line: str
+    origin_file: Optional[ExcludeFileInfo]
+
+
+@datacls.dataclass
+class TestExclusionSplitLine(TestExclusionRawLine):
+    """Test exclusion line split to a triplet"""
+    custom_target: str
+    issue_url: str
+    raw_platform: str
+
+    @classmethod
+    def from_raw_line(cls, test_excl: TestExclusionRawLine):
+        split_line = test_excl.raw_line.split(maxsplit=2)
+        if len(split_line) != 3:
+            raise TestExclusionProcessingException(
+                f'Not exactly 3 elements when splitting {test_excl.raw_line}', test_excl)
+        custom_target, issue_url, raw_platform = split_line
+        return cls(
+            **to_shallow_dict(test_excl),
+            custom_target=custom_target,
+            issue_url=issue_url,
+            raw_platform=raw_platform,
+        )
+
+
+@datacls.dataclass
+class TestExclusion(TestExclusionSplitLine):
+    """Test exclusion line with raw platform expanded to a set of concrete platform names"""
+    platforms: Set[str]
+
+    @classmethod
+    def from_split_line(cls, test_excl: TestExclusionSplitLine):
+        try:
+            platforms = resolve_platforms(test_excl)
+        except ValueError as e:
+            raise TestExclusionProcessingException(str(e), test_excl) from e
+        return cls(
+            **to_shallow_dict(test_excl),
+            platforms=platforms,
+        )
+
+    def to_scheme(self) -> Scheme:
+        return {
+            "JDK_VERSION": self.origin_file.jdk_info.version,
+            "JDK_IMPL": self.origin_file.jdk_info.implementation,
+            "TARGET": DEFAULT_TARGET,
+            "CUSTOM_TARGET": self.custom_target,
+            "PLATFORM": ','.join(self.platforms),
+            "ISSUE_TRACKER": self.issue_url,
+        }
 
 
 def transform_platform(os_arch_platform: str) -> str:
@@ -55,88 +197,103 @@ def transform_platform(os_arch_platform: str) -> str:
     return f"{arch_name}_{os_name}"
 
 
-def get_jdk_version_and_impl(exclude_list_file):
-    # As of now, the ProblemList*.txt files are named in the following format:
-    # ProblemList_openjdk<JDK_VERSION>-<JDK_IMPL>.txt  # for JDK_IMPL = openj9 and sap
-    # or
-    # ProblemList_openjdk<JDK_VERSION>.txt              # for JDK_IMPL = hotspot
-    temp = re.search(r'ProblemList_openjdk(\d*)-?(.*).txt', exclude_list_file)
-
-    jdk_version = temp.group(1)
-    jdk_impl = "hotspot" if temp.group(2) == '' else temp.group(2)
-    return jdk_version, jdk_impl
-
-
-def get_tests_from_exclude_file(exclude_list_file):
-    # 'exclude tests' are lines that are not empty AND do not start with #
-    with open(exclude_list_file, mode='r') as f:
-        return [(ln_num, line) for ln_num, line in enumerate(f.readlines(), 1) if line.strip() not in '' and not line.strip().startswith("#")]
-
-
-def resolve_platform(platform_string, line_number, exclude_list_file):
-    revolved_platform_list = []
-    list_of_unresolved_platform_names = [s.strip() for s in platform_string.split(",") if s.strip()]
+def resolve_platforms(split: TestExclusionSplitLine) -> Set[str]:
+    revolved_platforms = set()
+    list_of_unresolved_platform_names = [s.strip() for s in split.raw_platform.split(",") if s.strip()]
     for plat in list_of_unresolved_platform_names:
         if plat == "generic-all":
-            return "all"
+            return {"all"}
 
         if "_" in plat:
-            LOG.warning(f'{exclude_list_file}:{line_number} : '
+            LOG.warning(f'{split.origin_file.path}:{split.line_number} : '
                         f'assuming {plat!r} already formatted to ARCH_OS; continuing without transformation')
-            revolved_platform_list.append(plat)
+            revolved_platforms.add(plat)
         else:
-            revolved_platform_list.append(transform_platform(plat))
+            revolved_platforms.add(transform_platform(plat))
 
-    resolved_platforms = set(revolved_platform_list)
-    return ','.join(resolved_platforms)
+    return revolved_platforms
 
 
-def get_test_details(test, line_number, exclude_list_file):
-    test_details_dict = {}
-    test_tokens = test.split(maxsplit=2)  # platform list may include spaces; split from the left 2 times max
-    test_details_dict["TARGET"] = "jdk_custom"
-    test_details_dict["CUSTOM_TARGET"] = test_tokens[0]
-    test_details_dict["ISSUE_TRACKER"] = test_tokens[1]
-    test_details_dict["PLATFORM"] = resolve_platform(test_tokens[2], line_number, exclude_list_file)
-    return test_details_dict
+def parse_all_files(exclude_files):
+    all_exclusions: List[TestExclusion] = []
+    for exclude_path in exclude_files:
+        LOG.debug(f"Processing {exclude_path}...")
+        try:
+            exclusions = parse_file(exclude_path)
+            all_exclusions.extend(exclusions)
+        except ExclusionFileProcessingException as e:
+            LOG.error(f'{exclude_path} : {e}')
+    return all_exclusions
+
+
+def parse_file(exclude_path):
+    exclude_file = ExcludeFileInfo.from_path(exclude_path)
+
+    exclusions = []
+    for raw_line in exclude_file.lines:
+        try:
+            test_excl = parse_line(raw_line)
+            exclusions.append(test_excl)
+        except TestExclusionProcessingException as e1:
+            LOG.error(f'{raw_line.origin_file.path}:{raw_line.line_number} : {e1}')
+    return exclusions
+
+
+def parse_line(line: TestExclusionRawLine) -> TestExclusion:
+    test_excl_split = TestExclusionSplitLine.from_raw_line(line)
+    test_excl = TestExclusion.from_split_line(test_excl_split)
+    return test_excl
 
 
 def main():
     parser = argparse.ArgumentParser(description="Generate disabled test list JSON file from "
                                                  "exclude/ProblemList*.txt files")
-    parser.add_argument('--exclude_dir', type=str, help='directory containing ProblemList*.txt files')
-    parser.add_argument('--json_out_dir', type=str, help='absolute path to place exclude JSON file')
+    parser.add_argument('--exclude_dir', type=str,
+                        help='Source directory containing ProblemList*.txt files. '
+                             'Defaults to lines passed from stdin')
+    parser.add_argument('--json_out', type=str,
+                        help='Destination path of the generated JSON file. '
+                             'Defaults to printing to stdout')
+    parser.add_argument('--verbose', '-v', action='store_true',
+                        help="Enable logging debug mode")
     args = parser.parse_args()
 
-    script_dir = os.path.dirname(os.path.realpath(__file__))
+    if args.verbose:
+        LOG.setLevel(logging.DEBUG)
+
     # if the dir containing the exclude ProblemList*.txt is not passed, the attempt to use openjdk/excludes/ dir instead
-    exclude_dir = args.exclude_dir if args.exclude_dir is not None else os.path.join(script_dir, "..", "openjdk", "excludes")
-    # if output dir is not explicitly specified, dump the exclude list JSON in the `pwd`
-    output_dir = args.json_out_dir if args.json_out_dir is not None else os.getcwd()
+    if args.exclude_dir:
+        LOG.debug("Taking file list from directory")
+        exclude_files = [os.path.join(args.exclude_dir, file_name)
+                         for file_name in os.listdir(args.exclude_dir)]
+    else:
+        LOG.debug("Taking file list from stdin")
+        exclude_files = [line.rstrip() for line in sys.stdin.readlines()]  # remove the \n from each lines
 
-    if not os.path.exists(exclude_dir):
-        print(f"Exclude directory '{exclude_dir}' does not exist")
-        exit(3)
+    if args.json_out:
+        output_dir = os.path.dirname(args.json_out)
+        if not os.path.exists(output_dir):
+            LOG.error(f"Directory of {args.json_out!r} does not exist")
+            exit(1)
 
-    if not os.path.exists(output_dir):
-        print(f"Output directory '{output_dir}' does not exist")
-        exit(3)
+    all_exclusions = parse_all_files(exclude_files)
 
-    print(f"Translating '{exclude_dir}/ProblemList*.txt' files to a single '{output_dir}/ProblemList.json'")
-    problem_list_details = []
-    for exclude_list_file in os.listdir(exclude_dir):
-        test_list = get_tests_from_exclude_file(os.path.join(exclude_dir, exclude_list_file))
-        if len(test_list) > 0:
-            for line_number, test in test_list:
-                test_details = get_test_details(test, line_number, exclude_list_file)
-                test_details["JDK_VERSION"], test_details["JDK_IMPL"] = get_jdk_version_and_impl(exclude_list_file)
-                problem_list_details.append(test_details)
+    # convert to schemed format
+    json_exclusions = [excl.to_scheme() for excl in all_exclusions]
 
-    exclude_list_json = os.path.join(output_dir, "ProblemList.json")
-    with open(exclude_list_json, mode='w') as f:
-        f.write(json.dumps(problem_list_details, indent=4))
+    if args.json_out:
+        LOG.debug(f"Outputting to {args.json!r}")
+        stream = open(args.json_out, 'w')
+    else:
+        LOG.debug(f"Outputting to stdout")
+        stream = sys.stdout
 
-    print("Done")
+    with stream as fp:
+        json.dump(
+            obj=json_exclusions,
+            fp=fp,
+            indent=2,
+        )
 
 
 if __name__ == '__main__':
