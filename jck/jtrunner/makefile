@@ -28,6 +28,13 @@
 OS:=$(shell uname -s | tr "[:upper:]" "[:lower:]")
 ARCH:=$(shell uname -m | tr "[:upper:]" "[:lower:]")
 
+# We need to determine if the platform is Alpine Linux or not
+ifeq ($(OS),linux)
+	ifneq (,$(wildcard /etc/alpine-release))
+		OS:=alpine-linux
+	endif
+endif
+
 ifneq (,$(findstring cygwin,$(OS)))
 	OS:=win
 endif
