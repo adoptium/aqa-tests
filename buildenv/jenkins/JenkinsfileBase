@@ -752,7 +752,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}				
 			}
-			if (currentBuild.result == 'FAILURE') {
+			if (currentBuild.result != 'FAILURE') {
 				echo "Fetaching Tap files..."
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (def tapFile: tapFiles) {
@@ -761,7 +761,7 @@ def post(output_name) {
 					TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 					TestSet testSet = tapConsumer.load(file)
 					for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-						if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+						if (testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 							def testCase = testSet.getTestResult(i).getDescription().substring(2)
 							env.FAIL_TESTLIST += "$testCase,"
 						}
