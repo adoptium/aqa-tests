@@ -679,7 +679,7 @@ def post(output_name) {
 				tar_cmd_suffix = ""
 			}
 
-			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: true, failIfNoResults: true])
+			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
 			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
@@ -753,11 +753,8 @@ def post(output_name) {
 			def tapFiles = findFiles(glob: "**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}"
-				def fileContent = readFile(file: "${tapFile}") 
-			}
-			
-			if (currentBuild.result == 'FAILURE') {
-				
+				def file = readFile(file: "${tapFile}")
+				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer();
 			}
 		}
 	}
