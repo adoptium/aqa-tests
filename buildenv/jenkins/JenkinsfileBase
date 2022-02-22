@@ -688,6 +688,7 @@ def post(output_name) {
 			archiveSHAFile()
 			archiveTestenvFile()
 			archiveAQACertFile()
+			archiveTapFiles()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -907,6 +908,18 @@ def archiveAQACertFile() {
 		archiveArtifacts artifacts: AQACertFile, fingerprint: true, allowEmptyArchive: true
 	} else {
 		def pattern = "${env.WORKSPACE}/${AQACertFile}"
+		uploadToArtifactory(pattern)
+	}
+}
+
+def archiveTapFiles() {
+	def TAPzipFile = "aqa-tests/TKG/TAP.zip";
+	if (!params.ARTIFACTORY_SERVER) {
+		echo "ARTIFACTORY_SERVER is not set. Saving TAPzipFile on jenkins."
+		// TODO Copy to parents
+		archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
+	} else {
+		def pattern = "${env.WORKSPACE}/${TAPzipFile}"
 		uploadToArtifactory(pattern)
 	}
 }
