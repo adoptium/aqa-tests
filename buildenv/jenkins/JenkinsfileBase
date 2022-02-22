@@ -692,6 +692,7 @@ def post(output_name) {
 			archiveSHAFile()
 			archiveTestenvFile()
 			archiveAQACertFile()
+			archiveTapFiles()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -915,7 +916,7 @@ def archiveAQACertFile() {
 	}
 }
 
-def archiveTap() {
+def archiveTapFiles() {
 	def TAPzipFile = "aqa-tests/TKG/TAP.zip";
 	if (!params.ARTIFACTORY_SERVER) {
 		echo "ARTIFACTORY_SERVER is not set. Saving TAPzipFile on jenkins."
