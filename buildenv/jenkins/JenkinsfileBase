@@ -76,7 +76,7 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TESTLIST = "testList+TESTLIST= "
+	env.FAIL_TESTLIST = "testList+TESTLIST="
 	env.RERUN = ""
 	env.FAIL_TEST_TARGET = ""
 
@@ -752,7 +752,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}				
 			}
-			if (currentBuild.result != 'FAILURE') {
+			if (currentBuild.result == 'FAILURE') {
 				echo "Fetaching Tap files..."
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (def tapFile: tapFiles) {
@@ -761,14 +761,14 @@ def post(output_name) {
 					TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 					TestSet testSet = tapConsumer.load(file)
 					for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-						if (testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+						if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 							def testCase = testSet.getTestResult(i).getDescription().substring(2)
 							env.FAIL_TESTLIST += "$testCase,"
 						}
 					}
 				}
 				env.FAIL_TESTLIST = env.FAIL_TESTLIST.substring(0, env.FAIL_TESTLIST.length() - 1)
-				echo "Pass test list is ${FAIL_TESTLIST}"
+				echo "Fail test list is ${FAIL_TESTLIST}"
 				addFailTestsGrinderLink()
 			}
 		}
