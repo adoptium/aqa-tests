@@ -13,27 +13,12 @@
 #
 
 source $(dirname "$0")/test_base_functions.sh
-
 #Set up Java to be used by the system-test
-
-if [ -d /java/bin ];then
-	echo "Using mounted Java"
-	export JAVA_HOME=/java
-	export PATH=$JAVA_HOME/bin:$PATH
-else
-	echo "Using docker image default Java"
-	java_path=$(type -p java)
-	suffix="/java"
-	java_root=${java_path%$suffix}
-	java_home=$(dirname $java_root)
-	export JAVA_HOME=$java_home
-fi
+echo_setup
 
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
 export BUILD_LIST=system
-
-echo_setup
 
 cd /aqa-tests
 ./get.sh -t /aqa-tests
