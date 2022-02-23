@@ -13,29 +13,7 @@
 # limitations under the License.
 
 source $(dirname "$0")/test_base_functions.sh
-
-# Set up Java to be used by the the quarkus quickstarts test
-
-if [ -d /java/jre/bin ];then
-	echo "Using mounted Java8"
-	export JAVA_BIN=/java/jre/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-elif [ -d /java/bin ]; then
-	echo "Using mounted Java"
-	export JAVA_BIN=/java/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-else
-	echo "Using docker image default Java"
-	java_path=$(type -p java)
-	suffix="/java"
-	java_root=${java_path%$suffix}
-	export JAVA_BIN="$java_root"
-	echo "JAVA_BIN is: $JAVA_BIN"
-	export JAVA_HOME="${java_root%/bin}"
-fi
-
+# Set up Java to be used by the quarkus quickstarts test
 echo_setup
 
 export MAVEN_OPTS="-Xmx1g"

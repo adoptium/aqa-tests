@@ -13,29 +13,7 @@
 #
 
 source $(dirname "$0")/test_base_functions.sh
-
-#Set up Java to be used by the wildfly-test
-
-if [ -d /java/jre/bin ];then
-	echo "Using mounted Java8"
-	export JAVA_BIN=/java/jre/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-elif [ -d /java/bin ]; then
-	echo "Using mounted Java"
-	export JAVA_BIN=/java/bin
-	export JAVA_HOME=/java
-	export PATH=$JAVA_BIN:$PATH
-else
-	echo "Using docker image default Java"
-	java_path=$(type -p java)
-	suffix="/java"
-	java_root=${java_path%$suffix}
-	export JAVA_BIN="$java_root"
-	echo "JAVA_BIN is: $JAVA_BIN"
-	export JAVA_HOME="${java_root%/bin}"
-fi
-
+#Set up Java to be used by the wildfly test
 echo_setup
 
 # Replace the following with the initial command lines that trigger execution of your test
@@ -44,7 +22,6 @@ cd /wildfly
 set -e
 echo "Building wildfly  using maven , by invoking build.sh" && \
 ./build.sh
-
 
 echo "Wildfly Build - Completed"
 
