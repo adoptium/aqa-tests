@@ -22,7 +22,9 @@ Python 3.8+
 
 ### Installation
 
-No dependencies to install
+```shell
+pip install -r requirements.txt
+```
 
 ## `exclude_parser.py`
 ### Usage

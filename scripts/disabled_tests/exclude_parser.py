@@ -5,7 +5,7 @@ import argparse
 import re
 import logging
 import sys
-from typing import Set, List, ClassVar, Optional
+from typing import Set, List, ClassVar, Optional, Iterable
 
 from common.models import Scheme
 
@@ -29,6 +29,9 @@ ARCH_EXCEPTIONS = {
 
 
 def to_shallow_dict(dt) -> dict:
+    """
+    Convert a dataclass instance to a shallow (only 1 level) dictionary
+    """
     return {field.name: getattr(dt, field.name) for field in datacls.fields(dt)}
 
 
@@ -214,7 +217,7 @@ def resolve_platforms(split: TestExclusionSplitLine) -> List[str]:
     return revolved_platforms
 
 
-def parse_all_files(exclude_files):
+def parse_all_files(exclude_files: Iterable[str]) -> List[TestExclusion]:
     all_exclusions: List[TestExclusion] = []
     for exclude_path in exclude_files:
         LOG.debug(f"Processing {exclude_path}...")
@@ -226,7 +229,7 @@ def parse_all_files(exclude_files):
     return all_exclusions
 
 
-def parse_file(exclude_path):
+def parse_file(exclude_path) -> List[TestExclusion]:
     exclude_file = ExcludeFileInfo.from_path(exclude_path)
 
     exclusions = []
