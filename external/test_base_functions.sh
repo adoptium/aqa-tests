@@ -25,6 +25,25 @@ echo_env_var() {
 }
 
 echo_java_version() {
+	if [ -d /java/jre/bin ];then
+		echo "Using mounted Java8"
+		export JAVA_BIN=/java/jre/bin
+		export JAVA_HOME=/java
+		export PATH=$JAVA_BIN:$PATH
+	elif [ -d /java/bin ]; then
+		echo "Using mounted Java"
+		export JAVA_BIN=/java/bin
+		export JAVA_HOME=/java
+		export PATH=$JAVA_BIN:$PATH
+	else
+		echo "Using default openjdk image Java"
+		java_path=$(type -p java)
+		suffix="/java"
+		java_root=${java_path%$suffix}
+		export JAVA_BIN="$java_root"
+		export JAVA_HOME="${java_root%/bin}"
+	fi
+	echo "JAVA_BIN is: $JAVA_BIN"
 	echo "=JAVA VERSION OUTPUT BEGIN="
 	java -version
 	echo "=JAVA VERSION OUTPUT END="
