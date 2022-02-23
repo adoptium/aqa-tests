@@ -76,7 +76,7 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TESTLIST = "testList%20TESTLIST= "
+	env.FAIL_TESTLIST = "testList+TESTLIST= "
 	env.RERUN = ""
 	env.FAIL_TEST_TARGET = ""
 
