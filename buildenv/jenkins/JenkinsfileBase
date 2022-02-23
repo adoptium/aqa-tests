@@ -76,7 +76,7 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TESTLIST = "testList TESTLIST= "
+	env.FAIL_TESTLIST = "testList%20TESTLIST= "
 	env.RERUN = ""
 	env.FAIL_TEST_TARGET = ""
 
@@ -768,7 +768,7 @@ def post(output_name) {
 					}
 				}
 				env.FAIL_TESTLIST = env.FAIL_TESTLIST.substring(0, env.FAIL_TESTLIST.length() - 1)
-				echo "Failed test list is ${FAIL_TESTLIST}"
+				echo "Pass test list is ${FAIL_TESTLIST}"
 				addFailTestsGrinderLink()
 			}
 		}
