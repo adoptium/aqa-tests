@@ -40,26 +40,12 @@ limitations under the License.
 		<echo>===executable:			${compiler.javac}</echo>
 		<echo>===debug:				on</echo>
 		<echo>===destdir:				${DEST}</echo>
-		<if>
-			<equals arg1="${JDK_VERSION}" arg2="8"/>
-			<then>
-				<echo>===skip</echo>
-			</then>
-		<elseif>
-			<equals arg1="${JDK_VERSION}" arg2="11"/>
-			<then>
-				<echo>===skip</echo>
-			</then>
-		</elseif>
-		<else>
 			<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
 				<src path="${src}" />
 				<classpath>
 					<pathelement location="${LIB_DIR}/junit4.jar" />
 				</classpath>
 			</javac>
-		</else>
-		</if>
 	</target>
 
 	<target name="dist" depends="compile,copyData" description="generate the distribution">
@@ -76,7 +62,14 @@ limitations under the License.
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build" >
-		<antcall target="clean" inheritall="true" />
+        <target name="build">
+		<if>
+			<not>
+				<matches string="${JDK_VERSION}" pattern="^(8|9|10|11|12|13|14)$$" />
+			</not>
+			<then>
+				<antcall target="clean" inheritall="true" />
+			</then>
+		</if>
 	</target>
 </project>

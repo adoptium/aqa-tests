@@ -28,7 +28,7 @@ OUTPUT=$PWD/output.txt
 mkdir tmp
 cd tmp
 . ${BASE}/check_env_unix.sh
-TS=`${JAVA_BIN}/java CheckValidData "${TEST_STRING}"`
+TS=`${JAVA_BIN}/java ${JAVA_OPTIONS} CheckValidData "${TEST_STRING}"`
 
 JAVAFILE=${TS}.java
 # sed "s/TEST_STRING/${TS}/g" ${BASE}/class_org.java > ${JAVAFILE}
@@ -42,7 +42,7 @@ public class ${TS} {
 EOF
 
 echo "lauching CompilerTest1..." > ${OUTPUT}
-${JAVA_BIN}/java CompilerTest1 ${JAVAFILE} >> ${OUTPUT}
+${JAVA_BIN}/java ${JAVA_OPTIONS} CompilerTest1 ${JAVAFILE} >> ${OUTPUT}
 cd ..
 
 diff ${BASE}/expected_${FULLLANG}.txt ${OUTPUT} > /dev/null 2>&1

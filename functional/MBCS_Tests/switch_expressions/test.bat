@@ -16,8 +16,8 @@ SET PWD=%~dp0
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 
-%JAVA_BIN%\java -cp %PWD%\switch_expressions.jar GenerateTestSource %TEST_STRINGS% > SwitchExpressionsTest.java 2>&1
-%JAVA_BIN%\javac -cp %PWD%\junit4.jar SwitchExpressionsTest.java
+%JAVA_BIN%\java %JAVA_OPTIONS% -cp %PWD%\switch_expressions.jar GenerateTestSource %TEST_STRINGS% > SwitchExpressionsTest.java 2>&1
+%JAVA_BIN%\javac %JAVAC_OPTIONS% -cp %PWD%\junit4.jar SwitchExpressionsTest.java
 %JAVA_BIN%\java -cp %PWD%\junit4.jar;. junit.textui.TestRunner SwitchExpressionsTest
 
 exit %errorlevel%

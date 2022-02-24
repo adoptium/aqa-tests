@@ -20,7 +20,7 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 BASE=`dirname $0`
 . ${BASE}/check_env_unix.sh
 export CLASSPATH=${BASE}/codepage.jar
-ENCODING=`${JAVA_BIN}/java showcode`
+ENCODING=`${JAVA_BIN}/java ${JAVA_OPTIONS} showcode`
 CHARMAP=${FULLLANG}
 SOURCE="${CHARMAP}.txt"
 

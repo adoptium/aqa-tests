@@ -25,10 +25,10 @@ echo LOCALE = %LOCALE% > %OUTPUT%
 echo JDBC41_TABLE_NAME = %JDBC41_TABLE_NAME% >> %OUTPUT%
 echo JDBC41_CNAME = %JDBC41_CNAME% >> %OUTPUT%
 echo --- Create Table and Insert test data in JavaDB. >> %OUTPUT%
-%JAVA_BIN%\java jdbc41autoclose %TEST_STRINGS%  >> %OUTPUT% 2>&1
-%JAVA_BIN%\java jdbc41RowSetProvider  >> %OUTPUT% 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% jdbc41autoclose %TEST_STRINGS%  >> %OUTPUT% 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% jdbc41RowSetProvider  >> %OUTPUT% 2>&1
 echo --- Drop table in JavaDB. >> %OUTPUT%
-%JAVA_BIN%\java jdbc41droptb  >> %OUTPUT% 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% jdbc41droptb  >> %OUTPUT% 2>&1
 
 fc %PWD%\expected\win_%LOCALE%.expected.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

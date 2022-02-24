@@ -25,21 +25,21 @@ CP="-cp ${BASE}/coin.jar"
 mkdir tmp
 cd tmp
 
-${JAVA_BIN}/java ${CP} SwitchTest > SwitchTest.code
-${JAVA_BIN}/java SwitchTestCode > SwitchTest.log 2>&1
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} SwitchTest > SwitchTest.code
+${JAVA_BIN}/java ${JAVA_OPTIONS} SwitchTestCode > SwitchTest.log 2>&1
 
-${JAVA_BIN}/java ${CP} BinaryIntegralTest > BinaryIntegralTest.log
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} BinaryIntegralTest > BinaryIntegralTest.log
 
-${JAVA_BIN}/java ${CP} ExceptionTest > ExceptionTest.code
-${JAVA_BIN}/java ExceptionTestCode > ExceptionTest.log 2>&1
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} ExceptionTest > ExceptionTest.code
+${JAVA_BIN}/java ${JAVA_OPTIONS} ExceptionTestCode > ExceptionTest.log 2>&1
 
-${JAVA_BIN}/java ${CP} DiamondTest > DiamondTest.code
-${JAVA_BIN}/java DiamondTestCode > DiamondTest.log 2>&1
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} DiamondTest > DiamondTest.code
+${JAVA_BIN}/java ${JAVA_OPTIONS} DiamondTestCode > DiamondTest.log 2>&1
 
-${JAVA_BIN}/java ${CP} TryWithResourcesTest > TryWithResourcesTest.code
-${JAVA_BIN}/java TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} TryWithResourcesTest > TryWithResourcesTest.code
+${JAVA_BIN}/java ${JAVA_OPTIONS} TryWithResourcesTestCode > TryWithResourcesTest.log 2>&1
 
-${JAVA_BIN}/java ${CP} SimplifiedVarargsTest > SimplifiedVarargsTest.code
-${JAVA_BIN}/java SimplifiedVarargsTestCode > SimplifiedVarargsTest.log 2>&1
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} SimplifiedVarargsTest > SimplifiedVarargsTest.code
+${JAVA_BIN}/java ${JAVA_OPTIONS} SimplifiedVarargsTestCode > SimplifiedVarargsTest.log 2>&1
  
 LANG=${LANG} perl ${BASE}/resultCheck.pl

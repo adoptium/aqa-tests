@@ -16,9 +16,9 @@ SET PWD=%~dp0
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 
-%JAVA_BIN%\java -classpath %PWD%\text_blocks.jar GenerateTestSource %TEST_STRINGS% > TextBlocksTest.java 2>&1
-%JAVA_BIN%\javac TextBlocksTest.java
-%JAVA_BIN%\java TextBlocksTest > result.txt 2>&1
+%JAVA_BIN%\java %JAVA_OPTIONS% -classpath %PWD%\text_blocks.jar GenerateTestSource %TEST_STRINGS% > TextBlocksTest.java 2>&1
+%JAVA_BIN%\javac %JAVAC_OPTIONS% TextBlocksTest.java
+%JAVA_BIN%\java %JAVA_OPTIONS% TextBlocksTest > result.txt 2>&1
 
 fc result.txt %PWD%\expected\windows_%LOCALE%.txt > fc.out 2>&1
 exit %errorlevel%

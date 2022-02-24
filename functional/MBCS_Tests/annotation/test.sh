@@ -23,11 +23,9 @@ if [ "${BASE}" != "${PWD}" ]; then
   cp ${BASE}/*.java .
 fi
 
-cp ${BASE}/*.java .
-
 CP="-cp ${BASE}/annotation.jar"
 
-TS=`${JAVA_BIN}/java ${CP} CheckValidData "${TEST_STRINGS}"`
+TS=`${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} CheckValidData "${TEST_STRINGS}"`
 
 echo "creating source file..."
 # sed "s/TEST_STRING/${TS}/g" DefineAnnotation_org.java > DefineAnnotation.java
@@ -77,13 +75,13 @@ EOF
 SDKPATH=`${JAVA_BIN}/java ${CP} SDKPath`
 
 echo "compiling..."
-${SDKPATH}/javac DefineAnnotation.java AnnotatedTest.java
+${SDKPATH}/javac ${JAVAC_OPTIONS} DefineAnnotation.java AnnotatedTest.java
 
 echo "execute javap"
-${SDKPATH}/javap AnnotatedTest > javap.txt 2>&1
+${SDKPATH}/javap ${JAVAC_OPTIONS} AnnotatedTest > javap.txt 2>&1
 diff javap.txt ${BASE}/expected/${FULLLANG}.def.txt > diff.txt
 
-${SDKPATH}/java ${CP} SourceVersionCheck ${BASE}/expected/${FULLLANG}.pro.txt 2>> diff.txt
+${SDKPATH}/java ${JAVA_OPTIONS} ${CP} SourceVersionCheck ${BASE}/expected/${FULLLANG}.pro.txt 2>> diff.txt
 
 #clean up
 rm *.class

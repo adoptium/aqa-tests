@@ -19,6 +19,21 @@ if defined TEST_JDK_HOME (
    )
 )
 
+set JAVA_VER=8
+FOR /F "usebackq tokens=1,3" %%i IN (`%JAVA_BIN%\java -XshowSettings:properties -version 2^>^&1`) DO (
+   if java.version==%%i set JAVA_VER=%%j
+)
+set JAVA_VER=%JAVA_VER:~0,2%
+if 1.==%JAVA_VER% set JAVA_VER=8
+
+if %JAVA_VER% GEQ 18 (
+   SET JAVA_OPTIONS=-Dfile.encoding=COMPAT
+   SET JAVAC_OPTIONS=-J-Dfile.encoding=COMPAT
+) else (
+   SET JAVA_OPTIONS=
+   SET JAVAC_OPTIONS=
+)
+
 FOR /F "usebackq" %%i IN (`cscript //NOLOGO %PWD%\locale.vbs`) DO SET LOCALE=%%i
 SET STATUS=UKNOWN
 echo %CD% | findstr "jaxp14" > NUL

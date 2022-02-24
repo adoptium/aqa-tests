@@ -23,9 +23,9 @@ CP="-cp ${BASE}/switch_expressions.jar"
 
 CP_junit="-cp ${BASE}/junit4.jar"
 
-${JAVA_BIN}/java ${CP} GenerateTestSource "${TEST_STRINGS}" > SwitchExpressionsTest.java
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} GenerateTestSource "${TEST_STRINGS}" > SwitchExpressionsTest.java
 
-${JAVA_BIN}/javac ${CP_junit} SwitchExpressionsTest.java
+${JAVA_BIN}/javac ${JAVAC_OPTIONS} ${CP_junit} SwitchExpressionsTest.java
 
 ${JAVA_BIN}/java ${CP_junit}:. junit.textui.TestRunner SwitchExpressionsTest
 

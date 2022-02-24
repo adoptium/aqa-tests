@@ -60,3 +60,18 @@ https://www.unicode.org/Public/13.0.0/ucd/Scripts.txt
 UnicodeData-13.0.0.txt
 https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt
 
+Blocks-14.0.0.txt
+https://www.unicode.org/Public/14.0.0/ucd/Blocks.txt
+
+NormalizationTest-14.0.0.txt
+https://www.unicode.org/Public/14.0.0/ucd/NormalizationTest.txt
+
+PropertyValueAliases-14.0.0.txt
+https://www.unicode.org/Public/14.0.0/ucd/PropertyValueAliases.txt
+
+Scripts-14.0.0.txt
+https://www.unicode.org/Public/14.0.0/ucd/Scripts.txt
+
+UnicodeData-14.0.0.txt
+https://www.unicode.org/Public/14.0.0/ucd/UnicodeData.txt
+
