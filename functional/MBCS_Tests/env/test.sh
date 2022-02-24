@@ -25,7 +25,7 @@ export CLASSPATH=${BASE}/env.jar
 . ${BASE}/check_env_unix.sh
 
 echo "invoking EnvTest" > ${OUTPUT}
-${JAVA_BIN}/java EnvTest >> ${OUTPUT}
+${JAVA_BIN}/java ${JAVA_OPTIONS} EnvTest >> ${OUTPUT}
 diff ${BASE}/expected_${FULLLANG}.txt ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}

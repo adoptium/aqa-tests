@@ -40,6 +40,7 @@ foreach $l (
     "aix_zh_TW.IBM-eucTW","aix_Zh_TW.big5","aix_ZH_TW.UTF-8",
     "aix_ja_JP.UTF-8", "aix_ko_KR.UTF-8",
     "aix_zh_Hans_CN.UTF-8", "aix_zh_Hant_TW.UTF-8",
+    "darwin_ja_JP.UTF-8", "darwin_ko_KR.UTF-8", "darwin_zh_CN.UTF-8", "darwin_zh_TW.UTF-8",
     "linux_ja_JP.UTF-8","linux_ko_KR.UTF-8","linux_zh_CN.UTF-8","linux_zh_TW.UTF-8")
 {
     $LOC{$l} = "";

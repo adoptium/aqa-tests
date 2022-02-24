@@ -13,27 +13,27 @@ rem limitations under the License.
 
 @echo ------------ Pattern matching test ------------
 
-java SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) includes "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦". 
 @echo --- Did you get the line(s)?
 
-java SimpleGrep "嘨*嘪" %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep "嘨*嘪" %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) includes the pattern "嘨*嘪". 
 @echo --- Did you get the line(s) ?
 
-java SimpleGrep "^劚" %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep "^劚" %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) starts with "劚".
 @echo --- Did you get the line ?
 
-java SimpleGrep 噲 %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep 噲 %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) includes "噲". 
 @echo --- Did you get the line ?
 
-java SimpleGrep 椷 %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep 椷 %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) includes "椷". 
 @echo --- Did you get the line?
 
-java SimpleGrep \u628e\u99e1U\u90c2 %PWD%\win_zh-cn.txt
+java %JAVA_OPTIONS% SimpleGrep \u628e\u99e1U\u90c2 %PWD%\win_zh-cn.txt
 @echo --- Confirm that the line(s) includes "表抎駡名". 
 @echo --- Did you get the line ?
 
@@ -41,19 +41,19 @@ java SimpleGrep \u628e\u99e1U\u90c2 %PWD%\win_zh-cn.txt
 @echo\
 @echo ------------ Pattern replacement test ------------
 
-java RegexReplaceTest 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 aiueo %PWD%\win_zh-cn.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest 嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦 aiueo %PWD%\win_zh-cn.txt -v
 @echo --- Confirm that "嘨嘩嘪嘫嘮嘯嘰嘳鶣鶤鶥鶦" was replaced by "aiueo". 
 @echo --- OK ?
 
-java RegexReplaceTest 噲 僇僞僇僫 %PWD%\win_zh-cn.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest 噲 僇僞僇僫 %PWD%\win_zh-cn.txt -v
 @echo --- Confirm that "噲" was replaced by "僇僞僇僫". 
 @echo --- OK ?
 
-java RegexReplaceTest 椷 \\ %PWD%\win_zh-cn.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest 椷 \\ %PWD%\win_zh-cn.txt -v
 @echo --- Confirm that "椷" was replaced by "\". 
 @echo --- OK ?
 
-java RegexReplaceTest \u628e\u99e1U\u90c2 椷噲 %PWD%\win_zh-cn.txt -v
+java %JAVA_OPTIONS% RegexReplaceTest \u628e\u99e1U\u90c2 椷噲 %PWD%\win_zh-cn.txt -v
 @echo --- Confirm that "表抎駡名" was replaced by "椷噲". 
 @echo --- OK ?
 

@@ -21,11 +21,11 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 CP="-cp ${BASE}/text_blocks.jar"
 
-${JAVA_BIN}/java ${CP} GenerateTestSource ${TEST_STRINGS} > TextBlocksTest.java
+${JAVA_BIN}/java ${JAVA_OPTIONS} ${CP} GenerateTestSource ${TEST_STRINGS} > TextBlocksTest.java
 
-${JAVA_BIN}/javac TextBlocksTest.java
+${JAVA_BIN}/javac ${JAVAC_OPTIONS} TextBlocksTest.java
 
-${JAVA_BIN}/java TextBlocksTest > result.txt
+${JAVA_BIN}/java ${JAVA_OPTIONS} TextBlocksTest > result.txt
 
 diff result.txt ${BASE}/expected/${FULLLANG}.txt
 RESULT=$?

@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.lang.model.SourceVersion;
@@ -34,6 +35,7 @@ public class SourceVersionCheck {
             System.err.println("usage: java Version expectedFile");
             System.exit(1);
         }
+        String javacOptions = System.getenv("JAVAC_OPTIONS");
         boolean flag = false;
         final String target = "AnnotationProcessor";
         Path sourcePath = Paths.get(target+"_org.java");
@@ -76,7 +78,14 @@ public class SourceVersionCheck {
             }
             try {
                 // Execute javac with annotation
-                String[] command = {javaPath + "javac", targetFile};
+                ArrayList<String> commandList = new ArrayList<>();
+                commandList.add(javaPath + "javac");
+                if (javacOptions != null) {
+                    for (String s : javacOptions.split("\\s+"))
+                        commandList.add(s);
+                }
+                commandList.add(targetFile);
+                String[] command = commandList.toArray(new String[0]);
                 Runtime runtime = Runtime.getRuntime();
                 Process p = runtime.exec(command, null, null);
                 int ret = p.waitFor();
@@ -85,9 +94,16 @@ public class SourceVersionCheck {
                     System.exit(-1);
                 }
 
-                String[] cmdProcessor = { javaPath +"javac",
-                            "-processor", target + "_" + sv.toString(),
-                            "AnnotatedTest.java"};
+                commandList = new ArrayList<>();
+                commandList.add(javaPath + "javac");
+                if (javacOptions != null) {
+                    for (String s : javacOptions.split("\\s+"))
+                        commandList.add(s);
+                }
+                commandList.add("-processor");
+                commandList.add(target + "_" + sv.toString());
+                commandList.add("AnnotatedTest.java");
+                String[] cmdProcessor = commandList.toArray(new String[0]);
                 p = runtime.exec(cmdProcessor, null, null);
                 ret = p.waitFor();
                 if (ret != 0) {

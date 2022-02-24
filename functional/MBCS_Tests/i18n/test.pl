@@ -35,6 +35,7 @@ foreach $l (
     "aix_ko_KR.IBM-eucKR","aix_KO_KR.UTF-8",
     "aix_zh_CN.IBM-eucCN","aix_Zh_CN.GB18030","aix_ZH_CN.UTF-8",
     "aix_zh_TW.IBM-eucTW","aix_Zh_TW.big5","aix_ZH_TW.UTF-8",
+    "darwin_ja_JP.UTF-8", "darwin_ko_KR.UTF-8", "darwin_zh_CN.UTF-8", "darwin_zh_TW.UTF-8",
     "linux_ja_JP.UTF-8","linux_ko_KR.UTF-8","linux_zh_CN.UTF-8","linux_zh_TW.UTF-8")
 {
     $LOC{$l} = "";
@@ -75,10 +76,20 @@ $base = $FindBin::Bin."/";
 print "base ".$base."\n";
 $jar = "-cp ".$base."i18n.jar";
 
-system($ENV{'JAVA_BIN'}."/java ".$jar." showlocale > result/showlocale.out");
-system($ENV{'JAVA_BIN'}."/java ".$jar." DateFormatTest > result/DateFormatTest.out");
-
-system($ENV{'JAVA_BIN'}."/java ".$jar." BreakIteratorTest ".$base.$FULLLANG.".txt > result/BreakIteratorTest.out");
+open(CMD, "$ENV{'JAVA_BIN'}/java -XshowSettings:properties -version 2>&1 |");
+while(<CMD>) {
+  $rc = $1 if /^\s+java\.version = (\d+)/;
+}
+$rc = 8 if $rc == 1;
+if ($rc lt 18) {
+  system($ENV{'JAVA_BIN'}."/java ".$jar." showlocale > result/showlocale.out");
+  system($ENV{'JAVA_BIN'}."/java ".$jar." DateFormatTest > result/DateFormatTest.out");
+  system($ENV{'JAVA_BIN'}."/java ".$jar." BreakIteratorTest ".$base.$FULLLANG.".txt > result/BreakIteratorTest.out");
+} else {
+  system($ENV{'JAVA_BIN'}."/java -Dfile.encoding=COMPAT ".$jar." showlocale > result/showlocale.out");
+  system($ENV{'JAVA_BIN'}."/java -Dfile.encoding=COMPAT ".$jar." DateFormatTest > result/DateFormatTest.out");
+  system($ENV{'JAVA_BIN'}."/java -Dfile.encoding=COMPAT ".$jar." BreakIteratorTest ".$base.$FULLLANG.".txt > result/BreakIteratorTest.out");
+}
 
 #
 # checking the results

@@ -19,7 +19,7 @@ SET OUTPUT=output.txt
 SET CLASSPATH=%PWD%\env.jar
 call %PWD%\..\data\setup_%LOCALE%.bat
 echo "invoking EnvTest"> %OUTPUT%
-%JAVA_BIN%\java EnvTest >> %OUTPUT%
+%JAVA_BIN%\java %JAVA_OPTIONS% EnvTest >> %OUTPUT%
 
 fc %PWD%\expected_windows_%LOCALE%.txt %OUTPUT% > fc.out 2>&1
 exit %errorlevel%

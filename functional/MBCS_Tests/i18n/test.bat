@@ -22,9 +22,9 @@ if exist result rd /S /Q result
 mkdir result
 
 
-%JAVA_BIN%\java showlocale > result\showlocale.out
-%JAVA_BIN%\java DateFormatTest > result\DateFormatTest.out
-%JAVA_BIN%\java BreakIteratorTest %PWD%\win_%LOCALE%.txt > result\BreakIteratorTest.out
+%JAVA_BIN%\java %JAVA_OPTIONS% showlocale > result\showlocale.out
+%JAVA_BIN%\java %JAVA_OPTIONS% DateFormatTest > result\DateFormatTest.out
+%JAVA_BIN%\java %JAVA_OPTIONS% BreakIteratorTest %PWD%\win_%LOCALE%.txt > result\BreakIteratorTest.out
 
 SET FLAG=0
 
