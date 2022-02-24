@@ -258,8 +258,8 @@ print_sbt_install() {
           "\nENV SBT_VERSION=\$SBT_VERSION" \
           "\nENV SBT_HOME=/opt/sbt" \
           "\n\n# Install SBT" \
-          "\nRUN wget --no-check-certificate --no-cookies https://piccolo.link/sbt-\${SBT_VERSION}.tgz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://piccolo.link/sbt-\${SBT_VERSION}.tgz.asc \\" \
+          "\nRUN wget --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz \\" \
+          "\n\t&& wget --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz.asc \\" \
           "\n\t&& curl \"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823\" | gpg --import \\" \
           "\n\t&& gpg --verify sbt-\${SBT_VERSION}.tgz.asc sbt-\${SBT_VERSION}.tgz \\" \
           "\n\t&& tar -zvxf sbt-\${SBT_VERSION}.tgz -C /opt/ \\" \
