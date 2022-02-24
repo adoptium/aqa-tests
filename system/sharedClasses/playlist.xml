@@ -31,6 +31,12 @@
 		<command>if ! echo "$(PLATFORM)" | grep -q "win"; then export original_umask_val=`umask` $(AND_IF_SUCCESS) umask 0002 $(AND_IF_SUCCESS) echo umask set to `umask`; fi; \
 	$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesAPI; \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/14390</comment>
+				<platform>aarch64_mac.*</platform>
+			</disable>
+		</disables>
 		<levels>
 			<level>extended</level>
 		</levels>
