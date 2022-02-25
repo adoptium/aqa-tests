@@ -29,11 +29,11 @@ if [ $# -ne 8 ] && [ $# -ne 7 ]; then
 	echo "package = ${supported_packages}"
 	echo "build   = ${supported_builds}"
 	echo "testtarget" = "Optional: CMD to pass to ENTRYPOINT script from Dockerfile"
+	echo "buildArg" = "Optional: customized image"
 	exit -1
 fi
 if [ $# -eq 8 ]; then
 	buildArg="--build-arg IMAGE=$8"
-	echo "buildArg is $buildArg"
 fi
 if [[ ${check_external_custom} -eq 0 ]]; then
 	set_test $1

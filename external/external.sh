@@ -81,7 +81,6 @@ parseCommandLineArgs() {
 					echo "No EXTRA_DOCKER_ARGS set"; 
 				else 
   					docker_args="$1"; shift;
-  					echo "docker_args is ${docker_args}";
   					parse_docker_args $docker_args;
 				fi;;
 				
@@ -148,12 +147,11 @@ function parse_docker_args() {
 		shift; 
 
 		case "$opt" in
-			"--volumn" | "-v" )
+			"--volume" | "-v" )
 				mountV="-v $1";
 				shift;;
 			"--image" | "-i" )
 				imageArg="$1"; 
-				echo "image is ${imageArg}";
 				shift;;
 			*) echo >&2 "Invalid docker args option: ${opt}"; exit 1;
 		esac
