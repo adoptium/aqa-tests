@@ -81,7 +81,7 @@ print_image_args() {
     local package=$5
     local build=$6
 
-image_name="eclipse-temurin"
+    image_name="eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
@@ -92,12 +92,13 @@ image_name="eclipse-temurin"
         image_name="ibm-semeru-runtimes"
         tag=open-${tag}
     fi
+    image="${image_name}:${tag}"
 
-    echo -e "ARG IMAGE_NAME=${image_name}" \
+    echo -e "ARG IMAGE=${image}" \
           "\nARG OS=${os}" \
           "\nARG IMAGE_VERSION=nightly" \
           "\nARG TAG=${tag}" \
-          "\nFROM \$IMAGE_NAME:\$TAG\n" >> ${file}
+          "\nFROM \$IMAGE\n" >> ${file}
 }
 
 print_test_tag_arg() {
