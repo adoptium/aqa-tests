@@ -963,6 +963,12 @@
 				<impl>ibm</impl>
 				<platform>.*zos.*</platform>
 			</disable>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>s390x_zos</platform>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -1019,6 +1025,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_rmi</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>s390x_zos</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
