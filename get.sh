@@ -402,7 +402,7 @@ checkURL() {
 	local filename="$1"
 	if [[ $filename =~ "test-image" ]] && [ $TEST_IMAGES_REQUIRED = false ]; then
 		required=false
-	elif [[ $filename =~ "debug-image" ]] && [ $DEBUG_IMAGES_REQUIRED = false ]; then
+	elif [[ $filename =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]] && [ $DEBUG_IMAGES_REQUIRED = false ]; then
 		required=false
 	fi
 }
