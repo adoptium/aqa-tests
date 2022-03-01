@@ -316,23 +316,21 @@ getBinaryOpenjdk()
 	# if $jar_file_array contains debug-image, move debug-image element to the end of the array
 	# debug image jar needs to be extracted after jdk as debug image jar extraction location depends on jdk structure
 	# debug image jar extracts into j2sdk-image/jre dir if it exists. Otherwise, extracts into j2sdk-image dir
-	if [ $DEBUG_IMAGES_REQUIRED = true ]; then
-		last_index=$(( ${#jar_file_array[@]} - 1 ))
-		for i in "${!jar_file_array[@]}"; do
-			if [[ "${jar_file_array[$i]}" =~ "debug-image" ]] || [[ "${jar_file_array[$i]}" =~ "debugimage" ]]; then
-				if [ "$i" -ne "$last_index" ]; then
-					debug_image_jar="${jar_file_array[$i]}"
+	last_index=$(( ${#jar_file_array[@]} - 1 ))
+	for i in "${!jar_file_array[@]}"; do
+		if [[ "${jar_file_array[$i]}" =~ "debug-image" ]] || [[ "${jar_file_array[$i]}" =~ "debugimage" ]]; then
+			if [ "$i" -ne "$last_index" ]; then
+				debug_image_jar="${jar_file_array[$i]}"
 
-					# remove the element
-					unset jar_file_array[$i]
+				# remove the element
+				unset jar_file_array[$i]
 
-					# add $debug_image_jar to the end of the array
-					jar_file_array=( "${jar_file_array[@]}" "${debug_image_jar}" )
-					break
-				fi
+				# add $debug_image_jar to the end of the array
+				jar_file_array=( "${jar_file_array[@]}" "${debug_image_jar}" )
+				break
 			fi
-		done
-	fi
+		fi
+	done
 
 	for jar_name in "${jar_file_array[@]}"
 		do
@@ -400,10 +398,10 @@ getBinaryOpenjdk()
 
 checkURL() {
 	local filename="$1"
-	if [[ $filename =~ "test-image" ]] && [ $TEST_IMAGES_REQUIRED = false ]; then
-		required=false
-	elif [[ $filename =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]] && [ $DEBUG_IMAGES_REQUIRED = false ]; then
-		required=false
+	if [[ $filename =~ "test-image" ]]; then
+		required=$TEST_IMAGES_REQUIRED
+	elif [[ $filename =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]]; then
+		required=$DEBUG_IMAGES_REQUIRED
 	fi
 }
 
