@@ -207,14 +207,16 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
             if (params.RELATED_NODES) {
                 if (areNodesWithLabelOnline(params.RELATED_NODES)) {
-                    node(params.RELATED_NODES) {
-                        echo "On RELATED_NODES: ${params.RELATED_NODES}"
-                        node(LABEL) {
-                            echo "On main node"
-                            runTest()
-                            echo "Done with main node"
-                        }
-                        echo "Done with RELATED_NODES: ${params.RELATED_NODES}"
+                    timeout(activity: true, time: 1, unit: 'HOURS'){
+                        node(params.RELATED_NODES) {
+                           echo "On RELATED_NODES: ${params.RELATED_NODES}"
+                           node(LABEL) {
+                               echo "On main node"
+                               runTest()
+                               echo "Done with main node"
+                            }
+                            echo "Done with RELATED_NODES: ${params.RELATED_NODES}"
+                        } 
                     }
                 } else {
                     assert false : "Cannot find RELATED_NODES: ${params.RELATED_NODES}."
