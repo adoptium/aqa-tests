@@ -752,7 +752,7 @@ def post(output_name) {
 				}				
 			}
 			if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-				addFailTestsGrinderLink()
+				addFailedTestsGrinderLink()
 			}
 		}
 	}
@@ -1042,7 +1042,7 @@ def run_parallel_tests() {
 					currentBuild.result = buildResult
 				}
 				if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-					addFailTestsGrinderLink()
+					addFailedTestsGrinderLink()
 				}
 
 			}
