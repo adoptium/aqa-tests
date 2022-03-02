@@ -752,7 +752,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}				
 			}
-			if (currentBuild.result == 'FAILURE') {
+			if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 				echo "Fetaching Tap files..."
 				def tapFiles = findFiles(glob: "**/*.tap")
 				for (def tapFile: tapFiles) {
