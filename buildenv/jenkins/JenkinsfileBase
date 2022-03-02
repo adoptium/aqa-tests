@@ -76,7 +76,6 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.FAIL_TESTLIST = "testList+TESTLIST="
 	env.RERUN = ""
 	env.FAIL_TEST_TARGET = ""
 
@@ -753,22 +752,6 @@ def post(output_name) {
 				}				
 			}
 			if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-				echo "Fetching Tap files..."
-				def tapFiles = findFiles(glob: "**/*.tap")
-				for (def tapFile: tapFiles) {
-					echo "Tap file found: ${tapFile}"
-					def file = readFile(file: "${tapFile}")
-					TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-					TestSet testSet = tapConsumer.load(file)
-					for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-						if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-							def testCase = testSet.getTestResult(i).getDescription().substring(2)
-							env.FAIL_TESTLIST += "$testCase,"
-						}
-					}
-				}
-				env.FAIL_TESTLIST = env.FAIL_TESTLIST.substring(0, env.FAIL_TESTLIST.length() - 1)
-				echo "Fail test list is ${FAIL_TESTLIST}"
 				addFailTestsGrinderLink()
 			}
 		}
@@ -1007,11 +990,28 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
-def addFailTestsGrinderLink(){
+def addFailedTestsGrinderLink(){
+	echo "Fetching Tap files..."
+	def tapFiles = findFiles(glob: "**/*.tap")
+	def failedTestList = "testList+TESTLIST="
+	for (def tapFile: tapFiles) {
+		echo "Tap file found: ${tapFile}"
+		def file = readFile(file: "${tapFile}")
+		TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+		TestSet testSet = tapConsumer.load(file)
+		for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+			if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+				def testCase = testSet.getTestResult(i).getDescription().substring(2)
+				failedTestList += "$testCase,"
+			}
+		}
+	}
+	failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
+	echo "Fail test list is ${failedTestList}"
 	String url = env.RERUN
-	def failedTestUrl = url.replace(env.FAIL_TEST_TARGET, "TARGET=${env.FAIL_TESTLIST}")
+	def failedTestUrl = url.replace(env.FAIL_TEST_TARGET, "TARGET=$failedTestList")
 	echo "Rerun failed tests in Grinder: ${env.FAIL_TESTLIST}"
-	currentBuild.description += "<br><a href=${failedTestUrl}> Return in Grinder with failed tests </a>"
+	currentBuild.description += "<br><a href=${failedTestUrl}> Return in Grinder with failed tests targets</a>"
 }
 
 def run_parallel_tests() {
@@ -1042,22 +1042,6 @@ def run_parallel_tests() {
 					currentBuild.result = buildResult
 				}
 				if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-					echo "Fetching Tap files..."
-					def tapFiles = findFiles(glob: "**/*.tap")
-					for (def tapFile: tapFiles) {
-						echo "Tap file found: ${tapFile}"
-						def file = readFile(file: "${tapFile}")
-						TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-						TestSet testSet = tapConsumer.load(file)
-						for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-							if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-								def testCase = testSet.getTestResult(i).getDescription().substring(2)
-								env.FAIL_TESTLIST += "$testCase,"
-							}
-						}
-					}
-					env.FAIL_TESTLIST = env.FAIL_TESTLIST.substring(0, env.FAIL_TESTLIST.length() - 1)
-					echo "Fail test list is ${FAIL_TESTLIST}"
 					addFailTestsGrinderLink()
 				}
 
