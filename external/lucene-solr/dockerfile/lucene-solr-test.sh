@@ -21,7 +21,6 @@ pwd
 set -e
 
 ${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib ivy-bootstrap
-
 echo "Compile lucene-solr test"
 ${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${TEST_HOME}/build.xml -Duser.home=${TEST_HOME} -Dcommon.dir=${TEST_HOME}/lucene compile
 echo "Execute lucene-solr test"

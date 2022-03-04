@@ -87,6 +87,9 @@
 		<copy todir="${DEST_EXTERNAL}/${TEST}/dockerfile">
 			<fileset dir="${src}/dockerfile" includes="*.sh"/>
 		</copy>
+		<copy todir="${DEST_EXTERNAL}/${TEST}">
+			<fileset dir="${src}/" includes="*.sh, *.properties"/>
+		</copy>
 		<copy todir="${DEST_EXTERNAL}">
 			<fileset dir="${top}" includes="*.sh"/>
 		</copy>
