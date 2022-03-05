@@ -76,8 +76,8 @@ def setupEnv() {
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
-	env.RERUN = ""
-	env.FAIL_TEST_TARGET = ""
+	env.RERUN_LINK = ""
+	env.FAILED_TEST_TARGET = ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -751,9 +751,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}				
 			}
-			if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-				addFailedTestsGrinderLink()
-			}
+			addFailedTestsGrinderLink()
 		}
 	}
 }
@@ -980,38 +978,40 @@ def addGrinderLink() {
 			targetValue = "TARGET=${value}"
 		}
 	}
-	env.RERUN = url
-	env.FAIL_TEST_TARGET = targetValue
+	env.RERUN_LINK = url
+	env.FAILED_TEST_TARGET = targetValue
+	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
 	def sameMachineUrl = url.replace(labelValue,"LABEL=${NODE_NAME}")
 	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
-	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 }
 
 def addFailedTestsGrinderLink(){
-	echo "Fetching Tap files..."
-	def tapFiles = findFiles(glob: "**/*.tap")
-	def failedTestList = "testList+TESTLIST="
-	for (def tapFile: tapFiles) {
-		echo "Tap file found: ${tapFile}"
-		def file = readFile(file: "${tapFile}")
-		TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-		TestSet testSet = tapConsumer.load(file)
-		for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-			if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-				def testCase = testSet.getTestResult(i).getDescription().substring(2)
-				failedTestList += "$testCase,"
+	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
+		echo "Fetching Tap files..."
+		def tapFiles = findFiles(glob: "**/*.tap")
+		def failedTestList = "testList+TESTLIST="
+		for (def tapFile: tapFiles) {
+			echo "Tap file found: ${tapFile}"
+			def file = readFile(file: "${tapFile}")
+			TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+			TestSet testSet = tapConsumer.load(file)
+			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+					def testCase = testSet.getTestResult(i).getDescription().substring(2)
+					failedTestList += "$testCase,"
+				}
 			}
 		}
+		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
+		echo "Fail test list is ${failedTestList}"
+		String url = env.RERUN_LINK
+		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
+		echo "Rerun failed tests in Grinder: $failedTestList"
+		currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed tests targets</a>"
 	}
-	failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
-	echo "Fail test list is ${failedTestList}"
-	String url = env.RERUN
-	def failedTestUrl = url.replace(env.FAIL_TEST_TARGET, "TARGET=$failedTestList")
-	echo "Rerun failed tests in Grinder: ${env.FAIL_TESTLIST}"
-	currentBuild.description += "<br><a href=${failedTestUrl}> Return in Grinder with failed tests targets</a>"
 }
 
 def run_parallel_tests() {
@@ -1041,10 +1041,7 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
-				if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-					addFailedTestsGrinderLink()
-				}
-
+				addFailedTestsGrinderLink()
 			}
 		}
 	}
