@@ -764,7 +764,7 @@ public class JavaTestRunner {
 				jxcCmd = jxcCmd.replace("/", "\\");
 				genCmd = genCmd.replace("/", "\\");
 				impCmd = impCmd.replace("/", "\\");
-			} else if (platform.equals("linux") || platform.equals("aix")) {
+			} else if (platform.contains("linux") || platform.equals("aix")) {
 				xjcCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "wsgen.sh";
