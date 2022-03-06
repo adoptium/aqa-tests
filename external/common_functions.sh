@@ -199,6 +199,7 @@ function set_test_info() {
     path_to_file=$(pwd)
     echo ${path_to_file}    
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
+    home_path=$(getProperty "home_path")
     github_url=$(getProperty "github_url")
     script=$(getProperty "script")
     test_results=$(getProperty "test_results")
