@@ -59,3 +59,46 @@ python scripts/disabled_tests/exclude_parser.py > problem_list.json 2> errors.lo
 ls -1dq openjdk/excludes/* |
 python scripts/disabled_tests/exclude_parser.py -v > /dev/null
 ```
+
+## `issue_status.py`
+### Usage
+
+```
+usage: issue_status.py [-h] [--github-user USER] [--github-token TOKEN] [--max-workers MAX_WORKERS] [--infile INFILE] [--outfile OUTFILE] [--verbose]
+
+Fetch issue status for each disabled test
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --github-user USER    GitHub User used for API [env: AQA_ISSUE_TRACKER_GITHUB_USER]
+  --github-token TOKEN  GitHub Token used for API [env: AQA_ISSUE_TRACKER_GITHUB_TOKEN]
+  --max-workers MAX_WORKERS
+                        Maximum number of threads to spawn, default determined by ThreadPoolExecutor
+  --infile INFILE, -i INFILE
+                        Input file, defaults to stdin
+  --outfile OUTFILE, -o OUTFILE
+                        Output file, defaults to stdout
+  --verbose, -v         Enable info logging level, debug level if -vv
+```
+
+#### Output to file pass GitHub token through an environment variable
+```shell
+# Environment variables:
+# export AQA_ISSUE_TRACKER_GITHUB_USER=foobar
+# export AQA_ISSUE_TRACKER_GITHUB_TOKEN=abcdefghijklmnopqrst
+cat exclude_out.json |
+python scripts/disabled_tests/issue_status.py > out.json
+```
+
+#### Passing GitHub token using CLI
+```shell
+cat exclude_out.json |
+python scripts/disabled_tests/issue_status.py --github-user foobar --github-token abcdefghijklmnopqrst > out.json 2> errors.log
+```
+
+#### Dry run and debug
+```shell
+ls -1dq openjdk/excludes/ProblemList_openjdk13.txt |
+python scripts/disabled_tests/exclude_parser.py |
+python scripts/disabled_tests/issue_status.py --github-user foobar --github-token abcdefghijklmnopqrst -vv --max-workers 1 > /dev/null
+```
