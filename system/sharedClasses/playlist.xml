@@ -274,6 +274,12 @@
 		{ MXP_FLAG=$$(test $$(ulimit -u 2>/dev/null) $(AND_IF_SUCCESS) echo "-u" || echo "-p"); REQD_MXP=2048; if [ ! "$$(ulimit $$MXP_FLAG)" = "unlimited" ] $(AND_IF_SUCCESS) [ ! $$(ulimit $$MXP_FLAG) -gt $$REQD_MXP ]; then echo Attempting to increase max user processes from $$(ulimit $$MXP_FLAG) to $$REQD_MXP; ulimit $$MXP_FLAG $$REQD_MXP; echo max user processes now $$(ulimit $$MXP_FLAG); fi; }; \
 		$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThread$(Q); \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/14621</comment>
+				<platform>aarch64_mac.*</platform>
+			</disable>
+		</disables>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -293,6 +299,12 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClasses -test-args=$(Q)sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL$(Q); \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/14621</comment>
+				<platform>aarch64_mac.*</platform>
+			</disable>
+		</disables>
 		<levels>
 			<level>extended</level>
 		</levels>
