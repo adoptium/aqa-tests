@@ -234,8 +234,13 @@ getBinaryOpenjdk()
 		fi
 
 		if [ "$JDK_IMPL" == "openj9" ]; then
-			download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/openj9/${heap_size}/ibm https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/openj9/${heap_size}/ibm"
-			info_url="https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm"
+			if [ "$SDK_RESOURCE" = "nightly" ]; then
+				echo "Semeru API does not provide openj9 SDK nightly at the moment. Please use CUSTOMIZED_SDK_URL to provide the SDK URL directly."
+				exit 1
+			else
+				download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/openj9/${heap_size}/ibm https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/openj9/${heap_size}/ibm"
+				info_url="https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm"
+			fi
 		else
 			download_url="https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
 			info_url="https://api.adoptium.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=eclipse"
