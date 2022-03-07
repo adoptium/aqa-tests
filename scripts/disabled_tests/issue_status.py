@@ -8,7 +8,7 @@ import sys
 import urllib.parse
 from collections import defaultdict
 from concurrent import futures
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 import requests
 import requests.auth
@@ -22,6 +22,11 @@ LOG = logging.getLogger()
 
 GITHUB_USER_ENV = "AQA_ISSUE_TRACKER_GITHUB_USER"
 GITHUB_TOKEN_ENV = "AQA_ISSUE_TRACKER_GITHUB_TOKEN"
+
+# Partial URL segments used to filter exceptional issues
+EXCEPTIONS = [
+    '/aqa-tests/issues/1297',
+]
 
 
 class Status(enum.Enum):
@@ -165,7 +170,14 @@ def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Sc
     return url_to_issues
 
 
-def _handle_completed_future(future, log_prefix, url, url_to_issues):
+def should_exclude(url) -> Tuple[bool, str]:
+    for exception in EXCEPTIONS:
+        if exception in url:
+            return True, exception
+    return False, ''
+
+
+def _handle_completed_future(future, log_prefix, url, url_to_issues) -> List[models.SchemeWithStatus]:
     try:
         issue_status: Status = future.result()
     except HandlerException as he:
@@ -187,7 +199,17 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
     Fetch the status of all issue trackers using the provided dispatcher
     and augment each issue with their respective status
     """
-    url_to_issues = group_issues_by_url(issues)
+    raw_url_to_issues = group_issues_by_url(issues)
+
+    # Remove all issues whose tracker contains a URL segment listed in `EXCEPTIONS`
+    url_to_issues = {}
+    for url, issues in raw_url_to_issues.items():
+        exclude, reason = should_exclude(url)
+        if exclude:
+            LOG.warning(f"Excluding {url!r} due to exception segment {reason!r}")
+        else:
+            url_to_issues[url] = issues
+
     len_trackers = len(url_to_issues)
     LOG.debug(f"Unique issue trackers found: {len_trackers}")
 
@@ -245,6 +267,7 @@ def main():
             BugsOpenJdkHandler(),
         ]
     )
+
     issues_with_status = fetch_all_statuses(issues, dispatcher, args.max_workers)
 
     LOG.debug(f"Outputting JSON to {getattr(args.outfile, 'name', '<unknown>')}")
