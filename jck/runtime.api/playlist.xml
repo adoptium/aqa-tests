@@ -343,6 +343,38 @@
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming-spi</testCaseName>
 		<disables>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment><platform>x86-64_mac</platform>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment><platform>x86-64_mac</platform>
+				<impl>openj9</impl>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment><platform>x86-64_mac</platform>
+				<impl>ibm</impl>
+				<version>17</version>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment><platform>x86-64_mac</platform>
+				<impl>openj9</impl>
+				<version>17</version>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<impl>ibm</impl>
+				<version>18</version>
+			</disable>
+			<disable>
+				<comment>Disabled on osx for backlog/issues/739, in the interim these targets will be run manually</comment>
+				<platform>x86-64_mac</platform>
+				<impl>openj9</impl>
+				<version>18</version>
+			</disable>
  			<disable>
 				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
 				<platform>x86-64_mac|aarch64_mac</platform>
@@ -931,6 +963,12 @@
 				<impl>ibm</impl>
 				<platform>.*zos.*</platform>
 			</disable>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>s390x_zos</platform>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -987,6 +1025,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_rmi</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<version>11</version>
+				<impl>ibm</impl>
+				<platform>s390x_zos</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>

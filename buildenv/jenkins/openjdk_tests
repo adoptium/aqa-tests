@@ -46,6 +46,10 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_390',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
     ],
+    's390x_linux_zt' : [
+        'SPEC' : 'linux_390-64_zt',
+        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.linux',
+    ],
     's390x_linux' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
@@ -57,6 +61,14 @@ def PLATFORM_MAP = [
     's390x_zos_xl' : [
         'SPEC' : 'zos_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
+    ],
+    's390x_zos_zt' : [
+        'SPEC' : 'zos_390-64_zt',
+        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.zos',
+    ],
+    's390_zos_zt' : [
+        'SPEC' : 'zos_390_zt',
+        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.zos',
     ],
     's390_zos' : [
         'SPEC' : 'zos_390',
@@ -207,14 +219,16 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
             if (params.RELATED_NODES) {
                 if (areNodesWithLabelOnline(params.RELATED_NODES)) {
-                    node(params.RELATED_NODES) {
-                        echo "On RELATED_NODES: ${params.RELATED_NODES}"
-                        node(LABEL) {
-                            echo "On main node"
-                            runTest()
-                            echo "Done with main node"
-                        }
-                        echo "Done with RELATED_NODES: ${params.RELATED_NODES}"
+                    timeout(activity: true, time: 1, unit: 'HOURS'){
+                        node(params.RELATED_NODES) {
+                           echo "On RELATED_NODES: ${params.RELATED_NODES}"
+                           node(LABEL) {
+                               echo "On main node"
+                               runTest()
+                               echo "Done with main node"
+                            }
+                            echo "Done with RELATED_NODES: ${params.RELATED_NODES}"
+                        } 
                     }
                 } else {
                     assert false : "Cannot find RELATED_NODES: ${params.RELATED_NODES}."

@@ -1,6 +1,8 @@
+import json
+import os
 from unittest import TestCase
 
-from generateDisabledTestListJson import transform_platform
+from exclude_parser import transform_platform, parse_all_files
 
 platform_map = {
     "linux-aarch64": "aarch64_linux",
@@ -30,3 +32,14 @@ class Test(TestCase):
     def test_transform_platform_with_map(self):
         for k, v in platform_map.items():
             self.assertEqual(transform_platform(k), v)
+
+    def test_parse_file(self):
+        test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
+        input_file1 = os.path.join(test_data_dir, 'ProblemList_openjdk13.txt')
+        input_file2 = os.path.join(test_data_dir, 'ProblemList_openjdk11-openj9.txt')
+        expected_out_file = os.path.join(test_data_dir, 'out.json')
+        with open(expected_out_file) as f:
+            expected = json.load(f)
+        actual = [excl.to_scheme() for excl in parse_all_files([input_file1, input_file2])]
+        self.assertEqual(expected, actual)
+
