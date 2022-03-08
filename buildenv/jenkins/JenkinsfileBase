@@ -736,7 +736,7 @@ def post(output_name) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
 					if (env.BUILD_LIST.startsWith('external')) {
-						def dockerFile = "./**/Dockerfile.*"
+						def dockerFile = "**/Dockerfile.*"
 						archiveArtifacts artifacts: dockerFile, fingerprint: true, allowEmptyArchive: true
 					}
 				} else {
