@@ -18,7 +18,7 @@ echo_setup
 TEST_OPTIONS=$1
 
 # Initial command to trigger the execution of elasticsearch test 
-cd /elasticsearch
+cd ${TEST_HOME}
 
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \

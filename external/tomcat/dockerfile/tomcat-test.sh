@@ -16,7 +16,7 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
-cd /tomcat
+cd ${TEST_HOME}
 pwd
 
 set -e
