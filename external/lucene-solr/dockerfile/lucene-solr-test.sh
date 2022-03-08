@@ -15,15 +15,15 @@ source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the lucene test
 echo_setup
 
-cd ${LUCENE_SOLR_HOME}/lucene-solr
+cd ${TEST_HOME}
 
 pwd
 set -e
 
 ${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib ivy-bootstrap
-echo "Compile and execute lucene-solr test"
-${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${LUCENE_SOLR_HOME}/lucene-solr/build.xml -Duser.home=${LUCENE_SOLR_HOME} -Dcommon.dir=${LUCENE_SOLR_HOME}/lucene-solr/lucene compile
+echo "Compile lucene-solr test"
+${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${TEST_HOME}/build.xml -Duser.home=${TEST_HOME} -Dcommon.dir=${TEST_HOME}/lucene compile
 echo "Execute lucene-solr test"
-${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${LUCENE_SOLR_HOME}/lucene-solr/build.xml -Duser.home=${LUCENE_SOLR_HOME} -Dcommon.dir=${LUCENE_SOLR_HOME}/lucene-solr/lucene test
+${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib -f ${TEST_HOME}/build.xml -Duser.home=${TEST_HOME} -Dcommon.dir=${TEST_HOME}/lucene test
 
 set +e

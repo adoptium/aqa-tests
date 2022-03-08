@@ -20,7 +20,7 @@ echo_setup
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
 export MAVEN_OPTS="-Xmx1g"
 
-cd /camel-quarkus
+cd ${TEST_HOME}
 pwd
 echo "Compile and run camel tests"
 mvn clean install

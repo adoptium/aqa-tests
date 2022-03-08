@@ -17,7 +17,7 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 TEST_SUITE=$1
 
-cd /spring-boot
+cd ${TEST_HOME}
 set -e
 
 echo "Compile and execute spring-test"

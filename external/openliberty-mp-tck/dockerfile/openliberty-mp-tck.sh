@@ -16,7 +16,8 @@ source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the openliberty test
 echo_setup
 
-cd ${OPENLIBERTY_HOME}/open-liberty/dev
+cd ${TEST_HOME}
+cd dev
 
 set -e
 #Build all projects and create the open-liberty image

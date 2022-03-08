@@ -399,13 +399,11 @@ print_environment_variable() {
 
 print_home_path() {
     local file=$1
-    local test=$2
-    local path=$3
+    local github_url=$2
 
-    # Cause Test name to be capitalized
-    test="$(sanitize_test_names ${test} | tr a-z A-Z)_HOME"
-
-    echo -e "ENV ${test} ${path}\n" >> ${file}
+    # Get Github folder name
+    local folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    echo -e "ENV TEST_HOME /${folder}\n" >> ${file}
 }
 
 print_test_results() {
@@ -570,10 +568,6 @@ generate_dockerfile() {
         print_environment_variable ${file} ${environment_variable};
     fi
 
-    if [[ ! -z ${home_path} ]]; then
-        print_home_path ${file} ${test} ${home_path};
-    fi
-
     if [[ ! -z ${test_results} ]]; then
         print_test_results ${file};
     fi
@@ -581,7 +575,7 @@ generate_dockerfile() {
     if [[ ! -z ${script} ]]; then
         print_test_script ${file} ${test} ${script};
     fi
-
+    print_home_path ${file} ${github_url};
     print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
 
