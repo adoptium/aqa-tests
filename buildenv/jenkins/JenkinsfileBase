@@ -1006,11 +1006,10 @@ def addFailedTestsGrinderLink(){
 			}
 		}
 		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
-		echo "Fail test list is ${failedTestList}"
 		String url = env.RERUN_LINK
 		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
-		echo "Rerun failed tests in Grinder: $failedTestList"
-		currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed tests targets</a>"
+		echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
+		currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
 	}
 }
 
