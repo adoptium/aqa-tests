@@ -29,6 +29,7 @@ node {
 	                            case "corretto": variant = "corretto"; break
 	                            case "dragonwell": variant = "dragonwell"; break;
 	                            case "bisheng": variant = "bisheng"; break;
+	                            case "fast_startup": variant = "fast_startup"; break;
 	                            default: variant = "hs"
 	                        }
 	                        buildConfigurations.keySet().each { key -> 
