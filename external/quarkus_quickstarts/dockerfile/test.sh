@@ -18,7 +18,7 @@ echo_setup
 
 export MAVEN_OPTS="-Xmx1g"
 
-cd /quarkus-quickstarts
+cd ${TEST_HOME}}
 pwd
 echo "Compile and run quarkus_quickstarts tests"
 mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\

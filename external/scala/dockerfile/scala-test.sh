@@ -19,7 +19,7 @@ echo_setup
 TEST_SUITE=$1
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin scala test
-cd /scala
+cd ${TEST_HOME}
 pwd
 
 set -e

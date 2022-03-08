@@ -19,7 +19,7 @@ echo_setup
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin jenkins test
 
-cd /jenkins
+cd ${TEST_HOME}
 
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
