@@ -17,7 +17,7 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 # Initial command to trigger the execution of kafka test
-cd /kafka
+cd ${TEST_HOME}
 
 set -e
 echo "Building kafka  using gradle"

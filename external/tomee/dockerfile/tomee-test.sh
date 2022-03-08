@@ -18,7 +18,7 @@ echo_setup
 
 #begin tomee test
 
-cd /tomee
+cd ${TEST_HOME}
 
 set -e
 echo "Build TomEE without running test"

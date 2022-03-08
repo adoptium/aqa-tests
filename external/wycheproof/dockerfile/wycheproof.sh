@@ -18,7 +18,7 @@ echo_setup
 
 #Run tests 
 
-cd ${WYCHEPROOF_HOME}/wycheproof
+cd ${TEST_HOME}
 
 #Run OpenJDKAllTests 
 bazel test OpenJDKTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
