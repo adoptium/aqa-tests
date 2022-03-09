@@ -130,7 +130,7 @@ def setupEnv() {
 
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
-		timestamps{
+		//timestamps{
 			def maxChildJobNum = 25
 			def testSubDirs = []
 			int childJobNum = 1
@@ -306,7 +306,7 @@ def setupParallelEnv() {
 			}
 
 			// return to top level pipeline file in order to exit node block before running tests in parallel
-		}
+		//}
 	}
 }
 
@@ -369,7 +369,7 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 
 def setup() {
 	stage('Setup') {
-		timestamps{
+		//timestamps{
 			setupEnv()
 
 			if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
@@ -465,7 +465,7 @@ def setup() {
 				}
 				getJobProperties()
 			}
-		}
+		//}
 	}
 }
 
@@ -515,7 +515,7 @@ def makeCompileTest(){
 
 def buildTest() {
 	stage('Build') {
-		timestamps{
+		//timestamps{
 			echo 'Building tests...'
 
 			if ( params.PERF_CREDENTIALS_ID ) {
@@ -579,13 +579,13 @@ def buildTest() {
 				echo "Clean gcda files before generating new Code Coverage info"
 				sh "find ${WORKSPACE}/openjdkbinary/j2sdk-image -name '*.gcda' -type f -delete"
 			}
-		}
+		//}
 	}
 }
 
 def runTest( ) {
 	stage('Test') {
-		timestamps{
+		//timestamps{
 			echo 'Running tests...'
 			def CUSTOM_OPTION = ''
 
@@ -647,13 +647,13 @@ def runTest( ) {
 					sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 				}
 			}
-		}
+		//}
 	}
 }
 
 def post(output_name) {
 	stage('Post') {
-		timestamps{
+		//timestamps{
 			if (env.DISPLAY != null) {
 				env.DISPLAY = ""
 			}
@@ -699,7 +699,7 @@ def post(output_name) {
 
             //call the archive function for each file
             archiveFile(testenvFile)
-	    archiveFile(shaFile)
+	    	archiveFile(shaFile)
             archiveFile(AQACertFile)
 
 			if (env.BUILD_LIST.startsWith('jck')) {
@@ -760,7 +760,7 @@ def post(output_name) {
 				}
 			}
 			addFailedTestsGrinderLink()
-		}
+		//}
 	}
 }
 
