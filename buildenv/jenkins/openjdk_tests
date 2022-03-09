@@ -178,8 +178,8 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
         println "SPEC: ${SPEC}"
         println "LABEL: ${LABEL}"
 
-        timestamps {
-            stage('Queue') {
+        stage('Queue') {
+            timestamps {
                 if (!areNodesWithLabelOnline(LABEL)) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
                     timeout(ACTIVE_NODE_TIMEOUT) {
