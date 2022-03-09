@@ -1001,33 +1001,31 @@ def addFailedTestsGrinderLink(){
 def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None") {
 		stage ("Parallel Tests") {
-			timestamps {
-				def childJobs = parallel parallel_tests
-				node {
-					def buildResult = ""
-					childJobs.each {
-						cjob ->
-							def jobInvocation = cjob.value.getRawBuild()
-							def buildId = jobInvocation.getNumber()
-							def name = cjob.value.getProjectName()
-							def childResult = cjob.value.getCurrentResult()
-							try {
-								echo "${name} #${buildId} completed with status ${childResult}"
-								timeout(time: 1, unit: 'HOURS') {
-									copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
-								}
-								step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-							} catch (Exception e) {
-								echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
-								buildResult = childResult
+			def childJobs = parallel parallel_tests
+			node {
+				def buildResult = ""
+				childJobs.each {
+					cjob ->
+						def jobInvocation = cjob.value.getRawBuild()
+						def buildId = jobInvocation.getNumber()
+						def name = cjob.value.getProjectName()
+						def childResult = cjob.value.getCurrentResult()
+						try {
+							echo "${name} #${buildId} completed with status ${childResult}"
+							timeout(time: 1, unit: 'HOURS') {
+								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
-					}
-					if (buildResult) {
-						echo "set build status to ${buildResult}"
-						currentBuild.result = buildResult
-					}
-					addFailedTestsGrinderLink()
+							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+						} catch (Exception e) {
+							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+							buildResult = childResult
+						}
 				}
+				if (buildResult) {
+					echo "set build status to ${buildResult}"
+					currentBuild.result = buildResult
+				}
+				addFailedTestsGrinderLink()
 			}
 		}
 	}
