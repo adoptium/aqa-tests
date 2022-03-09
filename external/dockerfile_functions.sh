@@ -428,7 +428,7 @@ print_test_files() {
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     fi
     if [[ ! -z ${localPropertyFile} ]]; then
-        echo -e "# This is local perperty file needed to set up user preferred properties." \
+        echo -e "# This local property file is needed to set up user preferred properties." \
             "\nCOPY ${test}/${localPropertyFile} \${TEST_HOME}/${localPropertyFile}\n" >> ${file}
     fi
 }
