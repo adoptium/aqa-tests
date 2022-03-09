@@ -19,7 +19,7 @@
  */
 
 def getBaseJDKImpl(JDK_IMPL) {
-	if (JDK_IMPL == "hotspot" || JDK_IMPL == "sap" || JDK_IMPL == "corretto" || JDK_IMPL == "dragonwell" || JDK_IMPL == "bisheng") {
+	if (JDK_IMPL != "openj9" && JDK_IMPL != "ibm" ) {
 		return "hotspot"
 	}
 	return JDK_IMPL
