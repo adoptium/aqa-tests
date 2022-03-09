@@ -109,76 +109,76 @@ def PLATFORM_MAP = [
     ],
 ]
 
-timestamps{
-    if ( !params.TARGET ) {
-        assert false : "Please provide TARGET value"
-    }
-    def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
-    def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
-    def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
+if ( !params.TARGET ) {
+    assert false : "Please provide TARGET value"
+}
+def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
+def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
+def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
-    // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
-    if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
-        if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
-            assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or releases."
-        } else {
-            testJobs = [:]
-            PLATFORMS.each { PLATFORM ->
-                JDK_VERSIONS.each { JDK_VERSION ->
-                    JDK_IMPLS.each { JDK_IMPL ->
-                        def ACTUAL_PLATFORM = resolvePlatform(PLATFORM, JDK_VERSION)
-                        def childParams = []
-                        // loop through all the params and change the parameters if needed
-                        params.each { param ->
-                            if (param.key == "PLATFORM") {
-                                childParams << string(name: param.key, value: ACTUAL_PLATFORM)
-                            } else if (param.key == "JDK_VERSION") {
-                                childParams << string(name: param.key, value: JDK_VERSION)
-                            } else if (param.key == "JDK_IMPL") {
-                                childParams << string(name: param.key, value: JDK_IMPL)
+// if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
+if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
+    if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
+        assert false : "Multiple Grinders should run with SDK_RESOURCE=nightly or releases."
+    } else {
+        testJobs = [:]
+        PLATFORMS.each { PLATFORM ->
+            JDK_VERSIONS.each { JDK_VERSION ->
+                JDK_IMPLS.each { JDK_IMPL ->
+                    def ACTUAL_PLATFORM = resolvePlatform(PLATFORM, JDK_VERSION)
+                    def childParams = []
+                    // loop through all the params and change the parameters if needed
+                    params.each { param ->
+                        if (param.key == "PLATFORM") {
+                            childParams << string(name: param.key, value: ACTUAL_PLATFORM)
+                        } else if (param.key == "JDK_VERSION") {
+                            childParams << string(name: param.key, value: JDK_VERSION)
+                        } else if (param.key == "JDK_IMPL") {
+                            childParams << string(name: param.key, value: JDK_IMPL)
+                        } else {
+                            def value = param.value.toString()
+                            if (value == "true" || value == "false") {
+                                childParams << booleanParam(name: param.key, value: value.toBoolean())
                             } else {
-                                def value = param.value.toString()
-                                if (value == "true" || value == "false") {
-                                    childParams << booleanParam(name: param.key, value: value.toBoolean())
-                                } else {
-                                    childParams << string(name: param.key, value: value)
-                                }
+                                childParams << string(name: param.key, value: value)
                             }
                         }
-                        testJobs["openjdk${JDK_VERSION}_${JDK_IMPL}_${PLATFORM}"] = {
-                            build job: JOB_NAME, parameters: childParams
-                        }
+                    }
+                    testJobs["openjdk${JDK_VERSION}_${JDK_IMPL}_${PLATFORM}"] = {
+                        build job: JOB_NAME, parameters: childParams
                     }
                 }
             }
-            parallel testJobs
         }
-    } else {
-        if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
-            SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-            if (params.LABEL) {
-                LABEL = params.LABEL
-            } else {
-                LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-                    if (params.BUILD_LIST.contains("perf")) {
-                        def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
-                        if (areNodesWithLabelOnline(perfLabel)) {
-                        LABEL = perfLabel
-                        }
+        parallel testJobs
+    }
+} else {
+    if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+        SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+        if (params.LABEL) {
+            LABEL = params.LABEL
+        } else {
+             LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
+                if (params.BUILD_LIST.contains("perf")) {
+                    def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
+                    if (areNodesWithLabelOnline(perfLabel)) {
+                       LABEL = perfLabel
                     }
                 }
-
-            if (params.DOCKER_REQUIRED) {
-                LABEL += "&&sw.tool.docker"
             }
 
-            if (params.LABEL_ADDITION) {
-                LABEL += "&&${params.LABEL_ADDITION}"
-            }
+        if (params.DOCKER_REQUIRED) {
+            LABEL += "&&sw.tool.docker"
+        }
 
-            println "SPEC: ${SPEC}"
-            println "LABEL: ${LABEL}"
+        if (params.LABEL_ADDITION) {
+            LABEL += "&&${params.LABEL_ADDITION}"
+        }
 
+        println "SPEC: ${SPEC}"
+        println "LABEL: ${LABEL}"
+
+        timestamps {
             stage('Queue') {
                 if (!areNodesWithLabelOnline(LABEL)) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
@@ -240,14 +240,15 @@ timestamps{
                     }
                 }
             }
-            if (currentBuild.result != 'FAILURE') {
-                jenkinsfile.run_parallel_tests()
-            }
-        } else {
-            assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
         }
+        if (currentBuild.result != 'FAILURE') {
+            jenkinsfile.run_parallel_tests()
+        }
+    } else {
+        assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
     }
 }
+
 
 def runTest() {
     try {
