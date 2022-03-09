@@ -108,6 +108,12 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=SharedClassesWorkloadTest_Softmx_Increase_JitAot; \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/14635</comment>
+				<platform>aarch64_mac.*</platform>
+			</disable>
+		</disables>
 		<levels>
 			<level>extended</level>
 		</levels>
