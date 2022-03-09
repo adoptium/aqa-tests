@@ -210,6 +210,7 @@ function set_test_info() {
     bazel_version=$(getProperty "bazel_version")
     openssl_version=$(getProperty "openssl_version")
     environment_variable=$(getProperty "environment_variable")
+    localPropertyFile=$(getProperty "localPropertyFile")
     if [[ ! -z "$environment_variable" ]]; then
     environment_variable="MODE=\"java\""
     fi
