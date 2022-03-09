@@ -696,15 +696,15 @@ def post(output_name) {
             def testenvFile = "aqa-tests/testenv/testenv.properties"
             def shaFile = "aqa-tests/TKG/SHA.txt"
             def AQACertFile = "aqa-tests/TKG/AQACert.log"
-		  def TAPzipFile = "aqa-tests/TKG/TAPFiles.zip"
+            def TAPzipFile = "aqa-tests/TKG/TAPFiles.zip"
 
             //call the archive function for each file
             archiveFile(testenvFile)
             archiveFile(shaFile)
             archiveFile(AQACertFile)
-		  // TODO: how to push the tap files to TAPzipFile with the same archiveFile function?
-		  // archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
-		  archiveFile(TAPzipFile)
+            // TODO: how to push the tap files to TAPzipFile with the same archiveFile function?
+            // archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
+            archiveFile(TAPzipFile)
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
