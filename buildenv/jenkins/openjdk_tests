@@ -109,7 +109,7 @@ def PLATFORM_MAP = [
     ],
 ]
 
-timestamps{
+//timestamps{
     if ( !params.TARGET ) {
         assert false : "Please provide TARGET value"
     }
@@ -247,7 +247,7 @@ timestamps{
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
         }
     }
-}
+//}
 
 def runTest() {
     try {
