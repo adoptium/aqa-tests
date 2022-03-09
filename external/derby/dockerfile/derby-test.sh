@@ -22,17 +22,14 @@ pwd
 
 #clean previous build artifacts 
 ant -f build.xml clobber
-
 #build all
 ant -f build.xml all
-
 #create jars
 ant -f build.xml buildjars
 
 export jardir ${TEST_HOME}/jars/sane 
 export tstjardir ${TEST_HOME}/tools/java 
 export CLASSPATH "${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:${tstjardir}/junit.jar"
-
 java -jar ${TEST_HOME}/jars/sane/derbyrun.jar sysinfo
 
 set -e
