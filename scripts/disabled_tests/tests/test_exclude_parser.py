@@ -37,7 +37,7 @@ class Test(TestCase):
         test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
         input_file1 = os.path.join(test_data_dir, 'ProblemList_openjdk13.txt')
         input_file2 = os.path.join(test_data_dir, 'ProblemList_openjdk11-openj9.txt')
-        expected_out_file = os.path.join(test_data_dir, 'out.json')
+        expected_out_file = os.path.join(test_data_dir, 'exclude_out.json')
         with open(expected_out_file) as f:
             expected = json.load(f)
         actual = [excl.to_scheme() for excl in parse_all_files([input_file1, input_file2])]

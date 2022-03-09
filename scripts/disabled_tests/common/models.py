@@ -8,3 +8,7 @@ class Scheme(TypedDict):
     CUSTOM_TARGET: str
     PLATFORM: str
     ISSUE_TRACKER: str
+
+
+class SchemeWithStatus(Scheme):
+    ISSUE_TRACKER_STATUS: str
