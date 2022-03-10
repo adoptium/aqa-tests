@@ -22,7 +22,7 @@ export MAVEN_OPTS="-Xmx1g"
 
 export OPENJ9_JAVA_OPTIONS="-Xmx1g"
 
-cd ${TEST_HOME}}
+cd ${TEST_HOME}
 pwd
 echo "Compile and run quarkus tests"
 
