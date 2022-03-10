@@ -16,7 +16,7 @@ source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the jacoco-test
 echo_setup
 
-cd {TEST_HOME}
+cd ${TEST_HOME}
 cd org.jacoco.build
 pwd
 echo "Compile and run jacoco tests"
