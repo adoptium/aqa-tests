@@ -16,9 +16,6 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
-cd ${TEST_HOME}
-pwd
-
 set -e
 echo "Building tomcat" && \
 cp build.properties.default build.properties && \

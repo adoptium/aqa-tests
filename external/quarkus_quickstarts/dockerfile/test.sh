@@ -17,9 +17,6 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 export MAVEN_OPTS="-Xmx1g"
-
-cd ${TEST_HOME}
-pwd
 echo "Compile and run quarkus_quickstarts tests"
 mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\
 !:hibernate-search-elasticsearch-quickstart,!:mqtt-quickstart,\

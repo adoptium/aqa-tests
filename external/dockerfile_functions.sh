@@ -486,6 +486,11 @@ print_entrypoint() {
     fi
 }
 
+print_workdir() {
+    local file=$1
+    echo -e "\nWORKDIR \${TEST_HOME}\n" >> ${file}
+}
+
 print_cmd() {
     local file=$1
     local cmd=$2
@@ -584,7 +589,7 @@ generate_dockerfile() {
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         print_external_custom_parameters ${file}
     fi
-
+    print_workdir ${file};
     print_entrypoint ${file} ${script} ${os};
 
     if [[ ! -z ${testtarget} ]]; then

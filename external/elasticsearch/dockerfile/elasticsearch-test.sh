@@ -18,8 +18,6 @@ echo_setup
 TEST_OPTIONS=$1
 
 # Initial command to trigger the execution of elasticsearch test 
-cd ${TEST_HOME}
-
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
 ./gradlew -q -g /tmp assemble --exclude-task :distribution:docker:buildDockerImage --exclude-task :distribution:docker:buildOssDockerImage -exclude-task :distribution:docker:docker-export:exportDockerImage -exclude-task :distribution:docker:oss-docker-export:exportOssDockerImage

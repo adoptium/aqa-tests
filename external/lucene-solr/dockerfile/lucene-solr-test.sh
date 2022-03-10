@@ -15,9 +15,6 @@ source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the lucene test
 echo_setup
 
-cd ${TEST_HOME}
-
-pwd
 set -e
 
 ${ANT_HOME}/bin/ant -Divy_install_path=${ANT_HOME}/lib -lib ${ANT_HOME}/lib ivy-bootstrap

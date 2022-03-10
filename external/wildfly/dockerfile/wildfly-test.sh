@@ -17,8 +17,6 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 # Replace the following with the initial command lines that trigger execution of your test
-cd ${TEST_HOME}
-
 set -e
 echo "Building wildfly  using maven , by invoking build.sh" && \
 ./build.sh
