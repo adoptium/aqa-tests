@@ -412,10 +412,11 @@ print_test_results() {
     echo -e "RUN mkdir testResults\n" >> ${file}
 }
 
-print_test_script() {
+print_test_files() {
     local file=$1
     local test=$2
     local script=$3
+    local localPropertyFile=$4
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
@@ -426,7 +427,10 @@ print_test_script() {
                 "\nCOPY ${test}/dockerfile/${script} /${script}" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     fi
-    
+    if [[ ! -z ${localPropertyFile} ]]; then
+        echo -e "# This local property file is needed to set up user preferred properties." \
+            "\nCOPY ${test}/${localPropertyFile} \${TEST_HOME}/${localPropertyFile}\n" >> ${file}
+    fi
 }
 
 print_testInfo_env() {
@@ -572,12 +576,10 @@ generate_dockerfile() {
         print_test_results ${file};
     fi
 
-    if [[ ! -z ${script} ]]; then
-        print_test_script ${file} ${test} ${script};
-    fi
     print_home_path ${file} ${github_url};
     print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
+    print_test_files ${file} ${test} ${script} ${localPropertyFile};
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         print_external_custom_parameters ${file}
