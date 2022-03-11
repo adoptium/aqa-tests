@@ -17,7 +17,6 @@ echo_setup
 TEST_SUITE=$1
 
 set -e
-cd ${TEST_HOME}
 echo "Compile and execute netty-test" && \
 mvn clean package
 set +e

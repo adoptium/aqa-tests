@@ -17,9 +17,6 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 #begin tomee test
-
-cd ${TEST_HOME}
-
 set -e
 echo "Build TomEE without running test"
 mvn --batch-mode -Pquick -Dsurefire.useFile=false -DdisableXmlReport=true -DuniqueVersion=false -ff -Dassemble -DskipTests -DfailIfNoTests=false clean install
