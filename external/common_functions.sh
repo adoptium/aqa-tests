@@ -183,7 +183,6 @@ function set_external_custom_test_info(){
     test=$1
     check_external_custom_test=$2
     github_url="${EXTERNAL_CUSTOM_REPO}"
-    script="test.sh"
     test_command="${EXTERNAL_TEST_CMD}"
     test_results="testResults"
     tag_version="${EXTERNAL_REPO_BRANCH}"
@@ -200,7 +199,6 @@ function set_test_info() {
     echo ${path_to_file}    
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
-    script=$(getProperty "script")
     test_results=$(getProperty "test_results")
     ant_version=$(getProperty "ant_version")
     ivy_version=$(getProperty "ivy_version")
