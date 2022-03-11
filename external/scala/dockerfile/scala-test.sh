@@ -19,9 +19,6 @@ echo_setup
 TEST_SUITE=$1
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin scala test
-cd ${TEST_HOME}
-pwd
-
 set -e
 
 echo "Try to echo Scala version by using sbt \"scala -version\"" && \

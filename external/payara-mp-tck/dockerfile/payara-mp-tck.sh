@@ -18,7 +18,6 @@ echo_setup
 
 TEST_OPTIONS=$1
 
-cd ${TEST_HOME}
 mvn --batch-mode clean verify -Dpayara.version=5.184 $TEST_OPTIONS
 test_exit_code=$?
 find ./ -type d -name 'junitreports' -exec cp -r "{}" /testResults \;

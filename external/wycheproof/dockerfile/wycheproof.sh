@@ -16,10 +16,6 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the wycheproof test
 echo_setup
 
-#Run tests 
-
-cd ${TEST_HOME}
-
 #Run OpenJDKAllTests 
 bazel test OpenJDKTest --genrule_strategy=standalone --spawn_strategy=standalone --verbose_failures
 OpenJDKTest_exit_code=$?
