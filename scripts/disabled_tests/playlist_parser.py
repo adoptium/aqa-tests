@@ -28,7 +28,7 @@ class DisableNodeProcessingException(Exception):
 
 @datacls.dataclass
 class PlaylistFile:
-    """Parser-specific information extraction from a playlist.xml file"""
+    """Parser-specific information extracted from a playlist.xml file"""
     path: os.PathLike
     raw_tests: Iterable['RawTest']
 
@@ -114,7 +114,7 @@ class RawDisable:
 
 @datacls.dataclass
 class Disable(RawDisable):
-    """Parsed information from a "disable" node"""
+    """Parsed information from a disable node"""
     issue_url: str
     custom_target: str
     jdk_info: models.JdkInfo
