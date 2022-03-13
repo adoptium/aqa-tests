@@ -60,6 +60,41 @@ ls -1dq openjdk/excludes/* |
 python scripts/disabled_tests/exclude_parser.py -v > /dev/null
 ```
 
+
+## `playlist_parser.py`
+### Usage
+
+```
+usage: playlist_parser.py [-h] [--outfile OUTFILE] [--verbose]
+
+Generate disabled test list JSON file from playlist.xml files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --outfile OUTFILE, -o OUTFILE
+                        Output file, defaults to stdout
+  --verbose, -v         Enable info logging level, debug level if -vv
+```
+
+#### Query playlist.xml files excluding scripts directory and output to file
+```shell
+find . -name "playlist.xml" -not -path "scripts" |
+python scripts/disabled_tests/playlist_parser.py > playlist_problem_list.json
+```
+
+#### Query aqa-tests and openj9 repo, output to file and save debug log
+```shell
+find ./aqa-tests ./openj9 -name "playlist.xml"
+python scripts/disabled_tests/playlist_parser.py -vv > playlist_problem_list.json 2> debug.log
+```
+
+#### Dry run to see info, errors and warnings
+```shell
+find . -name "playlist.xml" |
+python scripts/disabled_tests/playlist_parser.py -v > /dev/null
+```
+
+
 ## `issue_status.py`
 ### Usage
 
