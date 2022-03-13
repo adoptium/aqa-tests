@@ -78,7 +78,7 @@ class Test(RawTest):
     def from_raw_test(cls, raw: RawTest) -> 'Test':
         test_name_node = raw.node.find(f'.//{cls.TEST_NAME_TAG}')
         if test_name_node is None:
-            raise TestNodeProcessingException(f"test node has no {cls.TEST_NAME_TAG!r} child, skipping")
+            raise TestNodeProcessingException(f"test node has no {cls.TEST_NAME_TAG!r} child; skipping node")
 
         # this is expected to be an empty list for some, if not most, test nodes
         # we still create a `Test` instance instead of raising an error to make this more reusable
@@ -128,7 +128,7 @@ class Disable(RawDisable):
     def from_raw_disable(cls, raw_disable: RawDisable) -> 'Disable':
         issue_url_node = raw_disable.node.find(f'.//{cls.ISSUE_TAG}')
         if issue_url_node is None:
-            raise DisableNodeProcessingException(f'disable node has no {cls.ISSUE_TAG!r} child, skipping')
+            raise DisableNodeProcessingException(f'disable node has no {cls.ISSUE_TAG!r} child; skipping node')
         issue_url = issue_url_node.text
 
         test_name = raw_disable.parent_test.name
@@ -170,7 +170,7 @@ class Disable(RawDisable):
 
         variation = maybe_variation_node.text
         if variation not in variations:
-            raise DisableNodeProcessingException(f'could not find {variation!r} in defined variations, skipping')
+            raise DisableNodeProcessingException(f'could not find {variation!r} in defined variations; skipping node')
 
         idx = variations.index(variation)
         suffix = f'_{idx}'
@@ -209,7 +209,7 @@ def parse_file(playlist_path: str) -> List[Disable]:
             disables = parse_test(test)
             disables_from_file.extend(disables)
         except TestNodeProcessingException as e:
-            LOG.debug(f'{playlist_path}:{test.node.sourceline} : {e}')
+            LOG.error(f'{playlist_path}:{test.node.sourceline} : {e}')
     return disables_from_file
 
 
