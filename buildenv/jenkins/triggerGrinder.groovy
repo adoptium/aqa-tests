@@ -6,11 +6,11 @@ node {
   checkout scm
   stage('Triggering python script')
   {
-    sh "python ${WORKSPACE}/aqa-tests/disabledTestParser/generateDisabledTestListJson.py"
-    sh "python ${WORKSPACE}/aqa-tests/disabledTestParser/issue_status.py"
+    sh "ls -1dq ${WORKSPACE}/aqa-tests/openjdk/excludes/* | python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/exclude_parser.py > ${WORKSPACE}/scripts/disabled_tests/problem_list.json"
+    trigger_issue_status()
   }
   stage('readJSON') {
-    def json_path = "${WORKSPACE}/aqa-tests/disabledTestParser/output.json"
+    def json_path = "${WORKSPACE}/aqa-tests/scripts/disabled_tests/output.json"
     json = readJSON(file: json_path) as List<Map<String, Object>>
   }
 }
@@ -20,14 +20,14 @@ stage('Launch Grinder Jobs')
   launch_grinders(json)
 }
 
+/**
+  Get the parameters specified as a string list.
+  Get each of the key-value pairs for each json value.
+  If the issue for a job is closed, and JDK_VERSION and 
+  JDK_IMPL match the parameters specified, 
+  run grinder on it. Otherwise ignore it
+  */
 def launch_grinders(List<Map<String, Object>> json) {
-  /**
-   Get the parameters specified as a string list.
-   Get each of the key-value pairs for each json value.
-   If the issue for a job is closed, and JDK_VERSION and 
-   JDK_IMPL match the parameters specified, 
-   run grinder on it. Otherwise ignore it
-   */
 
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
@@ -37,6 +37,25 @@ def launch_grinders(List<Map<String, Object>> json) {
       run_grinder(dict)
     }
   }
+}
+
+/**
+  Consumes git token and triggers issue_tracker 
+  Generates output.json
+  */
+def trigger_issue_status() {
+
+  sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
+
+    if (${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}) {
+
+      withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh "exoprt AQA_ISSUE_TRACKER_GITHUB_USER = $USERNAME
+          export AQA_ISSUE_TRACKER_GITHUB_TOKEN = $PASSWORD
+          python3 scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/scripts/disabled_tests/output.json"
+      }
+    }
+	}
 }
 
 /**
