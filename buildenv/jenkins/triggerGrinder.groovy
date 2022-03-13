@@ -20,14 +20,14 @@ stage('Launch Grinder Jobs')
   launch_grinders(json)
 }
 
+/**
+  Get the parameters specified as a string list.
+  Get each of the key-value pairs for each json value.
+  If the issue for a job is closed, and JDK_VERSION and 
+  JDK_IMPL match the parameters specified, 
+  run grinder on it. Otherwise ignore it
+  */
 def launch_grinders(List<Map<String, Object>> json) {
-  /**
-   Get the parameters specified as a string list.
-   Get each of the key-value pairs for each json value.
-   If the issue for a job is closed, and JDK_VERSION and 
-   JDK_IMPL match the parameters specified, 
-   run grinder on it. Otherwise ignore it
-   */
 
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
@@ -39,9 +39,16 @@ def launch_grinders(List<Map<String, Object>> json) {
   }
 }
 
+/**
+  Consumes git token and triggers issue_tracker 
+  Generates output.json
+  */
 def trigger_issue_status() {
+
   sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
+
     if (${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}) {
+
       withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "exoprt AQA_ISSUE_TRACKER_GITHUB_USER = $USERNAME
           export AQA_ISSUE_TRACKER_GITHUB_TOKEN = $PASSWORD
