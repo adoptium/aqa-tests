@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <playlist>
 	<test>
+		<NewTestCaseName>ParallelStreamsLoadTest_special_J9</NewTestCaseName>
+	</test>
+	<test>
 		<a>
 			<b>
 				<c>
@@ -9,6 +12,10 @@
 			</b>
 		</a>
 		<disables_new_name>
+			<disable>
+				<!--Missing "comment" node-->
+				<variation>Mode110-OSRG</variation>
+			</disable>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
 				<variation>misspelled-variation</variation>
