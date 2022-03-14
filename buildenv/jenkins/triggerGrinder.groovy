@@ -7,7 +7,7 @@ node {
   stage('Triggering python script')
   {
     sh """ls -1dq ${WORKSPACE}/aqa-tests/openjdk/excludes/* | 
-    python ${WORKSPACE}/aqa-tests/scripts/disabled_tests/exclude_parser.py > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/problem_list.json"""
+    python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/exclude_parser.py > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/problem_list.json"""
     trigger_issue_status()
   }
   stage('readJSON') {
@@ -53,7 +53,7 @@ def trigger_issue_status() {
       withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh """exoprt AQA_ISSUE_TRACKER_GITHUB_USER = ${USERNAME}
           export AQA_ISSUE_TRACKER_GITHUB_TOKEN = ${PASSWORD}
-          python ${WORKSPACE}/aqa-tests/scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/scripts/disabled_tests/output.json"""
+          python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/scripts/disabled_tests/output.json"""
       }
     }
 	}
