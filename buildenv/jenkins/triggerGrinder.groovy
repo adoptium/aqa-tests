@@ -50,8 +50,8 @@ def trigger_issue_status() {
     if (${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}) {
 
       withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "exoprt AQA_ISSUE_TRACKER_GITHUB_USER = $USERNAME
-          export AQA_ISSUE_TRACKER_GITHUB_TOKEN = $PASSWORD
+          sh "exoprt AQA_ISSUE_TRACKER_GITHUB_USER = ${USERNAME}
+          export AQA_ISSUE_TRACKER_GITHUB_TOKEN = ${PASSWORD}
           python3 scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/scripts/disabled_tests/output.json"
       }
     }
