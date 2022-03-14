@@ -6,7 +6,8 @@ node {
   checkout scm
   stage('Triggering python script')
   {
-    sh "ls -1dq ${WORKSPACE}/aqa-tests/openjdk/excludes/* | python ${WORKSPACE}/aqa-tests/scripts/disabled_tests/exclude_parser.py > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/problem_list.json"
+    sh """ls -1dq ${WORKSPACE}/aqa-tests/openjdk/excludes/* | 
+    python ${WORKSPACE}/aqa-tests/scripts/disabled_tests/exclude_parser.py > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/problem_list.json"""
     trigger_issue_status()
   }
   stage('readJSON') {
