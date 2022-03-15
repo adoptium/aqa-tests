@@ -142,13 +142,14 @@ function parse_tag() {
 
 function parse_docker_args() {
 # parse docker_args to two variable: mountV and  imageArg
+	mountV=""; 
 	while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		opt="$1";
 		shift; 
 
 		case "$opt" in
 			"--volume" | "-v" )
-				mountV="-v $1";
+				mountV="${mountV} -v $1 ";
 				shift;;
 			"--image" | "-i" )
 				imageArg="$1"; 
