@@ -251,7 +251,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 def runTest() {
     try {
         timeout(time: 1, unit: 'HOURS') {
-            cleanWs()
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
         if (params.PLATFORM.contains('zos')) {
             /* Ensure correct CC env */
