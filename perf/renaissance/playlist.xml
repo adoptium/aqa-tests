@@ -62,6 +62,11 @@
 				<comment>runtimes/infrastructure/issues/5444</comment>
 				<vendor>ibm</vendor>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3469#issuecomment-1069761683</comment>
+				<version>18</version>
+				<platform>ppc64_aix</platform>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)chi-square.json$(Q) chi-square; \
 		$(TEST_STATUS)</command>
