@@ -385,7 +385,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							}
 							choiceParam('PARALLEL', PARALLEL_LIST, '''Optional. Parallel mode: <br/>
 							None // run test(s) in serial <br/>
-							Dynamic // dynamically divides tests according to NUM_MACHINES and runs them in parallel. Please also provide NUM_MACHINES. <br/>
+							Dynamic // dynamically divides tests according to NUM_MACHINES or TEST_TIME and runs them in parallel. Please also provide NUM_MACHINES or TEST_TIME. <br/>
 							NodesByIterations // run the same test(s) in parallel according to NUM_MACHINES. You can also provide ITERATIONS. This is mainly for debugging intermittent issues. <br/>
 							Subdir // run tests in parallel according to subdir. This is mainly for external tests.''')
 							stringParam('NUM_MACHINES', NUM_MACHINES, '''Optional. It has to be used with PARALLEL=Dynamic or PARALLEL=NodesByIterations<br/>
