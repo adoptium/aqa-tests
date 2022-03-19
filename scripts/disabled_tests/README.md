@@ -48,6 +48,9 @@ python -m pytest tests\test_playlist_parser.py
 ```
 
 ## `exclude_parser.py`
+
+Generate disabled test list JSON file from exclude/ProblemList*.txt files
+
 ### Usage
 
 ```
@@ -83,6 +86,13 @@ python scripts/disabled_tests/exclude_parser.py -v > /dev/null
 
 
 ## `playlist_parser.py`
+
+Generate disabled test list JSON file from playlist.xml files
+
+This script does not rely on [the XSD format](https://github.com/adoptium/TKG/blob/master/resources/playlist.xsd)
+enforced on playlist files in the Adoptium repos. Instead, the parser looks for and fetches only the nodes that are
+required in the JSON output. (see defined XML tags in each dataclass for nodes which are considered essential)
+
 ### Usage
 
 ```
@@ -117,6 +127,9 @@ python scripts/disabled_tests/playlist_parser.py -v > /dev/null
 
 
 ## `issue_status.py`
+
+Fetch issue status for each disabled test
+
 ### Usage
 
 ```
