@@ -632,7 +632,6 @@ testJavaVersion()
 			TEST_JDK_HOME=${java_dir}/../
 			echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 		else
-			echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 			echo "Cannot find javac under TEST_JDK_HOME: ${TEST_JDK_HOME}!"
 			exit 1
 		fi
