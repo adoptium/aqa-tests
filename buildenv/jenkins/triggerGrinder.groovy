@@ -46,7 +46,7 @@ def launch_grinders(List<Map<String, Object>> json) {
   */
 def trigger_issue_status() {
 
-  if (${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}) {
+  if (params.AQA_ISSUE_TRACKER_CREDENTIAL_ID) {
     withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         sh """exoprt AQA_ISSUE_TRACKER_GITHUB_USER = ${USERNAME}
         export AQA_ISSUE_TRACKER_GITHUB_TOKEN = ${PASSWORD}
