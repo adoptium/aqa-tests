@@ -587,7 +587,6 @@ testJavaVersion()
 	if [ "$TEST_JDK_HOME" = "" ]; then
 		TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
 	fi
-	echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 	_java=${TEST_JDK_HOME}/bin/java
 	_release=${TEST_JDK_HOME}/release
 	# Code_Coverage use different _java through searching javac for now, following path will be modified after refining files from BUILD
@@ -600,6 +599,7 @@ testJavaVersion()
 		echo "=JAVA VERSION OUTPUT BEGIN="
 		${_java} -version
 		echo "=JAVA VERSION OUTPUT END="
+		echo "TEST_JDK_HOME=${TEST_JDK_HOME}" > ${TESTDIR}/job.properties
 		if [ -e ${_release} ]; then
 			echo "=RELEASE INFO BEGIN="
 			cat ${_release}
