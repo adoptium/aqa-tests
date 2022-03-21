@@ -471,14 +471,11 @@ def setup() {
 
 def getJobProperties() {
 	def jobProperties = "./aqa-tests/job.properties"
-	if (fileExists("${jobProperties}")) {
-		echo "readProperties file: ${jobProperties}"
-		def properties = readProperties file: "${jobProperties}"
-		if (properties.TEST_JDK_HOME) {
-			env.TEST_JDK_HOME = properties.TEST_JDK_HOME
-			echo "Reset TEST_JDK_HOME to ${TEST_JDK_HOME}"
-		}
-	}
+	echo "readProperties file: ${jobProperties}"
+	def properties = readProperties file: "${jobProperties}"
+	env.TEST_JDK_HOME = properties.TEST_JDK_HOME
+	echo "Reset TEST_JDK_HOME to ${TEST_JDK_HOME}"
+
 }
 
 def get_sources_with_authentication() {
