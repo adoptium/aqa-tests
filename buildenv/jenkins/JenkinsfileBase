@@ -477,8 +477,10 @@ def getJobProperties() {
 			env.TEST_JDK_HOME = properties.TEST_JDK_HOME
 			echo "Set TEST_JDK_HOME to ${TEST_JDK_HOME}"
 		} else {
-			error("Cannot find ${jobProperties} file")
+			error("Cannot find TEST_JDK_HOME in ${jobProperties}")
 		}
+	} else {
+		error("Cannot find ${jobProperties} file")
 	}
 }
 
