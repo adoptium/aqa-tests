@@ -415,16 +415,15 @@ print_test_results() {
 print_test_files() {
     local file=$1
     local test=$2
-    local script=$3
-    local localPropertyFile=$4
+    local localPropertyFile=$3
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
-                "\nCOPY external_custom/dockerfile/${script} /${script}" \
+                "\nCOPY external_custom/dockerfile/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     else
         echo -e "# This is the main script to run ${test} tests" \
-                "\nCOPY ${test}/dockerfile/${script} /${script}" \
+                "\nCOPY ${test}/dockerfile/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     fi
     if [[ ! -z ${localPropertyFile} ]]; then
@@ -476,13 +475,12 @@ print_external_custom_parameters(){
 
 print_entrypoint() {
     local file=$1
-    local script=$2
-    local os=$3
+    local os=$2
 
     if [[ "${os}" = "alpine" ]]; then
-        echo -e "ENTRYPOINT [\"/bin/ash\", \"/${script}\"]" >> ${file}
+        echo -e "ENTRYPOINT [\"/bin/ash\", \"/test.sh\"]" >> ${file}
     else
-        echo -e "ENTRYPOINT [\"/bin/bash\", \"/${script}\"]" >> ${file}
+        echo -e "ENTRYPOINT [\"/bin/bash\", \"/test.sh\"]" >> ${file}
     fi
 }
 
@@ -584,13 +582,13 @@ generate_dockerfile() {
     print_home_path ${file} ${github_url};
     print_testInfo_env ${test} ${tag_version} ${os}
     print_clone_project ${file} ${test} ${github_url};
-    print_test_files ${file} ${test} ${script} ${localPropertyFile};
+    print_test_files ${file} ${test} ${localPropertyFile};
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};
-    print_entrypoint ${file} ${script} ${os};
+    print_entrypoint ${file} ${os};
 
     if [[ ! -z ${testtarget} ]]; then
         print_cmd ${file} ${testtarget};
