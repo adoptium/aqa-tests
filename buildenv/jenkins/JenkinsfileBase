@@ -78,7 +78,6 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
-	env.PARALLEL_CHILDREN = ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -971,8 +970,10 @@ def addGrinderLink() {
 def addFailedTestsGrinderLink(){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
-		def tapFiles = findFiles(glob: "**/*.tap")
-		echo "current build ${currentBuild.id}, ${currentBuild.name}"
+		def buildID = currentBuild.id
+		def name = currentBuild.projectName
+		def tapFiles = findFiles(glob: "${name}/${buildID}/**/*.tap")
+		echo "current build ${buildID}, ${name}"
 		def failedTestList = "testList+TESTLIST="
 		for (def tapFile: tapFiles) {
 			echo "Tap file found: ${tapFile}"
@@ -1008,7 +1009,6 @@ def run_parallel_tests() {
 						def childResult = cjob.value.getCurrentResult()
 						try {
 							echo "${name} #${buildId} completed with status ${childResult}"
-							env.PARALLEL_CHILDREN += "${name}:${buildId} "
 							timeout(time: 1, unit: 'HOURS') {
 								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
