@@ -419,11 +419,11 @@ print_test_files() {
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
-                "\nCOPY external_custom/dockerfile/test.sh /test.sh" \
+                "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     else
         echo -e "# This is the main script to run ${test} tests" \
-                "\nCOPY ${test}/dockerfile/test.sh /test.sh" \
+                "\nCOPY ${test}/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
     fi
     if [[ ! -z ${localPropertyFile} ]]; then
