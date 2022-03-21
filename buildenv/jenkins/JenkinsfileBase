@@ -475,9 +475,9 @@ def getJobProperties() {
 		def properties = readProperties file: "${jobProperties}"
 		if (properties.TEST_JDK_HOME) {
 			env.TEST_JDK_HOME = properties.TEST_JDK_HOME
-			echo "Reset TEST_JDK_HOME to ${TEST_JDK_HOME}"
+			echo "Set TEST_JDK_HOME to ${TEST_JDK_HOME}"
 		} else {
-			error("Build failed as TEST_JDK_HOME not being correctly output from get.sh")
+			error("Cannot find ${jobProperties} file")
 		}
 	}
 }
