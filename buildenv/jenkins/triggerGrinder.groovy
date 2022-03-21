@@ -2,7 +2,7 @@
 
 List<Map<String, Object>> json = []
 
-node {
+node (params.LABEL) {
   checkout scm
   stage('Triggering python script')
   {
