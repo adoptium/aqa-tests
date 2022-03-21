@@ -47,9 +47,9 @@ def launch_grinders(List<Map<String, Object>> json) {
 def trigger_issue_status() {
 
   if (params.AQA_ISSUE_TRACKER_CREDENTIAL_ID) {
-    withCredentials([usernamePassword(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", variable: 'PASSWORD')]) {
+    withCredentials([string(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", variable: 'TOKEN')]) {
         sh """exoprt AQA_ISSUE_TRACKER_GITHUB_USER = eclipse_aqavit
-        export AQA_ISSUE_TRACKER_GITHUB_TOKEN = ${PASSWORD}
+        export AQA_ISSUE_TRACKER_GITHUB_TOKEN = ${TOKEN}
         python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/scripts/disabled_tests/output.json"""
     }
   }
