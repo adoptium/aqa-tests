@@ -980,7 +980,9 @@ def addGrinderLink() {
 def addFailedTestsGrinderLink(){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
-		def tapFiles = findFiles(glob: "**/*.tap")
+		def buildId = currentBuild.id
+		def buildName = currentBuild.projectName
+		def tapFiles = findFiles(glob: "${buildName}/${buildId}/**/*.tap")
 		def failedTestList = "testList+TESTLIST="
 		for (def tapFile: tapFiles) {
 			echo "Tap file found: ${tapFile}"
