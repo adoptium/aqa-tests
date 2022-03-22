@@ -37,14 +37,14 @@ python -m unittest discover tests
 #### Individual tests
 ```shell
 # in scripts/disabled_tests
-python -m unittest tests\test_playlist_parser.py
+python -m unittest tests/test_playlist_parser.py
 ```
 
 #### (Optional) run with `pytest` for better error reporting
 
 ```shell
 # in scripts/disabled_tests
-python -m pytest tests\test_playlist_parser.py
+python -m pytest tests/test_playlist_parser.py
 ```
 
 ## `exclude_parser.py`
