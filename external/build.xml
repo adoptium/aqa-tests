@@ -84,9 +84,6 @@
 	</target>
 
 	<target name="move_scripts" description="move shell scripts to working directory">
-		<copy todir="${DEST_EXTERNAL}/${TEST}/dockerfile">
-			<fileset dir="${src}/dockerfile" includes="*.sh"/>
-		</copy>
 		<copy todir="${DEST_EXTERNAL}/${TEST}">
 			<fileset dir="${src}/" includes="*.sh, *.properties"/>
 		</copy>
