@@ -396,7 +396,7 @@ print_cmd() {
     local file=$1
     local cmd=$2
 
-    echo -e "CMD [\"${cmd}\"]" >> ${file}
+    echo -e "\nCMD [\"${cmd}\"]" >> ${file}
 }
 
 remove_trailing_spaces() {
@@ -420,7 +420,6 @@ generate_dockerfile() {
     package=$6
     build=$7
     check_external_custom_test=$8
-    testtarget=$9
 
     if [[ ${check_external_custom_test} -eq 1 ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
@@ -495,8 +494,8 @@ generate_dockerfile() {
     print_workdir ${file};
     print_entrypoint ${file};
 
-    if [[ ! -z ${testtarget} ]]; then
-        print_cmd ${file} ${testtarget};
+    if [[ ! -z ${test_options} ]]; then
+        print_cmd ${file} "${test_options}";
     fi
 
     remove_trailing_spaces ${file};
