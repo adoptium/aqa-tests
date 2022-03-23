@@ -982,7 +982,7 @@ def addFailedTestsGrinderLink(){
 		echo "Fetching Tap files..."
 		def buildId = currentBuild.id
 		def buildName = currentBuild.projectName
-		def tapFiles = findFiles(glob: "${buildName}/${buildId}/**/*.tap")
+		def tapFiles = findFiles(glob: "/${buildName}/${buildId}/**/*.tap")
 		echo "Path is ${buildName}/${buildId}/**/*.tap"
 		def failedTestList = "testList+TESTLIST="
 		for (def tapFile: tapFiles) {
