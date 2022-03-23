@@ -373,7 +373,8 @@ def setup() {
 			setupEnv()
 
 			if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
-				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+				// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
+				CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
 			} else if (params.CUSTOMIZED_SDK_URL) {
 				SDK_RESOURCE = "customized"
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
