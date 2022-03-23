@@ -328,6 +328,17 @@ public class JavaTestRunner {
 			bw.flush();
 			bw.close();
 		}
+
+		if ( getJckVersionInt(jckVersionNo) >= 18 && tests.contains("api/java_net") ) {
+			// Requires SHA1 enabling for jar signers in jdk-18+
+			secPropsFile = resultDir + File.separator + "security.properties";
+			System.out.println("Custom security properties to be stored in: " + secPropsFile);
+			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024";
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile)));
+			bw.write(secPropsContents);
+			bw.flush();
+			bw.close();
+		}
 		
 		if ( tests.contains("api/javax_xml") ) {
 			// Requires SHA1 enabling
@@ -1148,7 +1159,7 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml")) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 18 && tests.contains("api/java_net")) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
