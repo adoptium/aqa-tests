@@ -323,8 +323,13 @@ public class JavaTestRunner {
 			secPropsFile = resultDir + File.separator + "security.properties";
 			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, anon, NULL, include jdk.disabled.namedCurves";
+			String secPropsJarAddition = "jdk.jar.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, anon, NULL, include jdk.disabled.namedCurves";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile))); 
 			bw.write(secPropsContents); 
+			if (getJckVersionInt(jckVersionNo) > 17) {
+				bw.newLine();
+				bw.write(secPropsJarAddition);
+			}
 			bw.flush();
 			bw.close();
 		}
