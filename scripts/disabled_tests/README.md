@@ -26,7 +26,31 @@ Python 3.8+
 pip install -r requirements.txt
 ```
 
+### Running unittests
+
+#### All tests
+```shell
+# in scripts/disabled_tests
+python -m unittest discover tests
+```
+
+#### Individual tests
+```shell
+# in scripts/disabled_tests
+python -m unittest tests/test_playlist_parser.py
+```
+
+#### (Optional) run with `pytest` for better error reporting
+
+```shell
+# in scripts/disabled_tests
+python -m pytest tests/test_playlist_parser.py
+```
+
 ## `exclude_parser.py`
+
+Generate disabled test list JSON file from exclude/ProblemList*.txt files
+
 ### Usage
 
 ```
@@ -60,7 +84,52 @@ ls -1dq openjdk/excludes/* |
 python scripts/disabled_tests/exclude_parser.py -v > /dev/null
 ```
 
+
+## `playlist_parser.py`
+
+Generate disabled test list JSON file from playlist.xml files
+
+This script does not rely on [the XSD format](https://github.com/adoptium/TKG/blob/master/resources/playlist.xsd)
+enforced on playlist files in the Adoptium repos. Instead, the parser looks for and fetches only the nodes that are
+required in the JSON output. (see defined XML tags in each dataclass for nodes which are considered essential)
+
+### Usage
+
+```
+usage: playlist_parser.py [-h] [--outfile OUTFILE] [--verbose]
+
+Generate disabled test list JSON file from playlist.xml files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --outfile OUTFILE, -o OUTFILE
+                        Output file, defaults to stdout
+  --verbose, -v         Enable info logging level, debug level if -vv
+```
+
+#### Query playlist.xml files excluding scripts directory and output to file
+```shell
+find . -name "playlist.xml" -not -path "scripts" |
+python scripts/disabled_tests/playlist_parser.py > playlist_problem_list.json
+```
+
+#### Query aqa-tests and openj9 repo, output to file and save debug log
+```shell
+find ./aqa-tests ./openj9 -name "playlist.xml"
+python scripts/disabled_tests/playlist_parser.py -vv > playlist_problem_list.json 2> debug.log
+```
+
+#### Dry run to see info, errors and warnings
+```shell
+find . -name "playlist.xml" |
+python scripts/disabled_tests/playlist_parser.py -v > /dev/null
+```
+
+
 ## `issue_status.py`
+
+Fetch issue status for each disabled test
+
 ### Usage
 
 ```

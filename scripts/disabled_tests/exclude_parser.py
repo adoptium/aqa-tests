@@ -5,11 +5,10 @@ import argparse
 import re
 import logging
 import sys
-from typing import Set, List, ClassVar, Optional, Iterable
+from typing import List, ClassVar, Optional, Iterable
 
-from common.models import Scheme
-
-DEFAULT_TARGET = "jdk_custom"
+from common.models import Scheme, JdkInfo
+from common.utils import to_shallow_dict, DEFAULT_TARGET
 
 logging.basicConfig(
     format="%(levelname)s - %(message)s"
@@ -28,13 +27,6 @@ ARCH_EXCEPTIONS = {
 }
 
 
-def to_shallow_dict(dt) -> dict:
-    """
-    Convert a dataclass instance to a shallow (only 1 level) dictionary
-    """
-    return {field.name: getattr(dt, field.name) for field in datacls.fields(dt)}
-
-
 class ExclusionFileProcessingException(Exception):
     pass
 
@@ -43,12 +35,6 @@ class TestExclusionProcessingException(Exception):
     def __init__(self, message: str, test_excl=None, *args):
         self.test_excl = test_excl
         super().__init__(message, *args)
-
-
-@datacls.dataclass
-class JdkInfo:
-    version: str
-    implementation: str
 
 
 @datacls.dataclass
@@ -74,7 +60,7 @@ class ExcludeFileInfo:
 
         return JdkInfo(
             version=match.group('jdk_version'),
-            implementation=match.group('jdk_impl') or "hotspot"
+            implementation=match.group('jdk_impl'),
         )
 
     @classmethod
