@@ -50,7 +50,7 @@ def trigger_issue_status() {
     withCredentials([string(credentialsId: "${params.AQA_ISSUE_TRACKER_CREDENTIAL_ID}", variable: 'TOKEN')]) {
         sh """export AQA_ISSUE_TRACKER_GITHUB_USER=eclipse_aqavit
         export AQA_ISSUE_TRACKER_GITHUB_TOKEN=${TOKEN}
-        python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/issue_status.py --infile problem_list.json > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/output.json"""
+        python3 ${WORKSPACE}/aqa-tests/scripts/disabled_tests/issue_status.py --infile ${WORKSPACE}/aqa-tests/scripts/disabled_tests/problem_list.json > ${WORKSPACE}/aqa-tests/scripts/disabled_tests/output.json"""
     }
   }
 }
