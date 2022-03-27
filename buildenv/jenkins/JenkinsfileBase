@@ -78,6 +78,7 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
+	env.FAILED_PARALLEL_TEST_PATH = ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -981,6 +982,7 @@ def addGrinderLink() {
 def addFailedTestsGrinderLink(){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
+		echo "Path ${env.FAILED_PARALLEL_TEST_PATH}"
 		def tapFiles = findFiles(glob: "**/*.tap")
 		def failedTestList = "testList+TESTLIST="
 		for (def tapFile: tapFiles) {
@@ -1021,6 +1023,7 @@ def run_parallel_tests() {
 								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
 							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+							env.FAILED_PARALLEL_TEST_PATH += "${name}/${buildId}/,"
 						} catch (Exception e) {
 							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 							buildResult = childResult
