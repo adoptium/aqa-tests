@@ -65,16 +65,16 @@ def run_grinder(Map<String, Object> map) {
     if (k != "ISSUE_TRACKER_STATUS" && k != "ISSUE_TRACKER") {
       childParams << string(name: "${k}", value: "${v}")
       if (k == "TARGET") {
-        def target = k
+        def target = v
       }
       else if (k == "PLATFORM") {
-        def platform = k
+        def platform = v
       }
       else if (k == "JDK_VERSION") {
-        def jdk_version = k
+        def jdk_version = v
       }
       else if (k == "JDK_IMPL") {
-        def jdk_impl = k
+        def jdk_impl = v
       }
     }
   }
