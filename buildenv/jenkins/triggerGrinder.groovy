@@ -61,10 +61,15 @@ def trigger_issue_status() {
  */
 def run_grinder(Map<String, Object> map) {
   def childParams = []
-
   map.each { k, v ->
     if (k != "ISSUE_TRACKER_STATUS" && k != "ISSUE_TRACKER") {
       childParams << string(name: "${k}", value: "${v}")
+      if (k == "TARGET") {
+        def target = k
+      }
+      else if (k == "PLATFORM") {
+        def platform = k
+      }
     }
   }
 
@@ -72,5 +77,9 @@ def run_grinder(Map<String, Object> map) {
     println e
   }
 
-  def job = build job: "Grinder", parameters: childParams, propagate: true
+  def jobs = [:]
+  job[${target}_${param.JDK_VERSION}_${param.JDK_IMPL_${platform}}] = {
+    build job: "Grinder", parameters: childParams, propagate: true
+  }
+  parallel jobs
 }
