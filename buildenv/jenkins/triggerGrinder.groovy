@@ -32,7 +32,7 @@ def launch_grinders(List<Map<String, Object>> json) {
 
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
-  def test_jobs = [:]
+  test_jobs = [:]
 
   json.eachWithIndex { dict, _ ->
     if (dict["ISSUE_TRACKER_STATUS"] == "closed" && jdk_ver.contains(dict["JDK_VERSION"].toString()) && jdk_imp.contains(dict["JDK_IMPL"])) {
