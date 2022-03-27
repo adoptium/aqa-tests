@@ -79,6 +79,11 @@ def run_grinder(Map<String, Object> map) {
     }
   }
 
+  println(jdk_impl)
+  println(jdk_version)
+  println(platform)
+  println(target)
+  
   //logic for running jobs in parallel
   def jobs = [:]
   job["${target}${jdk_version}_${jdk_impl}_${platform}"] = {
