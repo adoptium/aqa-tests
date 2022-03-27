@@ -70,12 +70,18 @@ def run_grinder(Map<String, Object> map) {
       else if (k == "PLATFORM") {
         def platform = k
       }
+      else if (k == "JDK_VERSION") {
+        def jdk_version = k
+      }
+      else if (k == "JDK_IMPL") {
+        def jdk_impl = k
+      }
     }
   }
 
   //logic for running jobs in parallel
   def jobs = [:]
-  job["${target}${param.JDK_VERSION}_${param.JDK_IMPL}_${platform}"] = {
+  job["${target}${jdk_version}_${jdk_impl}_${platform}"] = {
     build job: "Grinder", parameters: childParams, propagate: true
   }
   parallel jobs
