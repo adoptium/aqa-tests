@@ -82,7 +82,7 @@ def run_grinder(Map<String, Object> map) {
   }
 
   //logic for running jobs in parallel
-  test_jobs["${target}${platform}_${jdk_impl}_${jdk_version}"] = {
+  test_jobs["${target}_${platform}_${jdk_impl}_${jdk_version}"] = {
     build job: "Grinder", parameters: childParams, propagate: true
   }
 }
