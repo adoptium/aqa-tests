@@ -980,6 +980,7 @@ def addGrinderLink() {
 }
 
 def addFailedTestsGrinderLink(){
+	echo "Path ${env.FAILED_PARALLEL_TEST_PATH}"
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
 		echo "Path ${env.FAILED_PARALLEL_TEST_PATH}"
