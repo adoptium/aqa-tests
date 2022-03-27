@@ -73,12 +73,9 @@ def run_grinder(Map<String, Object> map) {
     }
   }
 
-  for (e in childParams) {
-    println e
-  }
-
+  //logic for running jobs in parallel
   def jobs = [:]
-  job[${target}_${param.JDK_VERSION}_${param.JDK_IMPL_${platform}}] = {
+  job["${target}_${param.JDK_VERSION}_${param.JDK_IMPL}_${platform}"] = {
     build job: "Grinder", parameters: childParams, propagate: true
   }
   parallel jobs
