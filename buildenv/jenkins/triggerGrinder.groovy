@@ -68,16 +68,16 @@ def run_grinder(Map<String, Object> map) {
       childParams << string(name: "${k}", value: "${v}")
     }
     if (k == "TARGET") {
-      def target = v
+      target = v
     }
     else if (k == "PLATFORM") {
-      def platform = v
+      platform = v
     }
     else if (k == "JDK_IMPL") {
-      def jdk_impl = v
+      jdk_impl = v
     }
     else if (k == "JDK_VERSION") {
-      def jdk_version = v
+      jdk_version = v
     }
   }
 
