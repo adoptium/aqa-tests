@@ -32,14 +32,14 @@ def launch_grinders(List<Map<String, Object>> json) {
 
   def jdk_ver = params.JDK_VERSION.split(',')
   def jdk_imp =  params.JDK_IMPL.split(',')
-  def jobs = [:]
+  def test_jobs = [:]
 
   json.eachWithIndex { dict, _ ->
     if (dict["ISSUE_TRACKER_STATUS"] == "closed" && jdk_ver.contains(dict["JDK_VERSION"].toString()) && jdk_imp.contains(dict["JDK_IMPL"])) {
       run_grinder(dict)
     }
   }
-  parallel jobs
+  parallel test_jobs
 }
 
 /**
@@ -82,7 +82,7 @@ def run_grinder(Map<String, Object> map) {
   }
 
   //logic for running jobs in parallel
-  jobs["${jdk_impl}_${platform}"] = {
+  test_jobs["${jdk_impl}_${platform}"] = {
     build job: "Grinder", parameters: childParams, propagate: true
   }
 }
