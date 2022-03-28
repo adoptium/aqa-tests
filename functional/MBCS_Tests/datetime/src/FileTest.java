@@ -34,11 +34,23 @@ import java.io.File;
 public class FileTest{
     private Path tempPath;
     private long version = 0L;
+    private int fileTimeLen;
+    private final static int EPOC_20000101 = 946684800; //Epoc of 2000-0101T00:00:00
+    private final static int NANOS_LEN  = "2000-01-01T00:00:01.001001001Z".length();
+    private final static int MICROS_LEN = "2000-01-01T00:00:01.001001Z".length();
+    private final static int MILLIS_LEN = "2000-01-01T00:00:01.001Z".length();
 
     @Before
     public void generate() {
         try{
             tempPath = Files.createTempFile(Paths.get("."), "FT", "");
+            Instant ins = Instant.ofEpochSecond(EPOC_20000101)
+                                 .plusNanos(1_001_001_001);
+            Files.setLastModifiedTime(tempPath, FileTime.from(ins));
+            FileTime ft = Files.getLastModifiedTime(tempPath,
+                              LinkOption.NOFOLLOW_LINKS);
+            Instant after = ft.toInstant();
+            fileTimeLen = after.toString().length();
         }catch(IOException e) {
             e.printStackTrace();
         }
@@ -96,50 +108,27 @@ public class FileTest{
 
         if (version >= 14_000_000L) {
             // JDK-8181493 enhanced to support nano seconds.
-            if (type.equals("xfs") ||
-                type.equals("ext4")) {
+            if (fileTimeLen >= NANOS_LEN) {
                 assertEquals(ft.toInstant(), insplus);
             }
         } else {
             assertFalse(ft.toString().equals(insplus.toString())); // No nano second support in file
         }
 
-// Micro seconds interval may not be supported 
-/*
+        if (fileTimeLen >= MICROS_LEN) {
             insplus = ins.plus(1L, ChronoUnit.MICROS);
             Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
             ft = Files.getLastModifiedTime(tempPath,
                               LinkOption.NOFOLLOW_LINKS);
-            if (type.equals("NTFS") ||
-                // NTFS supports 100-nanosecond intervals
-                type.equals("ext4") || 
-                type.equals("btrfs") ||
-                type.equals("xfs")
-               ) {
-                isEqualTimeString(ft.toString(), insplus.toString());
-            }else{
-                assertEquals(ft.toInstant(), insplus);
-            }
-*/
-
-        insplus = ins.plusMillis(1);
-        Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
-        ft = Files.getLastModifiedTime(tempPath,
-                          LinkOption.NOFOLLOW_LINKS);
-        if (type.equals("NTFS") ||
-            // NTFS supports 100-nanosecond intervals
-            type.equals("ext4") ||
-            type.equals("btrfs") ||
-            type.equals("xfs")
-           ) {
             isEqualTimeString(ft.toString(), insplus.toString());
-        } else if (type.equals("hfs") ||
-                   type.equals("ZFS")) {
-            // hfs and ZFS (for ZOS; not zfs for Linux) supports
-            // 1 second interval.
-            // Skip the test
-        }else{
-            assertEquals(ft.toInstant(), insplus);
+        }
+
+        if (fileTimeLen >= MILLIS_LEN) {
+            insplus = ins.plusMillis(1);
+            Files.setLastModifiedTime(tempPath, FileTime.from(insplus));
+            ft = Files.getLastModifiedTime(tempPath,
+                              LinkOption.NOFOLLOW_LINKS);
+            isEqualTimeString(ft.toString(), insplus.toString());
         }
 
         insplus = ins.plusSeconds(1);
@@ -147,10 +136,7 @@ public class FileTest{
         ft = Files.getLastModifiedTime(tempPath,
                           LinkOption.NOFOLLOW_LINKS);
         if (type.indexOf("FAT") != -1){
-            // FAT16/FAT32 supports 1-day intervals
-            // exFAT supports 2-second intervals
-            //assertNotEquals(ft.toString(), insplus.toString());
-            assertFalse(ft.toString().equals(insplus.toString()));
+            // Skip: FAT16/FAT32/exFAT support 2-second intervals
         }else{
             isEqualTimeString(ft.toString(), insplus.toString());
         }

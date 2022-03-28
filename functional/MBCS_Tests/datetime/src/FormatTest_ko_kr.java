@@ -84,12 +84,17 @@ public class FormatTest_ko_kr{
         }
 */
         date = LocalDate.of(2014, 3, 1);
+        boolean isJdk19orUp = JavaVersion.getVersion() >= 19_000_000L;
         for (int i=0;i<31;i++) {
             str = date.format(DateTimeFormatter.ofPattern(
                                 "F",
                                 Locale.KOREAN));
-            String expected = Integer.valueOf(i%7+1).toString();
-            assertEquals(expected, str); // 3/1=1, 3/2=2
+            // Specification was changed by JDK-8282081
+            int v = isJdk19orUp
+                    ? i/7+1  // Mar/1~7=1, Mar/8~14=2,...
+                    : i%7+1; // Mar/1=1, Mar/2=2,...Mar/8=1,...
+            String expected = Integer.valueOf(v).toString();
+            assertEquals(expected, str);
             date = date.plusDays(1);
         }
     }
