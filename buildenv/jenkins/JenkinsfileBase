@@ -981,9 +981,12 @@ def addGrinderLink() {
 
 def addFailedTestsGrinderLink(){
 	echo "Path ${env.FAILED_PARALLEL_TEST_PATH}"
+	def testTests = env.FAILED_PARALLEL_TEST_PATH.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
+	for (def testTest: testTests) {
+		echo "Lookup ${testTest}"
+	}
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
-		echo "Path ${env.FAILED_PARALLEL_TEST_PATH}"
 		def tapFiles = findFiles(glob: "**/*.tap")
 		def failedTestList = "testList+TESTLIST="
 		for (def tapFile: tapFiles) {
