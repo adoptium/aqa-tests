@@ -24,6 +24,16 @@ make
 make install
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/tmp/apr-build/lib"
 
+git clone -q https://github.com/apache/tomcat-native.git $HOME/tmp/tomcat-native
+cd $HOME/tmp/tomcat-native/native
+sh buildconf --with-apr=$HOME/tmp/apr
+./configure --with-apr=$HOME/tmp/apr --with-java-home=$JAVA_HOME --with-ssl=yes --prefix=$HOME/tmp/tomcat-native-build
+make
+make install
+cd $CURR_PWD
+yes | cp build.properties.default build.properties
+echo >> build.properties
+
 set -e
 echo "Building tomcat" && \
 cp build.properties.default build.properties && \
