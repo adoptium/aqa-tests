@@ -981,9 +981,26 @@ def addGrinderLink() {
 
 def addFailedTestsGrinderLink(){
 	def testTests = env.FAILED_PARALLEL_TEST_PATH.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
-	for (def testTest: testTests) {
-		echo "Lookup ${testTest}"
+	echo "Fetching Tap files..."
+	def failedTestList = "testList+TESTLIST="
+	if ("".equals(env.FAILED_PARALLEL_TEST_PATH.substring)) {
+		def buildId = currentBuild.id
+		def name = currentBuild.projectName
+		def tapFiles = findFiles(glob: "${name}/${buildId}/**/*.tap")
+		for (def tapFile: tapFiles) {
+			echo "Tap file found: ${tapFile}"
+			def file = readFile(file: "${tapFile}")
+			TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+			TestSet testSet = tapConsumer.load(file)
+			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+					def testCase = testSet.getTestResult(i).getDescription().substring(2)
+					failedTestList += "$testCase,"
+				}
+			}
+		}
 	}
+	echo "Goodie, ${testCase}"
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
