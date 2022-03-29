@@ -16,6 +16,14 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
+git clone -q -b 1.6.x --single-branch https://github.com/apache/apr.git $HOME/tmp/apr
+cd $HOME/tmp/apr
+./buildconf
+./configure --prefix=$HOME/tmp/apr-build
+make
+make install
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/tmp/apr-build/lib"
+
 set -e
 echo "Building tomcat" && \
 cp build.properties.default build.properties && \
