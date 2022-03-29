@@ -16,21 +16,22 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
-git clone -q -b 1.6.x --single-branch https://github.com/apache/apr.git $HOME/tmp/apr
-cd $HOME/tmp/apr
+export CURRENT=`pwd`
+git clone -q -b 1.6.x --single-branch https://github.com/apache/apr.git $CURRENT/tmp/apr
+cd $CURRENT/tmp/apr
 ./buildconf
-./configure --prefix=$HOME/tmp/apr-build
+./configure --prefix=$CURRENT/tmp/apr-build
 make
 make install
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/tmp/apr-build/lib"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$CURRENT/tmp/apr-build/lib"
 
-git clone -q https://github.com/apache/tomcat-native.git $HOME/tmp/tomcat-native
-cd $HOME/tmp/tomcat-native/native
-sh buildconf --with-apr=$HOME/tmp/apr
-./configure --with-apr=$HOME/tmp/apr --with-java-home=$JAVA_HOME --with-ssl=yes --prefix=$HOME/tmp/tomcat-native-build
+git clone -q https://github.com/apache/tomcat-native.git $CURRENT/tmp/tomcat-native
+cd $CURRENT/tmp/tomcat-native/native
+sh buildconf --with-apr=$CURRENT/tmp/apr
+./configure --with-apr=$CURRENT/tmp/apr --with-java-home=$JAVA_HOME --with-ssl=yes --prefix=$CURRENT/tmp/tomcat-native-build
 make
 make install
-cd $CURR_PWD
+cd $CURRENT
 yes | cp build.properties.default build.properties
 echo >> build.properties
 
