@@ -200,6 +200,7 @@ function set_test_info() {
     echo ${path_to_file}    
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
+    test_options=$(getProperty "test_options")
     test_results=$(getProperty "test_results")
     ant_version=$(getProperty "ant_version")
     ivy_version=$(getProperty "ivy_version")
