@@ -683,16 +683,11 @@ def post(output_name) {
 
 		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
-
-		//Defining the files to be archived
-		def testenvFile = "aqa-tests/testenv/testenv.properties"
-		def shaFile = "aqa-tests/TKG/SHA.txt"
-		def AQACertFile = "aqa-tests/TKG/AQACert.log"
-
-		//call the archive function for each file
-		archiveFile(testenvFile)
-		archiveFile(shaFile)
-		archiveFile(AQACertFile)
+			//call the archive function for each file
+			archiveFile("aqa-tests/testenv/testenv.properties")
+			archiveFile("aqa-tests/TKG/SHA.txt")
+			archiveFile("aqa-tests/TKG/AQACert.log")
+			archiveFile("**/*.tap")
 
 		if (env.BUILD_LIST.startsWith('jck')) {
 			xunit (

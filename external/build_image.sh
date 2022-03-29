@@ -21,14 +21,13 @@ buildArg=""
 if [ $# -ne 8 ] && [ $# -ne 7 ]; then
 	echo "The supported tests are ${supported_tests}"
 	echo
-	echo "usage: $0 test version vm os package build check_external_custom [testtarget]"
+	echo "usage: $0 test version vm os package build check_external_custom"
 	echo "test    = ${supported_tests}"
 	echo "version = ${supported_versions}"
 	echo "vm      = ${supported_jvms}"
 	echo "os      = ${supported_os}"
 	echo "package = ${supported_packages}"
 	echo "build   = ${supported_builds}"
-	echo "testtarget" = "Optional: CMD to pass to ENTRYPOINT script from Dockerfile"
 	echo "buildArg" = "Optional: customized image"
 	exit -1
 fi
@@ -83,7 +82,7 @@ mkdir -p ${dir}
 file="${dir}/Dockerfile.${vm}.${build}"
 
 # Generate Dockerfile
-generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${check_external_custom} ${testtarget} 
+generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${check_external_custom}
 
 # Check if Dockerfile exists
 if [ ! -f ${file} ]; then

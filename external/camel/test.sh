@@ -22,7 +22,7 @@ export MAVEN_OPTS="-Xmx1g"
 
 pwd
 echo "Compile and run camel tests"
-mvn clean install
+mvn --batch-mode clean install
 test_exit_code=$?
 echo "Build camel completed"
 
