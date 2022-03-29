@@ -19,7 +19,7 @@ echo_setup
 cd org.jacoco.build
 pwd
 echo "Compile and run jacoco tests"
-mvn clean verify
+mvn --batch-mode clean verify
 test_exit_code=$?
 echo "Build jacoco completed"
 
