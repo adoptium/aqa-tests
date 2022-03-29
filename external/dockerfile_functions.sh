@@ -133,8 +133,8 @@ print_ant_install() {
           "\nENV ANT_VERSION=\$ANT_VERSION" \
           "\nENV ANT_HOME=/opt/ant" \
           "\n\n# Install Ant" \
-          "\nRUN wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-\${ANT_VERSION}-bin.tar.gz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-\${ANT_VERSION}-bin.tar.gz.sha512 \\" >> ${file}
+          "\nRUN wget --no-verbose --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-\${ANT_VERSION}-bin.tar.gz \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies http://archive.apache.org/dist/ant/binaries/apache-ant-\${ANT_VERSION}-bin.tar.gz.sha512 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat apache-ant-\${ANT_VERSION}-bin.tar.gz.sha512) apache-ant-\${ANT_VERSION}-bin.tar.gz\" | sha512sum -c \\" >> ${file}
 
@@ -155,8 +155,8 @@ print_ant_contrib_install() {
     echo -e "ARG ANT_CONTRIB_VERSION=${ant_contrib_version}" \
           "\nENV ANT_CONTRIB_VERSION=\$ANT_CONTRIB_VERSION" \
           "\n\n# Install Ant Contrib" \
-          "\nRUN wget --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5 \\" >> ${file}
+          "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5) ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz\" | md5sum -c \\" >> ${file}
 
@@ -177,8 +177,8 @@ print_sbt_install() {
           "\nENV SBT_VERSION=\$SBT_VERSION" \
           "\nENV SBT_HOME=/opt/sbt" \
           "\n\n# Install SBT" \
-          "\nRUN wget --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz.asc \\" \
+          "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://github.com/sbt/sbt/releases/download/v\${SBT_VERSION}/sbt-\${SBT_VERSION}.tgz.asc \\" \
           "\n\t&& curl \"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823\" | gpg --import \\" \
           "\n\t&& gpg --verify sbt-\${SBT_VERSION}.tgz.asc sbt-\${SBT_VERSION}.tgz \\" \
           "\n\t&& tar -zvxf sbt-\${SBT_VERSION}.tgz -C /opt/ \\" \
@@ -198,8 +198,8 @@ print_gradle_install() {
           "\nENV GRADLE_VERSION=\$GRADLE_VERSION" \
           "\nENV GRADLE_HOME /opt/gradle" \
           "\n\n# Install Gradle" \
-          "\nRUN wget --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip.sha256 \\" >> ${file}
+          "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip.sha256 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat gradle-\${GRADLE_VERSION}-bin.zip.sha256) gradle-\${GRADLE_VERSION}-bin.zip\" | sha256sum -c \\" >> ${file}
 
@@ -218,8 +218,8 @@ print_ivy_install() {
     echo -e "ARG IVY_VERSION=${ivy_version}" \
           "\nENV IVY_VERSION=\$IVY_VERSION" \
           "\n\n# Install Ivy" \
-          "\nRUN wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/\${IVY_VERSION}/apache-ivy-\${IVY_VERSION}-bin.tar.gz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/\${IVY_VERSION}/apache-ivy-\${IVY_VERSION}-bin.tar.gz.sha512 \\" >> ${file}
+          "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/\${IVY_VERSION}/apache-ivy-\${IVY_VERSION}-bin.tar.gz \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://archive.apache.org/dist/ant/ivy/\${IVY_VERSION}/apache-ivy-\${IVY_VERSION}-bin.tar.gz.sha512 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat apache-ivy-\${IVY_VERSION}-bin.tar.gz.sha512) apache-ivy-\${IVY_VERSION}-bin.tar.gz\" | sha512sum -c \\" >> ${file}
 
@@ -238,8 +238,8 @@ print_openssl_install() {
           "\nENV OPENSSL_VERSION=\$OPENSSL_VERSION" \
           "\nENV OPENSSL_HOME /opt/openssl" \
           "\n\n# Install OpenSSL" \
-          "\nRUN  wget --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-\${OPENSSL_VERSION}.tar.gz \\" \
-          "\n\t&& wget --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-\${OPENSSL_VERSION}.tar.gz.sha256 \\" >> ${file}
+          "\nRUN  wget --no-verbose --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-\${OPENSSL_VERSION}.tar.gz \\" \
+          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://www.openssl.org/source/openssl-\${OPENSSL_VERSION}.tar.gz.sha256 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat openssl-\${OPENSSL_VERSION}.tar.gz.sha256) openssl-\${OPENSSL_VERSION}.tar.gz\" | sha256sum -c \\" >> ${file}
     echo -e "\t&& tar -zvxf openssl-\${OPENSSL_VERSION}.tar.gz -C /opt/ \\" \
@@ -262,8 +262,8 @@ print_bazel_install() {
           "\nENV BAZEL_VERSION=\$BAZEL_VERSION" \
           "\nENV BAZEL_HOME /opt/bazel" \
           "\n\n# Install Bazel" \
-          "\nRUN  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh \\" \
-          "\n\t&&  wget --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh.sha256 \\" >> ${file}
+          "\nRUN  wget --no-verbose --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh \\" \
+          "\n\t&&  wget --no-verbose --no-check-certificate --no-cookies https://github.com/bazelbuild/bazel/releases/download/\${BAZEL_VERSION}/bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh.sha256 \\" >> ${file}
 
     echo -e "\t&& echo \"\$(cat bazel-\${BAZEL_VERSION}-installer-linux-x86_64.sh.sha256)\" | sha256sum -c \\" >> ${file}
 
@@ -284,7 +284,7 @@ print_maven_install() {
           "\nENV MAVEN_VERSION=\$MAVEN_VERSION" \
           "\nENV MAVEN_HOME /opt/maven" \
           "\n\n# Install Maven" \
-          "\nRUN  wget --no-check-certificate --no-cookies https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/\${MAVEN_VERSION}/apache-maven-\${MAVEN_VERSION}-bin.tar.gz \\" >> ${file}
+          "\nRUN  wget --no-verbose --no-check-certificate --no-cookies https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/\${MAVEN_VERSION}/apache-maven-\${MAVEN_VERSION}-bin.tar.gz \\" >> ${file}
     
     echo -e "\t&& tar -zvxf apache-maven-\${MAVEN_VERSION}-bin.tar.gz -C /opt/ \\" \
             "\n\t&& ln -s /opt/apache-maven-\${MAVEN_VERSION} /opt/maven \\" \
