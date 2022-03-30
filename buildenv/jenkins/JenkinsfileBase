@@ -992,6 +992,7 @@ def addFailedTestsGrinderLink(){
 				def file = readFile(file: "${tapFile}")
 				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 				TestSet testSet = tapConsumer.load(file)
+				echo "Testset ${testSet}"
 				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
 					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 						def testCase = testSet.getTestResult(i).getDescription().substring(2)
@@ -1009,7 +1010,7 @@ def addFailedTestsGrinderLink(){
 					def file = readFile(file: "${tapFile}")
 					TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 					TestSet testSet = tapConsumer.load(file)
-					for (int i; i <= testSet.getNumberOfTestResults(); i++) {
+					for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
 						if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 							def testCase = testSet.getTestResult(i).getDescription().substring(2)
 							failedTestList += "$testCase,"
