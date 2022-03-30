@@ -983,7 +983,7 @@ def addFailedTestsGrinderLink(){
 	def testTests = env.FAILED_PARALLEL_TEST_PATH.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
 	echo "Fetching Tap files..."
 	def yeeTestList = "testList+TESTLIST="
-	echo "${currentBuild.result}"
+	echo "status ${currentBuild.result}"
 	if (currentBuild.result == 'SUCCESS') {
 		def buildPaths = env.FAILED_PARALLEL_TEST_PATH.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
 		for (def buildPath: buildPaths) {
