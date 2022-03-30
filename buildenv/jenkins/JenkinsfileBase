@@ -1031,8 +1031,8 @@ def addFailedParallelTestsGrinderLink() {
 	for (def buildPath: buildPaths) {
 		def tapFiles = findFiles(glob: "${buildPath}/**/*.tap")
 		for (def tapFile: tapFiles) {
-			echo "Tap file found: ${tapFile}"
 			def file = readFile(file: "${tapFile}")
+			echo "Tap file found: ${file}"
 			TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 			TestSet testSet = tapConsumer.load(file)
 			for (int i; i <= testSet.getNumberOfTestResults(); i++) {
