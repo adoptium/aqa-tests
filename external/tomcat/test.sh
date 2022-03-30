@@ -34,6 +34,11 @@ make install
 cd $CURRENT
 yes | cp build.properties.default build.properties
 echo >> build.properties
+echo "test.threads=4" >> build.properties
+echo "test.relaxTiming=true" >> build.properties
+echo "test.excludePerformance=true" >> build.properties
+echo "test.openssl.path=/dev/null/openssl" >> build.properties
+echo "test.apr.loc=$CURRENT/tmp/tomcat-native-build/lib" >> build.properties
 
 set -e
 echo "Building tomcat" && \
