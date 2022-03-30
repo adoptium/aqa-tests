@@ -25,7 +25,7 @@ export OPENJ9_JAVA_OPTIONS="-Xmx1g"
 pwd
 echo "Compile and run quarkus tests"
 
-./mvnw -pl '!:quarkus-documentation' clean install
+./mvnw --batch-mode -pl '!:quarkus-documentation' clean install
 test_exit_code=$?
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

@@ -18,7 +18,7 @@ echo_setup
 
 export MAVEN_OPTS="-Xmx1g"
 echo "Compile and run quarkus_quickstarts tests"
-mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\
+mvn --batch-mode -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\
 !:hibernate-search-elasticsearch-quickstart,!:mqtt-quickstart,\
 !:quartz-quickstart,!:security-jdbc-quickstart,!:security-keycloak-authorization-quickstart,\
 !:security-openid-connect-web-authentication-quickstart,\

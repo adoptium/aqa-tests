@@ -31,5 +31,5 @@ export USER=""
 echo "Printing Environment Variables"
 printenv
 
-./mvnw install -DallTests
+./mvnw --batch-mode install -DallTests
 set +e
