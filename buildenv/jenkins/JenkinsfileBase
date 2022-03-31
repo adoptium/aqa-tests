@@ -78,7 +78,6 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
-	env.FAILED_PARALLEL_TEST_PATH = ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -765,7 +764,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}
 			}
-			addFailedTestsGrinderLink()
+			addFailedTestsGrinderLink("")
 		}
 	}
 }
@@ -979,14 +978,19 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def addFailedTestsGrinderLink(){
+def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
-		if ("".equals(env.FAILED_PARALLEL_TEST_PATH)) {
-			def buildId = currentBuild.id
-			def name = currentBuild.projectName
-			def tapFiles = findFiles(glob: "${name}/${buildId}/**/*.tap")
+		List<String> buildPaths = []
+		if ("".equals(path)) {
+			buildPaths += "${currentBuild.projectName}/${currentBuild.id}"
+		}
+		else {
+			buildPaths += path.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
+		}
+		for (def buildPath: buildPaths) {
+			def tapFiles = findFiles(glob: "/**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}"
 				def file = readFile(file: "${tapFile}")
@@ -1001,24 +1005,7 @@ def addFailedTestsGrinderLink(){
 				}
 			}
 		}
-		else {
-			//def buildPaths = env.FAILED_PARALLEL_TEST_PATH.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
-			//for (def buildPath: buildPaths) {
-			def tapFiles = findFiles(glob: "${WORKSPACE}/**/*.tap")
-			for (def tapFile: tapFiles) {
-				echo "Tap file found: ${tapFile}"
-				def file = readFile(file: "${tapFile}")
-				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-				TestSet testSet = tapConsumer.load(file)
-				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-						def testCase = testSet.getTestResult(i).getDescription().substring(2)
-						failedTestList += "$testCase,"
-					}
-				}
-			}
-			//}
-		}
+		
 		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
 		String url = env.RERUN_LINK
 		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
@@ -1033,6 +1020,7 @@ def run_parallel_tests() {
 			def childJobs = parallel parallel_tests
 			node {
 				def buildResult = ""
+				def buildPaths = ""
 				childJobs.each {
 					cjob ->
 						def jobInvocation = cjob.value.getRawBuild()
@@ -1045,7 +1033,7 @@ def run_parallel_tests() {
 								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
 							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-							env.FAILED_PARALLEL_TEST_PATH += "${name}/${buildId}/,"
+							buildPaths += "${name}/${buildId}/,"
 						} catch (Exception e) {
 							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 							buildResult = childResult
@@ -1055,7 +1043,7 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
-				addFailedTestsGrinderLink()
+				addFailedTestsGrinderLink(buildPaths)
 			}
 		}
 	}
