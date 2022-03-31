@@ -345,9 +345,13 @@ print_testInfo_env() {
     local test=$1
     local test_tag=$2
     local OS=$3
+    local version=$4
+    local vm=$5
     echo -e "ENV APPLICATION_NAME=${test}" \
             "\nENV APPLICATION_TAG=${test_tag}" \
             "\nENV OS_TAG=${OS}" \
+            "\nENV JDK_VERSION=${version}" \
+            "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
 }
 
@@ -484,7 +488,7 @@ generate_dockerfile() {
     fi
 
     print_home_path ${file} ${github_url};
-    print_testInfo_env ${test} ${tag_version} ${os}
+    print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
