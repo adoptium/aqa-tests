@@ -987,7 +987,7 @@ def addFailedTestsGrinderLink(path){
 			buildPaths += "${currentBuild.projectName}/${currentBuild.id}"
 		}
 		else {
-			buildPaths += path.substring(0, env.FAILED_PARALLEL_TEST_PATH.length() - 1).split(',')
+			buildPaths += path.substring(0, path.length() - 1).split(',')
 		}
 		for (def buildPath: buildPaths) {
 			def tapFiles = findFiles(glob: "${buildPath}/**/*.tap")
