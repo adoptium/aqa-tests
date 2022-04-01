@@ -991,6 +991,7 @@ def addFailedTestsGrinderLink(path){
 		}
 		echo "V-test: ${buildPaths}"
 		for (def buildPath: buildPaths) {
+			echo "Path: ${buildPath}"
 			def tapFiles = findFiles(glob: "${buildPath}/**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}"
@@ -1006,7 +1007,7 @@ def addFailedTestsGrinderLink(path){
 				}
 			}
 		}
-
+		echo "X-TEST: ${failedTestList}"
 		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
 		String url = env.RERUN_LINK
 		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
