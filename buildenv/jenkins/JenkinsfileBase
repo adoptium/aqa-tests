@@ -989,6 +989,7 @@ def addFailedTestsGrinderLink(path){
 		else {
 			buildPaths += path.substring(0, path.length() - 1).split(',')
 		}
+		echo "V-test: ${buildPaths}"
 		for (def buildPath: buildPaths) {
 			def tapFiles = findFiles(glob: "${buildPath}/**/*.tap")
 			for (def tapFile: tapFiles) {
