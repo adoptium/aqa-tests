@@ -171,3 +171,70 @@ ls -1dq openjdk/excludes/ProblemList_openjdk13.txt |
 python scripts/disabled_tests/exclude_parser.py |
 python scripts/disabled_tests/issue_status.py --github-user foobar --github-token abcdefghijklmnopqrst -vv --max-workers 1 > /dev/null
 ```
+
+## `issue_filter.py`
+
+Filter issues stored in JSON files
+
+### Usage
+
+```
+usage: issue_filter.py [-h] [--jdk-version jdk_version] [--jdk-implementation jdk_implementation] [--platform platform] [--infile INFILE] [--outfile OUTFILE] [--verbose]
+
+Filter issues stored in JSON files
+
+Filter expressions can be provided through (in ascending order of priority):
+1. command-line switches
+2. environment variables
+
+Filter expressions can be of any 2 formats:
+1. a comma-separated list of exact matches
+   note: whitespace around commas is considered; case-insensitive
+   e.g.
+   - 11,17,18+
+   - openJ9
+   - aarch64_linux,Aarch64_macos
+2. a regular expression, prefixed with 're:'
+   note: be cautious of escaping rules on your shell when using a backslash '\'
+   e.g.
+   - re:1[4-8]
+   - re:x86\-64.*
+Note: an empty expression is equivalent to not specifying the filter at all
+   e.g.
+   --jdk-version="" is equivalent to not specifying a filter on jdk-version
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --jdk-version jdk_version
+                        Filter for jdk-version [env: AQA_ISSUE_FILTER_JDK_VERSION]
+  --jdk-implementation jdk_implementation
+                        Filter for jdk-implementation [env: AQA_ISSUE_FILTER_JDK_IMPLEMENTATION]
+  --platform platform   Filter for platform [env: AQA_ISSUE_FILTER_PLATFORM]
+  --infile INFILE, -i INFILE
+                        Input file, defaults to stdin
+  --outfile OUTFILE, -o OUTFILE
+                        Output file, defaults to stdout
+  --verbose, -v         Enable info logging level, debug level if -vv
+```
+
+#### Filter for hotspot; logging in debug mode
+```shell
+cat 1.json |
+python issue_filter.py --jdk-implementation "HotSpot" -vv  # case do not matter when using format #1
+```
+
+#### Filter for macOS on M1, versions 11 and 17 using env. variables; logging in info mode
+```shell
+# Environment variables:
+# export AQA_ISSUE_FILTER_PLATFORM=aarch64_macos
+# export AQA_ISSUE_FILTER_JDK_VERSION=11,17
+python issue_filter.py --infile 1.json -v
+```
+
+#### Filter for openj9, versions 12 through 17, and any platform containing "all"
+```shell
+# Environment variables:
+# export AQA_ISSUE_FILTER_JDK_VERSION=re:1[2-7]
+cat 1.json |
+python issue_filter.py --jdk-implementation "OpenJ9" --platform "re:.*all.*"
+```
