@@ -1,0 +1,47 @@
+name: "Parse all disabled issues"
+on:
+  schedule:
+    - cron: '0 4 * * 0'  # every Sunday, 4am UTC
+  workflow_dispatch:
+jobs:
+  parse_issues:
+    runs-on: ubuntu-latest
+    env:
+      AQA_ISSUE_TRACKER_GITHUB_USER: ${{ github.actor }}
+      AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: checkout current repo
+        uses: actions/checkout@v2
+      - name: install reqs
+        run: |
+          pip install -r scripts/disabled_tests/requirements.txt
+      - name: discover disabled tests
+        run : |
+          echo "::group::openjdk exclude files"
+          ls -1dq openjdk/excludes/* | tee exclude_files.txt
+          echo "::endgroup::"
+          echo "::group::playlist files"
+          find . -name "playlist.xml" -not -path "scripts" | tee playlist_files.txt
+          echo "::endgroup::"
+      - name: run scripts
+        run: |
+          echo "::group::parsing"
+          cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py -v > exclude.json
+          cat playlist_files.txt | python scripts/disabled_tests/playlist_parser.py -v > playlist.json
+          echo "::endgroup::"
+          echo "::group::merging"
+          jq -s 'flatten(1)' exclude.json playlist.json > all.json
+          echo "::endgroup::"
+          echo "::group::status"
+          cat all.json | python scripts/disabled_tests/issue_status.py -v > output.json
+          echo "::endgroup::"
+      - name: store artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: disabled_tests
+          path: output.json
+          retention-days: 90
