@@ -760,7 +760,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}
 			}
-			addFailedTestsGrinderLink("${JOB_NAME}/${BUILD_NUMBER}/")
+			addFailedTestsGrinderLink("${JOB_NAME}/${BUILD_NUMBER}")
 		}
 	}
 }
@@ -976,6 +976,7 @@ def addGrinderLink() {
 
 def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
+		echo "Path found: ${path}"
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
 		List<String> buildPaths = path.split(',')
@@ -1024,7 +1025,7 @@ def run_parallel_tests() {
 								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
 							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-							buildPaths += "${name}/${buildId}/,"
+							buildPaths += "${name}/${buildId},"
 						} catch (Exception e) {
 							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 							buildResult = childResult
