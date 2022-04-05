@@ -976,7 +976,6 @@ def addGrinderLink() {
 
 def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-		echo "Path ${path}"
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
 		List<String> buildPaths = path.split(',')
@@ -998,7 +997,6 @@ def addFailedTestsGrinderLink(path){
 				}
 			}
 		}
-		echo "Failed Test: ${failedTestList}"
 		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
 		String url = env.RERUN_LINK
 		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
