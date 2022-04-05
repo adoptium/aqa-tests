@@ -1037,7 +1037,7 @@ def run_parallel_tests() {
 					currentBuild.result = buildResult
 				}
 				archiveFile("**/*.tap")
-				addFailedTestsGrinderLink(buildPaths.substring(0, path.length() - 1))
+				addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
 			}
 		}
 	}
