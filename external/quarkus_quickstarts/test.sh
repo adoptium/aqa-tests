@@ -15,16 +15,21 @@
 source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the quarkus quickstarts test
 echo_setup
+excludeProject="-pl !:hibernate-orm-multi-tenancy-quickstart,\
+!:hibernate-search-orm-elasticsearch-quickstart,\
+!:mqtt-quickstart,\
+!:rabbitmq-quickstart-processor,\
+!:redis-quickstart,\
+!:security-jdbc-quickstart,\
+!:security-openid-connect-multi-tenancy-quickstart"
+
+if [ "$JDK_VERSION" == "17" ]; then
+	excludeProject+=",!:kogito-quickstart"
+fi
 
 export MAVEN_OPTS="-Xmx1g"
 echo "Compile and run quarkus_quickstarts tests"
-mvn -pl !:hibernate-orm-quickstart,!:hibernate-orm-panache-quickstart,\
-!:hibernate-search-elasticsearch-quickstart,!:mqtt-quickstart,\
-!:quartz-quickstart,!:security-jdbc-quickstart,!:security-keycloak-authorization-quickstart,\
-!:security-openid-connect-web-authentication-quickstart,\
-!:security-openid-connect-multi-tenancy-quickstart,!:spring-data-jpa-quickstart,\
-!:vertx-quickstart,!:context-propagation-quickstart,!:getting-started-reactive-rest,\
-!:kafka-quickstart,!:neo4j-quickstart,!:rest-client-quickstart,!:rest-client-multipart-quickstart clean install
+mvn --batch-mode $excludeProject clean install
 test_exit_code=$?
 echo "Build quarkus_quickstarts completed"
 

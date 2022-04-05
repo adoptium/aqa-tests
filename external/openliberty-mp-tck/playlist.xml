@@ -15,9 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_j9</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
 		</command>
 		<versions>
 			<version>8</version>
@@ -35,9 +35,9 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_hs</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
-                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
                 </command>
 		<versions>
 			<version>8</version>
@@ -56,9 +56,23 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2902</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/2902</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3381#issuecomment-1082095158</comment>
+				<version>17</version>
+			</disable>
+		</disables>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
-                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir openliberty-mp-tck
+                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
                 </command>
 		<versions>
 			<version>11+</version>
@@ -69,15 +83,5 @@
 		<groups>
 			<group>external</group>
 		</groups>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2902</comment>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2902</comment>
-				<impl>ibm</impl>
-			</disable>
-		</disables>
 	</test>
 </playlist>

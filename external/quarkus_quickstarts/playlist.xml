@@ -15,9 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>quarkus_quickstarts_test</testCaseName>
-		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_quickstarts --reportdst $(REPORTDIR) --docker_args "-v /var/run/docker.sock:/var/run/docker.sock $(EXTRA_DOCKER_ARGS)"; \
+		<command>$(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir quarkus_quickstarts --reportdst $(REPORTDIR) --docker_args "-v /var/run/docker.sock:/var/run/docker.sock $(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir quarkus_quickstarts 
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir quarkus_quickstarts 
 		</command>
 		<levels>
 			<level>sanity</level>
@@ -25,5 +25,8 @@
 		<groups>
 			<group>external</group>
 		</groups>
+		<versions>
+			<version>11+</version>
+		</versions>
 	</test>
 </playlist>

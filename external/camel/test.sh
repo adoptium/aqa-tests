@@ -20,9 +20,15 @@ echo_setup
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
 export MAVEN_OPTS="-Xmx1g"
 
-pwd
+#jdk17
+excludeProject="-pl !:camel-quarkus-support-spring,\
+!:camel-quarkus-support-xstream-deployment,\
+!:camel-quarkus-support-xalan,\
+!:camel-quarkus-support-mongodb-deployment,\
+!:camel-quarkus-support-spring-deployment"
+
 echo "Compile and run camel tests"
-mvn clean install
+./mvnw --batch-mode --fail-at-end $excludeProject clean install -DallTests
 test_exit_code=$?
 echo "Build camel completed"
 

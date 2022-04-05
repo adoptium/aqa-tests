@@ -20,10 +20,10 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/1160</comment>
 			</disable>
 		</disables>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck --testtarget "-pl !MicroProfile-OpenTracing/tck-runner,!MicroProfile-JWT-Auth,!MicroProfile-JWT-Auth/tck-arquillian-extension,!MicroProfile-JWT-Auth/tck-runner" \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir payara-mp-tck \
 		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir payara-mp-tck
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir payara-mp-tck
 		</command>
 		<versions>
 			<version>8</version>
