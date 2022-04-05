@@ -700,7 +700,7 @@ def post(output_name) {
 
             //call the archive function for each file
             archiveFile(testenvFile)
-	    archiveFile(shaFile)
+	    	archiveFile(shaFile)
             archiveFile(AQACertFile)
 
 			if (env.BUILD_LIST.startsWith('jck')) {
@@ -764,7 +764,7 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}
 			}
-			addFailedTestsGrinderLink("")
+			addFailedTestsGrinderLink("${JOB_NAME}/${BUILD_NUMBER}")
 		}
 	}
 }
@@ -982,13 +982,7 @@ def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
-		List<String> buildPaths = []
-		if ("".equals(path)) {
-			buildPaths += "${currentBuild.projectName}/${currentBuild.id}"
-		}
-		else {
-			buildPaths += path.substring(0, path.length() - 1).split(',')
-		}
+		List<String> buildPaths = path.split(',')
 		echo "V-test: ${buildPaths}"
 		for (def buildPath: buildPaths) {
 			echo "Path: ${buildPath}"
@@ -1045,7 +1039,8 @@ def run_parallel_tests() {
 					echo "set build status to ${buildResult}"
 					currentBuild.result = buildResult
 				}
-				addFailedTestsGrinderLink(buildPaths)
+				archiveFile("**/*.tap")
+				addFailedTestsGrinderLink(buildPaths.substring(0, path.length() - 1))
 			}
 		}
 	}
