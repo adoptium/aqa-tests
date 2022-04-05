@@ -599,6 +599,12 @@ testJavaVersion()
 		echo "=JAVA VERSION OUTPUT BEGIN="
 		${_java} -version
 		echo "=JAVA VERSION OUTPUT END="
+		if [ "$os" = "windows" ]; then
+			TEST_JDK_HOME=$(cygpath -w "${TEST_JDK_HOME}")
+			echo -e "TEST_JDK_HOME=${TEST_JDK_HOME}" | sed 's/\\/\\\\/g' > ${TESTDIR}/job.properties
+		else
+			echo "TEST_JDK_HOME=${TEST_JDK_HOME}"  > ${TESTDIR}/job.properties
+		fi
 		if [ -e ${_release} ]; then
 			echo "=RELEASE INFO BEGIN="
 			cat ${_release}
