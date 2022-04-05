@@ -976,6 +976,7 @@ def addGrinderLink() {
 
 def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
+		echo "Path ${path}"
 		echo "Fetching Tap files..."
 		def failedTestList = "testList+TESTLIST="
 		List<String> buildPaths = path.split(',')
