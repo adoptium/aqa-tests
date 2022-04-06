@@ -15,6 +15,12 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>spring_test</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3505#issuecomment-1086270612</comment>
+				<version>17</version>
+			</disable>
+		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir spring --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 			$(TEST_STATUS); \
 			$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir spring
