@@ -975,7 +975,7 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def testFailed():
+def testFailed(){
 	def tapFiles = findFiles(glob: "/**/*.tap")
 	for (def tapFile: tapFiles) {
 		echo "Tap file found: ${tapFile.absolutePath}"
@@ -990,6 +990,7 @@ def testFailed():
 			}
 		}
 	}
+}
 
 def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
