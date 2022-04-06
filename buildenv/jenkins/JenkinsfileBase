@@ -760,7 +760,8 @@ def post(output_name) {
 					uploadToArtifactory(pattern)
 				}
 			}
-			addFailedTestsGrinderLink("${currentBuild.projectName}/builds/${currentBuild.id}")
+			//addFailedTestsGrinderLink("${currentBuild.projectName}/builds/${currentBuild.id}")
+			testFailed()
 		}
 	}
 }
@@ -973,6 +974,22 @@ def addGrinderLink() {
 	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
+
+def testFailed():
+	def tapFiles = findFiles(glob: "/**/*.tap")
+	for (def tapFile: tapFiles) {
+		echo "Tap file found: ${tapFile.absolutePath}"
+		def file = readFile(file: "${tapFile}")
+		TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+		TestSet testSet = tapConsumer.load(file)
+		echo "Testset ${testSet}"
+		for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+			if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+				def testCase = testSet.getTestResult(i).getDescription().substring(2)
+				failedTestList += "$testCase,"
+			}
+		}
+	}
 
 def addFailedTestsGrinderLink(path){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
