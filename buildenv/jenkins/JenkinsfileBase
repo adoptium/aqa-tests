@@ -977,6 +977,7 @@ def addGrinderLink() {
 
 def testFailed(){
 	def tapFiles = findFiles(glob: "**/*.tap")
+	def failedTestList = "testList+TESTLIST="
 	for (def tapFile: tapFiles) {
 		echo "Tap file found: ${tapFile.path}"
 		def file = readFile(file: "${tapFile}")
