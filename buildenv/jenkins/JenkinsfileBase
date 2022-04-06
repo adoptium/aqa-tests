@@ -978,7 +978,7 @@ def addGrinderLink() {
 def testFailed(){
 	def tapFiles = findFiles(glob: "**/*.tap")
 	for (def tapFile: tapFiles) {
-		echo "Tap file found: ${tapFile.absolutePath}"
+		echo "Tap file found: ${tapFile.path}"
 		def file = readFile(file: "${tapFile}")
 		TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
 		TestSet testSet = tapConsumer.load(file)
