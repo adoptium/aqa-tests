@@ -685,18 +685,13 @@ def post(output_name) {
 
 			step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
-			// only archive children TAP result in parallel mode, the file will be copied into the parent job after parallel runs
-			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
-				archiveArtifacts artifacts: "**/*.tap", fingerprint: true, allowEmptyArchive: true
-			}
-
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 			//call the archive function for each file
-			archiveFile("aqa-tests/testenv/testenv.properties")
-			archiveFile("aqa-tests/TKG/SHA.txt")
-			archiveFile("aqa-tests/TKG/AQACert.log")
-			archiveFile("**/*.tap")
+			archiveFile("aqa-tests/testenv/testenv.properties", true)
+			archiveFile("aqa-tests/TKG/SHA.txt", true)
+			archiveFile("aqa-tests/TKG/AQACert.log", true)
+			archiveFile("**/*.tap", true)
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -728,6 +723,7 @@ def post(output_name) {
 					sh "${tar_cmd} ${test_output_tar_name} ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix}"
 				}
 
+				// TODO: archiveFile() should be used
 				if (!params.ARTIFACTORY_SERVER) {
 					echo "ARTIFACTORY_SERVER is not set. Saving artifacts on jenkins."
 					archiveArtifacts artifacts: test_output_tar_name, fingerprint: true, allowEmptyArchive: true
@@ -892,11 +888,14 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def archiveFile(filename){
-	if(!params.ARTIFACTORY_SERVER){
-		echo "ARTIFACTORY_SERVER is not set. Saving ${filename} file on jenkins."
+// If forceStoreOnJenkins set to true, archive on Jenkins.
+// If forceStoreOnJenkins set to false, archive on Artifactory if ARTIFACTORY_SERVER is provided. Otherwise, archive on Jenkins
+def archiveFile(filename, forceStoreOnJenkins) {
+	if (!params.ARTIFACTORY_SERVER || forceStoreOnJenkins) {
+		echo "Saving ${filename} file on jenkins."
 		archiveArtifacts artifacts: filename, fingerprint: true, allowEmptyArchive: true
-	} else {
+	} 
+	if (params.ARTIFACTORY_SERVER) {
 		def pattern = "${env.WORKSPACE}/${filename}"
 		uploadToArtifactory(pattern)
 	}
@@ -1003,30 +1002,46 @@ def run_parallel_tests() {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
-				def buildResult = ""
-				childJobs.each {
-					cjob ->
-						def jobInvocation = cjob.value.getRawBuild()
-						def buildId = jobInvocation.getNumber()
-						def name = cjob.value.getProjectName()
-						def childResult = cjob.value.getCurrentResult()
-						try {
-							echo "${name} #${buildId} completed with status ${childResult}"
-							timeout(time: 1, unit: 'HOURS') {
-								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
+				// cleanWs() does not work in some cases, so set opts below
+				cleanWs disableDeferredWipeout: true, deleteDirs: true
+				try {
+					def buildResult = ""
+					// for parallel run, only archive AQACert log once in the parent build
+					def archiveAQACert = false
+					childJobs.each {
+						cjob ->
+							def jobInvocation = cjob.value.getRawBuild()
+							def buildId = jobInvocation.getNumber()
+							def name = cjob.value.getProjectName()
+							def childResult = cjob.value.getCurrentResult()
+							try {
+								echo "${name} #${buildId} completed with status ${childResult}"
+								timeout(time: 1, unit: 'HOURS') {
+									copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
+									if (!archiveAQACert) {
+										copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/AQACert.log", target:"${name}/${buildId}")
+									}
+								}
+								step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+								archiveFile("${name}/${buildId}/**/*.tap", true)
+								if (!archiveAQACert) {
+									archiveFile("${name}/${buildId}/**/AQACert.log", true)
+									archiveAQACert = true
+								}
+							} catch (Exception e) {
+								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
+								buildResult = childResult
 							}
-							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-						} catch (Exception e) {
-							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
-							buildResult = childResult
-						}
+					}
+					if (buildResult) {
+						echo "set build status to ${buildResult}"
+						currentBuild.result = buildResult
+					}
+					addFailedTestsGrinderLink()
+				} finally {
+					// cleanWs() does not work in some cases, so set opts below
+					cleanWs disableDeferredWipeout: true, deleteDirs: true
 				}
-				if (buildResult) {
-					echo "set build status to ${buildResult}"
-					currentBuild.result = buildResult
-				}
-				archiveFile("**/*.tap")
-				addFailedTestsGrinderLink()
 			}
 		}
 	}
