@@ -19,7 +19,6 @@ echo_setup
 # Initial command to trigger the execution of kafka test
 set -e
 echo "Building kafka  using gradle"
-gradle -q
 ./gradlew -q jar
 
 echo "Kafka Build - Completed"
