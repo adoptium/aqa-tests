@@ -23,7 +23,13 @@ echo "Compile and execute spring-test"
 echo "Building Spring  using gradle"
 ./gradlew -q jar
 echo "Spring Build - Completed"
+excludeTask="--exclude-task :spring-boot-project:spring-boot-tools:spring-boot-gradle-plugin:test"
+
+if [ "$JDK_VERSION" == "8" ]; then
+	excludeTask+=" --exclude-task :spring-boot-project:spring-boot-autoconfigure:test"
+fi
+
 echo "Running (ALL) Spring tests :"
-./gradlew -q test
+./gradlew -q $excludeTask test
 
 set +e
