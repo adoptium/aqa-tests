@@ -220,7 +220,7 @@ optional arguments:
 #### Filter for hotspot; logging in debug mode
 ```shell
 cat 1.json |
-python issue_filter.py --jdk-implementation "HotSpot" -vv  # case do not matter when using format #1
+python issue_filter.py --jdk-implementation "HotSpot" -vv  # case does not matter when using format #1
 ```
 
 #### Filter for macOS on M1, versions 11 and 17 using env. variables; logging in info mode
