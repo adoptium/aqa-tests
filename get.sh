@@ -258,34 +258,11 @@ getBinaryOpenjdk()
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
-			set +e
-			count=0
-			download_exit_code=-1
-			# when the command is not found (code 127), do not retry
-			while [ $download_exit_code != 0 ] && [ $download_exit_code != 127 ] && [ $count -le 5 ]
-			do
-				if [ $count -gt 0 ]; then
-					sleep_time=300
-					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
-					sleep $sleep_time
-
-					download_filename=${file##*/}
-					echo "check for $download_filename. If found, the file will be removed."
-					if [ -f "$download_filename" ]; then
-						echo "remove $download_filename before retry..."
-						rm $download_filename
-					fi
-				fi
-
-				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
-				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file
-				download_exit_code=$?
-				count=$(( $count + 1 ))
-			done
-
-			if [ $download_exit_code != 0 ]; then
-				echo "curl error code: $download_exit_code"
-				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
+			executeCmdWithRetry "${file##*/}" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
+			rt_code=$?
+			if [ $rt_code != 0 ]; then
+				echo "curl error code: $rt_code"
+				echo "Failed to retrieve $file. This is what we received of the file and MD5 sum:"
 				ls -ld $file
 
 				if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -296,7 +273,6 @@ getBinaryOpenjdk()
 
 				exit 1
 			fi
-			set -e
 		done
 	fi
 
@@ -477,6 +453,34 @@ getCustomJtreg()
 	_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL
 }
 
+executeCmdWithRetry()
+{
+	set +e
+	count=0
+	rt_code=-1
+	# when the command is not found (code 127), do not retry
+	while [ "$rt_code" != 0 ] && [ "$rt_code" != 127 ] && [ "$count" -le 5 ]
+	do
+		if [ "$count" -gt 0 ]; then
+			sleep_time=300
+			echo "error code: $rt_code. Sleep $sleep_time secs, then retry $count..."
+			sleep $sleep_time
+
+			echo "check for $1. If found, the file will be removed."
+			if [ -f "$1" ]; then
+				echo "remove $1 before retry..."
+				rm $1
+			fi
+		fi
+		echo "$2"
+		eval "$2"
+		rt_code=$?
+		count=$(( $count + 1 ))
+	done
+	return "$rt_code"
+	set -e
+}
+
 getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
@@ -487,8 +491,12 @@ getFunctionalTestMaterial()
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
 	fi
 
-	echo "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
-	git clone --depth 1 -q $OPENJ9_BRANCH $OPENJ9_REPO
+	executeCmdWithRetry "openj9" "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
+	rt_code=$?
+	if [ $rt_code != 0 ]; then
+		echo "git clone error code: $rt_code"
+		exit 1
+	fi
 
 	if [ "$OPENJ9_SHA" != "" ]
 	then
