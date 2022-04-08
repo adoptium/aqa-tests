@@ -22,10 +22,46 @@ export MAVEN_OPTS="-Xmx1g"
 
 export OPENJ9_JAVA_OPTIONS="-Xmx1g"
 
-pwd
+excludeProject="-pl !:quarkus-documentation,\
+!:quarkus-openshift-deployment"
+
+#JDK 17: Failed projects 
+#!:quarkus-kubernetes-client,\
+#!:quarkus-liquibase-deployment,\
+#!:quarkus-vertx-graphql,\
+#!:quarkus-smallrye-graphql,\
+#!:quarkus-logging-json,\
+#!:quarkus-logging-gelf,\
+#!:quarkus-picocli,\
+#!:quarkus-google-cloud-functions-http-deployment,\
+#!:quarkus-google-cloud-functions,\
+#!:quarkus-awt,\
+#!:quarkus-project-core-extension-codestarts,\
+#!:quarkus-opentelemetry-deployment,\
+#!:quarkus-container-image-jib-deployment,\
+#!:quarkus-vertx-graphql-deployment,
+#!:quarkus-integration-test-shared-library"
+#!:quarkus-awt-deployment,\
+#!:quarkus-smallrye-graphql-deployment,\
+#!:quarkus-smallrye-graphql-client,\
+#!:quarkus-logging-gelf-deployment,\
+#!:quarkus-picocli-deployment,\
+#!:quarkus-google-cloud-functions-http,\
+#!:quarkus-google-cloud-functions-deployment,\
+#!:quarkus-integration-test-class-transformer,\
+#!:quarkus-maven-plugin,\
+
+
 echo "Compile and run quarkus tests"
 
-./mvnw --batch-mode -pl '!:quarkus-documentation' clean install
+if [ "$JDK_VERSION" == "11" ]; then
+	excludeProject="-pl !:quarkus-documentation,\
+!:quarkus-reactive-routes-deployment,\
+!:quarkus-cli,\
+!:quarkus-integration-test-no-awt,\
+!:quarkus-avro-reload-test"
+fi
+./mvnw --batch-mode --fail-at-end $excludeProject clean install
 test_exit_code=$?
 
 find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
