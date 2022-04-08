@@ -180,7 +180,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
         stage('Queue') {
             if (!areNodesWithLabelOnline(LABEL)) {
-                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
+                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 15
                 timeout(ACTIVE_NODE_TIMEOUT) {
                     // If there is available node before timeout
                     node(LABEL) {
