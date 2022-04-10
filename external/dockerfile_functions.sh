@@ -189,27 +189,6 @@ print_sbt_install() {
           "\n" >> ${file}
 }
 
-# Install Gradle
-print_gradle_install() {
-    local file=$1
-    local gradle_version=$2
-
-    echo -e "ARG GRADLE_VERSION=${gradle_version}" \
-          "\nENV GRADLE_VERSION=\$GRADLE_VERSION" \
-          "\nENV GRADLE_HOME /opt/gradle" \
-          "\n\n# Install Gradle" \
-          "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip \\" \
-          "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://services.gradle.org/distributions/gradle-\${GRADLE_VERSION}-bin.zip.sha256 \\" >> ${file}
-
-    echo -e "\t&& echo \"\$(cat gradle-\${GRADLE_VERSION}-bin.zip.sha256) gradle-\${GRADLE_VERSION}-bin.zip\" | sha256sum -c \\" >> ${file}
-
-    echo -e "\t&& unzip gradle-\${GRADLE_VERSION}-bin.zip -d \${GRADLE_HOME} \\" \
-            "\n\t&& ln -s \"\${GRADLE_HOME}/gradle-\${GRADLE_VERSION}/bin/gradle\" /usr/bin/gradle \\" \
-            "\n\t&& rm -f gradle-\${GRADLE_VERSION}-bin.zip \\" \
-            "\n\t&& rm -f gradle-\${GRADLE_VERSION}-bin.zip.sha256" \
-            "\n" >> ${file}
-}
-
 # Install Ivy
 print_ivy_install() {
     local file=$1
@@ -345,9 +324,13 @@ print_testInfo_env() {
     local test=$1
     local test_tag=$2
     local OS=$3
+    local version=$4
+    local vm=$5
     echo -e "ENV APPLICATION_NAME=${test}" \
             "\nENV APPLICATION_TAG=${test_tag}" \
             "\nENV OS_TAG=${OS}" \
+            "\nENV JDK_VERSION=${version}" \
+            "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
 }
 
@@ -458,10 +441,6 @@ generate_dockerfile() {
         print_sbt_install ${file} ${sbt_version};
     fi
 
-    if [[ ! -z ${gradle_version} ]]; then
-        print_gradle_install ${file} ${gradle_version};
-    fi
-
     if [[ ! -z ${openssl_version} ]]; then
         print_openssl_install ${file} ${openssl_version};
     fi
@@ -484,7 +463,7 @@ generate_dockerfile() {
     fi
 
     print_home_path ${file} ${github_url};
-    print_testInfo_env ${test} ${tag_version} ${os}
+    print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
