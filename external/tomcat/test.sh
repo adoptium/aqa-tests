@@ -42,7 +42,6 @@ echo "test.apr.loc=$CURRENT/tmp/tomcat-native-build/lib" >> build.properties
 
 set -e
 echo "Building tomcat" && \
-cp build.properties.default build.properties && \
 ant && \
 
 echo "Running tomcat tests" 
