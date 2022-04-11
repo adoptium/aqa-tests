@@ -983,7 +983,7 @@ def addFailedTestsGrinderLink(path){
 		echo "Build Path List: ${buildPaths}"
 		for (def buildPath: buildPaths) {
 			echo "Path: ${buildPath}"
-			def tapFiles = findFiles(glob: "${buildPath}/**/*.tap")
+			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}"
 				def file = readFile(file: "${tapFile}")
@@ -1025,7 +1025,7 @@ def run_parallel_tests() {
 								copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 							}
 							step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-							buildPaths += "${name}/${buildId},"
+							buildPaths += "${name}/${buildId}/,"
 						} catch (Exception e) {
 							echo "Cannot copy *.tap from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 							buildResult = childResult
