@@ -80,6 +80,11 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
   ifeq ($(filter 8 9 10 11 12 13 14 15 16, $(JDK_VERSION)),)
     OTHER_OPTS += -XX:-OpenJ9CommandLineEnv
   endif
+  ifeq (8, $(JDK_VERSION))
+    ifneq (,$(findstring osx, $(SPEC)))
+      OTHER_OPTS += -XstartOnFirstThread
+    endif
+  endif
 endif
 
 # If testsuite is not specified, default to RUNTIME
