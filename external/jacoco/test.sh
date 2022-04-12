@@ -17,9 +17,14 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 cd org.jacoco.build
-pwd
+
+excludeProject=""
+
+if [ "$JDK_VERSION" == "17" ]; then
+	excludeProject="-pl !:org.jacoco.core.test.validation.groovy"
+fi
 echo "Compile and run jacoco tests"
-mvn --batch-mode clean verify
+mvn --batch-mode --fail-at-end $excludeProject clean verify
 test_exit_code=$?
 echo "Build jacoco completed"
 
