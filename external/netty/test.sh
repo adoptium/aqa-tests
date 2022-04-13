@@ -14,9 +14,10 @@
 source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the netty test
 echo_setup
-TEST_SUITE=$1
+
+excludeProject="-pl !:netty-handler,!:netty-transport-blockhound-tests"
 
 set -e
 echo "Compile and execute netty-test" && \
-mvn --batch-mode clean package
+./mvnw --batch-mode --fail-at-end $excludeProject clean package
 set +e
