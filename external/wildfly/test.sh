@@ -31,5 +31,16 @@ export USER=""
 echo "Printing Environment Variables"
 printenv
 
-./mvnw --batch-mode install -DallTests
+#jdk8,11
+excludeProject="-pl !:wildfly-ts-integ-elytron"
+
+if [ "$JDK_VERSION" == "11" ]; then
+	excludeProject+=",!:wildfly-ts-integ-basic"
+fi
+
+if [ "$JDK_VERSION" == "17" ]; then
+	excludeProject="-pl !:wildfly-iiop-openjdk"
+fi
+
+./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests
 set +e
