@@ -76,6 +76,15 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
   ifneq (8, $(JDK_VERSION))
     OTHER_OPTS += --enable-preview
   endif
+  # if JDK_VERSION >= 17
+  ifeq ($(filter 8 9 10 11 12 13 14 15 16, $(JDK_VERSION)),)
+    OTHER_OPTS += -XX:-OpenJ9CommandLineEnv
+  endif
+  ifeq (8, $(JDK_VERSION))
+    ifneq (,$(findstring osx, $(SPEC)))
+      OTHER_OPTS += -XstartOnFirstThread
+    endif
+  endif
 endif
 
 # If testsuite is not specified, default to RUNTIME
@@ -84,11 +93,11 @@ ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
 endif
 
 define JCK_CMD_TEMPLATE_JRE
-$(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
+$(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
 endef
 
 define JCK_CMD_TEMPLATE
-$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(OTHER_OPTS) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
+$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
 endef
 
 ifeq ($(USE_JRE),1)
