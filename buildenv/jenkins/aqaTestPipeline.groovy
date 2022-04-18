@@ -36,6 +36,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
         }
 
         def download_url = params.CUSTOMIZED_SDK_URL ? params.CUSTOMIZED_SDK_URL : ""
+        def sdk_resource_value = SDK_RESOURCE
         if (SDK_RESOURCE == "customized" ) {
             if (params.TOP_LEVEL_SDK_URL) {
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip 
@@ -44,7 +45,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
         } else if (SDK_RESOURCE == "releases") {
             if (params.VARIANT == "openj9") {
                 // get IBM Semeru CE
-                SDK_RESOURCE = "customized"
+                sdk_resource_value = "customized"
                 download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/ga/${os}/${arch}/jdk/openj9/normal/ibm_ce https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/ga/${os}/${arch}/testimage/openj9/normal/ibm_ce"
             }
         }
@@ -80,7 +81,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO),
                         string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH),
                         booleanParam(name: 'USE_TESTENV_PROPERTIES', value: USE_TESTENV_PROPERTIES),
-                        string(name: 'SDK_RESOURCE', value: params.SDK_RESOURCE),
+                        string(name: 'SDK_RESOURCE', value: sdk_resource_value),
                         string(name: 'CUSTOMIZED_SDK_URL',  value: download_url),
                         string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID',  value: params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
                         string(name: 'PARALLEL', value: PARALLEL),
