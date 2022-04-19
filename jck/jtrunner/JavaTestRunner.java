@@ -638,7 +638,13 @@ public class JavaTestRunner {
 			// Fatal Error: file:/jck/jck8b/JCK-runtime-8b/tests/api/javax_xml/xmlCore/w3c/ibm/valid/P85/ibm85v01.xml(6,3384): JAXP00010005: The length of entity "[xml]" is "3,381" that exceeds the "1,000" limit set by "default".
 			if ( tests.contains("api/javax_xml")  || tests.equals("api")) {
 				extraJvmOptions += " -Djdk.xml.maxXMLNameLimit=4000";
-			}	
+			}
+			
+			// Needed to successfully pass api/xsl/conf/math/math85.html#math85. 
+			// Ensures that the number of groups an XPath expression can contain is set to 14 or above.
+			if ( tests.contains("api/xsl")) {
+				extraJvmOptions += " -Djdk.xml.xpathExprGrpLimit=14";
+			}
 
 			//CORBA related files (e.g. tnameserver) were removed post Java 9
 			if (jckVersion.contains("jck8")) {
