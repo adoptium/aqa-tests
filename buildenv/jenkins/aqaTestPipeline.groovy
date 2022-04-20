@@ -11,6 +11,9 @@ def SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 def AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN : false
 def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
+def LABEL = (params.LABEL) ?: ""
+def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
+def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def JOBS = [:]
 
@@ -86,6 +89,9 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false),
                         string(name: 'TIME_LIMIT', value: TIME_LIMIT.toString()),
                         string(name: 'TRSS_URL', value: TRSS_URL),
+                        string(name: 'LABEL', value: LABEL),
+                        string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
+                        string(name: 'TEST_FLAG', value: TEST_FLAG),
                         booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir)
                     ]
                 }
