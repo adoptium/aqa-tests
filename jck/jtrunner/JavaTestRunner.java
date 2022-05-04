@@ -689,6 +689,11 @@ public class JavaTestRunner {
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+
+			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
+			if (platform.equals("osx")) {
+				fileContent += "set jck.env.runtime.testExecute.otherEnvVars \" AWT_FORCE_HEADFUL=true \"" + ";\n";
+			}
 		}
 
 		// Compiler settings
