@@ -19,6 +19,18 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir quarkus_quickstarts 
 		</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3518</comment>
+				<platform>.*(aarch64_linux|s390x_linux).*</platform>
+				<impl>hotspot</impl>
+			</disable>
+			<disable>
+				<comment>github_ibm/runtimes/backlog/issues/776</comment>
+				<platform>.*(aarch64_linux|s390).*</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>		
 		<levels>
 			<level>sanity</level>
 		</levels>
