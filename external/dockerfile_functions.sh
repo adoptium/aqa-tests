@@ -119,6 +119,9 @@ print_ubuntu_pkg() {
     local packages=$2
 
     echo -e "RUN apt-get update \\" \
+            "\n\t&& apt-get install -qq -y --no-install-recommends software-properties-common \\" \
+            "\n\t&& add-apt-repository ppa:ubuntu-toolchain-r/test \\" \
+            "\n\t&& apt-get update \\" \
             "\n\t&& apt-get install -y --no-install-recommends ${packages} \\" \
             "\n\t&& rm -rf /var/lib/apt/lists/*" \
             "\n" >> ${file}
@@ -254,6 +257,48 @@ print_bazel_install() {
             "\nENV PATH \${PATH}:\${BAZEL_HOME}/bin" \
             "\n" >> ${file}
 }
+
+print_python_install() {
+    local file=$1
+    local python_version=$2
+
+    echo -e "ARG PYTHON_VERSION=${python_version}" \
+          "\nENV PYTHON_VERSION=\$PYTHON_VERSION" \
+          "\n\n# Install python" \
+          "\nRUN wget --progress=dot:mega -O python.tar.xz https://www.python.org/ftp/python/\${PYTHON_VERSION}/Python-\${PYTHON_VERSION}.tar.xz \\" >> ${file}
+    
+    echo -e "\t&& tar -xJf python.tar.xz \\" \
+            "\n\t&& cd Python-\${PYTHON_VERSION}  \\" \
+            "\n\t&& ./configure --prefix=/usr/local \\" \
+            "\n\t&& make \\" \
+            "\n\t&& make install \\" \
+            "\n\t&& cd .. \\" \
+            "\n\t&& rm -rf python.tar.xz Python-\${PYTHON_VERSION}" \
+            "\n" >> ${file}
+}
+
+print_criu_install() {
+    local file=$1
+    local criu_version=$2
+
+    echo -e "ARG CRIU_VERSION=${criu_version}" \
+          "\nENV CRIU_VERSION=\$CRIU_VERSION" \
+          "\n\n# Install criu and set capabilities" \
+          "\nRUN wget --progress=dot:mega -O v\${CRIU_VERSION}.tar.gz https://github.com/checkpoint-restore/criu/archive/refs/tags/v\${CRIU_VERSION}.tar.gz \\" >> ${file}
+    
+    echo -e "\t&& tar -xzf v\${CRIU_VERSION}.tar.gz \\" \
+            "\n\t&& cd criu-\${CRIU_VERSION}  \\" \
+            "\n\t&& make \\" \
+            "\n\t&& make install \\" \
+            "\n\t&& cd .. \\" \
+            "\n\t&& rm -rf v\${CRIU_VERSION}.tar.gz criu-\${CRIU_VERSION} \\" \
+            "\n\t&& setcap cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/local/sbin/criu" \
+            "\n\n# Run ldconfig to discover newly installed shared libraries" \
+            "\nRUN for dir in lib lib64 ; do echo /usr/local/$dir ; done > /etc/ld.so.conf.d/usr-local.conf \\" \
+            "\n\t&& ldconfig " \
+            "\n" >> ${file}
+}
+
 
 print_maven_install() {
     local file=$1
@@ -447,6 +492,14 @@ generate_dockerfile() {
 
     if [[ ! -z ${bazel_version} ]]; then
         print_bazel_install ${file} ${bazel_version};
+    fi
+
+    if [[ ! -z ${python_version} ]]; then
+        print_python_install ${file} ${python_version};
+    fi
+
+    if [[ ! -z ${criu_version} ]]; then
+        print_criu_install ${file} ${criu_version};
     fi
     
     if [[ ! -z ${maven_version} ]]; then

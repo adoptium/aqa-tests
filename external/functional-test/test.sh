@@ -17,18 +17,20 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
+export JDK_VERSION=
+echo "TEST_JDK_HOME has been unset, use auto-detect instead."
+export DYNAMIC_COMPILE=true
 export BUILD_LIST=functional
 
 cd /aqa-tests
-./get.sh -t /aqa-tests
-
+./get.sh
 cd /aqa-tests/TKG
 
 set -e
 
-echo "Building functional test material..." 
+echo "Building functional test material..."
 make compile
 
-echo "Generating make files and running the functional tests" 
+echo "Generating make files and running the functional tests"
 make $1
 set +e
