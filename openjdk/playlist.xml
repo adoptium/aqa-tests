@@ -1757,4 +1757,244 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk0</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/wisp2$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+			<version>11</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk1</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/wisp$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+			<version>11</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk2</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			-agentvm -a -ea -esa -v:fail,error,time,nopass -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc
+			-ignore:quiet -timeoutFactor:1 -xml:verify -concurrency:1 -k:'!headful' -vmoptions:"-Xmx512m"
+			-vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/rcm$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk3</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/management$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_tenant_jdk</testCaseName>
+		<command>${TEST_JDK_HOME}bin/jgroup -u testuser -g testuser ; \
+			$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/multi-tenant$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>spec.linux_x86-64</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_elastic-heap_jdk</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_JDK_TEST_DIR)/elastic-heap$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_elastic-heap_hotspot</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/elastic-heap$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_jwarmup_hotspot</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/jwarmup$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_tenant_hotspot</testCaseName>
+		<command>${TEST_JDK_HOME}bin/jgroup -u testuser -g testuser ; \
+			$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/multi-tenant$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>spec.linux_x86-64</platformRequirements>
+	</test>
 </playlist>
