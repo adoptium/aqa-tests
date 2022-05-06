@@ -361,7 +361,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT'], "Optional. Only set to JITAAS/AOT for JITAAS/AOT feature testing.")
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS, etc)")
 							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")

@@ -167,6 +167,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                 }
             }
 
+        if (params.TEST_FLAG == "FIPS") {
+            LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
+        }
+
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"
         }
