@@ -427,8 +427,14 @@ getTestKitGen()
 	if [ "$TKG_REPO" = "" ]; then
 		TKG_REPO="https://github.com/adoptium/TKG.git"
 	fi
-	echo "git clone -q $TKG_REPO"
-	git clone -q $TKG_REPO
+
+	executeCmdWithRetry "TKG" "git clone -q $TKG_REPO"
+	rt_code=$?
+	if [ $rt_code != 0 ]; then
+		echo "git clone error code: $rt_code"
+		exit 1
+	fi
+
 	cd TKG
 	echo "git rev-parse $TKG_BRANCH"
 	if ! tkg_sha=(`git rev-parse $TKG_BRANCH`); then
