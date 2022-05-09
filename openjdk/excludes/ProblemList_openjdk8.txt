@@ -107,7 +107,21 @@ runtime/7110720/Test7110720.sh https://github.com/adoptium/aqa-tests/issues/2818
 compiler/6894807/IsInstanceTest.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
 compiler/8004051/Test8004051.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
 gc/g1/TestHumongousCodeCacheRoots.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
-compiler/criticalnatives/argumentcorruption/Test8167409.sh https://github.com/adoptium/aqa-tests/issues/2984 linux-aarch64
+compiler/criticalnatives/argumentcorruption/Test8167409.sh https://github.com/adoptium/aqa-tests/issues/2984 linux-aarch64,linux-arm
+compiler/c2/cr6340864/TestByteVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/c2/cr6340864/TestDoubleVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/c2/cr6340864/TestFloatVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/c2/cr6340864/TestIntVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/c2/cr6340864/TestLongVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/c2/cr6340864/TestShortVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/codegen/TestCharVect2.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/escapeAnalysis/TestGetClass.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+compiler/rangechecks/RangeCheckEliminationScaleNotOne.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm
+gc/g1/Test2GbHeap.java https://bugs.openjdk.java.net/browse/JDK-8154787 linux-arm
+gc/g1/TestHumongousShrinkHeap.java https://bugs.openjdk.java.net/browse/JDK-8041506 linux-arm
+gc/whitebox/TestConcMarkCycleWB.java https://bugs.openjdk.java.net/browse/JDK-8067368 linux-arm
+runtime/StackGap/testme.sh https://bugs.openjdk.java.net/browse/JDK-8201536 linux-arm
+runtime/containers/docker/TestMemoryAwareness.java https://github.com/adoptium/aqa-tests/issues/3250 linux-arm
 ############################################################################
 
 # jdk_awt
@@ -176,8 +190,8 @@ com/sun/management/OperatingSystemMXBean/GetCommittedVirtualMemorySize.java		htt
 sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
-sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://github.com/adoptium/aqa-tests/issues/2792 linux-aarch64,linux-ppc64le
-com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-x64
+sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://bugs.openjdk.java.net/browse/JDK-8031420 linux-aarch64,linux-ppc64le,linux-arm
+com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-x64,linux-arm
 
 ############################################################################
 
@@ -327,7 +341,7 @@ tools/pack200/Pack200Test.java https://github.com/adoptium/aqa-tests/issues/2657
 sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
-
+tools/launcher/RunpathTest.java https://bugs.openjdk.java.net/browse/JDK-8286118 linux-arm
 ############################################################################
 
 # jdk_jdi
@@ -380,7 +394,7 @@ com/sun/jdi/RedefineFinal.sh			https://github.com/adoptium/aqa-tests/issues/2415
 com/sun/jdi/RedefineImplementor.sh		https://github.com/adoptium/aqa-tests/issues/2415 windows-all
 com/sun/jdi/RedefineIntConstantToLong.sh	https://github.com/adoptium/aqa-tests/issues/2415 windows-all
 com/sun/jdi/PrivateTransportTest.sh             https://github.com/adoptium/aqa-tests/issues/2154 windows-all
-
+com/sun/jdi/RedefineCrossEvent.java https://bugs.openjdk.java.net/browse/JDK-8206330 linux-arm
 ############################################################################
 
 # jdk_util
@@ -442,3 +456,24 @@ jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java https://github.com/adoptium/aqa-test
 jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64
 jdk/jfr/event/io/TestInstrumentation.java https://bugs.openjdk.java.net/browse/JDK-8202142 linux-all
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3046 windows-all
+jdk/jfr/event/compiler/TestCompile.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/collection/TestGCCauseWithG1ConcurrentMark.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/collection/TestGCCauseWithG1FullCollection.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/detailed/TestEvacuationFailedEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/detailed/TestEvacuationInfoEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/detailed/TestG1HeapRegionTypeChangeEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/detailed/TestG1MMUEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/detailed/TestPromotionEventWithG1.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventG1.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/objectcount/TestObjectCountAfterGCEventWithG1ConcurrentMark.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/stacktrace/TestG1HumongousAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/stacktrace/TestG1OldAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/stacktrace/TestG1YoungAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/stacktrace/TestMetaspaceG1GCAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/gc/stacktrace/TestParallelMarkSweepAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/oldobject/TestObjectDescription.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/os/TestCPUInformation.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/os/TestCPUInformation.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/event/runtime/TestSizeTFlags.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
+jdk/jfr/jvm/TestLargeJavaEvent512k.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
