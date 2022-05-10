@@ -168,3 +168,8 @@ GRAAL_PROBLEM_LIST_FILE:=
 ifneq ($(filter 11 16, $(JDK_VERSION)),)
 	GRAAL_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList-graal.txt$(Q)
 endif
+
+FEATURE_PROBLEM_LIST_FILE:=
+ifeq ($(TEST_FLAG), FIPS)
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
+endif
