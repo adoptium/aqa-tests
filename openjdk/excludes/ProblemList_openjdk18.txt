@@ -82,7 +82,7 @@ java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adopt
 
 java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920   aix-ppc64
 java/lang/System/FileEncodingTest.java  https://github.com/adoptium/aqa-tests/issues/1267   aix-ppc64
- 
+java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 linux-arm
 
 
 ############################################################################
@@ -137,35 +137,35 @@ java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/adoptium/in
 java/net/MulticastSocket/Test.java                             https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 ###
 java/net/MulticastSocket/B6427403.java  https://github.com/adoptium/infrastructure/issues/699   aix-ppc64
-java/net/MulticastSocket/IPMulticastIF.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux_ppc64le
-java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux_ppc64le
-java/net/CookieHandler/CookieManagerTest.java   https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux_ppc64le
-java/net/DatagramPacket/ReuseBuf.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/DatagramSocket/GetLocalAddress.java    https://github.com/adoptium/aqa-tests/issues/3088  aix-pcc64, linux_ppc64le
-java/net/DatagramSocket/PortUnreachable.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/DatagramSocket/ReuseAddressTest.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/DatagramSocket/Send12k.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3088  aix-pcc64,linux_ppc64le 
-java/net/DatagramSocket/SendSize.java.SendSize  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/DatagramSocket/SetDatagramSocketImplFactory/ADatagramSocket.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/CloseAvailable.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/GetLocalAddress.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/InheritTimeout.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/ProxyCons.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/ReadTimeout.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/SetSoLinger.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/SoTimeout.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/asyncClose/AsyncClose.java  https://github.com/adoptium/aqa-tests/issues/827 aix-ppc64, linux_ppc64le
-java/net/Socket/asyncClose/BrokenPipe.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/setReuseAddress/Basic.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/setReuseAddress/Restart.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/SocketInputStream/SocketTimeout.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socks/BadProxySelector.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socks/SocksProxyVersion.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/Socket/asyncClose/Race.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-java/net/ServerSocket/TestLocalAddress.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
+java/net/MulticastSocket/IPMulticastIF.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
+java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
+java/net/CookieHandler/CookieManagerTest.java   https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
+java/net/DatagramPacket/ReuseBuf.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/DatagramSocket/GetLocalAddress.java    https://github.com/adoptium/aqa-tests/issues/3088  aix-pcc64, linux-ppc64le
+java/net/DatagramSocket/PortUnreachable.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/DatagramSocket/ReuseAddressTest.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/DatagramSocket/Send12k.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3088  aix-pcc64,linux-ppc64le 
+java/net/DatagramSocket/SendSize.java.SendSize  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/DatagramSocket/SetDatagramSocketImplFactory/ADatagramSocket.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/CloseAvailable.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/GetLocalAddress.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/InheritTimeout.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/ProxyCons.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/ReadTimeout.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/SetSoLinger.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/SoTimeout.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/asyncClose/AsyncClose.java  https://github.com/adoptium/aqa-tests/issues/827 aix-ppc64, linux-ppc64le
+java/net/Socket/asyncClose/BrokenPipe.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/setReuseAddress/Basic.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/setReuseAddress/Restart.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/SocketInputStream/SocketTimeout.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socks/BadProxySelector.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socks/SocksProxyVersion.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/Socket/asyncClose/Race.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+java/net/ServerSocket/TestLocalAddress.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/httpclient/ManyRequests.java   https://github.com/adoptium/aqa-tests/issues/2828 aix-ppc64
-java/net/ipv6tests/UdpTest.java.UdpTest https://github.com/adoptium/aqa-tests/issues/2828 linux_s390x
+java/net/ipv6tests/UdpTest.java.UdpTest https://github.com/adoptium/aqa-tests/issues/2828 linux-s390x
 
 
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
@@ -175,13 +175,18 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all	
 java/nio/file/spi/SetDefaultProvider.java	https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 linux-s390x
-java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-ppc64,linux_s390x,win_64
-java/nio/channels/FileChannel/LargeGatheringWrite.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64,win_64
+java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-ppc64,linux-s390x,windows-x64
+java/nio/channels/FileChannel/LargeGatheringWrite.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64,windows-x64
 java/nio/channels/FileChannel/Transfer2GPlus.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 java/nio/channels/DatagramChannel/AfterDisconnect.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
-java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789   aix-ppc64,win_64
+java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789   aix-ppc64,windows-x64
 java/nio/Buffer/DirectBufferAllocTest.java  https://github.com/adoptium/aqa-tests/issues/3086 aix-ppc64
+com/sun/net/httpserver/simpleserver/CommandLinePositiveTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm
+com/sun/net/httpserver/simpleserver/jwebserver/CommandLinePositiveTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm
+java/net/InetAddress/HostsFileOrderingTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm
+java/net/InetAddress/InternalNameServiceTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm
+java/net/InetAddress/InternalNameServiceWithHostsFileTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm
 
 ############################################################################
 
@@ -214,7 +219,7 @@ jdk/nio/zipfs/ZipFSTester.java	https://github.com/adoptium/aqa-tests/issues/602 
 java/nio/file/Files/CopyAndMove.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 
-java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-tests/issues/3034  linux-aarch64,linux_ppc64le,linux_s390x
+java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-tests/issues/3034  linux-aarch64,linux-ppc64le,linux-s390x
  
 
 ############################################################################ 
@@ -246,16 +251,16 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 ############################################################################
 
 # jdk_tools
-sun/tools/jstat/jstatLineCounts1.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux_ppc64le
-sun/tools/jstat/jstatLineCounts2.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux_ppc64le
-sun/tools/jstat/jstatLineCounts3.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux_ppc64le
-sun/tools/jstat/jstatLineCounts4.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux_ppc64le
-sun/tools/jstatd/TestJstatdDefaults.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/tools/jstatd/TestJstatdExternalRegistry.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/tools/jstatd/TestJstatdPort.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/tools/jstatd/TestJstatdPortAndServer.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/tools/jstatd/TestJstatdRmiPort.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/tools/jstatd/TestJstatdServer.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
+sun/tools/jstat/jstatLineCounts1.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
+sun/tools/jstat/jstatLineCounts2.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
+sun/tools/jstat/jstatLineCounts3.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
+sun/tools/jstat/jstatLineCounts4.sh	https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
+sun/tools/jstatd/TestJstatdDefaults.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/tools/jstatd/TestJstatdExternalRegistry.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/tools/jstatd/TestJstatdPort.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/tools/jstatd/TestJstatdPortAndServer.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/tools/jstatd/TestJstatdRmiPort.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/tools/jstatd/TestJstatdServer.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 
 tools/jpackage/share/AddLauncherTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AppImagePackageTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -363,7 +368,7 @@ compiler/graalunit/Replacements12Test.java https://github.com/adoptium/aqa-tests
 compiler/graalunit/Replacements9Test.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/ReplacementsTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
-compiler/unsafe/UnsafeCopyMemory.java   https://github.com/adoptium/aqa-tests/issues/2804   aix-ppc64,linux_s390x
+compiler/unsafe/UnsafeCopyMemory.java   https://github.com/adoptium/aqa-tests/issues/2804   aix-ppc64,linux-s390x
 
 compiler/c2/cr6340864/TestIntVectRotate.java    https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
 compiler/c2/cr6340864/TestLongVectRotate.java   https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
@@ -398,7 +403,7 @@ jdk/jfr/jmx/streaming/TestSetSettings.java	https://github.com/adoptium/aqa-tests
 
 jdk/jfr/api/consumer/TestRecordedFullStackTrace.java https://bugs.openjdk.java.net/browse/JDK-8284024 linux-s390x
 jdk/jfr/event/profiling/TestFullStackTrace.java https://bugs.openjdk.java.net/browse/JDK-8284024 linux-s390x
-jdk/jfr/jcmd/TestJcmdDump.java https://github.com/adoptium/aqa-tests/issues/2919 aarch64-linux,linux_ppc64le,linux_s390x
+jdk/jfr/jcmd/TestJcmdDump.java https://github.com/adoptium/aqa-tests/issues/2919 aarch64-linux,linux-ppc64le,linux-s390x
 jdk/jfr/jmx/streaming/TestMetadataEvent.java    https://github.com/adoptium/aqa-tests/issues/2985 linux-arm
 jdk/jfr/jmx/streaming/TestSetSettings.java  https://github.com/adoptium/aqa-tests/issues/2985 linux-arm 
 jdk/jfr/jmx/streaming/TestStart.java    https://github.com/adoptium/aqa-tests/issues/2985 linux-arm,windows-x86
@@ -428,27 +433,27 @@ runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://b
 javax/imageio/plugins/shared/ImageWriterCompressionTest.java  https://github.com/adoptium/aqa-tests/issues/3072 linux-arm  
 ############################################################################
 #javax_management
-javax/management/remote/mandatory/connection/RMIConnectionIdTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/notif/RMINotifTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/passwordAuthenticator/RMIAltAuthTest.java https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/passwordAuthenticator/RMIPasswdAuthTest.java  https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/socketFactories/RMISocketFactoriesTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/subjectDelegation/SubjectDelegation1Test.java https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
-javax/management/remote/mandatory/util/MapNullValuesTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux_ppc64le
+javax/management/remote/mandatory/connection/RMIConnectionIdTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/notif/RMINotifTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/passwordAuthenticator/RMIAltAuthTest.java https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/passwordAuthenticator/RMIPasswdAuthTest.java  https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/socketFactories/RMISocketFactoriesTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/subjectDelegation/SubjectDelegation1Test.java https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
+javax/management/remote/mandatory/util/MapNullValuesTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
 
 
 ############################################################################
 #sun_net
-sun/net/www/http/HttpClient/B8025710.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/http/KeepAliveCache/B5045306.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/http/B6299712.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/http/HttpOnly.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/http/NoCache.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/http/ZoneId.java   https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/https/HttpsURLConnection/B6226610.java https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/https/HttpsURLConnection/ImpactOnSNI.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/https/HttpsURLConnection/PostThruProxyWithAuth.java    https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
-sun/net/www/protocol/jar/MultiReleaseJarURLConnection.java  https://github.com/adoptium/aqa-tests/issues/3088 linux_ppc64le
+sun/net/www/http/HttpClient/B8025710.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/http/KeepAliveCache/B5045306.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/http/B6299712.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/http/HttpOnly.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/http/NoCache.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/http/ZoneId.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/https/HttpsURLConnection/B6226610.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/https/HttpsURLConnection/ImpactOnSNI.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/https/HttpsURLConnection/PostThruProxyWithAuth.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/jar/MultiReleaseJarURLConnection.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 
 #####################################
 
