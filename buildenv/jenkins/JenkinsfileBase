@@ -1010,28 +1010,32 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def addFailedTestsGrinderLink(){
+def addFailedTestsGrinderLink(paths=""){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-		echo "Fetching Tap files..."
-		def tapFiles = findFiles(glob: "**/*.tap")
-		def failedTestList = "testList+TESTLIST="
-		for (def tapFile: tapFiles) {
-			echo "Tap file found: ${tapFile}"
-			def file = readFile(file: "${tapFile}")
-			TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-			TestSet testSet = tapConsumer.load(file)
-			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-					def testCase = testSet.getTestResult(i).getDescription().substring(2)
-					failedTestList += "$testCase,"
+		def failedTestList = ""
+		List<String> buildPaths = paths.split(',')
+		for (def buildPath: buildPaths) {
+			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
+			for (def tapFile: tapFiles) {
+				echo "Tap file found: ${tapFile}..."
+				def file = readFile(file: "${tapFile}")
+				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+				TestSet testSet = tapConsumer.load(file)
+				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+						def failedtest = testSet.getTestResult(i).getDescription().substring(2)
+						failedTestList += "${failedtest},"
+					}
 				}
 			}
 		}
-		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
-		String url = env.RERUN_LINK
-		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
-		echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
-		currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+		if (failedTestList) {
+			failedTestList = "testList+TESTLIST=" + failedTestList.substring(0, failedTestList.length() - 1)
+			String url = env.RERUN_LINK
+			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
+			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
+			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+		}
 	}
 }
 
@@ -1044,6 +1048,7 @@ def run_parallel_tests() {
 				cleanWs disableDeferredWipeout: true, deleteDirs: true
 				try {
 					def buildResult = ""
+					def buildPaths = ""
 					// for parallel run, only archive AQACert log once in the parent build
 					def archiveAQACert = false
 					childJobs.each {
@@ -1068,6 +1073,7 @@ def run_parallel_tests() {
 									archiveFile("${name}/${buildId}/**/SHA.txt", true)
 									archiveAQACert = true
 								}
+								buildPaths += "${name}/${buildId}/,"
 							} catch (Exception e) {
 								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 								buildResult = childResult
@@ -1078,7 +1084,9 @@ def run_parallel_tests() {
 						currentBuild.result = buildResult
 					}
 					archiveAQAvitFiles()
-					addFailedTestsGrinderLink()
+					if (buildPaths.length() > 0) {
+						addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+					}
 				} finally {
 					// cleanWs() does not work in some cases, so set opts below
 					cleanWs disableDeferredWipeout: true, deleteDirs: true
