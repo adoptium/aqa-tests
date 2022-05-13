@@ -319,11 +319,23 @@ getBinaryOpenjdk()
 
 	jar_files=`ls`
 	jar_file_array=(${jar_files//\\n/ })
+	last_index=$(( ${#jar_file_array[@]} - 1 ))
+
+	if [[ $last_index == 0 ]] && [[ $download_url =~ '*.tar.gz' ]]; then
+		nested_zip="${jar_file_array[0]}"
+		echo "${nested_zip} is a nested zip"
+		unzip -q $nested_zip -d .
+		rm $nested_zip
+		jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz 2> /dev/null`
+		echo "Found files under ${nested_zip}:"
+		echo "${jar_files}"
+		jar_file_array=(${jar_files//\\n/ })
+		last_index=$(( ${#jar_file_array[@]} - 1 ))
+	fi
 
 	# if $jar_file_array contains debug-image, move debug-image element to the end of the array
 	# debug image jar needs to be extracted after jdk as debug image jar extraction location depends on jdk structure
 	# debug image jar extracts into j2sdk-image/jre dir if it exists. Otherwise, extracts into j2sdk-image dir
-	last_index=$(( ${#jar_file_array[@]} - 1 ))
 	for i in "${!jar_file_array[@]}"; do
 		if [[ "${jar_file_array[$i]}" =~ "debug-image" ]] || [[ "${jar_file_array[$i]}" =~ "debugimage" ]]; then
 			if [ "$i" -ne "$last_index" ]; then
