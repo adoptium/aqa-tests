@@ -121,10 +121,23 @@ gc/g1/Test2GbHeap.java https://bugs.openjdk.java.net/browse/JDK-8154787 linux-ar
 gc/g1/TestHumongousShrinkHeap.java https://bugs.openjdk.java.net/browse/JDK-8041506 linux-arm
 gc/whitebox/TestConcMarkCycleWB.java https://bugs.openjdk.java.net/browse/JDK-8067368 linux-arm
 runtime/StackGap/testme.sh https://bugs.openjdk.java.net/browse/JDK-8201536 linux-arm
-runtime/containers/docker/TestMemoryAwareness.java https://github.com/adoptium/aqa-tests/issues/3250 linux-arm
+#https://github.com/adoptium/aqa-tests/issues/3250 linux-arm
+runtime/containers/docker/TestMemoryAwareness.java https://bugs.openjdk.java.net/browse/JDK-8229182 linux-arm,linux-ppc64le
 compiler/gcbarriers/PreserveFPRegistersTest.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
 gc/TestMemoryMXBeansAndPoolsPresence.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
 gc/g1/mixedgc/TestOldGenCollectionUsage.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
+runtime/CompressedOops/CompressedClassPointers.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le
+compiler/6865265/StackOverflowBug.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+compiler/8009761/Test8009761.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+compiler/exceptions/TestRecursiveReplacedException.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+compiler/uncommontrap/StackOverflowGuardPagesOff.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+compiler/uncommontrap/TestStackBangMonitorOwned.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+compiler/uncommontrap/TestStackBangRbp.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+gc/arguments/TestCMSHeapSizeFlags.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+gc/arguments/TestG1HeapSizeFlags.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+gc/arguments/TestParallelHeapSizeFlags.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+gc/arguments/TestSerialHeapSizeFlags.java https://github.com/adoptium/aqa-tests/issues/3059 inux-ppc64le
+
 ############################################################################
 
 # jdk_awt
@@ -457,7 +470,8 @@ javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github
 
 jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-882618581 generic-all
 jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64
-jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64
+#linux-arm https://github.com/adoptium/aqa-tests/issues/3301
+jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64,linux-arm,linux-ppc64le
 jdk/jfr/event/io/TestInstrumentation.java https://bugs.openjdk.java.net/browse/JDK-8202142 generic-all
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3046 windows-all
 jdk/jfr/event/compiler/TestCompile.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
@@ -477,8 +491,6 @@ jdk/jfr/event/gc/stacktrace/TestMetaspaceG1GCAllocationPendingStackTrace.java ht
 jdk/jfr/event/gc/stacktrace/TestParallelMarkSweepAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/oldobject/TestObjectDescription.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/os/TestCPUInformation.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
-jdk/jfr/event/os/TestCPUInformation.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
-jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/runtime/TestSizeTFlags.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/jvm/TestLargeJavaEvent512k.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/compiler/TestCodeSweeper.java https://github.com/adoptium/aqa-tests/issues/3043 macosx-all
