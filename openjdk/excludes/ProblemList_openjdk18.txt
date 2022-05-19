@@ -23,26 +23,31 @@ java/beans/PropertyEditor/TestColorClassJava.java	https://bugs.openjdk.java.net/
 java/beans/PropertyEditor/TestColorClassNull.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/PropertyEditor/TestColorClassValue.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/PropertyEditor/TestFontClass.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestFontClassJava.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
+#java/beans/PropertyEditor/TestFontClassJava.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+#java/beans/PropertyEditor/TestFontClassValue.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+java/beans/PropertyEditor/TestFontClassJava.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all
 java/beans/PropertyEditor/TestFontClassNull.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestFontClassValue.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
+java/beans/PropertyEditor/TestFontClassValue.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all
 java/beans/XMLEncoder/java_awt_CardLayout.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/java_awt_GridBagLayout.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-#java/beans/XMLEncoder/java_awt_ScrollPane.java	failure on mac is tracked by https://github.com/adoptium/aqa-tests/issues/2848
+#java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/2848 macosx-all
 java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all,macosx-all
 java/beans/XMLEncoder/javax_swing_Box.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_BoxLayout.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_Box_Filler.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
+#java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all,linux-all
 java/beans/XMLEncoder/javax_swing_JButton.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JLayeredPane.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JSplitPane.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-java/beans/XMLEncoder/javax_swing_JTree.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
+#java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+java/beans/XMLEncoder/javax_swing_JTree.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all,linux-all
 java/beans/XMLEncoder/javax_swing_OverlayLayout.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_border_TitledBorder.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_plaf_BorderUIResource_TitledBorderUIResource.java	https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-java/beans/XMLEncoder/Test4631471.java  https://github.com/adoptium/aqa-tests/issues/2810 linux-arm
-java/beans/XMLEncoder/Test4903007.java  https://github.com/adoptium/aqa-tests/issues/2810   aix-ppc64
+java/beans/XMLEncoder/Test4631471.java  https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+#java/beans/XMLEncoder/Test4903007.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+java/beans/XMLEncoder/Test4903007.java https://github.com/adoptium/aqa-tests/issues/2810   aix-ppc64,linux-all
 java/beans/PropertyChangeSupport/Test4682386.java   https://github.com/adoptium/aqa-tests/issues/2810 aix-ppc64
 
 ############################################################################
@@ -165,8 +170,6 @@ java/net/Socks/SocksProxyVersion.java   https://github.com/adoptium/aqa-tests/is
 java/net/Socket/asyncClose/Race.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/ServerSocket/TestLocalAddress.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/httpclient/ManyRequests.java   https://github.com/adoptium/aqa-tests/issues/2828 aix-ppc64
-java/net/ipv6tests/UdpTest.java.UdpTest https://github.com/adoptium/aqa-tests/issues/2828 linux-s390x
-
 
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
@@ -174,7 +177,7 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/adoptium/aqa-tests/issues/602
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all	
 java/nio/file/spi/SetDefaultProvider.java	https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
-java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 linux-s390x
+java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-ppc64,linux-s390x,windows-x64
 java/nio/channels/FileChannel/LargeGatheringWrite.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64,windows-x64
 java/nio/channels/FileChannel/Transfer2GPlus.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
@@ -187,7 +190,8 @@ com/sun/net/httpserver/simpleserver/jwebserver/CommandLinePositiveTest.java http
 java/net/InetAddress/HostsFileOrderingTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
 java/net/InetAddress/InternalNameServiceTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
 java/net/InetAddress/InternalNameServiceWithHostsFileTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
-
+com/sun/net/httpserver/simpleserver/CustomFileSystemTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x86
+com/sun/net/httpserver/simpleserver/SimpleFileServerTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x86
 ############################################################################
 
 # jdk_io
@@ -245,6 +249,7 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 
 # jdk_time
 java/time/test/java/time/format/TestZoneTextPrinterParser.java https://bugs.openjdk.java.net/browse/JDK-8283842 macosx-all,windows-x86
+java/time/test/java/time/format/TestUnicodeExtension.java https://bugs.openjdk.java.net/browse/JDK-8283842 windows-x86
 ############################################################################
 
 # jdk_tools
@@ -373,10 +378,75 @@ compiler/c2/irTests/TestPostParseCallDevirtualization.java  https://github.com/a
 compiler/loopstripmining/TestPinnedUseInOuterLSMUnusedBySfpt.java   https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
 compiler/tiered/TieredLevelsTest.java   https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
 compiler/vectorapi/TestNoInline.java    https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
-compiler/jvmci/jdk.vm.ci.hotspot.test/src/jdk/vm/ci/hotspot/test/TestTranslatedException.java https://github.com/adoptium/aqa-tests/issues/3658 linux-x64,windows-x64,linux-aarch64,macosx-aarch64
-
-
-
+compiler/jvmci/jdk.vm.ci.hotspot.test/src/jdk/vm/ci/hotspot/test/TestTranslatedException.java https://github.com/adoptium/aqa-tests/issues/3658 linux-x64,windows-x64,linux-aarch64,macosx-all
+compiler/compilercontrol/commandfile/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/c2/irTests/TestLongRangeChecks.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/c2/irTests/TestShiftAndMask.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeDynamic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeInterface2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/OverflowCodeCacheTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/BeanTypeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/CodeHeapBeanPresenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/GetUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/InitialAndMaxUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/ManagerNamesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/MemoryPoolsPresenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/PeakUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/PoolsIndependenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/ThresholdNotificationsTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdExceededSeveralTimesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdExceededTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdIncreasedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdNotExceededTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/stress/RandomAllocationTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddAndRemoveTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddCompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddLogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddPrintAssemblyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/ClearDirectivesStackTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/PrintDirectivesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/logcompilation/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/rangechecks/TestRangeCheckSmearing.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/AllocationCodeBlobTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/BlockingCompilation.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/GetCodeHeapEntriesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/MakeMethodNotCompilableTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
 ############################################################################
 
 # jdk_jfr
@@ -400,12 +470,15 @@ jdk/jfr/jmx/streaming/TestSetSettings.java	https://github.com/adoptium/aqa-tests
 
 jdk/jfr/api/consumer/TestRecordedFullStackTrace.java https://bugs.openjdk.java.net/browse/JDK-8284024 linux-s390x
 jdk/jfr/event/profiling/TestFullStackTrace.java https://bugs.openjdk.java.net/browse/JDK-8284024 linux-s390x
-jdk/jfr/jcmd/TestJcmdDump.java https://github.com/adoptium/aqa-tests/issues/2919 linux-aarch64,linux-ppc64le,linux-s390x
+jdk/jfr/jcmd/TestJcmdDump.java https://github.com/adoptium/aqa-tests/issues/2919 linux-all
 jdk/jfr/jmx/streaming/TestMetadataEvent.java    https://github.com/adoptium/aqa-tests/issues/2985 linux-arm
 jdk/jfr/jmx/streaming/TestSetSettings.java  https://github.com/adoptium/aqa-tests/issues/2985 linux-arm 
 jdk/jfr/jmx/streaming/TestStart.java    https://github.com/adoptium/aqa-tests/issues/2985 linux-arm,windows-x86
-jdk/jfr/jmx/TestGetRecordings.java  https://github.com/adoptium/aqa-tests/issues/2754   ppc64le_linux
-    
+jdk/jfr/jmx/TestGetRecordings.java  https://github.com/adoptium/aqa-tests/issues/2754 linux-ppc64le
+jdk/jfr/event/compiler/TestCodeCacheFull.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
+jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
+jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
+
 ###########################################################################
 
 #jdk_vector
@@ -425,9 +498,7 @@ jdk/incubator/vector/Byte128VectorLoadStoreTests.java https://github.com/adoptiu
 
 #runtime_nestmate
 runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://bugs.openjdk.java.net/browse/JDK-8269135 windows-x86
-
-######
-javax/imageio/plugins/shared/ImageWriterCompressionTest.java  https://github.com/adoptium/aqa-tests/issues/3072 linux-arm  
+ 
 ############################################################################
 #javax_management
 javax/management/remote/mandatory/connection/RMIConnectionIdTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
@@ -438,6 +509,9 @@ javax/management/remote/mandatory/socketFactories/RMISocketFactoriesTest.java   
 javax/management/remote/mandatory/subjectDelegation/SubjectDelegation1Test.java https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
 javax/management/remote/mandatory/util/MapNullValuesTest.java   https://github.com/adoptium/aqa-tests/issues/3087 linux-ppc64le
 
+############################################################################
+#jdk_imageio
+javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
 
 ############################################################################
 #sun_net
@@ -449,7 +523,7 @@ sun/net/www/protocol/http/NoCache.java  https://github.com/adoptium/aqa-tests/is
 sun/net/www/protocol/http/ZoneId.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 sun/net/www/protocol/https/HttpsURLConnection/B6226610.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 sun/net/www/protocol/https/HttpsURLConnection/ImpactOnSNI.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
-sun/net/www/protocol/https/HttpsURLConnection/PostThruProxyWithAuth.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
+sun/net/www/protocol/https/HttpsURLConnection/PostThruProxyWithAuth.java https://bugs.openjdk.java.net/browse/JDK-8224204 generic-all
 sun/net/www/protocol/jar/MultiReleaseJarURLConnection.java  https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 
 #####################################
