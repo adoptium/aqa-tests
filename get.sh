@@ -327,7 +327,7 @@ getBinaryOpenjdk()
 			echo "${nested_zip} is a nested zip"
 			unzip -q $nested_zip -d .
 			rm $nested_zip
-			jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null`
+			jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
 			echo "Found files under ${nested_zip}:"
 			echo "${jar_files}"
 			jar_file_array=(${jar_files//\\n/ })
