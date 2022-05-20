@@ -141,6 +141,7 @@ runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/infrastructure/is
 gc/concurrentMarkSweep/GuardShrinkWarning.java https://bugs.openjdk.java.net/browse/JDK-8023356 solaris-x64
 compiler/floatingpoint/8207838/TestFloatSyncJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 compiler/floatingpoint/8165673/TestFloatJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
+compiler/rtm/locking/TestRTMTotalCountIncrRate.java https://github.com/adoptium/aqa-tests/issues/3050 linux-all,windows-all
 ############################################################################
 
 # jdk_awt
@@ -276,6 +277,7 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/aqa-te
 sun/nio/ch/TestMaxCachedBufferSize.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 sun/nio/cs/FindDecoderBugs.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
 sun/nio/cs/OLD/TestIBMDB.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
 
 ############################################################################
 
@@ -365,8 +367,9 @@ sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-80
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 tools/launcher/RunpathTest.java https://bugs.openjdk.java.net/browse/JDK-8286118 linux-arm
 sun/jvmstat/monitor/MonitoredVm/MonitorVmStartTerminate.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64
-############################################################################
+sun/jvmstat/monitor/MonitoredVm/CR6672135.java https://github.com/adoptium/aqa-tests/issues/3691 windows-x64
 
+###############################################################################
 # jdk_jdi
 
 com/sun/jdi/RedefineCrossEvent.java	https://bugs.openjdk.java.net/browse/JDK-8283479	generic-all
@@ -476,9 +479,9 @@ javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github
 # jdk_jfr
 
 jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-882618581 generic-all
-jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64
+jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java https://github.com/adoptium/aqa-tests/issues/2766 generic-all
 #linux-arm https://github.com/adoptium/aqa-tests/issues/3301
-jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 linux-aarch64,linux-arm,linux-ppc64le
+jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 linux-all
 jdk/jfr/event/io/TestInstrumentation.java https://bugs.openjdk.java.net/browse/JDK-8202142 generic-all
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3046 windows-all
 jdk/jfr/event/compiler/TestCompile.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
@@ -503,7 +506,7 @@ jdk/jfr/event/runtime/TestSizeTFlags.java https://github.com/adoptium/aqa-tests/
 jdk/jfr/jvm/TestLargeJavaEvent512k.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/compiler/TestCodeSweeper.java https://github.com/adoptium/aqa-tests/issues/3043 macosx-all
 jdk/jfr/event/compiler/TestCodeCacheFull.java https://github.com/adoptium/aqa-tests/issues/3042 macosx-all
-jdk/jfr/event/compiler/TestCompilerCompile.java https://github.com/adoptium/aqa-tests/issues/3046 windows-x64,linux-aarch64,solaris-sparcv9
+jdk/jfr/event/compiler/TestCompilerCompile.java https://github.com/adoptium/aqa-tests/issues/3046 generic-all
 jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventDefNewSerial.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
 jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventPSParOld.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
 jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventPSSerial.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
