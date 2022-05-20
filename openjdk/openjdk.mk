@@ -173,3 +173,8 @@ FEATURE_PROBLEM_LIST_FILE:=
 ifeq ($(TEST_FLAG), FIPS)
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
 endif
+
+VENDOR_PROBLEM_LIST_FILE:=
+ifeq ($(JDK_VENDOR), "Red Hat, Inc.")
+	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)excludes$(D)vendors$(D)redhat$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
+endif
