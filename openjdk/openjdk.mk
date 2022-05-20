@@ -176,5 +176,5 @@ endif
 
 VENDOR_PROBLEM_LIST_FILE:=
 ifneq (,$(findstring Red Hat,$(JDK_VENDOR)))
-	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)excludes$(D)vendors$(D)redhat$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
+	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_RESROOT)$(D)excludes$(D)vendors$(D)redhat$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
 endif
