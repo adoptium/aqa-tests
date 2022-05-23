@@ -27,15 +27,24 @@
 	</target>
 
 	<target name="getDacapoSuite" depends="init">
-		<var name="curl_options" value="-Lks https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
-		<retry retrycount="3">
-			<sequential>
-				<echo message="curl ${curl_options}" />
-				<exec executable="curl" failonerror="true">
-					<arg line="${curl_options}" />
-				</exec>
-			</sequential>
-		</retry>
+		<var name="FILE_NAME" value="dacapo.jar"/>
+		<if>
+			<available file="${FILE_NAME}" type="file" />
+			<then>
+				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
+			</then>
+			<else>
+			<var name="curl_options" value="-Lks https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
+			<retry retrycount="3">
+				<sequential>
+					<echo message="curl ${curl_options}" />
+					<exec executable="curl" failonerror="true">
+						<arg line="${curl_options}" />
+					</exec>
+				</sequential>
+			</retry>
+			</else>
+		</if>
 	</target>
 	
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
