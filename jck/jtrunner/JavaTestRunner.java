@@ -238,9 +238,11 @@ public class JavaTestRunner {
 		if (platform.equals("solaris")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
-		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
+		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
+		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+		System.out.println("Using jti file "+ jtiFile);
+		
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
 		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
 		// A known failures list (.kfl) file is optional.
@@ -292,15 +294,16 @@ public class JavaTestRunner {
 
 		if (testSuite.equals("RUNTIME") && (tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api"))) {
 			if (!configAltPath.equals("NULL")) {
-				jckConfigLoc = configAltPath;
+				jckConfigLoc = configAltPath + File.separator + "default";
 			} else {
 				if (config.equals("NULL")) {
 					config = "default";	
 				}
-				String subdir = "config/" + config;
+				String subdir = "config" + File.separator + config;
 				jckConfigLoc = jckRoot + File.separator + subdir; 
 			}
 			
+			System.out.println("Reading config files from "+ jckConfigLoc);
 			File configFolder = new File(jckConfigLoc); 
 			if (!configFolder.exists()) {
 				System.out.println(testExecutionType + "Cannot locate the configuration directory containing the Kerberos and Http server settings here: " + jckConfigLoc + ". The requested tests include at least one of the tests which require these files.");
