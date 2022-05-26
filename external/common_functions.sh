@@ -209,6 +209,8 @@ function set_test_info() {
     sbt_version=$(getProperty "sbt_version")
     bazel_version=$(getProperty "bazel_version")
     openssl_version=$(getProperty "openssl_version")
+    python_version=$(getProperty "python_version")
+    criu_version=$(getProperty "criu_version")
     maven_version=$(getProperty "maven_version")
     environment_variable=$(getProperty "environment_variable")
     localPropertyFile=$(getProperty "localPropertyFile")

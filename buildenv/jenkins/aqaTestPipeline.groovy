@@ -11,6 +11,9 @@ def SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 def AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN : false
 def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
+def LABEL = (params.LABEL) ?: ""
+def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
+def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def JOBS = [:]
 
@@ -25,6 +28,10 @@ JDK_VERSIONS.each { JDK_VERSION ->
             arch ="x32"
         }
 
+        def filter = "*.tar.gz"
+        if (os.contains("windows")) {
+        	filter = "*.zip"
+        }
         def short_name = "hs"
         def jdk_impl = "hotspot"
         if (params.VARIANT == "openj9") {
@@ -34,10 +41,11 @@ JDK_VERSIONS.each { JDK_VERSION ->
 
         def download_url = params.CUSTOMIZED_SDK_URL ? params.CUSTOMIZED_SDK_URL : ""
         def sdk_resource_value = SDK_RESOURCE
+
         if (SDK_RESOURCE == "customized" ) {
             if (params.TOP_LEVEL_SDK_URL) {
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip 
-                download_url = params.TOP_LEVEL_SDK_URL + "/artifact/target/${os}/${arch}/${params.VARIANT}/*.tar.gz/*zip*/${params.VARIANT}.zip"
+                download_url = params.TOP_LEVEL_SDK_URL + "artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
             }
         } else if (SDK_RESOURCE == "releases") {
             if (params.VARIANT == "openj9") {
@@ -87,6 +95,9 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false),
                         string(name: 'TIME_LIMIT', value: TIME_LIMIT.toString()),
                         string(name: 'TRSS_URL', value: TRSS_URL),
+                        string(name: 'LABEL', value: LABEL),
+                        string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
+                        string(name: 'TEST_FLAG', value: TEST_FLAG),
                         booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir)
                     ]
                 }

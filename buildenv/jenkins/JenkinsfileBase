@@ -74,12 +74,20 @@ def setupEnv() {
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
-	env.TAP_NAME = "${JOB_NAME}.tap"
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
+	env.JDK_VENDOR = params.JDK_VENDOR ? params.JDK_VENDOR : ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+
+	if (JOB_NAME.contains("Grinder")) {
+		def currentDate = new Date()
+		def currentDateTime = currentDate.format("yyyyMMddHHmmss", TimeZone.getTimeZone('UTC'))
+		env.TAP_NAME = "${JOB_NAME}_${currentDateTime}.tap"
+	} else {
+		env.TAP_NAME = "${JOB_NAME}.tap"
+	}
 
 	if (params.CODE_COVERAGE) {
 		// GCOV strips # num from folder path in BUILD pipeline, e.g., /home/jenkins/workspace/Build_JDK11_x86-64_linux_Personal/build/linux-x86_64-normal-server-release/vm
@@ -530,7 +538,7 @@ def buildTest() {
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				try {
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './aqa-tests/TKG/'
+						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), filter: "**/parallelList.mk", target: './aqa-tests/TKG/'
 					}
 				} catch (Exception e) {
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
@@ -692,6 +700,7 @@ def post(output_name) {
 			archiveFile("aqa-tests/TKG/SHA.txt", true)
 			archiveFile("aqa-tests/TKG/AQACert.log", true)
 			archiveFile("**/*.tap", true)
+			archiveAQAvitFiles()
 
 			if (env.BUILD_LIST.startsWith('jck')) {
 				xunit (
@@ -888,6 +897,24 @@ def getJenkinsDomain() {
 	return domainName
 }
 
+def archiveAQAvitFiles() {
+	if (params.USE_TESTENV_PROPERTIES && !JOB_NAME.contains("_testList_")) {
+		if (params.ARTIFACTORY_SERVER) {
+			def currentDate = new Date()
+			def currentDateTime = currentDate.format("yyyyMMddHHmmss", TimeZone.getTimeZone('UTC'))
+			def uploadDir = "AQAvit/${JDK_IMPL}/${ADOPTOPENJDK_BRANCH}/${JDK_VERSION}/${PLATFORM}/${currentDateTime}"
+			uploadToArtifactory("${env.WORKSPACE}/**/*.tap", uploadDir)
+
+			// TODO: Donot need to archive SHA.txt and AQACert.log once the following issues are resolved:
+			// https://github.com/adoptium/TKG/issues/314
+			// https://github.com/adoptium/TKG/issues/313
+			// https://github.com/adoptium/TKG/issues/312
+			uploadToArtifactory("${env.WORKSPACE}/**/SHA.txt", uploadDir)
+			uploadToArtifactory("${env.WORKSPACE}/**/AQACert.log", uploadDir)
+		}
+	}
+}
+
 // If forceStoreOnJenkins set to true, archive on Jenkins.
 // If forceStoreOnJenkins set to false, archive on Artifactory if ARTIFACTORY_SERVER is provided. Otherwise, archive on Jenkins
 def archiveFile(filename, forceStoreOnJenkins) {
@@ -901,7 +928,7 @@ def archiveFile(filename, forceStoreOnJenkins) {
 	}
 }
 
-def uploadToArtifactory(pattern) {
+def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
@@ -909,30 +936,42 @@ def uploadToArtifactory(pattern) {
 		if (artifactoryRoorDir.endsWith("/")) {
 			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
 		}
-		def artifactoryUploadDir = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
+		def fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
+		if (artifactoryUploadDir) {
+			fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${artifactoryUploadDir}/"
+		}
 
 		def uploadSpec = """{
 			"files":[
 					{
 						"pattern": "${pattern}",
-						"target": "${artifactoryUploadDir}"
+						"target": "${fullUploadPath}"
 					}
 				]
 			}"""
 
 		def buildInfo = Artifactory.newBuildInfo()
-		// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
-		def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
 
-		buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
+		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
+			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
+		} else {
+			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
+			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
+			buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
+		}
 		server.upload spec: uploadSpec, buildInfo: buildInfo
 		server.publishBuildInfo buildInfo
 
 		def artifactoryUrl = server.getUrl()
-		def uploadUrl = "${artifactoryUrl}/${artifactoryUploadDir}"
-		echo "Test output artifactory URL:'${uploadUrl}'"
+		def uploadUrl = "${artifactoryUrl}/${fullUploadPath}"
 		if (!currentBuild.description.contains(uploadUrl)) {
-			currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+			if (uploadUrl.contains("AQAvit")) {
+				echo "AQAvit files artifactory URL:'${uploadUrl}'"
+				currentBuild.description += "<br><a href=${uploadUrl}>AQAvit Artifacts</a>"
+			} else {
+				echo "Test output artifactory URL:'${uploadUrl}'"
+				currentBuild.description += "<br><a href=${uploadUrl}>Artifacts</a>"
+			}
 		}
 	} else {
 		echo "ARTIFACTORY_SERVER is not set. Artifacts are not uploaded onto artifactory server."
@@ -972,28 +1011,32 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def addFailedTestsGrinderLink(){
+def addFailedTestsGrinderLink(paths=""){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-		echo "Fetching Tap files..."
-		def tapFiles = findFiles(glob: "**/*.tap")
-		def failedTestList = "testList+TESTLIST="
-		for (def tapFile: tapFiles) {
-			echo "Tap file found: ${tapFile}"
-			def file = readFile(file: "${tapFile}")
-			TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
-			TestSet testSet = tapConsumer.load(file)
-			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-					def testCase = testSet.getTestResult(i).getDescription().substring(2)
-					failedTestList += "$testCase,"
+		def failedTestList = ""
+		List<String> buildPaths = paths.split(',')
+		for (def buildPath: buildPaths) {
+			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
+			for (def tapFile: tapFiles) {
+				echo "Tap file found: ${tapFile}..."
+				def file = readFile(file: "${tapFile}")
+				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+				TestSet testSet = tapConsumer.load(file)
+				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+						def failedtest = testSet.getTestResult(i).getDescription().substring(2)
+						failedTestList += "${failedtest},"
+					}
 				}
 			}
 		}
-		failedTestList = failedTestList.substring(0, failedTestList.length() - 1)
-		String url = env.RERUN_LINK
-		def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
-		echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
-		currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+		if (failedTestList) {
+			failedTestList = "testList+TESTLIST=" + failedTestList.substring(0, failedTestList.length() - 1)
+			String url = env.RERUN_LINK
+			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
+			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
+			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+		}
 	}
 }
 
@@ -1006,6 +1049,7 @@ def run_parallel_tests() {
 				cleanWs disableDeferredWipeout: true, deleteDirs: true
 				try {
 					def buildResult = ""
+					def buildPaths = ""
 					// for parallel run, only archive AQACert log once in the parent build
 					def archiveAQACert = false
 					childJobs.each {
@@ -1020,14 +1064,17 @@ def run_parallel_tests() {
 									copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 									if (!archiveAQACert) {
 										copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/AQACert.log", target:"${name}/${buildId}")
+										copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/SHA.txt", target:"${name}/${buildId}")
 									}
 								}
 								step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 								archiveFile("${name}/${buildId}/**/*.tap", true)
 								if (!archiveAQACert) {
 									archiveFile("${name}/${buildId}/**/AQACert.log", true)
+									archiveFile("${name}/${buildId}/**/SHA.txt", true)
 									archiveAQACert = true
 								}
+								buildPaths += "${name}/${buildId}/,"
 							} catch (Exception e) {
 								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 								buildResult = childResult
@@ -1037,7 +1084,10 @@ def run_parallel_tests() {
 						echo "set build status to ${buildResult}"
 						currentBuild.result = buildResult
 					}
-					addFailedTestsGrinderLink()
+					archiveAQAvitFiles()
+					if (buildPaths.length() > 0) {
+						addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+					}
 				} finally {
 					// cleanWs() does not work in some cases, so set opts below
 					cleanWs disableDeferredWipeout: true, deleteDirs: true

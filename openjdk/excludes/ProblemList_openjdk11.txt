@@ -32,7 +32,8 @@ java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-t
 # jdk_compiler
 
 compiler/gcbarriers/UnsafeIntrinsicsTest.java#shenandoah https://github.com/adoptium/aqa-tests/issues/2640 linux-aarch64
-
+compiler/aot/verification/vmflags/TrackedFlagTest.java 8215224 generic-all
+compiler/aot/verification/vmflags/NotTrackedFlagTest.java 8215224 generic-all
 ############################################################################
 
 # jdk_lang
@@ -40,7 +41,7 @@ compiler/gcbarriers/UnsafeIntrinsicsTest.java#shenandoah https://github.com/adop
 java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1773 windows-x86
 # java/lang/String/StringRepeat.java https://bugs.openjdk.java.net/browse/JDK-8221400
-java/lang/String/StringRepeat.java	https://github.com/adoptium/aqa-tests/issues/1272 windows-all
+java/lang/String/StringRepeat.java#id1	https://github.com/adoptium/aqa-tests/issues/1272 windows-all
 java/lang/System/LoggerFinder/modules/JDKLoggerForImageTest.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/lang/System/LoggerFinder/modules/LoggerInImageTest.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/lang/System/LoggerFinder/modules/NamedLoggerForImageTest.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
@@ -95,6 +96,7 @@ sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK
 
 # jdk_other
 com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 windows-all
 ############################################################################
 
 # jdk_net
@@ -118,6 +120,7 @@ java/net/ipv6tests/B6521014.java	https://github.com/adoptium/aqa-tests/issues/15
 sun/net/www/protocol/file/DirPermissionDenied.java https://github.com/adoptium/aqa-tests/issues/760 windows-all
 com/sun/net/httpserver/bugs/B6361557.java	https://github.com/adoptium/aqa-tests/issues/1272	windows-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
+java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 
 ############################################################################
 
@@ -134,8 +137,7 @@ com/sun/jdi/OnJcmdTest.java	https://github.com/adoptium/aqa-tests/issues/2837	wi
 #jdk_jfr
 
 jdk/jfr/jvm/TestJFRIntrinsic.java https://bugs.openjdk.java.net/browse/JDK-8239423 linux-arm
-jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-82472 linux-arm
-
+jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-8247203 linux-arm,linux-ppc64le
 ############################################################################
 
 # jdk_nio
@@ -153,6 +155,9 @@ java/nio/file/Files/InputStreamTest.java	https://github.com/adoptium/aqa-tests/i
 jdk/nio/zipfs/ZipFSTester.java	https://github.com/adoptium/aqa-tests/issues/602 macosx-all,linux-ppc64le
 java/net/SocketPermission/SocketPermissionTest.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
 java/nio/channels/DatagramChannel/BasicMulticastTests.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
+java/nio/file/DirectoryStream/SecureDS.java https://github.com/adoptium/aqa-tests/issues/3635 linux-arm
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
 ############################################################################ 
 
 # jdk_rmi
@@ -162,6 +167,18 @@ java/nio/channels/DatagramChannel/BasicMulticastTests.java	https://bugs.openjdk.
 
 java/security/KeyFactory/KeyFactoryGetKeySpecForInvalidSpec.java	https://github.com/adoptium/aqa-tests/issues/2790	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/LetsEncryptCA.java	https://bugs.openjdk.java.net/browse/JDK-8270280 generic-all
+
+############################################################################
+
+# jdk_security3
+
+jdk/security/jarsigner/JarWithOneNonDisabledDigestAlg.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
+sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/pkcs11/fips/SunJSSEFIPSInit.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+sun/security/ssl/SSLSessionImpl/NoInvalidateSocketException.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/util/RegisteredDomain/ParseNames.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
+sun/security/util/RegisteredDomain/Versions.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
 
 ############################################################################
 
@@ -185,6 +202,7 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 ############################################################################
 
 # jdk_time
+java/time/tck/java/time/format/TCKDateTimeFormatterBuilder.java https://github.com/adoptium/aqa-tests/issues/3051 macosx-all
 
 ############################################################################
 
@@ -197,7 +215,7 @@ sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/brow
 ############################################################################
 
 # jdk_jdi
-
+com/sun/jdi/PrivateTransportTest.java https://bugs.openjdk.java.net/browse/JDK-8279326 macosx-all
 ############################################################################
 
 # jdk_util
@@ -284,8 +302,14 @@ compiler/graalunit/Replacements9Test.java https://github.com/adoptium/aqa-tests/
 compiler/graalunit/ReplacementsTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/c2/Test8202414.java https://bugs.openjdk.java.net/browse/JDK-8251152 linux-arm
-
+compiler/loopstripmining/TestPinnedUseInOuterLSMUnusedBySfpt.java https://bugs.openjdk.java.net/browse/JDK-8252473 windows-x86
+compiler/loopopts/TestSkeletonPredicateNegation.java https://bugs.openjdk.java.net/browse/JDK-8279032 windows-x86
 ############################################################################
 
 # jdk_imageio
 javax/imageio/plugins/shared/ImageWriterCompressionTest.java	https://github.com/adoptium/aqa-tests/issues/2814 aix-all
+
+############################################################################
+
+# jdk_build
+build/AbsPathsInImage.java https://github.com/adoptium/aqa-tests/issues/3234 linux-x64

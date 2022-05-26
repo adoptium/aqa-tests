@@ -258,34 +258,11 @@ getBinaryOpenjdk()
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
-			set +e
-			count=0
-			download_exit_code=-1
-			# when the command is not found (code 127), do not retry
-			while [ $download_exit_code != 0 ] && [ $download_exit_code != 127 ] && [ $count -le 5 ]
-			do
-				if [ $count -gt 0 ]; then
-					sleep_time=300
-					echo "curl error code: $download_exit_code. Sleep $sleep_time secs, then retry $count..."
-					sleep $sleep_time
-
-					download_filename=${file##*/}
-					echo "check for $download_filename. If found, the file will be removed."
-					if [ -f "$download_filename" ]; then
-						echo "remove $download_filename before retry..."
-						rm $download_filename
-					fi
-				fi
-
-				echo "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
-				_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file
-				download_exit_code=$?
-				count=$(( $count + 1 ))
-			done
-
-			if [ $download_exit_code != 0 ]; then
-				echo "curl error code: $download_exit_code"
-				echo "Failed to retrieve $file, exiting. This is what we received of the file and MD5 sum:"
+			executeCmdWithRetry "${file##*/}" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
+			rt_code=$?
+			if [ $rt_code != 0 ]; then
+				echo "curl error code: $rt_code"
+				echo "Failed to retrieve $file. This is what we received of the file and MD5 sum:"
 				ls -ld $file
 
 				if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -296,7 +273,6 @@ getBinaryOpenjdk()
 
 				exit 1
 			fi
-			set -e
 		done
 	fi
 
@@ -321,16 +297,18 @@ getBinaryOpenjdk()
 	jar_file_array=(${jar_files//\\n/ })
 	last_index=$(( ${#jar_file_array[@]} - 1 ))
 
-	if [[ $last_index == 0 ]] && [[ $download_url =~ '*.tar.gz' ]]; then
-		nested_zip="${jar_file_array[0]}"
-		echo "${nested_zip} is a nested zip"
-		unzip -q $nested_zip -d .
-		rm $nested_zip
-		jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz 2> /dev/null`
-		echo "Found files under ${nested_zip}:"
-		echo "${jar_files}"
-		jar_file_array=(${jar_files//\\n/ })
-		last_index=$(( ${#jar_file_array[@]} - 1 ))
+	if [[ $last_index == 0 ]]; then
+		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]]; then
+			nested_zip="${jar_file_array[0]}"
+			echo "${nested_zip} is a nested zip"
+			unzip -q $nested_zip -d .
+			rm $nested_zip
+			jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
+			echo "Found files under ${nested_zip}:"
+			echo "${jar_files}"
+			jar_file_array=(${jar_files//\\n/ })
+			last_index=$(( ${#jar_file_array[@]} - 1 ))
+		fi
 	fi
 
 	# if $jar_file_array contains debug-image, move debug-image element to the end of the array
@@ -451,8 +429,14 @@ getTestKitGen()
 	if [ "$TKG_REPO" = "" ]; then
 		TKG_REPO="https://github.com/adoptium/TKG.git"
 	fi
-	echo "git clone -q $TKG_REPO"
-	git clone -q $TKG_REPO
+
+	executeCmdWithRetry "TKG" "git clone -q $TKG_REPO"
+	rt_code=$?
+	if [ $rt_code != 0 ]; then
+		echo "git clone error code: $rt_code"
+		exit 1
+	fi
+
 	cd TKG
 	echo "git rev-parse $TKG_BRANCH"
 	if ! tkg_sha=(`git rev-parse $TKG_BRANCH`); then
@@ -477,6 +461,34 @@ getCustomJtreg()
 	_ENCODE_FILE_NEW=UNTAGGED curl -LJks -o custom_jtreg.tar.gz --retry 5 --retry-delay 300 ${curl_options} $JTREG_URL
 }
 
+executeCmdWithRetry()
+{
+	set +e
+	count=0
+	rt_code=-1
+	# when the command is not found (code 127), do not retry
+	while [ "$rt_code" != 0 ] && [ "$rt_code" != 127 ] && [ "$count" -le 5 ]
+	do
+		if [ "$count" -gt 0 ]; then
+			sleep_time=300
+			echo "error code: $rt_code. Sleep $sleep_time secs, then retry $count..."
+			sleep $sleep_time
+
+			echo "check for $1. If found, the file will be removed."
+			if [ -f "$1" ]; then
+				echo "remove $1 before retry..."
+				rm $1
+			fi
+		fi
+		echo "$2"
+		eval "$2"
+		rt_code=$?
+		count=$(( $count + 1 ))
+	done
+	return "$rt_code"
+	set -e
+}
+
 getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
@@ -487,8 +499,12 @@ getFunctionalTestMaterial()
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
 	fi
 
-	echo "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
-	git clone --depth 1 -q $OPENJ9_BRANCH $OPENJ9_REPO
+	executeCmdWithRetry "openj9" "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
+	rt_code=$?
+	if [ $rt_code != 0 ]; then
+		echo "git clone error code: $rt_code"
+		exit 1
+	fi
 
 	if [ "$OPENJ9_SHA" != "" ]
 	then

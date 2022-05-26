@@ -65,10 +65,9 @@ public class JavaTestRunner {
 	private static String nativesLoc;
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
-	private static String jtxRelativePath;
 	private static String jtxFullPath;
-	private static String kflRelativePath;
 	private static String kflFullPath;
+	private static String fipsJtxFullPath;
 	private static String krbConfFile;
 	private static String fileUrl;
 
@@ -97,6 +96,7 @@ public class JavaTestRunner {
 	private static String resultDir;
 	private static String pathToJava;
 	private static String secPropsFile;
+	private static String testFlag;
 
 	private static HashMap<String, String> testArgs = new HashMap<String, String>();
 	private static String jvmOpts = ""; 
@@ -167,6 +167,7 @@ public class JavaTestRunner {
 		}
 		
 		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts"); 
+		testFlag = System.getenv("TEST_FLAG");
 		
 		try { 
 			boolean jtbGenerated = false, testSuccedded = false, summaryGenerated = false;
@@ -254,11 +255,7 @@ public class JavaTestRunner {
 			initialJtxFullPath = "";
 		}
 
-		// Look for an update to the initial excludes file
-		jtxRelativePath = "excludes/" + jckVersion + ".jtx";
-		kflRelativePath = "excludes/" + jckVersion + ".kfl";
-
-		jtxFullPath = jckRoot + File.separator + jtxRelativePath; 
+		jtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".jtx";
 		File jtxFile = new File(jtxFullPath);
 		
 		if (jtxFile.exists()) {
@@ -269,7 +266,7 @@ public class JavaTestRunner {
 		}
 
 		// Look for a known failures list file
-		kflFullPath = jckRoot + File.separator + kflRelativePath;
+		kflFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".kfl";
 		File kflFile = new File(kflFullPath);
 		
 		if (kflFile.exists()) { 
@@ -277,6 +274,20 @@ public class JavaTestRunner {
 		} else {
 			System.out.println("Unable to find known failures list file " + kflFullPath);
 			kflFullPath = "";
+		}
+		
+		fipsJtxFullPath = "";
+		if (testFlag != null && testFlag.equals("FIPS")) {
+			// Look for a known failures list file specific to FIPS testing
+			fipsJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-fips.jtx";
+			File fipsJtxFile = new File(fipsJtxFullPath);
+			
+			if (fipsJtxFile.exists()) {
+				System.out.println("Using FIPS specific failures list file " + fipsJtxFullPath);
+			} else {
+				System.out.println("Unable to find FIPS specific failures list file " + fipsJtxFullPath);
+				fipsJtxFullPath = "";
+			}
 		}
 
 		if (testSuite.equals("RUNTIME") && (tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api"))) {
@@ -395,7 +406,7 @@ public class JavaTestRunner {
 			return false; 
 		}
 
-		fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + "\"" + ";\n";
+		fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + " " + fipsJtxFullPath + "\"" + ";\n";
 		fileContent += "runTests" + ";\n";
 		fileContent += "writeReport -type xml " + reportDir + ";\n";
 
@@ -638,7 +649,13 @@ public class JavaTestRunner {
 			// Fatal Error: file:/jck/jck8b/JCK-runtime-8b/tests/api/javax_xml/xmlCore/w3c/ibm/valid/P85/ibm85v01.xml(6,3384): JAXP00010005: The length of entity "[xml]" is "3,381" that exceeds the "1,000" limit set by "default".
 			if ( tests.contains("api/javax_xml")  || tests.equals("api")) {
 				extraJvmOptions += " -Djdk.xml.maxXMLNameLimit=4000";
-			}	
+			}
+			
+			// Needed to successfully pass api/xsl/conf/math/math85.html#math85. 
+			// Ensures that the number of groups an XPath expression can contain is set to 14 or above.
+			if ( tests.contains("api/xsl")) {
+				extraJvmOptions += " -Djdk.xml.xpathExprGrpLimit=14";
+			}
 
 			//CORBA related files (e.g. tnameserver) were removed post Java 9
 			if (jckVersion.contains("jck8")) {
@@ -683,6 +700,11 @@ public class JavaTestRunner {
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+
+			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
+			if (platform.equals("osx")) {
+				fileContent += "set jck.env.runtime.testExecute.otherEnvVars \" AWT_FORCE_HEADFUL=true \"" + ";\n";
+			}
 		}
 
 		// Compiler settings

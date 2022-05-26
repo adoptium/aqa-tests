@@ -13,6 +13,10 @@ def PLATFORM_MAP = [
         'SPEC' : 'linux_aarch64',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
     ],
+    'aarch64_alpine-linux' : [
+        'SPEC' : 'alpine-linux_aarch64',
+        'LABEL' : 'ci.role.test&&hw.arch.aarch64&&sw.os.alpine-linux',
+    ],
     'ppc32_aix' : [
         'SPEC' : 'aix_ppc',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
@@ -166,6 +170,10 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
                     }
                 }
             }
+
+        if (params.TEST_FLAG == "FIPS") {
+            LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
+        }
 
         if (params.DOCKER_REQUIRED) {
             LABEL += "&&sw.tool.docker"

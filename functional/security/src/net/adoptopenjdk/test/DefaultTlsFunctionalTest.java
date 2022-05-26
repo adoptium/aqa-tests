@@ -43,7 +43,7 @@ public class DefaultTlsFunctionalTest {
 
     private final static String[] TLS_HOSTS = {
             "https://www.cloudflare.com/",
-            "https://www.google.com/",
+            "https://www2.bing.com/",
             "https://services.gradle.org/", // Ensure that Gradle can be downloaded.
             "https://repo1.maven.org/" // Ensure that Maven artifacts can be resolved.
     };

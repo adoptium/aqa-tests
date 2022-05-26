@@ -97,6 +97,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_compiler$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -126,6 +128,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_gc$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -156,6 +160,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_runtime$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -186,6 +192,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_serviceability$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -216,6 +224,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/AsyncGetCallTrace/MyPackage/ASGCTBaseTest.java$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -258,6 +268,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_native_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -295,6 +307,8 @@
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	${GRAAL_PROBLEM_LIST_FILE} \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_compiler$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -331,6 +345,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)runtime$(D)Nestmates$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -357,6 +373,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_HOTSPOT_TEST_DIR):jre$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -400,6 +418,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_awt$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -434,6 +454,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_beans$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -457,6 +479,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_io$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -481,6 +505,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_lang$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -647,6 +673,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_math$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -671,6 +699,8 @@
 	-jdk:$(Q)$(JRE_IMAGE)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_math$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -699,6 +729,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_other$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -732,6 +764,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_net$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -755,6 +789,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_nio$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -778,6 +814,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security1$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -801,6 +839,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security2$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -815,14 +855,12 @@
 		<disables>
 			<disable>
 				<comment>https://github.com/adoptium/aqa-tests/issues/2123#issuecomment-758367994</comment>
+				<version>17+</version>
 			</disable>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
-				<impl>ibm</impl>
+				<platform>.*windows.*</platform>
+				<version>8</version>
 			</disable>
 		</disables>
 		<variations>
@@ -837,6 +875,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security3$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -860,6 +900,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security4$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -888,6 +930,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_sound$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -916,6 +960,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_swing$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -940,6 +986,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_text$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -964,6 +1012,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_util$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -997,6 +1047,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_time$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1030,6 +1082,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_management$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1063,6 +1117,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jmx$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1086,6 +1142,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_rmi$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1123,6 +1181,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_tools$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1156,6 +1216,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jdi$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1192,6 +1254,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jfr$(Q); \
 	$(TEST_STATUS)</command>
 		<impls>
@@ -1218,6 +1282,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_foreign$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1293,6 +1359,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_instrument$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1331,6 +1399,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_svc_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1367,6 +1437,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jdi$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -1403,6 +1475,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):build$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1440,6 +1514,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_imageio$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1480,6 +1556,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_client_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1506,6 +1584,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security_infra$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1536,6 +1616,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_native_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1575,6 +1657,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_2d$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1615,6 +1699,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jfc_demo$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1641,6 +1727,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR)/com/sun/crypto/provider/Cipher$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1667,6 +1755,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR)/java/nio/Buffer$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1693,6 +1783,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR)/sun/nio/cs/ISO8859x.java$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1719,6 +1811,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR)/tools/pack200$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1745,6 +1839,8 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_vector$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1756,5 +1852,263 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk0</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/wisp2$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+			<version>11</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk1</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/wisp$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+			<version>11</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk2</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			-agentvm -a -ea -esa -v:fail,error,time,nopass -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc
+			-ignore:quiet -timeoutFactor:1 -xml:verify -concurrency:1 -k:'!headful' -vmoptions:"-Xmx512m"
+			-vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/rcm$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_feature_jdk3</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/com/alibaba/management$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_tenant_jdk</testCaseName>
+		<command>${TEST_JDK_HOME}bin/jgroup -u testuser -g testuser ; \
+			$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/multi-tenant$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>spec.linux_x86-64</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_elastic-heap_jdk</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_JDK_TEST_DIR)/elastic-heap$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_elastic-heap_hotspot</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/elastic-heap$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_jwarmup_hotspot</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/jwarmup$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>os.linux</platformRequirements>
+	</test>
+	<test>
+		<testCaseName>dragonwell8_tenant_hotspot</testCaseName>
+		<command>${TEST_JDK_HOME}bin/jgroup -u testuser -g testuser ; \
+			$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/multi-tenant$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>8</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<vendors>
+			<vendor>alibaba</vendor>
+		</vendors>
+		<platformRequirements>spec.linux_x86-64</platformRequirements>
 	</test>
 </playlist>
