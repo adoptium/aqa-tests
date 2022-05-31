@@ -64,6 +64,11 @@ JDK_VERSIONS.each { JDK_VERSION ->
             if (TARGET.contains("jck") || TARGET.contains("openjdk")) {
                 keep_reportdir = true
             }
+            if (TARGET.contains("functional") || TARGET.contains("perf") {
+                if (params.VARIANT == "temurin") {
+                    PARALLEL = "None"
+                }
+            }
             if (AUTO_AQA_GEN) {
                 String[] targetTokens = TARGET.split("\\.")
                 def level = targetTokens[0];
