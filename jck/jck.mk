@@ -92,9 +92,9 @@ ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
    override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET) testsuite=RUNTIME
 endif
 
-JCK_CMD_TEMPLATE := $(JAVA_COMMAND)
+JCK_CMD_TEMPLATE = $(JAVA_COMMAND)
 ifeq ($(USE_JRE),1)
-  JCK_CMD_TEMPLATE := $(JRE_COMMAND)
+  JCK_CMD_TEMPLATE = $(JRE_COMMAND)
 endif
 
 JCK_CMD_TEMPLATE += -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION)
