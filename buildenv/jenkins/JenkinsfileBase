@@ -957,7 +957,10 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		} else {
 			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
-			buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
+			if (JOB_NAME.contains("Grinder")) {
+				numArtifacts = 200
+			}
+			buildInfo.retention maxBuilds: numArtifacts, maxDays: 60, deleteBuildArtifacts: true
 		}
 		server.upload spec: uploadSpec, buildInfo: buildInfo
 		server.publishBuildInfo buildInfo
