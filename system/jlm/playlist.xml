@@ -42,6 +42,13 @@
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11557</comment>
+				<platform>ppc64_aix</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -187,6 +194,13 @@
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11557</comment>
+				<platform>ppc64_aix</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -212,6 +226,13 @@
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassAuth_SE80</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11557</comment>
+				<platform>ppc64_aix</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -256,9 +277,15 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	<!--Exclude TestIBMJlmRemoteClassNoAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassNoAuth</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11557</comment>
+				<platform>ppc64_aix</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -281,6 +308,13 @@
 	</test>
 	<test>
 		<testCaseName>TestIBMJlmRemoteClassNoAuth_SE80</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/11557</comment>
+				<platform>ppc64_aix</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
