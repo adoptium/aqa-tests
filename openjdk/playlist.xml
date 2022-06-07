@@ -1910,8 +1910,8 @@
 	<test>
 		<testCaseName>dragonwell8_feature_jdk2</testCaseName>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-			-agentvm -a -ea -esa -v:fail,error,time,nopass -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc
-			-ignore:quiet -timeoutFactor:1 -xml:verify -concurrency:1 -k:'!headful' -vmoptions:"-Xmx512m"
+			-agentvm -a -ea -esa -v:fail,error,time,nopass -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc \
+			-ignore:quiet -timeoutFactor:1 -xml:verify -concurrency:1 -k:'!headful' -vmoptions:"-Xmx512m" \
 			-vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS)$(Q) \
 			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
