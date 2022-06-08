@@ -38,6 +38,13 @@
 	</test>
 	<test>
 		<testCaseName>langtools_custom</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15264</comment>
+				<version>19+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1266,6 +1273,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15152</comment>
+				<version>19+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
