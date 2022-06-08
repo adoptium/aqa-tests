@@ -305,6 +305,7 @@ java/nio/channels/SocketChannel/VectorParams.java https://github.ibm.com/runtime
 java/nio/channels/SocketChannel/Write.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
+java/nio/file/Files/probeContentType/Basic.java  https://github.ibm.com/runtimes/backlog/issues/655 windows-all
 java/nio/MappedByteBuffer/MapSyncFail.java https://github.com/eclipse-openj9/openj9/issues/6831 generic-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse-openj9/openj9/issues/4679 linux-x64,macosx-all
 
@@ -331,7 +332,45 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+
 ############################################################################
+
+# jdk_security3
+
+javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all,aix-all
+javax/net/ssl/ServerName/SSLEngineExplorerWithSrv.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all,aix-all
+javax/net/ssl/SSLEngine/LargePacket.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-s390x,aix-all,windows-all
+javax/net/ssl/SSLSocket/Tls13PacketSize.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+javax/net/ssl/TLSv11/TLSEnginesClosureTest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
+sun/security/ec/TestEC.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/mscapi/CastError.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/CngCipher.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/InteropWithSunRsaSign.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/KeyAlgorithms.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/KeyStoreEmptyCertChain.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/PublicKeyInterop.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/RSAEncryptDecrypt.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SetDupNameEntry.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/ShortRSAKeyWithinTLS.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignUsingNONEwithRSA.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignUsingSHA2withRSA.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignatureOffsets.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignedObjectChain.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SmallPrimeExponentP.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/VeryLongAlias.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/pkcs11/Provider/MultipleLogins.sh	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+sun/security/rsa/PrivateKeyEqualityTest.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/rsa/pss/SignatureTest2.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/rsa/pss/SignatureTestPSS.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/ssl/CipherSuite/DisabledCurve.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/CipherSuite/NamedGroupsWithCipherSuite.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/CipherSuite/SupportedGroups.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/tools/jarsigner/PreserveRawManifestEntryAndDigest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
+
+########################################################################################################################################################
 
 # jdk_sound
 
@@ -386,6 +425,7 @@ java/util/Random/RandomTestBsi1999.java		https://github.com/eclipse-openj9/openj
 
 # jdk_other
 
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.ibm.com/runtimes/backlog/issues/755 windows-all
 
 jdk/dynalink/TypeConverterFactoryMemoryLeakTest.java#with_G1GC https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 jdk/dynalink/TypeConverterFactoryMemoryLeakTest.java#with_ParallelGC https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -402,7 +442,6 @@ jdk/internal/misc/VM/RuntimeArguments.java		https://github.com/eclipse-openj9/op
 jdk/internal/reflect/CallerSensitive/CheckCSMs.java	https://github.com/eclipse-openj9/openj9/issues/7245		generic-all
 jdk/internal/reflect/constantPool/ConstantPoolTest.java	https://github.com/eclipse-openj9/openj9/issues/7249		generic-all
 
-sun/jndi/ldap/LdapPoolTimeoutTest.java  https://github.ibm.com/runtimes/backlog/issues/655 windows-all
 sun/misc/SunMiscSignalTest.java		https://github.com/eclipse-openj9/openj9/issues/7264		generic-all
 sun/net/www/protocol/file/DirPermissionDenied.java https://github.com/adoptium/aqa-tests/issues/749 windows-all
 sun/nio/ch/TestMaxCachedBufferSize.java		https://github.com/eclipse-openj9/openj9/issues/5328		generic-all

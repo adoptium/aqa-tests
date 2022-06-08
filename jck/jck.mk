@@ -62,14 +62,14 @@ ifndef JCK_ROOT
 endif
 
 ifndef CONFIG_ALT_PATH
-  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)jtrunner$(D)config$(D)default
+  export CONFIG_ALT_PATH:=$(TEST_ROOT)$(D)jck$(D)jtrunner$(D)config
 endif
 
 OTHER_OPTS=
 # if JDK_IMPL is openj9 or ibm
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
   OTHER_OPTS= -Xtrace:maximal=all{level2} -Xfuture
-  export CONFIG_ALT_PATH:=$(JCK_ROOT)$(D)config$(D)default
+  export CONFIG_ALT_PATH:=$(JCK_ROOT)$(D)config
   ifneq (,$(findstring zos, $(SPEC)))
     OTHER_OPTS += -Dcom.ibm.tools.attach.enable=yes
   endif
@@ -92,17 +92,12 @@ ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
    override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET) testsuite=RUNTIME
 endif
 
-define JCK_CMD_TEMPLATE_JRE
-$(JRE_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
-endef
-
-define JCK_CMD_TEMPLATE
-$(JAVA_COMMAND) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT)
-endef
-
+JCK_CMD_TEMPLATE = $(JAVA_COMMAND)
 ifeq ($(USE_JRE),1)
-  JCK_CMD_TEMPLATE := $(JCK_CMD_TEMPLATE_JRE)
+  JCK_CMD_TEMPLATE = $(JRE_COMMAND)
 endif
+
+JCK_CMD_TEMPLATE += -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH)
 
 VERIFIER_INSTRUCTIONS_TESTS_GROUP1=$(Q)vm/verifier/instructions/aaload;vm/verifier/instructions/aastore;vm/verifier/instructions/anewarray;vm/verifier/instructions/areturn;vm/verifier/instructions/baload;vm/verifier/instructions/bastore;vm/verifier/instructions/bipush;vm/verifier/instructions/caload;vm/verifier/instructions/castore;vm/verifier/instructions/d2f;vm/verifier/instructions/d2i;vm/verifier/instructions/d2l;vm/verifier/instructions/dadd;vm/verifier/instructions/daload;vm/verifier/instructions/dastore;vm/verifier/instructions/dcmp;vm/verifier/instructions/dconst;vm/verifier/instructions/ddiv;vm/verifier/instructions/dmul;vm/verifier/instructions/dneg;vm/verifier/instructions/drem;vm/verifier/instructions/dreturn;vm/verifier/instructions/dsub;vm/verifier/instructions/dup;vm/verifier/instructions/dup2$(Q)
 VERIFIER_INSTRUCTIONS_TESTS_GROUP2=$(Q)vm/verifier/instructions/dup2x1;vm/verifier/instructions/dup2x2;vm/verifier/instructions/dupx1;vm/verifier/instructions/dupx2;vm/verifier/instructions/f2d;vm/verifier/instructions/f2i;vm/verifier/instructions/f2l;vm/verifier/instructions/fadd;vm/verifier/instructions/faload;vm/verifier/instructions/fastore;vm/verifier/instructions/fcmp;vm/verifier/instructions/fconst;vm/verifier/instructions/fdiv;vm/verifier/instructions/fmul;vm/verifier/instructions/fneg;vm/verifier/instructions/frem;vm/verifier/instructions/freturn;vm/verifier/instructions/fsub;vm/verifier/instructions/getfield;vm/verifier/instructions/getstatic;vm/verifier/instructions/i2b;vm/verifier/instructions/i2c;vm/verifier/instructions/i2d;vm/verifier/instructions/i2f;vm/verifier/instructions/i2l$(Q)

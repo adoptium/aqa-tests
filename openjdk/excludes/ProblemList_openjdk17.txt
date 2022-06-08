@@ -99,6 +99,7 @@ sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-t
 
 # jdk_other
 com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 windows-all
 ############################################################################
 
 # jdk_net
@@ -132,7 +133,11 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/adoptium/aqa-tests/issues/602
 java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all	
 java/nio/file/spi/SetDefaultProvider.java https://github.com/adoptium/aqa-tests/issues/2871 linux-arm,windows-x86
-java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 linux-s390x
+java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
+java/nio/channels/FileChannel/Transfer2GPlus.java https://github.com/adoptium/aqa-tests/issues/3690 windows-x64
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789 aix-ppc64,windows-x64
 ############################################################################
 
 # jdk_io
@@ -171,6 +176,18 @@ java/nio/channels/FileChannel/Transfer2GPlus.java   https://bugs.openjdk.java.ne
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+
+############################################################################
+
+# jdk_security3
+
+javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+javax/net/ssl/ServerName/SSLEngineExplorerWithSrv.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+sun/security/provider/SecureRandom/AbstractDrbg/SpecTest.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+
 ############################################################################
 
 # jdk_sound
@@ -223,7 +240,7 @@ tools/jpackage/windows/WinShortcutPromptTest.java	https://github.com/adoptium/in
 tools/jpackage/windows/WinShortcutTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUpgradeUUIDTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUrlTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-x86
+tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jlink/JLinkTest.java	https://github.com/adoptium/aqa-tests/issues/2857 windows-x86,linux-arm
 tools/jlink/JLinkReproducible3Test.java	https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
 tools/jlink/JLinkReproducibleTest.java  https://bugs.openjdk.java.net/browse/JDK-8217166 aix-all 
@@ -301,6 +318,72 @@ compiler/graalunit/Replacements12Test.java https://github.com/adoptium/aqa-tests
 compiler/graalunit/Replacements9Test.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/ReplacementsTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
 compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/2804 generic-all
+compiler/compilercontrol/commandfile/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeDynamic2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeInterface2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeSpecial2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeStatic2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2InterpretedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromCompiled/CompiledInvokeVirtual2NativeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeDynamic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeInterface2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromInterpreted/InterpretedInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeSpecial2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeStatic2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/calls/fromNative/NativeInvokeVirtual2CompiledTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/OverflowCodeCacheTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/BeanTypeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/CodeHeapBeanPresenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/GetUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/InitialAndMaxUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/ManagerNamesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/MemoryPoolsPresenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/PeakUsageTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/PoolsIndependenceTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/ThresholdNotificationsTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdExceededSeveralTimesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdExceededTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdIncreasedTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/jmx/UsageThresholdNotExceededTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/codecache/stress/RandomAllocationTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commandfile/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/commands/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/CompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/ExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/directives/PrintTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddAndRemoveTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddCompileOnlyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddExcludeTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddLogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/AddPrintAssemblyTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/ClearDirectivesStackTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/ControlIntrinsicTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/jcmd/PrintDirectivesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/compilercontrol/logcompilation/LogTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/rangechecks/TestRangeCheckSmearing.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/AllocationCodeBlobTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/BlockingCompilation.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/GetCodeHeapEntriesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/whitebox/MakeMethodNotCompilableTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
 ############################################################################
 
 # jdk_jfr

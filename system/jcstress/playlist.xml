@@ -13,39 +13,16 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
-	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck-devtools-schema2java-nisttest</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema2java/nisttest testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<testCaseName>jcstress_SampleTestBench</testCaseName>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-latest.jar$(Q) -jvmArgs $(Q)$(JVM_OPTIONS) -t SampleTestBench$(Q); \
+		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
 		<groups>
-			<group>jck</group>
+			<group>system</group>
 		</groups>
-		<versions>
-			<version>8</version>
-		</versions>
 	</test>
-	<test>
-		<testCaseName>jck-devtools-schema2java-structures</testCaseName>
-		<variations>
-			<variation>NoOptions</variation>
-		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema2java/structures testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>jck</group>
-		</groups>
-		<versions>
-			<version>8</version>
-		</versions>
-	</test>
+	 
 </playlist>

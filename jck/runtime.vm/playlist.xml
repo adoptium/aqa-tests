@@ -27,7 +27,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/constantpool jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/constantpool testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -51,7 +51,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/jdwp jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/jdwp testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -65,7 +65,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/jvmti jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/jvmti testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -76,21 +76,9 @@
 		<disables>
 			<disable>
 				<comment>backlog/issues/607</comment>
-				<impl>ibm</impl>
-				<platform>x86-64_windows</platform>
-				<version>8+</version>
-			</disable>
-			<disable>
-				<comment>backlog/issues/607</comment>
 				<impl>openj9</impl>
 				<platform>x86-64_windows</platform>
 				<version>8+</version>
-			</disable>
-			<disable>
-				<comment>backlog/issues/607</comment>
-				<impl>ibm</impl>
-				<platform>x86-32_windows</platform>
-				<version>8</version>
 			</disable>
 			<disable>
 				<comment>backlog/issues/607</comment>
@@ -102,7 +90,7 @@
 				<comment>Temporarily disabled on z/OS for backlog/issues/670</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
-				<version>11</version>
+				<version>8+</version>
 			</disable>
 		</disables>
 	</test>
@@ -111,7 +99,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/overview jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/overview testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -125,7 +113,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/classfmt jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/classfmt testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -139,7 +127,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/module jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/module testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -156,7 +144,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/abstractAndNative jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/abstractAndNative testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -173,7 +161,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP1) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP1) testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -190,7 +178,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP2) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP2) testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -207,7 +195,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP3) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP3) testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -224,7 +212,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP4) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=$(VERIFIER_INSTRUCTIONS_TESTS_GROUP4) testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -241,7 +229,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/protectedCheck jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/protectedCheck testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -258,7 +246,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/subclassFinal jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/verifier/subclassFinal testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -275,7 +263,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/instr jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/instr testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -289,7 +277,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/cldc jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/cldc testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -303,7 +291,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/concepts jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/concepts testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -317,7 +305,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/fp jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/fp testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -331,7 +319,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/jni jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/jni testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -345,7 +333,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=vm/typechecker jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testsuite=RUNTIME; \
+		<command>$(JCK_CMD_TEMPLATE) tests=vm/typechecker testsuite=RUNTIME; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

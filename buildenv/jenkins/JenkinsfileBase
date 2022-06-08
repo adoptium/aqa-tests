@@ -77,6 +77,7 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
+	env.JDK_VENDOR = params.JDK_VENDOR ? params.JDK_VENDOR : ""
 
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
@@ -537,7 +538,7 @@ def buildTest() {
 			if (params.UPSTREAM_TEST_JOB_NAME && params.UPSTREAM_TEST_JOB_NUMBER) {
 				try {
 					timeout(time: 1, unit: 'HOURS') {
-						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), target: './aqa-tests/TKG/'
+						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), filter: "**/parallelList.mk", target: './aqa-tests/TKG/'
 					}
 				} catch (Exception e) {
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
@@ -956,7 +957,10 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		} else {
 			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 20 build artifacts
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 20
-			buildInfo.retention maxBuilds: numArtifacts, deleteBuildArtifacts: true
+			if (JOB_NAME.contains("Grinder")) {
+				numArtifacts = 200
+			}
+			buildInfo.retention maxBuilds: numArtifacts, maxDays: 60, deleteBuildArtifacts: true
 		}
 		server.upload spec: uploadSpec, buildInfo: buildInfo
 		server.publishBuildInfo buildInfo
