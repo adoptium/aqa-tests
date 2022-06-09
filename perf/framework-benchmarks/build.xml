@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="FrameworkBenchmarks-Test" default="build" basedir=".">
+    <taskdef resource="net/sf/antcontrib/antlib.xml" />
+    <description>
+        Build FrameworkBenchmarks-Test Docker image
+    </description>
+
+    <!-- set properties for this build -->
+    <property name="TEST" value="framework-benchmarks" />
+    <property name="DEST" value="${BUILD_ROOT}/perf/${TEST}" />
+    <property name="src" location="." />
+
+    <condition property="git-prefix" value="git" else="https">
+        <isset property="isZOS"/>
+    </condition>
+
+    <target name="init">
+        <mkdir dir="${DEST}"/>
+    </target>
+
+    <target name="getFrameworkBenchmarks" depends="init" description="Clone the distribution">
+        <echo message="Cloning FrameworkBenchmarks"/>
+        <var name="git_command" value="clone --depth 1 -b master ${git-prefix}://github.com/TechEmpower/FrameworkBenchmarks.git ${DEST}"/>
+        <echo message="git ${git_command}" />
+        <exec executable="git" failonerror="false" dir=".">
+            <arg line="${git_command}" />
+        </exec>
+    </target>
+
+    <target name="dist" depends="getFrameworkBenchmarks" description="generate the distribution">
+        <copy todir="${DEST}">
+            <fileset dir="${src}" includes="*.xml, *.mk"/>
+        </copy>
+    </target>
+
+    <target name="build">
+        <antcall target="dist" inheritall="true" />
+    </target>
+</project>

@@ -26,6 +26,7 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 //├── dacapo
 //├── renaissance
 //├── liberty
+//├── FrameworkBenchmarks
 
 ```
 Each subdirectory requires a build.xml file describing where to pull the benchmark suite from, and how to build and run it.  Each subdirectory also requires a playlist.xml file which describes 1 or more benchmarks and what commands to run in order to execute a particular benchmark run.
@@ -48,5 +49,8 @@ Liberty benchmarks from https://github.com/OpenLiberty - including liberty-dt7-s
 
 #### renaissance
 Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance - including renaissance-akka-uct, renaissance-als, renaissance-chi-square, renaissance-db-shootout, renaissance-dec-tree, renaissance-finagle-chirper, renaissance-finagle-http, renaissance-fj-kmeans, renaissance-future-genetic, renaissance-gauss-mix, renaissance-log-regression, renaissance-mnemonics, renaissance-movie-lens, renaissance-naive-bayes, renaissance-par-mnemonics, renaissance-philosophers and renaissance-scala-kmeans
+
+#### FrameworkBenchmarks
+FrameworkBenchmarks from https://github.com/TechEmpower/FrameworkBenchmarks - including a wide field of web application frameworks for JAVA.
 
 Additional benchmarks are being reviewed for addition and if you wish to include more, please comment in the open performance benchmarks [issue 1112](https://github.com/adoptium/aqa-tests/issues/1112).
