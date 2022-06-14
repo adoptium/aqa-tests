@@ -27,7 +27,7 @@ node {
             if (arch.contains("x86-64")){
                 arch = "x64"
             } else if (arch.contains("x86-32")) {
-                arch ="x32"
+                arch ="x86-32"
             }
     
             def filter = "*.tar.gz"
