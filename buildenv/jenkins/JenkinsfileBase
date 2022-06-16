@@ -954,12 +954,7 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
 			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
 		} else {
-			// if ARTIFACTORY_NUM_ARTIFACTS is not set, set to keep 60 artifacts
-			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : 60
-			if (JOB_NAME.contains("Grinder")) {
-				numArtifacts = 400
-			}
-			buildInfo.retention maxBuilds: numArtifacts, maxDays: 60, deleteBuildArtifacts: true
+			buildInfo.retention maxDays: 30, deleteBuildArtifacts: true
 		}
 		server.upload spec: uploadSpec, buildInfo: buildInfo
 		server.publishBuildInfo buildInfo
