@@ -696,8 +696,6 @@ def post(output_name) {
 
 			//call the archive function for each file
 			archiveFile("aqa-tests/testenv/testenv.properties", true)
-			archiveFile("aqa-tests/TKG/SHA.txt", true)
-			archiveFile("aqa-tests/TKG/AQACert.log", true)
 			archiveFile("**/*.tap", true)
 			archiveAQAvitFiles()
 
@@ -903,13 +901,6 @@ def archiveAQAvitFiles() {
 			def currentDateTime = currentDate.format("yyyyMMddHHmmss", TimeZone.getTimeZone('UTC'))
 			def uploadDir = "AQAvit/${JDK_IMPL}/${ADOPTOPENJDK_BRANCH}/${JDK_VERSION}/${PLATFORM}/${currentDateTime}"
 			uploadToArtifactory("${env.WORKSPACE}/**/*.tap", uploadDir)
-
-			// TODO: Donot need to archive SHA.txt and AQACert.log once the following issues are resolved:
-			// https://github.com/adoptium/TKG/issues/314
-			// https://github.com/adoptium/TKG/issues/313
-			// https://github.com/adoptium/TKG/issues/312
-			uploadToArtifactory("${env.WORKSPACE}/**/SHA.txt", uploadDir)
-			uploadToArtifactory("${env.WORKSPACE}/**/AQACert.log", uploadDir)
 		}
 	}
 }
@@ -1052,8 +1043,6 @@ def run_parallel_tests() {
 				try {
 					def buildResult = ""
 					def buildPaths = ""
-					// for parallel run, only archive AQACert log once in the parent build
-					def archiveAQACert = false
 					childJobs.each {
 						cjob ->
 							def jobInvocation = cjob.value.getRawBuild()
@@ -1064,18 +1053,9 @@ def run_parallel_tests() {
 								echo "${name} #${buildId} completed with status ${childResult}"
 								timeout(time: 1, unit: 'HOURS') {
 									copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
-									if (!archiveAQACert) {
-										copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/AQACert.log", target:"${name}/${buildId}")
-										copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/SHA.txt", target:"${name}/${buildId}")
-									}
 								}
 								step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 								archiveFile("${name}/${buildId}/**/*.tap", true)
-								if (!archiveAQACert) {
-									archiveFile("${name}/${buildId}/**/AQACert.log", true)
-									archiveFile("${name}/${buildId}/**/SHA.txt", true)
-									archiveAQACert = true
-								}
 								buildPaths += "${name}/${buildId}/,"
 							} catch (Exception e) {
 								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
