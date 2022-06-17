@@ -138,30 +138,17 @@
 				<if>
 					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
-						<echo message="git clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
-						<exec executable="git" failonerror="true">
-							<arg line="clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
-						</exec>
+						<getFileWithRetry file="openjdktemp" command="git clone -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<exec executable="git" failonerror="true" dir="openjdktemp">
 							<arg line="checkout ${env.OPENJDK_SHA}" />
 						</exec>
 					</then>
 					<else>
-						<echo message="git clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
-						<exec executable="git" failonerror="false" resultproperty="failCode">
-							<arg line="clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
-						</exec>
+						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<if>
 							<equals arg1="${failCode}" arg2="128"/>			
 							<then>
-								<echo message="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp "/>
-								<exec executable="git" failonerror="true" >
-									<arg value="clone" />		
-									<arg value="-q"/>
-									<arg value="${JDK_REPO_SPECIFIC}"/>
-									<arg value="openjdktemp"/>
-								</exec>
-
+								<getFileWithRetry file="openjdktemp" command="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp"/>
 								<echo message="git rev-parse ${env.JDK_BRANCH} "/>
 								<exec executable="git" failonerror="false" dir="openjdktemp" outputproperty="jdk_sha1" resultproperty="code">
 									<arg value="rev-parse"/>
@@ -296,19 +283,13 @@
 				<if>
 					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
-						<echo message="git clone -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
-						<exec executable="git" failonerror="true">
-							<arg line="clone -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
-						</exec>
+						<getFileWithRetry file="openjdk-jdk" command="git clone -q ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
 						<exec executable="git" failonerror="true" dir="openjdk-jdk">
 							<arg line="checkout ${env.OPENJDK_SHA}" />
 						</exec>
 					</then>
 					<else>
-						<echo message="git clone --depth 1 -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
-						<exec executable="git" failonerror="true">
-							<arg line="clone --depth 1 -q ${defaultBranch} ${regressionRepo} openjdk-jdk" />
-						</exec>
+						<getFileWithRetry file="openjdk-jdk" command="git clone --depth 1 -q ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
 					</else>
 				</if>
 			</else>
