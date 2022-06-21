@@ -945,7 +945,26 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
 			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
 		} else {
-			buildInfo.retention maxDays: 30, deleteBuildArtifacts: true
+			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ?: -1
+			def numDays = 20
+			if (params.ARTIFACTORY_NUM_DAYS) {
+				numDays = params.ARTIFACTORY_NUM_DAYS
+			} else {
+				if (ARTIFACTORY_SERVER.contains("ci-eclipse-openj9")) {
+					if (JOB_NAME.contains("Grinder")) {
+						numDays = 7
+					} else {
+						numDays = 25
+					}
+				} else {
+					if (JOB_NAME.contains("Grinder")) {
+						numDays = 20
+					} else {
+						numDays = 45
+					}
+				}
+			}
+			buildInfo.retention maxBuilds: numArtifacts, maxDays: numDays, deleteBuildArtifacts: true
 		}
 		server.upload spec: uploadSpec, buildInfo: buildInfo
 		server.publishBuildInfo buildInfo
