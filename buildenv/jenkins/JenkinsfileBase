@@ -821,7 +821,13 @@ def testExecution() {
 		} else {
 			buildTest()
 		}
-		runTest()
+		if( env.BUILD_LIST.startsWith('jck')) {
+			sshagent(credentials:["${params.JENKINS_KEY}"], ignoreMissing: true) {
+				runTest()
+			}
+		} else {
+			runTest()
+		}
 	} finally {
 		post("${env.BUILD_LIST}")
 	}
