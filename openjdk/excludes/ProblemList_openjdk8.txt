@@ -196,9 +196,11 @@ java/beans/XMLEncoder/sun_swing_PrintColorUIResource.java	https://github.com/ado
 
 java/lang/ClassLoader/Assert.java	https://github.com/adoptium/aqa-tests/issues/1012	aix-all
 java/lang/Math/HypotTests.java	https://github.com/adoptium/aqa-tests/issues/128	linux-all
-java/lang/ProcessBuilder/Basic.java	https://bugs.openjdk.org/browse/JDK-8282219	aix-all,solaris-x64
+#java/lang/ProcessBuilder/Basic.java same issue with alpine linux, exclude by linux-all for now
+java/lang/ProcessBuilder/Basic.java	https://bugs.openjdk.org/browse/JDK-8282219	aix-all,solaris-x64,linux-all
 java/lang/invoke/MethodHandles/CatchExceptionTest.java  https://bugs.openjdk.java.net/browse/JDK-8146623 linux-s390x,linux-arm
 java/lang/instrument/BootClassPath/BootClassPathTest.sh https://bugs.openjdk.java.net/browse/JDK-8256405 macosx-all
+
 
 ############################################################################
 
@@ -210,7 +212,8 @@ com/sun/management/OperatingSystemMXBean/GetCommittedVirtualMemorySize.java		htt
 sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
-sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://bugs.openjdk.java.net/browse/JDK-8031420 linux-aarch64,linux-ppc64le,linux-arm
+# alpine-linux https://github.com/adoptium/aqa-tests/issues/3238
+sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://bugs.openjdk.java.net/browse/JDK-8031420 linux-all
 com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-all
 
 ############################################################################
@@ -278,7 +281,7 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/aqa-te
 sun/nio/ch/TestMaxCachedBufferSize.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 sun/nio/cs/FindDecoderBugs.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
 sun/nio/cs/OLD/TestIBMDB.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 
 ############################################################################
 
