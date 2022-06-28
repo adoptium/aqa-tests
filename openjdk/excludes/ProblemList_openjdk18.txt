@@ -115,7 +115,7 @@ sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-t
 ############################################################################
 
 # jdk_other
-com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+#com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
 com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 ############################################################################
 
@@ -139,13 +139,18 @@ java/net/httpclient/http2/BadHeadersTest.java	https://github.com/adoptium/temuri
 java/net/httpclient/DigestEchoClientSSL.java	https://github.com/adoptium/temurin-build/issues/893	linux-all
 java/net/httpclient/ResponseBodyBeforeError.java	https://github.com/adoptium/temurin-build/issues/893	linux-all
 java/net/httpclient/ResponsePublisher.java	https://github.com/adoptium/temurin-build/issues/893	linux-all
-java/net/MulticastSocket/Promiscuous.java               https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/SetLoopbackMode.java     https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/Test.java                             https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-###
-java/net/MulticastSocket/B6427403.java  https://github.com/adoptium/infrastructure/issues/699   aix-ppc64
-java/net/MulticastSocket/IPMulticastIF.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
-java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
+#Multivase failures on aix https://github.com/adoptium/aqa-tests/issues/2246
+java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
+java/net/MulticastSocket/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
+java/net/MulticastSocket/B6427403.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all,linux-ppc64le
+java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
+java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/MulticastAddresses.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/CookieHandler/CookieManagerTest.java   https://github.com/adoptium/infrastructure/issues/699   aix-ppc64,linux-ppc64le
 java/net/DatagramPacket/ReuseBuf.java   https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/DatagramSocket/GetLocalAddress.java    https://github.com/adoptium/aqa-tests/issues/3088  aix-pcc64, linux-ppc64le
@@ -172,7 +177,6 @@ java/net/Socks/SocksProxyVersion.java   https://github.com/adoptium/aqa-tests/is
 java/net/Socket/asyncClose/Race.java    https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/ServerSocket/TestLocalAddress.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/httpclient/ManyRequests.java   https://github.com/adoptium/aqa-tests/issues/2828 aix-ppc64
-
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
@@ -196,6 +200,8 @@ java/net/InetAddress/InternalNameServiceWithHostsFileTest.java https://github.co
 com/sun/net/httpserver/simpleserver/CustomFileSystemTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x64
 com/sun/net/httpserver/simpleserver/MapToPathTest.java https://bugs.openjdk.java.net/browse/JDK-8281305 windows-x64
 com/sun/net/httpserver/simpleserver/SimpleFileServerTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x64
+java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
+java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
 ############################################################################
 
 # jdk_io
@@ -207,6 +213,8 @@ java/io/File/GetXSpace.java	https://bugs.openjdk.java.net/browse/JDK-8251466 win
 com/sun/jdi/JdwpNetProps.java	https://bugs.openjdk.java.net/browse/JDK-8231915 linux-s390x
 com/sun/jdi/JdwpAttachTest.java	https://bugs.openjdk.java.net/browse/JDK-8253940 linux-s390x
 com/sun/jdi/BreakpointTest.java https://bugs.openjdk.java.net/browse/JDK-8050470 linux-s390x
+com/sun/jdi/JdwpAllowTest.java https://bugs.openjdk.org/browse/JDK-8241624 generic-all
+com/sun/jdi/JdwpListenTest.java https://bugs.openjdk.org/browse/JDK-8241624 generic-all
 ############################################################################
 
 # jdk_nio
@@ -237,7 +245,8 @@ java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-test
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-
+security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aqa-tests/issues/3811 windows-x86
 ############################################################################
 
 # jdk_security3
@@ -495,6 +504,8 @@ jdk/jfr/jmx/TestGetRecordings.java  https://github.com/adoptium/aqa-tests/issues
 jdk/jfr/event/compiler/TestCodeCacheFull.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
 jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
+jdk/jfr/event/gc/detailed/TestZUncommitEvent.java https://bugs.openjdk.org/browse/JDK-8248078 generic-all
+jdk/jfr/event/gc/detailed/TestGCLockerEvent.java https://github.com/adoptium/aqa-tests/issues/3817 windows-x64
 
 ###########################################################################
 

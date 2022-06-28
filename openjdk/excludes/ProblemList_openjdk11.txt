@@ -99,8 +99,8 @@ sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK
 ############################################################################
 
 # jdk_other
-com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
-com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 windows-all
+#com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
 com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 ############################################################################
 
@@ -112,10 +112,11 @@ java/net/Inet6Address/B6206527.java	https://github.com/adoptium/aqa-tests/issues
 java/net/InetAddress/BadDottedIPAddress.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/InetAddress/CachedUnknownHostName.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/InetAddress/IPv4Formats.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
-java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
+#Multicase failures on aix https://github.com/adoptium/aqa-tests/issues/2246
+java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
+java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
 java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
+java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
 java/net/SocketPermission/SocketPermissionCollection.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/SocketPermission/Wildcard.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/Socks/SocksV4Test.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
@@ -193,6 +194,7 @@ sun/security/util/RegisteredDomain/Versions.java	https://github.com/adoptium/aqa
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 ############################################################################
 
 # jdk_sound
