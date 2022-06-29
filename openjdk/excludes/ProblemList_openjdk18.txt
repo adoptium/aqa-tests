@@ -84,11 +84,12 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/adoptium/infrastructure/issues/1118	linux-aarch64
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
-
-java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920   aix-ppc64
 java/lang/System/FileEncodingTest.java  https://github.com/adoptium/aqa-tests/issues/1267   aix-ppc64
 java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 linux-arm
-
+#java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920   aix-ppc64
+#java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
+java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
+java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
 
 ############################################################################
 
@@ -115,6 +116,7 @@ sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-t
 
 # jdk_other
 com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 ############################################################################
 
 # jdk_net
@@ -183,7 +185,8 @@ java/nio/channels/FileChannel/LargeGatheringWrite.java  https://github.com/adopt
 java/nio/channels/FileChannel/Transfer2GPlus.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 java/nio/channels/DatagramChannel/AfterDisconnect.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
-java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789   aix-ppc64,windows-x64
+#java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
+java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789 aix-ppc64,windows-all
 java/nio/Buffer/DirectBufferAllocTest.java  https://github.com/adoptium/aqa-tests/issues/3086 aix-ppc64
 com/sun/net/httpserver/simpleserver/CommandLinePositiveTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
 com/sun/net/httpserver/simpleserver/jwebserver/CommandLinePositiveTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64

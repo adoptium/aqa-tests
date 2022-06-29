@@ -27,6 +27,7 @@ java/beans/PropertyEditor/TestFontClassJava.java	https://bugs.openjdk.java.net/b
 java/beans/PropertyEditor/TestFontClassNull.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/PropertyEditor/TestFontClassValue.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/2848 macosx-all
+java/beans/Beans/TypoInBeanDescription.java https://bugs.openjdk.org/browse/JDK-8217438 aix-all
 ############################################################################
 
 # jdk_compiler
@@ -68,7 +69,9 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/adoptium/infrastructure/issues/1118	linux-aarch64
 jdk/modules/etc/DefaultModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 jdk/modules/incubator/ImageModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
-
+#java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
+java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
+java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
 ############################################################################
 
 # jdk_management
@@ -77,7 +80,8 @@ sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adopti
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-all
-
+# alpine-linux https://github.com/adoptium/aqa-tests/issues/3238
+sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://github.com/adoptium/aqa-tests/issues/3238 linux-all
 ############################################################################
 
 # jdk_security4
@@ -97,6 +101,7 @@ sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK
 # jdk_other
 com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
 com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 windows-all
+com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 ############################################################################
 
 # jdk_net
@@ -156,8 +161,9 @@ jdk/nio/zipfs/ZipFSTester.java	https://github.com/adoptium/aqa-tests/issues/602 
 java/net/SocketPermission/SocketPermissionTest.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
 java/nio/channels/DatagramChannel/BasicMulticastTests.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
 java/nio/file/DirectoryStream/SecureDS.java https://github.com/adoptium/aqa-tests/issues/3635 linux-arm
-java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
-java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
+java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
+java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
 ############################################################################ 
 
 # jdk_rmi
@@ -211,7 +217,8 @@ java/time/tck/java/time/format/TCKDateTimeFormatterBuilder.java https://github.c
 sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
-
+tools/jlink/plugins/CompressorPluginTest.java https://bugs.openjdk.org/browse/JDK-8247407 generic-all
+tools/launcher/Test7029048.java https://bugs.openjdk.org/browse/JDK-8217438 aix-all
 ############################################################################
 
 # jdk_jdi
