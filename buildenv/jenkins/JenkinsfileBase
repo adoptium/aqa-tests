@@ -347,6 +347,14 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	jobParams.put('TEST_JOB_NAME', TEST_JOB_NAME)
 	jobParams.put('ARCH_OS_LIST', ARCH_OS)
 
+	if (params.DAYS_TO_KEEP) {
+		jobParams.put('DAYS_TO_KEEP', DAYS_TO_KEEP)
+	}
+
+	if (params.BUILDS_TO_KEEP) {
+		jobParams.put('BUILDS_TO_KEEP', BUILDS_TO_KEEP)
+	}
+
 	//get level and group if TEST_JOB_NAME matches the format of Test_openjdk11_j9_extended.functional_ppc64_aix
 	//otherwise, use default level and group value in template
 	if (TEST_JOB_NAME.startsWith("Test_openjdk")) {
