@@ -185,8 +185,10 @@ java/nio/channels/DatagramChannel/Promiscuous.java              https://github.c
 java/nio/file/spi/SetDefaultProvider.java	https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-ppc64,linux-s390x,windows-x64
-java/nio/channels/FileChannel/LargeGatheringWrite.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64,windows-x64
-java/nio/channels/FileChannel/Transfer2GPlus.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
+java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-ppc64,linux-all
+java/nio/channels/FileChannel/Transfer2GPlus.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64,windows-x86
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
+java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/channels/DatagramChannel/AfterDisconnect.java  https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java   https://github.com/adoptium/aqa-tests/issues/3086   aix-ppc64
 #java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
@@ -197,9 +199,9 @@ com/sun/net/httpserver/simpleserver/jwebserver/CommandLinePositiveTest.java http
 java/net/InetAddress/HostsFileOrderingTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
 java/net/InetAddress/InternalNameServiceTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
 java/net/InetAddress/InternalNameServiceWithHostsFileTest.java https://github.com/adoptium/aqa-tests/issues/3637 linux-arm,linux-aarch64
-com/sun/net/httpserver/simpleserver/CustomFileSystemTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x64
+com/sun/net/httpserver/simpleserver/CustomFileSystemTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-all
 com/sun/net/httpserver/simpleserver/MapToPathTest.java https://bugs.openjdk.java.net/browse/JDK-8281305 windows-x64
-com/sun/net/httpserver/simpleserver/SimpleFileServerTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-x64
+com/sun/net/httpserver/simpleserver/SimpleFileServerTest.java https://bugs.openjdk.java.net/browse/JDK-8280965 windows-all
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
 java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
 ############################################################################
@@ -242,10 +244,6 @@ java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-test
 
 # jdk_security
 
-security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aqa-tests/issues/3811 windows-x86
 ############################################################################
 
@@ -253,12 +251,22 @@ sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aq
 
 javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
 javax/net/ssl/ServerName/SSLEngineExplorerWithSrv.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
+javax/net/ssl/SSLEngine/LargePacket.java https://bugs.openjdk.org/browse/JDK-8227651 generic-all
 sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
 sun/security/provider/SecureRandom/AbstractDrbg/SpecTest.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
 sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+############################################################################
 
-########################################################################################################################################################
+#jdk_security_infra
+security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/DTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/HaricaCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+
+####################################################################################################################################################################################################################################
 
 # jdk_sound
 
@@ -339,6 +347,7 @@ java/util/concurrent/tck/JSR166TestCase.java	https://github.com/adoptium/aqa-tes
 ############################################################################
 
 # jdk_other
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
 ############################################################################
 
 # jdk_foreign
@@ -473,6 +482,28 @@ compiler/whitebox/AllocationCodeBlobTest.java https://github.com/adoptium/aqa-te
 compiler/whitebox/BlockingCompilation.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
 compiler/whitebox/GetCodeHeapEntriesTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
 compiler/whitebox/MakeMethodNotCompilableTest.java https://github.com/adoptium/aqa-tests/issues/3620 windows-x86
+compiler/c2/TestCMoveInfiniteGVN.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/TestDeadDataLoopCmoveIdentity.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/TestModDivTopInput.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/FillArrayWithUnsafe.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/TestPredicateInputBelowLoopPredicate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/print/PrintInlining.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/rangechecks/RangeCheckEliminationScaleNotOne.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopstripmining/AntiDependentLoadInOuterStripMinedLoop.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopstripmining/LoadDependsOnIfIdenticalToLoopExit.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopstripmining/TestConservativeAntiDep.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopstripmining/TestEliminatedLoadPinnedOnBackedge.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestByteVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestDoubleVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestFloatVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestIntVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestIntVectRotate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestLongVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestLongVectRotate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/cr6340864/TestShortVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/irTests/TestSkeletonPredicates.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/irTests/TestStripMiningDropsSafepoint.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/c2/irTests/TestSuperwordFailsUnrolling.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 ############################################################################
 
 # jdk_jfr
