@@ -261,6 +261,8 @@ def runTest() {
         timeout(time: 1, unit: 'HOURS') {
             cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
+        def retry_count = 0
+        def sleep_time = 180
         if (params.PLATFORM.contains('zos')) {
             /* Ensure correct CC env */
             env._CC_CCMODE = '1'
@@ -275,21 +277,33 @@ def runTest() {
             def SCM_GIT_REPO_VAL = sh(script: "echo ${SCM_GIT_REPO}", returnStdout: true).trim()
             SCM_GIT_REPO_VAL = SCM_GIT_REPO_VAL.replace("https://github.com/","git@github.com:")
 
-            sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
+            retry(5) {
+                if (retry_count > 0) {
+                    sleep(sleep_time)
+                }
+                retry_count++
+                sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
+            }
         } else {
             def gitConfig = scm.getUserRemoteConfigs().get(0)
 
             // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
             ref_cache = "${env.HOME}/openjdk_cache"
 
-            checkout scm: [$class: 'GitSCM',
-                branches: [[name: "${scm.branches[0].name}"]],
-                extensions: [
-                    [$class: 'CleanBeforeCheckout'],
-                    [$class: 'CloneOption', reference: ref_cache],
-                    [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-            ]
+            retry(5) {
+                if (retry_count > 0) {
+                    sleep(sleep_time)
+                }
+                retry_count++
+                checkout scm: [$class: 'GitSCM',
+                    branches: [[name: "${scm.branches[0].name}"]],
+                    extensions: [
+                        [$class: 'CleanBeforeCheckout'],
+                        [$class: 'CloneOption', reference: ref_cache],
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                ]
+            }
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
