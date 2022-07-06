@@ -21,6 +21,7 @@ platform_map = {
     "solaris-sparcv9": "sparcv9_solaris",
     "solaris-x86-64": "x86-64_solaris",
     "alpine-linux-x86-64": "x86-64_alpine-linux",
+    "alpine-linux_aarch64": "aarch64_alpine-linux",
     "linux-x86-32": "x86-32_linux",
 
     "linux-all": "all_linux",
