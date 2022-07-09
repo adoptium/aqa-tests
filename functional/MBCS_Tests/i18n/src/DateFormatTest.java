@@ -39,6 +39,10 @@ public class DateFormatTest {
 		try {
 			resource = ResourceBundle.getBundle("ResourceBundleTest_16", locale);
 		} catch (MissingResourceException e) {} // Do nothing
+	} else if (feature >= 19L) {
+		try {
+			resource = ResourceBundle.getBundle("ResourceBundleTest_19", locale);
+		} catch (MissingResourceException e) {} // Do nothing
         }
 	if (resource == null){
 		resource = ResourceBundle.getBundle("ResourceBundleTest", locale);
