@@ -86,6 +86,8 @@ sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://github.com/ad
 
 # jdk_security3
 javax/net/ssl/SSLEngine/LargePacket.java https://bugs.openjdk.org/browse/JDK-8227651 generic-all
+javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all,macosx-all
+sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aqa-tests/issues/3811 windows-x86
 
 ############################################################################
 # jdk_security4
@@ -148,6 +150,7 @@ com/sun/jdi/OnJcmdTest.java	https://github.com/adoptium/aqa-tests/issues/2837	wi
 
 jdk/jfr/jvm/TestJFRIntrinsic.java https://bugs.openjdk.java.net/browse/JDK-8239423 linux-arm
 jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-8247203 linux-arm,linux-ppc64le
+jdk/jfr/api/recording/state/TestStateInvalid.java https://github.com/adoptium/aqa-tests/issues/3836 windows-x86
 ############################################################################
 
 # jdk_nio
@@ -190,7 +193,7 @@ sun/security/ssl/SSLSessionImpl/NoInvalidateSocketException.java	https://github.
 sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/util/RegisteredDomain/ParseNames.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
 sun/security/util/RegisteredDomain/Versions.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
-
+sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
 ############################################################################
 
 # jdk_security_infra
@@ -226,7 +229,7 @@ sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/b
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 tools/jlink/plugins/CompressorPluginTest.java https://bugs.openjdk.org/browse/JDK-8247407 generic-all
-tools/launcher/Test7029048.java https://bugs.openjdk.org/browse/JDK-8217438 aix-all
+tools/launcher/Test7029048.java#id1 https://bugs.openjdk.org/browse/JDK-8217438 aix-all
 ############################################################################
 
 # jdk_jdi
@@ -319,6 +322,11 @@ compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/28
 compiler/c2/Test8202414.java https://bugs.openjdk.java.net/browse/JDK-8251152 linux-arm
 compiler/loopstripmining/TestPinnedUseInOuterLSMUnusedBySfpt.java https://bugs.openjdk.java.net/browse/JDK-8252473 windows-x86
 compiler/loopopts/TestSkeletonPredicateNegation.java https://bugs.openjdk.java.net/browse/JDK-8279032 windows-x86
+compiler/rtm/locking/TestRTMAbortRatio.java https://bugs.openjdk.org/browse/JDK-8183263 aix-all
+compiler/c2/TestModDivTopInput.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/FillArrayWithUnsafe.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/TestPredicateInputBelowLoopPredicate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/LoopRotateBadNodeBudget.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 ############################################################################
 
 # jdk_imageio
