@@ -59,6 +59,14 @@
 	</test>
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/infrastructure/issues/2376</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+				<platform>arm_linux</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -77,6 +85,13 @@
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
