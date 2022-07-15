@@ -85,12 +85,13 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://g
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/lang/System/FileEncodingTest.java  https://github.com/adoptium/aqa-tests/issues/1267   aix-ppc64
-java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 linux-arm
+java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 generic-all
 #java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920   aix-ppc64
 #java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
 java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
 java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
-
+java/lang/StringBuffer/HugeCapacity.java https://bugs.openjdk.org/browse/JDK-8279954 windows-all
+java/lang/StringBuilder/HugeCapacity.java https://bugs.openjdk.org/browse/JDK-8279954 windows-all
 ############################################################################
 
 # jdk_management
@@ -326,7 +327,7 @@ tools/jpackage/windows/WinShortcutTest.java	https://github.com/adoptium/infrastr
 tools/jpackage/windows/WinUpgradeUUIDTest.java#id1	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinUrlTest.java	https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jlink/JLinkTest.java	https://github.com/adoptium/aqa-tests/issues/2857 windows-x86,linux-arm
-tools/jlink/JLinkReproducible3Test.java	https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
+tools/jlink/JLinkReproducible3Test.java	https://bugs.openjdk.java.net/browse/JDK-8253688 generic-all
 tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aixx-pcc64
 tools/jpackage/windows/WinInstallerIconTest.java    https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AddLShortcutTest.java  https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -342,7 +343,8 @@ com/sun/jdi/OnJcmdTest.java	https://github.com/adoptium/aqa-tests/issues/2837	wi
 java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/util/logging/TestLoggerWeakRefLeak.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/util/concurrent/tck/JSR166TestCase.java	https://github.com/adoptium/aqa-tests/issues/1272 windows-all
-java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/issues/3818 linux-all
+java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/issues/3818 generic-all
+java/util/BitSet/HugeToString.java https://github.com/adoptium/aqa-tests/issues/3818 generic-all
 ############################################################################
 
 # svc_tools
@@ -540,7 +542,7 @@ jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3277 windows-x86
 jdk/jfr/event/gc/detailed/TestZUncommitEvent.java https://bugs.openjdk.org/browse/JDK-8248078 generic-all
 jdk/jfr/event/gc/detailed/TestGCLockerEvent.java https://github.com/adoptium/aqa-tests/issues/3817 windows-x64
-
+jdk/jfr/event/runtime/TestDirectBufferStatisticsEvent.java https://github.com/adoptium/aqa-tests/issues/3853 linux-aarch64
 ###########################################################################
 
 #jdk_vector
