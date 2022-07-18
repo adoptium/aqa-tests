@@ -1189,7 +1189,7 @@ public class JavaTestRunner {
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
 		
-		Matcher matcher = Pattern.compile("jck(\\d+)c?").matcher(jckVersion);
+		Matcher matcher = Pattern.compile("jck(\\d+)[bc]?").matcher(jckVersion);
 		if (matcher.matches()) {
 			// first group is going to be 8, 9, 10, 11, etc.
 			int jckVerNum = Integer.parseInt(matcher.group(1));
@@ -1337,7 +1337,7 @@ public class JavaTestRunner {
 	}
 	
 	private static int getJckVersionInt(String version) {
-		if (version.equals("8c")) {
+		if (version.equals("8c") || version.equals("8b")) {
 			return 8; 
 		} else {
 			return Integer.parseInt(version); 
