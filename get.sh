@@ -499,7 +499,7 @@ getFunctionalTestMaterial()
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
 	fi
 
-	executeCmdWithRetry "openj9" "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
+	executeCmdWithRetry "openj9" "git clone --depth 1 --reference-if-able ${HOME}/openjdk_cache $OPENJ9_BRANCH $OPENJ9_REPO"
 	rt_code=$?
 	if [ $rt_code != 0 ]; then
 		echo "git clone error code: $rt_code"
