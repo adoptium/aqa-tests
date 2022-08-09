@@ -1863,12 +1863,10 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
-	<!-- Below are jdk_vector tests (named jdk_vector_xxx_j9) with specific Openj9 JIT options. They should only run on the machine which supports vector instructions (Z13/Z14 or newer for Z, AVX512 on x86, etc)
-	For now, limit the testing on openj9 s390 on openj9 Jenkins because it has z15 machines. A proper platformRequirements will be set once https://github.com/adoptium/TKG/issues/336 is implemented. -->
 	<test>
 		<testCaseName>jdk_vector_float128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Float128VectorTests*}(count=1,optlevel=scorching),disableAsyncCompilation,disableAutoSIMD,disableDynamicLoopTransfer,acceptHugeMethods,scratchSpaceLimit=5000000000,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Float128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -1880,7 +1878,6 @@
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr"; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.390</platformRequirements>
 		<versions>
 			<version>19+</version>
 		</versions>
@@ -1893,14 +1890,11 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<vendors>
-			<vendor>eclipse</vendor>
-		</vendors>
 	</test>
 	<test>
 		<testCaseName>jdk_vector_byte64_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Byte64VectorTests*}(count=1,optlevel=scorching),disableAsyncCompilation,disableAutoSIMD,disableDynamicLoopTransfer,acceptHugeMethods,scratchSpaceLimit=5000000000,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Byte64VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -1912,7 +1906,6 @@
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr"; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr; \
 	$(TEST_STATUS)</command>
-		<platformRequirements>os.linux,arch.390</platformRequirements>
 		<versions>
 			<version>19+</version>
 		</versions>
@@ -1925,9 +1918,6 @@
 		<impls>
 			<impl>openj9</impl>
 		</impls>
-		<vendors>
-			<vendor>eclipse</vendor>
-		</vendors>
 	</test>
 	<test>
 		<testCaseName>dragonwell8_feature_jdk0</testCaseName>
