@@ -48,6 +48,7 @@
 		</if>
 	</target>
 	<target name="clone_stf">
+		<echo "running git clone -q ${stf_repo}"/>
 		<getFileWithRetry file="STF" command="git clone -q ${stf_repo}" dest="${SYSTEMTEST_ROOT}"/>
 		<echo message="git rev-parse ${stf_branch} "/>
 		<exec executable="git" failonerror="false" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha1" resultproperty="code">
