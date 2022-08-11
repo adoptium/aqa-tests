@@ -15,7 +15,7 @@ jobs:
     outputs:
       buildLists: ${{ steps.locations_parse.outputs.build_lists }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: jitterbit/get-changed-files@v1
         id: get_change
         continue-on-error: true
@@ -45,14 +45,14 @@ jobs:
           source: 'nightly'
           impl: ${{ matrix.impl }}
       - name: AQA
-        uses: adoptium/run-aqa@v1
+        uses: adoptium/run-aqa@v2
         with:
           build_list: ${{ matrix.build_list }}
           target: '_sanity.regular'
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
           openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:${{ github.head_ref }}'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: output_changed_based_build_list
