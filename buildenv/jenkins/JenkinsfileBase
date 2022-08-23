@@ -609,7 +609,7 @@ def buildTest() {
 
 def runTest( ) {
 	stage('Test') {
-		TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
+		TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 		timeout(time: TIME_LIMIT, unit: 'HOURS') {
 			timestamps{
 				echo 'Running tests...'
