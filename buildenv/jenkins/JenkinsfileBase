@@ -609,67 +609,70 @@ def buildTest() {
 
 def runTest( ) {
 	stage('Test') {
-		timestamps{
-			echo 'Running tests...'
-			def CUSTOM_OPTION = ''
+		TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
+		timeout(time: TIME_LIMIT, unit: 'HOURS') {
+			timestamps{
+				echo 'Running tests...'
+				def CUSTOM_OPTION = ''
 
-			TARGET = "${params.TARGET}";
-			if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
-				if (TARGET == 'system_custom') {
-					env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
-				} else {
-					CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				TARGET = "${params.TARGET}";
+				if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
+					if (TARGET == 'system_custom') {
+						env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
+					} else {
+						CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+					}
 				}
-			}
-			if (!TARGET.startsWith('-f')) {
-				TARGET="_${params.TARGET}"
-			} else if (TARGET.contains('-f parallelList.mk') && SPEC.startsWith('zos')) {
-				def parallelList = "aqa-tests/TKG/parallelList.mk"
-				if (fileExists("${parallelList}")) {
-					echo 'Converting parallelList.mk file from ascii to ebcdic...'
-					sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
+				if (!TARGET.startsWith('-f')) {
+					TARGET="_${params.TARGET}"
+				} else if (TARGET.contains('-f parallelList.mk') && SPEC.startsWith('zos')) {
+					def parallelList = "aqa-tests/TKG/parallelList.mk"
+					if (fileExists("${parallelList}")) {
+						echo 'Converting parallelList.mk file from ascii to ebcdic...'
+						sh "iconv -f iso8859-1 -t ibm-1047 ${parallelList} > ${parallelList}.ebcdic; rm ${parallelList}; mv ${parallelList}.ebcdic ${parallelList}"
+					}
 				}
-			}
 
-			RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
-			for (int i = 1; i <= ITERATIONS; i++) {
-				echo "ITERATION: ${i}/${ITERATIONS}"
-				if (env.SPEC.startsWith('aix')) {
-					sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX -secIP 000 :0 &"
-					env.DISPLAY = "unix:0"
-					echo "env.DISPLAY is ${env.DISPLAY}"
-					makeTest("${RUNTEST_CMD}")
-				}
-				else if (env.SPEC.startsWith('sunos')) {
-					sh "nohup /usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
-					env.DISPLAY = ":2"
-					echo "env.DISPLAY is ${env.DISPLAY}"
-					makeTest("${RUNTEST_CMD}")
-				}
-				else if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
-					// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
-					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
-						def DISPLAY = sh (
-								script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
-								returnStdout: true
-						).trim()
-						env.DISPLAY = "${DISPLAY}"
+				RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
+				for (int i = 1; i <= ITERATIONS; i++) {
+					echo "ITERATION: ${i}/${ITERATIONS}"
+					if (env.SPEC.startsWith('aix')) {
+						sh "nohup /usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX -secIP 000 :0 &"
+						env.DISPLAY = "unix:0"
 						echo "env.DISPLAY is ${env.DISPLAY}"
 						makeTest("${RUNTEST_CMD}")
 					}
+					else if (env.SPEC.startsWith('sunos')) {
+						sh "nohup /usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
+						env.DISPLAY = ":2"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
+					}
+					else if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure')) {
+						// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
+						wrap([$class: 'Xvfb', autoDisplayName: true, timeout:10]) {
+							def DISPLAY = sh (
+									script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+									returnStdout: true
+							).trim()
+							env.DISPLAY = "${DISPLAY}"
+							echo "env.DISPLAY is ${env.DISPLAY}"
+							makeTest("${RUNTEST_CMD}")
+						}
+					}
+					else {
+						makeTest("${RUNTEST_CMD}")
+					}
 				}
-				else {
-					makeTest("${RUNTEST_CMD}")
-				}
-			}
 
-			if (params.CODE_COVERAGE) {
-				echo 'Generating Code Coverage Reports...'
-				dir("$WORKSPACE/openjdkbinary/j2sdk-image") {
-					// Current lcov generates "Cannot open source file" info, but does not affect results, since Build and Test paths difference are corrected after summary.
-					sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => ${WORKSPACE}/openjdkbinary/j2sdk-image/jenkins/workspace/'"
-					sh "lcov --quiet --output-file codeCoverageInfoFinal.info --remove codeCoverageInfoOrigin.info '/usr/include/*' '/usr/local/*' '/home/*/attrlookup.gperf'"
-					sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
+				if (params.CODE_COVERAGE) {
+					echo 'Generating Code Coverage Reports...'
+					dir("$WORKSPACE/openjdkbinary/j2sdk-image") {
+						// Current lcov generates "Cannot open source file" info, but does not affect results, since Build and Test paths difference are corrected after summary.
+						sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => ${WORKSPACE}/openjdkbinary/j2sdk-image/jenkins/workspace/'"
+						sh "lcov --quiet --output-file codeCoverageInfoFinal.info --remove codeCoverageInfoOrigin.info '/usr/include/*' '/usr/local/*' '/home/*/attrlookup.gperf'"
+						sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
+					}
 				}
 			}
 		}
