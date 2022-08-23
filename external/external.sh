@@ -30,19 +30,21 @@ portable="false"
 node_name=""
 node_labels=""
 node_label_micro_architecture=""
+docker_registry_required="false"
 docker_registry_url=""
 reportdst="false"
 reportsrc="false"
 docker_args=""
 mountV=""
+mount_jdk="true"
 imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_url DOCKER_REGISTRY_URL] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
-supported_tests="external_custom camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
+supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
 
 function check_test() {
     test=$1
@@ -109,6 +111,9 @@ parseCommandLineArgs() {
 			"--portable" )
 				portable="$1"; shift;;
 
+			"--mount_jdk" )
+				mount_jdk="$1"; shift;;
+
 			"--node_name" )
 				node_name="$1"; shift;;
 
@@ -123,8 +128,14 @@ parseCommandLineArgs() {
 					fi
 				done;;
 
+			"--docker_registry_required" )
+				docker_registry_required="$1"; shift;;
+
 			"--docker_registry_url" )
 				docker_registry_url="$1"; shift;;
+
+			"--test_root" )
+				test_root="$1"; shift;;
 
 			"--reportsrc" )
 				reportsrc="$1"; shift;;
@@ -260,21 +271,43 @@ fi
 
 if [ $command_type == "load" ]; then
 	# TO-DO: Use a different micro architecture (e.g. skylake vs broadwell) to test when machine label completed.
-	if [[ $docker_registry_url ]]; then
-		echo "Private Docker Registry login starts:"
-		echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
-		
-		current_micro_architecture=$node_label_micro_architecture
-		docker pull $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
-		docker image ls
-		# restore
-		echo "docker run --privileged $mountV --name restore-checkpoint --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}"
-		docker run --privileged $mountV --name restore-checkpoint --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
+	if [[ $docker_registry_required != "false" ]]; then
+		if [[ $docker_registry_url ]]; then
+			echo "Private Docker Registry login starts:"
+			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
+			
+			current_micro_architecture=$node_label_micro_architecture
+			docker pull $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
+			docker image ls
+			mount_options=""
+			if [[ $mount_jdk != "false" ]]; then
+				echo "Mounting JDK"
+				mount_options="$mountV"
+			fi
+			# restore
+			echo "docker run --privileged $mount_options --name restore-test --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}"
+			docker run --privileged $mount_options --name restore-test --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
 
-		docker logout $docker_registry_url
-	else
-		echo "Docker Regsitry is not avaialble on this Jenkins"
-		exit 1
+			docker logout $docker_registry_url
+		else
+			echo "Docker Regsitry is not avaialble on this Jenkins"
+			exit 1
+		fi
+	else # no need private docker registry
+		docker_image_name="eclipse-temurin:${JDK_VERSION}-jdk"
+		if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
+			docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
+		fi
+		test_script_path="$test_root/external/$test/test.sh"
+		chmod a+x $test_script_path
+		mount_test_script="-v $test_script_path:/test.sh"
+		mount_options=$mount_test_script
+		if [[ $mount_jdk != "false" ]]; then
+			echo "Mounting JDK and test script"
+			mount_options="$mountV $mount_test_script"
+		fi
+		echo "docker run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh"
+		docker run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh
 	fi
 fi
 
@@ -283,6 +316,6 @@ if [ $command_type == "clean" ]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 	fi
 	docker rm -f $test-test; docker rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
-	docker rm -f restore-checkpoint
+	docker rm -f restore-test
 	docker rmi -f ${docker_registry_url}/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}
 fi
