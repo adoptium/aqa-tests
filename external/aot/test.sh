@@ -16,12 +16,11 @@ set -e
 echo "Testing AOT"
 aot_failure_msg="AOT header validation failed"
 java -Xjit:verbose -version >output 2>&1
-fail_count=$(grep "$aot_failure_msg" output)
-if [ -z "$fail_count" ]; then
-  echo "Test Passed!"
-else
+if grep -q "$aot_failure_msg" output; then
   cat output
   echo -e "\nError: $aot_failure_msg"
   exit 1
+else
+  echo "Test Passed!"
 fi
 set +e

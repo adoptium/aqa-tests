@@ -298,6 +298,7 @@ if [ $command_type == "load" ]; then
 		if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
 			docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
 		fi
+		docker pull $docker_image_name
 		test_script_path="$test_root/external/$test/test.sh"
 		chmod a+x $test_script_path
 		mount_test_script="-v $test_script_path:/test.sh"
