@@ -17,12 +17,18 @@ def testBuild() {
 	timeout(time: time_limit, unit: 'HOURS') {
 		try {
 			if( params.BUILD_TYPE == "systemtest" ){
+				AQA_SYSTEMTEST_REPO="https://github.com/adoptium/aqa-systemtest"
+				STF_REPO="https://github.com/adoptium/STF"
+				if( env.USE_GIT_SSH == "true" ){
+					AQA_SYSTEMTEST_REPO.replace("https://github.com/","git@github.com:")
+					STF_REPO.replace("https://github.com/","git@github.com:")
+				}
 				sh 'curl -OLJks "https://api.adoptopenjdk.net/v3/binary/latest/8/ga/linux/x64/jdk/hotspot/normal/adoptopenjdk"'
 				sh 'mkdir ${WORKSPACE}/j2sdk-image'
 				sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 1'
 				sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
-				sh 'git clone https://github.com/adoptium/aqa-systemtest'
-				sh 'git clone https://github.com/adoptium/STF'
+				sh "git clone ${AQA_SYSTEMTEST_REPO}"
+				sh "git clone ${STF_REPO}"
 				sh 'ant -f ./aqa-systemtest/openjdk.build/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				sh 'ant -f ./aqa-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				archiveArtifacts '**/systemtest_prereqs/cvsclient/org-netbeans-lib-cvsclient.jar'

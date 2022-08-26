@@ -428,6 +428,9 @@ getTestKitGen()
 	cd $TESTDIR
 	if [ "$TKG_REPO" = "" ]; then
 		TKG_REPO="https://github.com/adoptium/TKG.git"
+		if [ "$USE_GIT_SSH" = "true" ]; then
+			TKG_REPO="git@github.com:adoptium/TKG.git"
+		fi
 	fi
 
 	executeCmdWithRetry "TKG" "git clone -q $TKG_REPO"
@@ -497,6 +500,10 @@ getFunctionalTestMaterial()
 	if [ "$OPENJ9_BRANCH" != "" ]
 	then
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
+	fi
+	if [ "$USE_GIT_SSH" = "true" ]
+	then
+		OPENJ9_REPO=`echo $OPENJ9_REPO | sed "s|https://github.com/|git@github.com:|"`
 	fi
 
 	executeCmdWithRetry "openj9" "git clone --depth 1 --reference-if-able ${HOME}/openjdk_cache $OPENJ9_BRANCH $OPENJ9_REPO"

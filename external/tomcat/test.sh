@@ -16,7 +16,11 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
-git clone -q -b 1.6.x --single-branch https://github.com/apache/apr.git $TEST_HOME/tmp/apr
+git_prefix="https://github.com/"
+if [[ "$USE_GIT_SSH" = "true" ]]; then
+    git_prefix="git@github.com:"
+fi
+git clone -q -b 1.6.x --single-branch ${git_prefix}apache/apr.git $TEST_HOME/tmp/apr
 cd $TEST_HOME/tmp/apr
 ./buildconf
 ./configure --prefix=$TEST_HOME/tmp/apr-build
@@ -24,7 +28,7 @@ make
 make install
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$TEST_HOME/tmp/apr-build/lib"
 
-git clone -q https://github.com/apache/tomcat-native.git $TEST_HOME/tmp/tomcat-native
+git clone -q ${git_prefix}apache/tomcat-native.git $TEST_HOME/tmp/tomcat-native
 cd $TEST_HOME/tmp/tomcat-native/native
 sh buildconf --with-apr=$TEST_HOME/tmp/apr
 ./configure --with-apr=$TEST_HOME/tmp/apr --with-java-home=$JAVA_HOME --with-ssl=yes --prefix=$TEST_HOME/tmp/tomcat-native-build

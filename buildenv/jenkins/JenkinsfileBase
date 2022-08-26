@@ -46,7 +46,7 @@ def setupEnv() {
 		TKG_BRANCH = tkg[1]
 		//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 		env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
-		if (env.SPEC.startsWith('zos')) {
+		if (env.SPEC.startsWith('zos') || env.USE_GIT_SSH == "true") {
 			ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 		}

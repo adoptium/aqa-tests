@@ -17,6 +17,9 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
         testenv_file="./testenv/testenv_arm32.properties"
     fi
     while read line; do
+        if [[ "$USE_GIT_SSH" = "true" ]]; then
+            line=`echo $line | sed "s|https://github.com/|git@github.com:|"`
+        fi
         export $line
     done <$testenv_file
     if [ $JDK_IMPL == "openj9" ] || [ $JDK_IMPL == "ibm" ]; then
