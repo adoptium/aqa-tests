@@ -255,7 +255,7 @@ if [ $command_type == "run" ]; then
 
 				docker logout $docker_registry_url
 			else
-				echo "Docker Regsitry is not avaialble on this Jenkins"
+				echo "Docker Registry is not available on this Jenkins"
 				exit 1
 			fi
 		fi
@@ -290,7 +290,7 @@ if [ $command_type == "load" ]; then
 
 			docker logout $docker_registry_url
 		else
-			echo "Docker Regsitry is not avaialble on this Jenkins"
+			echo "Docker Registry is not available on this Jenkins"
 			exit 1
 		fi
 	else # no need private docker registry
