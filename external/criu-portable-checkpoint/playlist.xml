@@ -19,6 +19,11 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-portable-checkpoint --platform "${PLATFORM}" --node_labels "${NODE_LABELS}" --docker_registry_url $(DOCKER_REGISTRY_URL)
 		</command>
+		<disables>
+			<disable>
+				<comment>runtimes_backlog_issues_879</comment>
+			</disable>
+		</disables>
 		<features>
 			<feature>CRIU:required</feature>
 		</features>
