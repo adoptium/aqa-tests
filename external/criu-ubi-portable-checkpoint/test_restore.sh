@@ -14,7 +14,6 @@
 
 source $(dirname "$0")/test_base_functions.sh
 # This script is used as the new entrypoint for saved criu-restore-ready-with-jdk docker image
-set -e
 echo "Restore tests from Checkpoint"
 checkpoint_folders="/aqa-tests/TKG/output_*/cmdLineTester_criu_keepCheckpoint*"
 output_file="testOutput" # File "testOutput" is used to store all outputs
@@ -31,9 +30,8 @@ do
     else
         echo "Test $cur_test_name failed"
         cat $output_file
-        $result_code=1
+        result_code=1
     fi
 done
 
 exit $result_code
-set +e
