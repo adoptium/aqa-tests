@@ -63,6 +63,8 @@ public class JavaTestRunner {
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
 	private static String jtxFullPath;
+	private static String jtxDevFullPath;
+	private static String customJtx;
 	private static String kflFullPath;
 	private static String testFlagJtxFullPath;
 	private static String krbConfFile;
@@ -120,6 +122,7 @@ public class JavaTestRunner {
 	private static final String CONCURRENCY = "concurrency"; 
 	private static final String CONFIG_ALT_PATH = "configAltPath"; 
 	private static final String TASK = "task";
+	private static final String CUSTOM_JTX = "customJtx";
 
 	public static void main(String args[]) throws Exception {
 		ArrayList<String> essentialParameters = new ArrayList<String>(); 
@@ -136,6 +139,7 @@ public class JavaTestRunner {
 		essentialParameters.add(CONCURRENCY);
 		essentialParameters.add(CONFIG_ALT_PATH);
 		essentialParameters.add(TASK);
+		essentialParameters.add(CUSTOM_JTX);
 
 		for (String arg : args) {
 			if (arg.contains("=")) { 
@@ -169,6 +173,7 @@ public class JavaTestRunner {
 		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts"); 
 		testFlag = System.getenv("TEST_FLAG");
 		task = testArgs.get(TASK);
+		customJtx = testArgs.get(CUSTOM_JTX);
 		
 		try { 
 			boolean jtbGenerated = false, testSuccedded = false, summaryGenerated = false;
@@ -266,6 +271,26 @@ public class JavaTestRunner {
 		} else {
 			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
 			jtxFullPath = "";
+		}
+		
+		jtxDevFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-dev.jtx";
+		File jtxDevFile = new File(jtxDevFullPath);
+		
+		if (jtxDevFile.exists()) {
+			System.out.println("Using additional excludes list file " + jtxDevFullPath);
+		} else {
+			System.out.println("Unable to find additional excludes list file " + jtxDevFullPath);
+			jtxDevFullPath = "";
+		}
+		
+		if (customJtx != null && !customJtx.equals("")) {
+			File customJtxFile = new File(customJtx);
+			if (customJtxFile.exists()) {
+				System.out.println("Using additional custom excludes list file " + customJtx);
+			} else {
+				System.out.println("Unable to find additional custom excludes list file " + customJtx);
+				customJtx = "";
+			}
 		}
 
 		// Look for a known failures list file
@@ -415,9 +440,9 @@ public class JavaTestRunner {
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
 		// when running a test via jck_custom.
 		if (task == null || !task.equals("custom")) {  
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
 		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
 		}
 		
 		fileContent += "runTests" + ";\n";
