@@ -181,6 +181,7 @@ def setupParallelEnv() {
 						sh "cd ./aqa-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
 					}
 				} catch (Exception e) {
+					echo 'Exception: ' + e.toString()
 					echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
 				}
 
@@ -190,6 +191,7 @@ def setupParallelEnv() {
 						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 					}
 				} catch (Exception e) {
+					echo 'Exception: ' + e.toString()
 					echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 				}
 
@@ -556,6 +558,7 @@ def buildTest() {
 						copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), filter: "**/parallelList.mk", target: './aqa-tests/TKG/'
 					}
 				} catch (Exception e) {
+					echo 'Exception: ' + e.toString()
 					echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
 				}
 			}
@@ -566,6 +569,7 @@ def buildTest() {
 					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 				}
 			} catch (Exception e) {
+				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
 
@@ -577,6 +581,7 @@ def buildTest() {
 					}
 				}
 			} catch (Exception e) {
+				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
 			}
 
@@ -1089,6 +1094,7 @@ def run_parallel_tests() {
 								archiveFile("${name}/${buildId}/**/*.tap", true)
 								buildPaths += "${name}/${buildId}/,"
 							} catch (Exception e) {
+								echo 'Exception: ' + e.toString()
 								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 								buildResult = childResult
 							}
