@@ -283,13 +283,14 @@ public class JavaTestRunner {
 			jtxDevFullPath = "";
 		}
 		
-		if (customJtx != null && !customJtx.equals("")) {
+		if (customJtx == null) {
+			customJtx = "";
+		} else {
 			File customJtxFile = new File(customJtx);
 			if (customJtxFile.exists()) {
 				System.out.println("Using additional custom excludes list file " + customJtx);
 			} else {
 				System.out.println("Unable to find additional custom excludes list file " + customJtx);
-				customJtx = "";
 			}
 		}
 
