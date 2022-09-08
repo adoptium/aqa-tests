@@ -38,6 +38,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on aix</comment>
+				<platform>.*aix.*</platform>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
