@@ -25,7 +25,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
         if (arch.contains("x86-64")){
             arch = "x64"
         } else if (arch.contains("x86-32")) {
-            arch ="x32"
+            arch ="x86-32"
         }
 
         def filter = "*.tar.gz"
@@ -38,7 +38,6 @@ JDK_VERSIONS.each { JDK_VERSION ->
             short_name = "j9"
             jdk_impl = params.VARIANT
         }
-
         def download_url = params.CUSTOMIZED_SDK_URL ? params.CUSTOMIZED_SDK_URL : ""
         def sdk_resource_value = SDK_RESOURCE
 
@@ -64,6 +63,12 @@ JDK_VERSIONS.each { JDK_VERSION ->
             if (TARGET.contains("jck") || TARGET.contains("openjdk")) {
                 keep_reportdir = true
             }
+            if (TARGET.contains("functional") || TARGET.contains("perf")) {
+                if (params.VARIANT == "temurin") {
+                    PARALLEL = "None"
+                }
+            }
+
             if (AUTO_AQA_GEN) {
                 String[] targetTokens = TARGET.split("\\.")
                 def level = targetTokens[0];
@@ -82,7 +87,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
             def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
             if (JobHelper.jobIsRunnable(TEST_JOB_NAME as String)) {
                 JOBS["${TEST_JOB_NAME}"] = {
-                    build job: TEST_JOB_NAME, parameters: [
+                    def downstreamJob = build job: TEST_JOB_NAME, propagate: false, parameters: [
                         string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO),
                         string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH),
                         booleanParam(name: 'USE_TESTENV_PROPERTIES', value: USE_TESTENV_PROPERTIES),
@@ -99,13 +104,42 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
                         string(name: 'TEST_FLAG', value: TEST_FLAG),
                         booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir)
-                    ]
+                    ], wait: true
+                    def result = downstreamJob.getResult()
+                    echo " ${TEST_JOB_NAME} result is ${result}"
+                    if (downstreamJob.getResult() == 'SUCCESS' || downstreamJob.getResult() == 'UNSTABLE') {
+                        echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
+                        node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                            try {
+                                timeout(time: 2, unit: 'HOURS') {
+                                    copyArtifacts(
+                                        projectName: TEST_JOB_NAME,
+                                        selector:specific("${downstreamJob.getNumber()}"),
+                                        filter: "**/${TEST_JOB_NAME}*.tap",
+                                        fingerprintArtifacts: true,
+                                        flatten: true
+                                    )
+                                }
+                            } catch (Exception e) {
+                                echo "Cannot run copyArtifacts from job ${TEST_JOB_NAME}. Skipping copyArtifacts..."
+                            }
+                            try {
+                                timeout(time: 1, unit: 'HOURS') {
+                                    archiveArtifacts artifacts: "*.tap", fingerprint: true
+                                }
+                            } catch (Exception e) {
+                                echo "Cannot archiveArtifacts from job ${TEST_JOB_NAME}. "
+                            }
+                        }
+                    } else {
+                        echo " ${TEST_JOB_NAME} result is ${result}"
+                        currentBuild.result = "FAILURE"
+                    }
                 }
             } else {
-	            println "[WARNING] Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}"
+                println "[WARNING] Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}"
             }
         }
     }
-
 }
 parallel JOBS

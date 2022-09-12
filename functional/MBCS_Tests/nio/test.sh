@@ -19,8 +19,7 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 BASE=`dirname $0`
 export CLASSPATH=${BASE}/nio.jar
-CHARMAP=${FULLLANG}
-SOURCE="${CHARMAP}.txt"
+. ${BASE}/check_env_unix.sh
 
 if [ "$FULLLANG" = "AIX_Zh_TW.big5" ]; then
   LOC="IBM-950";
@@ -30,7 +29,6 @@ fi
 
 echo "system code page is " ${LOC}
 
-. ${BASE}/check_env_unix.sh
 echo "invoking ReadWriteTest..." 
 ${JAVA_BIN}/java ReadWriteTest ${BASE}/expected_${FULLLANG}.txt ${LOC} converted.txt ${LOC} > log 2>&1
 diff ${BASE}/expected_${FULLLANG}.txt ./converted.txt > diff.txt 2>&1

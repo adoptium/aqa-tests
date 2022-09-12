@@ -33,6 +33,15 @@ if [ "x$JAVA_BIN" = "x" ]; then
     fi
 fi
 
+unset LC_ALL
+OS=`uname`
+LOC=`locale charmap 2>&1`
+if [ "${LOC}" != "${LOC%% *}" ]; then
+    FULLLANG=${LANG}
+    showMessage
+fi
+FULLLANG=${OS}_${LANG%.*}.${LOC}
+
 case "${FULLLANG}" in
     "AIX_Ja_JP.IBM-943"|\
     "AIX_ja_JP.IBM-eucJP"|\

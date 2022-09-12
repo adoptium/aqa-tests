@@ -45,6 +45,13 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_i18n_zh_CN_linux</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15249</comment>
+				<impl>openj9</impl>
+				<version>19+</version>
+			</disable>
+		</disables>
 		<command>LANG=zh_CN.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
@@ -150,6 +157,13 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_i18n_zh_CN_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15249</comment>
+				<impl>openj9</impl>
+				<version>19+</version>
+			</disable>
+		</disables>
 		<command>LANG=zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>

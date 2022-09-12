@@ -15,6 +15,18 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TestConfig/playlist.xsd">
 	<test>
 		<testCaseName>quarkus_test</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3807</comment>
+				<version>11</version>
+				<impl>hotspot</impl>
+			</disable>
+			<disable>
+				<comment>runtimes_backlog/issues/831</comment>
+				<version>11</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir quarkus --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir quarkus

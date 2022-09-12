@@ -27,10 +27,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,8 +40,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+
 import java.io.FileNotFoundException;
 
 public class JavaTestRunner {
@@ -66,8 +63,10 @@ public class JavaTestRunner {
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
 	private static String jtxFullPath;
+	private static String jtxDevFullPath;
+	private static String customJtx;
 	private static String kflFullPath;
-	private static String fipsJtxFullPath;
+	private static String testFlagJtxFullPath;
 	private static String krbConfFile;
 	private static String fileUrl;
 
@@ -97,6 +96,7 @@ public class JavaTestRunner {
 	private static String pathToJava;
 	private static String secPropsFile;
 	private static String testFlag;
+	private static String task;
 
 	private static HashMap<String, String> testArgs = new HashMap<String, String>();
 	private static String jvmOpts = ""; 
@@ -121,6 +121,8 @@ public class JavaTestRunner {
 	private static final String CONFIG = "config";
 	private static final String CONCURRENCY = "concurrency"; 
 	private static final String CONFIG_ALT_PATH = "configAltPath"; 
+	private static final String TASK = "task";
+	private static final String CUSTOM_JTX = "customJtx";
 
 	public static void main(String args[]) throws Exception {
 		ArrayList<String> essentialParameters = new ArrayList<String>(); 
@@ -136,6 +138,8 @@ public class JavaTestRunner {
 		essentialParameters.add(CONFIG);
 		essentialParameters.add(CONCURRENCY);
 		essentialParameters.add(CONFIG_ALT_PATH);
+		essentialParameters.add(TASK);
+		essentialParameters.add(CUSTOM_JTX);
 
 		for (String arg : args) {
 			if (arg.contains("=")) { 
@@ -168,6 +172,8 @@ public class JavaTestRunner {
 		
 		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts"); 
 		testFlag = System.getenv("TEST_FLAG");
+		task = testArgs.get(TASK);
+		customJtx = testArgs.get(CUSTOM_JTX);
 		
 		try { 
 			boolean jtbGenerated = false, testSuccedded = false, summaryGenerated = false;
@@ -238,9 +244,11 @@ public class JavaTestRunner {
 		if (platform.equals("solaris")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
-		jtiFile = testRoot + File.separator + "jck" + File.separator + "jtrunner" + File.separator + CONFIG + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 
+		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
+		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+		System.out.println("Using jti file "+ jtiFile);
+		
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
 		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
 		// A known failures list (.kfl) file is optional.
@@ -264,6 +272,27 @@ public class JavaTestRunner {
 			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
 			jtxFullPath = "";
 		}
+		
+		jtxDevFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-dev.jtx";
+		File jtxDevFile = new File(jtxDevFullPath);
+		
+		if (jtxDevFile.exists()) {
+			System.out.println("Using additional excludes list file " + jtxDevFullPath);
+		} else {
+			System.out.println("Unable to find additional excludes list file " + jtxDevFullPath);
+			jtxDevFullPath = "";
+		}
+		
+		if (customJtx == null) {
+			customJtx = "";
+		} else {
+			File customJtxFile = new File(customJtx);
+			if (customJtxFile.exists()) {
+				System.out.println("Using additional custom excludes list file " + customJtx);
+			} else {
+				System.out.println("Unable to find additional custom excludes list file " + customJtx);
+			}
+		}
 
 		// Look for a known failures list file
 		kflFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".kfl";
@@ -275,32 +304,35 @@ public class JavaTestRunner {
 			System.out.println("Unable to find known failures list file " + kflFullPath);
 			kflFullPath = "";
 		}
-		
-		fipsJtxFullPath = "";
-		if (testFlag != null && testFlag.equals("FIPS")) {
-			// Look for a known failures list file specific to FIPS testing
-			fipsJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-fips.jtx";
-			File fipsJtxFile = new File(fipsJtxFullPath);
-			
-			if (fipsJtxFile.exists()) {
-				System.out.println("Using FIPS specific failures list file " + fipsJtxFullPath);
-			} else {
-				System.out.println("Unable to find FIPS specific failures list file " + fipsJtxFullPath);
-				fipsJtxFullPath = "";
+
+		if (task == null || !task.equals("custom")) {
+			testFlagJtxFullPath = "";
+			if (testFlag != null) {
+				// Look for a known failures list file specific to TEST_FLAG testing
+				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
+				File testFlagJtxFile = new File(testFlagJtxFullPath);
+				
+				if (testFlagJtxFile.exists()) {
+					System.out.println("Using " + testFlag + " specific failures list file " + testFlagJtxFullPath);
+				} else {
+					System.out.println("Unable to find " + testFlag + " specific failures list file " + testFlagJtxFullPath);
+					testFlagJtxFullPath = "";
+				}
 			}
 		}
 
 		if (testSuite.equals("RUNTIME") && (tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api"))) {
 			if (!configAltPath.equals("NULL")) {
-				jckConfigLoc = configAltPath;
+				jckConfigLoc = configAltPath + File.separator + "default";
 			} else {
 				if (config.equals("NULL")) {
 					config = "default";	
 				}
-				String subdir = "config/" + config;
+				String subdir = "config" + File.separator + config;
 				jckConfigLoc = jckRoot + File.separator + subdir; 
 			}
 			
+			System.out.println("Reading config files from "+ jckConfigLoc);
 			File configFolder = new File(jckConfigLoc); 
 			if (!configFolder.exists()) {
 				System.out.println(testExecutionType + "Cannot locate the configuration directory containing the Kerberos and Http server settings here: " + jckConfigLoc + ". The requested tests include at least one of the tests which require these files.");
@@ -406,7 +438,14 @@ public class JavaTestRunner {
 			return false; 
 		}
 
-		fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + " " + fipsJtxFullPath + "\"" + ";\n";
+		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
+		// when running a test via jck_custom.
+		if (task == null || !task.equals("custom")) {  
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
+		} else {
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
+		}
+		
 		fileContent += "runTests" + ";\n";
 		fileContent += "writeReport -type xml " + reportDir + ";\n";
 
@@ -534,7 +573,7 @@ public class JavaTestRunner {
 			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 2" + ";\n";	// 2 base time limit equal 20 minutes
+			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
 			fileContent += keyword + ";\n";
 
 			if (platform.equals("win")) {
@@ -724,7 +763,7 @@ public class JavaTestRunner {
 			} 
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 1" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
+			fileContent += "timeoutfactor 4" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
 			fileContent += keyword + ";\n";
 
 			String cmdAsStringOrFile = "cmdAsString"; // Whether to reference cmd via cmdAsString or cmdAsFile
@@ -972,7 +1011,7 @@ public class JavaTestRunner {
 			
 			try {
 				jckRC = jck.exitValue();
-			} catch (java.lang.IllegalThreadStateException e) {
+			} catch (IllegalThreadStateException e) {
 				// If the 'jck' process "hangs" for some reasons, exitValue() will result in this exception.
 				// Attempt to forcibly terminate the process at that point.
 				jck.destroy();
@@ -1192,7 +1231,7 @@ public class JavaTestRunner {
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
 		
-		Matcher matcher = Pattern.compile("jck(\\d+)c?").matcher(jckVersion);
+		Matcher matcher = Pattern.compile("jck(\\d+)[bc]?").matcher(jckVersion);
 		if (matcher.matches()) {
 			// first group is going to be 8, 9, 10, 11, etc.
 			int jckVerNum = Integer.parseInt(matcher.group(1));
@@ -1340,7 +1379,7 @@ public class JavaTestRunner {
 	}
 	
 	private static int getJckVersionInt(String version) {
-		if (version.equals("8c")) {
+		if (version.equals("8c") || version.equals("8b")) {
 			return 8; 
 		} else {
 			return Integer.parseInt(version); 
