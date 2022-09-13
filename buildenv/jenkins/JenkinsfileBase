@@ -83,9 +83,8 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
-	// Temporarily only hyc DOCKER_REGISTRY is avaliable, will add these parameters into jenkins when more registries are available
-	env.DOCKER_REGISTRY_URL = env.BUILD_URL.contains('hyc') ? "sys-rt-docker-local.artifactory.swg-devops.com" : ""
-	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = env.BUILD_URL.contains('hyc') ? params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID : ""
+	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
+	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
