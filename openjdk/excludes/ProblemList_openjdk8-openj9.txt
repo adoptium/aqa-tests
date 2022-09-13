@@ -134,7 +134,7 @@ sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/ad
 # jdk_other
 
 javax/naming/InitialContext/NoApplet.java https://github.com/eclipse-openj9/openj9/issues/12638 macosx-all
-javax/rmi/ssl/SSLSocketParametersTest.sh https://github.com/eclipse-openj9/openj9/issues/12168 macosx-all,aix-all,windows-all
+javax/rmi/ssl/SSLSocketParametersTest.sh https://github.com/eclipse-openj9/openj9/issues/12168 generic-all
 
 ############################################################################
 
@@ -165,8 +165,6 @@ java/net/Socket/asyncClose/AsyncClose.java	https://github.com/eclipse-openj9/ope
 java/net/ipv6tests/B6521014.java https://github.com/adoptium/infrastructure/issues/1105 linux-all,macosx-all
 java/net/ipv6tests/TcpTest.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
 java/net/ipv6tests/UdpTest.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all,macosx-all
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java    https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/nio/channels/DatagramChannel/Promiscuous.java                  https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 sun/net/www/http/ChunkedOutputStream/checkError.java	https://github.com/adoptium/aqa-tests/issues/1506	windows-all,linux-all
 
 ############################################################################
@@ -194,6 +192,8 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse-openj9/
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/AsynchronousSocketChannel/CompletionHandlerRelease.java https://github.com/eclipse-openj9/openj9/issues/12167 aix-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.ibm.com/runtimes/backlog/issues/783	macosx-all,linux-s390x
+java/nio/channels/DatagramChannel/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699   linux-s390x
 java/nio/channels/DatagramChannel/SendToUnresolved.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/Selector/KeySets.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/Selector/RacyDeregister.java	https://bugs.openjdk.java.net/browse/JDK-8161083	aix-all
@@ -217,7 +217,7 @@ sun/nio/cs/TestStringCodingUTF8.java	https://github.com/eclipse-openj9/openj9/is
 
 java/rmi/activation/ActivateFailedException/activateFails/ActivateFails.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/checkActivateRef/CheckActivateRef.java	https://github.com/eclipse-openj9/openj9/issues/5049	macosx-all,windows-all
-java/rmi/activation/Activatable/checkAnnotations/CheckAnnotations.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all
+java/rmi/activation/Activatable/checkAnnotations/CheckAnnotations.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all,windows-all
 java/rmi/activation/Activatable/createPrivateActivable/CreatePrivateActivatable.java	https://github.com/eclipse-openj9/openj9/issues/5049	macosx-all
 java/rmi/activation/Activatable/downloadParameterClass/DownloadParameterClass.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/extLoadedImpl/ext.sh	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
@@ -229,6 +229,7 @@ java/rmi/activation/Activatable/restartLatecomer/RestartLatecomer.java	https://g
 java/rmi/activation/Activatable/restartService/RestartService.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/ActivationSystem/modifyDescriptor/ModifyDescriptor.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/CommandEnvironment/SetChildEnv.java		https://github.com/eclipse-openj9/openj9/issues/5138	macosx-all
+java/rmi/activation/rmidViaInheritedChannel/InheritedChannelNotServerSocket.java	https://github.ibm.com/runtimes/backlog/issues/622	windows-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/registry/readTest/readTest.sh		https://github.com/eclipse-openj9/openj9/issues/13259	windows-all
@@ -277,9 +278,15 @@ java/security/Signature/SignatureLength.java https://github.com/eclipse-openj9/o
 
 # jdk_security3
 
+
 sun/security/ec/TestEC.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
-sun/security/pkcs11/Secmod/TestNssDbSqlite.java	https://github.ibm.com/runtimes/backlog/issues/795	generic-all
+sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/pkcs11/fips/TestTLS12.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+sun/security/pkcs11/KeyStore/SecretKeysBasic.sh	https://github.com/eclipse-openj9/openj9/issues/15221	generic-all
+#sun/security/pkcs11/KeyStore/SecretKeysBasic.sh is also excluded for the issue https://bugs.openjdk.java.net/browse/JDK-8189603
+sun/security/pkcs11/Secmod/GetPrivateKey.java	https://github.com/eclipse-openj9/openj9/issues/15221	generic-all
+sun/security/pkcs11/Secmod/JksSetPrivateKey.java	https://github.com/eclipse-openj9/openj9/issues/15221	generic-all
+sun/security/pkcs11/Secmod/TestNssDbSqlite.java	https://github.ibm.com/runtimes/backlog/issues/795	generic-all
 sun/security/rsa/pss/SignatureTest2.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
 sun/security/rsa/pss/SignatureTestPSS.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
 sun/security/ssl/CipherSuite/SSL_NULL.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all

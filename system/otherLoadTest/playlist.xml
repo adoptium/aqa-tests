@@ -33,6 +33,14 @@
 	</test>
 	<test>
 		<testCaseName>MiniMix_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3819</comment>
+				<version>11+</version>
+				<impl>hotspot</impl>
+				<platform>ppc64_aix|s390x_linux|ppc64le_linux</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -53,6 +61,12 @@
 			<disable>
 				<comment>eclipse-openj9/openj9/issues/14165，https://github.com/adoptium/aqa-tests/issues/3230</comment>
 				<platform>x86-32_windows</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3819</comment>
+				<platform>ppc64_aix|ppc64le_linux</platform>
+				<impl>hotspot</impl>
+				<version>17+</version>
 			</disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -debug-generation -java-debug-args=$(Q)-Xmx3g -Xms3g$(Q) -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx3g -Xms3g$(Q); \
@@ -150,6 +164,14 @@
 	</test>
 	<test>
 		<testCaseName>ConcurrentLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3819</comment>
+				<version>11+</version>
+				<impl>hotspot</impl>
+				<platform>ppc64_aix|s390x_linux|ppc64le_linux</platform>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -270,6 +292,13 @@
 	</test>
 	<test>
 		<testCaseName>HCRLateAttachWorkload_previewEnabled</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15250</comment>
+				<impl>openj9</impl>
+				<version>19+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>

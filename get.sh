@@ -499,7 +499,7 @@ getFunctionalTestMaterial()
 		OPENJ9_BRANCH="-b $OPENJ9_BRANCH"
 	fi
 
-	executeCmdWithRetry "openj9" "git clone --depth 1 $OPENJ9_BRANCH $OPENJ9_REPO"
+	executeCmdWithRetry "openj9" "git clone --depth 1 --reference-if-able ${HOME}/openjdk_cache $OPENJ9_BRANCH $OPENJ9_REPO"
 	rt_code=$?
 	if [ $rt_code != 0 ]; then
 		echo "git clone error code: $rt_code"
@@ -702,6 +702,9 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 	if [[ "$PLATFORM" == *"zos"* ]]; then
 		echo "load ./testenv/testenv_zos.properties"
 		source ./testenv/testenv_zos.properties
+	elif [[ "$PLATFORM" == *"arm"* ]] && [[ "$JDK_VERSION" == "8" ]] ; then
+		echo "load ./testenv/testenv_arm32.properties"
+		source ./testenv/testenv_arm32.properties
 	else
 		echo "load ./testenv/testenv.properties"
 		source ./testenv/testenv.properties

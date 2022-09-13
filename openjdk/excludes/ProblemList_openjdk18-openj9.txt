@@ -27,8 +27,6 @@
 # jdk_lang
 
 java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
-#java/lang/Class/GetPackageBootLoaderChildLayer.java is also excluded for the issue https://github.com/adoptium/aqa-tests/issues/1267
-java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
 java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse-openj9/openj9/issues/5225	generic-all
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse-openj9/openj9/issues/6668	macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
@@ -66,6 +64,7 @@ java/lang/String/concat/WithSecurityManager.java	https://github.com/eclipse-open
 java/lang/String/EqualsIgnoreCase.java	https://github.com/eclipse-openj9/openj9/issues/6666	generic-all
 java/lang/String/StringRepeat.java	https://github.com/eclipse-openj9/openj9/issues/6667	generic-all
 java/lang/String/UnicodeCasingTest.java https://github.com/eclipse-openj9/openj9/issues/4597 linux-s390x
+java/lang/StringBuffer/HugeCapacity.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/StringBuilder/HugeCapacity.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/System/Logger/custom/CustomLoggerTest.java	https://github.com/eclipse-openj9/openj9/issues/6674	generic-all
 java/lang/System/Logger/default/DefaultLoggerTest.java	https://github.com/eclipse-openj9/openj9/issues/6674	generic-all
@@ -332,7 +331,51 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+
 ############################################################################
+
+# jdk_security3
+
+javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all,aix-all
+javax/net/ssl/ServerName/SSLEngineExplorerWithSrv.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all,aix-all
+javax/net/ssl/SSLEngine/LargePacket.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-s390x,aix-all,windows-all
+javax/net/ssl/SSLSocket/Tls13PacketSize.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+javax/net/ssl/TLSv11/TLSEnginesClosureTest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
+sun/security/ec/TestEC.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/mscapi/CastError.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/CngCipher.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/InteropWithSunRsaSign.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/KeyAlgorithms.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/KeyStoreEmptyCertChain.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/PublicKeyInterop.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/RSAEncryptDecrypt.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SetDupNameEntry.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/ShortRSAKeyWithinTLS.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignUsingNONEwithRSA.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignUsingSHA2withRSA.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignatureOffsets.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SignedObjectChain.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/SmallPrimeExponentP.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/mscapi/VeryLongAlias.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
+sun/security/pkcs11/Provider/MultipleLogins.sh	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+sun/security/provider/SecureRandom/AbstractDrbg/SpecTest.java	https://github.ibm.com/runtimes/backlog/issues/809	linux-aarch64
+sun/security/provider/SecureRandom/StrongSecureRandom.java	https://github.ibm.com/runtimes/backlog/issues/809	linux-aarch64
+sun/security/rsa/PrivateKeyEqualityTest.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/rsa/pss/SignatureTest2.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/rsa/pss/SignatureTestPSS.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
+sun/security/ssl/CipherSuite/DisabledCurve.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/CipherSuite/NamedGroupsWithCipherSuite.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/CipherSuite/SupportedGroups.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
+sun/security/tools/jarsigner/PreserveRawManifestEntryAndDigest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
+
+############################################################################
+
+# jdk_security4
+
+########################################################################################################################################################
 
 # jdk_sound
 
@@ -452,7 +495,7 @@ java/foreign/loaderLookup/TestLoaderLookup.java https://github.com/eclipse-openj
 java/foreign/TestHandshake.java https://github.com/eclipse-openj9/openj9/issues/14148 generic-all
 java/foreign/TestSegmentCopy.java https://github.com/eclipse-openj9/openj9/issues/14148 generic-all
 
-java/foreign/TestFunctionDescriptor.java https://github.com/eclipse-openj9/openj9/issues/14487 macosx-all
+java/foreign/TestFunctionDescriptor.java https://github.com/eclipse-openj9/openj9/issues/15579 generic-all
 
 java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
 

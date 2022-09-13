@@ -27,6 +27,7 @@ java/beans/PropertyEditor/TestFontClassJava.java	https://bugs.openjdk.java.net/b
 java/beans/PropertyEditor/TestFontClassNull.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/PropertyEditor/TestFontClassValue.java	https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
 java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/2848 macosx-all
+java/beans/Beans/TypoInBeanDescription.java https://github.com/adoptium/aqa-tests/issues/3841 aix-all
 ############################################################################
 
 # jdk_compiler
@@ -68,7 +69,9 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/adoptium/infrastructure/issues/1118	linux-aarch64
 jdk/modules/etc/DefaultModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 jdk/modules/incubator/ImageModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
-
+#java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
+java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
+java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
 ############################################################################
 
 # jdk_management
@@ -76,10 +79,17 @@ jdk/modules/incubator/ImageModules.java	https://github.com/adoptium/aqa-tests/is
 sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
-com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-x64,linux-s390x,linux-ppc64le,linux-arm
-
+com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-all
+# alpine-linux https://github.com/adoptium/aqa-tests/issues/3238
+sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://github.com/adoptium/aqa-tests/issues/3238 linux-all
 ############################################################################
 
+# jdk_security3
+javax/net/ssl/SSLEngine/LargePacket.java https://bugs.openjdk.org/browse/JDK-8227651 generic-all
+javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all,macosx-all
+sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aqa-tests/issues/3811 windows-x86
+
+############################################################################
 # jdk_security4
 sun/security/krb5/auto/ReplayCacheTestProc.java https://bugs.openjdk.java.net/browse/JDK-8258855 linux-all
 sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK-8258855 linux-all
@@ -95,8 +105,9 @@ sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK
 ############################################################################
 
 # jdk_other
-com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
-com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 windows-all
+#com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
+com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
+com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 ############################################################################
 
 # jdk_net
@@ -107,10 +118,11 @@ java/net/Inet6Address/B6206527.java	https://github.com/adoptium/aqa-tests/issues
 java/net/InetAddress/BadDottedIPAddress.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/InetAddress/CachedUnknownHostName.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/InetAddress/IPv4Formats.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
-java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
+#Multicase failures on aix https://github.com/adoptium/aqa-tests/issues/2246
+java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
+java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
 java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
+java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all
 java/net/SocketPermission/SocketPermissionCollection.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/SocketPermission/Wildcard.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
 java/net/Socks/SocksV4Test.java	https://github.com/adoptium/aqa-tests/issues/593	linux-all
@@ -121,7 +133,6 @@ sun/net/www/protocol/file/DirPermissionDenied.java https://github.com/adoptium/a
 com/sun/net/httpserver/bugs/B6361557.java	https://github.com/adoptium/aqa-tests/issues/1272	windows-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
-
 ############################################################################
 
 # jdk_io
@@ -138,6 +149,7 @@ com/sun/jdi/OnJcmdTest.java	https://github.com/adoptium/aqa-tests/issues/2837	wi
 
 jdk/jfr/jvm/TestJFRIntrinsic.java https://bugs.openjdk.java.net/browse/JDK-8239423 linux-arm
 jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-8247203 linux-arm,linux-ppc64le
+jdk/jfr/api/recording/state/TestStateInvalid.java https://github.com/adoptium/aqa-tests/issues/3836 windows-x86
 ############################################################################
 
 # jdk_nio
@@ -156,8 +168,9 @@ jdk/nio/zipfs/ZipFSTester.java	https://github.com/adoptium/aqa-tests/issues/602 
 java/net/SocketPermission/SocketPermissionTest.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
 java/nio/channels/DatagramChannel/BasicMulticastTests.java	https://bugs.openjdk.java.net/browse/JDK-8269919 aix-all
 java/nio/file/DirectoryStream/SecureDS.java https://github.com/adoptium/aqa-tests/issues/3635 linux-arm
-java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
-java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-x64
+java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
+java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
+java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
 ############################################################################ 
 
 # jdk_rmi
@@ -179,7 +192,7 @@ sun/security/ssl/SSLSessionImpl/NoInvalidateSocketException.java	https://github.
 sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/util/RegisteredDomain/ParseNames.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
 sun/security/util/RegisteredDomain/Versions.java	https://github.com/adoptium/aqa-tests/issues/2123	aix-all
-
+sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.com/adoptium/aqa-tests/issues/2123	linux-all
 ############################################################################
 
 # jdk_security_infra
@@ -187,6 +200,9 @@ sun/security/util/RegisteredDomain/Versions.java	https://github.com/adoptium/aqa
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/DTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
+security/infra/java/security/cert/CertPathValidator/certification/HaricaCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 ############################################################################
 
 # jdk_sound
@@ -211,7 +227,8 @@ java/time/tck/java/time/format/TCKDateTimeFormatterBuilder.java https://github.c
 sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
-
+tools/jlink/plugins/CompressorPluginTest.java https://bugs.openjdk.org/browse/JDK-8247407 generic-all
+tools/launcher/Test7029048.java#id1 https://bugs.openjdk.org/browse/JDK-8217438 aix-all
 ############################################################################
 
 # jdk_jdi
@@ -304,6 +321,11 @@ compiler/graalunit/UtilTest.java https://github.com/adoptium/aqa-tests/issues/28
 compiler/c2/Test8202414.java https://bugs.openjdk.java.net/browse/JDK-8251152 linux-arm
 compiler/loopstripmining/TestPinnedUseInOuterLSMUnusedBySfpt.java https://bugs.openjdk.java.net/browse/JDK-8252473 windows-x86
 compiler/loopopts/TestSkeletonPredicateNegation.java https://bugs.openjdk.java.net/browse/JDK-8279032 windows-x86
+compiler/rtm/locking/TestRTMAbortRatio.java https://bugs.openjdk.org/browse/JDK-8183263 aix-all
+compiler/c2/TestModDivTopInput.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/FillArrayWithUnsafe.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/TestPredicateInputBelowLoopPredicate.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/loopopts/LoopRotateBadNodeBudget.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 ############################################################################
 
 # jdk_imageio

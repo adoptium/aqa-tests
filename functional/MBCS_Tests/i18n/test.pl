@@ -20,9 +20,17 @@ use FindBin;
 
 $OS=$^O; #OS name
 chomp($OS);
-$SYSENC=`locale charmap`;
+undef $ENV{'LC_ALL'};
+$SYSENC=`locale charmap 2>&1`;
+$lang = $ENV{'LANG'};
+if (index($SYSENC," ") > -1) {
+    for($i = 0; $i < 3; $i+=1) {
+        ok(1 == 1,"skip");
+    }
+    print "SKIPPED! $lang is not supported.\n";
+    exit(0);
+}
 chomp($SYSENC);
-$lang = $ENV{LANG};
 $i = index($lang,".");
 if ($i == -1) {
     $i = length($lang);

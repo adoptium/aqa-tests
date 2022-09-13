@@ -19,12 +19,12 @@ jobs:
       id: workflow_run_info
     # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
     - name: Checkout current repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: 'main'
     # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
     - name: Checkout main TKG repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: 'adoptium/TKG.git'
         ref: 'master'
@@ -47,7 +47,7 @@ jobs:
       id: output_log
     - name: Create error comment
       if: failure()
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -69,7 +69,7 @@ jobs:
       run: echo ::set-output name=failed::true
       id: failure_report
     - name: Create success comment
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -129,7 +129,7 @@ jobs:
         sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
-    - uses: actions/github-script@v3
+    - uses: actions/github-script@v6
       id: get-pr
       with:
         script: |
@@ -166,7 +166,7 @@ jobs:
     if: failure() && !needs.parseComment.outputs.failed
     steps:
     - name: Create comment
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -187,7 +187,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -208,7 +208,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 # Prerequisites:
 
 - ant 1.9.6 or above with ant-contrib (1.0b2 or above)
+- git 2.11.4 or above
 - make 4.1 or above
 - perl 5.10.1 or above\*\*
 - curl 7.20.0 or above (needs -J/--remote-header-name support)

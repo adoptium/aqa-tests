@@ -27,10 +27,6 @@ cd /aqa-tests
 cd /aqa-tests/TKG
 
 set -e
-
-echo "Building functional test material..."
-make compile
-
-echo "Generating make files and running the functional tests"
+echo "Generating make files and running the target tests"
 make $1
 set +e

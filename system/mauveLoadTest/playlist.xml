@@ -99,6 +99,13 @@
 	</test>
 	<test>
 		<testCaseName>MauveMultiThrdLoad_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15253</comment>
+				<version>19+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>

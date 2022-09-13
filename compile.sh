@@ -13,6 +13,9 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
     if [[ "$PLATFORM" == *"zos"* ]]; then
         testenv_file="./testenv/testenv_zos.properties"
     fi
+    if [[ "$PLATFORM" == *"arm"* ]] && [[ "$JDK_VERSION" == "8" ]]; then
+        testenv_file="./testenv/testenv_arm32.properties"
+    fi
     while read line; do
         export $line
     done <$testenv_file
