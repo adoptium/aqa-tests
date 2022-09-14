@@ -41,7 +41,15 @@
 					<property name="jtregTar" value="jtreg_6_1"/>
 				</then>
 				<else>
-					<property name="jtregTar" value="jtreg_6_1_1"/>
+					<if>
+						<matches pattern="^[1][89]" string="${JDK_VERSION}"/>
+						<then>
+							<property name="jtregTar" value="jtreg_6_1_1"/>
+						</then>
+						<else>
+							<property name="jtregTar" value="jtreg_7_1"/>
+						</else>
+					</if>
 				</else>
 			</if>
 		</else>
@@ -74,7 +82,7 @@
 					<available file="custom_jtreg.tar.gz"/>
 					<then>
 						<echo message="Using custom_jtreg.tar.gz"/>
-							<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
+						<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
 					</then>
 				</if>
 			</then>
