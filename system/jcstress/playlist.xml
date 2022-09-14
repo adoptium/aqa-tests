@@ -13,9 +13,10 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+	<include>../systemtest.mk</include>
 	<test>
 		<testCaseName>jcstress_SampleTestBench</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-latest.jar$(Q) -jvmArgs $(Q)$(JVM_OPTIONS) -t SampleTestBench$(Q); \
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-latest.jar$(Q) $(APPLICATION_OPTIONS) -t SampleTestBench; \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
