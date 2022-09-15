@@ -90,7 +90,7 @@ git push origin env_var
 
 #### Method 2: Put it in the .mk file of the test that you want to run 
 
-This method is to be used when the objective is to set that environment variable for all test targets in the group being run. For this example, we will be looking at the systemtest.mk file. 
+This method is to be used when the objective is to set that environment variable for all test targets in the group being run. For this example, we will be looking at the system.mk file. 
 
 1.	Open the aqa-tests/system folder
 
