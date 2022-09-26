@@ -636,10 +636,10 @@ testJavaVersion()
 		# Search javac as java may not be unique
 		if [[ "$CODE_COVERAGE" == "true" ]]; then
 			echo "${TEST_JDK_HOME}/build/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
-			javac_path=`find ${TEST_JDK_HOME} \( -path "*/images/jdk/bin/javac" -o -path "*/images/jdk/bin/javac.exe" \)`
+			javac_path=`find ${TEST_JDK_HOME} \( -name javac -o -name javac.exe \) | egrep '/images/jdk/bin/javac$|/images/jdk/bin/javac.exe$'`
 		else
 			echo "${TEST_JDK_HOME}/bin/java does not exist! Searching under TEST_JDK_HOME: ${TEST_JDK_HOME}..."
-			javac_path=`find ${TEST_JDK_HOME} \( -path "*/bin/javac" -o -path "*/bin/javac.exe" \)`
+			javac_path=`find ${TEST_JDK_HOME} \( -name javac -o -name javac.exe \) | egrep 'bin/javac$|bin/javac.exe$'`
 		fi
 		if [ "$javac_path" != "" ]; then
 			echo "javac_path: ${javac_path}"

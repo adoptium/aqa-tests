@@ -29,7 +29,7 @@
 		<mkdir dir="${DEST}" />
 	</target>
 	
-	<target name="dist" depends="init" description="generate the distribution">
+	<target name="dist" depends="init, getDependentLibs" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${SRC}"/>
 		</copy>
