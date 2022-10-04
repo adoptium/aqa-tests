@@ -12,9 +12,9 @@ you can simply run `docker run -it -v <path to test jdk>:/java -v <path to test 
 We assume you have already cloned this repo to your local machine.
 
 1. Execute `./get.sh -t .` in the test root folder to get all dependencies.
-2. Build the docker image: `docker build -t openjdk-test .`
+2. Build the docker image: `docker build -t aqa-test .`
 3. If you want to get into the Docker image to manually run tests, the command is: 
-   `docker run -it -v <path_to_JDK_root>:/java -v <path_to_openjdk_test_root_dir>:/test openjdk-test /bin/bash` , then you could follow the README.md in test root to run tests manually.
+   `docker run -it -v <path_to_JDK_root>:/java -v <path_to_aqa_test_root_dir>:/test aqa-test /bin/bash` , then you could follow the README.md in test root to run tests manually.
 
    If you want to automatically execute tests, the command is:
-   `docker run -it -v <path_to_JDK_root>:/java -v <path_to_openjdk_test_root_dir>:/test openjdk-test`
+   `docker run -it -v <path_to_JDK_root>:/java -v <path_to_aqa_test_root_dir>:/test aqa-test`
