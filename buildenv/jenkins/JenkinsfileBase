@@ -669,7 +669,50 @@ def runTest( ) {
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
 		}
+
+		checkTestResults()
 	}
+}
+
+def checkTestResults() {
+	def results = [:]
+	def summary = null
+
+	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)   (EXECUTED: \\d+)   (PASSED: \\d+)   (FAILED: \\d+)   (DISABLED: \\d+)   (SKIPPED: \\d+).*")
+	if (!matcher?.matches()) {
+		currentBuild.result = 'FAILURE'
+		echo 'Could not find test result, set build result to FAILURE.'
+		summary = manager.createSummary("error.svg")
+		summary.appendText("TEST BUILD FAILURE!", false)
+		return
+	}
+
+	for (int i = 1; i < matcher.groupCount(); i++) {
+		def matchVals = matcher.group(i).split(": ")
+		results[matchVals[0]] = matchVals[1]
+	}
+
+	if (results["TOTAL"].equals("0")) {
+		currentBuild.result = 'FAILURE'
+		echo 'No test ran, set build result to FAILURE.'
+		summary = manager.createSummary("folder-delete.svg")
+		summary.appendText("NO TEST FOUND!", false)
+		return
+	}
+	
+	if (!results["FAILED"].equals("0")) {
+		currentBuild.result = 'UNSTABLE'
+		echo 'There were test failures, set build result to UNSTABLE.'
+		summary = manager.createSummary("warning.svg")
+	} else {
+		summary = manager.createSummary("accept.svg")
+	}
+
+	summary.appendText("TEST TARGETS SUMMARY:<ul>", false)
+	results.each {
+		summary.appendText("<li><b>$it.key</b> : $it.value</li>", false)
+	}
+	summary.appendText("</ul>", false)
 }
 
 def post(output_name) {
