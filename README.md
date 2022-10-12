@@ -23,7 +23,26 @@ For nightly and release builds, there are test jobs running as part of the Adopt
 
 The directory structure in this aqa-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The provided links jump to test jobs in Jenkins (ci.adoptopenjdk.net).
 
-![overview of tests](doc/diagrams/overviewOfAdoptTests.svg)
+```mermaid
+graph TD
+    A[openjdk-tests] -->B[make _perf]
+    A[openjdk-tests] -->C[make _openjdk]
+    A[openjdk-tests] -->D[make _system]
+    A[openjdk-tests] -->E[make _functional]
+    A[openjdk-tests] -->F[make _jck]
+    A[openjdk-tests] -->G[make _external]
+    B[make _perf] -->|perf|H[performance]
+    H[performance] -->|_sanity.perf|I[.....]
+    H[performance] -->|_extended.perf|J[..]
+    C[make _openjdk] -->|openjdk|K[openjdk]
+    D[make _system] -->|system|L[system]
+    E[make _functional] -->|functional|M[functional]
+    F[make _jck] -->|jck|N[jck]
+    G[make _external] -->|external|O[external]
+    O[external] -->|_sanity.external|P[...]
+    O[external] -->|_extended.external|Q[....] 
+    
+```
 
 --- 
 
@@ -39,13 +58,44 @@ Tests from the adoptium/aqa-systemtest repo
 
 ##### [external](https://ci.adoptopenjdk.net/view/Test_external/) tests - 3rd party application tests
 Test suites from a variety of applications, along with microprofile TCKs, run in Docker containers
-![external tests](doc/diagrams/externaltests.svg)
+
+```mermaid
+graph TD
+ A[openjdk-tests] -->|make _external| B[external]
+    B --> C[derby]
+    B --> D[elasticsearch]
+    B --> E[example]
+    B --> F[jenkins]
+    B --> G[kafka]
+    B --> H[lucene-solr]
+    B -->|_sanity.external|I[scala]
+    B --> J[tomcat]
+    B --> K[wildfly]
+    B --> L[openliberty]
+    B --> M[geode]
+    B --> N[hbase]
+    B --> O[akka]
+    B --> P[logstash]
+    B --> Q[openliberty-mp-tck]
+    B -->|_extended.external|R[payara-mp-tck]
+    B --> S[thorntail-mp-tck]
+   
+```
 
 --- 
 
 ##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests - Performance benchmark suites 
 Performance benchmark tests (both full suites and microbenches) from different open-source projects such as Acme-Air and adoptium/bumblebench
-![perf tests](doc/diagrams/perftests.svg)
+
+```mermaid
+graph TD
+ A[openjdk-tests] -->|make _perf| B[performance]
+    B -->|_sanity.perf| C[bbench]
+    B --> D[idle_micro]
+    B --> E[odm]
+    B -->|_extended.perf| F[liberty_dt]
+    B --> G[acme_air]
+   ```
 
 --- 
 
