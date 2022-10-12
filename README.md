@@ -25,22 +25,22 @@ The directory structure in this aqa-tests repository is meant to reflect the dif
 
 ```mermaid
 graph TD
- A[openjdk-tests] --> B|make _perf| 
-    A --> C |make _openjdk| 
-    A --> D |make _system|
-    A --> E |make _functional|
-    A --> F |make _jck|
-    A --> G|make _external|
-    B --> H[performance]
-    H --> N|_sanity.perf|[.....]
-    H --> O|_extended.perf|[..]
-    C --> I[openjdk]
-    D --> J[system]
-    E --> K[functional]
-    F --> L[jck]
-    G --> M[external]
-    M --> P|_sanity.external|[...]
-    M -->Q|_extended.external|[....]
+    A[openjdk-tests] -->B[make _perf]
+    A[openjdk-tests] -->C[make _openjdk]
+    A[openjdk-tests] -->D[make _system]
+    A[openjdk-tests] -->E[make _functional]
+    A[openjdk-tests] -->F[make _jck]
+    A[openjdk-tests] -->G[make _external]
+    B[make _perf] -->|perf|H[performance]
+    H[performance] -->|_sanity.perf|I[.....]
+    H[performance] -->|_extended.perf|J[..]
+    C[make _openjdk] -->|openjdk|K[openjdk]
+    D[make _system] -->|system|L[system]
+    E[make _functional] -->|functional|M[functional]
+    F[make _jck] -->|jck|N[jck]
+    G[make _external] -->|external|O[external]
+    O[external] -->|_sanity.external|P[...]
+    O[external] -->|_extended.external|Q[....] 
     
 ```
 
