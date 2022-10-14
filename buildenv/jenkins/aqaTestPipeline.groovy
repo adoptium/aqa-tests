@@ -17,6 +17,10 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def JOBS = [:]
 
+def suffix = ""
+if (TEST_FLAG) {
+    suffix = "_" + TEST_FLAG.toLowerCase().trim()
+}
 JDK_VERSIONS.each { JDK_VERSION ->
     PLATFORMS.each { PLATFORM ->
         String[] tokens = PLATFORM.split('_')
@@ -56,7 +60,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
         echo "download_url: ${download_url}"
 
         TARGETS.each { TARGET ->
-            def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}"
+            def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
 
             def keep_reportdir = false
