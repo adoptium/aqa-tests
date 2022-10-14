@@ -993,6 +993,7 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
 			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
 		} else {
+			buildInfo.name = "sys-rt/" + buildInfo.name
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ?: -1
 			def numDays = 20
 			if (params.ARTIFACTORY_NUM_DAYS) {
