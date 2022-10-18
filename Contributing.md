@@ -36,7 +36,7 @@ Contributor Agreement (ECA) on file.
 For more information, please see the Eclipse Committer Handbook and Adoptium documentation:
 https://www.eclipse.org/projects/handbook/#resources-commit
 
-https://github.com/adoptium/documentation/blob/main/documentation-documentation/eca-sign-off.adoc
+https://adoptium.net/docs/eca-sign-off
 
 ## Submitting a contribution to AQAvit
 
