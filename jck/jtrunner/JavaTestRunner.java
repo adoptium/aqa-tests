@@ -372,8 +372,8 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
-			// Requires SHA1 enabling for jar signers in jdk-18+
+		if ( getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+			// Requires SHA1 enabling for jar signers in jdk-11+
 			secPropsFile = resultDir + File.separator + "security.properties";
 			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024";
