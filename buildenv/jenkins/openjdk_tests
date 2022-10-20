@@ -276,9 +276,6 @@ timestamps{
 
 def runTest() {
     try {
-        timeout(time: 1, unit: 'HOURS') {
-            cleanWs disableDeferredWipeout: true, deleteDirs: true
-        }
         def retry_count = 0
         def sleep_time = 180
         if (params.PLATFORM.contains('zos')) {
@@ -300,6 +297,9 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                timeout(time: 1, unit: 'HOURS') {
+                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                }
                 sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
             }
         } else {
@@ -313,6 +313,9 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                timeout(time: 1, unit: 'HOURS') {
+                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                }
                 checkout scm: [$class: 'GitSCM',
                     branches: [[name: "${scm.branches[0].name}"]],
                     extensions: [
