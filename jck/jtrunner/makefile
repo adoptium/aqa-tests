@@ -122,6 +122,7 @@ ifneq (,$(findstring hp,$(OS)))
 	JCKJNI=$(OFLAGTEMP) $(FULLOUTDIR)$@ jckjni.o
 	#JCKATR=$(OFLAGTEMP) $(FULLOUTDIR)$@ jckatr.o
 	JCKJVMTI=$(OFLAGTEMP) $(FULLOUTDIR)$@ jckjvmti.o
+	JCKFOREIGN=$(OFLAGTEMP) $(FULLOUTDIR)$@ jckforeign.o
 	SYSTEMINFOUSENATIVE=$(OFLAGTEMP) $@ com_sun_management_mbeans_loading_SystemInfoUseNativeLib.o
 	GETLIBIDFROMNATIVE=$(OFLAGTEMP) $@ com_sun_management_mbeans_loading_GetLibIdFromNativeLib.o
 	RANDOMGEN=$(OFLAGTEMP) $(FULLOUTDIR)$@ com_sun_management_mbeans_loading_RandomGen.o
@@ -139,7 +140,7 @@ COPYDIR=cp -r
 AND_IF_SUCCESSFUL=&&
 export AND_IF_SUCCESSFUL
 
-VPATH=$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D):$(SRCDIR)$(D)src$(D)share$(D)lib$(D)atr$(D):$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jvmti$(D):$(SRCDIR)$(D)tests$(D)api$(D)javax_management$(D)loading$(D)data$(D)archives$(D)src$(D)C$(D):$(SRCDIR)$(D)src
+VPATH=$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D):$(SRCDIR)$(D)src$(D)share$(D)lib$(D)atr$(D):$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jvmti$(D):$(SRCDIR)$(D)tests$(D)api$(D)javax_management$(D)loading$(D)data$(D)archives$(D)src$(D)C$(D):$(SRCDIR)$(D)src:$(SRCDIR)$(D)tests$(D)api$(D)java_lang$(D)foreign$(D)SymbolLookup
 JMX_DATA_PATH=$(SRCDIR)$(D)tests$(D)api$(D)javax_management$(D)loading$(D)data
 JNI_INCLUDE_PATH=$(SRCDIR)$(D)src$(D)share$(D)lib$(D)jni$(D)include
 SOLARIS_PATH=$(JNI_INCLUDE_PATH)$(D)solaris
@@ -228,12 +229,17 @@ ifeq ($(OS),win)
 	
 	JCKJNI=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)jckjni.obj
 	JCKJVMTI=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)jckjvmti.obj
+	JCKFOREIGN=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)SymbolLookup.obj
 	SYSTEMINFOUSENATIVE=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)com_sun_management_mbeans_loading_SystemInfoUseNativeLib.obj
 	GETLIBIDFROMNATIVE=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)com_sun_management_mbeans_loading_GetLibIdFromNativeLib.obj
 	RANDOMGEN=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)com_sun_management_mbeans_loading_RandomGen.obj
 endif
 
-OBJS=$(LIBPREF)jckjni.$(LIBEXT)  $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
+ifeq ($(shell test $(JDK_VERSION) -gt 18; echo $$?),0)
+	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)jckforeign.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
+else
+	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
+endif
 
 CFLAGS := $(CFLAGS) -I"$(SRCDIR)" -I"$(JNI_INCLUDE_PATH)" -I"$(JVMTI_INCLUDE_PATH)"
 .SUFFIXES:.c
@@ -291,7 +297,11 @@ $(LIBPREF)jckjni.$(LIBEXT): jckjni.c $(EXTRAJCKJNIDEP)
 $(LIBPREF)jckjvmti.$(LIBEXT):jckjvmti.c
 	cd $(FULLOUTDIR) && $(CC) $(CFLAGS) $(LDFLAGS) $< $(OFLAG)$(FULLOUTDIR)$(VAR)
 	$(JCKJVMTI)
-	
+
+$(LIBPREF)jckforeign.$(LIBEXT):SymbolLookup.c
+	cd $(FULLOUTDIR) && $(CC) $(CFLAGS) $(LDFLAGS) $< $(OFLAG)$(FULLOUTDIR)$(VAR)
+	$(JCKFOREIGN)
+
 $(LIBPREF)systemInfo.$(LIBEXT):com_sun_management_mbeans_loading_SystemInfoUseNativeLib.c
 	cd $(FULLOUTDIR) && $(CC) $(CFLAGS) $(LDFLAGS) $< $(OFLAG)$(VAR)
 	$(SYSTEMINFOUSENATIVE)

@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 # OpenJDK regression tests
 This group of tests are the set that comes from the openjdk project, often referred to as jtreg tests, as the jtreg framework is the underlying executable used to execute them.  The entire set of openjdk regression tests is quite large.  For our nightly builds, we run only a subset of these tests (typically, those suites of tests that we 'tag' as sanity in the [playlist.xml](https://github.com/adoptium/aqa-tests/blob/master/openjdk/playlist.xml) file).  For release builds, we intend to run the suites tagged as sanity and extended in the playlist.  
 
-For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html).  
+For more details on how the underlying jtreg harness works, you can refer to the ["How to Use the JTreg harness" guide](https://adoptopenjdk.gitbooks.io/adoptopenjdk-getting-started-kit/en/intermediate-steps/how_to_use_jtreg_-_java_regression_test_harness.html). For advanced users, you can refer to the [jtreg doc](https://openjdk.org/jtreg/command-help.html). 
 
 ## Running OpenJDK tests locally
 While you can directly use the jtreg test harness to run these tests locally, we have also integrated them into our AQA test suite with TKG (TestKitGen) so that they can be run following the same pattern as any other AQA test:
 
 0. Ensure your test machine is set up with [test prereqs](https://github.com/eclipse-openj9/openj9/blob/master/test/docs/Prerequisites.md).  For openjdk tests, you do not need Docker installed.
 
-1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptopenjdk.net](https://adoptopenjdk.net/)).
+1. Download/unpack the SDK you want to your test machine (you can download them from our website: [adoptium.net](adoptium.net).
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>` 
 1. `git clone https://github.com/adoptium/aqa-tests.git` 
 1. `cd aqa-tests`

@@ -27,11 +27,15 @@ test=derby
 testtarget=""
 platform="linux_x86-64"
 portable="false"
+job_name=""
+build_number=""
 node_name=""
 node_labels=""
 node_label_micro_architecture=""
+criu_micro_architecture_list=""
 docker_registry_required="false"
 docker_registry_url=""
+docker_registry_dir=""
 reportdst="false"
 reportsrc="false"
 docker_args=""
@@ -41,7 +45,7 @@ imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--criu_micro_architecture_list CRIU_MICRO_ARCHITECTURE_LIST] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
 supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
@@ -133,6 +137,19 @@ parseCommandLineArgs() {
 
 			"--docker_registry_url" )
 				docker_registry_url="$1"; shift;;
+
+			"--docker_registry_dir" )
+				docker_registry_dir="$1"; shift;
+				docker_registry_dir=$(echo "$docker_registry_dir" | tr '[:upper:]' '[:lower:]')  # docker registry link must be lowercase
+				IFS=':' read -r -a dir_array <<< "$docker_registry_dir"
+				job_name=${dir_array[0]}
+				build_number=${dir_array[1]};;
+
+			"--criu_default_image_job_name" )
+				criu_default_image_job_name="$1"; shift;;
+
+			"--criu_micro_architecture_list" )
+				criu_micro_architecture_list="$1"; shift;;
 
 			"--test_root" )
 				test_root="$1"; shift;;
@@ -243,16 +260,25 @@ if [ $command_type == "run" ]; then
 			if [[ $docker_registry_url ]]; then
 				echo "Private Docker Registry login starts:"
 				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
-				
-				restore_ready_checkpoint_image="criu-restore-ready-with-jdk"
-				restore_ready_checkpoint_tag="${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}"
-				tagged_restore_ready_checkpoint_image="${docker_registry_url}/${restore_ready_checkpoint_image}:${restore_ready_checkpoint_tag}"
-				echo "tagged_restore_ready_checkpoint_image is $tagged_restore_ready_checkpoint_image"
-				docker commit --change='ENTRYPOINT ["/bin/bash", "/test_restore.sh"]' $test-test $tagged_restore_ready_checkpoint_image
 
-				echo "Pushing docker image ${restore_ready_checkpoint_image}:${restore_ready_checkpoint_tag} to docker registry"
-				docker push $tagged_restore_ready_checkpoint_image
+				restore_ready_checkpoint_image_folder="${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}"
+				tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
+				tagged_restore_ready_checkpoint_image_latest="${restore_ready_checkpoint_image_folder}:latest"
 
+				# Push a docker image with build_num for records
+				echo "tagged_restore_ready_checkpoint_image_num is $tagged_restore_ready_checkpoint_image_num"
+				docker commit --change='ENTRYPOINT ["/bin/bash", "/test_restore.sh"]' $test-test $tagged_restore_ready_checkpoint_image_num
+				echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_num}"
+				docker push $tagged_restore_ready_checkpoint_image_num
+
+				# Push another copy as the nightly default latest
+				echo "Change Tag from build_number to latest"
+				docker tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest
+
+				if [[ "$job_name" == *"$criu_default_image_job_name"* ]]; then
+					echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_latest} to docker registry"
+					docker push $tagged_restore_ready_checkpoint_image_latest
+				fi
 				docker logout $docker_registry_url
 			else
 				echo "Docker Registry is not available on this Jenkins"
@@ -270,24 +296,40 @@ if [ $command_type == "run" ]; then
 fi
 
 if [ $command_type == "load" ]; then
-	# TO-DO: Use a different micro architecture (e.g. skylake vs broadwell) to test when machine label completed.
 	if [[ $docker_registry_required != "false" ]]; then
 		if [[ $docker_registry_url ]]; then
 			echo "Private Docker Registry login starts:"
 			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
 			
-			current_micro_architecture=$node_label_micro_architecture
-			docker pull $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
-			docker image ls
-			mount_options=""
-			if [[ $mount_jdk != "false" ]]; then
-				echo "Mounting JDK"
-				mount_options="$mountV"
+			mount_options="$mountV"
+			if [[ $mount_jdk == "false" ]]; then
+				echo "JDK inside the docker image is used for testing"
+				mount_options=""
 			fi
-			# restore
-			echo "docker run --privileged $mount_options --name restore-test --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}"
-			docker run --privileged $mount_options --name restore-test --rm $docker_registry_url/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${current_micro_architecture}
 
+			restore_docker_image_name_list=()
+			if [ ! -z "${docker_registry_dir}" ]; then
+				echo "Testing image from specified DOCKER_REGISTRY_DIR"
+				restore_docker_image_name_list+=("${docker_registry_url}/${docker_registry_dir}")
+			else
+				echo "Testing images from nightly builds"
+				image_micro_architecture_list=($criu_micro_architecture_list)
+				for image_micro_architecture in ${image_micro_architecture_list[@]}
+				do
+					restore_docker_image_name_list+=("${docker_registry_url}/$criu_default_image_job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_micro_architecture}:latest")
+				done
+			fi
+			
+			echo "The host machine micro-architecture is ${node_label_micro_architecture}"
+			for restore_docker_image_name in ${restore_docker_image_name_list[@]}
+			do
+				echo "Pulling image $restore_docker_image_name"
+				docker pull $restore_docker_image_name
+				# restore
+				echo "docker run --privileged $mount_options --name restore-test --rm $restore_docker_image_name"
+				docker run --privileged $mount_options --name restore-test --rm $restore_docker_image_name
+			done
+			
 			docker logout $docker_registry_url
 		else
 			echo "Docker Registry is not available on this Jenkins"
@@ -318,5 +360,6 @@ if [ $command_type == "clean" ]; then
 	fi
 	docker rm -f $test-test; docker rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	docker rm -f restore-test
-	docker rmi -f ${docker_registry_url}/criu-restore-ready-with-jdk:${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}
+	docker rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
+	docker rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
 fi

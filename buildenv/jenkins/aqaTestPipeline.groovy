@@ -4,7 +4,7 @@ def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*");
 def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*");
 def TARGETS = params.TARGETS.trim().split("\\s*,\\s*");
 
-def USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES ? params.USE_TESTENV_PROPERTIES : true
+def USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES ? params.USE_TESTENV_PROPERTIES : false
 def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 def NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES : 3
 def SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
@@ -17,6 +17,10 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def JOBS = [:]
 
+def suffix = ""
+if (TEST_FLAG) {
+    suffix = "_" + TEST_FLAG.toLowerCase().trim()
+}
 JDK_VERSIONS.each { JDK_VERSION ->
     PLATFORMS.each { PLATFORM ->
         String[] tokens = PLATFORM.split('_')
@@ -56,7 +60,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
         echo "download_url: ${download_url}"
 
         TARGETS.each { TARGET ->
-            def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}"
+            def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
 
             def keep_reportdir = false

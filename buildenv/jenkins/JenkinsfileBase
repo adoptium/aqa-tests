@@ -68,7 +68,6 @@ def setupEnv() {
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
-	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
@@ -79,13 +78,12 @@ def setupEnv() {
 	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
-	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
-	// Temporarily only hyc DOCKER_REGISTRY is avaliable, will add these parameters into jenkins when more registries are available
-	env.DOCKER_REGISTRY_URL = env.BUILD_URL.contains('hyc') ? "sys-rt-docker-local.artifactory.swg-devops.com" : ""
-	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = env.BUILD_URL.contains('hyc') ? params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID : ""
+	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
+	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
+	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
@@ -439,19 +437,15 @@ def setup() {
 		JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
 		// system test repository exports to be used by system/common.xml
-		if(!params.USE_TESTENV_PROPERTIES && params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH){
+		if(!params.USE_TESTENV_PROPERTIES){
 			String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
 			env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 			env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
-		}
 
-		if (!params.USE_TESTENV_PROPERTIES && params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
 			String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
 			env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
 			env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
-		}
 
-		if (!params.USE_TESTENV_PROPERTIES && params.STF_OWNER_BRANCH) {
 			String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 			env.STF_REPO = stf[0]
 			env.STF_BRANCH = stf[1]
@@ -670,7 +664,50 @@ def runTest( ) {
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
 		}
+
+		checkTestResults()
 	}
+}
+
+def checkTestResults() {
+	def results = [:]
+	def summary = null
+
+	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)   (EXECUTED: \\d+)   (PASSED: \\d+)   (FAILED: \\d+)   (DISABLED: \\d+)   (SKIPPED: \\d+).*")
+	if (!matcher?.matches()) {
+		currentBuild.result = 'FAILURE'
+		echo 'Could not find test result, set build result to FAILURE.'
+		summary = manager.createSummary("error.svg")
+		summary.appendText("TEST BUILD FAILURE!", false)
+		return
+	}
+
+	for (int i = 1; i < matcher.groupCount(); i++) {
+		def matchVals = matcher.group(i).split(": ")
+		results[matchVals[0]] = matchVals[1]
+	}
+
+	if (results["TOTAL"].equals("0")) {
+		currentBuild.result = 'FAILURE'
+		echo 'No test ran, set build result to FAILURE.'
+		summary = manager.createSummary("folder-delete.svg")
+		summary.appendText("NO TEST FOUND!", false)
+		return
+	}
+	
+	if (!results["FAILED"].equals("0")) {
+		currentBuild.result = 'UNSTABLE'
+		echo 'There were test failures, set build result to UNSTABLE.'
+		summary = manager.createSummary("warning.svg")
+	} else {
+		summary = manager.createSummary("accept.svg")
+	}
+
+	summary.appendText("TEST TARGETS SUMMARY:<ul>", false)
+	results.each {
+		summary.appendText("<li><b>$it.key</b> : $it.value</li>", false)
+	}
+	summary.appendText("</ul>", false)
 }
 
 def post(output_name) {
@@ -957,6 +994,7 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
 			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
 		} else {
+			buildInfo.name = "sys-rt/" + buildInfo.name
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ?: -1
 			def numDays = 20
 			if (params.ARTIFACTORY_NUM_DAYS) {

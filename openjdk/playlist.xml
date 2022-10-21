@@ -218,6 +218,68 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>hotspot_serviceability_jvmti</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/jvmti$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>serviceability_jvmti_j9</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -nativepath:"$(TESTIMAGE_PATH)/hotspot/jtreg/native" -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/jvmti$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>ASGCTBaseTest</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
@@ -1273,13 +1335,6 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/15152</comment>
-				<version>19+</version>
-				<impl>openj9</impl>
-			</disable>
-		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1411,7 +1466,11 @@
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	${FEATURE_PROBLEM_LIST_FILE} \
 	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_JDK_TEST_DIR):jdk_svc_sanity$(Q); \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_management_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_instrument_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jmx_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jfr_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):svc_tools_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
 			<version>11+</version>
@@ -1724,34 +1783,6 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jdk11_tier1_cipher</testCaseName>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
-	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
-	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
-	${FEATURE_PROBLEM_LIST_FILE} \
-	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_JDK_TEST_DIR)/com/sun/crypto/provider/Cipher$(Q); \
-	$(TEST_STATUS)</command>
-		<versions>
-			<version>11+</version>
-		</versions>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>openjdk</group>
-		</groups>
-	</test>
-	<test>
 		<testCaseName>jdk11_tier1_buffer</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
@@ -1877,6 +1908,146 @@
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Float128VectorTests.java$(Q); \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr"; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_vector_double128_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Double128VectorTests.java$(Q); \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr"; \
+	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_vector_int128_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:{*Int128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Int128VectorTests.java$(Q); \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr"; \
+	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_vector_short128_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:{*Short128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Short128VectorTests.java$(Q); \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr"; \
+	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_vector_byte128_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:{*Byte128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte128VectorTests.java$(Q); \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr"; \
+	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr; \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_vector_long128_j9</testCaseName>
+		<variations>
+			<variation>-Xjit:{*Long128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Long128VectorTests.java$(Q); \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr"; \
+	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
 			<version>19+</version>
