@@ -1071,7 +1071,7 @@ def addFailedTestsGrinderLink(paths=""){
 		def failedTestList = ""
 		List<String> buildPaths = paths.split(',')
 		for (def buildPath: buildPaths) {
-			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
+			def tapFiles = findFiles(glob: "${buildPath.trim()}**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}..."
 				def file = readFile(file: "${tapFile}")
