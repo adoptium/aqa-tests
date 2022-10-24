@@ -361,10 +361,10 @@ public class JavaTestRunner {
 			}
 		}
 		
+		secPropsFile = resultDir + File.separator + "security.properties";
+		
 		if (tests.contains("api/javax_net") ) {
 			// Requires TLS 1.0/1.1 enabling
-			secPropsFile = resultDir + File.separator + "security.properties";
-			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, anon, NULL, include jdk.disabled.namedCurves";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile))); 
 			bw.write(secPropsContents); 
@@ -372,11 +372,11 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
-			// Requires SHA1 enabling for jar signers in jdk-18+
-			secPropsFile = resultDir + File.separator + "security.properties";
-			System.out.println("Custom security properties to be stored in: " + secPropsFile);
-			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024";
+		if ( getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+			// Requires SHA1 enabling for jar signers in jdk-11+
+			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
+			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
+			secPropsContents += "RSA keySize < 1024, DSA keySize < 1024, EC keySize < 224, include jdk.disabled.namedCurves" + "\n";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile)));
 			bw.write(secPropsContents);
 			bw.flush();
@@ -385,8 +385,6 @@ public class JavaTestRunner {
 		
 		if ( tests.contains("api/javax_xml") ) {
 			// Requires SHA1 enabling
-			secPropsFile = resultDir + File.separator + "security.properties";
-			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.xml.dsig.secureValidationPolicy=\\" + "\n";
 			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
 			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
@@ -409,6 +407,21 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
+		if (new File(secPropsFile).length() != 0) { 
+			System.out.println("Echoing contents of generated security.properties file : " + secPropsFile); 
+			System.out.println(">>>>>>>>>>");
+			BufferedReader br = new BufferedReader (new FileReader(secPropsFile)); 
+			while(true) {
+				String s = br.readLine(); 
+				if ( s == null) {
+					break; 
+				} else {
+					System.out.println(s); 
+				}
+			}
+			System.out.println("<<<<<<<<");
+		}
+			
 		// Some tests provoke out of memory exceptions.
 		// If we're testing a J9 VM that will result in dumps being taken and a non-zero return code
 		// which stf will detect as a failure. So in this case add the -Xdump options required to suppress
@@ -1220,7 +1233,7 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
