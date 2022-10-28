@@ -1073,7 +1073,7 @@ def addFailedTestsGrinderLink(paths=""){
 		def failedTestList = ""
 		List<String> buildPaths = paths.split(',')
 		for (def buildPath: buildPaths) {
-			def tapFiles = findFiles(glob: "${buildPath.trim()}**/*.tap")
+			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}..."
 				def file = readFile(file: "${tapFile}")
@@ -1081,7 +1081,7 @@ def addFailedTestsGrinderLink(paths=""){
 				TestSet testSet = tapConsumer.load(file)
 				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
 					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-						def failedtest = testSet.getTestResult(i).getDescription().substring(2)
+						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
 						failedTestList += "${failedtest},"
 					}
 				}
