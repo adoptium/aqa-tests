@@ -4,9 +4,9 @@ usage() {
 
 }
 if [ "$(uname)" = AIX ] || [ "$(uname)" = SunOS ] || [ "$(uname)" = *BSD ]; then
-    MAKE=gmake
+    MAKE="gmake"
 else
-    MAKE=make
+    MAKE="make"
 fi
 if [ "$USE_TESTENV_PROPERTIES" == true ]; then
     testenv_file="./testenv/testenv.properties"
