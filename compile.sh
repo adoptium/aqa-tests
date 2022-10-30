@@ -16,8 +16,8 @@ if [ "$USE_TESTENV_PROPERTIES" == true ]; then
     if [[ "$PLATFORM" == *"arm"* ]] && [[ "$JDK_VERSION" == "8" ]]; then
         testenv_file="./testenv/testenv_arm32.properties"
     fi
-    while read line; do
-        export $line
+    while read -r line; do
+        export "${line?}"
     done <$testenv_file
     if [ "$JDK_IMPL" == "openj9" ] || [ "$JDK_IMPL" == "ibm" ]; then
         repo=JDK${JDK_VERSION}_OPENJ9_REPO
