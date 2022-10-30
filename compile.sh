@@ -27,11 +27,8 @@ if [ "$USE_TESTENV_PROPERTIES" == true ]; then
         branch=JDK${JDK_VERSION}_BRANCH
     fi
 
-    eval repo2='$'"$repo"
-    eval branch2='$'"$branch"
-
-    export JDK_REPO=$repo2
-    export JDK_BRANCH=$branch2
+    export JDK_REPO="${!repo}"
+    export JDK_BRANCH="${!branch}"
     echo "Set values based on ${testenv_file}:"
     cat $testenv_file
     echo ""
