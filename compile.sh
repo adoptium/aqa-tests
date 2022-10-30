@@ -8,7 +8,7 @@ if [ "$(uname)" = AIX ] || [ "$(uname)" = SunOS ] || [ "$(uname)" = *BSD ]; then
 else
     MAKE=make
 fi
-if [ $USE_TESTENV_PROPERTIES == true ]; then
+if [ "$USE_TESTENV_PROPERTIES" == true ]; then
     testenv_file="./testenv/testenv.properties"
     if [[ "$PLATFORM" == *"zos"* ]]; then
         testenv_file="./testenv/testenv_zos.properties"
@@ -19,7 +19,7 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
     while read line; do
         export $line
     done <$testenv_file
-    if [ $JDK_IMPL == "openj9" ] || [ $JDK_IMPL == "ibm" ]; then
+    if [ "$JDK_IMPL" == "openj9" ] || [ "$JDK_IMPL" == "ibm" ]; then
         repo=JDK${JDK_VERSION}_OPENJ9_REPO
         branch=JDK${JDK_VERSION}_OPENJ9_BRANCH
     else
@@ -27,8 +27,8 @@ if [ $USE_TESTENV_PROPERTIES == true ]; then
         branch=JDK${JDK_VERSION}_BRANCH
     fi
 
-    eval repo2='$'$repo
-    eval branch2='$'$branch
+    eval repo2='$'"$repo"
+    eval branch2='$'"$branch"
 
     export JDK_REPO=$repo2
     export JDK_BRANCH=$branch2
