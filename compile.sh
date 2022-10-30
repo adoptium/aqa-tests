@@ -39,5 +39,6 @@ if [ "$USE_TESTENV_PROPERTIES" == true ]; then
     echo "JDK_BRANCH=${JDK_BRANCH}"
 
 fi
+# shellcheck disable=SC2164
 cd ./TKG
 $MAKE compile
