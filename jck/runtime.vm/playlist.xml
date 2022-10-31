@@ -49,6 +49,32 @@
 		<groups>
 			<group>jck</group>
 		</groups>
+		<disables>
+			<disable>
+			        <comment>backlog/issues/477</comment>
+				<impl>ibm</impl>
+				<platform>.*aix.*</platform>
+				<version>8</version>
+			</disable>
+			<disable>
+			        <comment>backlog/issues/477</comment>
+				<impl>openj9</impl>
+				<platform>.*aix.*</platform>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>openj9</impl>
+				<platform>.*aix.*</platform>
+				<version>11</version>
+			</disable>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>openj9</impl>
+				<platform>.*aix.*</platform>			
+				<version>17</version>
+			</disable>
+		</disables>
 	</test>
 	<test>
 		<testCaseName>jck-runtime-vm-jvmti</testCaseName>
