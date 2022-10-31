@@ -146,7 +146,7 @@ jobs:
             core.setFailed(`Request failed with error ${err}`)
           }
     - name: AQA
-      uses: adoptium/run-aqa@v1
+      uses: adoptium/run-aqa@v2
       with:
          build_list: ${{ matrix.build_list }}
          target: ${{ matrix.target }}
