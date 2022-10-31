@@ -154,7 +154,7 @@ jobs:
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
          tkg_Repo: ${{ matrix.tkg_repo }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: test_output
