@@ -87,6 +87,7 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -152,7 +153,7 @@ def setupParallelEnv() {
 		def UPSTREAM_TEST_JOB_NUMBER = ""
 
 		if (params.PARALLEL == "NodesByIterations") {
-			childJobNum = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
+			childJobNum = NUM_MACHINES
 			// limit childJobNum
 			if (childJobNum > 20) {
 				echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
@@ -810,23 +811,13 @@ def testBuild() {
 			addGrinderLink()
 			// prepare environment and compile test projects
 			if( params.PARALLEL && params.PARALLEL != "None" ) {
-				setupParallelEnv()
-			} else {
-				try {
-					//ToDo: temporary workaround for jck test parallel runs
-					// until build.xml is added into each subfolder
-					if( env.BUILD_LIST.startsWith('jck/')) {
-						def temp = env.BUILD_LIST
-						env.BUILD_LIST = "jck"
-						buildTest()
-						env.BUILD_LIST = temp
-					} else {
-						buildTest()
-					}
-					runTest()
-				} finally {
-					post("${env.BUILD_LIST}")
+				if ((params.PARALLEL == "NodesByIterations" || params.PARALLEL == "Dynamic") && NUM_MACHINES == 1) {
+					testExecution()
+				} else {
+					setupParallelEnv()
 				}
+			} else {
+				testExecution()
 			}
 		} finally {
 			// Terminate any left over java processes
@@ -845,6 +836,24 @@ def testBuild() {
 				}
 			}
 		}
+	}
+}
+
+def testExecution() {
+	try {
+		//ToDo: temporary workaround for jck test parallel runs
+		// until build.xml is added into each subfolder
+		if( env.BUILD_LIST.startsWith('jck/')) {
+			def temp = env.BUILD_LIST
+			env.BUILD_LIST = "jck"
+			buildTest()
+			env.BUILD_LIST = temp
+		} else {
+			buildTest()
+		}
+		runTest()
+	} finally {
+		post("${env.BUILD_LIST}")
 	}
 }
 
@@ -1152,7 +1161,7 @@ def triggerRerunJob (failedTests) {
 }
 
 def run_parallel_tests() {
-	if (params.PARALLEL && params.PARALLEL != "None") {
+	if (params.PARALLEL && params.PARALLEL != "None" && NUM_MACHINES > 1) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
