@@ -262,28 +262,7 @@ def setupParallelEnv() {
 
 			def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
-			// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-			if (params.GENERATE_JOBS) {
-				create_jobs[childTest] = {
-					echo "GENERATE_JOBS is set to true, set test job ${TEST_JOB_NAME} params for generating the job"
-					createJob( TEST_JOB_NAME, PLATFORM)
-				}
-			} else {
-				def jobIsRunnable = false
-				try {
-					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
-					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
-				} catch (Exception e) {
-					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
-				}
-				if (!jobIsRunnable) {
-					create_jobs[childTest] = {
-						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params for generating the job"
-						createJob( TEST_JOB_NAME, PLATFORM)
-					}
-				}
-			}
+			generateJob(create_jobs, childTest, TEST_JOB_NAME)
 
 			def childParams = []
 			// loop through all the params and change the parameters if needed
@@ -382,6 +361,10 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	}
 
 	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
+	if (!fileExists(templatePath)) {
+		sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
+		templatePath = 'testJobTemplate'
+	}
 
 	if (params.LIGHT_WEIGHT_CHECKOUT) {
 		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
@@ -813,7 +796,8 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-		addFailedTestsGrinderLink()
+		String failedTests = addFailedTestsGrinderLink()
+		triggerRerunJob(failedTests)
 	}
 }
 
@@ -1090,11 +1074,79 @@ def addFailedTestsGrinderLink(paths=""){
 			}
 		}
 		if (failedTestList) {
-			failedTestList = "testList+TESTLIST=" + failedTestList.substring(0, failedTestList.length() - 1)
+			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
+			failedTestList = "testList+TESTLIST=" + failedTests
 			String url = env.RERUN_LINK
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+			return failedTests;
+		}
+		return null;
+	}
+}
+
+def generateJob (newJobs, childTest, testJobName) {
+	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
+	if (params.GENERATE_JOBS) {
+		newJobs[childTest] = {
+			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
+			createJob(testJobName, PLATFORM)
+		}
+	} else {
+		def jobIsRunnable = false
+		try {
+			def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+			jobIsRunnable = JobHelper.jobIsRunnable("${testJobName}")
+			echo "${testJobName} jobIsRunnable: ${jobIsRunnable}"
+		} catch (Exception e) {
+			echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+		}
+		if (!jobIsRunnable) {
+			newJobs[childTest] = {
+				echo "Test job ${testJobName} doesn't exist, set test job ${testJobName} params for generating the job"
+				createJob(testJobName, PLATFORM)
+			}
+		}
+	}
+}
+def triggerRerunJob (failedTests) {
+	// if the JOB_NAME contains _rerun or _testList_, we will not trigger rerun job
+	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
+		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
+		if (rerunIterations > 0 && failedTests) {
+			stage('Rerun') {
+				def rerunJobName = "${JOB_NAME}_rerun"
+				def newJobs = [:]
+				generateJob(newJobs, rerunJobName, rerunJobName)
+				parallel newJobs
+
+				def childParams = []
+				// loop through all the params and change the parameters if needed
+				params.each { param ->
+					// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
+					// set TARGET to failed tests and set ITERATIONS to rerunIterations
+					if (param.key == "TARGET") {
+						childParams << string(name: param.key, value: "testList TESTLIST=" + failedTests )
+					} else if (param.key == "PARALLEL") {
+						childParams << string(name: param.key, value: "None")
+					} else if (param.key == "NUM_MACHINES") {
+						childParams << string(name: param.key, value: "")
+					} else if (param.key == "TEST_TIME") {
+						childParams << string(name: param.key, value: "")
+					} else if (param.key == "ITERATIONS") {
+						childParams << string(name: param.key, value: rerunIterations.toString())
+					} else {
+						def value = param.value.toString()
+						if (value == "true" || value == "false") {
+							childParams << booleanParam(name: param.key, value: value.toBoolean())
+						} else {
+							childParams << string(name: param.key, value: value)
+						}
+					}
+				}
+				build job: rerunJobName, parameters: childParams, propagate: false
+			}
 		}
 	}
 }
@@ -1135,7 +1187,8 @@ def run_parallel_tests() {
 					}
 					archiveAQAvitFiles()
 					if (buildPaths.length() > 0) {
-						addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+						String failedTests = addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+						triggerRerunJob(failedTests)
 					}
 				} finally {
 					// cleanWs() does not work in some cases, so set opts below
