@@ -147,7 +147,6 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		def maxChildJobNum = 25
-		def testSubDirs = []
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
 		def UPSTREAM_TEST_JOB_NUMBER = ""
@@ -223,24 +222,8 @@ def setupParallelEnv() {
 			} else {
 				assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 			}
-		} else if (params.PARALLEL == "Subdir") {
-			dir("$WORKSPACE/aqa-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-			}
-
-			if (TARGET.contains('special.system')) {
-				// In special.system, some subfolders do not have any system test in special level
-				// In order to save machine resources, exclude the following system test subfolders in parallel mode
-				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
-				echo "exclude the following system test subfolders: ${excludes}"
-				testSubDirs = testSubDirs - excludes
-			}
-
-			childJobNum = testSubDirs.size()
-			if ( childJobNum > maxChildJobNum) {
-				assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
-			}
 		}
+
 		UPSTREAM_TEST_JOB_NAME = JOB_NAME
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 		echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
@@ -256,11 +239,7 @@ def setupParallelEnv() {
 			} else if (params.PARALLEL == "Dynamic") {
 				childTest = "testList_${i}"
 				childTarget = "-f parallelList.mk ${childTest}"
-			} else if (params.PARALLEL == "Subdir") {
-				childTest = testSubDirs[i].trim().replace("/","");
-				buildListName = "${env.BUILD_LIST}/${childTest}"
 			}
-
 			def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
 			generateJob(create_jobs, childTest, TEST_JOB_NAME)
