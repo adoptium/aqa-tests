@@ -726,13 +726,13 @@ def post(output_name) {
 			tar_cmd_suffix = ""
 		}
 
-		step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
 		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
-		archiveFile("**/*.tap", true)
+		archiveFile("aqa-tests/TKG/**/*.tap", true)
 		archiveAQAvitFiles()
 
 		if (env.BUILD_LIST.startsWith('jck')) {
