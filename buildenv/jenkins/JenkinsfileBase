@@ -87,6 +87,7 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -146,13 +147,12 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		def maxChildJobNum = 25
-		def testSubDirs = []
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
 		def UPSTREAM_TEST_JOB_NUMBER = ""
 
 		if (params.PARALLEL == "NodesByIterations") {
-			childJobNum = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
+			childJobNum = NUM_MACHINES
 			// limit childJobNum
 			if (childJobNum > 20) {
 				echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
@@ -222,24 +222,8 @@ def setupParallelEnv() {
 			} else {
 				assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 			}
-		} else if (params.PARALLEL == "Subdir") {
-			dir("$WORKSPACE/aqa-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-			}
-
-			if (TARGET.contains('special.system')) {
-				// In special.system, some subfolders do not have any system test in special level
-				// In order to save machine resources, exclude the following system test subfolders in parallel mode
-				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
-				echo "exclude the following system test subfolders: ${excludes}"
-				testSubDirs = testSubDirs - excludes
-			}
-
-			childJobNum = testSubDirs.size()
-			if ( childJobNum > maxChildJobNum) {
-				assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
-			}
 		}
+
 		UPSTREAM_TEST_JOB_NAME = JOB_NAME
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 		echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
@@ -255,11 +239,7 @@ def setupParallelEnv() {
 			} else if (params.PARALLEL == "Dynamic") {
 				childTest = "testList_${i}"
 				childTarget = "-f parallelList.mk ${childTest}"
-			} else if (params.PARALLEL == "Subdir") {
-				childTest = testSubDirs[i].trim().replace("/","");
-				buildListName = "${env.BUILD_LIST}/${childTest}"
 			}
-
 			def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
 			generateJob(create_jobs, childTest, TEST_JOB_NAME)
@@ -725,13 +705,13 @@ def post(output_name) {
 			tar_cmd_suffix = ""
 		}
 
-		step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
 		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
-		archiveFile("**/*.tap", true)
+		archiveFile("aqa-tests/TKG/**/*.tap", true)
 		archiveAQAvitFiles()
 
 		if (env.BUILD_LIST.startsWith('jck')) {
@@ -810,23 +790,13 @@ def testBuild() {
 			addGrinderLink()
 			// prepare environment and compile test projects
 			if( params.PARALLEL && params.PARALLEL != "None" ) {
-				setupParallelEnv()
-			} else {
-				try {
-					//ToDo: temporary workaround for jck test parallel runs
-					// until build.xml is added into each subfolder
-					if( env.BUILD_LIST.startsWith('jck/')) {
-						def temp = env.BUILD_LIST
-						env.BUILD_LIST = "jck"
-						buildTest()
-						env.BUILD_LIST = temp
-					} else {
-						buildTest()
-					}
-					runTest()
-				} finally {
-					post("${env.BUILD_LIST}")
+				if ((params.PARALLEL == "NodesByIterations" || params.PARALLEL == "Dynamic") && NUM_MACHINES == 1) {
+					testExecution()
+				} else {
+					setupParallelEnv()
 				}
+			} else {
+				testExecution()
 			}
 		} finally {
 			// Terminate any left over java processes
@@ -845,6 +815,24 @@ def testBuild() {
 				}
 			}
 		}
+	}
+}
+
+def testExecution() {
+	try {
+		//ToDo: temporary workaround for jck test parallel runs
+		// until build.xml is added into each subfolder
+		if( env.BUILD_LIST.startsWith('jck/')) {
+			def temp = env.BUILD_LIST
+			env.BUILD_LIST = "jck"
+			buildTest()
+			env.BUILD_LIST = temp
+		} else {
+			buildTest()
+		}
+		runTest()
+	} finally {
+		post("${env.BUILD_LIST}")
 	}
 }
 
@@ -1152,7 +1140,7 @@ def triggerRerunJob (failedTests) {
 }
 
 def run_parallel_tests() {
-	if (params.PARALLEL && params.PARALLEL != "None") {
+	if (params.PARALLEL && params.PARALLEL != "None" && NUM_MACHINES > 1) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {

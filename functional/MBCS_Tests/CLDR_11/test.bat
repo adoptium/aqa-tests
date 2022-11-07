@@ -75,20 +75,14 @@ REM call :run_fc LocaleTest-%LANGTAG%-HOST.log %PWD%\win_expected_LocaleTest-%LA
 call :run_fc LocaleTest-%LANGTAG%-SPI.log expected_LocaleTest-%LANGTAG%-SPI.log fc30.out
 
 call :run_fc TimeZoneTestA-%LANGTAG%-DEFAULT.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc31.out
-call :run_fc TimeZoneTestA-%LANGTAG%-DEFAULT.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc32.out
-if %JAVAVERSION% LSS 11000008 (
-  call :run_fc TimeZoneTestA-%LANGTAG%-JRE.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc33.out
-) else (
-  if %LANGTAG% NEQ zh-TW (
-    call :run_fc TimeZoneTestA-%LANGTAG%-JRE.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc33.out
-  )
+call :run_fc TimeZoneTestA-%LANGTAG%-DEFAULT.log "TimeZoneTestA-%LANGTAG%-DEFAULT.log" fc32.out
+if %LANGTAG% NEQ zh-TW (
+  call :run_fc TimeZoneTestA-%LANGTAG%-JRE.log "TimeZoneTestA-%LANGTAG%-JRE.log" fc33.out
 )
 
 REM call :run_fc TimeZoneTestA-%LANGTAG%-HOST.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc34.out
 
-if %JAVAVERSION% LSS 11000007 (
-  call :run_fc TimeZoneTestA-%LANGTAG%-SPI.log "TimeZoneTestA-%LANGTAG%-CLDR,JRE.log" fc35.out
-)
+call :run_fc TimeZoneTestA-%LANGTAG%-SPI.log "TimeZoneTestA-%LANGTAG%-SPI.log" fc35.out
 
 call :run_fc TimeZoneTestA-%LANGTAG%-CLDR.log expected_TimeZoneTestA-%LANGTAG%-CLDR.log fc36.out
 
