@@ -89,7 +89,6 @@ JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
 JTREG_XML_OPTION = -xml:verify
 JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 # Add any extra options
-JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 JTREG_KEY_OPTIONS :=
 VMOPTION_HEADLESS :=
 libcVendor = $(shell ldd --version 2>&1 | sed -n '1s/.*\(musl\).*/\1/p')
@@ -99,6 +98,19 @@ ifeq ($(libcVendor),musl)
 	VMOPTION_HEADLESS := -Djava.awt.headless=true
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
+
+# set JTREG_BASIC_OPTIONS value into a new parameter before adding EXTRA_JTREG_OPTIONS
+JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS := $(JTREG_BASIC_OPTIONS)
+JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
+
+# add another new parameter for concurrency
+SPECIAL_CONCURRENCY=$(EXTRA_JTREG_OPTIONS)
+# set SPECIAL_CONCURRENCY to 1 if the jdk is openj9 and the platform is linux_aarch64.
+ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
+	ifneq ($(filter linux_aarch64, $(SPEC)),)
+		SPECIAL_CONCURRENCY= -concurrency:1
+	endif
+endif
 
 ifdef OPENJDK_DIR 
 # removing "
