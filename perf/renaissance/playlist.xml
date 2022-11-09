@@ -210,6 +210,10 @@
 				<comment>runtimes/infrastructure/issues/5444</comment>
 				<vendor>ibm</vendor>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4129#issuecomment-1307899175</comment>
+				<platform>aarch64_windows</platform>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
 		$(TEST_STATUS)</command>
