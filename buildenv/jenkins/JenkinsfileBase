@@ -130,7 +130,7 @@ def setupEnv() {
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
 
-	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
+	if (env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
