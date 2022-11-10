@@ -120,12 +120,7 @@ endif
 JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
 HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
 LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
-FULLPATH_JDK_CUSTOM_TARGET =
-ifneq (1,$(words [$(JDK_CUSTOM_TARGET)]))
-	FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
-else
-	FULLPATH_JDK_CUSTOM_TARGET = $(JTREG_JDK_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)
-endif
+FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
