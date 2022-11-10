@@ -64,9 +64,11 @@ ifeq (,$(findstring $(JDK_IMPL),hotspot))
   JAVA_ARGS += -Xdump:system:events=user
 endif
 
-APPLICATION_OPTIONS :=
+ifndef APPLICATION_OPTIONS
+  APPLICATION_OPTIONS :=
+endif
 ifdef JVM_OPTIONS
-  APPLICATION_OPTIONS := -jvmArgs $(Q)$(JVM_OPTIONS)$(Q)
+  APPLICATION_OPTIONS := $(APPLICATION_OPTIONS) -jvmArgs $(Q)$(JVM_OPTIONS)$(Q)
 endif
 
 define SYSTEMTEST_CMD_TEMPLATE

@@ -70,6 +70,7 @@ def setupEnv() {
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
+        env.APPLICATION_OPTIONS = params.APPLICATION_OPTIONS ? params.APPLICATION_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
@@ -638,7 +639,7 @@ def checkTestResults() {
 	def results = [:]
 	def summary = null
 
-	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)   (EXECUTED: \\d+)   (PASSED: \\d+)   (FAILED: \\d+)   (DISABLED: \\d+)   (SKIPPED: \\d+).*")
+	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+).*")
 	if (!matcher?.matches()) {
 		currentBuild.result = 'FAILURE'
 		echo 'Could not find test result, set build result to FAILURE.'
@@ -648,8 +649,10 @@ def checkTestResults() {
 	}
 
 	for (int i = 1; i < matcher.groupCount(); i++) {
-		def matchVals = matcher.group(i).split(": ")
-		results[matchVals[0]] = matchVals[1]
+                if (matcher.group(i) != null) {
+  		    def matchVals = matcher.group(i).split(": ")
+  		    results[matchVals[0]] = matchVals[1]
+                }
 	}
 
 	if (results["TOTAL"].equals("0")) {
