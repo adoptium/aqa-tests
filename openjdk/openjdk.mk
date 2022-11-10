@@ -119,9 +119,6 @@ else
 OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
-JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
-HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
-LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
@@ -131,6 +128,11 @@ else
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
 endif
+
+JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
+HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
+LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
+FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
