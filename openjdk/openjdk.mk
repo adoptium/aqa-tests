@@ -89,7 +89,6 @@ JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
 JTREG_XML_OPTION = -xml:verify
 JTREG_BASIC_OPTIONS += $(JTREG_XML_OPTION)
 # Add any extra options
-JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 JTREG_KEY_OPTIONS :=
 VMOPTION_HEADLESS :=
 libcVendor = $(shell ldd --version 2>&1 | sed -n '1s/.*\(musl\).*/\1/p')
@@ -100,6 +99,19 @@ ifeq ($(libcVendor),musl)
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
+# set JTREG_BASIC_OPTIONS value into a new parameter before adding EXTRA_JTREG_OPTIONS
+JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS := $(JTREG_BASIC_OPTIONS)
+JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
+
+# add another new parameter for concurrency
+SPECIAL_CONCURRENCY=$(EXTRA_JTREG_OPTIONS)
+# set SPECIAL_CONCURRENCY to 1 if the jdk is openj9 and the platform is linux_aarch64.
+ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
+	ifneq ($(filter linux_aarch64, $(SPEC)),)
+		SPECIAL_CONCURRENCY= -concurrency:1
+	endif
+endif
+
 ifdef OPENJDK_DIR 
 # removing "
 OPENJDK_DIR := $(subst ",,$(OPENJDK_DIR))
@@ -107,9 +119,6 @@ else
 OPENJDK_DIR := $(TEST_ROOT)$(D)openjdk$(D)openjdk-jdk
 endif
 
-JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
-HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
-LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
 ifneq (,$(findstring $(JDK_VERSION),8-9))
 	JTREG_JDK_TEST_DIR := $(OPENJDK_DIR)$(D)jdk$(D)test
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)hotspot$(D)test
@@ -119,6 +128,11 @@ else
 	JTREG_HOTSPOT_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)hotspot$(D)jtreg
 	JTREG_LANGTOOLS_TEST_DIR := $(OPENJDK_DIR)$(D)test$(D)langtools
 endif
+
+JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
+HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
+LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
+FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=

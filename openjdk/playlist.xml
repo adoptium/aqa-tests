@@ -27,7 +27,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
+	$(FULLPATH_JDK_CUSTOM_TARGET); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -1874,7 +1874,7 @@
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS) $(SPECIAL_CONCURRENCY) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
