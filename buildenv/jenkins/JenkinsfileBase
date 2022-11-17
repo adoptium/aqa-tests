@@ -15,6 +15,8 @@ def makeTest(testParam) {
 		} else {
 			sh "$makeTestCmd"
 		}
+	} catch (err) {
+		currentBuild.result = 'UNSTABLE'
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -68,7 +70,7 @@ def setupEnv() {
 	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
-	env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
+        env.APPLICATION_OPTIONS = params.APPLICATION_OPTIONS ? params.APPLICATION_OPTIONS : ""
 	env.EXTRA_DOCKER_ARGS = params.EXTRA_DOCKER_ARGS ? params.EXTRA_DOCKER_ARGS : ""
 	env.OPENJDK_SHA = params.OPENJDK_SHA ? params.OPENJDK_SHA : ""
 	env.TEST_FLAG = params.TEST_FLAG ? params.TEST_FLAG : ''
@@ -79,13 +81,14 @@ def setupEnv() {
 	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
-	env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
 	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
+	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -128,7 +131,7 @@ def setupEnv() {
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
 
-	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
+	if (env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
@@ -145,13 +148,12 @@ def setupEnv() {
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
 		def maxChildJobNum = 25
-		def testSubDirs = []
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
 		def UPSTREAM_TEST_JOB_NUMBER = ""
 
 		if (params.PARALLEL == "NodesByIterations") {
-			childJobNum = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
+			childJobNum = NUM_MACHINES
 			// limit childJobNum
 			if (childJobNum > 20) {
 				echo "Due to the limited machines, NUM_MACHINES can only be set up to 20. Current NUM_MACHINES is ${NUM_MACHINES}."
@@ -221,24 +223,8 @@ def setupParallelEnv() {
 			} else {
 				assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 			}
-		} else if (params.PARALLEL == "Subdir") {
-			dir("$WORKSPACE/aqa-tests/${env.BUILD_LIST}") {
-				testSubDirs = sh(returnStdout: true, script: "ls -d */").trim().tokenize()
-			}
-
-			if (TARGET.contains('special.system')) {
-				// In special.system, some subfolders do not have any system test in special level
-				// In order to save machine resources, exclude the following system test subfolders in parallel mode
-				def excludes = ["jlm/", "modularity/", "sharedClasses/"]
-				echo "exclude the following system test subfolders: ${excludes}"
-				testSubDirs = testSubDirs - excludes
-			}
-
-			childJobNum = testSubDirs.size()
-			if ( childJobNum > maxChildJobNum) {
-				assert false : "Build failed becuase childJobNum: ${childJobNum} > ${maxChildJobNum}."
-			}
 		}
+
 		UPSTREAM_TEST_JOB_NAME = JOB_NAME
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 		echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
@@ -254,35 +240,10 @@ def setupParallelEnv() {
 			} else if (params.PARALLEL == "Dynamic") {
 				childTest = "testList_${i}"
 				childTarget = "-f parallelList.mk ${childTest}"
-			} else if (params.PARALLEL == "Subdir") {
-				childTest = testSubDirs[i].trim().replace("/","");
-				buildListName = "${env.BUILD_LIST}/${childTest}"
 			}
-
 			def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
 
-			// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-			if (params.GENERATE_JOBS) {
-				create_jobs[childTest] = {
-					echo "GENERATE_JOBS is set to true, set test job ${TEST_JOB_NAME} params for generating the job"
-					createJob( TEST_JOB_NAME, PLATFORM)
-				}
-			} else {
-				def jobIsRunnable = false
-				try {
-					def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-					jobIsRunnable = JobHelper.jobIsRunnable("${TEST_JOB_NAME}")
-					echo "${TEST_JOB_NAME} jobIsRunnable: ${jobIsRunnable}"
-				} catch (Exception e) {
-					echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
-				}
-				if (!jobIsRunnable) {
-					create_jobs[childTest] = {
-						echo "Test job ${TEST_JOB_NAME} doesn't exist, set test job ${TEST_JOB_NAME} params for generating the job"
-						createJob( TEST_JOB_NAME, PLATFORM)
-					}
-				}
-			}
+			generateJob(create_jobs, childTest, TEST_JOB_NAME)
 
 			def childParams = []
 			// loop through all the params and change the parameters if needed
@@ -381,6 +342,10 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	}
 
 	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
+	if (!fileExists(templatePath)) {
+		sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
+		templatePath = 'testJobTemplate'
+	}
 
 	if (params.LIGHT_WEIGHT_CHECKOUT) {
 		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
@@ -438,19 +403,15 @@ def setup() {
 		JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
 		// system test repository exports to be used by system/common.xml
-		if(!params.USE_TESTENV_PROPERTIES && params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH){
+		if(!params.USE_TESTENV_PROPERTIES){
 			String[] adoptSystemTest = getGitRepoBranch(params.ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH, "adoptium:master", "aqa-systemtest")
 			env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 			env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
-		}
 
-		if (!params.USE_TESTENV_PROPERTIES && params.OPENJ9_SYSTEMTEST_OWNER_BRANCH) {
 			String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
 			env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
 			env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
-		}
 
-		if (!params.USE_TESTENV_PROPERTIES && params.STF_OWNER_BRANCH) {
 			String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 			env.STF_REPO = stf[0]
 			env.STF_BRANCH = stf[1]
@@ -669,7 +630,52 @@ def runTest( ) {
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
 		}
+
+		checkTestResults()
 	}
+}
+
+def checkTestResults() {
+	def results = [:]
+	def summary = null
+
+	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+).*")
+	if (!matcher?.matches()) {
+		currentBuild.result = 'FAILURE'
+		echo 'Could not find test result, set build result to FAILURE.'
+		summary = manager.createSummary("error.svg")
+		summary.appendText("TEST BUILD FAILURE!", false)
+		return
+	}
+
+	for (int i = 1; i < matcher.groupCount(); i++) {
+                if (matcher.group(i) != null) {
+  		    def matchVals = matcher.group(i).split(": ")
+  		    results[matchVals[0]] = matchVals[1]
+                }
+	}
+
+	if (results["TOTAL"].equals("0")) {
+		currentBuild.result = 'FAILURE'
+		echo 'No test ran, set build result to FAILURE.'
+		summary = manager.createSummary("folder-delete.svg")
+		summary.appendText("NO TEST FOUND!", false)
+		return
+	}
+	
+	if (!results["FAILED"].equals("0")) {
+		currentBuild.result = 'UNSTABLE'
+		echo 'There were test failures, set build result to UNSTABLE.'
+		summary = manager.createSummary("warning.svg")
+	} else {
+		summary = manager.createSummary("accept.svg")
+	}
+
+	summary.appendText("TEST TARGETS SUMMARY:<ul>", false)
+	results.each {
+		summary.appendText("<li><b>$it.key</b> : $it.value</li>", false)
+	}
+	summary.appendText("</ul>", false)
 }
 
 def post(output_name) {
@@ -702,13 +708,13 @@ def post(output_name) {
 			tar_cmd_suffix = ""
 		}
 
-		step([$class: "TapPublisher", testResults: "**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
 		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
-		archiveFile("**/*.tap", true)
+		archiveFile("aqa-tests/TKG/**/*.tap", true)
 		archiveAQAvitFiles()
 
 		if (env.BUILD_LIST.startsWith('jck')) {
@@ -773,7 +779,8 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-		addFailedTestsGrinderLink()
+		String failedTests = addFailedTestsGrinderLink()
+		triggerRerunJob(failedTests)
 	}
 }
 
@@ -786,23 +793,13 @@ def testBuild() {
 			addGrinderLink()
 			// prepare environment and compile test projects
 			if( params.PARALLEL && params.PARALLEL != "None" ) {
-				setupParallelEnv()
-			} else {
-				try {
-					//ToDo: temporary workaround for jck test parallel runs
-					// until build.xml is added into each subfolder
-					if( env.BUILD_LIST.startsWith('jck/')) {
-						def temp = env.BUILD_LIST
-						env.BUILD_LIST = "jck"
-						buildTest()
-						env.BUILD_LIST = temp
-					} else {
-						buildTest()
-					}
-					runTest()
-				} finally {
-					post("${env.BUILD_LIST}")
+				if ((params.PARALLEL == "NodesByIterations" || params.PARALLEL == "Dynamic") && NUM_MACHINES == 1) {
+					testExecution()
+				} else {
+					setupParallelEnv()
 				}
+			} else {
+				testExecution()
 			}
 		} finally {
 			// Terminate any left over java processes
@@ -821,6 +818,24 @@ def testBuild() {
 				}
 			}
 		}
+	}
+}
+
+def testExecution() {
+	try {
+		//ToDo: temporary workaround for jck test parallel runs
+		// until build.xml is added into each subfolder
+		if( env.BUILD_LIST.startsWith('jck/')) {
+			def temp = env.BUILD_LIST
+			env.BUILD_LIST = "jck"
+			buildTest()
+			env.BUILD_LIST = temp
+		} else {
+			buildTest()
+		}
+		runTest()
+	} finally {
+		post("${env.BUILD_LIST}")
 	}
 }
 
@@ -956,6 +971,7 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 		if (artifactoryUploadDir && artifactoryUploadDir.contains("AQAvit")) {
 			buildInfo.name = "sys-rt/AQAvit_" + buildInfo.name
 		} else {
+			buildInfo.name = "sys-rt/" + buildInfo.name
 			def numArtifacts = params.ARTIFACTORY_NUM_ARTIFACTS ?: -1
 			def numDays = 20
 			if (params.ARTIFACTORY_NUM_DAYS) {
@@ -1042,24 +1058,92 @@ def addFailedTestsGrinderLink(paths=""){
 				TestSet testSet = tapConsumer.load(file)
 				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
 					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-						def failedtest = testSet.getTestResult(i).getDescription().substring(2)
+						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
 						failedTestList += "${failedtest},"
 					}
 				}
 			}
 		}
 		if (failedTestList) {
-			failedTestList = "testList+TESTLIST=" + failedTestList.substring(0, failedTestList.length() - 1)
+			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
+			failedTestList = "testList+TESTLIST=" + failedTests
 			String url = env.RERUN_LINK
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+			return failedTests;
+		}
+		return null;
+	}
+}
+
+def generateJob (newJobs, childTest, testJobName) {
+	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
+	if (params.GENERATE_JOBS) {
+		newJobs[childTest] = {
+			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
+			createJob(testJobName, PLATFORM)
+		}
+	} else {
+		def jobIsRunnable = false
+		try {
+			def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+			jobIsRunnable = JobHelper.jobIsRunnable("${testJobName}")
+			echo "${testJobName} jobIsRunnable: ${jobIsRunnable}"
+		} catch (Exception e) {
+			echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
+		}
+		if (!jobIsRunnable) {
+			newJobs[childTest] = {
+				echo "Test job ${testJobName} doesn't exist, set test job ${testJobName} params for generating the job"
+				createJob(testJobName, PLATFORM)
+			}
+		}
+	}
+}
+def triggerRerunJob (failedTests) {
+	// if the JOB_NAME contains _rerun or _testList_, we will not trigger rerun job
+	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
+		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
+		if (rerunIterations > 0 && failedTests) {
+			stage('Rerun') {
+				def rerunJobName = "${JOB_NAME}_rerun"
+				def newJobs = [:]
+				generateJob(newJobs, rerunJobName, rerunJobName)
+				parallel newJobs
+
+				def childParams = []
+				// loop through all the params and change the parameters if needed
+				params.each { param ->
+					// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
+					// set TARGET to failed tests and set ITERATIONS to rerunIterations
+					if (param.key == "TARGET") {
+						childParams << string(name: param.key, value: "testList TESTLIST=" + failedTests )
+					} else if (param.key == "PARALLEL") {
+						childParams << string(name: param.key, value: "None")
+					} else if (param.key == "NUM_MACHINES") {
+						childParams << string(name: param.key, value: "")
+					} else if (param.key == "TEST_TIME") {
+						childParams << string(name: param.key, value: "")
+					} else if (param.key == "ITERATIONS") {
+						childParams << string(name: param.key, value: rerunIterations.toString())
+					} else {
+						def value = param.value.toString()
+						if (value == "true" || value == "false") {
+							childParams << booleanParam(name: param.key, value: value.toBoolean())
+						} else {
+							childParams << string(name: param.key, value: value)
+						}
+					}
+				}
+				build job: rerunJobName, parameters: childParams, propagate: false
+			}
 		}
 	}
 }
 
 def run_parallel_tests() {
-	if (params.PARALLEL && params.PARALLEL != "None") {
+	if (params.PARALLEL && params.PARALLEL != "None" && NUM_MACHINES > 1) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
@@ -1094,7 +1178,8 @@ def run_parallel_tests() {
 					}
 					archiveAQAvitFiles()
 					if (buildPaths.length() > 0) {
-						addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+						String failedTests = addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+						triggerRerunJob(failedTests)
 					}
 				} finally {
 					// cleanWs() does not work in some cases, so set opts below

@@ -342,13 +342,6 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_naming-spi</testCaseName>
-		<disables>
-		<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-64_mac|aarch64_mac</platform>
-  				<impl>hotspot</impl>
-			</disable>
-		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -413,21 +406,6 @@
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>openj9</impl>
 			</disable>
-			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-64_mac|aarch64_mac</platform>
-				<impl>hotspot</impl>
-			</disable>
-			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-32_windows</platform>
-				<impl>hotspot</impl>
- 			</disable>
- 			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-64_windows</platform>
-				<impl>hotspot</impl>
- 			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -511,6 +489,11 @@
 			<disable>
 				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
 				<platform>.*zos.*</platform>
+			</disable>
+			<disable>
+				<comment>Disabled due to backlog/issues/921,923,750. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<platform>ppc64_aix|x86-64_mac|x86-64_windows|x86-32_windows</platform>
+				<impl>openj9</impl>
 			</disable>
 		</disables>
 		<variations>
@@ -950,21 +933,6 @@
 			<disable>
 				<comment>backlog/issues/608 : To be run manually</comment>
 				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-64_mac</platform>
-				<impl>hotspot</impl>
-			</disable>
-			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-32_windows</platform>
-				<impl>hotspot</impl>
-			</disable>
-			<disable>
-				<comment>Requires UI https://github.com/temurin-compliance/temurin-compliance/issues/29</comment>
-				<platform>x86-64_windows</platform>
-				<impl>hotspot</impl>
 			</disable>
 		</disables>
 		<variations>

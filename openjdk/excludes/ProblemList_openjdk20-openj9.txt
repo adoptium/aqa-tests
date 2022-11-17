@@ -180,8 +180,6 @@ jdk/modules/etc/DefaultModules.java https://github.com/eclipse-openj9/openj9/iss
 jdk/modules/incubator/ImageModules.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all
 jni/nullCaller/NullCallerTest.java https://github.com/eclipse-openj9/openj9/issues/15370 linux-ppc64le,macosx-all
 
-java/lang/Thread/jni/AttachCurrentThread/AttachTest.java#id1  https://github.com/eclipse-openj9/openj9/issues/15466  generic-all
-
 ############################################################################
 
 # jdk_internal
@@ -368,8 +366,8 @@ java/nio/channels/SocketChannel/VectorIO.java https://github.ibm.com/runtimes/ba
 java/nio/channels/SocketChannel/VectorParams.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/SocketChannel/Write.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
-java/nio/channels/vthread/BlockingChannelOps.java#id0 https://github.com/eclipse-openj9/openj9/issues/15265 generic-all
-java/nio/channels/vthread/BlockingChannelOps.java#id1 https://github.com/eclipse-openj9/openj9/issues/15247 generic-all
+java/nio/channels/vthread/BlockingChannelOps.java#id0 https://github.com/eclipse-openj9/openj9/issues/16279 aix-all
+java/nio/channels/vthread/BlockingChannelOps.java#id1 https://github.com/eclipse-openj9/openj9/issues/16279 aix-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
 java/nio/file/Files/probeContentType/Basic.java https://github.ibm.com/runtimes/backlog/issues/655 windows-all
 java/nio/MappedByteBuffer/MapSyncFail.java https://github.com/eclipse-openj9/openj9/issues/6831 generic-all
@@ -445,6 +443,7 @@ sun/security/util/math/TestIntegerModuloP.java	https://github.com/eclipse-openj9
 # jdk_security4
 
 sun/security/krb5/ccache/Refresh.java https://github.com/eclipse-openj9/openj9/issues/15267 generic-all
+sun/security/krb5/auto/Cleaners.java https://github.com/eclipse-openj9/openj9/issues/16248 aix-all
 
 ########################################################################################################################################################
 
@@ -565,7 +564,10 @@ java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/
 java/foreign/valist/VaListTest.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
 java/foreign/virtual/TestVirtualCalls.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
 
-java/foreign/TestFunctionDescriptor.java https://github.com/eclipse-openj9/openj9/issues/15579 generic-all
+java/foreign/TestDowncallStack.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
+java/foreign/TestUpcallAsync.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
+java/foreign/TestUpcallScope.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
+java/foreign/TestUpcallStack.java https://github.com/eclipse-openj9/openj9/issues/13994 generic-all
 
 ############################################################################
 
@@ -579,6 +581,72 @@ jdk/incubator/vector/Byte128VectorTests.java https://github.com/eclipse-openj9/o
 jdk/incubator/vector/Byte256VectorTests.java https://github.com/eclipse-openj9/openj9/issues/15268 generic-all
 jdk/incubator/vector/Int128VectorTests.java https://github.com/eclipse-openj9/openj9/issues/15268 generic-all
 jdk/incubator/vector/Short256VectorTests.java https://github.com/eclipse-openj9/openj9/issues/15268 generic-all
-jdk/incubator/vector/Vector128ConversionTests.java https://github.com/eclipse-openj9/openj9/issues/15211 generic-all
 
 ############################################################################
+
+# serviceability
+
+serviceability/jvmti/GetLocalVariable/GetLocalVars.java https://github.com/eclipse-openj9/openj9/issues/15920 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorEventOnOffTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorGCParallelTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorArrayAllSampledTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorGCTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorGCSerialTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorIllegalArgumentTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorInitialAllocationTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorInterpreterArrayTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorMultiArrayTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorInterpreterObjectTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorNoCapabilityTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorRecursiveTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatArrayCorrectnessTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatIntervalTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatObjectCorrectnessTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatSimpleTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorThreadDisabledTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorThreadOnOffTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorThreadTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorTwoAgentsTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorVMEventsTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorVMEventsTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
+serviceability/jvmti/ModuleAwareAgents/ClassFileLoadHook/MAAClassFileLoadHook.java https://github.com/eclipse-openj9/openj9/issues/15985 generic-all
+serviceability/jvmti/ModuleAwareAgents/ClassLoadPrepare/MAAClassLoadPrepare.java https://github.com/eclipse-openj9/openj9/issues/15985 generic-all
+serviceability/jvmti/ModuleAwareAgents/ThreadStart/MAAThreadStart.java https://github.com/eclipse-openj9/openj9/issues/15985 generic-all
+serviceability/jvmti/RedefineClasses/ClassVersionAfterRedefine.java https://github.com/eclipse-openj9/openj9/issues/15988 generic-all
+serviceability/jvmti/RedefineClasses/RedefineAddLambdaExpression.java https://github.com/eclipse-openj9/openj9/issues/15989 generic-all
+serviceability/jvmti/RedefineClasses/RedefineGenericSignatureTest.java https://github.com/eclipse-openj9/openj9/issues/15990 generic-all
+serviceability/jvmti/RedefineClasses/RedefineSubtractLambdaExpression.java https://github.com/eclipse-openj9/openj9/issues/15989 generic-all
+serviceability/jvmti/RedefineClasses/TestAddDeleteMethods.java https://github.com/eclipse-openj9/openj9/issues/15989 generic-all
+serviceability/jvmti/StartPhase/AllowedFunctions/AllowedFunctions.java https://github.com/eclipse-openj9/openj9/issues/15992 generic-all
+serviceability/jvmti/SuspendWithObjectMonitorWait/SuspendWithObjectMonitorWait.java https://github.com/eclipse-openj9/openj9/issues/15993 generic-all
+serviceability/jvmti/SuspendWithObjectMonitorEnter/SuspendWithObjectMonitorEnter.java https://github.com/eclipse-openj9/openj9/issues/15993 generic-all
+serviceability/jvmti/VMObjectAlloc/VMObjectAllocTest.java https://github.com/eclipse-openj9/openj9/issues/15994 generic-all
+serviceability/jvmti/events/FieldAccess/fieldacc03/fieldacc03.java https://github.com/eclipse-openj9/openj9/issues/16218 generic-all
+serviceability/jvmti/events/FieldAccess/fieldacc04/fieldacc04.java https://github.com/eclipse-openj9/openj9/issues/16218 generic-all
+serviceability/jvmti/events/FramePop/framepop02/framepop02.java#id1 https://github.com/eclipse-openj9/openj9/issues/16229 generic-all
+serviceability/jvmti/events/SingleStep/singlestep01/singlestep01.java https://github.com/eclipse-openj9/openj9/issues/16229 generic-all
+serviceability/jvmti/RedefineClasses/RedefineRunningMethodsWithBacktrace.java https://github.com/eclipse-openj9/openj9/issues/16275 generic-all
+serviceability/jvmti/stress/StackTrace/NotSuspended/GetStackTraceNotSuspendedStressTest.java https://github.com/eclipse-openj9/openj9/issues/16203 generic-all
+serviceability/jvmti/stress/StackTrace/Suspended/GetStackTraceSuspendedStressTest.java https://github.com/eclipse-openj9/openj9/issues/16203 generic-all
+serviceability/jvmti/stress/ThreadLocalStorage/SetGetThreadLocalStorageStressTest/SetGetThreadLocalStorageStressTest.java https://github.com/eclipse-openj9/openj9/issues/16203 generic-all
+serviceability/jvmti/thread/GetFrameCount/framecnt01/framecnt01.java https://github.com/eclipse-openj9/openj9/issues/16185 generic-all
+serviceability/jvmti/thread/GetStackTrace/getstacktr03/getstacktr03.java https://github.com/eclipse-openj9/openj9/issues/16185 generic-all
+serviceability/jvmti/thread/GetStackTrace/getstacktr05/getstacktr05.java https://github.com/eclipse-openj9/openj9/issues/16185 generic-all
+serviceability/jvmti/thread/GetStackTrace/getstacktr06/getstacktr06.java https://github.com/eclipse-openj9/openj9/issues/16238 generic-all
+serviceability/jvmti/thread/GetStackTrace/getstacktr08/getstacktr08.java https://github.com/eclipse-openj9/openj9/issues/16238 generic-all
+serviceability/jvmti/thread/GetThreadInfo/thrinfo01/thrinfo01.java https://github.com/eclipse-openj9/openj9/issues/16226 generic-all
+serviceability/jvmti/thread/SuspendThread/suspendthrd03/suspendthrd03.java https://github.com/eclipse-openj9/openj9/issues/16242 generic-all
+serviceability/jvmti/vthread/BreakpointInYieldTest/BreakpointInYieldTest.java https://github.com/eclipse-openj9/openj9/issues/16167 generic-all
+serviceability/jvmti/vthread/ContYieldBreakPointTest/ContYieldBreakPointTest.java https://github.com/eclipse-openj9/openj9/issues/16215 generic-all
+serviceability/jvmti/vthread/MethodExitTest/MethodExitTest.java https://github.com/eclipse-openj9/openj9/issues/16168 generic-all
+serviceability/jvmti/vthread/NullAsCurrentThreadTest/NullAsCurrentThreadTest.java https://github.com/eclipse-openj9/openj9/issues/16167 generic-all
+serviceability/jvmti/vthread/SuspendResume1/SuspendResume1.java https://github.com/eclipse-openj9/openj9/issues/16203 generic-all
+serviceability/jvmti/vthread/RedefineClasses/RedefineRunningMethods.java https://github.com/eclipse-openj9/openj9/issues/16212 generic-all
+serviceability/jvmti/vthread/RawMonitorTest/RawMonitorTest.java https://github.com/eclipse-openj9/openj9/issues/16168 generic-all
+serviceability/jvmti/vthread/VThreadMonitorTest/VThreadMonitorTest.java https://github.com/eclipse-openj9/openj9/issues/16168 generic-all
+serviceability/jvmti/vthread/VThreadNotifyFramePopTest/VThreadNotifyFramePopTest.java https://github.com/eclipse-openj9/openj9/issues/16279 aix-all
+serviceability/jvmti/vthread/VThreadTest/VThreadTest.java https://github.com/eclipse-openj9/openj9/issues/16168 generic-all
+serviceability/jvmti/vthread/VThreadUnsupportedTest/VThreadUnsupportedTest.java https://github.com/eclipse-openj9/openj9/issues/16167 generic-all
+serviceability/jvmti/vthread/WaitNotifySuspendedVThreadTest/WaitNotifySuspendedVThreadTest.java https://github.com/eclipse-openj9/openj9/issues/16168 generic-all
+

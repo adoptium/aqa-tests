@@ -25,7 +25,7 @@ else
 fi
 
 FILE=${PROG}-${TYPE}.${NPATCH}
-diff expected_$PROG-$LOC-$TYPE.log $PROG-$LOC-$TYPE.log | sed -e 's/\//\\&/g' -ne '/^> /p' | awk '{print "s/^" substr($0,3) "$/'${FILE}'." NR ":" substr($0,3) "/"}' > cldr.sed
+diff expected_$PROG-$LOC-$TYPE.log $PROG-$LOC-$TYPE.log | sed -e 's/\//\\&/g' -ne '/^> /p' | awk '{print "s/^" substr($0,3) "$/'${FILE}'." NR ":" substr($0,3) "/"}' | sed -e 's/\\u/\\\\u/g' > cldr.sed
 
 perl src/cldr.pl $PROG-$TYPE.$OPATCH.patch src/CLDR11-$LOC.properties > cldr.file
 

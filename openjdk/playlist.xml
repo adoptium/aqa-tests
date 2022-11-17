@@ -27,7 +27,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)$(JDK_CUSTOM_TARGET)$(Q); \
+	$(FULLPATH_JDK_CUSTOM_TARGET); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -206,6 +206,37 @@
 		<versions>
 			<version>8</version>
 			<version>9</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>hotspot</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>hotspot_serviceability_jvmti</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/jvmti$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>19+</version>
 		</versions>
 		<levels>
 			<level>extended</level>
@@ -1304,13 +1335,6 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/15152</comment>
-				<version>19+</version>
-				<impl>openj9</impl>
-			</disable>
-		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1442,7 +1466,11 @@
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	${FEATURE_PROBLEM_LIST_FILE} \
 	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_JDK_TEST_DIR):jdk_svc_sanity$(Q); \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_management_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_instrument_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jmx_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jfr_sanity$(Q) \
+	$(Q)$(JTREG_JDK_TEST_DIR):svc_tools_sanity$(Q); \
 	$(TEST_STATUS)</command>
 		<versions>
 			<version>11+</version>
@@ -1846,7 +1874,7 @@
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS) $(SPECIAL_CONCURRENCY) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1877,8 +1905,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Float128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Float128VectorTests.java$(Q)  &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1905,8 +1933,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Double128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Double128VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1933,8 +1961,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Int128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Int128VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1961,8 +1989,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Short128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Short128VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -1989,8 +2017,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte128VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -2017,8 +2045,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Long128VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Long128VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>
@@ -2045,8 +2073,8 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte64VectorTests.java$(Q); \
-	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr"; \
+	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte64VectorTests.java$(Q) &amp;&amp; \
+	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr; \
 	$(TEST_STATUS)</command>
 		<versions>

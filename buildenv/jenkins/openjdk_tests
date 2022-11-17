@@ -163,6 +163,8 @@ timestamps{
         }
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+            env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
+            env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
             if (params.LABEL) {
                 LABEL = params.LABEL
@@ -178,6 +180,11 @@ timestamps{
 
             if (params.TEST_FLAG == "FIPS") {
                 LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
+                env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+                // For FIPS functional testing, limit BUILD_LIST to FIPS test folder
+                if (JOB_NAME.contains ("functional") && JOB_NAME.contains("_fips")) {
+                    env.BUILD_LIST = "functional/cmdLineTests/fips"
+                }
             }
 
             // Temporarily exclude ubuntu 22 machines for criu sanity.external pipeline
@@ -269,9 +276,6 @@ timestamps{
 
 def runTest() {
     try {
-        timeout(time: 1, unit: 'HOURS') {
-            cleanWs disableDeferredWipeout: true, deleteDirs: true
-        }
         def retry_count = 0
         def sleep_time = 180
         if (params.PLATFORM.contains('zos')) {
@@ -293,6 +297,9 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                timeout(time: 1, unit: 'HOURS') {
+                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                }
                 sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
             }
         } else {
@@ -306,6 +313,9 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                timeout(time: 1, unit: 'HOURS') {
+                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                }
                 checkout scm: [$class: 'GitSCM',
                     branches: [[name: "${scm.branches[0].name}"]],
                     extensions: [

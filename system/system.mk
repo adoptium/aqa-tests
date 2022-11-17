@@ -59,20 +59,23 @@ ifeq ($(filter 8 9 10 11 12 13 14 15 16 17, $(JDK_VERSION)),)
   $(warning Environment variable JAVA_TOOL_OPTIONS is set to '$(JAVA_TOOL_OPTIONS)')
 endif
 
+JAVA_ARGS = $(JVM_OPTIONS)
 ifeq (,$(findstring $(JDK_IMPL),hotspot))
-  JVM_OPTIONS += -Xdump:system:events=user
+  JAVA_ARGS += -Xdump:system:events=user
 endif
 
-APPLICATION_OPTIONS :=
+ifndef APPLICATION_OPTIONS
+  APPLICATION_OPTIONS :=
+endif
 ifdef JVM_OPTIONS
-  APPLICATION_OPTIONS := -jvmArgs $(Q)$(JVM_OPTIONS)$(Q)
+  APPLICATION_OPTIONS := $(APPLICATION_OPTIONS) -jvmArgs $(Q)$(JVM_OPTIONS)$(Q)
 endif
 
 define SYSTEMTEST_CMD_TEMPLATE
 perl $(SYSTEMTEST_RESROOT)$(D)STF$(D)stf.core$(D)scripts$(D)stf.pl \
   -test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)STF;$(SYSTEMTEST_RESROOT)$(D)aqa-systemtest$(OPENJ9_PRAM)$(Q) \
   -systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
-  -java-args=$(SQ)$(JVM_OPTIONS)$(SQ) \
+  -java-args=$(SQ)$(JAVA_ARGS)$(SQ) \
   -results-root=$(REPORTDIR)
 endef
 
