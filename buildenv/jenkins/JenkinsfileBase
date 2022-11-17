@@ -708,8 +708,6 @@ def post(output_name) {
 			tar_cmd_suffix = ""
 		}
 
-		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-
 		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 
 		//call the archive function for each file
@@ -1163,7 +1161,6 @@ def run_parallel_tests() {
 								timeout(time: 1, unit: 'HOURS') {
 									copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 								}
-								step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 								archiveFile("${name}/${buildId}/**/*.tap", true)
 								buildPaths += "${name}/${buildId}/,"
 							} catch (Exception e) {
