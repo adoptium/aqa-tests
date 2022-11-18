@@ -456,7 +456,7 @@ public class JavaTestRunner {
 		if (task == null || !task.equals("custom")) {  
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
 		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
 		}
 		
 		fileContent += "runTests" + ";\n";
