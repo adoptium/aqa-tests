@@ -78,7 +78,7 @@ if (!binding.hasVariable('DAYS_TO_KEEP')) {
 if (binding.hasVariable('LEVELS')) {
 	LEVELS = LEVELS.split(',')
 } else {
-	// 'sanity','extended','special'
+	// 'sanity','extended','special', 'dev'
 	LEVELS = ['sanity']
 }
 
@@ -180,7 +180,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				def DOCKER_REQUIRED = false
 				def DOCKERIMAGE_TAG = ""
 				def EXTRA_DOCKER_ARGS = ""
-				if (GROUP == "external") {
+				if (GROUP == "external" || LEVEL == 'dev') {
 					DOCKER_REQUIRED = true
 					DOCKERIMAGE_TAG = "nightly"
 					if (LEVEL == "sanity" || LEVEL == "extended") {
