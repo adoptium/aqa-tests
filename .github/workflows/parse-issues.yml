@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: '0 4 * * 0'  # every Sunday, 4am UTC
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   parse_issues:
     runs-on: ubuntu-latest
@@ -11,11 +15,11 @@ jobs:
       AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Set up Python 3.8
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.3.0
         with:
           python-version: 3.8
       - name: checkout current repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
       - name: install reqs
         run: |
           pip install -r scripts/disabled_tests/requirements.txt
@@ -40,7 +44,7 @@ jobs:
           cat all.json | python scripts/disabled_tests/issue_status.py -v > output.json
           echo "::endgroup::"
       - name: store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3.1.1
         with:
           name: disabled_tests
           path: output.json
