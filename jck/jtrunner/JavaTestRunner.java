@@ -246,7 +246,12 @@ public class JavaTestRunner {
 		}
 
 		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+                if (platform.contains("win")) {
+                        // Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
+			fileUrl = "file:///" + jckBase.replace("\\","/") + "/testsuite.jtt";
+                } else {
+			fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+		}
 		System.out.println("Using jti file "+ jtiFile);
 		
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
