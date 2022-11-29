@@ -307,7 +307,7 @@ public class JavaTestRunner {
 
 		if (task == null || !task.equals("custom")) {
 			testFlagJtxFullPath = "";
-			if (testFlag != null) {
+			if (testFlag != null && testFlag.length() > 0 ) {
 				// Look for a known failures list file specific to TEST_FLAG testing
 				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
 				File testFlagJtxFile = new File(testFlagJtxFullPath);

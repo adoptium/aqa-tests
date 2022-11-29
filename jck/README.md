@@ -101,3 +101,15 @@ cd TKG
 make compile
 make _sanity.jck
 ```
+
+## TCK exclude lists 
+
+We have three types of tck exclude lists: 
+
+1. Dev excludes: This exclude file, ending with `-dev` (e.g. jck8c-dev.jtx), contains vendor specific excludes. All excludes related to automation run by a specific vendor would go into the `*dev.jtx` files in tck repositories maintained by that vendor for use during development not certification.
+
+2. Test-flag specific excludes: These exclude files support development work by allowing developers to add feature specific temporary excludes. For example, the FIPS specific exclude file (e.g., jck8c-fips.jtx) contains list of excludes specific to FIPS that will only be in effect if `TEST_FLAG` is set to `fips`. These files are used for development, not for certification.
+
+3. Standard excludes: These are the 3 standard exclude files (jtx and kfl) that come with tck materials. These constitute known failures and are not updated by vendors.
+
+Note In regular automated runs in Jenkins, we will only see the exclude list of type 1 and 3. In grinder runs where `jck_custom` is used, Dev exclude is ignored. Type 1 and 2 are used during development, not for certification.
