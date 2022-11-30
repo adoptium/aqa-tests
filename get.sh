@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -eo pipefail
 
 SDKDIR=""
 TESTDIR="$(pwd)"
@@ -485,8 +485,8 @@ executeCmdWithRetry()
 		rt_code=$?
 		count=$(( $count + 1 ))
 	done
-	return "$rt_code"
 	set -e
+	return "$rt_code"	
 }
 
 getFunctionalTestMaterial()
