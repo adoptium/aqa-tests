@@ -11,6 +11,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 -->
 
+<!-- PROJECT LOGO -->
+
+<p align="center">
+  <a href="https://adoptium.net/aqavit">
+    <img src="https://adoptium.net/images/aqavit-light.png" alt="Logo" width="250">
+  </a>
+</p>
+<br />
+
+[![License](https://img.shields.io/github/license/Adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/blob/master/LICENSE)
+[![contributors](https://img.shields.io/github/contributors/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/graphs/contributors)
+[![commit-activity](https://img.shields.io/github/commit-activity/m/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/commits/master)
+[![closed-issues](https://img.shields.io/github/issues-closed/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/issues?q=is%3Aissue+is%3Aclosed)
+[![closed-pr](https://img.shields.io/github/issues-pr-closed/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/pulls?q=is%3Apr+is%3Aclosed)
+[![release-date](https://img.shields.io/github/release-date/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/releases)
+<br />
+[![slack](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=white)](https://adoptium.net/slack/)
+[![Twitter](https://img.shields.io/twitter/follow/adoptium?style=social)](https://twitter.com/adoptium)
+
 # Adoptium Testing
 
 #### Guide to the Test Jobs at Adoptium
