@@ -334,7 +334,11 @@ def runTest() {
                 jenkinsfile.testBuild()
             }
         } else {
-            jenkinsfile.testBuild()
+                                    // test
+                        println "Testing ..."
+                        println "There is not enough space in the file system"
+                        currentBuild.result = 'FAILURE'
+            //jenkinsfile.testBuild()
         }
     } catch (Exception e) {
         println("Exception: " + e.toString())
@@ -351,16 +355,17 @@ def runTest() {
             timeout(time: 5, unit: 'MINUTES') {
                 if (currentBuild.result == 'FAILURE') {
                     println("${env.JOB_NAME} #${env.BUILD_NUMBER} result is FAILURE. Checking console log for specific errors...")
-                    // create error list and regex can be used
-                    List<String> errorList = new ArrayList<String>();
-                    errorList.add(".*There is not enough space in the file system.*");
-                    errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
-
+                    // create errorMap, which contains "error string" : "action"
+                    // regex can be used in error string
+                    def errorMap = [
+                        ".*There is not enough space in the file system.*" : "cleanupNode",
+                        ".*java.io.IOException: Cannot run program \"nohup\".*" : "offline",
+                    ]
                     // nightly/weekly builds should not have git clone issue
                     if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
-                        errorList.add(".*ERROR: Error cloning remote repo.*");
+                        errorMap.put(".*ERROR: Error cloning remote repo.*" : "offline")
                     }
-                    checkErrors(errorList)
+                    checkErrors(errorMap)
                 }
             }
         }
@@ -400,25 +405,54 @@ def areNodesWithLabelOnline(labelToCheck) {
             return true
         }   
 
-
-def checkErrors(errorList) {
+def checkErrors(errorMap) {
     def foundError = ""
-    for (String error : errorList) {
+    for ( e in errorMap ) {
+        def error = e.key
+        def action = e.value
         if (manager.logContains(error)) {
+            println "Found error: $error, action: $action"
             foundError = error;
             break;
         }
     }
     if (foundError) {
-        def message = "${env.JOB_NAME} #${env.BUILD_NUMBER} failed on ${NODE_NAME} due to ${foundError}: ${env.BUILD_URL} \nSet ${NODE_NAME} temporarily offline! ${env.JENKINS_URL}computer/${NODE_NAME}"
-        def currentNode = Jenkins.instance.getNode(NODE_NAME).toComputer()
-        // set the current node temporarily offline
-        if (currentNode) {
-            println("${message}")
-            currentNode.setTemporarilyOffline(true, new hudson.slaves.OfflineCause.UserCause(User.current(), "${message}"))
+        def action = errorMap.get(foundError)
+        def currentNode = Jenkins.instance.getNode(NODE_NAME)
+        def message = "This is a test!!! Please ignore the msg. \n ${env.JOB_NAME} #${env.BUILD_NUMBER} failed on ${NODE_NAME} due to ${foundError}: ${env.BUILD_URL} \n"
+        if (action == "offline") {
+            // set the current node temporarily offline
+            if (currentNode.toComputer()) {
+                message += "Set ${NODE_NAME} temporarily offline! ${env.JENKINS_URL}computer/${NODE_NAME}"
+                println(message)
+                currentNode.toComputer().setTemporarilyOffline(true, new hudson.slaves.OfflineCause.UserCause(User.current(), "${message}"))
+            }
+        } else if (action == "cleanupNode") {
+            message += "Temporarily change the label from ci.role.test to ci.role.test.disabled. And trigger Cleanup-Nodes job on ${env.JENKINS_URL}computer/${NODE_NAME}"
+            println(message)
+            // temporarily set the label to ci.role.test.disabled, so that no other test builds can land on it
+            // Cleanup-Nodes job will clean the node and reset the label back once it is done
+            def currentNodeLabels = currentNode.getLabelString()
+            println("Current label: ${currentNodeLabels}")
+            def newLabels = currentNodeLabels.replace(" ci.role.test ", " ci.role.test.disabled ")
+            println("Change the label to: ${newLabels}")
+            currentNode.setLabelString(newLabels)
+            currentNode.save()
+
+            def cleanupNodeParams = []
+            cleanupNodeParams.addAll([
+                string(name: 'SETUP_LABEL', value: 'ci.project.openj9&&sw.os.linux'),
+                string(name: 'LABEL', value: NODE_NAME),
+                string(name: 'MODE', value: 'all'),
+                string(name: 'SLACK_CHANNEL', value: params.SLACK_CHANNEL ?: '')
+            ])
+            build job: "Cleanup-Nodes_sandbox", parameters: cleanupNodeParams, propagate: false, wait: false
+        } else {
+            message += "No action is found."
         }
+
         // if SLACK_CHANNEL is provided, send the message in slack 
-        if (params.SLACK_CHANNEL) {
+        if (params.SLACK_CHANNEL && message) {
             slackSend channel: SLACK_CHANNEL, message: "${message}"
         }
     }
