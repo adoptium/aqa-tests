@@ -192,7 +192,11 @@ getBinaryOpenjdk()
 		arr=(${download_urls/ / })
 		download_url=()
 		for n in "${arr[@]}" ; do
-			download_url+=" ${latestBuildUrl}${n}"
+			required=true
+			checkURL "$n"
+			if [ $required != false ]; then
+				download_url+=" ${latestBuildUrl}${n}"
+			fi
 		done
 	elif [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
