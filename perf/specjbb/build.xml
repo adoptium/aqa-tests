@@ -27,10 +27,31 @@
 	</target>
 
 	<target name="getSpecjbbSuite" depends="init">
-		<exec executable="bash">
-			<env key="FOO" value="BAR!"/>
+        
+        <property environment="env"/>
+	    <property name="SPECJBB_DEST" value="${DEST}/suite" />
+	    <property name="SPECJBB_SRC" value="${env.SPECJBB_SRC}" />
+        <property name="JAVA_BIN" value="${env.TEST_JDK_HOME}/bin/java"/>
+		<property name="SPECJBB_JAR" value="specjbb2015.jar"/>
+        <property name="SCRIPT_LOG" value="${DEST}/getSpecjbbSuite.log"/>
+        <property name="SCRIPT_SUCCESS" value="0"/>
+
+        <exec executable="bash" failifexecutionfails="true" output="${SCRIPT_LOG}" resultproperty="SCRIPT_RESULT">
+            <env key="SPECJBB_DEST" value="${SPECJBB_DEST}"/>
+            <env key="SPECJBB_SRC" value="${SPECJBB_SRC}"/>
+            <env key="JAVA_BIN" value="${JAVA_BIN}"/>
+            <env key="SPECJBB_JAR" value="${SPECJBB_JAR}"/>
 		    <arg value="${SRC}/getSpecjbbSuite.sh"/>
-		</exec>	
+		</exec>
+        
+        <fail message="Failed to get SPECjbb suite. See the following file for more info: ${SCRIPT_LOG}">
+            <condition>
+                <not>
+                    <equals arg1="${SCRIPT_RESULT}" arg2="${SCRIPT_SUCCESS}"/>
+                </not>
+            </condition>
+        </fail> 
+        
 	</target>	
 
 	<target name="dist" depends="getSpecjbbSuite" description="generate the distribution">
