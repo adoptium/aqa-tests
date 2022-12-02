@@ -58,7 +58,7 @@ jobs:
           \`\`\`
           No builds were started.
           `;
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -87,7 +87,7 @@ jobs:
 
           Workflow Run ID: [${{ steps.workflow_run_info.outputs.id }}](${{ steps.workflow_run_info.outputs.url }})
           `;
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -174,7 +174,7 @@ jobs:
           @${{ github.actor }} Build(s) failed.
           Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -195,7 +195,7 @@ jobs:
           @${{ github.actor }} Build(s) cancelled.
           Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -216,7 +216,7 @@ jobs:
           @${{ github.actor }} Build(s) successful.
           Workflow Run ID: [${{ needs.parseComment.outputs.workflow_id }}](${{ needs.parseComment.outputs.workflow_url }})
           `;
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
