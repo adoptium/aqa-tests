@@ -377,7 +377,7 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+		if ( getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
 			// Requires SHA1 enabling for jar signers in jdk-11+
 			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
 			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
@@ -1238,7 +1238,7 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
