@@ -51,11 +51,9 @@ else
 
   # Fix For Issue https://github.com/adoptium/infrastructure/issues/2442 - Solaris PS Command Truncation
   if [ `uname` = "SunOS" ]; then
-    PSCOMMAND="/usr/ucb/ps -auxww"
-  elif [ `uname` = "Darwin" ]; then
-    PSCOMMAND="ps -eo user,pid,lstart,command"
+      PSCOMMAND="/usr/ucb/ps -uxww"
   else
-    PSCOMMAND="ps -ef"
+      PSCOMMAND="ps -fu jenkins"
   fi
 
   if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
