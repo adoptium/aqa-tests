@@ -26,12 +26,7 @@ def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Terminate any previous test related processes that are running
-	echo "PROCESSCATCH: Terminating previous test related processes which are currently on the machine:"
-	def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
-	echo "returnCode = ${statusCode}"
-	if (statusCode != 0) {
-		echo "Unable to terminate all processes."
-	}
+        terminateTestProcesses()
 
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
@@ -792,8 +787,8 @@ def testBuild() {
 				testExecution()
 			}
 		} finally {
-			// Terminate any left over java processes
-			terminateJavaProcesses()
+			// Terminate any left over test job processes
+			terminateTestProcesses()
 
 			if (!params.KEEP_WORKSPACE) {
 				// cleanWs() does not work in some cases, so set opts below
@@ -829,7 +824,7 @@ def testExecution() {
 	}
 }
 
-def terminateJavaProcesses() {
+def terminateTestProcesses() {
 	echo "PROCESSCATCH: Terminating any hung/left over test processes:"
 
         def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
