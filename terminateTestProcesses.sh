@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 set -euxo pipefail
 
 # If Windows use PowerShell
