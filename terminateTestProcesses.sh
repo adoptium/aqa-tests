@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -euxo pipefail
+
 # If Windows use PowerShell
 if [ "$OSTYPE" = "cygwin" ]; then
   echo "Windows machine, using powershell queries..."
