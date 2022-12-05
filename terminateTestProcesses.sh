@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Arg S1 : Unix current env.User
+
 # If Windows use PowerShell
 if [ "$OSTYPE" = "cygwin" ]; then
   echo "Windows machine, using powershell queries..."
@@ -53,7 +55,7 @@ else
   if [ `uname` = "SunOS" ]; then
       PSCOMMAND="/usr/ucb/ps -uxww"
   else
-      PSCOMMAND="ps -fu jenkins"
+      PSCOMMAND="ps -fu $1"
   fi
 
   if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
