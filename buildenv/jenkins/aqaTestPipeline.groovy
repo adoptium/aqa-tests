@@ -14,8 +14,14 @@ def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
 def LABEL = (params.LABEL) ?: ""
 def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
+def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ?: ""
 
 def JOBS = [:]
+
+// Set the AQA_TEST_PIPELINE Jenkins job displayName if set
+if (PIPELINE_DISPLAY_NAME != "") {
+    currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
+}
 
 def suffix = ""
 if (TEST_FLAG) {
