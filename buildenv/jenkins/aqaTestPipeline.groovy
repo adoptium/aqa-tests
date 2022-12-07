@@ -17,7 +17,7 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 // Use BUILD_USER_ID if set as default PIPELINE_DISPLAY_NAME suffix
 //def BUILD_USER_SUFFIX = (BUILD_USER_IDD) ? " - ${BUILD_USER_IDD}" : ""
-def BUILD_USER_SUFFIX = (BUILD_USER_ID) ? "${BUILD_USER_ID}" : "?"
+def BUILD_USER_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID}" : "?"
 def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.number} - ${params.PIPELINE_DISPLAY_NAME}" : "#${currentBuild.number}${BUILD_USER_SUFFIX}"
 
 def JOBS = [:]
