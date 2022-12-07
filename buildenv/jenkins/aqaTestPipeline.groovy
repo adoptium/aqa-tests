@@ -15,7 +15,14 @@ def LABEL = (params.LABEL) ?: ""
 def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
+// Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
+def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
+def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.number} - ${params.PIPELINE_DISPLAY_NAME}" : "#${currentBuild.number} - ${DEFAULT_SUFFIX}"
+
 def JOBS = [:]
+
+// Set the AQA_TEST_PIPELINE Jenkins job displayName
+currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 def suffix = ""
 if (TEST_FLAG) {
