@@ -14,14 +14,15 @@ def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
 def LABEL = (params.LABEL) ?: ""
 def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
-def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ?: ""
+
+// Use BUILD_USER_ID if set as default PIPELINE_DISPLAY_NAME suffix
+def BUILD_USER_SUFFIX = (BUILD_USER_IDD) ? " - ${BUILD_USER_IDD}" : ""
+def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.number} - ${params.PIPELINE_DISPLAY_NAME}" : "#${currentBuild.number}${BUILD_USER_SUFFIX}"
 
 def JOBS = [:]
 
-// Set the AQA_TEST_PIPELINE Jenkins job displayName if set
-if (PIPELINE_DISPLAY_NAME != "") {
-    currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
-}
+// Set the AQA_TEST_PIPELINE Jenkins job displayName
+currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 def suffix = ""
 if (TEST_FLAG) {
