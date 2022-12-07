@@ -2,11 +2,11 @@
 
 # Arg S1 : Unix current env.User
 
-# If Windows use PowerShell
+# If Windows uses PowerShell
 if [ "$OSTYPE" = "cygwin" ]; then
   echo "Windows machine, using powershell queries..."
 
-  # Match anything that most likely test job or process related
+  # Match anything that is most likely a test job or process related
   match_str="(CommandLine like '%java%jck%' or \
              CommandLine like '%openjdkbinary%java%' or \
              CommandLine like '%java%javatest%' or \
@@ -22,36 +22,34 @@ if [ "$OSTYPE" = "cygwin" ]; then
               not CommandLine like '%agent.jar%' and \
               not CommandLine like '%grep%'"
 
-  C=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+  count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
   
-  if [ $C -gt 0 ]; then
+  if [ $count -gt 0 ]; then
       echo Windows rogue processes detected, attempting to stop them..
       powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
       powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}).Terminate()"
       uname | grep CYGWIN 2>/dev/null || uptime
+      echo Sleeping for 10 seconds...
       sleep 10
       uname | grep CYGWIN 2>/dev/null || uptime
-      C=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
-      if [ $C -gt 0 ]; then
-        echo "Cleanup failed, processes still remain..."
+      count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+      if [ $count -gt 0 ]; then
+        echo "Cleanup failed, ${count} processes still remain..."
         exit 127
       fi 
       echo "Processes stopped successfully"
   else
-      echo Woohoo - no rogue processes detected
+      echo Woohoo - no rogue processes detected!
   fi
 else
   echo "Unix type machine.."
 
-  # Match anything that most likely jck test job or process related
-  # Note: On Solaris "other user" ps output trauncated to 80 chars, so this list
-  #       needs best attempt to match first part of command line
+  # Match anything that is most likely a jck test job or process related
   match_str="java.*jck|openjdkbinary.*java|java.*javatest|java.*-Xfuture|X.*vfb|rmid|rmiregistry|tnameserv|make"
 
   # Ignore Jenkins agent and grep cmd
   ignore_str="remoting.jar|agent.jar|grep"
 
-  # Fix For Issue https://github.com/adoptium/infrastructure/issues/2442 - Solaris PS Command Truncation
   if [ `uname` = "SunOS" ]; then
       PSCOMMAND="/usr/ucb/ps -uxww"
   else
@@ -60,9 +58,10 @@ else
 
   if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
       echo Boooo - there are rogue processes kicking about
-      echo Issuing a kill to all processes shown above - though this will not terminate vfb processes on AIX as we are trying to debug source of leftovers there
+      echo Issuing a kill to all processes shown above
       $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill
       uname | grep CYGWIN 2>/dev/null || uptime
+      echo Sleeping for 10 seconds...
       sleep 10
       uname | grep CYGWIN 2>/dev/null || uptime
       if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
@@ -76,7 +75,7 @@ else
       fi
       echo "Processes stopped successfully"
   else
-      echo Woohoo - no rogue processes detected
+      echo Woohoo - no rogue processes detected!
   fi
 fi
 

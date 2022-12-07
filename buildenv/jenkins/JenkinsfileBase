@@ -828,9 +828,8 @@ def terminateTestProcesses() {
 	echo "PROCESSCATCH: Terminating any hung/left over test processes:"
 
         def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
-        echo "returnCode = ${statusCode}"
         if (statusCode != 0) {
-                echo "Unable to terminate all processes."
+                echo "rc = ${statusCode}, Unable to terminate all processes."
         } 
 }
 
