@@ -88,6 +88,9 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	env.TKG_ITERATIONS = params.TKG_ITERATIONS ? "${params.TKG_ITERATIONS}".toInteger() : 1
+	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false
+	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
