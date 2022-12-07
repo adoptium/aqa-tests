@@ -11,7 +11,6 @@ if [ "$OSTYPE" = "cygwin" ]; then
              CommandLine like '%openjdkbinary%java%' or \
              CommandLine like '%java%javatest%' or \
              CommandLine like '%java%-Xfuture%' or \
-             CommandLine like '%X%vfb%' or \
              CommandLine like '%rmid%' or \
              CommandLine like '%rmiregistry%' or \
              CommandLine like '%tnameserv%' or \
