@@ -3,7 +3,7 @@
 # Arg S1 : Unix current env.User
 
 # If Windows uses PowerShell
-if [ "$OSTYPE" = "cygwin" ]; then
+if [ "$OS" = "Windows_NT" ]; then
   echo "Windows machine, using powershell queries..."
 
   # Match anything that is most likely a test job or process related
