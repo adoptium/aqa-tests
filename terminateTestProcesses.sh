@@ -27,10 +27,8 @@ if [ "$OS" = "Windows_NT" ]; then
       echo Windows rogue processes detected, attempting to stop them..
       powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
       powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}).Terminate()"
-      uname | grep CYGWIN 2>/dev/null || uptime
       echo Sleeping for 10 seconds...
       sleep 10
-      uname | grep CYGWIN 2>/dev/null || uptime
       count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
       if [ $count -gt 0 ]; then
         echo "Cleanup failed, ${count} processes still remain..."
@@ -59,10 +57,8 @@ else
       echo Boooo - there are rogue processes kicking about
       echo Issuing a kill to all processes shown above
       $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill
-      uname | grep CYGWIN 2>/dev/null || uptime
       echo Sleeping for 10 seconds...
       sleep 10
-      uname | grep CYGWIN 2>/dev/null || uptime
       if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
         echo Still processes left going to remove those with kill -KILL ...
         $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill -KILL
