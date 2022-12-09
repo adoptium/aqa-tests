@@ -31,15 +31,16 @@ ifeq ($(OS),FreeBSD)
 endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
-	MEMORY_SIZE:=$(shell \
-		expr `wmic computersystem get totalphysicalmemory -value | grep = \
-		| cut -d "=" -f 2-` / 1024 / 1024 \
-		)
+	MEMORY_SIZE:=$(shell expr `wmic computersystem get totalphysicalmemory -value | grep "=" | cut -d"=" -f2 | tr -d '[:space:]'` / 1024 / 1024)
 endif
 ifeq ($(OS),SunOS)	
 	NPROCS:=$(shell psrinfo | wc -l)
 	MEMORY_SIZE:=$(shell prtconf | awk '/^Memory size:/{print int($$3/1024)}')
 endif	
+ifeq ($(OS),AIX)
+	NPROCS:=$(shell lparstat -m | grep lcpu= | sed "s/.*\(lcpu=[0-9]*\).*/\1/" | cut -d'=' -f2)
+	MEMORY_SIZE:=$(shell lparstat -m | grep mem= | sed "s/.*\(mem=[0-9]*\).*/\1/" | cut -d'=' -f2)
+endif
 ifeq ($(OS),OS/390)
 	EXTRA_OPTIONS += -Dcom.ibm.tools.attach.enable=yes
 endif

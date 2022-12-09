@@ -121,10 +121,7 @@ ifeq ($(OS),FreeBSD)
 endif
 ifeq ($(CYGWIN),1)
         NPROCS:=$(NUMBER_OF_PROCESSORS)
-        MEMORY_SIZE:=$(shell \
-                expr `wmic computersystem get totalphysicalmemory -value | grep = \
-                | cut -d "=" -f 2-` / 1024 / 1024 \
-                )
+        MEMORY_SIZE:=$(shell expr `wmic computersystem get totalphysicalmemory -value | grep "=" | cut -d"=" -f2 | tr -d '[:space:]'` / 1024 / 1024)
 endif
 ifeq ($(OS),SunOS)
         NPROCS:=$(shell psrinfo | wc -l)
