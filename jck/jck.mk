@@ -97,12 +97,61 @@ ifndef APPLICATION_OPTIONS
    APPLICATION_OPTIONS :=
 endif
 
+# JavaTestRunner by default can only determine max concurrency based upon the number of CPUs
+# it has no knowledge of the host memory capacity, so it is better to throttle concurrency
+# here where we can evaluate the host memory and cpu capacity together.
+# Defaults to start with:
+NPROCS:=1
+# Memory size in MB
+MEMORY_SIZE:=1024
+
+OS:=$(shell uname -s)
+
+ifeq ($(OS),Linux)
+        NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
+        MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [ -r /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`; else CGMEM=`expr $${KMEMMB} \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1048576`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+endif
+ifeq ($(OS),Darwin)
+        NPROCS:=$(shell sysctl -n hw.ncpu)
+        MEMORY_SIZE:=$(shell expr `sysctl -n hw.memsize` / 1024 / 1024)
+endif
+ifeq ($(OS),FreeBSD)
+        NPROCS:=$(shell sysctl -n hw.ncpu)
+        MEMORY_SIZE:=$(shell expr `sysctl -n hw.memsize` / 1024 / 1024)
+endif
+ifeq ($(CYGWIN),1)
+        NPROCS:=$(NUMBER_OF_PROCESSORS)
+        MEMORY_SIZE:=$(shell \
+                expr `wmic computersystem get totalphysicalmemory -value | grep = \
+                | cut -d "=" -f 2-` / 1024 / 1024 \
+                )
+endif
+ifeq ($(OS),SunOS)
+        NPROCS:=$(shell psrinfo | wc -l)
+        MEMORY_SIZE:=$(shell prtconf | awk '/^Memory size:/{print int($$3/1024)}')
+endif
+
+# Concurrency for Jck runner: min(NPROCS, MEM_IN_GB).
+# Note: Any concurrency=<int> specified in APPLICATIONS_OPTIONS or testsuite playlist will take precedence.
+MEM_IN_GB := $(shell expr $(MEMORY_SIZE) / 1024)
+ifeq ($(shell expr $(NPROCS) \> $(MEM_IN_GB)), 1)
+        CONC := $(MEM_IN_GB)
+else
+        CONC := $(NPROCS)
+endif
+# Can't determine cores on zOS, use a reasonable default
+ifeq ($(OS),OS/390)
+        CONC := 4
+endif
+
+$(warning Jck concurrency determined from host environment OS=$(OS), CPUs=$(NPROCS), Memory=$(MEM_IN_GB) Gb. Using concurrency=$(CONC))
+
 JCK_CMD_TEMPLATE = $(JAVA_COMMAND)
 ifeq ($(USE_JRE),1)
   JCK_CMD_TEMPLATE = $(JRE_COMMAND)
 endif
 
-JCK_CMD_TEMPLATE += -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
+JCK_CMD_TEMPLATE += -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) concurrency=$(CONC) $(APPLICATION_OPTIONS)
 
 VERIFIER_INSTRUCTIONS_TESTS_GROUP1=$(Q)vm/verifier/instructions/aaload;vm/verifier/instructions/aastore;vm/verifier/instructions/anewarray;vm/verifier/instructions/areturn;vm/verifier/instructions/baload;vm/verifier/instructions/bastore;vm/verifier/instructions/bipush;vm/verifier/instructions/caload;vm/verifier/instructions/castore;vm/verifier/instructions/d2f;vm/verifier/instructions/d2i;vm/verifier/instructions/d2l;vm/verifier/instructions/dadd;vm/verifier/instructions/daload;vm/verifier/instructions/dastore;vm/verifier/instructions/dcmp;vm/verifier/instructions/dconst;vm/verifier/instructions/ddiv;vm/verifier/instructions/dmul;vm/verifier/instructions/dneg;vm/verifier/instructions/drem;vm/verifier/instructions/dreturn;vm/verifier/instructions/dsub;vm/verifier/instructions/dup;vm/verifier/instructions/dup2$(Q)
 VERIFIER_INSTRUCTIONS_TESTS_GROUP2=$(Q)vm/verifier/instructions/dup2x1;vm/verifier/instructions/dup2x2;vm/verifier/instructions/dupx1;vm/verifier/instructions/dupx2;vm/verifier/instructions/f2d;vm/verifier/instructions/f2i;vm/verifier/instructions/f2l;vm/verifier/instructions/fadd;vm/verifier/instructions/faload;vm/verifier/instructions/fastore;vm/verifier/instructions/fcmp;vm/verifier/instructions/fconst;vm/verifier/instructions/fdiv;vm/verifier/instructions/fmul;vm/verifier/instructions/fneg;vm/verifier/instructions/frem;vm/verifier/instructions/freturn;vm/verifier/instructions/fsub;vm/verifier/instructions/getfield;vm/verifier/instructions/getstatic;vm/verifier/instructions/i2b;vm/verifier/instructions/i2c;vm/verifier/instructions/i2d;vm/verifier/instructions/i2f;vm/verifier/instructions/i2l$(Q)
