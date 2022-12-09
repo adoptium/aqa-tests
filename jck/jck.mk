@@ -130,6 +130,10 @@ ifeq ($(OS),SunOS)
         NPROCS:=$(shell psrinfo | wc -l)
         MEMORY_SIZE:=$(shell prtconf | awk '/^Memory size:/{print int($$3/1024)}')
 endif
+ifeq ($(OS),AIX)
+        NPROCS:=$(shell lparstat -m | grep lcpu= | sed "s/.*\(lcpu=[0-9]*\).*/\1/" | cut -d'=' -f2)
+        MEMORY_SIZE:=$(shell lparstat -m | grep mem= | sed "s/.*\(mem=[0-9]*\).*/\1/" | cut -d'=' -f2)
+endif
 
 # Concurrency for Jck runner: min(NPROCS, MEM_IN_GB).
 # Note: Any concurrency=<int> specified in APPLICATIONS_OPTIONS or testsuite playlist will take precedence.
