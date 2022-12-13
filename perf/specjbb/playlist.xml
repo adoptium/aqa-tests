@@ -16,7 +16,6 @@
     <include>testenv.mk</include>
 	<test>
 		<testCaseName>specjbb-multijvm-simple</testCaseName>
-        <!--<command>export JAVA=$(JAVA_COMMAND); cd $(JVM_TEST_ROOT)/perf/specjbb; source env.sh; bash scripts/run/run_multi.sh; echo "Hello"</command>-->
         <command>source $(RUN_OPTIONS)/specjbb-multijvm-simple.sh; bash $(RUN_SCRIPTS)/run_multi.sh; $(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
