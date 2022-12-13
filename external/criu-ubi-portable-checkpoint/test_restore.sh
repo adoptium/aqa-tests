@@ -19,6 +19,11 @@ checkpoint_folders="/aqa-tests/TKG/output_*/cmdLineTester_criu_keepCheckpoint*"
 output_file="testOutput" # File "testOutput" is used to store all outputs
 result_code=0
 
+echo "export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load";
+export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load
+echo "export LD_BIND_NOT=on";
+export LD_BIND_NOT=on
+
 for checkpoint_folder in $checkpoint_folders
 do
     cd $checkpoint_folder

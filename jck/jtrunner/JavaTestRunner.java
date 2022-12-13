@@ -246,7 +246,12 @@ public class JavaTestRunner {
 		}
 
 		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+                if (platform.contains("win")) {
+                        // Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
+			fileUrl = "file:///" + jckBase.replace("\\","/") + "/testsuite.jtt";
+                } else {
+			fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+		}
 		System.out.println("Using jti file "+ jtiFile);
 		
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
@@ -307,7 +312,7 @@ public class JavaTestRunner {
 
 		if (task == null || !task.equals("custom")) {
 			testFlagJtxFullPath = "";
-			if (testFlag != null) {
+			if (testFlag != null && testFlag.length() > 0 ) {
 				// Look for a known failures list file specific to TEST_FLAG testing
 				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
 				File testFlagJtxFile = new File(testFlagJtxFullPath);
@@ -372,7 +377,7 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+		if ( getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
 			// Requires SHA1 enabling for jar signers in jdk-11+
 			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
 			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
@@ -456,7 +461,7 @@ public class JavaTestRunner {
 		if (task == null || !task.equals("custom")) {  
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
 		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
 		}
 		
 		fileContent += "runTests" + ";\n";
@@ -983,9 +988,9 @@ public class JavaTestRunner {
 			int jckRC = -1;
 			boolean endedWithinTimeLimit = false;
 			
-			// Use the presence of a '/' to signify that we are running a subset of tests.
-			// If one of the highest level test nodes is being run it is likely to take a long time.
-			if ( tests.contains("/") && !isRiscv ) {
+			// Use the presence of more than one '/' to signify that we are running a smaller subset of tests.
+			// If one of the highest level subsets of tests is being run it is likely to take a long time.
+			if ( tests.chars().filter(c -> c == '/').count() > 1 && !isRiscv ) {
 				timeout = 4;
 			}
 
@@ -1233,7 +1238,7 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 11 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}

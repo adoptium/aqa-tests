@@ -155,6 +155,13 @@ ifneq ($(JDK_VERSION),8)
 	endif
 endif
 
+# Suitable values: 'docker' or 'podman'
+CONTAINER_TEST_ENGINE=docker
+# Run container tests on latest UBI 8 base image
+OPENJDK_CONTAINER_TEST_OPTS:=-Djdk.test.docker.image.name=registry.access.redhat.com/ubi8/ubi -Djdk.test.docker.image.version=latest
+ifneq ($(CONTAINER_TEST_ENGINE),docker)
+  OPENJDK_CONTAINER_TEST_OPTS += -Djdk.test.container.command=$(CONTAINER_TEST_ENGINE)
+endif
 PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk$(JDK_VERSION).txt
 PROBLEM_LIST_DEFAULT:=excludes/ProblemList_openjdk11.txt
 TEST_VARIATION_DUMP:=
@@ -189,7 +196,7 @@ ifeq ($(TEST_FLAG), FIPS)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
-ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba))
+ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft))
 	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
 endif
 

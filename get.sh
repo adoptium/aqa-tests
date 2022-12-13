@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -eo pipefail
 
 SDKDIR=""
 TESTDIR="$(pwd)"
@@ -192,7 +192,11 @@ getBinaryOpenjdk()
 		arr=(${download_urls/ / })
 		download_url=()
 		for n in "${arr[@]}" ; do
-			download_url+=" ${latestBuildUrl}${n}"
+			required=true
+			checkURL "$n"
+			if [ $required != false ]; then
+				download_url+=" ${latestBuildUrl}${n}"
+			fi
 		done
 	elif [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
@@ -485,8 +489,8 @@ executeCmdWithRetry()
 		rt_code=$?
 		count=$(( $count + 1 ))
 	done
-	return "$rt_code"
 	set -e
+	return "$rt_code"	
 }
 
 getFunctionalTestMaterial()

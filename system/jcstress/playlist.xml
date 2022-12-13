@@ -215,6 +215,13 @@
 		<testCaseName>jcstress_ThreadMXBeanAlloc</testCaseName>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20220908.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadMXBeanAlloc; \
 			$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>git_ibm/runtimes/backlog/issues/979</comment>
+				<impl>openj9</impl>
+				<version>8+</version>
+			</disable>
+		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>
@@ -239,9 +246,9 @@
 			$(TEST_STATUS)</command>
 		<disables>
 			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/16178</comment>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16178 runtimes/backlog/979</comment>
 				<impl>openj9</impl>
-				<version>11</version>
+				<version>8+</version>
 			</disable>
 		</disables>
 		<levels>
@@ -504,6 +511,13 @@
 		<testCaseName>jcstress_DekkerTest</testCaseName>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20220908.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerTest; \
 			$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>git_ibm/runtimes/backlog/issues/973 and 979</comment>
+				<impl>openj9</impl>
+				<version>8+</version>
+			</disable>
+		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>
@@ -1823,17 +1837,6 @@
 	<test>
 		<testCaseName>jcstress_DekkerRelaxation2Test</testCaseName>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20220908.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerRelaxation2Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DekkerTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20220908.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerTest; \
 			$(TEST_STATUS)</command>
 		<levels>
 			<level>dev</level>

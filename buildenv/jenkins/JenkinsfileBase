@@ -25,13 +25,8 @@ def makeTest(testParam) {
 def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
-	// Check what existing java processes are running
-	echo "PROCESSCATCH: Java processes which are currently on the machine:"
-	if (PLATFORM.contains("windows")) {
-		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
-	} else {
-		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
-	}
+	// Terminate any previous test related processes that are running
+        terminateTestProcesses()
 
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
@@ -88,6 +83,9 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	env.TKG_ITERATIONS = params.TKG_ITERATIONS ? "${params.TKG_ITERATIONS}".toInteger() : 1
+	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false
+	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 
 	if (JOB_NAME.contains("Grinder")) {
@@ -131,7 +129,7 @@ def setupEnv() {
 	env.OCP_SERVER = params.OCP_SERVER ? params.OCP_SERVER : ''
 	env.OCP_TOKEN = params.OCP_TOKEN ? params.OCP_TOKEN : ''
 
-	if (env.BUILD_LIST == 'openjdk' ||  env.BUILD_LIST.contains('external')) {
+	if (env.BUILD_LIST.contains('external')) {
 		env.DIAGNOSTICLEVEL ='noDetails'
 	}
 
@@ -368,12 +366,6 @@ def setup() {
 		} else {
 			CUSTOMIZED_SDK_URL_OPTION = ""
 		}
-		if (params.CUSTOMIZED_SDK_SOURCE_URL) {
-			SDK_RESOURCE = "customized"
-			CUSTOMIZED_SDK_SOURCE_URL_OPTION = "-S '${params.CUSTOMIZED_SDK_SOURCE_URL}'"
-		} else {
-			CUSTOMIZED_SDK_SOURCE_URL_OPTION = ""
-		}
 
 		if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 			timeout(time: 1, unit: 'HOURS') {
@@ -416,10 +408,6 @@ def setup() {
 			env.STF_REPO = stf[0]
 			env.STF_BRANCH = stf[1]
 		}
-
-
-
-
 		// vendor test
 		// expect VENDOR_TEST_* to be comma separated string parameters
 		VENDOR_TEST_REPOS = (params.VENDOR_TEST_REPOS) ? "--vendor_repos \"${params.VENDOR_TEST_REPOS}\"" : ""
@@ -436,7 +424,7 @@ def setup() {
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
 
 
-		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CUSTOMIZED_SDK_SOURCE_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
+		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 
 		dir( WORKSPACE) {
@@ -802,8 +790,8 @@ def testBuild() {
 				testExecution()
 			}
 		} finally {
-			// Terminate any left over java processes
-			terminateJavaProcesses()
+			// Terminate any left over test job processes
+			terminateTestProcesses()
 
 			if (!params.KEEP_WORKSPACE) {
 				// cleanWs() does not work in some cases, so set opts below
@@ -839,50 +827,13 @@ def testExecution() {
 	}
 }
 
-def terminateJavaProcesses() {
-	// Attempt up to 30 times or until no more Java processes spawn...
-	for(int i=0; i<30; i++) {
-		echo 'terminateJavaProcesses iteration: '+(i+1)
+def terminateTestProcesses() {
+	echo "PROCESSCATCH: Terminating any hung/left over test processes:"
 
-		// Terminate Java processes
-		if (PLATFORM.contains("windows")) {
-			// Windows code based on https://github.com/adoptium/infrastructure/issues/1669#issuecomment-727863096
-			echo "PROCESSCATCH: Showing java processes - one will be the jenkins agent - removing any of these created since ${env.JOBSTARTTIME}:"
-			sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
-
-			def C=sh(script:'powershell -c "(Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | measure).count" | tr -d \\\\r', returnStdout:true)
-			echo "Number of java processes = ${C}"
-			if (!C.trim().equals("0")) {
-				echo "PROCESSCATCH: Attempting to stop the following processes:"
-				sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")}"', returnStatus:true)
-				def sh_rc=sh(script:'powershell -c "Get-Process java | select id,processname,starttime | where {\\$_.StartTime -gt (Get-Date -Date \\"'+"${env.JOBSTARTTIME}"+'\\")} | stop-process"', returnStatus:true)
-				echo "stop-process rc = ${sh_rc}"
-			} else {
-				// No more spawned, we are done...
-				break
-			}
-		} else {
-			// Non-Windows code from https://ci.adoptopenjdk.net/job/SXA-processCheck
-			echo "PROCESSCATCH: Checking for any leftover java processes on the machine"
-			def sh_rc=sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus: true)
-			if (sh_rc == 0) {
-				echo "PROCESSCATCH: There are rogue processes still on the machine as per the list above"
-				// TODO: We could kill them, but SXA-processCheck covers this in the adoptopenjdk jenkins
-				// And this is likely to be replaced as part of https://github.com/adoptium/TKG/issues/45
-			}
-			break
-		}
-
-		// Pause between iterations in case of spawning processes
-		sleep(2)
-	}
-
-	echo "PROCESSCATCH: Removed processes - here is what is remaining:"
-	if (PLATFORM.contains("windows")) {
-		sh(script:'powershell -c "Get-Process java | select id,processname,starttime"', returnStatus:true)
-	} else {
-		sh(script:'ps -fu '+"${env.USER}"+' | grep java | egrep -v "remoting.jar|agent.jar|grep"', returnStatus:true)
-	}
+        def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
+        if (statusCode != 0) {
+                echo "rc = ${statusCode}, Unable to terminate all processes."
+        } 
 }
 
 def getJDKImpl(jvm_version) {
