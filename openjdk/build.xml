@@ -24,7 +24,22 @@
 	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
 	<property name="src" location="." />
 	<property environment="env" />
-	<property name="REFERENCE_REPO" value="--reference-if-able ${env.HOME}/openjdk_cache" />
+
+	<if>
+		<contains string="${SPEC}" substring="win" />
+		<then>
+			<path id="home.path">
+				<pathelement path="${env.HOME}" />
+			</path>
+			<pathconvert targetos="unix" property="home.unix" refid="home.path"/>
+			<echo message="pathconvert ${env.HOME} to unix on windows. home.unix is set to ${home.unix}" />
+		</then>
+		<else>
+			<property name="home.unix" value="${env.HOME}" />
+		</else>
+	</if>
+	
+	<property name="REFERENCE_REPO" value="--reference-if-able ${home.unix}/openjdk_cache" />
 
 	<if>
 		<or>
