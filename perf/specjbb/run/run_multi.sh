@@ -24,6 +24,8 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
   echo "Launching SPECjbb2015 in MultiJVM mode..."
   echo
 
+  JAVA="${JAVA%\"}"
+  JAVA="${JAVA#\"}"
   echo "Start Controller JVM"
   $JAVA $JAVA_OPTS_C $SPEC_OPTS_C -jar $SPECJBB_JAR -m MULTICONTROLLER $MODE_ARGS_C 2>controller.log > controller.out &
 
