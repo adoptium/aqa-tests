@@ -264,9 +264,9 @@
 			$(TEST_STATUS)</command>
 		<disables>
 			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/16178</comment>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16178 runtimes/backlog/988</comment>
 				<impl>openj9</impl>
-				<version>11</version>
+				<version>8+</version>
 			</disable>
 		</disables>
 		<levels>
@@ -489,6 +489,13 @@
 		<testCaseName>jcstress_VolatileIRIWTest</testCaseName>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20220908.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileIRIWTest; \
 			$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>runtimes/backlog/988</comment>
+				<impl>openj9</impl>
+				<version>8+</version>
+			</disable>
+		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>
