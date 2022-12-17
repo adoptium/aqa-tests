@@ -1,6 +1,9 @@
 #!/bin/sh
 
-# Arg S1 : Unix current env.User
+# Arg $1 : Unix current env.User
+# Arg $2 : Terminate process "TERMINATE", or just display "DISPLAY"
+
+echo "terminateTestProcesses.sh: $1 $2"
 
 # If Windows uses PowerShell
 if [ "$OS" = "Windows_NT" ]; then
@@ -26,15 +29,17 @@ if [ "$OS" = "Windows_NT" ]; then
   if [ $count -gt 0 ]; then
       echo Windows rogue processes detected, attempting to stop them..
       powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
-      powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}).Terminate()"
-      echo Sleeping for 10 seconds...
-      sleep 10
-      count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
-      if [ $count -gt 0 ]; then
-        echo "Cleanup failed, ${count} processes still remain..."
-        exit 127
-      fi 
-      echo "Processes stopped successfully"
+      if [ "$2" = "TERMINATE" ]; then
+          powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}).Terminate()"
+          echo Sleeping for 10 seconds...
+          sleep 10
+          count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+          if [ $count -gt 0 ]; then
+            echo "Cleanup failed, ${count} processes still remain..."
+            exit 127
+          fi 
+          echo "Processes stopped successfully"
+      fi
   else
       echo Woohoo - no rogue processes detected!
   fi
@@ -55,20 +60,22 @@ else
 
   if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
       echo Boooo - there are rogue processes kicking about
-      echo Issuing a kill to all processes shown above
-      $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill
-      echo Sleeping for 10 seconds...
-      sleep 10
-      if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
-        echo Still processes left going to remove those with kill -KILL ...
-        $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill -KILL
-        echo DONE - One final check ...
-        if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
-          echo "Cleanup failed, processes still remain..."
-          exit 127
-        fi
+      if [ "$2" = "TERMINATE" ]; then
+          echo Issuing a kill to all processes shown above
+          $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill
+          echo Sleeping for 10 seconds...
+          sleep 10
+          if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
+            echo Still processes left going to remove those with kill -KILL ...
+            $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill -KILL
+            echo DONE - One final check ...
+            if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
+              echo "Cleanup failed, processes still remain..."
+              exit 127
+            fi
+          fi
+          echo "Processes stopped successfully"
       fi
-      echo "Processes stopped successfully"
   else
       echo Woohoo - no rogue processes detected!
   fi
