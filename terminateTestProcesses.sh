@@ -53,17 +53,29 @@ else
       PSCOMMAND="ps -fu $1"
   fi
 
-  if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
+  LINUX_DOCKER_FILTER=""
+  if [ `uname` = "Linux" ]; then
+      if egrep "\/docker\/" /proc/1/cgroup >nul; then
+          echo Running in a Linux docker container
+      else
+          echo Running on a Linux host
+          # Filter any possible docker container processes by cgroup containing "/docker"
+          PSCOMMAND="ps -o cgroup,pid,state,tname,time,command -u $1"
+          LINUX_DOCKER_FILTER="| egrep -v '^[^[:space:]]+\/docker'"
+      fi
+  fi
+
+  if eval "$PSCOMMAND | egrep '${match_str}' | egrep -v '${ignore_str}' ${LINUX_DOCKER_FILTER}"; then
       echo Boooo - there are rogue processes kicking about
       echo Issuing a kill to all processes shown above
-      $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill
+      eval "$PSCOMMAND | egrep '${match_str}' | egrep -v '${ignore_str}' ${LINUX_DOCKER_FILTER} | awk '{print \$2}' | xargs -n1 kill"
       echo Sleeping for 10 seconds...
       sleep 10
-      if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
+      if eval "$PSCOMMAND | egrep '${match_str}' | egrep -v '${ignore_str}' ${LINUX_DOCKER_FILTER}"; then
         echo Still processes left going to remove those with kill -KILL ...
-        $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}" | awk '{print $2}' | xargs -n1 kill -KILL
+        eval "$PSCOMMAND | egrep '${match_str}' | egrep -v '${ignore_str}' ${LINUX_DOCKER_FILTER} | awk '{print \$2}' | xargs -n1 kill -KILL"
         echo DONE - One final check ...
-        if $PSCOMMAND | egrep "${match_str}" | egrep -v "${ignore_str}"; then
+        if eval "$PSCOMMAND | egrep '${match_str}' | egrep -v '${ignore_str}' ${LINUX_DOCKER_FILTER}"; then
           echo "Cleanup failed, processes still remain..."
           exit 127
         fi
