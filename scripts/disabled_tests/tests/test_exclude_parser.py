@@ -17,6 +17,7 @@ platform_map = {
     "linux-ppc32": "ppc32_linux",
     "linux-ppc64": "ppc64_linux",
     "linux-riscv64": "riscv64_linux",
+    "linux-loongarch64": "loongarch64_linux",
     "linux-s390": "s390_linux",
     "solaris-sparcv9": "sparcv9_solaris",
     "solaris-x86-64": "x86-64_solaris",
