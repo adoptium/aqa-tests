@@ -223,6 +223,7 @@ public class JavaTestRunner {
 					if (!jckVersion.equals(actualJckVersion)) {
 						System.out.println("test-args jckversion " + jckVersion + " does not match actual jckversion " + actualJckVersion + ". Using actual jckversion " + actualJckVersion);
 						jckVersion = actualJckVersion;
+						jckVersionNo = jckVersion.replace("jck", "");
 					}
 				}
 			}
