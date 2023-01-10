@@ -235,7 +235,7 @@ ifeq ($(OS),win)
 	RANDOMGEN=cd $(FULLOUTDIR) && $(LINK_CMD) $(LFLAGS)"$(FULLOUTDIR)$(D)$@" $(FULLOUTDIR)$(D)com_sun_management_mbeans_loading_RandomGen.obj
 endif
 
-ifeq ($(shell test $(JDK_VERSION) -gt 18; echo $$?),0)
+ifeq ($(JDK_VERSION),19)
 	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)jckforeign.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
 else
 	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
