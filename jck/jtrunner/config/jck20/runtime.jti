@@ -1,15 +1,15 @@
 #JavaTest Harness Configuration Interview
-DESCRIPTION=JCK13 runtime template jti for STF automation
+DESCRIPTION=JCK20 runtime template jti for STF automation
 INTERVIEW=com.sun.jck.interview.JCKParameters
 LOCALE=en_US
 NAME=jck_runtime
 QUESTION=jck.end
-# TESTSUITE example: /jck/jck13/JCK-runtime-13
+# TESTSUITE example: /jck/jck20/JCK-runtime-20
 TESTSUITE=will_be_set_by_test_automation_at_run_time
-# WORKDIR example: /home/user/JCK-runtime-13
+# WORKDIR example: /home/user/JCK-runtime-20
 WORKDIR=will_be_set_by_test_automation_at_run_time
 jck.concurrency.concurrency=1
-jck.env.description=JCK13 runtime template jti for STF automation
+jck.env.description=JCK20 runtime template jti for STF automation
 jck.env.envName=jck_runtime
 jck.env.moduleSystem.compilerOptions=compilerAddModsOptionTemplate\=\ncompilerModulePathOptionTemplate\=\ncompilerModuleSourcePathOptionTemplate\=\n
 jck.env.moduleSystem.vmOptions=vmModuleEntryOptionTemplate\=--module \#\nvmModulePathOptionTemplate\=--module-path \#\nvmAddModsOptionTemplate\=--add-modules \#[,\#]\n
@@ -38,7 +38,7 @@ jck.env.runtime.fp.floatMinExponent=
 jck.env.runtime.fp.format=Intel, 15 bit exponent
 jck.env.runtime.fp.supportExtended=Yes
 jck.env.runtime.fp=Yes
-jck.env.runtime.ftpSupport=No
+jck.env.runtime.ftpSupport=Yes
 # jck.env.runtime.idl.orbHost example: xxxx.xxxx.xxxx.com
 jck.env.runtime.idl.orbHost=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.idl.orbPort=9876
@@ -112,12 +112,12 @@ jck.env.runtime.testExecute.additionalClasspath=
 jck.env.runtime.testExecute.classpath=command line option
 jck.env.runtime.testExecute.classpathEnv=CLASSPATH
 jck.env.runtime.testExecute.classpathOpt=-classpath \#
-# jck.env.runtime.testExecute.cmdAsFile example: /home/user/jdk13/jre/bin/java
+# jck.env.runtime.testExecute.cmdAsFile example: /home/user/jdk20/jre/bin/java
 jck.env.runtime.testExecute.cmdAsFile=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.testExecute.jarExecution=Yes
 jck.env.runtime.testExecute.jarExecutionOpt=-jar \#
 jck.env.runtime.testExecute.jmx=Yes
-# jck.env.runtime.testExecute.jmxResourcePathFileValue example: /jck/jck13/natives/linux_x86-64
+# jck.env.runtime.testExecute.jmxResourcePathFileValue example: /jck/jck20/natives/linux_x86-64
 jck.env.runtime.testExecute.jmxResourcePathFileValue=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.testExecute.jni=Yes
 jck.env.runtime.testExecute.jvmti=Yes
@@ -128,7 +128,7 @@ jck.env.runtime.testExecute.libPath=environment variable
 # jck.env.runtime.testExecute.libPathEnv example: LD_LIBRARY_PATH
 jck.env.runtime.testExecute.libPathEnv=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.testExecute.moduleOptions=Yes
-# jck.env.runtime.testExecute.nativeLibPathFileValue example: /jck/jck13/natives/linux_x86-64
+# jck.env.runtime.testExecute.nativeLibPathFileValue example: /jck/jck20/natives/linux_x86-64
 jck.env.runtime.testExecute.nativeLibPathFileValue=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.testExecute.nativeLibrariesLocation=Yes
 jck.env.runtime.testExecute.nativeLibsLinkage=dynamic
@@ -142,7 +142,7 @@ jck.env.runtime.testExecute.verify=-Xfuture
 # jck.env.runtime.url.fileURL example: file\:///home/user/urlfile.txt
 jck.env.runtime.url.fileURL=will_be_set_by_test_automation_at_run_time
 # jck.env.runtime.url.ftpURL example: ftp\://user\:password@xxxx.xxxx.xxxx.com/xxx.txt
-jck.env.runtime.url.ftpURL=will_be_set_by_test_automation_at_run_time
+jck.env.runtime.url.ftpURL=ftp\://jckftp\:CqwbpqMpe4Q68kDRXj4mqxM7W@jckservices.adoptium.net/filename.txt
 # jck.env.runtime.url.httpURL example: http\://xxxx.xxxx.xxxx.com/index.html
 jck.env.runtime.url.httpURL=will_be_set_by_test_automation_at_run_time
 jck.env.runtime.url=Yes
@@ -162,7 +162,7 @@ jck.env.testPlatform.remoteNetworking=Remote network support
 jck.env.testPlatform.systemRoot=will_be_set_by_test_automation_at_run_time
 jck.env.testPlatform.typecheckerSpecific=Yes
 jck.env.testPlatform.useAgent=No
-# jck.excludeList.customFiles example: /jck/jck13/excludes/jck13.jtx\n/jck/jck13/excludes/jck13.kfl
+# jck.excludeList.customFiles example: /jck/jck20/excludes/jck20.jtx\n/jck/jck20/excludes/jck20.kfl
 jck.excludeList.customFiles=will_be_set_by_test_automation_at_run_time
 jck.excludeList.excludeListType=custom
 jck.excludeList.latestAutoCheck=No
