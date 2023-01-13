@@ -1101,7 +1101,6 @@ def run_parallel_tests() {
 				// cleanWs() does not work in some cases, so set opts below
 				cleanWs disableDeferredWipeout: true, deleteDirs: true
 				try {
-					def buildResult = ""
 					def buildPaths = ""
 					childJobs.each {
 						cjob ->
@@ -1120,12 +1119,10 @@ def run_parallel_tests() {
 							} catch (Exception e) {
 								echo 'Exception: ' + e.toString()
 								echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
-								buildResult = childResult
 							}
-					}
-					if (buildResult) {
-						echo "set build status to ${buildResult}"
-						currentBuild.result = buildResult
+							if (!currentBuild.resultIsWorseOrEqualTo(childResult)) {
+								currentBuild.result = childResult;
+							}
 					}
 					archiveAQAvitFiles()
 					if (buildPaths.length() > 0) {
