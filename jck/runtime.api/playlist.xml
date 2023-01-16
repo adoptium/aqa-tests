@@ -898,6 +898,14 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_sound</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on x64 + aarch64 Mac for backlog/issues/718</comment>
+				<platform>aarch64_mac|x86-64_mac</platform>
+				<impl>openj9</impl>
+				<version>11+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -1029,6 +1037,12 @@
 			<disable>
 				<comment>backlog/issues/567</comment>
 				<platform>.*zos.*</platform>
+			</disable>
+			<disable>
+				<comment>Temporarily disabled on x64 + aarch64 Mac for infrastructure/issues/7151</comment>
+				<platform>aarch64_mac|x86-64_mac</platform>
+				<impl>openj9</impl>
+				<version>11</version>
 			</disable>
 		</disables>
 	</test>
