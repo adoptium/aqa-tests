@@ -191,7 +191,7 @@ ifneq ($(filter 11 16, $(JDK_VERSION)),)
 endif
 
 FEATURE_PROBLEM_LIST_FILE:=
-ifeq ($(TEST_FLAG), FIPS)
+ifneq (,$(findstring FIPS, $(TEST_FLAG))) 
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
 endif
 
