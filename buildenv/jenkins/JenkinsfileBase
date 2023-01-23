@@ -828,12 +828,12 @@ def testExecution() {
 }
 
 def terminateTestProcesses() {
-	echo "PROCESSCATCH: Terminating any hung/left over test processes:"
+	echo "DISABLED due to https://github.com/adoptium/infrastructure/issues/2888 : PROCESSCATCH: Terminating any hung/left over test processes:"
 
-        def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
-        if (statusCode != 0) {
-                echo "rc = ${statusCode}, Unable to terminate all processes."
-        } 
+        //def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
+        //if (statusCode != 0) {
+        //        echo "rc = ${statusCode}, Unable to terminate all processes."
+        //} 
 }
 
 def getJDKImpl(jvm_version) {
