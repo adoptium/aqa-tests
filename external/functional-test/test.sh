@@ -15,6 +15,12 @@
 source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the functional test
 echo_setup
+
+echo "export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load";
+export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load
+echo "export LD_BIND_NOT=on";
+export LD_BIND_NOT=on
+
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
 export JDK_VERSION=
