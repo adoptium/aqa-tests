@@ -79,6 +79,7 @@ def setupEnv() {
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
 	env.FAILED_TEST_TARGET = ""
+	env.CUSTOM_TARGET_KEY_VALUE =""
 	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
@@ -974,6 +975,7 @@ def addGrinderLink() {
 	int i = 1;
 	def labelValue = ""
 	def targetValue = ""
+	def customTargetKeyValue = ""
 	def urlParams = params.findAll {
 		// Exclude separator and help text parameters from url
 		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
@@ -991,9 +993,14 @@ def addGrinderLink() {
 		if ( key == "TARGET" ) {
 			targetValue = "TARGET=${value}"
 		}
+		if ( key == "CUSTOM_TARGET") {
+			customTargetKeyValue = "CUSTOM_TARGET=${value}"
+		}
+
 	}
 	env.RERUN_LINK = url
 	env.FAILED_TEST_TARGET = targetValue
+	env.CUSTOM_TARGET_KEY_VALUE = customTargetKeyValue
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
@@ -1005,18 +1012,33 @@ def addGrinderLink() {
 def addFailedTestsGrinderLink(paths=""){
 	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
 		def failedTestList = ""
+		def jdkFailedTestCaseList = ""
+		def hotspotFailedTestCaseList = ""
 		List<String> buildPaths = paths.split(',')
 		for (def buildPath: buildPaths) {
 			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
 			for (def tapFile: tapFiles) {
 				echo "Tap file found: ${tapFile}..."
 				def file = readFile(file: "${tapFile}")
-				TapConsumer tapConsumer = TapConsumerFactory.makeTap13Consumer()
+				TapConsumer tapConsumer = TapConsumerFactory.makeTap13YamlConsumer()
 				TestSet testSet = tapConsumer.load(file)
 				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
 					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
 						failedTestList += "${failedtest},"
+						if (env.BUILD_LIST.contains('openjdk')) {
+							def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
+							if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
+								failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
+								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
+								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
+								if (failedtest.startsWith("jdk_")) {
+									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+								} else {
+									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1028,6 +1050,21 @@ def addFailedTestsGrinderLink(paths=""){
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
+			def customizedTestCases = [:]
+			if (jdkFailedTestCaseList) {
+				customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
+			} 
+			if (hotspotFailedTestCaseList) {
+				customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
+			}
+			customizedTestCases.each { target, testcases -> 
+				def tempTestCases = testcases.substring(0, testcases.length() - 1)
+				tempTestCases = tempTestCases.split(' ').toUnique().join('+')
+				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")
+				customURL = customURL.replace(env.CUSTOM_TARGET_KEY_VALUE, "CUSTOM_TARGET=$tempTestCases")
+				echo "Rerun failed ${target} test cases in Grinder with ${target}_custom target: ${customURL}"
+				currentBuild.description += "<br><a href=${customURL}> Rerun failed ${target} test cases in Grinder with ${target}_custom target</a>"
+			}
 			return failedTests;
 		}
 		return null;
