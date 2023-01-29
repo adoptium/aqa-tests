@@ -62,6 +62,7 @@ if (!binding.hasVariable('USER_CREDENTIALS_ID')) USER_CREDENTIALS_ID = ""
 if (!binding.hasVariable('GENERATE_JOBS')) GENERATE_JOBS = false
 if (!binding.hasVariable('CLOUD_PROVIDER')) CLOUD_PROVIDER = ""
 if (!binding.hasVariable('RERUN_ITERATIONS')) RERUN_ITERATIONS = "0"
+if (!binding.hasVariable('USE_GIT_SSH')) USE_GIT_SSH = false
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -437,6 +438,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('SLACK_CHANNEL', SLACK_CHANNEL, "Slack channel. e.g., #rt-jenkins")
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 							booleanParam('USE_TESTENV_PROPERTIES', USE_TESTENV_PROPERTIES.toBoolean(), "use properties defined in the testenv.properties")
+                                                        booleanParam('USE_GIT_SSH', USE_GIT_SSH.toBoolean(), "Use ssh protocol? True, if clone all repo by ssh.")
 							stringParam('RERUN_ITERATIONS', RERUN_ITERATIONS, "Optional. Number of times to repeat execution of failed test target(s).")
 						}
 						cpsScm {

@@ -141,6 +141,15 @@ def setupEnv() {
 	} else {
 		sh 'printenv'
 	}
+        if ( params.USE_GIT_SSH ) {
+                def gitGlobalConfig = fileExists('~/.gitconfig') ? sh(script:"git config --global -l", returnStdout:true) : ''
+                if (!gitGlobalConfig || !gitGlobalConfig.contains('url.git@github.com:.insteadof')) {
+                        sh "git config --global url.'git@github.com:'.insteadOf 'https://github.com/'"
+                }
+                if (!gitGlobalConfig.contains('url.git@gitlab.com:.insteadof')) {
+                        sh "git config --global url.'git@gitlab.com:'.insteadOf 'https://gitlab.com/'"
+                }
+        }
 }
 
 def setupParallelEnv() {
@@ -805,6 +814,15 @@ def testBuild() {
 					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				}
 			}
+                        if ( params.USE_GIT_SSH ) {
+                                def gitGlobalConfig = sh(script:"git config --global -l", returnStdout:true)
+                                if (gitGlobalConfig.contains('url.git@github.com:.insteadof')) {
+                                        sh "git config --global --unset url.'git@github.com:'.insteadOf"
+                                }
+                                if (gitGlobalConfig.contains('url.git@gitlab.com:.insteadof')) {
+                                        sh "git config --global --unset url.'git@gitlab.com:'.insteadOf"
+                                }
+                        }
 		}
 	}
 }
