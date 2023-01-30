@@ -680,31 +680,31 @@ def runTest( ) {
 			}
 		}
 
-		checkTestResults()
+		def resultSum = [:]
+		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+).*")
+		if (matcher?.matches()) {
+			for (int i = 1; i < matcher.groupCount(); i++) {
+				def matchVals = matcher.group(i).split(": ")
+				resultSum[matchVals[0]] = matchVals[1] as int
+			}
+			checkTestResults(resultSum)
+		} else {
+			currentBuild.result = 'FAILURE'
+			echo 'Could not find test result, set build result to FAILURE.'
+			def summary = manager.createSummary("error.svg")
+			summary.appendText("TEST BUILD FAILURE!", false)
+		}
 	}
 }
 
-def checkTestResults() {
-	def results = [:]
-	def summary = null
-
-	def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+).*")
-	if (!matcher?.matches()) {
-		currentBuild.result = 'FAILURE'
-		echo 'Could not find test result, set build result to FAILURE.'
-		summary = manager.createSummary("error.svg")
-		summary.appendText("TEST BUILD FAILURE!", false)
+def checkTestResults(results) {
+	if (results.isEmpty()) {
 		return
 	}
 
-	for (int i = 1; i < matcher.groupCount(); i++) {
-                if (matcher.group(i) != null) {
-  		    def matchVals = matcher.group(i).split(": ")
-  		    results[matchVals[0]] = matchVals[1]
-                }
-	}
+	def summary = null
 
-	if (results["TOTAL"].equals("0")) {
+	if (results["TOTAL"] == 0) {
 		currentBuild.result = 'FAILURE'
 		echo 'No test ran, set build result to FAILURE.'
 		summary = manager.createSummary("folder-delete.svg")
@@ -712,7 +712,7 @@ def checkTestResults() {
 		return
 	}
 	
-	if (!results["FAILED"].equals("0")) {
+	if (results["FAILED"] != 0) {
 		currentBuild.result = 'UNSTABLE'
 		echo 'There were test failures, set build result to UNSTABLE.'
 		summary = manager.createSummary("warning.svg")
@@ -1237,6 +1237,10 @@ def run_parallel_tests() {
 								currentBuild.result = childResult;
 							}
 					}
+
+					def resultSum = parseResultSumFromTaps()
+					checkTestResults(resultSum)
+
 					archiveAQAvitFiles()
 					if (buildPaths.length() > 0) {
 						String failedTests = addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
@@ -1249,6 +1253,33 @@ def run_parallel_tests() {
 			}
 		}
 	}
+}
+
+def parseResultSumFromTaps() {
+	def results = [:]
+	def tapFiles = findFiles(glob: "**/*.tap")
+	for (String tapFile : tapFiles) {
+		def tap = readFile(file: "${tapFile}")
+		def lines = tap.readLines()
+		def found = false
+		for (String line : lines) {
+			if ((match = line =~ /# RESULTS_SUMMARY: (TOTAL: \d+)\s*(EXECUTED: \d+)\s*(PASSED: \d+)\s*(FAILED: \d+)\s*(DISABLED: \d+)\s*(SKIPPED: \d+)/)) {
+				for (int i = 1; i < match.groupCount(); i++) {
+					def matchVals = match.group(i).split(": ")
+					if (!results[matchVals[0]]) {
+						results[matchVals[0]] = 0;
+					}
+					results[matchVals[0]] += matchVals[1] as int
+				}
+				found = true
+				break
+			}
+		}
+		if (!found) {
+			return [:]
+		}
+	}
+	return results
 }
 
 def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
