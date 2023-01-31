@@ -56,7 +56,11 @@ ifneq (,$(findstring zos,$(SPEC)))
 endif
 
 ifndef JCK_ROOT
-  export JCK_ROOT=$(realpath $(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped)
+   ifeq ($(CYGWIN),1)
+      export JCK_ROOT=$(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped
+   else
+      export JCK_ROOT=$(realpath $(TEST_ROOT)/../../../jck_root/JCK$(JDK_VERSION)-unzipped)
+   endif 
   $(info JCK_ROOT is $(JCK_ROOT))
 endif
 
