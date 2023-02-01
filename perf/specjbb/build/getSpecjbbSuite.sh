@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# Validate and copy the directory containing the SPECjbb jar file SPECJBB_SRC to the build directory SPECJBB_DEST
 
 SUCCESS=0
 ERROR=1

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# This will configure a basic run of SPECjbb in multi-jvm mode
+# Therefore, the topography of the run includes 1 group consisting of
+# 1 TransactionInjector and 1 Backend
 
 export GROUP_COUNT=1
 export TI_JVM_COUNT=1 
