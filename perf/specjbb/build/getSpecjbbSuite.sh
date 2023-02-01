@@ -28,12 +28,12 @@ dirIsValid(){
 }
 
 dstIsValid(){
-    echo "##### Validating destination suite"
+    echo "##### Validating destination SPECjbb dir"
     return $(dirIsValid $SPECJBB_DEST)
 }
 
 srcIsValid(){
-    echo "##### Validating source suite"
+    echo "##### Validating source SPECjbb dir"
     return $(dirIsValid $SPECJBB_SRC)
 }
 
