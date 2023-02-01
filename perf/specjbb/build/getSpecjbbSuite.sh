@@ -37,9 +37,9 @@ srcIsValid(){
     return $(dirIsValid $SPECJBB_SRC)
 }
 
-syncSrcAndDst(){
-    echo "##### Syncing destination with source"
-    rsync -a $SPECJBB_SRC/ $SPECJBB_DEST
+copySrcToDst(){
+    echo "##### Copying contents of source SPECjbb dir to destination SPECjbb dir"
+    cp -a $SPECJBB_SRC/. $SPECJBB_DEST
 }
 
 succeed(){
@@ -54,7 +54,7 @@ fail(){
 
 main(){
     if srcIsValid; then
-        syncSrcAndDst  
+        copySrcToDst
         if dstIsValid; then
             succeed
         fi
