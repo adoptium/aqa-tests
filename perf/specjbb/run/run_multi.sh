@@ -27,7 +27,7 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
   JAVA="${JAVA%\"}"
   JAVA="${JAVA#\"}"
   echo "Start Controller JVM"
-  $JAVA $JAVA_OPTS_C $SPEC_OPTS_C -jar $SPECJBB_JAR -m MULTICONTROLLER $MODE_ARGS_C 2>controller.log > controller.out &
+  $JAVA $JAVA_OPTS_C $SPECJBB_OPTS_C -jar $SPECJBB_JAR -m MULTICONTROLLER $MODE_ARGS_C 2>controller.log > controller.out &
 
   CTRL_PID=$!
   echo "Controller PID = $CTRL_PID"
@@ -45,7 +45,7 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
         TI_NAME=$GROUPID.TxInjector.$JVMID
 
         echo "    Start $TI_NAME"
-        $JAVA $JAVA_OPTS_TI $SPEC_OPTS_TI -jar $SPECJBB_JAR -m TXINJECTOR -G=$GROUPID -J=$JVMID $MODE_ARGS_TI > $TI_NAME.log 2>&1 &
+        $JAVA $JAVA_OPTS_TI $SPECJBB_OPTS_TI -jar $SPECJBB_JAR -m TXINJECTOR -G=$GROUPID -J=$JVMID $MODE_ARGS_TI > $TI_NAME.log 2>&1 &
         echo -e "\t$TI_NAME PID = $!"
         sleep 1
     done
@@ -56,7 +56,7 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
     # Add GC logging to the backend's JVM options 
     JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*:file=${BE_NAME}_gc.log"
     echo "    Start $BE_NAME"
-    $JAVA $JAVA_OPTS_BE_WITH_GC_LOG $SPEC_OPTS_BE -jar $SPECJBB_JAR -m BACKEND -G=$GROUPID -J=$JVMID $MODE_ARGS_BE > $BE_NAME.log 2>&1 &
+    $JAVA $JAVA_OPTS_BE_WITH_GC_LOG $SPECJBB_OPTS_BE -jar $SPECJBB_JAR -m BACKEND -G=$GROUPID -J=$JVMID $MODE_ARGS_BE > $BE_NAME.log 2>&1 &
     echo -e "\t$BE_NAME PID = $!"
     sleep 1
 
