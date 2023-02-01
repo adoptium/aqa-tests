@@ -14,14 +14,14 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
     <include>run/testenv.mk</include>
-	<test>
-		<testCaseName>specjbb-multijvm-simple</testCaseName>
+    <test>
+        <testCaseName>specjbb-multijvm-simple</testCaseName>
         <command>source $(RUN_OPTIONS)/specjbb-multijvm-simple.sh; bash $(RUN_SCRIPTS)/run_multi.sh; $(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
+        <levels>
+            <level>extended</level>
+        </levels>
+        <groups>
+            <group>perf</group>
+        </groups>
+    </test>
 </playlist>

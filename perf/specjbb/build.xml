@@ -15,19 +15,19 @@
 -->
 
 <project name="Specjbb suite" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<description>Specjbb suite</description>
+    <taskdef resource="net/sf/antcontrib/antlib.xml" />
+    <description>Specjbb suite</description>
 
-	<!-- set global properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/perf/specjbb" />
-	<property name="SRC" location="." />
-	
-	<target name="init">
-		<mkdir dir="${DEST}" />
-	</target>
+    <!-- set global properties for this build -->
+    <property name="DEST" value="${BUILD_ROOT}/perf/specjbb" />
+    <property name="SRC" location="." />
 
-	<target name="getSpecjbbSuite" depends="init">
-        
+    <target name="init">
+        <mkdir dir="${DEST}" />
+    </target>
+
+    <target name="getSpecjbbSuite" depends="init">
+
         <property environment="env"/>
         <property name="SPECJBB_DEST" value="${DEST}/suite" />
         <property name="SPECJBB_SRC" value="${env.SPECJBB_SRC}" />
@@ -42,8 +42,8 @@
             <env key="JAVA_BIN" value="${JAVA_BIN}"/>
             <env key="SPECJBB_JAR" value="${SPECJBB_JAR}"/>
             <arg value="${SRC}/build/getSpecjbbSuite.sh"/>
-		</exec>
-        
+        </exec>
+
         <fail message="Failed to get SPECjbb suite. See the following file for more info: ${SCRIPT_LOG}">
             <condition>
                 <not>
@@ -51,16 +51,16 @@
                 </not>
             </condition>
         </fail> 
-        
-	</target>	
 
-	<target name="dist" depends="getSpecjbbSuite" description="generate the distribution">
+    </target>	
+
+    <target name="dist" depends="getSpecjbbSuite" description="generate the distribution">
         <copy todir="${DEST}/run">
             <fileset dir="${SRC}/run"/>
-		</copy>
-	</target>
+        </copy>
+    </target>
 
-	<target name="build">
-		<antcall target="dist" inheritall="true" />
-	</target>
+    <target name="build">
+        <antcall target="dist" inheritall="true" />
+    </target>
 </project>
