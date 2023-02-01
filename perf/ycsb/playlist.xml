@@ -18,7 +18,7 @@
 	<include>./testenv.mk</include>
 	<test>
 		<testCaseName>ycsb-azurecosmos-load</testCaseName>
-		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) load azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q); \
+		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) load azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q) -s > $(Q)$(REPORTDIR)$(D)load.dat$(Q); \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -29,7 +29,7 @@
 	</test>
 	<test>
 		<testCaseName>ycsb-azurecosmos-sanity</testCaseName>
-		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) run azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q) -p operationcount=100; \
+		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) run azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q) -p operationcount=100 -s > $(Q)$(REPORTDIR)$(D)transactions.dat$(Q); \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -40,7 +40,7 @@
 	</test>
 	<test>
 		<testCaseName>ycsb-azurecosmos</testCaseName>
-		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) run azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q); \
+		<command>bash $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/bin/ycsb.sh$(Q) run azurecosmos -P $(Q)$(TEST_RESROOT)$(D)ycsb-$(YCSB_VERSION)/workloads/$(YCSB_WORKLOAD)$(Q) -P $(Q)$(TEST_RESROOT)$(D)azurecosmos.properties$(Q) -s > $(Q)$(REPORTDIR)$(D)transactions.dat$(Q); \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
