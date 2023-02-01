@@ -53,7 +53,7 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
     JVMID=beJVM
     BE_NAME=$GROUPID.Backend.$JVMID
     
-    #TODO
+    # Add GC logging to the backend's JVM options 
     JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*:file=${BE_NAME}_gc.log"
     echo "    Start $BE_NAME"
     $JAVA $JAVA_OPTS_BE_WITH_GC_LOG $SPEC_OPTS_BE -jar $SPECJBB_JAR -m BACKEND -G=$GROUPID -J=$JVMID $MODE_ARGS_BE > $BE_NAME.log 2>&1 &

@@ -11,7 +11,6 @@ exists() {
 
 isRunnable() {
     local specjbb_dir=$1
-    #result=$(${JAVA_BIN} -jar ${specjbb_dir}/${SPECJBB_JAR} -v > /dev/null 2>&1 | grep -q "SPECjbb2015") > /dev/null 2>&1
     result=$(${JAVA_BIN} -jar ${specjbb_dir}/${SPECJBB_JAR} -v | grep -q "SPECjbb2015") > /dev/null 2>&1
     return $result
 }
