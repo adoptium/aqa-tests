@@ -34,7 +34,7 @@
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-			<var name="curl_options" value="-Lks https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
+			<var name="curl_options" value="-Lks -C - https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
 			<retry retrycount="3">
 				<sequential>
 					<echo message="curl ${curl_options}" />
