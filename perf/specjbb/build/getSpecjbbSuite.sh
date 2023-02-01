@@ -53,12 +53,6 @@ fail(){
 }
 
 main(){
-    if dstIsValid; then
-        succeed
-    fi
-
-    echo "##### Destination suite is not valid"
-
     if srcIsValid; then
         syncSrcAndDst  
         if dstIsValid; then
