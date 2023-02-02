@@ -26,6 +26,7 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 //├── dacapo
 //├── renaissance
 //├── liberty
+//|-- specjbb
 //├── ycsb
 
 ```
@@ -49,6 +50,9 @@ Liberty benchmarks from https://github.com/OpenLiberty - including liberty-dt7-s
 
 #### renaissance
 Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance - including renaissance-akka-uct, renaissance-als, renaissance-chi-square, renaissance-db-shootout, renaissance-dec-tree, renaissance-finagle-chirper, renaissance-finagle-http, renaissance-fj-kmeans, renaissance-future-genetic, renaissance-gauss-mix, renaissance-log-regression, renaissance-mnemonics, renaissance-movie-lens, renaissance-naive-bayes, renaissance-par-mnemonics, renaissance-philosophers and renaissance-scala-kmeans
+
+#### SPECjbb [license required]
+SPECjbb 2015 benchmark from https://www.spec.org/jbb2015/
 
 #### Yahoo! Cloud Serving Benchmark (YCSB)
 YCSB from https://github.com/brianfrankcooper/YCSB/, including ycsb-azurecosmos-load and ycsb-azurecosmos. AQA performance testing currently only supports YCSB with Azure Cosmos DB, but other databases may be added in the future.
