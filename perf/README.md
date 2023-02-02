@@ -26,6 +26,7 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 //├── dacapo
 //├── renaissance
 //├── liberty
+//|-- specjbb
 //├── TechEmpower
 //├── ycsb
 
@@ -50,6 +51,9 @@ Liberty benchmarks from https://github.com/OpenLiberty - including liberty-dt7-s
 
 #### renaissance
 Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance - including renaissance-akka-uct, renaissance-als, renaissance-chi-square, renaissance-db-shootout, renaissance-dec-tree, renaissance-finagle-chirper, renaissance-finagle-http, renaissance-fj-kmeans, renaissance-future-genetic, renaissance-gauss-mix, renaissance-log-regression, renaissance-mnemonics, renaissance-movie-lens, renaissance-naive-bayes, renaissance-par-mnemonics, renaissance-philosophers and renaissance-scala-kmeans
+
+#### SPECjbb [license required]
+SPECjbb 2015 benchmark from https://www.spec.org/jbb2015/
 
 #### TechEmpower Framework Benchmarks (TFB)
 Framework Benchmarks from https://github.com/TechEmpower/FrameworkBenchmarks, including tfb-spring, tfb-spring-verify, tfb-jetty, and tfb-jetty-verify. 
