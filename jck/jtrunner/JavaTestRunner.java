@@ -67,6 +67,7 @@ public class JavaTestRunner {
 	private static String customJtx;
 	private static String kflFullPath;
 	private static String testFlagJtxFullPath;
+	private static String[] testFlagList;
 	private static String krbConfFile;
 	private static String fileUrl;
 
@@ -312,17 +313,29 @@ public class JavaTestRunner {
 		}
 
 		if (task == null || !task.equals("custom")) {
-			testFlagJtxFullPath = "";
 			if (testFlag != null && testFlag.length() > 0 ) {
 				// Look for a known failures list file specific to TEST_FLAG testing
-				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
-				File testFlagJtxFile = new File(testFlagJtxFullPath);
-				
-				if (testFlagJtxFile.exists()) {
-					System.out.println("Using " + testFlag + " specific failures list file " + testFlagJtxFullPath);
+				testFlagJtxFullPath = ""; 
+				if (testFlag.contains(",")) {
+					testFlagList = testFlag.split(",");
 				} else {
-					System.out.println("Unable to find " + testFlag + " specific failures list file " + testFlagJtxFullPath);
-					testFlagJtxFullPath = "";
+					testFlagList = new String[] { testFlag };
+				}
+				
+				for ( String aFlag : testFlagList ) { 
+					String aTestFlagExclude = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + aFlag.toLowerCase() + ".jtx";
+					File testFlagJtxFile = new File(aTestFlagExclude);
+					
+					if (testFlagJtxFile.exists()) {
+						System.out.println("Using " + aFlag + " specific failures list file: " + aTestFlagExclude);
+						if (testFlagJtxFullPath.length() == 0) { 
+							testFlagJtxFullPath = aTestFlagExclude;
+						} else {
+							testFlagJtxFullPath = testFlagJtxFullPath + " " + aTestFlagExclude;
+						}
+					} else {
+						System.out.println("Unable to find " + aFlag + " specific failures list file: " + aTestFlagExclude);
+					}
 				}
 			}
 		}
