@@ -205,7 +205,7 @@ timestamps{
 
             stage('Queue') {
                 if (!areNodesWithLabelOnline(LABEL)) {
-                    int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 15
+                    int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
                     timeout(ACTIVE_NODE_TIMEOUT) {
                         // If there is available node before timeout
                         node(LABEL) {
