@@ -1,13 +1,18 @@
 # Test Triage at Adoptium
 
-## TRSS Parser for Release Builds
+## Generate a Release Summary Report
 
-We've created a NodeJS module to parse TRSS output, convert it to Markdown so folks can paste that summary into a GitHub issue.
+Locate the pipeline you wish to triage in the ["By Pipeline" view](https://trss.adoptium.net/tests/Test) of TRSS.
 
-```bash
-npm install -g trss-parser
-trss-parser <parent id of TRSS pipeline run>
-```
+![image](https://user-images.githubusercontent.com/93431609/216171285-c313c957-6c8e-49df-95dd-6a68a9897f90.png)
+
+Navigate to the Grid view by clicking on the Grid link for the pipeline you wish to triage and click on the Release Summary Report button at the top of the Grid view page.
+
+![image](https://user-images.githubusercontent.com/93431609/216171387-abebba1d-0ff7-46a9-b486-8aba8fc4bcbc.png)
+
+Click on the 'Copy` icon and paste the .md formatted content into a new Github issue that you wish to use to track triage investigation.
+
+![image](https://user-images.githubusercontent.com/93431609/216171428-705c1933-eea4-4598-a9f2-e488c229bab0.png)
 
 ## Triage Guidance
 
@@ -25,7 +30,7 @@ There are many different test jobs running at the adoptium project.  No matter w
 
 ### Raise an issue if no issue exists
 
-- infra issue - raise an issue in [openjdk-infrastructure](https://github.com/adoptium/infrastructure/issues)
+- infra issue - raise an issue in [infrastructure](https://github.com/adoptium/infrastructure/issues)
 - test issue - ideally, there are enough details to determine which test repo to raise an issue in ond of the test repositories from which test material is pulled (OpenJDK, [aqa-systemtest](https://github.com/adoptium/aqa-systemtest/issues), [aqa-tests](https://github.com/adoptium/aqa-tests/issues) or any of the various 3rd party application suites).  If in doubt, ask some questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G) and/or raise in [aqa-tests](https://github.com/adoptium/aqa-tests/issues) where it will get routed to proper repo
   - OpenJDK test issues - see [Guidance for creating OpenJDK bugs](https://github.com/adoptium/aqa-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects)
   - Additional guidance for external tests - [Triage Rules for Application tests](https://github.com/adoptium/aqa-tests/tree/master/external#triage-rules)
