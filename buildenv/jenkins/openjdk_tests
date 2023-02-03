@@ -44,7 +44,8 @@ def PLATFORM_MAP = [
     ],
     'riscv64_linux' : [
         'SPEC' : 'linux_riscv64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
+        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv',
+        'DockerAgents' : ['default']
     ],
     'riscv64_linux_xl' : [
         'SPEC' : 'linux_riscv64',
@@ -166,6 +167,8 @@ timestamps{
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+            dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
+            dockerAgentLabel = ''
             if (params.LABEL) {
                 LABEL = params.LABEL
             } else {
@@ -204,7 +207,7 @@ timestamps{
             println "LABEL: ${LABEL}"
 
             stage('Queue') {
-                if (!areNodesWithLabelOnline(LABEL)) {
+                if (!areNodesWithLabelOnline(LABEL) && !dockerAgents) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
                     timeout(ACTIVE_NODE_TIMEOUT) {
                         // If there is available node before timeout
@@ -219,14 +222,14 @@ timestamps{
                     dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
                     println "dynamicAgents: ${dynamicAgents}"
 
-                    if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents && LABEL == PLATFORM_MAP[params.PLATFORM]["LABEL"]) {
+                    if ((params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
                         boolean isNodeIdle = false
                         node {
                             String[] onlineNodes = nodesByLabel(LABEL)
                             for (String onlineNode : onlineNodes) {
                                 def currentNode = Jenkins.instance.getNode(onlineNode).getComputer()
                                 if (!currentNode.isOffline()) {
-                                    if (currentNode.countBusy() != 0) {
+                                    if (currentNode.countBusy() < currentNode.getNumExecutors()) {
                                         println "Found an idle node: ${onlineNode}. The program will not start dynamic vm."
                                         isNodeIdle = true
                                         break
@@ -235,9 +238,26 @@ timestamps{
                             }
                         }
                         if (!isNodeIdle) {
-                            println "Cannot find any idle nodes. Starting dynamic vm"
-                            LABEL = LABEL.minus("ci.role.test&&")
-                            LABEL += '&&ci.agent.dynamic'
+                            // DynamicAgents and DockerAgents shouldn't contain the same label
+                            if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                                LABEL = LABEL.minus("ci.role.test&&")
+                                LABEL += '&&ci.agent.dynamic'
+                                println "Cannot find any idle nodes. Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${params.CLOUD_PROVIDER}'"
+                            } else if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dockerAgents) {
+                                dockerAgentLabel = params.CLOUD_PROVIDER
+                            } else if (dockerAgents.size() >= 1) {
+                                dockerAgentLabel = dockerAgents[0]
+                            }
+                            if (!dockerAgentLabel.equals('')) {
+                                if (dockerAgentLabel.equals('default') && SPEC.equals('linux_riscv64')) {
+                                    LABEL = LABEL.minus("&&hw.arch.riscv")
+                                    LABEL += '&&hw.arch.x86'
+                                    if (!LABEL.contains('&&sw.tool.docker')) {
+                                        LABEL += '&&sw.tool.docker'
+                                    }
+                                }
+                                println "Cannot find any idle nodes. Starting run test on docker node, nodeLabel: '${LABEL}', dockerAgentLabel: '${dockerAgentLabel}'"
+                            }
                         }
                     }
                 }
@@ -327,10 +347,21 @@ def runTest() {
             }
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-        if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') {
+        if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
             //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
             docker.image('adoptopenjdk/centos6_build_image').pull() 
             docker.image('adoptopenjdk/centos6_build_image').inside {
+                jenkinsfile.testBuild()
+            }
+        } else if (dockerAgentLabel.equals('default') && LABEL.contains('&&sw.tool.docker') && SPEC.equals('linux_riscv64')) {
+            // The requested image's platform is (linux/amd64)
+            docker.image('multiarch/qemu-user-static').pull()
+            // Automatically registers foreign file formats with the kernel using binfmt_static to simplify execution of multi-architecture binaries and Docker containers
+            // In fact, this command only needs to be executed once
+            sh "docker run --rm --privileged multiarch/qemu-user-static --reset -p yes"
+            docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').pull()
+            // The ${HOME} directory must be mounted, otherwise xvfb will fail to startup
+            docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').inside("-v ${env.HOME}:${env.HOME}") {
                 jenkinsfile.testBuild()
             }
         } else {
@@ -398,7 +429,7 @@ def areNodesWithLabelOnline(labelToCheck) {
                 return false
             } 
             return true
-        }   
+        }
 
 
 def checkErrors(errorList) {
