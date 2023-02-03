@@ -139,6 +139,7 @@ def OPENJ9_REPO = "https://github.com/eclipse-openj9/openj9.git"
 def ADOPTOPENJDK_REPO = "https://github.com/adoptium/aqa-tests.git"
 def ADOPTOPENJDK_BRANCH = "master"
 def USE_TESTENV_PROPERTIES = false
+def SETUP_JCK_RUN = false
 
 // Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
 // (See https://issues.jenkins.io/browse/JENKINS-48431)
@@ -438,6 +439,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('PERSONAL_BUILD', false, "Is this a personal build?")
 							booleanParam('USE_TESTENV_PROPERTIES', USE_TESTENV_PROPERTIES.toBoolean(), "use properties defined in the testenv.properties")
 							stringParam('RERUN_ITERATIONS', RERUN_ITERATIONS, "Optional. Number of times to repeat execution of failed test target(s).")
+							booleanParam('SETUP_JCK_RUN', SETUP_JCK_RUN.toBoolean(), "setup jdk during release for jck interactive run")
 						}
 						cpsScm {
 							scm {
