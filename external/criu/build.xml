@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="criu-portable-checkpoint" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		CRIU PingPerf
+	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
+
+	<!-- set properties for this build -->
+	<property name="TEST" value="criu" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="src" location="." />
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="dist" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk, *.sh"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
