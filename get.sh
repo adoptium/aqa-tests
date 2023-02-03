@@ -479,7 +479,7 @@ executeCmdWithRetry()
 			sleep $sleep_time
 
 			echo "check for $1. If found, the file will be removed."
-			if [ -f "$1" ]; then
+			if [ "$1" != "" ] && [ -f "$1" ]; then
 				echo "remove $1 before retry..."
 				rm $1
 			fi
@@ -514,8 +514,7 @@ getFunctionalTestMaterial()
 	then
 		echo "update to openj9 sha: $OPENJ9_SHA"
 		cd openj9
-		echo "git fetch -q --unshallow"
-		git fetch -q --unshallow
+		executeCmdWithRetry "" "git fetch -q --unshallow"
 		if ! git checkout $OPENJ9_SHA; then
 			echo "SHA not yet found. Continue fetching PR refs and tags..."
 			echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
