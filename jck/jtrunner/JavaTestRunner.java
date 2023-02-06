@@ -311,11 +311,12 @@ public class JavaTestRunner {
 			System.out.println("Unable to find known failures list file " + kflFullPath);
 			kflFullPath = "";
 		}
+		
+		testFlagJtxFullPath = "";
 
 		if (task == null || !task.equals("custom")) {
 			if (testFlag != null && testFlag.length() > 0 ) {
 				// Look for a known failures list file specific to TEST_FLAG testing
-				testFlagJtxFullPath = ""; 
 				if (testFlag.contains(",")) {
 					testFlagList = testFlag.split(",");
 				} else {
