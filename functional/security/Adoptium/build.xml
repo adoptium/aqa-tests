@@ -14,15 +14,15 @@
 # limitations under the License.
 -->
 
-<project name="Security Functional tests" default="build" basedir=".">
+<project name="Adotpium Security Functional tests" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-    	Security Functional tests
-    </description>
-	<import file="${TEST_ROOT}/functional/build.xml"/>
+		Adotpium Security Functional tests
+	</description>
+<!-- <import file="${TEST_ROOT}/functional/build.xml"/> -->
 
 	<!-- set global properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/functional/security" />
+	<property name="DEST" value="${BUILD_ROOT}/functional/security/Adoptium" />
 
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
@@ -32,7 +32,7 @@
 		<mkdir dir="${DEST}" />
 		<mkdir dir="${build}" />
 	</target>
-
+	
 	<target name="compile" depends="init" description="Using java ${JDK_VERSION} to compile the source  ">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
