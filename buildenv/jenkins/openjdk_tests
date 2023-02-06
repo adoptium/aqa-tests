@@ -247,6 +247,7 @@ timestamps{
                         timeout(activity: true, time: 1, unit: 'HOURS'){
                             node(params.RELATED_NODES) {
                             echo "On RELATED_NODES: ${params.RELATED_NODES}"
+                            env.AGENT_NODE = "${NODE_NAME}"
                             node(LABEL) {
                                 echo "On main node"
                                 runTest()
