@@ -27,6 +27,7 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 //├── renaissance
 //├── liberty
 //|-- specjbb
+//├── TechEmpower
 //├── ycsb
 
 ```
@@ -53,6 +54,9 @@ Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissanc
 
 #### SPECjbb [license required]
 SPECjbb 2015 benchmark from https://www.spec.org/jbb2015/
+
+#### TechEmpower Framework Benchmarks (TFB)
+Framework Benchmarks from https://github.com/TechEmpower/FrameworkBenchmarks, including tfb-spring, tfb-spring-verify, tfb-jetty, and tfb-jetty-verify. 
 
 #### Yahoo! Cloud Serving Benchmark (YCSB)
 YCSB from https://github.com/brianfrankcooper/YCSB/, including ycsb-azurecosmos-load and ycsb-azurecosmos. AQA performance testing currently only supports YCSB with Azure Cosmos DB, but other databases may be added in the future.
