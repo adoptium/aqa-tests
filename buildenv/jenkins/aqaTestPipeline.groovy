@@ -15,6 +15,8 @@ def LABEL = (params.LABEL) ?: ""
 def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 def APPLICATION_OPTIONS = (params.APPLICATION_OPTIONS) ?: ""
+def SETUP_JCK_RUN = params.SETUP_JCK_RUN ?: false
+
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
@@ -116,7 +118,8 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
                         string(name: 'TEST_FLAG', value: TEST_FLAG),
                         string(name: 'APPLICATION_OPTIONS', value: APPLICATION_OPTIONS),
-                        booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir)
+                        booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir),
+                        booleanParam(name: 'SETUP_JCK_RUN', value: SETUP_JCK_RUN)
                     ], wait: true
                     def result = downstreamJob.getResult()
                     echo " ${TEST_JOB_NAME} result is ${result}"
