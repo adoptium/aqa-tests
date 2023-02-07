@@ -422,11 +422,8 @@ def setup() {
 		CODE_COVERAGE_OPTION = params.CODE_COVERAGE ? "--code_coverage true" : ""
 
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
-
-
 		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
-
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			// on zOS use the user's ssh key
@@ -436,6 +433,55 @@ def setup() {
 				get_sources()
 			}
 			getJobProperties()
+		}
+	}
+}
+
+def setup_jck_interactives() {
+	def targetDir = "${env.WORKSPACE}/../../jck_run/jdk${JDK_VERSION}/jdk"
+	if (PLATFORM.contains("windows")) {
+		targetDir = "c:/Users/jenkins/jck_run/jdk${JDK_VERSION}/jdk"
+	}
+	def tarBall = CUSTOMIZED_SDK_URL.tokenize('/').last()
+	echo "tarBall is ${tarBall}"
+	def jckRunDirExists = sh(script: """
+		if [ -d "${targetDir}" ]; then
+			echo true
+		else
+			echo false
+		fi
+		""", returnStdout: true).toBoolean()
+
+	if (jckRunDirExists) {
+		def jdkDir = ""
+		if (PLATFORM.contains("windows")) {
+			jdkDir = sh(script: "unzip -l `pwd`/openjdkbinary/${tarBall} | head -n 4 | tail -n 1 | xargs -n 1 echo | tail -n 1", returnStdout: true).trim().replaceFirst(".\$","")
+			if (PLATFORM.contains("x86-32_windows")) {
+				jdkDir = "${jdkDir}_32"
+			} else if (PLATFORM.contains("x86-64_windows")) {
+				jdkDir = "${jdkDir}_64"
+			}
+		} else {
+			jdkDir =  sh(script: "tar -tf `pwd`/openjdkbinary/${tarBall} | head -1", returnStdout: true).trim().replaceFirst(".\$","")
+		}
+		def jckRunDir = "${targetDir}/${jdkDir}"
+		def jckRunJDKExists = sh(script: """
+		if [ -d "${jckRunDir}" ]; then
+			echo true
+		else
+			echo false
+		fi
+		""", returnStdout: true).toBoolean()
+
+		if (!jckRunJDKExists) {
+			sh returnStatus: true, script: """
+				cd ${targetDir}
+				mkdir ${jdkDir}
+				cd ${jdkDir}
+				cp -r ${TEST_JDK_HOME}/* .
+				chgrp -R jck ${targetDir}/${jdkDir}
+				chmod -R 775 ${targetDir}/${jdkDir}
+				"""
 		}
 	}
 }
@@ -468,6 +514,9 @@ def get_sources() {
 		} else {
 			sh "$GET_SH_CMD"
 		}
+	}
+	if (env.BUILD_LIST.contains('jck') && SDK_RESOURCE.contains('customized' && params.SETUP_JCK_RUN )) {
+		setup_jck_interactives()
 	}
 }
 def makeCompileTest(){
