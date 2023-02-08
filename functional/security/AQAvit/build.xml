@@ -20,6 +20,7 @@
 		AQAvit Security Functional tests
 	</description>
 	<import file="${TEST_ROOT}/functional/build.xml"/>
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/security/AQAvit" />
@@ -33,7 +34,7 @@
 		<mkdir dir="${build}" />
 	</target>
 	
-	<target name="compile" depends="init" description="Using java ${JDK_VERSION} to compile the source  ">
+	<target name="compile" depends="init,getDependentLibs" description="Using java ${JDK_VERSION} to compile the source  ">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
 		<echo>===fork:                         yes</echo>
