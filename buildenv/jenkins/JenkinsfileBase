@@ -516,7 +516,7 @@ def get_sources() {
 			sh "$GET_SH_CMD"
 		}
 	}
-	if (env.BUILD_LIST.contains('jck') && SDK_RESOURCE.contains('customized' && params.SETUP_JCK_RUN )) {
+	if (params.SETUP_JCK_RUN && env.BUILD_LIST.contains('jck') && SDK_RESOURCE.contains('customized')) {
 		setup_jck_interactives()
 	}
 }
