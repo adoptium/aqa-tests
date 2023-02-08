@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Crypto Security Functional tests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Crypto Security Functional tests
+	</description>
+<!-- <import file="${TEST_ROOT}/functional/build.xml"/>  -->
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/functional/security/Crypto" />
+	
+	<!--Properties for this particular build-->
+	<property name="src" location="./CryptoTest/cryptotest" />
+	<property name="build" location="./bin" />
+	
+	<target name="cryptoTest.check">
+		<condition property="cryptoTestdir.exists">
+			<available file="CryptoTest" type="dir"/>
+		</condition>
+	</target>
+
+	<target name="getCryptoTest" depends="cryptoTest.check" unless="cryptoTestdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="https://github.com/rh-openjdk/CryptoTest.git" />
+		</exec>
+	</target>
+
+
+	
+	<target name="init">
+		<mkdir dir="${DEST}" />
+		<mkdir dir="${build}" />
+	</target>
+	
+	<target name="compile" depends="init,getCryptoTest" description="Using java ${JDK_VERSION} to compile the source  ">
+		<echo>Ant version is ${ant.version}</echo>
+		<echo>============COMPILER SETTINGS============</echo>
+		<echo>===fork:                         yes</echo>
+		<echo>===executable:                   ${compiler.javac}</echo>
+		<echo>===debug:                        on</echo>
+		<echo>===destdir:                      ${DEST}</echo>
+
+		<if>
+			<equals arg1="${JDK_VERSION}" arg2="8"/>
+			<then>
+				<property name="extraOptions" value="-XDignore.symbol.file=true" />
+				<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
+					<src path="${src}" />
+					<compilerarg line='${extraOptions}' />
+				</javac>
+			</then>
+			<else>
+				<property name="addExports" value="--add-reads java.base=ALL-UNNAMED --add-exports java.base/com.sun.crypto.provider=ALL-UNNAMED --add-exports java.base/sun.security.internal.spec=ALL-UNNAMED --add-exports  java.base/sun.security.ssl=ALL-UNNAMED  --add-exports  java.base/sun.security.x509=ALL-UNNAMED --add-reads java.security.jgss=ALL-UNNAMED --add-exports java.security.jgss/sun.security.jgss=ALL-UNNAMED --add-exports java.security.jgss/sun.security.jgss.krb5=ALL-UNNAMED --add-exports java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-reads java.xml.crypto=ALL-UNNAMED --add-exports java.xml.crypto/org.jcp.xml.dsig.internal.dom=ALL-UNNAMED --add-modules=jdk.crypto.ec --add-reads jdk.crypto.ec=ALL-UNNAMED --add-exports jdk.crypto.ec/sun.security.ec=ALL-UNNAMED"/>				
+				<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
+					<src path="${src}" />
+					<compilerarg line='${addExports}' />
+				</javac>
+			</else>
+		</if>
+	</target>
+	<target name="dist" depends="compile" description="generate the distribution">
+		<copy todir="${build}/cryptotest/tests">
+			<fileset file="${src}/tests/test.jks" />
+		</copy>
+		<jar jarfile="${DEST}/CryptoTests.jar" filesonly="true">
+			<fileset dir="${build}" />
+		</jar>
+		<copy todir="${DEST}">
+			<fileset dir="${src}/../../" includes="*.xml,*.mk" />
+			<fileset file="${src}/tests/test.jks" />
+		</copy>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}" />
+	</target>
+
+	<target name="build" >
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
