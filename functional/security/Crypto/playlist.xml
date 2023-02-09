@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
-	<include>crypto.mk</include>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>CryptoTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) $(JAVA_MOD_ARGS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)CryptoTests.jar$(P)$(TEST_RESROOT)$(D)test.jks$(Q) -Dcryptotests.skipAgentTests=1 cryptotest.CryptoTest; \
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 \
+		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+		-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+		-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+		$(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(Q); \
 		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

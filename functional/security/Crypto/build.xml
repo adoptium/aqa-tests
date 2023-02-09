@@ -19,14 +19,12 @@
 	<description>
 		Crypto Security Functional tests
 	</description>
-<!-- <import file="${TEST_ROOT}/functional/build.xml"/>  -->
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/security/Crypto" />
 	
 	<!--Properties for this particular build-->
 	<property name="src" location="./CryptoTest/cryptotest" />
-	<property name="build" location="./bin" />
 	
 	<target name="cryptoTest.check">
 		<condition property="cryptoTestdir.exists">
@@ -45,45 +43,78 @@
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
-		<mkdir dir="${build}" />
 	</target>
+	<if>
+		<or>
+			<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
+			<matches pattern="^[1][023456]" string="${JDK_VERSION}"/>
+		</or>
+		<then>
+			<property name="jtregTar" value="jtreg_5_1_b01"/>
+		</then>
+		<else>
+			<if> 
+				<matches pattern="^[1][17]" string="${JDK_VERSION}"/>
+				<then>
+					<property name="jtregTar" value="jtreg_6_1"/>
+				</then>
+				<else>
+					<if>
+						<matches pattern="^[1][89]" string="${JDK_VERSION}"/>
+						<then>
+							<property name="jtregTar" value="jtreg_6_1_1"/>
+						</then>
+						<else>
+							<property name="jtregTar" value="jtreg_7_1_1_1"/>
+						</else>
+					</if>
+				</else>
+			</if>
+		</else>
+	</if>
+	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	
-	<target name="compile" depends="init,getCryptoTest" description="Using java ${JDK_VERSION} to compile the source  ">
-		<echo>Ant version is ${ant.version}</echo>
-		<echo>============COMPILER SETTINGS============</echo>
-		<echo>===fork:                         yes</echo>
-		<echo>===executable:                   ${compiler.javac}</echo>
-		<echo>===debug:                        on</echo>
-		<echo>===destdir:                      ${DEST}</echo>
-
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+	<target name="getJtreg">
+		<mkdir dir="${DEST}"/>
 		<if>
-			<equals arg1="${JDK_VERSION}" arg2="8"/>
+			<not>
+				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
+			</not>
 			<then>
-				<property name="extraOptions" value="-XDignore.symbol.file=true" />
-				<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
-					<src path="${src}" />
-					<compilerarg line='${extraOptions}' />
-				</javac>
+				<if> 
+					<available file="custom_jtreg.tar.gz"/>
+					<then>
+						<echo message="Using custom_jtreg.tar.gz"/>
+						<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
+					</then>
+				</if>
 			</then>
 			<else>
-				<property name="addExports" value="--add-reads java.base=ALL-UNNAMED --add-exports java.base/com.sun.crypto.provider=ALL-UNNAMED --add-exports java.base/sun.security.internal.spec=ALL-UNNAMED --add-exports  java.base/sun.security.ssl=ALL-UNNAMED  --add-exports  java.base/sun.security.x509=ALL-UNNAMED --add-reads java.security.jgss=ALL-UNNAMED --add-exports java.security.jgss/sun.security.jgss=ALL-UNNAMED --add-exports java.security.jgss/sun.security.jgss.krb5=ALL-UNNAMED --add-exports java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-reads java.xml.crypto=ALL-UNNAMED --add-exports java.xml.crypto/org.jcp.xml.dsig.internal.dom=ALL-UNNAMED --add-modules=jdk.crypto.ec --add-reads jdk.crypto.ec=ALL-UNNAMED --add-exports jdk.crypto.ec/sun.security.ec=ALL-UNNAMED"/>				
-				<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
-					<src path="${src}" />
-					<compilerarg line='${addExports}' />
-				</javac>
+   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
+			</else>
+		</if>
+		<exec executable="gzip" failonerror="true">
+			<arg line="-df ${jtregTar}.tar.gz" />
+		</exec>
+		<if>
+			<contains string="${SPEC}" substring="zos" />
+			<then>
+				<exec executable="tar" failonerror="true">
+					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
+				</exec>
+			</then>
+			<else>
+				<exec executable="sh" failonerror="true">
+					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				</exec>
 			</else>
 		</if>
 	</target>
-	<target name="dist" depends="compile" description="generate the distribution">
-		<copy todir="${build}/cryptotest/tests">
-			<fileset file="${src}/tests/test.jks" />
-		</copy>
-		<jar jarfile="${DEST}/CryptoTests.jar" filesonly="true">
-			<fileset dir="${build}" />
-		</jar>
+	
+	<target name="dist" depends="getDependentLibs,getJtreg,getCryptoTest" description="generate the distribution">
 		<copy todir="${DEST}">
-			<fileset dir="${src}/../../" includes="*.xml,*.mk" />
-			<fileset file="${src}/tests/test.jks" />
+			<fileset dir="${src}" includes="*.xml,*.mk" />
 		</copy>
 	</target>
 
@@ -96,3 +127,4 @@
 		<antcall target="clean" inheritall="true" />
 	</target>
 </project>
+
