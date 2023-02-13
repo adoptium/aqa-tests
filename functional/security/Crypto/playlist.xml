@@ -15,6 +15,12 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
 		<testCaseName>CryptoTests</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16712</comment>
+				<version>19+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 \
 		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
