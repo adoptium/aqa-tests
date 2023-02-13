@@ -703,6 +703,45 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<!-- 
+		Binary16ConversionNaN is subtest of jdk_lang. It only works with TR_disableDirectMove=true. 
+		Please see https://github.com/eclipse-openj9/openj9/issues/16660.
+		jdk/java/lang/Float/Binary16ConversionNaN.java is excluded in jdk_lang on AIX and pLinux via ProblemList_openjdk20-openj9.
+	 -->
+	<test>
+		<testCaseName>Binary16ConversionNaN</testCaseName>
+		<variations>
+			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode150</variation>
+			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode650</variation>
+			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode1000</variation>
+		</variations>
+		<command>export TR_disableDirectMove=true; \
+		$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	$(Q)$(OPENJDK_DIR)/test/jdk/java/lang/Float/Binary16ConversionNaN.java$(Q); \
+	$(TEST_STATUS); \
+	unset TR_disableDirectMove</command>
+		<platformRequirements>arch.ppc</platformRequirements>
+		<versions>
+			<version>20+</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
 	<test>
 		<testCaseName>jdk_lang_native</testCaseName>
 		<variations>
