@@ -182,7 +182,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				def DOCKERIMAGE_TAG = ""
 				def EXTRA_DOCKER_ARGS = ""
 				if (GROUP == "external") {
-					DOCKER_REQUIRED = true
+					if (LEVEL != "dev") {
+						DOCKER_REQUIRED = true
+					}
 					DOCKERIMAGE_TAG = "nightly"
 					if (LEVEL == "sanity" || LEVEL == "extended") {
 						EXTRA_DOCKER_ARGS = '-v ${TEST_JDK_HOME}:/opt/java/openjdk'
