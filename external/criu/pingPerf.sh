@@ -15,6 +15,7 @@
 set -e
 
 pingPerfZipPath=""
+testJDKPath=""
 
 prepare() {
     echo "prepare at $(pwd)..."
@@ -33,6 +34,20 @@ prepare() {
     (
         cd ci.docker || exit
         git checkout instanton
+
+        # replace commands in openLiberty dockerfile
+        libertyDockerfilePath="releases/latest/beta-instanton/Dockerfile.ubi.openjdk17"
+        sed -i "s:ENV JAVA_VERSION jdk-17.0.4.1+1: :" $libertyDockerfilePath
+        sed -i '/USER 1001.*/a RUN \/opt\/java\/openjdk\/bin\/java  --version' $libertyDockerfilePath
+
+        commandToRemove='tar -xf /tmp/openjdk.tar.xz --strip-components=1; \\'
+        commandAfterRemovedOne="rm -rf /tmp/openjdk.tar.xz;"
+        attachCommand="COPY NEWJDK/ /opt/java/openjdk"
+        sed -i "s:$commandAfterRemovedOne:$attachCommand:" $libertyDockerfilePath
+        sed -i "s:$commandToRemove:$commandAfterRemovedOne:" $libertyDockerfilePath
+ 
+        mkdir releases/latest/beta-instanton/NEWJDK
+        cp -r $testJDKPath/. releases/latest/beta-instanton/NEWJDK/
     )
 }
 
@@ -132,6 +147,7 @@ testCreateImageAndPrivilegedRestore() {
 
 if [ "$1" == "prepare" ]; then
     pingPerfZipPath=$2
+    testJDKPath=$3
     prepare
 elif [ "$1" == "buildImage" ]; then
     buildImage
@@ -149,6 +165,7 @@ elif [ "$1" == "clean" ]; then
     clean
 elif [ "$1" == "testCreateRestoreImageOnly" ]; then
     pingPerfZipPath=$2
+    testJDKPath=$3
     testCreateRestoreImageOnly
 elif [ "$1" == "testUnprivilegedRestoreOnly" ]; then
     testUnprivilegedRestoreOnly
@@ -156,9 +173,11 @@ elif [ "$1" == "testPrivilegedRestoreOnly" ]; then
     testPrivilegedRestoreOnly
 elif [ "$1" == "testCreateImageAndUnprivilegedRestore" ]; then
     pingPerfZipPath=$2
+    testJDKPath=$3
     testCreateImageAndUnprivilegedRestore
 elif [ "$1" == "testCreateImageAndPrivilegedRestore" ]; then
     pingPerfZipPath=$2
+    testJDKPath=$3
     testCreateImageAndPrivilegedRestore
 else
     echo "unknown command"
