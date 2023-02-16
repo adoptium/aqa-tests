@@ -63,6 +63,7 @@ if (!binding.hasVariable('GENERATE_JOBS')) GENERATE_JOBS = false
 if (!binding.hasVariable('CLOUD_PROVIDER')) CLOUD_PROVIDER = ""
 if (!binding.hasVariable('RERUN_ITERATIONS')) RERUN_ITERATIONS = "0"
 if (!binding.hasVariable('JENKINS_KEY')) JENKINS_KEY = ""
+if (!binding.hasVariable('RELATED_NODES')) RELATED_NODES = ""
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -444,6 +445,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('RERUN_ITERATIONS', RERUN_ITERATIONS, "Optional. Number of times to repeat execution of failed test target(s).")
 							booleanParam('SETUP_JCK_RUN', SETUP_JCK_RUN.toBoolean(), "setup jdk during release for jck interactive run")
 							stringParam('JENKINS_KEY', JENKINS_KEY, "Optional. Only use this for Multi-node Compiler TCK tests")
+							stringParam('RELATED_NODES', RELATED_NODES, "Optional. Only use this for reserving secondary nodes other than current")
 						}
 						cpsScm {
 							scm {
