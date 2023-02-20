@@ -104,7 +104,7 @@ You can skip `-f` in `git push` if you've never pushed your branch before.
 
 8. We would like to encourage you to open a pull request early and use `Create draft pull request` option. This allows others to check the PR, get early feedback, and helps create a better end product.
 
-9. If you have been given access to run test jobs in our Jenkins server, run [Grinder](https://ci.adoptopenjdk.net/job/Grinder/) to validate your PR. Your can find recordings about how to use Grinder in AQA Lightning Talk Series: https://github.com/eclipse-openj9/openj9/wiki/AQA-Lightning-Talk-Series.  If you do not have access, the reviewers of your PR will run some tests.  Reviewers may ask you to run extra tests depending on what changes you have made in your PR.
+9. If you have been given access to run test jobs in our Jenkins server, run [Grinder](https://ci.adoptium.net/job/Grinder/) to validate your PR. Your can find recordings about how to use Grinder in AQA Lightning Talk Series: https://github.com/eclipse-openj9/openj9/wiki/AQA-Lightning-Talk-Series.  If you do not have access, the reviewers of your PR will run some tests.  Reviewers may ask you to run extra tests depending on what changes you have made in your PR.
 
 10. Ensure all related Grinder jobs pass and provide the Grinder links in the PR comment. Your changes must also pass the auto PR builds that will be applied to your pull request.
 

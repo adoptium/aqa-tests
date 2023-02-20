@@ -40,7 +40,7 @@ For nightly and release builds, there are test jobs running as part of the Adopt
 
 #### Test 'Inventory'
 
-The directory structure in this aqa-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The provided links jump to test jobs in Jenkins (ci.adoptopenjdk.net).
+The directory structure in this aqa-tests repository is meant to reflect the different types of test we run (and pull from lots of other locations).  The diagrams below show the test make target for each of the types, along with in-plan, upcoming additions (denoted by dotted line grey boxes). The provided links jump to test jobs in Jenkins (ci.adoptium.net).
 
 ```mermaid
 graph TD
@@ -65,17 +65,17 @@ graph TD
 
 --- 
 
-##### [openjdk](https://ci.adoptopenjdk.net/view/Test_openjdk/) tests - OpenJDK regression tests 
+##### [openjdk](https://ci.adoptium.net/view/Test_openjdk/) tests - OpenJDK regression tests 
 Tests from OpenJDK
 
 --- 
 
-##### [system](https://ci.adoptopenjdk.net/view/Test_system/) tests - System and load tests 
+##### [system](https://ci.adoptium.net/view/Test_system/) tests - System and load tests 
 Tests from the adoptium/aqa-systemtest repo
 
 --- 
 
-##### [external](https://ci.adoptopenjdk.net/view/Test_external/) tests - 3rd party application tests
+##### [external](https://ci.adoptium.net/view/Test_external/) tests - 3rd party application tests
 Test suites from a variety of applications, along with microprofile TCKs, run in Docker containers
 
 ```mermaid
@@ -103,7 +103,7 @@ graph TD
 
 --- 
 
-##### [perf](https://ci.adoptopenjdk.net/view/Test_perf/) tests - Performance benchmark suites 
+##### [perf](https://ci.adoptium.net/view/Test_perf/) tests - Performance benchmark suites 
 Performance benchmark tests (both full suites and microbenches) from different open-source projects such as Acme-Air and adoptium/bumblebench
 
 ```mermaid
@@ -118,7 +118,7 @@ graph TD
 
 --- 
 
-##### [functional](https://ci.adoptopenjdk.net/view/Test_functional/) tests - Unit and functional tests
+##### [functional](https://ci.adoptium.net/view/Test_functional/) tests - Unit and functional tests
 Functional tests not originating from the openjdk regression suite, that include locale/language tests and a subset of implementation agnostic tests from the openj9 project.
 
 --- 
@@ -154,6 +154,6 @@ The test infrastructure in this repository allows us to lightly yoke a great var
 You can:
 - browse through the [aqa-tests issues list](https://github.com/adoptium/aqa-tests/issues), select one, add a comment to claim it and ask questions
 - browse through the [aqa-systemtest issues](https://github.com/adoptium/aqa-systemtest/issues) or [stf issues](https://github.com/adoptium/stf/issues), claim one with a comment and dig right in
-- triage live test jobs at [ci.adoptopenjdk.net](https://ci.adoptopenjdk.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/doc/Triage.md) for guidance
+- triage live test jobs at [ci.adoptium.net](https://ci.adoptium.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/doc/Triage.md) for guidance
   - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/adoptium/aqa-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
 - ask questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G) 
