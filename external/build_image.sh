@@ -17,6 +17,7 @@ set -o pipefail
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
 buildArg=""
+container_build="docker build"
 
 if [ $# -ne 9 ] && [ $# -ne 8 ]; then
 	echo "The supported tests are ${supported_tests}"
@@ -62,13 +63,16 @@ function build_image() {
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
+	if [[ "$test" == *"criu"* ]]; then
+		container_build="sudo podman build"
+	fi
 
 	echo "#####################################################"
-	echo "INFO: docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
+	echo "INFO: $container_build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
 	echo "#####################################################"
-	docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
+	$container_build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
 	if [ $? != 0 ]; then
-		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
+		echo "ERROR: $container_build of image: ${tags} from ${file} failed."
 		exit 1
 	fi
 }
