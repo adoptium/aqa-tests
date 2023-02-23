@@ -13,6 +13,7 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+	<include>../criuSettings.mk</include>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndUnprivilegedRestore</testCaseName>
 		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME); \
@@ -46,13 +47,45 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>criu_pingPerf_testCreateRestoreImageOnly</testCaseName>
+		<testCaseName>criu_pingPerf_testCreateRestoreImageAndPushToRegistry</testCaseName>
 		<disables>
 			<disable>
 				<comment>runtimes_backlog_issues_879</comment>
 			</disable>
 		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageOnly $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME); \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) "$(DOCKER_REGISTRY_DIR)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)/external/criu/pingPerf.sh clean
+		</command>
+		<features>
+			<feature>CRIU:required</feature>
+		</features>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>criu_pingPerf_pullImageUnprivilegedRestore</testCaseName>
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh pullImageUnprivilegedRestore "$(DOCKER_REGISTRY_DIR)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)/external/criu/pingPerf.sh clean
+		</command>
+		<features>
+			<feature>CRIU:required</feature>
+		</features>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>criu_pingPerf_pullImagePrivilegedRestore</testCaseName>
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh pullImagePrivilegedRestore "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
