@@ -38,7 +38,7 @@ jobs:
         build_list: ${{ fromJson(needs.getBuildLists.outputs.buildLists) }}
         impl: [hotspot, openj9]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: AdoptOpenJDK/install-jdk@v1
         with:
           version: ${{ matrix.version }}
