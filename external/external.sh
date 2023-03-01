@@ -42,6 +42,7 @@ container_logout="docker logout"
 container_push="docker push"
 container_pull="docker pull"
 container_rm="docker rm"
+container_rmi="docker rmi"
 criu_micro_architecture_list=""
 docker_registry_required="false"
 docker_registry_url=""
@@ -106,6 +107,7 @@ parseCommandLineArgs() {
 					container_push="sudo podman push"
 					container_pull="sudo podman pull"
 					container_rm="sudo podman rm"
+					container_rmi="sudo podman rmi"
 				fi
 				shift;;
 			
