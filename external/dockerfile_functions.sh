@@ -90,12 +90,12 @@ print_image_args() {
     fi
     if [[ "${vm}" == "openj9" ]]; then
         if  [[ "${os}" == "ubuntu" ]]; then
-            image_name="ibm-semeru-runtimes"
+            image_name="docker.io/ibm-semeru-runtimes"
             tag=open-${tag}-focal
         else
             # os is ubi
             image_name="registry.access.redhat.com/ubi8/ubi"
-            tag="8.5"
+            tag="8.6"
         fi
     fi
     image="${image_name}:${tag}"
@@ -358,7 +358,7 @@ print_criu_install() {
                     "\n" >> ${file}
 
             echo -e "\nRUN chmod a+x /usr/sbin/criu \\" \
-                    "\n\t&& setcap cap_sys_ptrace,cap_setpcap=eip /usr/sbin/criu \\" \
+                    "\n\t&& setcap cap_checkpoint_restore,cap_sys_ptrace,cap_setpcap=eip /usr/sbin/criu \\" \
                     "\n\t&& export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load \\" \
                     "\n\t&& cd /usr/lib64 \\" \
                     "\n\t&& ln -s libcriu.so.2.0 libcriu.so \\" \
@@ -394,7 +394,7 @@ print_criu_install() {
                 "\n\t&& git reset --hard origin/criu-dev \\" \
                 "\n\t&& make PREFIX=/usr install \\" \
                 "\n\t&& criu -V \\" \
-                "\n\t&& setcap cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
+                "\n\t&& setcap 40,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
                 "\n\t&& export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
                 "\n" >> ${file}
     fi
