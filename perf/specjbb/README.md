@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 SPECjbb is a Java Client/Server performance testing benchmark. 
 Please visit its product page for more information, including a user guide: https://www.spec.org/jbb2015/
 
-
 ## Prerequisites
 Since SPECjbb requires a license to run, this aqa-test config requires that a licensed copy of the benchmark already exists on the machine that you are running on.
 
