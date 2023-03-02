@@ -15,6 +15,9 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
     <include>run/testenv.mk</include>
     <test>
+        <!-- The minimum hardware requirement to run this test is 8GB of memory and 8 CPU cores -->
+        <!-- see specjbb/run/options/specjbb-multijvm-simple.sh for more details -->
+
         <testCaseName>SPECjbb2015-multijvm-simple</testCaseName>
         <command>. $(RUN_OPTIONS)/specjbb-multijvm-simple.sh; bash $(RUN_SCRIPTS)/run_multi.sh; $(TEST_STATUS)</command>
         <levels>
