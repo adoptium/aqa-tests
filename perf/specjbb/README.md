@@ -22,7 +22,7 @@ Since SPECjbb requires a license to run, this aqa-test config requires that a li
 
 Set the `SPECJBB_SRC` environment variable to the absolute path of your SPECjbb benchmark directory
 
-```
+```sh
 export SPECJBB_SRC=/Users/aqa-tester/SPECjbb2015-1.03
 ```
 
