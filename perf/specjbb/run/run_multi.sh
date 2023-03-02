@@ -14,7 +14,6 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
   result="${temp}/${timestamp}"
   mkdir -pv $result
   
-
   # Copy current config to the result directory
   cp -r $SPECJBB_CONFIG $result
 
