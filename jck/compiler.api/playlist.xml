@@ -39,12 +39,7 @@
 		</groups>
 		<versions>
 			<version>8</version>
-			<version>9</version>
-			<version>10</version>
 			<version>11</version>
-			<version>12</version>
-			<version>13</version>
-			<version>14</version>
 		</versions>
 	</test>
 	<test>
@@ -91,7 +86,7 @@
 		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_tools testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -113,7 +108,117 @@
 		<command>$(JCK_CMD_TEMPLATE) tests=api/signaturetest testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-api-java_rmi_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=api/java_rmi testsuite=COMPILER'; \
+			$(START_MULTI_JVM_COMP_TEST); \
+			$(GEN_SUMMARY) tests=api/java_rmi testsuite=COMPILER; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+			<version>11</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-api-javax_annotation_multijvm</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=api/javax_annotation testsuite=COMPILER'; \
+			$(START_MULTI_JVM_COMP_TEST); \
+			$(GEN_SUMMARY) tests=api/javax_annotation testsuite=COMPILER; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-api-javax_lang_multijvm</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=api/javax_lang testsuite=COMPILER'; \
+		$(START_MULTI_JVM_COMP_TEST); \
+		$(GEN_SUMMARY) tests=api/javax_lang testsuite=COMPILER; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-api-javax_tools_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<platform>.*zos.*</platform>
+				<impl>ibm</impl>
+				<version>11</version>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=api/javax_tools testsuite=COMPILER'; \
+		$(START_MULTI_JVM_COMP_TEST); \
+		$(GEN_SUMMARY) tests=api/javax_tools testsuite=COMPILER; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jck-compiler-api-signaturetest_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Temporarily disabled on aix on JDK8 for test setup issue: backlog/issues/506</comment>
+				<platform>ppc64_aix</platform>
+				<version>8</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=api/signaturetest testsuite=COMPILER'; \
+		$(START_MULTI_JVM_COMP_TEST); \
+		$(GEN_SUMMARY) tests=api/signaturetest testsuite=COMPILER; \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
 		</levels>
 		<groups>
 			<group>jck</group>

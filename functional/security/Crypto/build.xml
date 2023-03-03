@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Crypto Security Functional tests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Crypto Security Functional tests
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/functional/security/Crypto" />
+	
+	<!--Properties for this particular build-->
+	<property name="src" location="./CryptoTest/cryptotest" />
+	
+	<target name="cryptoTest.check">
+		<condition property="cryptoTestdir.exists">
+			<available file="CryptoTest" type="dir"/>
+		</condition>
+	</target>
+
+	<target name="getCryptoTest" depends="cryptoTest.check" unless="cryptoTestdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="https://github.com/rh-openjdk/CryptoTest.git" />
+		</exec>
+	</target>
+
+
+	
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+	<if>
+		<or>
+			<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
+			<matches pattern="^[1][023456]" string="${JDK_VERSION}"/>
+		</or>
+		<then>
+			<property name="jtregTar" value="jtreg_5_1_b01"/>
+		</then>
+		<else>
+			<if> 
+				<matches pattern="^[1][17]" string="${JDK_VERSION}"/>
+				<then>
+					<property name="jtregTar" value="jtreg_6_1"/>
+				</then>
+				<else>
+					<if>
+						<matches pattern="^[1][89]" string="${JDK_VERSION}"/>
+						<then>
+							<property name="jtregTar" value="jtreg_6_1_1"/>
+						</then>
+						<else>
+							<property name="jtregTar" value="jtreg_7_1_1_1"/>
+						</else>
+					</if>
+				</else>
+			</if>
+		</else>
+	</if>
+	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
+	
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+	<target name="getJtreg">
+		<mkdir dir="${DEST}"/>
+		<if>
+			<not>
+				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
+			</not>
+			<then>
+				<if> 
+					<available file="custom_jtreg.tar.gz"/>
+					<then>
+						<echo message="Using custom_jtreg.tar.gz"/>
+						<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
+					</then>
+				</if>
+			</then>
+			<else>
+   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
+			</else>
+		</if>
+		<exec executable="gzip" failonerror="true">
+			<arg line="-df ${jtregTar}.tar.gz" />
+		</exec>
+		<if>
+			<contains string="${SPEC}" substring="zos" />
+			<then>
+				<exec executable="tar" failonerror="true">
+					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
+				</exec>
+			</then>
+			<else>
+				<exec executable="sh" failonerror="true">
+					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
+				</exec>
+			</else>
+		</if>
+	</target>
+	
+	<target name="dist" depends="getDependentLibs,getJtreg,getCryptoTest" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml,*.mk" />
+		</copy>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}" />
+	</target>
+
+	<target name="build" >
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
+

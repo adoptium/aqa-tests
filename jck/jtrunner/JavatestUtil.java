@@ -27,8 +27,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,10 +42,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.io.FileNotFoundException;
 
-public class JavaTestRunner {
+public class JavatestUtil {
 	private static String testJdk;
 	private static String tests;
 	private static String testExecutionType;
@@ -63,11 +66,8 @@ public class JavaTestRunner {
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
 	private static String jtxFullPath;
-	private static String jtxDevFullPath;
-	private static String customJtx;
 	private static String kflFullPath;
-	private static String testFlagJtxFullPath;
-	private static String[] testFlagList;
+	private static String fipsJtxFullPath;
 	private static String krbConfFile;
 	private static String fileUrl;
 
@@ -85,19 +85,20 @@ public class JavaTestRunner {
 	private static String krb5ClientUsername;
 	private static String krb5ServerPassword;
 	private static String krb5ServerUsername;
-	private static String newJtbLocation; 
-	private static String reportDir; 
 	private static String workDir;
+	private static String reportDir;
 	private static String newJtbFileRef; 
 	private static String jckVersionNo;
 	private static String testSuiteFolder;
 	private static String fileContent;
-	private static String testRoot; 
-	private static String resultDir;
+	private static String testRoot;
 	private static String pathToJava;
 	private static String secPropsFile;
 	private static String testFlag;
 	private static String task;
+	private static String agentHost;
+	private static String testJavaForMultiJVMCompTest;
+	private static String riJavaForMultiJVMCompTest;
 
 	private static HashMap<String, String> testArgs = new HashMap<String, String>();
 	private static String jvmOpts = ""; 
@@ -108,9 +109,7 @@ public class JavaTestRunner {
 	private static int freePort;
 	private static String archName = System.getProperty("os.arch");
 	private static String platform = getOSNameShort();
-	private static boolean isRiscv = archName.toLowerCase().contains("riscv");
 	
-	private static final String RESULTS_ROOT = "resultsRoot";
 	private static final String TEST_ROOT = "testRoot";
 	private static final String JCK_ROOT = "jckRoot";
 	private static final String TESTS = "tests";
@@ -120,14 +119,18 @@ public class JavaTestRunner {
 	private static final String WITH_AGENT = "withAgent";
 	private static final String INTERACTIVE = "interactive";
 	private static final String CONFIG = "config";
-	private static final String CONCURRENCY = "concurrency"; 
-	private static final String CONFIG_ALT_PATH = "configAltPath"; 
+	private static final String CONCURRENCY = "concurrency";
+	private static final String CONFIG_ALT_PATH = "configAltPath";
 	private static final String TASK = "task";
-	private static final String CUSTOM_JTX = "customJtx";
+	private static final String TASK_CMD_FILE_GENERATION = "cmdfilegen";
+	private static final String TASK_GENERATE_SUMMARY_REPORT = "summarygen";
+	private static final String AGENT_HOST = "agentHost";
+	private static final String TEST_JAVA_FOR_MULTIJVM_COMP_TEST = "testJava";
+	private static final String RI_JAVA_FOR_MULTIJVM_COMP_TEST = "riJava";
+	private static final String WORK_DIR = "workdir";
 
 	public static void main(String args[]) throws Exception {
 		ArrayList<String> essentialParameters = new ArrayList<String>(); 
-		essentialParameters.add(RESULTS_ROOT);
 		essentialParameters.add(TEST_ROOT);
 		essentialParameters.add(JCK_ROOT);
 		essentialParameters.add(TESTS);
@@ -140,17 +143,22 @@ public class JavaTestRunner {
 		essentialParameters.add(CONCURRENCY);
 		essentialParameters.add(CONFIG_ALT_PATH);
 		essentialParameters.add(TASK);
-		essentialParameters.add(CUSTOM_JTX);
+		essentialParameters.add(AGENT_HOST);
+		essentialParameters.add(TEST_JAVA_FOR_MULTIJVM_COMP_TEST);
+		essentialParameters.add(RI_JAVA_FOR_MULTIJVM_COMP_TEST);
+		essentialParameters.add(WORK_DIR);
 
 		for (String arg : args) {
-			if (arg.contains("=")) { 
-				String [] aPair = arg.split("="); 
-				String key = aPair[0]; 
-				String value = aPair[1];  
-				// We only load testArgs with key,value pairs that are needed by the JavaTestRunner 
-				if (essentialParameters.contains(key)) { 
+			if (arg.contains("=")) {
+				String [] aPair = arg.split("=");
+				String key = aPair[0];
+				String value = aPair[1];
+				
+				// We only load testArgs with key,value pairs that are needed by the JavatestUtil 
+				if (essentialParameters.contains(key)) {
 					// This is a special case for JCK where we may supply multiple sub-folders to run
 					if(value.contains(";")) {
+						value = value.trim().replace("\n", "").replace("\r", "");
 						String [] tests = value.split(";");
 						String finalTarget = "";
 						for (int i = 0; i < tests.length; i++) {
@@ -165,55 +173,61 @@ public class JavaTestRunner {
 						testArgs.put(key, value); 
 					}
 				} else {
+					System.out.println("In JavatestUtil");
 					System.out.println("Unrecognized input key ignored: " + key);
 					System.exit(1);
 				}
 			} 
 		}
 		
-		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts"); 
+		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts");
 		testFlag = System.getenv("TEST_FLAG");
-		task = testArgs.get(TASK);
-		customJtx = testArgs.get(CUSTOM_JTX);
+		task = testArgs.get(TASK).trim();
 		
-		try { 
-			boolean jtbGenerated = false, testSuccedded = false, summaryGenerated = false;
-			jtbGenerated = generateJTB(); 
-			if (jtbGenerated) {
-				testSuccedded = execute();
-				summaryGenerated = generateSummary();
-			}  
-			
-			if (jtbGenerated && testSuccedded && summaryGenerated) {
-				System.exit(0);
-			} else {
-				System.exit(1);
-			}
-		} catch (Exception e) {
-			e.printStackTrace(); 
-			System.exit(1);
+		if (task.equals("cmdfilegen")) { 
+			agentHost = testArgs.get(AGENT_HOST).trim();
 		}
-	}
-	
-	public static boolean generateJTB() throws Exception {
+		
 		testJdk = System.getenv("JAVA_HOME");
-		tests = testArgs.get(TESTS).trim(); 
-		jckVersion = testArgs.get(JCK_VERSION); 
-		jckRoot = new File(testArgs.get(JCK_ROOT)).getCanonicalPath(); 
-		testSuite = testArgs.get(TEST_SUITE); 
-		testExecutionType = testArgs.get(TEST_EXECUTION_TYPE) == null ? "multijvm" : testArgs.get(TEST_EXECUTION_TYPE); 
-		withAgent = testArgs.get(WITH_AGENT) == null ? "off" : testArgs.get(WITH_AGENT); 
-		interactive = testArgs.get(INTERACTIVE) == null ? "no" : testArgs.get(INTERACTIVE); 
-		concurrencyString = testArgs.get("concurrency") == null ? "NULL" : testArgs.get("concurrency"); 
+		tests = testArgs.get(TESTS).trim();
+		jckVersion = testArgs.get(JCK_VERSION);
+		jckRoot = new File(testArgs.get(JCK_ROOT)).getCanonicalPath();
+		testSuite = testArgs.get(TEST_SUITE);
+		testExecutionType = testArgs.get(TEST_EXECUTION_TYPE) == null ? "multijvm" : testArgs.get(TEST_EXECUTION_TYPE);
+		withAgent = testArgs.get(WITH_AGENT) == null ? "off" : testArgs.get(WITH_AGENT);
+		interactive = testArgs.get(INTERACTIVE) == null ? "no" : testArgs.get(INTERACTIVE);
+		concurrencyString = testArgs.get("concurrency") == null ? "NULL" : testArgs.get("concurrency");
 		config = testArgs.get(CONFIG) == null ? "NULL" : testArgs.get(CONFIG);
-		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH); 
+		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH);
 		testRoot = new File(testArgs.get(TEST_ROOT)).getCanonicalPath();
-		resultDir = new File(testArgs.get(RESULTS_ROOT)).getCanonicalPath();	
-		jckVersionNo = jckVersion.replace("jck", "");	
+		testJavaForMultiJVMCompTest = testArgs.get(TEST_JAVA_FOR_MULTIJVM_COMP_TEST);
+		riJavaForMultiJVMCompTest = testArgs.get(RI_JAVA_FOR_MULTIJVM_COMP_TEST);
+		workDir = testArgs.get(WORK_DIR);
+		
+		jckVersionNo = jckVersion.replace("jck", "");
+		
+		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
+		jckBase = jckRoot + File.separator + testSuiteFolder;
+		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
+		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
+		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
+		classesFullPath = jckBase + File.separator + "classes";
+		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
 
+		reportDir = workDir + File.separator + "report";
+		newJtbFileRef = workDir + File.separator + "generated.jtb";
+		
+		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
+		fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+		
+		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
+		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
+		// A known failures list (.kfl) file is optional.
+		// The automation here adds any files found (initial or updates) as 'custom' files. 
+		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
+		
 		File f = new File(jckRoot);
 		File[] files = f.listFiles();
-
 		boolean found = false;
 		for (File file : files) {
 			if (file.isDirectory() && (file.getName().contains("JCK-runtime")) ) {
@@ -224,7 +238,6 @@ public class JavaTestRunner {
 					if (!jckVersion.equals(actualJckVersion)) {
 						System.out.println("test-args jckversion " + jckVersion + " does not match actual jckversion " + actualJckVersion + ". Using actual jckversion " + actualJckVersion);
 						jckVersion = actualJckVersion;
-						jckVersionNo = jckVersion.replace("jck", "");
 					}
 				}
 			}
@@ -232,35 +245,28 @@ public class JavaTestRunner {
 		
 		if (!found) {
 			System.out.println("Cannot locate the JCK artifacts under : " + jckRoot);
-			return false; 
+			System.exit(1);
 		}
 
-		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
-		jckBase = jckRoot + File.separator + testSuiteFolder; 
-		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
-		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
-		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
-		classesFullPath = jckBase + File.separator + "classes";
-		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
 		// Solaris natives are in /natives/sunos
 		if (platform.equals("solaris")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
-
-		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-                if (platform.contains("win")) {
-                        // Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
-			fileUrl = "file:///" + jckBase.replace("\\","/") + "/testsuite.jtt";
-                } else {
-			fileUrl = "file:///" + jckBase + "/testsuite.jtt";
+	
+		try { 
+			if (task.equals(TASK_GENERATE_SUMMARY_REPORT)) { 
+				if (!generateSummary()) {
+					System.exit(1);
+				}
+				System.exit(0);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			System.exit(1);
 		}
+		
 		System.out.println("Using jti file "+ jtiFile);
 		
-		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
-		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
-		// A known failures list (.kfl) file is optional.
-		// The automation here adds any files found (initial or updates) as 'custom' files. 
-		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
 		File initialJtxFile = new File(initialJtxFullPath);
 
 		if (initialJtxFile.exists()) {
@@ -279,27 +285,6 @@ public class JavaTestRunner {
 			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
 			jtxFullPath = "";
 		}
-		
-		jtxDevFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-dev.jtx";
-		File jtxDevFile = new File(jtxDevFullPath);
-		
-		if (jtxDevFile.exists()) {
-			System.out.println("Using additional excludes list file " + jtxDevFullPath);
-		} else {
-			System.out.println("Unable to find additional excludes list file " + jtxDevFullPath);
-			jtxDevFullPath = "";
-		}
-		
-		if (customJtx == null) {
-			customJtx = "";
-		} else {
-			File customJtxFile = new File(customJtx);
-			if (customJtxFile.exists()) {
-				System.out.println("Using additional custom excludes list file " + customJtx);
-			} else {
-				System.out.println("Unable to find additional custom excludes list file " + customJtx);
-			}
-		}
 
 		// Look for a known failures list file
 		kflFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".kfl";
@@ -312,35 +297,34 @@ public class JavaTestRunner {
 			kflFullPath = "";
 		}
 		
-		testFlagJtxFullPath = "";
-
-		if (task == null || !task.equals("custom")) {
-			if (testFlag != null && testFlag.length() > 0 ) {
-				// Look for a known failures list file specific to TEST_FLAG testing
-				if (testFlag.contains(",")) {
-					testFlagList = testFlag.split(",");
-				} else {
-					testFlagList = new String[] { testFlag };
-				}
-				
-				for ( String aFlag : testFlagList ) { 
-					String aTestFlagExclude = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + aFlag.toLowerCase() + ".jtx";
-					File testFlagJtxFile = new File(aTestFlagExclude);
-					
-					if (testFlagJtxFile.exists()) {
-						System.out.println("Using " + aFlag + " specific failures list file: " + aTestFlagExclude);
-						if (testFlagJtxFullPath.length() == 0) { 
-							testFlagJtxFullPath = aTestFlagExclude;
-						} else {
-							testFlagJtxFullPath = testFlagJtxFullPath + " " + aTestFlagExclude;
-						}
-					} else {
-						System.out.println("Unable to find " + aFlag + " specific failures list file: " + aTestFlagExclude);
-					}
-				}
+		fipsJtxFullPath = "";
+		if (testFlag != null && testFlag.equals("FIPS")) {
+			// Look for a known failures list file specific to FIPS testing
+			fipsJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-fips.jtx";
+			File fipsJtxFile = new File(fipsJtxFullPath);
+			
+			if (fipsJtxFile.exists()) {
+				System.out.println("Using FIPS specific failures list file " + fipsJtxFullPath);
+			} else {
+				System.out.println("Unable to find FIPS specific failures list file " + fipsJtxFullPath);
+				fipsJtxFullPath = "";
 			}
 		}
-
+		
+		try { 
+			if (task.equals(TASK_CMD_FILE_GENERATION)) { 
+				if (!generateJTB()) {
+					System.exit(1);
+				}
+				System.exit(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			System.exit(1);
+		} 
+	}
+	
+	private static boolean generateJTB() throws Exception {
 		if (testSuite.equals("RUNTIME") && (tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api"))) {
 			if (!configAltPath.equals("NULL")) {
 				jckConfigLoc = configAltPath + File.separator + "default";
@@ -381,10 +365,10 @@ public class JavaTestRunner {
 			}
 		}
 		
-		secPropsFile = resultDir + File.separator + "security.properties";
-		
 		if (tests.contains("api/javax_net") ) {
 			// Requires TLS 1.0/1.1 enabling
+			secPropsFile = workDir + File.separator + "security.properties";
+			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, anon, NULL, include jdk.disabled.namedCurves";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile))); 
 			bw.write(secPropsContents); 
@@ -392,11 +376,11 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
-			// Requires SHA1 enabling for jar signers in jdk-11+
-			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
-			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
-			secPropsContents += "RSA keySize < 1024, DSA keySize < 1024, EC keySize < 224, include jdk.disabled.namedCurves" + "\n";
+		if ( getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+			// Requires SHA1 enabling for jar signers in jdk-18+
+			secPropsFile = workDir + File.separator + "security.properties";
+			System.out.println("Custom security properties to be stored in: " + secPropsFile);
+			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile)));
 			bw.write(secPropsContents);
 			bw.flush();
@@ -405,6 +389,8 @@ public class JavaTestRunner {
 		
 		if ( tests.contains("api/javax_xml") ) {
 			// Requires SHA1 enabling
+			secPropsFile = workDir + File.separator + "security.properties";
+			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.xml.dsig.secureValidationPolicy=\\" + "\n";
 			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
 			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
@@ -427,21 +413,6 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if (new File(secPropsFile).length() != 0) { 
-			System.out.println("Echoing contents of generated security.properties file : " + secPropsFile); 
-			System.out.println(">>>>>>>>>>");
-			BufferedReader br = new BufferedReader (new FileReader(secPropsFile)); 
-			while(true) {
-				String s = br.readLine(); 
-				if ( s == null) {
-					break; 
-				} else {
-					System.out.println(s); 
-				}
-			}
-			System.out.println("<<<<<<<<");
-		}
-			
 		// Some tests provoke out of memory exceptions.
 		// If we're testing a J9 VM that will result in dumps being taken and a non-zero return code
 		// which stf will detect as a failure. So in this case add the -Xdump options required to suppress
@@ -450,70 +421,10 @@ public class JavaTestRunner {
 			suppressOutOfMemoryDumpOptions = " -Xdump:system:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -Xdump:snap:none -Xdump:snap:events=gpf+abort+traceassert+corruptcache -Xdump:java:none -Xdump:java:events=gpf+abort+traceassert+corruptcache -Xdump:heap:none -Xdump:heap:events=gpf+abort+traceassert+corruptcache"; 
 		}
 
-		newJtbLocation = resultDir + File.separator + "JTB"; 
-		workDir = resultDir + File.separator + "workdir"; 
-		reportDir = resultDir + File.separator + "report"; 
-		newJtbFileRef = newJtbLocation + File.separator + "generated.jtb";
-
-		File file = new File(newJtbLocation);
-		file.mkdir();
-
 		fileContent = "testsuite \"" + jckBase + "\";\n";
-		fileContent += "workDirectory -create -overwrite " + workDir + ";\n";
+		fileContent += "workDirectory -create " + workDir + File.separator +  "work" + ";\n";
 		fileContent += "tests " + tests + ";\n";
 
-		if (testExecutionType.equals("multijvm") && withAgent.equals("off")) {
-			if (!jckConfigurationForMultijvmWithNoAgent()) {
-				return false; 
-			}
-		} else {
-			System.out.println(testExecutionType + "with Agent " + withAgent + "combination is not yet supported.");
-			return false; 
-		}
-
-		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
-		// when running a test via jck_custom.
-		if (task == null || !task.equals("custom")) {  
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
-		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
-		}
-		
-		fileContent += "runTests" + ";\n";
-		fileContent += "writeReport -type xml " + reportDir + ";\n";
-
-		// Make sure any backslashes are escaped, required by the test harness.
-		fileContent = fileContent.replace("\\\\", "\\"); 		// Replaces \\ with \, leave \ alone.
-		fileContent = fileContent.replace("\\", "\\\\");		// Replaces \ with \\
-
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbFileRef))); 
-		bw.write(fileContent); 
-		bw.flush();
-		bw.close();
-
-		if (platform.equals("zos")) {
-			if(!doIconvFile()) {
-				System.out.println("Failed to convert jtb file encoding for z/OS");
-			}
-		}
-
-		System.out.println("Echoing contents of generated jtb file : " + newJtbFileRef); 
-		System.out.println(">>>>>>>>>>");
-		BufferedReader br = new BufferedReader (new FileReader(newJtbFileRef)); 
-		while(true) {
-			String s = br.readLine(); 
-			if ( s == null) {
-				break; 
-			} else {
-				System.out.println(s); 
-			}
-		}
-		System.out.println("<<<<<<<<");
-		
-		return true; 
-	}
-	
-	public static boolean jckConfigurationForMultijvmWithNoAgent() throws Exception {
 		pathToJava = testJdk + File.separator + "bin" + File.separator + "java";
 		String pathToRmic = testJdk + File.separator + "bin" + File.separator + "rmic";
 		String pathToLib = testJdk + File.separator + "jre" + File.separator + "lib";
@@ -693,7 +604,7 @@ public class JavaTestRunner {
 				fileContent += "set jck.env.runtime.jgss.kdcHostName " + KerberosConfig.kdcHostName + ";\n";
 				fileContent += "set jck.env.runtime.jgss.kdcRealmName " + KerberosConfig.kdcRealmName + ";\n";
 
-				extraJvmOptions += " -Djava.security.krb5.conf=" + krbConfFile + " -DKRB5CCNAME=" + resultDir + File.separator + "krb5.cache" + " -DKRB5_KTNAME=" + resultDir + File.separator + "krb5.keytab";
+				extraJvmOptions += " -Djava.security.krb5.conf=" + krbConfFile + " -DKRB5CCNAME=" + workDir + File.separator + "krb5.cache" + " -DKRB5_KTNAME=" + workDir + File.separator + "krb5.keytab";
 			}	
 			if ( tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.net.localHostName " + hostname + ";\n";
@@ -790,9 +701,16 @@ public class JavaTestRunner {
 			} 
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 4" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
+			fileContent += "timeoutfactor 100" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
 			fileContent += keyword + ";\n";
-
+			
+			if (testExecutionType != null && testExecutionType.equals("multijvm")) { 
+				fileContent += "set jck.env.testPlatform.useAgent \"Yes\";\n";
+				fileContent += "set jck.env.compiler.agent.agentType \"passive\";\n";
+				fileContent += "set jck.env.compiler.agent.passiveHost \"" + agentHost + "\"" + ";\n";
+				fileContent += "set jck.env.compiler.agent.passivePortDefault \"Yes\";\n";
+			}
+			
 			String cmdAsStringOrFile = "cmdAsString"; // Whether to reference cmd via cmdAsString or cmdAsFile
 			if (platform.equals("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
@@ -810,10 +728,10 @@ public class JavaTestRunner {
 				fileContent += "set jck.env.testPlatform.fileSep \"/\";\n";
 				fileContent += "set jck.env.testPlatform.pathSep \":\";\n";
 			}
-
+			
 			// If the Select Compiler question in the JCK interview was answered as "Java Compiler API (JSR199)",
 			// set jck.env.compiler.testCompile.testCompileAPImultiJVM.cmdAsString.
-			fileContent += "set jck.env.compiler.testCompile.testCompileAPImultiJVM." + cmdAsStringOrFile + " \"" + pathToJava + "\"" + ";\n";
+			fileContent += "set jck.env.compiler.testCompile.testCompileAPImultiJVM." + cmdAsStringOrFile + " \"" + testJavaForMultiJVMCompTest + "\"" + ";\n";
 
 			if (jckVersion.contains("jck8")) {
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source 1.8 \"" + ";\n";
@@ -830,7 +748,7 @@ public class JavaTestRunner {
 				fileContent += "set jck.env.compiler.testRmic." + cmdAsStringOrFile + " \"" + pathToRmic + "\"" + ";\n";
 			}
 			
-			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + pathToJava + "\"" + ";\n";
+			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + riJavaForMultiJVMCompTest + "\"" + ";\n";
 
 			if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
 				// On jck11+ z/OS and AIX set the compRefExecute file and path separators
@@ -844,9 +762,11 @@ public class JavaTestRunner {
 			if (getJckVersionInt(jckVersionNo) > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
-
+			
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";	
+			if (testExecutionType != null && !testExecutionType.equals("multijvm")) { 
+				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+			}
 		}
 		// Devtools settings
 		if (testSuite.equals("DEVTOOLS")) {
@@ -937,146 +857,41 @@ public class JavaTestRunner {
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";	
 		}
-		return true;
-	}
 
-	public static boolean execute() throws Exception {
-		if (testExecutionType.equals("multijvm") && withAgent.equals("off")) {
-			Process javatestAgent = null;
-			Process rmiRegistry = null;
-			Process rmid = null;
-			Process tnameserv = null;
-			Process jck = null; 
+		fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + " " + fipsJtxFullPath + "\"" + ";\n";
+		fileContent += "runTests" + ";\n";
+		fileContent += "writeReport -type xml " + reportDir + ";\n";
 
-			if ( (testSuite.equals("RUNTIME")) && (tests.contains("api/java_util") || tests.contains("api/java_net") || tests.contains("api/java_rmi")  || tests.contains("api/javax_management") 
-					|| tests.contains("api/org_omg") || tests.contains("api/javax_xml") || tests.equals("api") || tests.contains("vm/jdwp") || tests.equals("vm")) ) {
-				String addModules = "";
-				// JCK 9/10 javatest agents need to be given access to non default modules.
-				// JCK 8 doesn't support modules, JCK11 and beyond have removed these two modules: java.xml.ws,java.corba.
-				if ( jckVersion.contains("jck9") || jckVersion.contains("jck10") ) {
-					addModules = "--add-modules java.xml.ws,java.corba";
-				}
+		// Make sure any backslashes are escaped, required by the test harness.
+		fileContent = fileContent.replace("\\\\", "\\"); 		// Replaces \\ with \, leave \ alone.
+		fileContent = fileContent.replace("\\", "\\\\");		// Replaces \ with \\
 
-				String classPath = javatestJarFullPath + File.pathSeparator + classesFullPath; 
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbFileRef))); 
+		bw.write(fileContent); 
+		bw.flush();
+		bw.close();
 
-				List<String> javatestAgentCmd = new ArrayList<>();
-				javatestAgentCmd.add(pathToJava);
-				javatestAgentCmd.add("-Djavatest.security.allowPropertiesAccess=true");
-				javatestAgentCmd.add("-Djava.security.policy=" + jckPolicyFileFullPath);
-				if (!addModules.equals("")) {
-					javatestAgentCmd.add(addModules);
-				}
-				javatestAgentCmd.add("-classpath"); 
-				javatestAgentCmd.add(classPath);
-				javatestAgentCmd.add("com.sun.javatest.agent.AgentMain");
-				javatestAgentCmd.add("-passive");
-				javatestAgent = startSubProcess("com.sun.javatest.agent.AgentMain",javatestAgentCmd);
-
-				// We only need RMI registry and RMI activation daemon processes for tests under api/java_rmi
-				if (tests.contains("api/java_rmi") && 
-					(jckVersion.contains("jck8") || jckVersion.contains("jck11") || jckVersion.contains("jck16"))) {
-					String pathToRmiRegistry = testJdk + File.separator + "bin" + File.separator + "rmiregistry";
-					List<String> rmiRegistryCmd = new ArrayList<>();
-					rmiRegistryCmd.add(pathToRmiRegistry);
-					rmiRegistry = startSubProcess("rmiregistry", rmiRegistryCmd); 
-
-					String pathToRmid = testJdk + File.separator + "bin" + File.separator + "rmid";
-					List<String> rmidCmd = new ArrayList<>();
-					rmidCmd.add(pathToRmid);
-					rmidCmd.add("-J-Dsun.rmi.activation.execPolicy=none"); 
-					rmidCmd.add("-J-Djava.security.policy=" + jckPolicyFileFullPath); 
-					rmid = startSubProcess("rmid", rmidCmd); 
-				}
-
-				// tnameserv has been removed from jdk11. We only should need it for jck8
-				if (jckVersion.contains("jck8")) { 
-					String pathToTnameserv = testJdk + File.separator + "bin" + File.separator + "tnameserv";
-					List<String> tnameservCmd = new ArrayList<>();
-					tnameservCmd.add(pathToTnameserv);
-					tnameservCmd.add("-ORBInitialPort");
-					tnameservCmd.add("9876");
-					tnameserv = startSubProcess("tnameserve", tnameservCmd); 
-				}
+		if (platform.equals("zos")) {
+			if(!doIconvFile()) {
+				System.out.println("Failed to convert jtb file encoding for z/OS");
+				return false; 
 			}
-
-			long timeout = 24;
-			int jckRC = -1;
-			boolean endedWithinTimeLimit = false;
-			
-			// Use the presence of more than one '/' to signify that we are running a smaller subset of tests.
-			// If one of the highest level subsets of tests is being run it is likely to take a long time.
-			if ( tests.chars().filter(c -> c == '/').count() > 1 && !isRiscv ) {
-				timeout = 4;
-			}
-
-			File f = new File (javatestJarFullPath); 
-			f.setReadable(true); 
-
-			List<String> jckCmd = new ArrayList<>();
-			jckCmd.add(pathToJava);
-			jckCmd.add("-jar"); 
-			jckCmd.add(javatestJarFullPath);
-			jckCmd.add("-config");
-			jckCmd.add(jtiFile);
-			jckCmd.add(" @" + newJtbFileRef);
-			System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
-			jck = startSubProcess("jck", jckCmd);
-			
-			//List<String> jckCmd = new ArrayList<>();
-			//jckCmd.add(pathToJava);
-			//jckCmd.add("-jar"); 
-			//jckCmd.add(jtliteJarFullPath);
-			//jckCmd.add("-verbose:max");
-			//jckCmd.add("-config");
-			//jckCmd.add(jtiFile);
-			//jckCmd.add(" @" + newJtbFileRef);
-			//System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
-			//jck = startSubProcess("jck", jckCmd);
-
-			// Block parent for this process to finish
-			endedWithinTimeLimit = jck.waitFor(timeout, TimeUnit.HOURS); 
-			
-			try {
-				jckRC = jck.exitValue();
-			} catch (IllegalThreadStateException e) {
-				// If the 'jck' process "hangs" for some reasons, exitValue() will result in this exception.
-				// Attempt to forcibly terminate the process at that point.
-				jck.destroy();
-				endedWithinTimeLimit = false;
-			}
-
-			// The Compiler -ANNOT, EXPR and LMBD may take over 6 hours to run on some machines.
-			if (javatestAgent != null) {
-				System.out.println("Stopping javatest agent"); 
-				javatestAgent.destroy();
-			}
-			if (rmiRegistry != null) {
-				System.out.println("Stopping rmiregistry"); 
-				rmiRegistry.destroy();
-			}
-			if (rmid != null) {
-				System.out.println("Stopping rmid"); 
-				rmid.destroy();
-			}
-			if (tnameserv != null) {
-				System.out.println("Stopping tnameserver"); 
-				tnameserv.destroy();
-			}
-			
-			boolean result;
-			if (jckRC != 0) {
-				System.out.println("JCK subprocess returned a non-zero value");
-				result = false; 
-			} else if (!endedWithinTimeLimit) {
-				System.out.println("Test did not finish within timeout");
-				result = false; 
-			} else {
-				result = true; 
-			}
-			return result; 
 		}
-		System.out.println("Only non-multijvm tests are supported with Agent turned off");
-		return false; 
+
+		System.out.println("Echoing contents of generated jtb file : " + newJtbFileRef); 
+		System.out.println(">>>>>>>>>>");
+		BufferedReader br = new BufferedReader (new FileReader(newJtbFileRef)); 
+		while(true) {
+			String s = br.readLine(); 
+			if ( s == null) {
+				break; 
+			} else {
+				System.out.println(s); 
+			}
+		}
+		System.out.println("<<<<<<<<");
+		return true;
 	}
 
 	private static boolean generateSummary() {
@@ -1148,12 +963,13 @@ public class JavaTestRunner {
 		System.out.println("Starting sub-process: "+ processName);
 		System.out.println("Full command: " + command);
 		ProcessBuilder pb = new ProcessBuilder(command);
+		pb = pb.redirectErrorStream(true);
 		return pb.inheritIO().start();
 	}
 	
 	private static Process startSubProcessRedirectOut(String processName, List<String> command) throws IOException {
-		File outputFile = new File(resultDir + File.separator + processName + ".out"); 
-		File errFile = new File(resultDir + File.separator + processName + ".err");
+		File outputFile = new File(workDir + File.separator + processName + ".out"); 
+		File errFile = new File(workDir + File.separator + processName + ".err");
 		outputFile.createNewFile(); 
 		errFile.createNewFile();
 		System.out.println("Starting sub-process: "+ processName);
@@ -1253,12 +1069,12 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
 		
-		Matcher matcher = Pattern.compile("jck(\\d+)[bc]?").matcher(jckVersion);
+		Matcher matcher = Pattern.compile("jck(\\d+)c?").matcher(jckVersion);
 		if (matcher.matches()) {
 			// first group is going to be 8, 9, 10, 11, etc.
 			int jckVerNum = Integer.parseInt(matcher.group(1));
@@ -1378,11 +1194,12 @@ public class JavaTestRunner {
 	}
 
 	private static boolean doIconvFile() throws Exception {
-		String tempFile = newJtbLocation + File.separator + "temp.jtb";
+		String tempFile = newJtbFileRef + File.separator + "jtb.tmp";
 		BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile)); 
 		bw.write(fileContent); 
 		bw.flush();
 		bw.close();
+		
 		new File(newJtbFileRef).delete(); 
 		new File(newJtbFileRef).createNewFile(); 
 
@@ -1406,7 +1223,7 @@ public class JavaTestRunner {
 	}
 	
 	private static int getJckVersionInt(String version) {
-		if (version.equals("8c") || version.equals("8b")) {
+		if (version.equals("8c")) {
 			return 8; 
 		} else {
 			return Integer.parseInt(version); 

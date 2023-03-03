@@ -133,6 +133,7 @@ JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
 HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
 LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
 FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
+FULLPATH_HOTSPOT_CUSTOM_TARGET = $(foreach target,$(HOTSPOT_CUSTOM_TARGET),$(JTREG_HOTSPOT_TEST_DIR)$(D)$(target))
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
@@ -191,7 +192,7 @@ ifneq ($(filter 11 16, $(JDK_VERSION)),)
 endif
 
 FEATURE_PROBLEM_LIST_FILE:=
-ifeq ($(TEST_FLAG), FIPS)
+ifneq (,$(findstring FIPS, $(TEST_FLAG))) 
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
 endif
 

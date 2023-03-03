@@ -78,7 +78,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)$(HOTSPOT_CUSTOM_TARGET)$(Q); \
+	$(FULLPATH_HOTSPOT_CUSTOM_TARGET); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -996,6 +996,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1021,6 +1022,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1053,6 +1055,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1078,6 +1081,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1320,6 +1324,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1453,6 +1458,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16565</comment>
+				<version>20+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1638,6 +1650,39 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<!-- ClassesByName2Test is a subtest of jdk_jdi. Once jdk_jdi is fully enabled in openj9/ibm, the classesByName2Test below can be removed  -->
+	<test>
+		<testCaseName>classesByName2Test</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)com$(D)sun$(D)jdi$(D)ClassesByName2Test.java$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<versions>
+			<version>11+</version>
+		</versions>
+		<impls>
+			<impl>ibm</impl>
+			<impl>openj9</impl>
+		</impls>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
 	<test>
 		<testCaseName>jdk_build</testCaseName>
 		<disables>
@@ -1766,6 +1811,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \

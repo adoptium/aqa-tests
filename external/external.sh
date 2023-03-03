@@ -32,6 +32,17 @@ build_number=""
 node_name=""
 node_labels=""
 node_label_micro_architecture=""
+container_run="docker run"
+container_login="docker login"
+container_inspect="docker inspect"
+container_cp="docker cp"
+container_commit="docker commit"
+container_tag="docker tag"
+container_logout="docker logout"
+container_push="docker push"
+container_pull="docker pull"
+container_rm="docker rm"
+container_rmi="docker rmi"
 criu_micro_architecture_list=""
 docker_registry_required="false"
 docker_registry_url=""
@@ -83,6 +94,20 @@ parseCommandLineArgs() {
 
 				if [[ "${test}" == *"ubi"* ]]; then
 					docker_os=ubi
+				fi
+
+				if [[ "${test}" == *"criu"* ]]; then
+					container_run="sudo podman run"
+					container_login="sudo podman login"
+					container_inspect="sudo podman inspect"
+					container_cp="sudo podman cp"
+					container_commit="sudo podman commit"
+					container_tag="sudo podman tag"
+					container_logout="sudo podman logout"
+					container_push="sudo podman push"
+					container_pull="sudo podman pull"
+					container_rm="sudo podman rm"
+					container_rmi="sudo podman rmi"
 				fi
 				shift;;
 			
@@ -227,7 +252,7 @@ function parse_docker_args() {
 
 
 function docker-ip() {
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$@"
+  $container_inspect --format '{{ .NetworkSettings.IPAddress }}' "$@"
 }
 
 parseCommandLineArgs "$@"
@@ -246,20 +271,20 @@ if [ $command_type == "run" ]; then
 	fi
 
 	if [[ $reportsrc != "false" ]] || [[ $portable != "false" ]]; then
-		echo "docker run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
+		echo "$container_run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		if [ -n "$testtarget" ]; then
-			docker run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type "$testtarget";
+			$container_run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type "$testtarget";
 		else
-			docker run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
+			$container_run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
 		fi
 		if [ $reportsrc != "false" ]; then
-			docker cp $test-test:$reportsrc $reportdst/external_test_reports;
+			$container_cp $test-test:$reportsrc $reportdst/external_test_reports;
 		fi
 		
 		if [ $portable != "false" ]; then
 			if [[ $docker_registry_url ]]; then
 				echo "Private Docker Registry login starts:"
-				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
+				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
 
 				restore_ready_checkpoint_image_folder="${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}"
 				tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
@@ -267,30 +292,30 @@ if [ $command_type == "run" ]; then
 
 				# Push a docker image with build_num for records
 				echo "tagged_restore_ready_checkpoint_image_num is $tagged_restore_ready_checkpoint_image_num"
-				docker commit --change='ENTRYPOINT ["/bin/bash", "/test_restore.sh"]' $test-test $tagged_restore_ready_checkpoint_image_num
+				$container_commit --change='ENTRYPOINT ["/bin/bash", "/test_restore.sh"]' $test-test $tagged_restore_ready_checkpoint_image_num
 				echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_num}"
-				docker push $tagged_restore_ready_checkpoint_image_num
+				$container_push $tagged_restore_ready_checkpoint_image_num
 
 				# Push another copy as the nightly default latest
 				echo "Change Tag from build_number to latest"
-				docker tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest
+				$container_tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest
 
 				if [[ "$job_name" == *"$criu_default_image_job_name"* ]]; then
 					echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_latest} to docker registry"
-					docker push $tagged_restore_ready_checkpoint_image_latest
+					$container_push $tagged_restore_ready_checkpoint_image_latest
 				fi
-				docker logout $docker_registry_url
+				$container_logout $docker_registry_url
 			else
 				echo "Docker Registry is not available on this Jenkins"
 				exit 1
 			fi
 		fi
 	else
-		echo "docker run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
+		echo "$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		if [ -n "$testtarget" ]; then
-			docker run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type "$testtarget";
+			$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type "$testtarget";
 		else
-			docker run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
+			$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
 		fi
 	fi
 fi
@@ -299,7 +324,7 @@ if [ $command_type == "load" ]; then
 	if [[ $docker_registry_required != "false" ]]; then
 		if [[ $docker_registry_url ]]; then
 			echo "Private Docker Registry login starts:"
-			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | docker login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
+			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
 			
 			mount_options="$mountV"
 			if [[ $mount_jdk == "false" ]]; then
@@ -324,13 +349,13 @@ if [ $command_type == "load" ]; then
 			for restore_docker_image_name in ${restore_docker_image_name_list[@]}
 			do
 				echo "Pulling image $restore_docker_image_name"
-				docker pull $restore_docker_image_name
+				$container_pull $restore_docker_image_name
 				# restore
-				echo "docker run --privileged $mount_options --name restore-test --rm $restore_docker_image_name"
-				docker run --privileged $mount_options --name restore-test --rm $restore_docker_image_name
+				echo "$container_run --privileged $mount_options --name restore-test --rm $restore_docker_image_name"
+				$container_run --privileged $mount_options --name restore-test --rm $restore_docker_image_name
 			done
 			
-			docker logout $docker_registry_url
+			$container_logout $docker_registry_url
 		else
 			echo "Docker Registry is not available on this Jenkins"
 			exit 1
@@ -340,7 +365,7 @@ if [ $command_type == "load" ]; then
 		if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
 			docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
 		fi
-		docker pull $docker_image_name
+		$container_pull $docker_image_name
 		test_script_path="$test_root/external/$test/test.sh"
 		chmod a+x $test_script_path
 		mount_test_script="-v $test_script_path:/test.sh"
@@ -349,8 +374,8 @@ if [ $command_type == "load" ]; then
 			echo "Mounting JDK and test script"
 			mount_options="$mountV $mount_test_script"
 		fi
-		echo "docker run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh"
-		docker run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh
+		echo "$container_run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh"
+		$container_run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh
 	fi
 fi
 
@@ -358,8 +383,8 @@ if [ $command_type == "clean" ]; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 	fi
-	docker rm -f $test-test; docker rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
-	docker rm -f restore-test
-	docker rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
-	docker rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
+	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
+	$container_rm -f restore-test
+	$container_rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
+	$container_rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
 fi
