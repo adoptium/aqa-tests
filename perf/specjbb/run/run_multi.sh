@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 echo "Backend opts: $JAVA_OPTS_BE"
