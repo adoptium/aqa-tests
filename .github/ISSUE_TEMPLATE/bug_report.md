@@ -1,6 +1,6 @@
 name: Failing test report
 about: An Issue to describe a failing test
-title: '<Test Name> FAILED in <Jenkins Test Job Name> '
+title: '<Test Name> FAILED in <Jenkins Test Job Name>'
 labels: ''
 assignees: ''
 
