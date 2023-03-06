@@ -28,7 +28,7 @@ export SPECJBB_SRC=/Users/aqa-tester/SPECjbb2015-1.03
 
 ## Run
 
-The configuration currently includes one group, `extended`, and that group contains one test, `SPECjbb2015-multijvm-simple`. You can use the following commands to run it:
+This test target is part of the `dev` level, and the test target name is, `SPECjbb2015-multijvm-simple`. You can use the following commands to run it:
 ```
 make _SPECjbb2015-multijvm-simple
 ```
