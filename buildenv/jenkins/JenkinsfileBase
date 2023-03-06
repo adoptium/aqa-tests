@@ -364,6 +364,21 @@ def setup() {
 		} else if (params.CUSTOMIZED_SDK_URL) {
 			SDK_RESOURCE = "customized"
 			CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+			if (params.ADDITIONAL_ARTIFACTS_REQUIRED == "RI_JDK") {
+				def server = Artifactory.server params.ARTIFACTORY_SERVER
+				def artifactoryUrl = server.getUrl()
+				def repoForRi = ''
+				def riURL = ''
+				if (params.ARTIFACTORY_REPO.contains(',')) {
+					String[] repos = params.ARTIFACTORY_REPO.split(",")
+					// Assumption: ARTIFACTORY_REPO=X,Y (X=to upload results, Y=to download ri)
+					repoForRi = repos[1].trim()
+					if (!env.SPEC.startsWith('aix') && !env.SPEC.startsWith('zos')) {
+						riURL = "${artifactoryUrl}/${repoForRi}/Latest/${PLATFORM}/${JDK_VERSION}"
+					}
+				} 
+				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
+			} 	
 		} else {
 			CUSTOMIZED_SDK_URL_OPTION = ""
 		}
@@ -421,9 +436,10 @@ def setup() {
 		TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 		DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
 		CODE_COVERAGE_OPTION = params.CODE_COVERAGE ? "--code_coverage true" : ""
+		ADDITIONAL_ARTIFACTS_REQUIRED_OPTION = (params.ADDITIONAL_ARTIFACTS_REQUIRED) ? "--additional_artifacts_required ${params.ADDITIONAL_ARTIFACTS_REQUIRED}" : ""
 
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
-		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
+		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -976,6 +992,12 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
+		
+		if (artifactoryRepo.contains(',')) {
+			String[] repos = artifactoryRepo.split(",")
+			artifactoryRepo = repos[0].trim()
+		}
+		
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
 		if (artifactoryRoorDir.endsWith("/")) {
 			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
