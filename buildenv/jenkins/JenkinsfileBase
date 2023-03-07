@@ -1102,7 +1102,7 @@ def addFailedTestsGrinderLink(paths=""){
 								failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
 								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
-								//Remove #id suffixed to the openjdk testcase name. Jtreg doesn't work with it.
+								// Remove #id suffixed to the openjdk testcase name. Jtreg doesn't work with it.
 								failedTestCasesInfo = failedTestCasesInfo.replaceAll(/#id\d{1,}/, "")
 								if (failedtest.startsWith("jdk_")) {
 									jdkFailedTestCaseList += "${failedTestCasesInfo} "
