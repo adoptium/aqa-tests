@@ -156,6 +156,7 @@ clean() {
     echo "clean ..."
     sudo podman stop --all
     sudo podman container rm --all -f
+    sudo podman system prune --all -f
 }
 
 testCreateRestoreImageOnly() {
