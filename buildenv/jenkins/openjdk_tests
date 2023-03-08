@@ -200,6 +200,15 @@ timestamps{
             println "LABEL: ${LABEL}"
 
             stage('Queue') {
+            	if (!areNodesWithLabelOnline(LABEL)) {
+            		node(LABEL) {
+            			echo "shouldn't be here"
+            		}
+            	} else {
+            		node(LABEL) {
+            			echo "should be here"
+            		}
+            	}
                 if (!areNodesWithLabelOnline(LABEL)) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
                     timeout(ACTIVE_NODE_TIMEOUT) {
