@@ -32,6 +32,7 @@ build_number=""
 node_name=""
 node_labels=""
 node_label_micro_architecture=""
+node_label_current_os=""
 container_run="docker run"
 container_login="docker login"
 container_inspect="docker inspect"
@@ -43,7 +44,7 @@ container_push="docker push"
 container_pull="docker pull"
 container_rm="docker rm"
 container_rmi="docker rmi"
-criu_micro_architecture_list=""
+criu_combo_os_microarch_list=""
 docker_registry_required="false"
 docker_registry_url=""
 docker_registry_dir=""
@@ -56,7 +57,7 @@ imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--criu_micro_architecture_list CRIU_MICRO_ARCHITECTURE_LIST] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--criu_combo_os_microarch_list CRIU_XLINUX_COMBO_LIST] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
 supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
@@ -150,9 +151,13 @@ parseCommandLineArgs() {
 				node_labels="$1"; shift;
 				for label in $node_labels
 				do 
-					if [[ "$label" == "hw.arch."*"."* ]]; then
+					if [[ -z "$node_label_micro_architecture" && "$label" == "hw.arch."*"."* ]]; then #hw.arch.x86.skylake
 						node_label_micro_architecture=$label
 						echo "node_label_micro_architecture is $node_label_micro_architecture"
+					elif [[ -z "$node_label_current_os" && "$label" == "sw.os."*"."* ]]; then # sw.os.ubuntu.22 sw.os.rhel.8
+						node_label_current_os=$label
+						echo "node_label_current_os is $node_label_current_os"
+					elif [[ -n "$node_label_current_os" && -n "$node_label_micro_architecture" ]]; then
 						break
 					fi
 				done;;
@@ -173,8 +178,8 @@ parseCommandLineArgs() {
 			"--criu_default_image_job_name" )
 				criu_default_image_job_name="$1"; shift;;
 
-			"--criu_micro_architecture_list" )
-				criu_micro_architecture_list="$1"; shift;;
+			"--criu_combo_os_microarch_list" )
+				criu_combo_os_microarch_list="$1"; shift;;
 
 			"--test_root" )
 				test_root="$1"; shift;;
@@ -286,7 +291,7 @@ if [ $command_type == "run" ]; then
 				echo "Private Docker Registry login starts:"
 				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
 
-				restore_ready_checkpoint_image_folder="${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}"
+				restore_ready_checkpoint_image_folder="${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}"
 				tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
 				tagged_restore_ready_checkpoint_image_latest="${restore_ready_checkpoint_image_folder}:latest"
 
@@ -338,14 +343,14 @@ if [ $command_type == "load" ]; then
 				restore_docker_image_name_list+=("${docker_registry_url}/${docker_registry_dir}")
 			else
 				echo "Testing images from nightly builds"
-				image_micro_architecture_list=($criu_micro_architecture_list)
-				for image_micro_architecture in ${image_micro_architecture_list[@]}
+				image_os_micro_architecture_list=($criu_combo_os_microarch_list)
+				for image_os_micro_architecture in ${image_os_micro_architecture_list[@]}
 				do
-					restore_docker_image_name_list+=("${docker_registry_url}/$criu_default_image_job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_micro_architecture}:latest")
+					restore_docker_image_name_list+=("${docker_registry_url}/$criu_default_image_job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_os_micro_architecture}:latest")
 				done
 			fi
 			
-			echo "The host machine micro-architecture is ${node_label_micro_architecture}"
+			echo "The host machine OS is ${node_label_current_os}, and micro-architecture is ${node_label_micro_architecture}"
 			for restore_docker_image_name in ${restore_docker_image_name_list[@]}
 			do
 				echo "Pulling image $restore_docker_image_name"
@@ -385,6 +390,6 @@ if [ $command_type == "clean" ]; then
 	fi
 	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	$container_rm -f restore-test
-	$container_rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
-	$container_rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_micro_architecture}:latest
+	$container_rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:latest
+	$container_rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:latest
 fi
