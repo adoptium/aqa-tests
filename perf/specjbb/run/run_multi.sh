@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/bin/bash
+=======
+#!/usr/bin/env bash
+>>>>>>> adoptium/master
 
 
 echo "Backend opts: $JAVA_OPTS_BE"
@@ -14,7 +18,6 @@ for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
   result="${temp}/${timestamp}"
   mkdir -pv $result
   
-
   # Copy current config to the result directory
   cp -r $SPECJBB_CONFIG $result
 

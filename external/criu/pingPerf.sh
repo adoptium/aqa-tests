@@ -50,15 +50,42 @@ prepare() {
         cd ci.docker || exit
         git checkout instanton
 
-        # replace commands in openLiberty dockerfile
+        # replace commands in openLiberty dockerfile to use JDK from the pipeline
+        # https://github.com/OpenLiberty/ci.docker/blob/instanton/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17
+
         libertyDockerfilePath="releases/latest/beta-instanton/Dockerfile.ubi.openjdk17"
+
+        # before:
+        # curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL}; \
+        # echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -; \
+        # mkdir -p /opt/java/openjdk; \
+        # cd /opt/java/openjdk; \
+        # tar -xf /tmp/openjdk.tar.xz --strip-components=1; \
+        # rm -rf /tmp/openjdk.tar.xz;
+
+        # after:
+        # mkdir -p /opt/java/openjdk; \
+        # cd /opt/java/openjdk; \
+        # rm -rf /tmp/openjdk.tar.xz;
+        # COPY NEWJDK/ /opt/java/openjdk
+
+        # delete line: curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL};
+        sed -i '/curl -LfsSo \/tmp\/openjdk.tar.xz ${BINARY_URL};/d' $libertyDockerfilePath
+        # delete line: echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -;
+        sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.xz" \| sha256sum -c -;/d' $libertyDockerfilePath
+
+
+        # delete line: ENV JAVA_VERSION jdk-17.0.4.1+1
         sed -i "s:ENV JAVA_VERSION jdk-17.0.4.1+1: :" $libertyDockerfilePath
+        # add line: RUN /opt/java/openjdk/bin/java  --version
         sed -i '/USER 1001.*/a RUN \/opt\/java\/openjdk\/bin\/java  --version' $libertyDockerfilePath
 
         commandToRemove='tar -xf /tmp/openjdk.tar.xz --strip-components=1; \\'
         commandAfterRemovedOne="rm -rf /tmp/openjdk.tar.xz;"
         attachCommand="COPY NEWJDK/ /opt/java/openjdk"
+        # replace line tar -xf rm -rf /tmp/openjdk.tar.xz; with line COPY NEWJDK/ /opt/java/openjdk
         sed -i "s:$commandAfterRemovedOne:$attachCommand:" $libertyDockerfilePath
+        # replace line tar -xf /tmp/openjdk.tar.xz --strip-components=1; with line rm -rf /tmp/openjdk.tar.xz;
         sed -i "s:$commandToRemove:$commandAfterRemovedOne:" $libertyDockerfilePath
  
         mkdir releases/latest/beta-instanton/NEWJDK
@@ -129,6 +156,7 @@ clean() {
     echo "clean ..."
     sudo podman stop --all
     sudo podman container rm --all -f
+    sudo podman system prune --all -f
 }
 
 testCreateRestoreImageOnly() {

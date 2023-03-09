@@ -15,20 +15,20 @@ See the License for the specific language governing permissions and
 SPECjbb is a Java Client/Server performance testing benchmark. 
 Please visit its product page for more information, including a user guide: https://www.spec.org/jbb2015/
 
-
 ## Prerequisites
 Since SPECjbb requires a license to run, this aqa-test config requires that a licensed copy of the benchmark already exists on the machine that you are running on.
 
 ## Setup
 
 Set the `SPECJBB_SRC` environment variable to the absolute path of your SPECjbb benchmark directory
-```
+
+```sh
 export SPECJBB_SRC=/Users/aqa-tester/SPECjbb2015-1.03
 ```
 
 ## Run
 
-The configuration currently includes one group, `extended`, and that group contains one test, `SPECjbb2015-multijvm-simple`. You can use the following commands to run it:
+This test target is part of the `dev` level, and the test target name is, `SPECjbb2015-multijvm-simple`. You can use the following commands to run it:
 ```
-make _testList TESTLIST=SPECjbb2015-multijvm-simple
+make _SPECjbb2015-multijvm-simple
 ```
