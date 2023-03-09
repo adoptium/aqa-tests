@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-#!/bin/bash
-=======
 #!/usr/bin/env bash
->>>>>>> adoptium/master
-
 
 echo "Backend opts: $JAVA_OPTS_BE"
 echo "Number of runs: ${NUM_OF_RUNS}"
