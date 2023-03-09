@@ -230,7 +230,7 @@ timestamps{
                         // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
                         // In this case jobs will be fooled to fall back to wait local busy nodes.
                         if (!isNodeIdle) {
-                            println "Cannot find any idle nodes. Starting dynamic vm ${params.CLOUD_PROVIDER}"
+                            println "Cannot find any idle nodes. Starting dynamic agent from CLOUD_PROVIDER=${params.CLOUD_PROVIDER}"
                             LABEL = LABEL.minus("ci.role.test&&")
                             LABEL += '&&ci.agent.dynamic'
                         }
