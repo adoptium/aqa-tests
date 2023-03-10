@@ -24,4 +24,3 @@ export JAVA_OPTS_BE="-Xms4g -Xmx4g -Xmn3g -XX:+UseParallelGC -XX:ParallelGCThrea
 export MODE_ARGS_C=""
 export MODE_ARGS_TI=""
 export MODE_ARGS_BE=""
-
