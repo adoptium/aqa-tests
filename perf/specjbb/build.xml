@@ -93,7 +93,7 @@
         <echo message="JAVA_BIN ${JAVA_BIN}"/>
     </target>
 
-    <target name="getSpecjbbSuite" depends="init">
+    <target name="getSpecjbbSuite" depends="init" if="env.SPECJBB_SRC">
         <antcall target="printInput"/>
         <antcall target="srcIsValid"/>
         <antcall target="copySrcToDst"/>
