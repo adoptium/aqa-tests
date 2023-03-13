@@ -63,6 +63,8 @@ Open testing engages more people and helps to drive innovation and build communi
 We want a diverse and robust set of test suites to fulfill enterprise and developer requirements.
 These tests should cover different categories including functional/regression, security, performance, scalability, load/stress.  The tests also need to span different JDK versions, implementations, platforms, and applications.
 
+<a name="functionalRegression"></a>
+
 #### 2.2.1 Functional and Regression Tests
 We currently utilize both the OpenJDK regression test suite and the Eclipse OpenJ9 functional test suite.  While there remains some effort to segregate the portions of these test suites that are VM-implementation specific (OpenJDK functional originally written to target Hotspot VM, Openj9 functional originally written to target Openj9 VM), we see there is a great number of tests that are implementation agnostic and can be used to verify different implementations.  
 
@@ -74,6 +76,8 @@ This category of testing includes tests designed and written from a system-wide 
 
 Some of these load and stress tests fire up thousands of threads and iterate 10’s of thousands of times.  The tests can also be tuned, so that as binaries become more resilient, we can increase the load to further stress and push the load bar higher.
 
+<a name="externalApp"></a>
+
 #### 2.2.3 External Application Tests
 This test category includes various suites, at present, functional and smoke tests from a set of third-party applications and Microprofile TCKs (run on different implementations of application server). 
 
@@ -82,6 +86,8 @@ Current External Applications Suites being run at AQAvit can be found within ado
 These tests are run in containers based from Temurin and optionally alternate vendor docker images in order to both exercise those images from docker hub, and to verify these third-party applications work well against them.  Application suites are selected for both their real-world popularity and because they offer interesting workloads that best exercise an OpenJDK binary.  This suite is expandable and there are more applications in the plan captured in adoptium/aqa-tests issue #172.
 
 We are interested in ensuring these suites run well.  We want to engage and share with application communities, but more importantly, we aim to demonstrate to enterprise consumers the correct execution of key applications. 
+
+<a name="performance"></a>
 
 #### 2.2.4 Performance Tests
 Performance benchmarks are important verification tools to compare binaries against an acceptable baseline.  Consumers of our binaries require them to be performant.  This category of tests includes microbenchmarks and large open-source benchmark suites.
@@ -94,12 +100,16 @@ Along with the output and ‘score’ from the benchmark itself, the metrics gat
 
 We will set baseline scores for the performance benchmarks included in AQA that binaries must meet or exceed in order to pass the performance bar.
 
+<a name="security"></a>
+
 #### 2.2.5 Security Tests
 While the regression and functional suites contain many security tests, we intend to increase the level of security tests run against the Temurin and other OpenJDK binaries.  We will include open security test suites that test for known vulnerabilities. We also intend to use fuzzers to search for security vulnerabilities. 
 
 <a name="evolution"></a>
 
 ### 2.3 Evolution Alongside Implementations
+
+<a name="continualInvest"></a>
 
 #### 2.3.1 Continual Investment
 Tests (like the products they verify) need to continuously evolve & change.  This is not a small effort, so is best achieved when we coordinate our efforts with many like-minded quality professionals and developers on a common goal of quality assurance.  
@@ -109,6 +119,8 @@ Automate re-inclusions upon fixes
 Remove friction, make testing easier
 Reduce process, make tools simpler
 
+<a name="processToModify"></a>
+
 #### 2.3.2 Process to Modify
 As described in more detail in Section 2.5, the AQA will be a versioned, reproducible set of suites.  As new OpenJDK versions with their new features come along, so do new or updated test suites.  We may also gather metrics and additional information that will inform us that we should revise the AQA.  For these reasons, the test suites that form the AQA need to be reviewed and modified on occasion.  This process will be lead by the TSC test leads and should include:
 Review/assess existing & new tests on a regular basis (initially as a quarterly review)
@@ -117,6 +129,8 @@ Update the current active set of tests (fixes, levels)
 The project should also produce guides for plugging in new suites, the test source plus build file and playlist files, essential instructions for how to build and execute new test material.  In this way, interested parties may introduce new test suites for trial and review and possible inclusion into an AQA update.
 
 To summarize this section on the process to modify, the selection criteria would favour test suites that address the secure, functional, performant and scalable requirements best.  We aim to improve code coverage in prioritized areas of the heat map (to best reflect real-world API usage), broaden execution of edge cases, test for newly identified vulnerabilities and new features in later releases.
+
+<a name="metrics"></a>
 
 #### 2.3.3 Codecov & Other Metrics
 We should continually review the value of the tests and processes that we employ.  The project should gather data to measure the effectiveness of tests.  This data helps inform our process of improvement and change. 
@@ -135,6 +149,7 @@ Metrics of interest are:
 
 In summary, we will gather metrics for the purpose of improving test material and our ability to assure quality.
 
+<a name="comparativeAnalysis"></a>
 
 #### 2.3.4 Comparative Analysis
 We can employ a “test-the-tests” mechanism, running tests and seeing how they perform across implementations/versions etc.  This allows for a repeatable pattern to follow when triaging test results, look first at the failure and look to see if it fails across versions, platforms and implementations to hone in on root cause.  We can also employ tools for a ‘diff’ of test results, to compare across the variations that we encounter at the project.
