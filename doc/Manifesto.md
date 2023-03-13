@@ -11,7 +11,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 -->
 
-# Adoptium Quality Assurance (AQA) Definition
+# Adoptium Quality Assurance (AQA) Definition v1.0
+
+### Table of contents
+
+1. [Introduction](#introduction)
+2. [Guidelines for AQA](#guidelines)
+    1. [Open and Transparent](#openTransparent)
+    2. [Diverse and Robust](#diverseRobust)
+        1. [Functional and Regression Tests](#functionalRegression)
+        2. [External Application Tests](#externalApp)
+        3. [Performance Benchmarks](#performance)
+        4. [Security Tests](#security)
+    3. [Evolution alongside Implementations](#evolution)
+        1. [Continual Investment](#continualInvest)
+        2. [Process to Modify](#processToModify)
+        3. [Codecov and other Metrics](#metrics)
+        4. [Comparative Analysis](#comparativeAnalysis)
+    4. [Portable](#portable)
+    5. [Tag and Publish](#tagPublish)
+3. [Summary](#summary)
+
+<a name="introduction"></a>
 
 ## 1 Introduction 
 
@@ -23,7 +44,11 @@ Quality Assurance means, “Make quality certain to happen”.  Our goal is to m
 - Performant – meets or exceeds a set performance bar for various types of operations
 - Scalable – can span and scale to enterprise workloads
 
+<a name="guidelines"></a>
+
 ## 2 Guidelines for AQA
+
+<a name="openTransparent"></a>
 
 ### 2.1 Open & Transparent 
 We believe open languages deserve open tests.  This means test source should be open and tests should be executed in the open with their results openly available.  
@@ -31,6 +56,8 @@ We believe open languages deserve open tests.  This means test source should be 
 Transparent processes strengthen confidence.  Consumers get to see test results directly and know a certain quality bar was achieved, rather than just be told some testing was done.  Open tests get scrutinized, get fixed, get loved.  
 
 Open testing engages more people and helps to drive innovation and build community.  Being able to see and compare test results across implementations also creates a healthy and competitive ecosystem that ultimately benefits all.
+
+<a name="diverseRobust"></a>
 
 ### 2.2 Diverse & Robust Set of Test Suites
 We want a diverse and robust set of test suites to fulfill enterprise and developer requirements.
@@ -69,6 +96,8 @@ We will set baseline scores for the performance benchmarks included in AQA that 
 
 #### 2.2.5 Security Tests
 While the regression and functional suites contain many security tests, we intend to increase the level of security tests run against the Temurin and other OpenJDK binaries.  We will include open security test suites that test for known vulnerabilities. We also intend to use fuzzers to search for security vulnerabilities. 
+
+<a name="evolution"></a>
 
 ### 2.3 Evolution Alongside Implementations
 
@@ -114,6 +143,8 @@ One of the greatest benefits that the work encapulated by AQAvit offers is that 
 - how did each implementation fair against particular test criteria? 
 - how stable/fast/secure is the new release?
 
+<a name="portable"></a>
+
 ### 2.4 Portable
 Test portability is related to an open and transparent statement.  The tests that form the AQA need to be easily run:
 - on newly-added platforms
@@ -121,6 +152,8 @@ Test portability is related to an open and transparent statement.  The tests tha
 - by any developer on a laptop via command line
 - in any distributors' continuous integration (CI) server
 Portable tests allow for both easier upkeep and maintenance but also faster evolution of the AQA.  This also allows developers to reproduce test failures, make changes and retest, reducing turnaround time when incorporating fixes and features.
+
+<a name="tagPublish"></a>
 
 ### 2.5 Tag & Publish
 We want consumers of our binaries to be able to see what tests were run against them, and how the binaries scored against a rigorous onslaught of tests.  Consumers should be able to get a Bill of Materials (BoM), essentially a listing of the test materials used to verify an OpenJDK binary.  
@@ -135,6 +168,8 @@ Ability to associate binaries to:
 - Downloadable relevant test artifacts 
 - Badge/indicator on website marking binaries that pass the AQA
 The goal would be the ability for 100% reproducible test results per release.  Anyone should be able to grab a binary and the test artifacts including the BoM and reproduce the same test set that was originally run at the project.  
+
+<a name="summary"></a>
 
 ## 3 Summary
 Our goals and intention for AQA is to provide the community with a valuable quality assurance toolkit and set a high bar for OpenJDK binaries being produced and distributed.  We believe that working together on this toolkit in an open and collaborative environment will be beneficial to all implementers, developers, consumers, and stakeholders within the open community.
