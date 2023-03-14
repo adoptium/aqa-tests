@@ -1,78 +1,100 @@
 #!/usr/bin/env bash
 
-echo "Backend opts: $JAVA_OPTS_BE"
+echo "Backend opts: ${JAVA_OPTS_BE}"
 echo "Number of runs: ${NUM_OF_RUNS}"
 echo "Results dir: ${RESULTS_DIR}"
 
-for ((n=1; $n<=$NUM_OF_RUNS; n=$n+1)); do
+function runSpecJbbMulti() {
+  for ((runNumber=1; runNumber<=NUM_OF_RUNS; runNumber=runNumber+1)); do
 
-  # Create result directory                
-  temp="${RESULTS_DIR%\"}"
-  temp="${temp#\"}"
-  timestamp=$(date '+%y-%m-%d_%H%M%S')
-  result="${temp}/${timestamp}"
-  mkdir -pv $result
-  
-  # Copy current config to the result directory
-  cp -r $SPECJBB_CONFIG $result
+    # Create temp result directory                
+    local result
+    result="${RESULTS_DIR%\"}"
+    result="${result#\"}"
+    mkdir -pv "${result}"
+    
+    # Copy current config to the result directory
+    cp -r "${SPECJBB_CONFIG}" "${result}"
+    cd "${result}" || exit
 
-  cd $result
+    # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
+    local timestamp
+    timestamp=$(date +%Y%m%d_%H%M%S)
+    
+    # Start logging
+    echo "Run $runNumber: $timestamp"
+    echo "Launching SPECjbb2015 in MultiJVM mode..."
+    echo
 
-  echo "Run $n: $timestamp"
-  echo "Launching SPECjbb2015 in MultiJVM mode..."
-  echo
+    # Start the Controller JVM, note JAVA is a previously exported environment variable coming in from testenv.mk
+    echo "Starting the Controller JVM"
+    JAVA="${JAVA%\"}"
+    JAVA="${JAVA#\"}"
+    # We don't double quote escape all arguments as some of those are being pssed in as a list with spaces
+    # shellcheck disable=SC2086
+    "${JAVA}" ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar "${SPECJBB_JAR}" -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &
 
-  JAVA="${JAVA%\"}"
-  JAVA="${JAVA#\"}"
-  echo "Start Controller JVM"
-  $JAVA $JAVA_OPTS_C $SPECJBB_OPTS_C -jar $SPECJBB_JAR -m MULTICONTROLLER $MODE_ARGS_C 2>controller.log 2>&1 | tee controller.out &
+    # Save the PID of the Controller JVM
+    CTRL_PID=$!
+    echo "Controller PID = $CTRL_PID"
 
-  CTRL_PID=$!
-  echo "Controller PID = $CTRL_PID"
+    # Sleep for 3 seconds for the controller to start. TODO This is brittle, let's detect proper controller start-up
+    sleep 3
 
-  sleep 3
+    # Start the TransactionInjector and Backend JVMs for each group
+    for ((groupNumber=1; groupNumber<GROUP_COUNT+1; groupNumber=groupNumber+1)); do
 
-  for ((gnum=1; $gnum<$GROUP_COUNT+1; gnum=$gnum+1)); do
+      local groupId="Group$groupNumber"
 
-    GROUPID=Group$gnum
-    echo -e "\nStarting JVMs from $GROUPID:"
+      echo -e "\nStarting Transaction Injector JVMs from $groupId:"
 
-    for ((jnum=1; $jnum<$TI_JVM_COUNT+1; jnum=$jnum+1)); do
+      for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
 
-        JVMID=txiJVM$jnum
-        TI_NAME=$GROUPID.TxInjector.$JVMID
+          local transactionInjectorJvmId="txiJVM$injectorNumber"
+          local transactionInjectorName="$groupId.TxInjector.$transactionInjectorJvmId"
 
-        echo "    Start $TI_NAME"
-        $JAVA $JAVA_OPTS_TI $SPECJBB_OPTS_TI -jar $SPECJBB_JAR -m TXINJECTOR -G=$GROUPID -J=$JVMID $MODE_ARGS_TI > $TI_NAME.log 2>&1 &
-        echo -e "\t$TI_NAME PID = $!"
-        sleep 1
+          echo "Start $transactionInjectorName"
+          # We don't double quote escape all arguments as some of those are being pssed in as a list with spaces
+          # shellcheck disable=SC2086
+          "${JAVA}" ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar "${SPECJBB_JAR}" -m TXINJECTOR -G=$groupId -J="${transactionInjectorJvmId}" ${MODE_ARGS_TI} > "${TI_NAME}.log" 2>&1 &
+          echo -e "\t${transactionInjectorName} PID = $!"
+
+          # Sleep for 1 second to allow each transaction injector JVM to start. TODO this seems arbitrary
+          sleep 1
+      done
+
+      local backendJvmId=beJVM
+      local backendName="$groupId.Backend.${backendJvmId}"
+      
+      # Add GC logging to the backend's JVM options TODO update this to the real command
+      JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*:file=${backendName}_gc.log"
+      echo " Start $BE_NAME"
+      # We don't double quote escape all arguments as some of those are being pssed in as a list with spaces
+      # shellcheck disable=SC2086
+      "${JAVA}" ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar "${SPECJBB_JAR}" -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > "${backendName}.log" 2>&1 &
+      echo -e "\t$BE_NAME PID = $!"
+
+      # Sleep for 1 second to allow each backend JVM to start. TODO this seems arbitrary
+      sleep 1
+
     done
 
-    JVMID=beJVM
-    BE_NAME=$GROUPID.Backend.$JVMID
+    echo
+    echo "SPECjbb2015 is running..."
+    echo "Please monitor $result/controller.out for progress"
+
+    wait $CTRL_PID
+    echo
+    echo "Controller has stopped"
+
+    echo "SPECjbb2015 has finished"
+    echo
     
-    # Add GC logging to the backend's JVM options 
-    JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*:file=${BE_NAME}_gc.log"
-    echo "    Start $BE_NAME"
-    $JAVA $JAVA_OPTS_BE_WITH_GC_LOG $SPECJBB_OPTS_BE -jar $SPECJBB_JAR -m BACKEND -G=$GROUPID -J=$JVMID $MODE_ARGS_BE > $BE_NAME.log 2>&1 &
-    echo -e "\t$BE_NAME PID = $!"
-    sleep 1
+    cd "${WORKING_DIR}" || exit
 
   done
+}
 
-  echo
-  echo "SPECjbb2015 is running..."
-  echo "Please monitor $result/controller.out for progress"
-
-  wait $CTRL_PID
-  echo
-  echo "Controller has stopped"
-
-  echo "SPECjbb2015 has finished"
-  echo
-  
-  cd $WORKING_DIR
-
-done
+runSpecJbbMulti
 
 exit 0
