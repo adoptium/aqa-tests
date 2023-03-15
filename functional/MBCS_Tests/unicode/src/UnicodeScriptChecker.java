@@ -23,7 +23,7 @@ public class UnicodeScriptChecker {
   private static void checker(String startStr, String endStr, String name) {
     int startCode = Integer.parseInt(startStr,16);
     int endCode   = Integer.parseInt(endStr,16);
-    name = name.toUpperCase();
+    name = name.toUpperCase(Locale.ROOT);
     Character.UnicodeScript script1 = Character.UnicodeScript.valueOf(name);
     if (!name.equals(script1.toString()))
       System.err.printf("[%s]<->[%s]%n", name, script1.toString());

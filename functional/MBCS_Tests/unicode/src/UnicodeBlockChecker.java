@@ -49,8 +49,8 @@ public class UnicodeBlockChecker {
           int startCode = Integer.parseInt(result.group(1),16);
           int endCode = Integer.parseInt(result.group(2),16);
           String blockName = result.group(3).replace('-', ' ');
-          if (blockTable.containsKey(blockName.toLowerCase(Locale.ENGLISH)))
-            blockName = blockTable.get(blockName.toLowerCase(Locale.ENGLISH));
+          if (blockTable.containsKey(blockName.toLowerCase(Locale.ROOT)))
+            blockName = blockTable.get(blockName.toLowerCase(Locale.ROOT));
           for (int i=startCode; i<=endCode; i++) {
             String name = (Character.UnicodeBlock.of(i)==null ? "UNASSIGNED" : Character.UnicodeBlock.of(i)).toString().replace('_', ' ');
             if (!blockName.equalsIgnoreCase(name))

@@ -34,3 +34,10 @@ https://www.unicode.org/Public/14.0.0/ucd/UnicodeData.txt
 Unihan_IRGSources-14.0.0.txt was downloaded by following link.
 Unihan_IRGSources.txt was original name.
 https://www.unicode.org/Public/14.0.0/ucd/Unihan.zip
+
+UnicodeData-15.0.0.txt was downloaded by following link
+https://www.unicode.org/Public/15.0.0/ucd/UnicodeData.txt
+
+Unihan_IRGSources-15.0.0.txt was downloaded by following link.
+Unihan_IRGSources.txt was original name.
+https://www.unicode.org/Public/15.0.0/ucd/Unihan.zip
