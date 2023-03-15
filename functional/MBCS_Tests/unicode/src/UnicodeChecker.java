@@ -33,6 +33,7 @@ public class UnicodeChecker {
     blockTable.put("CJK Ideograph Extension E","CJK UNIFIED IDEOGRAPHS EXTENSION E");
     blockTable.put("CJK Ideograph Extension F","CJK UNIFIED IDEOGRAPHS EXTENSION F");
     blockTable.put("CJK Ideograph Extension G","CJK UNIFIED IDEOGRAPHS EXTENSION G");
+    blockTable.put("CJK Ideograph Extension H","CJK UNIFIED IDEOGRAPHS EXTENSION H");
     blockTable.put("Plane 15 Private Use","SUPPLEMENTARY PRIVATE USE AREA A");
     blockTable.put("Plane 16 Private Use","SUPPLEMENTARY PRIVATE USE AREA B");
 
@@ -83,7 +84,7 @@ public class UnicodeChecker {
                 uName = String.format("LATIN 1 SUPPLEMENT %X",code);
             }
         }
-        if (uName.toUpperCase().lastIndexOf(", LAST>") != -1) {
+        if (uName.toUpperCase(Locale.ROOT).lastIndexOf(", LAST>") != -1) {
           String h0 = String.format("%X", code);
           for(int i=firstCode; i<=code; i++) {
             String sName = String.format("%s %X", name, i);
@@ -96,7 +97,7 @@ public class UnicodeChecker {
           }
           name = null;
           firstCode = 0;
-        } else if (uName.toUpperCase().lastIndexOf(", FIRST>") != -1) {
+        } else if (uName.toUpperCase(Locale.ROOT).lastIndexOf(", FIRST>") != -1) {
           name = uName.substring(1, uName.length()-8);
           if (blockTable.containsKey(name))
             name = blockTable.get(name);

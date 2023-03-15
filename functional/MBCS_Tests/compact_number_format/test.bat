@@ -17,7 +17,18 @@ SET PWD=%~dp0
 call %PWD%\check_env_windows.bat
 call %PWD%\..\data\setup_%LOCALE%.bat
 
+%JAVA_BIN%\java -cp %PWD%\compact_number_format.jar JavaVer
+SET JAVAVER=%errorlevel%
+
 %JAVA_BIN%\java -cp %PWD%\compact_number_format.jar CompactNumberFormatTest > result.txt 2>&1
 
-fc result.txt %PWD%\expected\windows_%LOCALE%.txt > fc.out 2>&1
+if %JAVAVER% GEQ 20 (
+  if exist %PWD%\expected\windows_%LOCALE%_20.txt (
+    fc result.txt %PWD%\expected\windows_%LOCALE%_20.txt > fc.out 2>&1
+  ) else (
+    fc result.txt %PWD%\expected\windows_%LOCALE%.txt > fc.out 2>&1
+  )
+) else (
+  fc result.txt %PWD%\expected\windows_%LOCALE%.txt > fc.out 2>&1
+)
 exit %errorlevel%

@@ -96,7 +96,7 @@ public static void main(String[] args) {
         System.err.println("Usage: java ReadWriteTest infile inenc outfile outenc");
         return;
     }
-    if(args.length > 4 && args[4].toLowerCase(Locale.ENGLISH).equals("-w") ){
+    if(args.length > 4 && args[4].toLowerCase(Locale.ROOT).equals("-w") ){
        winmode = true;
     }
     ReadWriteTest rwt = new ReadWriteTest(winmode);

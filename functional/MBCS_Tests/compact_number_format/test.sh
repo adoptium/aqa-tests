@@ -21,8 +21,15 @@ FULLLANG=${OS}_${LANG%.*}.${LOC}
 
 CP="-cp ${BASE}/compact_number_format.jar"
 
+${JAVA_BIN}/java ${CP} JavaVer
+JAVA_VAR=$?
+
 ${JAVA_BIN}/java ${CP} CompactNumberFormatTest > result.txt
 
-diff result.txt ${BASE}/expected/${FULLLANG}.txt
+if [ ${JAVA_VER} -ge 20 -a -f ${BASE}/expected/${FULLLANG}_20.txt ]; then
+  diff result.txt ${BASE}/expected/${FULLLANG}_20.txt
+else
+  diff result.txt ${BASE}/expected/${FULLLANG}.txt
+fi
 RESULT=$?
 exit ${RESULT}
