@@ -16,8 +16,14 @@ SET PWD=%~dp0
 SET BASE=%PWD%
 call %PWD%\set_variable.bat
 %JAVA_BIN%\java -cp %PWD%unicode.jar Main
+
 set SIZE=1
-for /f %%i in ("err*.txt") do set SIZE=%%~zi
-echo SIZE= %SIZE%
-exit %SIZE%
+if exist out.txt del out.txt
+copy /b err?.txt out.txt > NUL
+for %%i in (out.txt) do set SIZE=%%~zi
+
+set FLAG=0
+if %SIZE% GTR 0 set FLAG=1
+
+exit %FLAG%
 

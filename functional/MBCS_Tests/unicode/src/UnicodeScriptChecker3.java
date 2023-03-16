@@ -44,7 +44,7 @@ public class UnicodeScriptChecker3 {
             MatchResult result = scanner.match();
             if (result.groupCount() == 2) {
                 String code = result.group(1);
-                String value = result.group(2).toUpperCase();
+                String value = result.group(2).toUpperCase(Locale.ROOT);
                 try {
                     Character.UnicodeScript script = Character.UnicodeScript.forName(code);
                     if (!value.equals(script.toString()))

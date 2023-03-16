@@ -12,20 +12,21 @@
 * limitations under the License.
 *******************************************************************************/
 
+import java.math.*;
 import java.text.*;
 import java.util.*;
 
 public class CompactNumberFormatTest {
-  private static final long[] LONG_ARRAY = {10000, 100000000, 1000000000000L, 
-                                            10000000000000000L, 19400, 19500, 
-                                            19600, 19940, 19950, 19960, 19994, 
+  private static final long[] LONG_ARRAY = {10000, 100000000, 1000000000000L,
+                                            10000000000000000L, 19400, 19500,
+                                            19600, 19940, 19950, 19960, 19994,
                                             19995, 19996};
   private static final int MAX_FRACTION_DIGITS = 4;
-  
-  private NumberFormat compactNumberFormat;
-  
 
-  public CompactNumberFormatTest() { 
+  private NumberFormat compactNumberFormat;
+
+
+  public CompactNumberFormatTest() {
     compactNumberFormat = NumberFormat.getCompactNumberInstance(Locale.getDefault(), NumberFormat.Style.LONG);
   }
 
@@ -37,13 +38,13 @@ public class CompactNumberFormatTest {
       return null;
     }
   }
-  
+
   private void testMaximumFractionDigits(long value, int fraction_digits) {
     compactNumberFormat.setMaximumFractionDigits(fraction_digits);
     String formatted = compactNumberFormat.format(value);
     Number parsed = cnfParse(formatted);
-    System.out.println("setMaximumFractionDigits : " + fraction_digits 
-                     + " input : " + value + " ===> FORMAT : [" 
+    System.out.println("setMaximumFractionDigits : " + fraction_digits
+                     + " input : " + value + " ===> FORMAT : ["
                      + formatted + "] ===> PARSE : [" + parsed +"]");
   }
 
@@ -51,16 +52,51 @@ public class CompactNumberFormatTest {
     compactNumberFormat.setMinimumFractionDigits(fraction_digits);
     String formatted = compactNumberFormat.format(value);
     Number parsed = cnfParse(formatted);
-    System.out.println("setMinimumFractionDigits : " + fraction_digits 
+    System.out.println("setMinimumFractionDigits : " + fraction_digits
                      + " input : " + value + " ===> FORMAT : ["
                      + formatted + "] ===> PARSE : [" + parsed +"]");
+  }
+
+  private void testMaximumFractionDigits(BigInteger value, int fraction_digits) {
+    compactNumberFormat.setMaximumFractionDigits(fraction_digits);
+    String formatted = compactNumberFormat.format(value);
+    Number parsed = cnfParse(formatted);
+    System.out.println("setMaximumFractionDigits : " + fraction_digits
+                     + " input : " + value + " ===> FORMAT : ["
+                     + formatted + "] ===> PARSE : [" + parsed +"]");
+  }
+
+  private void testMinimumFractionDigits(BigInteger value, int fraction_digits) {
+    compactNumberFormat.setMinimumFractionDigits(fraction_digits);
+    String formatted = compactNumberFormat.format(value);
+    Number parsed = cnfParse(formatted);
+    System.out.println("setMinimumFractionDigits : " + fraction_digits
+                     + " input : " + value + " ===> FORMAT : ["
+                     + formatted + "] ===> PARSE : [" + parsed +"]");
+  }
+
+  private void testOverLongMaxFractionDigits() {
+    String sep = String.join("", Collections.nCopies(5, "+"));
+    NumberFormat cnf = NumberFormat.getCompactNumberInstance(Locale.getDefault(), NumberFormat.Style.LONG);
+    String s = cnf.format(Long.MAX_VALUE).replaceAll("^(\\d+).*$","$1");
+    var number = BigInteger.valueOf(10).pow(20);
+    if (s.length() < 4) {
+      for(int j = 1; j <= MAX_FRACTION_DIGITS; j++) {
+        testMaximumFractionDigits(number,j);
+      }
+      System.out.println(sep);
+      for(int j = 1; j <= MAX_FRACTION_DIGITS; j++) {
+        testMinimumFractionDigits(number,j);
+      }
+      System.out.println(sep);
+    }
   }
 
 
   public static void main(String[] args) {
     CompactNumberFormatTest cnft = new CompactNumberFormatTest();
-    String sep = String.join("", Collections.nCopies(5, "+")); 
-    
+    String sep = String.join("", Collections.nCopies(5, "+"));
+
     for(int i = 0; i < LONG_ARRAY.length; i++) {
       for(int j = 1; j <= MAX_FRACTION_DIGITS; j++) {
         cnft.testMaximumFractionDigits(LONG_ARRAY[i],j);
@@ -74,5 +110,7 @@ public class CompactNumberFormatTest {
       }
       System.out.println(sep);
     }
+
+    cnft.testOverLongMaxFractionDigits();
   }
 }
