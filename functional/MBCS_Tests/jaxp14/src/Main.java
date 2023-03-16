@@ -20,7 +20,7 @@ public class Main {
    public static void main(String[] args) throws Exception {
       Locale.setDefault(new Locale(args[1],args[2]));
       System.setOut(new java.io.PrintStream(new File("output"),args[3]));
-      String country = args[2].toLowerCase(Locale.ENGLISH);
+      String country = args[2].toLowerCase(Locale.ROOT);
       String[] teststring = {
          args[4] + "\\drinks_" + args[1] + "-" + country + ".xml",
          args[4] + "\\drinks_" + args[1] + "-" + country + ".xsl"
