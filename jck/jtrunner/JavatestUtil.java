@@ -748,6 +748,8 @@ public class JavatestUtil {
 				fileContent += "set jck.env.compiler.testRmic." + cmdAsStringOrFile + " \"" + pathToRmic + "\"" + ";\n";
 			}
 			
+			System.out.println("RI JDK Used: " + riJavaForMultiJVMCompTest);
+			
 			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + riJavaForMultiJVMCompTest + "\"" + ";\n";
 
 			if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
