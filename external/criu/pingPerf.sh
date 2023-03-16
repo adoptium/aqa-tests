@@ -75,8 +75,8 @@ prepare() {
         sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.xz" \| sha256sum -c -;/d' $libertyDockerfilePath
 
 
-        # delete line: ENV JAVA_VERSION jdk-17.0.4.1+1
-        sed -i "s:ENV JAVA_VERSION jdk-17.0.4.1+1: :" $libertyDockerfilePath
+        # delete line: ENV JAVA_VERSION .*
+        sed -i "s:ENV JAVA_VERSION .*: :" $libertyDockerfilePath
         # add line: RUN /opt/java/openjdk/bin/java  --version
         sed -i '/USER 1001.*/a RUN \/opt\/java\/openjdk\/bin\/java  --version' $libertyDockerfilePath
 
