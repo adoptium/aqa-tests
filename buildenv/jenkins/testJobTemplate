@@ -318,6 +318,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('JDK_IMPL', JDK_IMPL_BASE, "JDK Base implementation, e.g. hotspot, openj9")
 							stringParam('CUSTOMIZED_SDK_URL', "", "Customized SDK url, need to set when SDK_RESOURCE=customized")
 							stringParam('CUSTOMIZED_SDK_URL_CREDENTIAL_ID', CUSTOMIZED_SDK_URL_CREDENTIAL_ID, "Only use this if you are pulling an JDK from a site that needs credential")
+							stringParam('ADDITIONAL_ARTIFACTS_REQUIRED', ADDITIONAL_ARTIFACTS_REQUIRED, "Optional. Only use this to specify the type of additional artifacts")
 							stringParam('DOCKER_REGISTRY_URL', DOCKER_REGISTRY_URL, "Only use this if you need to access a docker registry")
 							stringParam('DOCKER_REGISTRY_DIR', DOCKER_REGISTRY_DIR, "Only use this if you need to specify the directory in docker registry")
 							stringParam('DOCKER_REGISTRY_URL_CREDENTIAL_ID', DOCKER_REGISTRY_URL_CREDENTIAL_ID, "Only use this if the docker registry you access needs credential")
@@ -447,7 +448,6 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('SETUP_JCK_RUN', SETUP_JCK_RUN.toBoolean(), "setup jdk during release for jck interactive run")
 							stringParam('JENKINS_KEY', JENKINS_KEY, "Optional. Only use this for Multi-node Compiler TCK tests")
 							stringParam('RELATED_NODES', RELATED_NODES, "Optional. Only use this for reserving secondary nodes other than current")
-							stringParam('ADDITIONAL_ARTIFACTS_REQUIRED', ADDITIONAL_ARTIFACTS_REQUIRED, "Optional. Only use this to specify the type of additional artifacts")
 						}
 						cpsScm {
 							scm {
