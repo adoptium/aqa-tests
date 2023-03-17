@@ -84,7 +84,7 @@ java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessShort.java	https://gi
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java	https://github.com/adoptium/infrastructure/issues/1118	linux-aarch64
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
-java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 linux-arm
+java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 generic-all
 #java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920   aix-ppc64
 #java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
 java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
@@ -101,7 +101,7 @@ sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/is
 sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 sun/management/jdp/JdpOffTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-
+sun/management/jmxremote/startstop/JMXStatusTest.java https://bugs.openjdk.org/browse/JDK-8207908 macosx-all
 
 ############################################################################
 
@@ -117,6 +117,7 @@ sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-t
 #com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
 com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
 com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
+jdk/incubator/concurrent/ScopedValue/StressStackOverflow.java https://bugs.openjdk.org/browse/JDK-8303498 linux-s390x,linux-arm,aix-all
 ############################################################################
 
 # jdk_net
@@ -233,9 +234,7 @@ jdk/nio/zipfs/ZipFSTester.java	https://github.com/adoptium/aqa-tests/issues/602 
 java/nio/file/Files/CopyAndMove.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 
-java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-tests/issues/3034  linux-aarch64,linux-ppc64le,linux-s390x
- 
-
+java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-tests/issues/3034  linux-aarch64,linux-ppc64le,linux-s390x,aix-all
 ############################################################################ 
 
 # jdk_rmi
@@ -244,11 +243,13 @@ java/nio/channels/Channels/ReadXBytes.java  https://github.com/adoptium/aqa-test
 # jdk_security
 
 sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aqa-tests/issues/3811 windows-x86
+sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4432 aix-all
 ############################################################################
 
 #jdk_security3
 javax/net/ssl/SSLEngine/LargePacket.java https://bugs.openjdk.org/browse/JDK-8227651 generic-all
-
+sun/security/lib/cacerts/VerifyCACerts.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 ###########################################################################
 #jdk_security_infra
 security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
@@ -257,7 +258,7 @@ security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.jav
 security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/DTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 security/infra/java/security/cert/CertPathValidator/certification/HaricaCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-
+security/infra/java/security/cert/CertPathValidator/certification/ActalisCA.java https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 ############################################################################
 # jdk_sound
 
@@ -336,15 +337,12 @@ java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/iss
 
 ############################################################################
 
-# jdk_other
-############################################################################
-
 # jdk_foreign
 java/foreign/TestArrays.java	https://github.com/adoptium/aqa-tests/issues/1701 generic-all
 java/foreign/TestLayouts.java	https://github.com/adoptium/aqa-tests/issues/1701 generic-all
 java/foreign/TestLayoutPaths.java	https://github.com/adoptium/aqa-tests/issues/1701	generic-all
 java/foreign/TestNative.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
-
+java/foreign/TestLargeSegmentCopy.java https://github.com/adoptium/aqa-tests/issues/4429 aix-all
 ############################################################################
 # jvm_compiler
 
@@ -425,6 +423,8 @@ compiler/c2/cr6340864/TestShortVect.java https://github.com/adoptium/aqa-tests/i
 compiler/c2/irTests/TestSkeletonPredicates.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/c2/irTests/TestStripMiningDropsSafepoint.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/c2/irTests/TestSuperwordFailsUnrolling.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+compiler/codecache/MHIntrinsicAllocFailureTest.java https://bugs.openjdk.org/browse/JDK-8298947 linux-arm
+compiler/whitebox/ForceNMethodSweepTest.java https://bugs.openjdk.org/browse/JDK-8265181 linux-arm
 ############################################################################
 
 # jdk_jfr
