@@ -1068,6 +1068,7 @@ def addGrinderLink() {
 	def labelValue = ""
 	def targetValue = ""
 	def customTargetKeyValue = ""
+	def rerunIterations = ""
 	def urlParams = params.findAll {
 		// Exclude separator and help text parameters from url
 		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
@@ -1088,11 +1089,20 @@ def addGrinderLink() {
 		if ( key == "CUSTOM_TARGET") {
 			customTargetKeyValue = "CUSTOM_TARGET=${value}"
 		}
+		if ( key == "RERUN_ITERATIONS") {
+			rerunIterations = "RERUN_ITERATIONS=${value}"
+		}
 
 	}
 	env.RERUN_LINK = url
 	env.FAILED_TEST_TARGET = targetValue
 	env.CUSTOM_TARGET_KEY_VALUE = customTargetKeyValue
+
+	// reset RERUN_ITERATIONS to 0 in Rerun in Grinder link
+	if (rerunIterations) {
+		url = url.replace(rerunIterations,"RERUN_ITERATIONS=0")
+	}
+
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
