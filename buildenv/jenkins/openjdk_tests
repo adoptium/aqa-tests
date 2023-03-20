@@ -311,7 +311,16 @@ def runTest() {
                 }
                 retry_count++
                 timeout(time: 1, unit: 'HOURS') {
-                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                    try {
+                        cleanWs disableDeferredWipeout: true, deleteDirs: true
+                    } catch (Exception e) {
+                        echo 'Exception: ' + e.toString()
+                        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+                        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+                        sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+                        // call cleanWs() again
+                        cleanWs disableDeferredWipeout: true, deleteDirs: true
+                    }
                 }
                 checkout scm: [$class: 'GitSCM',
                     branches: [[name: "${scm.branches[0].name}"]],
