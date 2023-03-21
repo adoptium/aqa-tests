@@ -388,10 +388,10 @@ print_criu_install() {
         echo -e "\n# Build criu and set capabilities" \
                 "\nRUN mkdir -p /tmp \\" \
                 "\n\t&& cd /tmp \\" \
-                "\n\t&& git clone https://github.com/checkpoint-restore/criu.git \\" \
+                "\n\t&& git clone https://github.com/ibmruntimes/criu.git \\" \
                 "\n\t&& cd criu \\" \
                 "\n\t&& git fetch origin \\" \
-                "\n\t&& git reset --hard origin/criu-dev \\" \
+                "\n\t&& git reset --hard origin/march_ea_23 \\" \
                 "\n\t&& make PREFIX=/usr install \\" \
                 "\n\t&& criu -V \\" \
                 "\n\t&& setcap cap_checkpoint_restore,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
