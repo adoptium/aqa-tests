@@ -7,10 +7,19 @@ echo "Results dir: ${RESULTS_DIR}"
 function runSpecJbbMulti() {
   for ((runNumber=1; runNumber<=NUM_OF_RUNS; runNumber=runNumber+1)); do
 
-    # Call sync to force any pending disk writes
+    # TODO we can check the output of this.
+    numactl --show
+
+    # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
+    local timestamp
+    timestamp=$(date +%Y%m%d_%H%M%S)
+
+    # Call sync to force any pending disk writes TODO we want to run this as sudo
     sync
 
-    # Clear memory caches
+    # TODO we need to give the azdo user permission to write to this file
+    # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
+    # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
     echo 3 > /proc/sys/vm/drop_caches
 
     # Create temp result directory                
@@ -22,10 +31,6 @@ function runSpecJbbMulti() {
     # Copy current config to the result directory
     cp -r "${SPECJBB_CONFIG}" "${result}"
     cd "${result}" || exit
-
-    # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
-    local timestamp
-    timestamp=$(date +%Y%m%d_%H%M%S)
     
     # Start logging
     echo "Run $runNumber: $timestamp"
