@@ -270,11 +270,11 @@ timestamps{
     }
 }
 
-
 def runTest() {
     try {
         def retry_count = 0
         def sleep_time = 180
+        
         if (params.PLATFORM.contains('zos')) {
             /* Ensure correct CC env */
             env._CC_CCMODE = '1'
@@ -295,7 +295,7 @@ def runTest() {
                 }
                 retry_count++
                 timeout(time: 1, unit: 'HOURS') {
-                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                    forceCleanWS()
                 }
                 sh "git clone -b ${SCM_GIT_BRANCH} ${SCM_GIT_REPO_VAL} aqa-tests"
             }
@@ -311,7 +311,7 @@ def runTest() {
                 }
                 retry_count++
                 timeout(time: 1, unit: 'HOURS') {
-                    cleanWs disableDeferredWipeout: true, deleteDirs: true
+                    forceCleanWS()
                 }
                 checkout scm: [$class: 'GitSCM',
                     branches: [[name: "${scm.branches[0].name}"]],
@@ -420,3 +420,18 @@ def checkErrors(errorList) {
         }
     }
 }
+
+
+def forceCleanWS() {
+    try {
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    } catch (Exception e) {
+        echo 'Exception: ' + e.toString()
+        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+        sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+        // call cleanWs() again
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    }
+}
+

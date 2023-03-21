@@ -871,18 +871,7 @@ def testBuild() {
 			terminateTestProcesses()
 
 			if (!params.KEEP_WORKSPACE) {
-				try {
-					// cleanWs() does not work in some cases, so set opts below
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
-				} catch (Exception e) {
-					echo 'Exception: ' + e.toString()
-					//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-					//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-					sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
-					// call cleanWs() again
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
-				}
-
+				forceCleanWS()
 				// clean up remaining core files
 				if (PLATFORM.contains("mac")) {
 					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
@@ -1245,8 +1234,7 @@ def run_parallel_tests() {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
-				// cleanWs() does not work in some cases, so set opts below
-				cleanWs disableDeferredWipeout: true, deleteDirs: true
+				forceCleanWS()
 				try {
 					def buildPaths = ""
 					childJobs.each {
@@ -1277,8 +1265,7 @@ def run_parallel_tests() {
 						triggerRerunJob(failedTests)
 					}
 				} finally {
-					// cleanWs() does not work in some cases, so set opts below
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
+					forceCleanWS()
 				}
 			}
 		}
@@ -1302,6 +1289,19 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 	actualRepoBranch[0] = repoURL
 	actualRepoBranch[1] = actualRepoBranch[1].trim()
 	return actualRepoBranch
+}
+
+def forceCleanWS() {
+	try {
+		cleanWs disableDeferredWipeout: true, deleteDirs: true
+	} catch (Exception e) {
+		echo 'Exception: ' + e.toString()
+		//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+		//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+		sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+		// call cleanWs() again
+		cleanWs disableDeferredWipeout: true, deleteDirs: true
+	}
 }
 
 return this
