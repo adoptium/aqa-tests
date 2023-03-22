@@ -49,8 +49,8 @@ echo "load in ${TEST_ROOT}/perf/affinity.sh"
 echo "loaded ${TEST_ROOT}/perf/affinity.sh"
 
 echo "Set affinities with --server-physcpu-num ${SERVER_PHYSCPU_NUM} --smt ${SMT}"
-setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}" > /dev/null 2>&1
-#setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}"
+#setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}" > /dev/null 2>&1
+setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}"
 echo "Affinities set"
 
 if [ -z "${SERVER_AFFINITY_CMD}" ]; then
