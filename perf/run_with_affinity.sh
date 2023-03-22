@@ -45,7 +45,8 @@ while [ -n "$1" ]; do
 done
 
 echo "load in ${TEST_ROOT}/perf/affinity.sh"
-. "${TEST_ROOT}/perf/affinity.sh" > /dev/null 2>&1
+#. "${TEST_ROOT}/perf/affinity.sh" > /dev/null 2>&1
+. "${TEST_ROOT}/perf/affinity.sh"
 echo "loaded ${TEST_ROOT}/perf/affinity.sh"
 
 echo "Set affinities with --server-physcpu-num ${SERVER_PHYSCPU_NUM} --smt ${SMT}"
