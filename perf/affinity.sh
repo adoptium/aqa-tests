@@ -1507,14 +1507,10 @@ function main() {
 	return
 }
 
-echo "I am alive before I call functions"
 __init_platform
 __init_cpus
 printMachineCPUInfo
 
-echo "I am alive before I bring in the source file"
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-	echo "I am about to execute main"
 	main "$@"
 fi
-
