@@ -454,11 +454,15 @@ function __get_cpu_info {
 function __init_platform() {
 	__AFFINITY_UNAME=$(uname)
 	__AFFINITY_PLATFORM=""
+
+	echo "Affinity name: ${__AFFINITY_UNAME}"
+
 	case "$__AFFINITY_UNAME" in
 	Linux)
 		# ie. x86, x86_64, ppcle64, ppc64, s390, s390x
 		__AFFINITY_CPU_ARCH=$(uname -m)
 		__AFFINITY_PLATFORM="${__AFFINITY_UNAME}-${__AFFINITY_CPU_ARCH}"
+		echo "Affinity platform: ${__AFFINITY_PLATFORM}"
 		;;
 	AIX)
 		__AFFINITY_CPU_ARCH=$(uname -m)
@@ -488,6 +492,9 @@ function __init_platform() {
 # initializes environment variables for cpu configuration.
 # this function needs to be called for other functions to work
 function __init_cpus() {
+
+	echo "os detected: $(get_os)"
+
 	case $(get_os) in
 	Linux)
 		__init_cpus_linux
