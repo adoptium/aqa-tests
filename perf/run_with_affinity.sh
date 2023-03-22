@@ -44,6 +44,7 @@ while [ -n "$1" ]; do
 	shift
 done
 
+pwd
 echo "load in ${TEST_ROOT}/perf/affinity.sh"
 #. "${TEST_ROOT}/perf/affinity.sh" > /dev/null 2>&1
 . "${TEST_ROOT}/perf/affinity.sh"
