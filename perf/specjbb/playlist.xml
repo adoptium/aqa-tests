@@ -19,7 +19,7 @@
         <!-- see specjbb/run/options/specjbb-multijvm-simple.sh for more details -->
 
         <testCaseName>SPECjbb2015-multijvm-simple</testCaseName>
-        <command>. $(Q)$(RUN_OPTIONS)$(D)specjbb-multijvm-simple.sh$(Q); $(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)bash $(RUN_SCRIPTS)$(D)run_multi.sh$(Q); --test_root $(TEST_ROOT) $(TEST_STATUS)</command>
+        <command>. $(Q)$(RUN_OPTIONS)$(D)specjbb-multijvm-simple.sh$(Q); $(TEST_ROOT)$(D)perf$(D)run_with_affinity.sh --exec_cmd $(Q)bash $(RUN_SCRIPTS)$(D)run_multi.sh$(Q) --test_root $(TEST_ROOT); $(TEST_STATUS)</command>
         <levels>
             <level>dev</level>
         </levels>
