@@ -7,8 +7,7 @@ echo "Results dir: ${RESULTS_DIR}"
 function runSpecJbbMulti() {
   for ((runNumber=1; runNumber<=NUM_OF_RUNS; runNumber=runNumber+1)); do
 
-    # TODO we can check the output of this.
-    echo "Calling numactl --show"
+    # Prove that numactl is enabled (or not).
     numactl --show
 
     # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
@@ -16,14 +15,16 @@ function runSpecJbbMulti() {
     timestamp=$(date +%Y%m%d_%H%M%S)
 
     # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
-    echo "sync"
+    echo "Starting sync to flush any pending disk writes"
     sync
+    echo "sync completed"
 
-    # Note, the user needs to have permission to write to this file
+    # Note, the user needs to have permission to write to this file (we use sudo tee for this)
     # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
     # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
     echo "Clearing the memory caches"
-    echo 3 > /proc/sys/vm/drop_caches
+    echo 3 | sudo tee /proc/sys/vm/drop_caches
+    echo "Memory caches cleared"
 
     # Create temp result directory                
     local result
