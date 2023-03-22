@@ -48,7 +48,7 @@ echo "load in ${TEST_ROOT}/perf/affinity.sh"
 . "${TEST_ROOT}/perf/affinity.sh" > /dev/null 2>&1
 echo "loaded ${TEST_ROOT}/perf/affinity.sh"
 
-echo "Set affinities"
+echo "Set affinities with --server-physcpu-num ${SERVER_PHYSCPU_NUM} --smt ${SMT}"
 setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}" > /dev/null 2>&1
 echo "Affinities set"
 
