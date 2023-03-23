@@ -8,23 +8,34 @@ function runSpecJbbMulti() {
   for ((runNumber=1; runNumber<=NUM_OF_RUNS; runNumber=runNumber+1)); do
 
     # Prove that numactl is enabled (or not).
+
+    echo "==============================================="
+    echo "Running numactl --show to prove numa is enabled"
+    echo 
     numactl --show
+    echo "==============================================="
 
     # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
 
     # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
+    echo "==============================================="
     echo "Starting sync to flush any pending disk writes"
+    echo ""
     sync
     echo "sync completed"
+    echo "==============================================="
 
     # Note, the user needs to have permission to write to this file (we use sudo tee for this)
     # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
     # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
+    echo "==============================================="
     echo "Clearing the memory caches"
+    echo 
     echo 3 | sudo tee /proc/sys/vm/drop_caches
     echo "Memory caches cleared"
+    echo "==============================================="
 
     # Create temp result directory                
     local result
@@ -37,14 +48,16 @@ function runSpecJbbMulti() {
     cd "${result}" || exit
     
     # Start logging
+    echo "==============================================="
     echo "Run $runNumber: $timestamp"
     echo "Launching SPECjbb2015 in MultiJVM mode..."
     echo
 
     # Start the Controller JVM, note JAVA is a previously exported environment variable coming in from testenv.mk
     echo "Starting the Controller JVM"
-    JAVA="${JAVA%\"}"
-    JAVA="${JAVA#\"}"
+    JAVA="${JAVA%\"}" # Santize the JAVA variable
+    JAVA="${JAVA#\"}" # Santize the JAVA variable
+
     # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
     # shellcheck disable=SC2086
     "${JAVA}" ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar "${SPECJBB_JAR}" -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &
@@ -69,9 +82,10 @@ function runSpecJbbMulti() {
       # Calculate CPUs avaialble via NUMA for this run. We use some math to create a CPU range string
       # WARNING: We have hard coded this to work for a single run and a single group on a 64 core host
       # TODO We should use the functions in the affinity.sh script in the future
-      local cpuInit=$((cpuCount*4))                 # 0 * 4 = 0
-      local cpuMax=$(($(($((cpuCount+1))*4))-1))    # 1 * 64 - 1 = 63
-      local cpuRange="${cpuInit}-${cpuMax}"         # 0-63
+      local cpuInit=$((cpuCount*64))                 # 0 * 64 = 0
+      local cpuMax=$(($(($((cpuCount+1))*64))-1))    # 1 * 64 - 1 = 63
+      local cpuRange="${cpuInit}-${cpuMax}"          # 0-63
+      echo "cpuRange is $cpuRange"
 
       for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
 
