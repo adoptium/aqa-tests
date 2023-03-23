@@ -15,6 +15,12 @@ function runSpecJbbMulti() {
     numactl --show
     echo "==============================================="
 
+    echo "==========================================================================================="
+    echo "Running cat /sys/kernel/mm/transparent_hugepage/enabled to show how we are using huge pages"
+    echo 
+    cat /sys/kernel/mm/transparent_hugepage/enabled
+    echo "==========================================================================================="
+
     # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
