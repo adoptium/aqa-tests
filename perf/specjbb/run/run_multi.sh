@@ -56,6 +56,9 @@ function runSpecJbbMulti() {
     # Sleep for 3 seconds for the controller to start. TODO This is brittle, let's detect proper controller start-up
     sleep 3
 
+    # Start CPU count as 0
+    cpuCount=0
+
     # Start the TransactionInjector and Backend JVMs for each group
     for ((groupNumber=1; groupNumber<GROUP_COUNT+1; groupNumber=groupNumber+1)); do
 
@@ -63,15 +66,23 @@ function runSpecJbbMulti() {
 
       echo -e "\nStarting Transaction Injector JVMs from $groupId:"
 
+      # Calculate CPUs avaialble via NUMA for this run. We use some math to create a CPU range string
+      # WARNING: We have hard coded this to work for a single run and a single group on a 64 core host
+      # TODO We should use the functions in the affinity.sh script in the future
+      local cpuInit=$((cpuCount*4))                 # 0 * 4 = 0
+      local cpuMax=$(($(($((cpuCount+1))*4))-1))    # 1 * 64 - 1 = 63
+      local cpuRange="${cpuInit}-${cpuMax}"         # 0-63
+
       for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
 
           local transactionInjectorJvmId="txiJVM$injectorNumber"
           local transactionInjectorName="$groupId.TxInjector.$transactionInjectorJvmId"
 
           echo "Start $transactionInjectorName"
+          
           # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
           # shellcheck disable=SC2086
-          "${JAVA}" ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar "${SPECJBB_JAR}" -m TXINJECTOR -G=$groupId -J="${transactionInjectorJvmId}" ${MODE_ARGS_TI} > "${TI_NAME}.log" 2>&1 &
+          numactl --physcpubind=$cpuRange --localalloc "${JAVA}" ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar "${SPECJBB_JAR}" -m TXINJECTOR -G=$groupId -J="${transactionInjectorJvmId}" ${MODE_ARGS_TI} > "${TI_NAME}.log" 2>&1 &
           echo -e "\t${transactionInjectorName} PID = $!"
 
           # Sleep for 1 second to allow each transaction injector JVM to start. TODO this seems arbitrary
@@ -87,12 +98,15 @@ function runSpecJbbMulti() {
       echo " Start $BE_NAME"
       # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
       # shellcheck disable=SC2086
-      "${JAVA}" ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar "${SPECJBB_JAR}" -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > "${backendName}.log" 2>&1 &
+      numactl --physcpubind=$cpuRange --localalloc "${JAVA}" ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar "${SPECJBB_JAR}" -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > "${backendName}.log" 2>&1 &
       echo -e "\t$BE_NAME PID = $!"
 
       # Sleep for 1 second to allow each backend JVM to start. TODO this seems arbitrary
       sleep 1
 
+      # Increment the CPU count so that we use a new range for the next run
+      # TODO This is actually pointless as run and group = 1 in our current experiment
+      cpucount=$((cpucount+1))
     done
 
     echo
