@@ -66,7 +66,9 @@ function runSpecJbbMulti() {
 
     # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
     # shellcheck disable=SC2086
-    "${JAVA}" ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar "${SPECJBB_JAR}" -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &
+    controllerCommand="${JAVA} ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar ${SPECJBB_JAR} -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &"
+    echo "$controllerCommand"
+    eval $controllerCommand
 
     # Save the PID of the Controller JVM
     CTRL_PID=$!
@@ -78,6 +80,17 @@ function runSpecJbbMulti() {
     # Start CPU count as 0
     cpuCount=0
 
+    # Extract total CPU count from affinity.sh
+    . "../../../perf/affinity.sh"
+    totalCpuCount=$(get_cpu_count)
+
+    if [ -z "$totalCpuCount" ]; then
+      echo "ERROR: Could not determine total CPU count, defaulting to 8"
+      totalCpuCount=8
+    fi
+
+    echo "Detected $totalCpuCount CPUs"
+
     # Start the TransactionInjector and Backend JVMs for each group
     for ((groupNumber=1; groupNumber<GROUP_COUNT+1; groupNumber=groupNumber+1)); do
 
@@ -87,10 +100,10 @@ function runSpecJbbMulti() {
 
       # Calculate CPUs avaialble via NUMA for this run. We use some math to create a CPU range string
       # WARNING: We have hard coded this to work for a single run and a single group on a 64 core host
-      # TODO We should use the functions in the affinity.sh script in the future
-      local cpuInit=$((cpuCount*64))                 # 0 * 64 = 0
-      local cpuMax=$(($(($((cpuCount+1))*64))-1))    # 1 * 64 - 1 = 63
-      local cpuRange="${cpuInit}-${cpuMax}"          # 0-63
+      # E.g if totalCpuCount is 64, then we should use 0-63
+      local cpuInit=$((cpuCount*$totalCpuCount))                 # 0 * 64 = 0
+      local cpuMax=$(($(($((cpuCount+1))*$totalCpuCount))-1))    # 1 * 64 - 1 = 63
+      local cpuRange="${cpuInit}-${cpuMax}"                      # 0-63
       echo "cpuRange is $cpuRange"
 
       for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
@@ -102,7 +115,9 @@ function runSpecJbbMulti() {
           
           # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
           # shellcheck disable=SC2086
-          numactl --physcpubind=$cpuRange --localalloc "${JAVA}" ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar "${SPECJBB_JAR}" -m TXINJECTOR -G=$groupId -J="${transactionInjectorJvmId}" ${MODE_ARGS_TI} > "${TI_NAME}.log" 2>&1 &
+          transactionInjectorCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar ${SPECJBB_JAR} -m TXINJECTOR -G=$groupId -J=${transactionInjectorJvmId} ${MODE_ARGS_TI} > ${transactionInjectorName}.log 2>&1 &"
+          echo "$transactionInjectorCommand"
+          eval $transactionInjectorCommand
           echo -e "\t${transactionInjectorName} PID = $!"
 
           # Sleep for 1 second to allow each transaction injector JVM to start. TODO this seems arbitrary
@@ -118,7 +133,9 @@ function runSpecJbbMulti() {
       echo " Start $BE_NAME"
       # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
       # shellcheck disable=SC2086
-      numactl --physcpubind=$cpuRange --localalloc "${JAVA}" ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar "${SPECJBB_JAR}" -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > "${backendName}.log" 2>&1 &
+      backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
+      echo "$backendCommand"
+      eval $backendCommand
       echo -e "\t$BE_NAME PID = $!"
 
       # Sleep for 1 second to allow each backend JVM to start. TODO this seems arbitrary
