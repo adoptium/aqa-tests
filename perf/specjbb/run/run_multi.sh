@@ -11,12 +11,6 @@ function checkHostReadiness() {
   echo 
   numactl --show
   echo "=========================================================="
-
-  echo "============================================================================================"
-  echo "Running cat /sys/kernel/mm/transparent_hugepage/enabled to determine if we are using madvise"
-  echo 
-  cat /sys/kernel/mm/transparent_hugepage/enabled
-  echo "============================================================================================"
 }
 
 # The main run script for SPECjbb2015 in MultiJVM mode
@@ -48,10 +42,14 @@ function runSpecJbbMulti() {
     # interface in the Linux kernel for managing how users can use THP.
     # madvise: Will allow the JVM to select what to use it for (heap only).
     # Note, the user needs permission to write to this file (we use sudo tee for this)
+    # TODO That cehck could be a proper check and not just catting output
     echo "============================================================="
     echo "Setting madvise for THP                                      "
     echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
-    echo "madvise set                                                  "
+    echo 
+    echo "Checking that madvise was set:"
+    echo 
+    cat /sys/kernel/mm/transparent_hugepage/enabled
     echo "============================================================="
 
     # Create temp result directory                
