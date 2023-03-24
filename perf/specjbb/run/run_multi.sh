@@ -4,44 +4,55 @@ echo "Backend opts: ${JAVA_OPTS_BE}"
 echo "Number of runs: ${NUM_OF_RUNS}"
 echo "Results dir: ${RESULTS_DIR}"
 
+# Function to determine what is set in terms of NUMA, THP et als
+function checkHostReadiness() {
+  echo "=========================================================="
+  echo "Running numactl --show to determine if/how numa is enabled"
+  echo 
+  numactl --show
+  echo "=========================================================="
+
+  echo "============================================================================================"
+  echo "Running cat /sys/kernel/mm/transparent_hugepage/enabled to determine if we are using madvise"
+  echo 
+  cat /sys/kernel/mm/transparent_hugepage/enabled
+  echo "============================================================================================"
+}
+
+# The main run script for SPECjbb2015 in MultiJVM mode
 function runSpecJbbMulti() {
+
   for ((runNumber=1; runNumber<=NUM_OF_RUNS; runNumber=runNumber+1)); do
-
-    # Prove that numactl is enabled (or not).
-
-    echo "==============================================="
-    echo "Running numactl --show to prove numa is enabled"
-    echo 
-    numactl --show
-    echo "==============================================="
-
-    echo "==========================================================================================="
-    echo "Running cat /sys/kernel/mm/transparent_hugepage/enabled to show how we are using huge pages"
-    echo 
-    cat /sys/kernel/mm/transparent_hugepage/enabled
-    echo "==========================================================================================="
 
     # Create timestamp for use in logging, this is split over two lines as timestamp itself is a function
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
 
     # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
-    echo "==============================================="
+    echo "=============================================="
     echo "Starting sync to flush any pending disk writes"
-    echo ""
     sync
-    echo "sync completed"
-    echo "==============================================="
+    echo "sync completed                                "
+    echo "=============================================="
 
-    # Note, the user needs to have permission to write to this file (we use sudo tee for this)
     # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
     # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
+    # Note, the user needs permission to write to this file (we use sudo tee for this)
     echo "==============================================="
-    echo "Clearing the memory caches"
-    echo 
+    echo "Clearing the memory caches                     "
     echo 3 | sudo tee /proc/sys/vm/drop_caches
-    echo "Memory caches cleared"
+    echo "Memory caches cleared                          "
     echo "==============================================="
+
+    # The /sys/kernel/mm/transparent_hugepage/enabled file is a special 
+    # interface in the Linux kernel for managing how users can use THP.
+    # madvise: Will allow the JVM to select what to use it for (heap only).
+    # Note, the user needs permission to write to this file (we use sudo tee for this)
+    echo "============================================================="
+    echo "Setting madvise for THP                                      "
+    echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
+    echo "madvise set                                                  "
+    echo "============================================================="
 
     # Create temp result directory                
     local result
@@ -49,26 +60,26 @@ function runSpecJbbMulti() {
     result="${result#\"}"
     mkdir -pv "${result}"
     
-    # Copy current config to the result directory
+    # Copy current SPECjbb2015 config for this run to the result directory
     cp -r "${SPECJBB_CONFIG}" "${result}"
     cd "${result}" || exit
     
     # Start logging
     echo "==============================================="
     echo "Run $runNumber: $timestamp"
-    echo "Launching SPECjbb2015 in MultiJVM mode..."
+    echo "Launching SPECjbb2015 in MultiJVM mode...      "
     echo
 
-    # Start the Controller JVM, note JAVA is a previously exported environment variable coming in from testenv.mk
-    echo "Starting the Controller JVM"
-    JAVA="${JAVA%\"}" # Santize the JAVA variable
-    JAVA="${JAVA#\"}" # Santize the JAVA variable
+    # JAVA is a previously exported environment variable coming in from testenv.mk and so we sanitize it
+    JAVA="${JAVA%\"}"
+    JAVA="${JAVA#\"}"
 
+    echo "Starting the Controller JVM"
     # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
     # shellcheck disable=SC2086
-    controllerCommand="${JAVA} ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar ${SPECJBB_JAR} -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &"
+    local controllerCommand="${JAVA} ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar ${SPECJBB_JAR} -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &"
     echo "$controllerCommand"
-    eval $controllerCommand
+    eval "${controllerCommand}"
 
     # Save the PID of the Controller JVM
     CTRL_PID=$!
@@ -77,16 +88,18 @@ function runSpecJbbMulti() {
     # Sleep for 3 seconds for the controller to start. TODO This is brittle, let's detect proper controller start-up
     sleep 3
 
-    # Start CPU count as 0
-    cpuCount=0
+    local cpuCount=0
 
-    # Extract total CPU count from affinity.sh
+    # source the affinity script
     . "../../../perf/affinity.sh"
+    
+    local totalCpuCount=0
+    # Extract total CPU count from affinity.sh
     totalCpuCount=$(get_cpu_count)
 
     if [ -z "$totalCpuCount" ]; then
-      echo "ERROR: Could not determine total CPU count, defaulting to 8"
-      totalCpuCount=8
+      echo "ERROR: Could not determine total CPU count, exiting"
+      exit 1
     fi
 
     echo "Detected $totalCpuCount CPUs"
@@ -101,9 +114,9 @@ function runSpecJbbMulti() {
       # Calculate CPUs avaialble via NUMA for this run. We use some math to create a CPU range string
       # WARNING: We have hard coded this to work for a single run and a single group on a 64 core host
       # E.g if totalCpuCount is 64, then we should use 0-63
-      local cpuInit=$((cpuCount*$totalCpuCount))                 # 0 * 64 = 0
-      local cpuMax=$(($(($((cpuCount+1))*$totalCpuCount))-1))    # 1 * 64 - 1 = 63
-      local cpuRange="${cpuInit}-${cpuMax}"                      # 0-63
+      local cpuInit=$((cpuCount*totalCpuCount))                 # 0 * 64 = 0
+      local cpuMax=$(($(($((cpuCount+1))*totalCpuCount))-1))    # 1 * 64 - 1 = 63
+      local cpuRange="${cpuInit}-${cpuMax}"                     # 0-63
       echo "cpuRange is $cpuRange"
 
       for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
@@ -115,9 +128,9 @@ function runSpecJbbMulti() {
           
           # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
           # shellcheck disable=SC2086
-          transactionInjectorCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar ${SPECJBB_JAR} -m TXINJECTOR -G=$groupId -J=${transactionInjectorJvmId} ${MODE_ARGS_TI} > ${transactionInjectorName}.log 2>&1 &"
+          local transactionInjectorCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_TI} ${SPECJBB_OPTS_TI} -jar ${SPECJBB_JAR} -m TXINJECTOR -G=$groupId -J=${transactionInjectorJvmId} ${MODE_ARGS_TI} > ${transactionInjectorName}.log 2>&1 &"
           echo "$transactionInjectorCommand"
-          eval $transactionInjectorCommand
+          eval "${transactionInjectorCommand}"
           echo -e "\t${transactionInjectorName} PID = $!"
 
           # Sleep for 1 second to allow each transaction injector JVM to start. TODO this seems arbitrary
@@ -133,9 +146,9 @@ function runSpecJbbMulti() {
       echo " Start $BE_NAME"
       # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
       # shellcheck disable=SC2086
-      backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
+      local backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
       echo "$backendCommand"
-      eval $backendCommand
+      eval "${backendCommand}"
       echo -e "\t$BE_NAME PID = $!"
 
       # Sleep for 1 second to allow each backend JVM to start. TODO this seems arbitrary
@@ -162,6 +175,7 @@ function runSpecJbbMulti() {
   done
 }
 
+checkHostReadiness
 runSpecJbbMulti
 
 # exit gracefully once we are done
