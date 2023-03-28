@@ -1278,6 +1278,8 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 		String[] tokens = ownerBranch.split(":")
 		if (tokens.size() == 2 ) {
 			actualRepoBranch = tokens;
+		} else {
+			error "[ERROR]: Wrong format of XXX_OWNER_BRANCH value: ${ownerBranch}. The expected format is [owner]:[branch]"
 		}
 	}
 
