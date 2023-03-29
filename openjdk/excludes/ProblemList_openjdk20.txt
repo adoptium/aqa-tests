@@ -206,10 +206,11 @@ java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-
 com/sun/net/httpserver/simpleserver/StressDirListings.java https://github.com/adoptium/aqa-tests/issues/3841 aix-all
 java/net/vthread/HttpALot.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/InterruptHttp.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
-jdk/net/ExtendedSocketOption/DontFragmentTest https://github.com/adoptium/aqa-tests/issues/4440 aix-all
+jdk/net/ExtendedSocketOption/DontFragmentTest.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/BlockingSocketOps.java#direct-register https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/BlockingSocketOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
-
+java/nio/channels/vthread/BlockingChannelOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
+java/nio/channels/vthread/BlockingChannelOps.java#direct-register https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 ############################################################################
 
 # jdk_io
@@ -350,6 +351,7 @@ java/foreign/TestLayouts.java	https://github.com/adoptium/aqa-tests/issues/1701 
 java/foreign/TestLayoutPaths.java	https://github.com/adoptium/aqa-tests/issues/1701	generic-all
 java/foreign/TestNative.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/foreign/TestLargeSegmentCopy.java https://github.com/adoptium/aqa-tests/issues/4429 aix-all
+javax/management/mxbean/ThreadStartTest.java https://github.com/adoptium/aqa-tests/issues/4429 aix-all
 ############################################################################
 # jvm_compiler
 
@@ -432,6 +434,9 @@ compiler/c2/irTests/TestStripMiningDropsSafepoint.java https://github.com/adopti
 compiler/c2/irTests/TestSuperwordFailsUnrolling.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/codecache/MHIntrinsicAllocFailureTest.java https://bugs.openjdk.org/browse/JDK-8298947 linux-arm
 compiler/whitebox/ForceNMethodSweepTest.java https://bugs.openjdk.org/browse/JDK-8265181 linux-arm
+
+compiler/codegen/aes/Test8292158.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
+compiler/codegen/aes/TestAESMain.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
 ############################################################################
 
 # jdk_jfr
@@ -510,3 +515,8 @@ sun/net/www/protocol/jar/MultiReleaseJarURLConnection.java https://github.com/ad
 
 # jdk_container/hotspot_container
 containers/docker/TestMemoryWithCgroupV1.java https://bugs.openjdk.org/browse/JDK-8297274 linux-all
+
+############################################################
+#serviceability
+serviceability/jvmti/GetOwnedMonitorStackDepthInfo/GetOwnedMonitorStackDepthInfoWithEATest.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
+serviceability/jvmti/Heap/IterateHeapWithEscapeAnalysisEnabled.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
