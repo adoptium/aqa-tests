@@ -1,23 +1,27 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
+name: Failing test report
+about: An Issue to describe a failing test
+title: '<Test Name> FAILED in <Jenkins Test Job Name>'
 labels: ''
 assignees: ''
 
----
+**Failing Test Info**
+Test Name:  
+Test Duration:  
+Machine it fails on: 
+Machines it passes on (if intermittent):
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Jenkins Test Job Info**
+Jenkins Test Job Name: (Example: Test_openjdk8_hs_extended.openjdk_arm_linux_testList_0)
+Jenkins Test Job URL: 
+TRSS link for the build (if available):
 
-**To Reproduce**
-Steps to reproduce the behavior (or Grinder rerun link):
+**Deep History Link from TRSS (if available)**
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+** Rerun in Grinder Link (if available) or Steps to Reproduce**
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Java Version output (from console output)**
 
-**Additional context**
-Add any other context about the problem here.
+**Relevant Console Output (showing exceptions/errors/crashes)**
+
+**Attach or link to relevant artifacts** 
+In the case of test failures, the Jenkins Test Job has test_output.tar.gz artifacts that contain extra logs and core files in the case of crashes.  Please download and inspect these files.  Copy relevant files to an accessible location that can be linked to, or attach relevant files to this issue directly.

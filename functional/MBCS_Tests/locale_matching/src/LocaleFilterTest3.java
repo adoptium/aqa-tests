@@ -22,7 +22,7 @@ public class LocaleFilterTest3 {
         System.setOut(ps);
 
         Locale loc = Locale.getDefault();
-        String langtag = loc.getLanguage()+"-"+loc.getCountry().toLowerCase(Locale.ENGLISH);
+        String langtag = loc.getLanguage()+"-"+loc.getCountry().toLowerCase(Locale.ROOT);
         String ranges = langtag+",en-us;q=0.4";
         List<Locale.LanguageRange> list = Locale.LanguageRange.parse(ranges);
         Vector<String> collection = new Vector<>();

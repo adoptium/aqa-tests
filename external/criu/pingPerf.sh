@@ -48,7 +48,8 @@ prepare() {
     git clone https://github.com/OpenLiberty/ci.docker.git
     (
         cd ci.docker || exit
-        git checkout instanton
+        # TODO: update code based on recent change https://github.com/OpenLiberty/ci.docker/commit/00d28e5cbb76d20723c18fbced1fa6ad144b0fd4
+        git checkout 2136b0870460878c7ab13233a5472b61b0e06946
 
         # replace commands in openLiberty dockerfile to use JDK from the pipeline
         # https://github.com/OpenLiberty/ci.docker/blob/instanton/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17
@@ -75,8 +76,8 @@ prepare() {
         sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.xz" \| sha256sum -c -;/d' $libertyDockerfilePath
 
 
-        # delete line: ENV JAVA_VERSION jdk-17.0.4.1+1
-        sed -i "s:ENV JAVA_VERSION jdk-17.0.4.1+1: :" $libertyDockerfilePath
+        # delete line: ENV JAVA_VERSION .*
+        sed -i "s:ENV JAVA_VERSION .*: :" $libertyDockerfilePath
         # add line: RUN /opt/java/openjdk/bin/java  --version
         sed -i '/USER 1001.*/a RUN \/opt\/java\/openjdk\/bin\/java  --version' $libertyDockerfilePath
 
@@ -156,7 +157,6 @@ clean() {
     echo "clean ..."
     sudo podman stop --all
     sudo podman container rm --all -f
-    sudo podman system prune --all -f
 }
 
 testCreateRestoreImageOnly() {

@@ -364,6 +364,21 @@ def setup() {
 		} else if (params.CUSTOMIZED_SDK_URL) {
 			SDK_RESOURCE = "customized"
 			CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+			if (params.ADDITIONAL_ARTIFACTS_REQUIRED == "RI_JDK") {
+				def server = Artifactory.server params.ARTIFACTORY_SERVER
+				def artifactoryUrl = server.getUrl()
+				def repoForRi = ''
+				def riURL = ''
+				if (params.ARTIFACTORY_REPO.contains(',')) {
+					String[] repos = params.ARTIFACTORY_REPO.split(",")
+					// Assumption: ARTIFACTORY_REPO=X,Y (X=to upload results, Y=to download ri)
+					repoForRi = repos[1].trim()
+					if (!env.SPEC.startsWith('aix') && !env.SPEC.startsWith('zos')) {
+						riURL = "${artifactoryUrl}/${repoForRi}/Latest/${PLATFORM}/${JDK_VERSION}"
+					}
+				} 
+				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
+			} 	
 		} else {
 			CUSTOMIZED_SDK_URL_OPTION = ""
 		}
@@ -421,9 +436,10 @@ def setup() {
 		TEST_IMAGES_REQUIRED = (params.TEST_IMAGES_REQUIRED == false) ? "--test_images_required false" : ""
 		DEBUG_IMAGES_REQUIRED = (params.DEBUG_IMAGES_REQUIRED == false) ? "--debug_images_required false" : ""
 		CODE_COVERAGE_OPTION = params.CODE_COVERAGE ? "--code_coverage true" : ""
+		ADDITIONAL_ARTIFACTS_REQUIRED_OPTION = (params.ADDITIONAL_ARTIFACTS_REQUIRED) ? "--additional_artifacts_required ${params.ADDITIONAL_ARTIFACTS_REQUIRED}" : ""
 
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
-		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS}"
+		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -855,18 +871,7 @@ def testBuild() {
 			terminateTestProcesses()
 
 			if (!params.KEEP_WORKSPACE) {
-				try {
-					// cleanWs() does not work in some cases, so set opts below
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
-				} catch (Exception e) {
-					echo 'Exception: ' + e.toString()
-					//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-					//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-					sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
-					// call cleanWs() again
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
-				}
-
+				forceCleanWS()
 				// clean up remaining core files
 				if (PLATFORM.contains("mac")) {
 					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
@@ -976,6 +981,12 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
+		
+		if (artifactoryRepo.contains(',')) {
+			String[] repos = artifactoryRepo.split(",")
+			artifactoryRepo = repos[0].trim()
+		}
+		
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
 		if (artifactoryRoorDir.endsWith("/")) {
 			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
@@ -1046,6 +1057,7 @@ def addGrinderLink() {
 	def labelValue = ""
 	def targetValue = ""
 	def customTargetKeyValue = ""
+	def rerunIterations = ""
 	def urlParams = params.findAll {
 		// Exclude separator and help text parameters from url
 		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
@@ -1066,11 +1078,20 @@ def addGrinderLink() {
 		if ( key == "CUSTOM_TARGET") {
 			customTargetKeyValue = "CUSTOM_TARGET=${value}"
 		}
+		if ( key == "RERUN_ITERATIONS") {
+			rerunIterations = "RERUN_ITERATIONS=${value}"
+		}
 
 	}
 	env.RERUN_LINK = url
 	env.FAILED_TEST_TARGET = targetValue
 	env.CUSTOM_TARGET_KEY_VALUE = customTargetKeyValue
+
+	// reset RERUN_ITERATIONS to 0 in Rerun in Grinder link
+	if (rerunIterations) {
+		url = url.replace(rerunIterations,"RERUN_ITERATIONS=0")
+	}
+
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
@@ -1213,8 +1234,7 @@ def run_parallel_tests() {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
-				// cleanWs() does not work in some cases, so set opts below
-				cleanWs disableDeferredWipeout: true, deleteDirs: true
+				forceCleanWS()
 				try {
 					def buildPaths = ""
 					childJobs.each {
@@ -1245,8 +1265,7 @@ def run_parallel_tests() {
 						triggerRerunJob(failedTests)
 					}
 				} finally {
-					// cleanWs() does not work in some cases, so set opts below
-					cleanWs disableDeferredWipeout: true, deleteDirs: true
+					forceCleanWS()
 				}
 			}
 		}
@@ -1259,6 +1278,8 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 		String[] tokens = ownerBranch.split(":")
 		if (tokens.size() == 2 ) {
 			actualRepoBranch = tokens;
+		} else {
+			error "[ERROR]: Wrong format of XXX_OWNER_BRANCH value: ${ownerBranch}. The expected format is [owner]:[branch]"
 		}
 	}
 
@@ -1270,6 +1291,19 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 	actualRepoBranch[0] = repoURL
 	actualRepoBranch[1] = actualRepoBranch[1].trim()
 	return actualRepoBranch
+}
+
+def forceCleanWS() {
+	try {
+		cleanWs disableDeferredWipeout: true, deleteDirs: true
+	} catch (Exception e) {
+		echo 'Exception: ' + e.toString()
+		//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+		//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+		sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+		// call cleanWs() again
+		cleanWs disableDeferredWipeout: true, deleteDirs: true
+	}
 }
 
 return this

@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 
 import java.time.*;
 import java.time.format.*;
+import java.time.temporal.*;
 import java.util.*;
 
 public class FormatTest_zh_cn{
@@ -33,7 +34,12 @@ public class FormatTest_zh_cn{
         str = date.format(DateTimeFormatter.ofPattern(
                             "e ee eee eeee eeeee",
                             Locale.SIMPLIFIED_CHINESE));
-        assertEquals("3 03 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        DayOfWeek firstDayOfWeek = WeekFields.of(Locale.SIMPLIFIED_CHINESE).getFirstDayOfWeek();
+        if (firstDayOfWeek == DayOfWeek.MONDAY) {
+            assertEquals("2 02 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        } else {
+            assertEquals("3 03 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        }
         try{
             str = date.format(DateTimeFormatter.ofPattern(
                             "cc", Locale.SIMPLIFIED_CHINESE));
@@ -44,7 +50,11 @@ public class FormatTest_zh_cn{
         str = date.format(DateTimeFormatter.ofPattern(
                             "c ccc cccc ccccc",
                             Locale.SIMPLIFIED_CHINESE));
-        assertEquals("3 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        if (firstDayOfWeek == DayOfWeek.MONDAY) {
+            assertEquals("2 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        } else {
+            assertEquals("3 \u5468\u4e8c \u661f\u671f\u4e8c \u4e8c", str);
+        }
 
 /*
         date = LocalDate.of(2014, 3, 16);
