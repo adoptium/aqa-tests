@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
-echo "Backend opts: ${JAVA_OPTS_BE}"
-echo "Number of runs: ${NUM_OF_RUNS}"
-echo "Results dir: ${RESULTS_DIR}"
+# echo out what our config is set to
+function showConfig() {
+  echo "=========================================================="
+  echo "Backend opts: ${JAVA_OPTS_BE}"
+  echo "Number of runs: ${NUM_OF_RUNS}"
+  echo "Results dir: ${RESULTS_DIR}"
+  echo "=========================================================="
+}
 
 # Function to determine what is set in terms of NUMA, THP et als
 function checkHostReadiness() {
@@ -11,6 +16,56 @@ function checkHostReadiness() {
   echo 
   numactl --show
   echo "=========================================================="
+}
+
+
+# Get the total CPU count from the affinity.sh script
+TOTAL_CPU_COUNT=0
+function getTotalCPUs() {
+      # source the affinity script so we can split up the CPUs correctly
+    . "../../../perf/affinity.sh"
+    
+    # Extract total CPU count from affinity.sh
+    TOTAL_CPU_COUNT=$(get_cpu_count)
+
+    if [ -z "$TOTAL_CPU_COUNT" ]; then
+      echo "ERROR: Could not determine total CPU count, exiting"
+      exit 1
+    fi
+
+    echo "CPU Count: $TOTAL_CPU_COUNT"
+}
+
+# Make sure the O/S disks and memory etc are cleared before a run
+function beforeEachRun() {
+    # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
+    echo "============================================================="
+    echo "Starting sync to flush any pending disk writes"
+    sync
+    echo "sync completed                                "
+    echo
+
+    # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
+    # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
+    # Note, the user needs permission to write to this file (we use sudo tee for this)
+    echo "Clearing the memory caches                     "
+    echo 3 | sudo tee /proc/sys/vm/drop_caches
+    echo "Memory caches cleared                          "
+    echo
+
+    # The /sys/kernel/mm/transparent_hugepage/enabled file is a special 
+    # interface in the Linux kernel for managing how users can use THP.
+    # madvise: Will allow the JVM to select what to use it for (heap only).
+    # Note, the user needs permission to write to this file (we use sudo tee for this)
+    # TODO That cehck could be a proper check and not just catting output
+    echo "Setting madvise for THP                                      "
+    echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
+    echo 
+    echo "Checking that madvise was set:"
+    echo 
+    cat /sys/kernel/mm/transparent_hugepage/enabled
+    echo "============================================================="
+
 }
 
 # The main run script for SPECjbb2015 in MultiJVM mode
@@ -22,35 +77,8 @@ function runSpecJbbMulti() {
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
 
-    # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
-    echo "=============================================="
-    echo "Starting sync to flush any pending disk writes"
-    sync
-    echo "sync completed                                "
-    echo "=============================================="
-
-    # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
-    # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
-    # Note, the user needs permission to write to this file (we use sudo tee for this)
-    echo "==============================================="
-    echo "Clearing the memory caches                     "
-    echo 3 | sudo tee /proc/sys/vm/drop_caches
-    echo "Memory caches cleared                          "
-    echo "==============================================="
-
-    # The /sys/kernel/mm/transparent_hugepage/enabled file is a special 
-    # interface in the Linux kernel for managing how users can use THP.
-    # madvise: Will allow the JVM to select what to use it for (heap only).
-    # Note, the user needs permission to write to this file (we use sudo tee for this)
-    # TODO That cehck could be a proper check and not just catting output
-    echo "============================================================="
-    echo "Setting madvise for THP                                      "
-    echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
-    echo 
-    echo "Checking that madvise was set:"
-    echo 
-    cat /sys/kernel/mm/transparent_hugepage/enabled
-    echo "============================================================="
+    # Some O/S setup before each run
+    beforeEachRun
 
     # Create temp result directory                
     local result
@@ -64,8 +92,9 @@ function runSpecJbbMulti() {
     
     # Start logging
     echo "==============================================="
-    echo "Run $runNumber: $timestamp"
     echo "Launching SPECjbb2015 in MultiJVM mode...      "
+    echo
+    echo "Run $runNumber: $timestamp"
     echo
 
     # JAVA is a previously exported environment variable coming in from testenv.mk and so we sanitize it
@@ -81,41 +110,29 @@ function runSpecJbbMulti() {
 
     # Save the PID of the Controller JVM
     CTRL_PID=$!
-    echo "Controller PID = $CTRL_PID"
+    echo "Controller PID: $CTRL_PID"
 
-    # Sleep for 3 seconds for the controller to start. TODO This is brittle, let's detect proper controller start-up
+    # TODO This is brittle, let's detect proper controller start-up
+    # Sleep for 3 seconds for the controller to start.
     sleep 3
 
     local cpuCount=0
 
-    # source the affinity script
-    . "../../../perf/affinity.sh"
-    
-    local totalCpuCount=0
-    # Extract total CPU count from affinity.sh
-    totalCpuCount=$(get_cpu_count)
-
-    if [ -z "$totalCpuCount" ]; then
-      echo "ERROR: Could not determine total CPU count, exiting"
-      exit 1
-    fi
-
-    echo "Detected $totalCpuCount CPUs"
+    getTotalCPUs
 
     # Start the TransactionInjector and Backend JVMs for each group
     for ((groupNumber=1; groupNumber<GROUP_COUNT+1; groupNumber=groupNumber+1)); do
 
       local groupId="Group$groupNumber"
 
-      echo -e "\nStarting Transaction Injector JVMs from $groupId:"
+      echo -e "\nStarting Transaction Injector JVMs for group $groupId:"
 
       # Calculate CPUs avaialble via NUMA for this run. We use some math to create a CPU range string
-      # WARNING: We have hard coded this to work for a single run and a single group on a 64 core host
       # E.g if totalCpuCount is 64, then we should use 0-63
-      local cpuInit=$((cpuCount*totalCpuCount))                 # 0 * 64 = 0
-      local cpuMax=$(($(($((cpuCount+1))*totalCpuCount))-1))    # 1 * 64 - 1 = 63
-      local cpuRange="${cpuInit}-${cpuMax}"                     # 0-63
-      echo "cpuRange is $cpuRange"
+      local cpuInit=$((cpuCount*TOTAL_CPU_COUNT))                 # e.g., 0 * 64 = 0
+      local cpuMax=$(($(($((cpuCount+1))*TOTAL_CPU_COUNT))-1))    # e.g., 1 * 64 - 1 = 63
+      local cpuRange="${cpuInit}-${cpuMax}"                       # e.g., 0-63
+      echo "cpuRange is: $cpuRange"
 
       for ((injectorNumber=1; injectorNumber<TI_JVM_COUNT+1; injectorNumber=injectorNumber+1)); do
 
@@ -141,7 +158,7 @@ function runSpecJbbMulti() {
       # Add GC logging to the backend's JVM options. We use the recommendended settings for Microsoft's internal GC analysis tool called Censum
       JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*,gc+ref=debug,gc+phases=debug,gc+age=trace,safepoint:file=${backendName}_gc.log"
 
-      echo " Start $BE_NAME"
+      echo "Start $BE_NAME"
       # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
       # shellcheck disable=SC2086
       local backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m BACKEND -G=$groupId -J=$backendJvmId ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
@@ -149,7 +166,8 @@ function runSpecJbbMulti() {
       eval "${backendCommand}"
       echo -e "\t$BE_NAME PID = $!"
 
-      # Sleep for 1 second to allow each backend JVM to start. TODO this seems arbitrary
+      # TODO 1 second seems arbitrary
+      # Sleep for 1 second to allow each backend JVM to start.
       sleep 1
 
       # Increment the CPU count so that we use a new range for the next run
@@ -173,6 +191,7 @@ function runSpecJbbMulti() {
   done
 }
 
+showConfig
 checkHostReadiness
 runSpecJbbMulti
 
