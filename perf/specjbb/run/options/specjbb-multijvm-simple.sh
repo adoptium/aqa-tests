@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
+#export MODE="multi-jvm"
+export MODE="composite"
+#export MODE="distributed"
+
 # This will configure a basic run of SPECjbb in multi-jvm mode
 # Therefore, the topography of the run includes 1 group consisting of
 # 1 TransactionInjector and 1 Backend
-
 export GROUP_COUNT=1
 export TI_JVM_COUNT=1 
 export NUM_OF_RUNS=1
 
+# TODO - This is a temporary hard coded configuration to get the run to complete
+# Configuration for a Maxed out (from a scaling perspective) Standard_D64s_v5 run as per the Java Engineering Group Azure VM SKU SPECjbb2015 guide
 export SPECJBB_OPTS_C="-Dspecjbb.group.count=$GROUP_COUNT -Dspecjbb.txi.pergroup.count=$TI_JVM_COUNT -Dspecjbb.forkjoin.workers.Tier1=128 -Dspecjbb.forkjoin.workers.Tier2=14 -Dspecjbb.forkjoin.workers.Tier3=24 -Dspecjbb.customerDriver.threads.saturate=96 -Dspecjbb.comm.connect.selector.runner.count=10"
 export SPECJBB_OPTS_TI=""
 export SPECJBB_OPTS_BE=""
@@ -19,10 +24,9 @@ export SPECJBB_OPTS_BE=""
 # This implies that a machine should have atleast 8GB of memory and 8 CPU cores to run this test
 export JAVA_OPTS_C="-Xms2g -Xmx2g -Xmn1536m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -XX:CICompilerCount=4"
 export JAVA_OPTS_TI="${JAVA_OPTS_C}"
+# export JAVA_OPTS_BE="-Xms4g -Xmx4g -Xmn3g -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:-UseAdaptiveSizePolicy" # Default configuration
 
-# Default shakeout configuration
-# export JAVA_OPTS_BE="-Xms4g -Xmx4g -Xmn3g -XX:+UseParallelGC -XX:ParallelGCThreads=4 -XX:-UseAdaptiveSizePolicy"
-
+# TODO - This is a temporary hard coded configuration to get the run to complete
 # Configuration for a Maxed out (from a scaling perspective) Standard_D64s_v5 run as per the Java Engineering Group Azure VM SKU SPECjbb2015 guide
 export JAVA_OPTS_BE="-Xms192g -Xmx192g -Xmn173g -XX:+UseParallelGC -XX:ParallelGCThreads=64 -XX:+AlwaysPreTouch -XX:+UseLargePages -XX:+UseTransparentHugePages -XX:-UseAdaptiveSizePolicy -XX:-UsePerfData"
 
