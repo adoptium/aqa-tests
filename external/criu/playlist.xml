@@ -16,7 +16,7 @@
 	<include>../criuSettings.mk</include>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndUnprivilegedRestore</testCaseName>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME); \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION}; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -32,7 +32,7 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndPrivilegedRestore</testCaseName>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME); \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION}; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -53,7 +53,7 @@
 				<comment>runtimes_backlog_issues_879</comment>
 			</disable>
 		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) "$(DOCKER_REGISTRY_DIR)"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>

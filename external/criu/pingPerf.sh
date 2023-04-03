@@ -16,6 +16,7 @@ set -e
 
 pingPerfZipPath=""
 testJDKPath=""
+jdkVersion=""
 restoreImage="ol-instanton-test-pingperf-restore"
 job_name=""
 build_number=""
@@ -32,6 +33,37 @@ getCriuseccompproFile() {
     fi
 }
 
+getSemeruDockerfile() {
+    if [[ ! -f "Dockerfile.open.releases.full" ]]; then
+
+        if [[ $jdkVersion ]]; then
+            echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion-ea/jdk/ubi/ubi8/Dockerfile.open.releases.full"
+            curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion-ea/jdk/ubi/ubi8/Dockerfile.open.releases.full
+            semeruDockerfile="Dockerfile.open.releases.full"
+            # replace artifactory credential
+            sed -i 's:# Set your Artifactory credentials here or pass them at build time:ARG DOCKER_REGISTRY_CREDENTIALS_USR:' $semeruDockerfile
+            sed -i 's:ARG ARTIFACTORY_TOKEN:ARG DOCKER_REGISTRY_CREDENTIALS_PSW:' $semeruDockerfile
+            sed -i 's;-H "Authorization: Bearer ${ARTIFACTORY_TOKEN}";--user "${DOCKER_REGISTRY_CREDENTIALS_USR}:${DOCKER_REGISTRY_CREDENTIALS_PSW}";' $semeruDockerfile
+            # delete line: ENV JAVA_VERSION .*
+            sed -i "s:ENV JAVA_VERSION .*: :" $semeruDockerfile
+            # delete line: curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL};
+            sed -i '/curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};/d' $semeruDockerfile
+            # delete line: echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -;
+            sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" \| sha256sum -c -;/d' $semeruDockerfile
+            # replace commands to copy new jdk
+            sed -i 's:mkdir -p \/opt\/java\/java-ea; \\:mkdir -p \/opt\/java\/java-ea;:' $semeruDockerfile
+            sed -i 's:cd \/opt\/java\/java-ea; \\:COPY NEWJDK\/ \/opt\/java\/java-ea:' $semeruDockerfile
+            sed -i 's:tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;:RUN \/opt\/java\/java-ea\/bin\/java --version:' $semeruDockerfile
+    
+            mkdir NEWJDK
+            cp -r $testJDKPath/. NEWJDK/
+        else
+            echo "jdkVersion value is not set. Cannot download docker file."
+            exit 1
+        fi
+    fi
+}
+
 prepare() {
     echo "prepare at $(pwd)..."
     if [ -f "$pingPerfZipPath" ]; then
@@ -44,58 +76,20 @@ prepare() {
     fi
 
     getCriuseccompproFile
+    getSemeruDockerfile
 
     git clone https://github.com/OpenLiberty/ci.docker.git
     (
         cd ci.docker || exit
-        # TODO: update code based on recent change https://github.com/OpenLiberty/ci.docker/commit/00d28e5cbb76d20723c18fbced1fa6ad144b0fd4
-        git checkout 2136b0870460878c7ab13233a5472b61b0e06946
-
-        # replace commands in openLiberty dockerfile to use JDK from the pipeline
-        # https://github.com/OpenLiberty/ci.docker/blob/instanton/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17
-
+        git checkout instanton
         libertyDockerfilePath="releases/latest/beta-instanton/Dockerfile.ubi.openjdk17"
-
-        # before:
-        # curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL}; \
-        # echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -; \
-        # mkdir -p /opt/java/openjdk; \
-        # cd /opt/java/openjdk; \
-        # tar -xf /tmp/openjdk.tar.xz --strip-components=1; \
-        # rm -rf /tmp/openjdk.tar.xz;
-
-        # after:
-        # mkdir -p /opt/java/openjdk; \
-        # cd /opt/java/openjdk; \
-        # rm -rf /tmp/openjdk.tar.xz;
-        # COPY NEWJDK/ /opt/java/openjdk
-
-        # delete line: curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL};
-        sed -i '/curl -LfsSo \/tmp\/openjdk.tar.xz ${BINARY_URL};/d' $libertyDockerfilePath
-        # delete line: echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -;
-        sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.xz" \| sha256sum -c -;/d' $libertyDockerfilePath
-
-
-        # delete line: ENV JAVA_VERSION .*
-        sed -i "s:ENV JAVA_VERSION .*: :" $libertyDockerfilePath
-        # add line: RUN /opt/java/openjdk/bin/java  --version
-        sed -i '/USER 1001.*/a RUN \/opt\/java\/openjdk\/bin\/java  --version' $libertyDockerfilePath
-
-        commandToRemove='tar -xf /tmp/openjdk.tar.xz --strip-components=1; \\'
-        commandAfterRemovedOne="rm -rf /tmp/openjdk.tar.xz;"
-        attachCommand="COPY NEWJDK/ /opt/java/openjdk"
-        # replace line tar -xf rm -rf /tmp/openjdk.tar.xz; with line COPY NEWJDK/ /opt/java/openjdk
-        sed -i "s:$commandAfterRemovedOne:$attachCommand:" $libertyDockerfilePath
-        # replace line tar -xf /tmp/openjdk.tar.xz --strip-components=1; with line rm -rf /tmp/openjdk.tar.xz;
-        sed -i "s:$commandToRemove:$commandAfterRemovedOne:" $libertyDockerfilePath
- 
-        mkdir releases/latest/beta-instanton/NEWJDK
-        cp -r $testJDKPath/. releases/latest/beta-instanton/NEWJDK/
+        sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-ea-jdk-ubi-amd64;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
     )
 }
 
 buildImage() {
     echo "build image at $(pwd)..."
+    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
     sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17 ci.docker/releases/latest/beta-instanton
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
 }
@@ -320,6 +314,7 @@ setup() {
 if [ "$1" == "prepare" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
+    jdkVersion=$4
     prepare
 elif [ "$1" == "buildImage" ]; then
     buildImage
@@ -338,6 +333,7 @@ elif [ "$1" == "clean" ]; then
 elif [ "$1" == "testCreateRestoreImageOnly" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
+    jdkVersion=$4
     testCreateRestoreImageOnly
 elif [ "$1" == "testUnprivilegedRestoreOnly" ]; then
     testUnprivilegedRestoreOnly
@@ -354,17 +350,20 @@ elif [ "$1" == "pullImagePrivilegedRestore" ]; then
 elif [ "$1" == "testCreateRestoreImageAndPushToRegistry" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
-    docker_registry_dir=$4
+    jdkVersion=$4
+    docker_registry_dir=$5
     setup
     testCreateRestoreImageOnly
     pushImage
 elif [ "$1" == "testCreateImageAndUnprivilegedRestore" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
+    jdkVersion=$4
     testCreateImageAndUnprivilegedRestore
 elif [ "$1" == "testCreateImageAndPrivilegedRestore" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
+    jdkVersion=$4
     testCreateImageAndPrivilegedRestore
 else
     echo "unknown command"
