@@ -28,7 +28,10 @@ jobs:
 
       # merge upstream changes
       - name: Merge upstream
-        run: git merge adoptium/master
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git merge adoptium/master
 
       # push changes
       - name: Push changes
