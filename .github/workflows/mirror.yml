@@ -1,0 +1,38 @@
+# Bot that merges upstream changes from https://github.com/adoptium/aqa-tests.git
+# into this repository.
+
+name: Adoptium Merge Bot
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours
+permissions:
+  contents: write
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repository
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+    
+      # setup remote for upstream
+      - name: Setup upstream
+        run: git remote add adoptium https://github.com/adoptium/aqa-tests.git
+
+      # fetch upstream changes
+      - name: Fetch upstream
+        run: git fetch adoptium
+
+      # merge upstream changes
+      - name: Merge upstream
+        run: git merge adoptium/master
+
+      # push changes
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
