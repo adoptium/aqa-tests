@@ -25,8 +25,9 @@ subdirectory and given a meaningful name.  Once the reorganization of this direc
 //├── idle_micro
 //├── dacapo
 //├── renaissance
+//├── renaissance-jmh
 //├── liberty
-//|-- specjbb
+//├── specjbb
 //├── TechEmpower
 //├── ycsb
 
@@ -51,6 +52,9 @@ Liberty benchmarks from https://github.com/OpenLiberty - including liberty-dt7-s
 
 #### renaissance
 Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance - including renaissance-akka-uct, renaissance-als, renaissance-chi-square, renaissance-db-shootout, renaissance-dec-tree, renaissance-finagle-chirper, renaissance-finagle-http, renaissance-fj-kmeans, renaissance-future-genetic, renaissance-gauss-mix, renaissance-log-regression, renaissance-mnemonics, renaissance-movie-lens, renaissance-naive-bayes, renaissance-par-mnemonics, renaissance-philosophers and renaissance-scala-kmeans
+
+#### renaissance-jmh
+Renaissance benchmarks from https://github.com/renaissance-benchmarks/renaissance/#jmh-support that are executed using the JMH framework (https://github.com/openjdk/jmh). The benchmarks include renaissance-jmh-AkkaUct, renaissance-jmh-Als, renaissance-jmh-ChiSquare, renaissance-jmh-DecTree, renaissance-jmh-Dotty, renaissance-jmh-FinagleChirper, renaissance-jmh-FinagleHttp, renaissance-jmh-FjKmeans, renaissance-jmh-FutureGenetic, renaissance-jmh-GaussMix, renaissance-jmh-LogRegression, renaissance-jmh-Mnemonics, renaissance-jmh-MovieLens, renaissance-jmh-NaiveBayes, renaissance-jmh-PageRank, renaissance-jmh-ParMnemonics, renaissance-jmh-Philosophers, renaissance-jmh-Reactors, renaissance-jmh-RxScrabble, renaissance-jmh-ScalaDoku, renaissance-jmh-ScalaKmeans, renaissance-jmh-ScalaStmBench7, and renaissance-jmh-Scrabble.
 
 #### SPECjbb [license required]
 SPECjbb 2015 benchmark from https://www.spec.org/jbb2015/
