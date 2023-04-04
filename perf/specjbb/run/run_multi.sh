@@ -222,7 +222,7 @@ function runSpecJbbComposite() {
     
     # Start logging
     echo "==============================================="
-    echo "Launching SPECjbb2015 in MultiJVM mode...      "
+    echo "Launching SPECjbb2015 in Composite mode...     "
     echo
     echo "Run $runNumber: $timestamp"
     echo
@@ -252,7 +252,9 @@ function runSpecJbbComposite() {
     local backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_C} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m COMPOSITE ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
     echo "$backendCommand"
     eval "${backendCommand}"
-    echo -e "\t$BE_NAME PID = $!"
+    local compositePid=$!
+    echo "Composite JVM PID = $compositePid"
+    sleep 3
 
     # Increment the CPU count so that we use a new range for the next run
     # TODO This is actually pointless as run and group = 1 in our current experiment
@@ -260,6 +262,7 @@ function runSpecJbbComposite() {
     echo
     echo "SPECjbb2015 is running..."
     echo "Please monitor $result/controller.out for progress"
+    wait $compositePid
 
     echo "SPECjbb2015 has finished"
     echo
