@@ -91,6 +91,10 @@ endif
 ifneq (,$(JAVA_HOME))
   JAR:=$(JAVA_HOME)$(D)bin$(D)jar
   $(warning JAVA_HOME set to $(JAVA_HOME). Using $(JAR) to create jar files)
+  ifeq (,$(JDK_VERSION))
+    JDK_VERSION:=$(shell $(JAVA_HOME)/bin/java --version | sed -n 's/^openjdk \([0-9]*\).*$$/\1/p')
+    $(warning JDK_VERSION is $(JDK_VERSION). Extracted from JAVA_HOME)
+  endif
 else
   ifneq (,$(findstring win,$(OS)))
     JAR:=$(dir $(firstword $(shell where jar.exe 2>nul)))
