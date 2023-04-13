@@ -19,7 +19,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=jaxws/mapping testsuite=DEVTOOLS; \
+		<command>$(GEN_JTB_GENERIC) tests=jaxws/mapping testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=jaxws/mapping testsuite=DEVTOOLS; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>

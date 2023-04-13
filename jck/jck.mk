@@ -131,22 +131,40 @@ ifneq ($(filter aix_ppc-64 zos_390 linux_ppc-64_le linux_390-64, $(SPEC)),)
    REFERENCE_JAVA_CMD=/home/jenkins/jckshare/ri/jdk-11.0.19/bin/java
    USEQ='
    PREP = mkdir -p $(WORKSPACE); cp -rf $(CONFIG_ALT_PATH)$(D)jck$(JCK_VERSION_NUMBER)$(D)compiler.jti $(WORKSPACE)$(D); cp -rf $(TEST_ROOT)$(D)jck$(D)jtrunner $(WORKSPACE)
-   GEN_JTB = $(PREP); ssh -o StrictHostKeyChecking=no jenkins@$(AGENT_NODE) $(USEQ)$(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(WORKSPACE)$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(WORKSPACE) configAltPath=$(CONFIG_ALT_PATH) agentHost=$(NODE_NAME) task=cmdfilegen testExecutionType=multijvm
-   GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(WORKSPACE) task=summarygen
+   GEN_JTB = $(PREP); ssh -o StrictHostKeyChecking=no jenkins@$(AGENT_NODE) $(USEQ)$(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(WORKSPACE)$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(WORKSPACE) configAltPath=$(CONFIG_ALT_PATH) agentHost=$(NODE_NAME) task=cmdfilegen spec=$(SPEC) testExecutionType=multijvm
+   GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(WORKSPACE) spec=$(SPEC) task=summarygen
    START_AGENT = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes com.sun.javatest.agent.AgentMain -passive -trace &> $(WORKSPACE)$(D)agent.log &
    START_HARNESS = ssh -o StrictHostKeyChecking=no jenkins@$(AGENT_NODE) $(REFERENCE_JAVA_CMD) -jar $(JCK_ROOT)$(D)JCK-runtime-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar -config $(WORKSPACE)$(D)compiler.jti @$(WORKSPACE)$(D)generated.jtb
 else
    REFERENCE_JAVA_CMD=$(TEST_ROOT)/../additionaljdkbinary/bin/java
-   GEN_JTB = $(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) agentHost=localhost task=cmdfilegen testExecutionType=multijvm
-   GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) task=summarygen
+   GEN_JTB = $(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) task=cmdfilegen spec=$(SPEC) testExecutionType=multijvm 
+   GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) spec=$(SPEC) task=summarygen
    START_AGENT = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(Q)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)$(D)agent.log &
    START_HARNESS = $(REFERENCE_JAVA_CMD) -jar $(JCK_ROOT)$(D)JCK-runtime-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar -config $(CONFIG_ALT_PATH)$(D)jck$(JCK_VERSION_NUMBER)$(D)compiler.jti @$(REPORTDIR)$(D)generated.jtb
 endif
 
-define START_MULTI_JVM_COMP_TEST
-chmod +x $(TEST_ROOT)$(D)jck$(D)agent-drive.sh; \
-$(TEST_ROOT)$(D)jck$(D)agent-drive.sh '$(START_AGENT)' '$(START_HARNESS)'
-endef
+$(shell chmod +x $(TEST_ROOT)$(D)jck$(D)agent-drive.sh)
+
+START_MULTI_JVM_COMP_TEST = $(TEST_ROOT)$(D)jck$(D)agent-drive.sh '$(START_AGENT)' '$(START_HARNESS)'
+GEN_JTB_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) testJava=$(JAVA_TO_TEST) riJava=$(JAVA_TO_TEST) task=cmdfilegen spec=$(SPEC) $(APPLICATION_OPTIONS)
+GEN_SUMMARY_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) spec=$(SPEC) task=summarygen
+START_AGENT_GENERIC = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy -classpath $(Q)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar$(P)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)/agent.log &
+START_RMIREG = $(TEST_JDK_HOME)/bin/rmiregistry > $(REPORTDIR)$(D)rmiregistry.log &
+START_RMID = $(TEST_JDK_HOME)/bin/rmid -J-Dsun.rmi.activation.execPolicy=none -J-Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policym > $(REPORTDIR)$(D)rmid.log &
+START_TNAMESRV = $(TEST_JDK_HOME)/bin/tnameserv -ORBInitialPort 9876 > $(REPORTDIR)$(D)tnameserv.log &
+EXEC_RUNTIME_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/runtime.jti @$(REPORTDIR)/generated.jtb
+EXEC_COMPILER_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-compiler-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/compiler.jti @$(REPORTDIR)/generated.jtb
+EXEC_DEVTOOLS_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-devtools-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/devtools.jti @$(REPORTDIR)/generated.jtb
+EXEC_RUNTIME_TEST_WITH_AGENT = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST)'
+EXEC_RUNTIME_TEST_WITH_SERVICES = $(EXEC_RUNTIME_TEST)
+
+ifeq ($(JDK_VERSION), 8)
+	EXEC_RUNTIME_TEST_WITH_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(START_RMIREG)' '$(START_RMID)' '$(START_TNAMESRV)' '$(EXEC_RUNTIME_TEST)'
+endif
+
+ifeq ($(JDK_VERSION), 11)
+	EXEC_RUNTIME_TEST_WITH_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_RMIREG)' '$(START_RMID)' '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST)'
+endif
 
 ifeq (8, $(JDK_VERSION))
    COMPILER_LANG_CLASS_TESTS_GROUP1=$(Q)lang/CLSS/clss426;lang/CLSS/clss419;lang/CLSS/clss089;lang/CLSS/clss421;lang/CLSS/clss045;lang/CLSS/clss087;lang/CLSS/clss073;lang/CLSS/clss417;lang/CLSS/clss428;lang/CLSS/clss410;lang/CLSS/clss074;lang/CLSS/clss444;lang/CLSS/clss020;lang/CLSS/clss212;lang/CLSS/clss018;lang/CLSS/clss215;lang/CLSS/clss027;lang/CLSS/clss443;lang/CLSS/clss481;lang/CLSS/clss475;lang/CLSS/clss223;lang/CLSS/clss011;lang/CLSS/clss029;lang/CLSS/clss016;lang/CLSS/clss224;lang/CLSS/clss472;lang/CLSS/clss411;lang/CLSS/clss075;lang/CLSS/clss072;lang/CLSS/clss416;lang/CLSS/clss086$(Q)
