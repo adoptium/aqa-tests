@@ -697,7 +697,7 @@ def runTest( ) {
 		}
 
 		def resultSum = [:]
-		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+).*")
+		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
 		if (matcher?.matches()) {
 			for (int i = 1; i < matcher.groupCount(); i++) {
 				def matchVals = matcher.group(i).split(": ")
