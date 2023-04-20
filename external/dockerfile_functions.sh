@@ -118,6 +118,10 @@ print_test_tag_arg() {
     echo -e "ARG ${test}=${tag}\n" >> ${file}
 }
 
+print_result_comment_arg() {
+    local file=$1
+    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+}
 
 # Select the ubuntu OS packages
 print_ubuntu_pkg() {
@@ -578,6 +582,7 @@ generate_dockerfile() {
     print_legal ${file};
     print_adopt_test ${file} ${test};
     print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
 
