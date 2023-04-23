@@ -198,7 +198,7 @@ function runSpecJbbComposite() {
     echo "Start $BE_NAME"
     # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
     # shellcheck disable=SC2086
-    local backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_C} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m COMPOSITE ${MODE_ARGS_BE} > ${backendName}.log 2>&1 &"
+    local backendCommand="numactl --physcpubind=$cpuRange --localalloc ${JAVA} ${JAVA_OPTS_BE_WITH_GC_LOG} ${SPECJBB_OPTS_C} ${SPECJBB_OPTS_BE} -jar ${SPECJBB_JAR} -m COMPOSITE ${MODE_ARGS_BE} 2>&1 | tee composite.out &"
     echo "$backendCommand"
     eval "${backendCommand}"
     local compositePid=$!
@@ -210,7 +210,7 @@ function runSpecJbbComposite() {
     # cpucount=$((cpucount+1))
     echo
     echo "SPECjbb2015 is running..."
-    echo "Please monitor $result/controller.out for progress"
+    echo "Please monitor $result/composite.out for progress"
     wait $compositePid
 
     echo "SPECjbb2015 has finished"
