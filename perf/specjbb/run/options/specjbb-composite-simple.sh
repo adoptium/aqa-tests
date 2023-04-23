@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
-# SPECjbb2015 will run in multi-jvm mode
-# That is, the Controller, TransactionInjector and Backend are all in separate JVMs
-#export MODE="multi-jvm"
+# SPECjbb2015 will run in composite mode
+# That is, the Controller and TransactionInjector will be run in the same JVM as the Backend
+#export MODE="composite"
 
-# This will configure a basic run of SPECjbb in multi-jvm mode
+# Number of runs to execute
+export NUM_OF_RUNS=1
+
+# This will configure a basic run of SPECjbb in composite mode
 # Therefore, the topography of the run includes 1 group consisting of
 # 1 TransactionInjector and 1 Backend
 export GROUP_COUNT=1
 export TI_JVM_COUNT=1 
-export NUM_OF_RUNS=1
+
 
 # TODO - This is a temporary hard coded configuration to get the run to complete
 # Configuration for a Maxed out (from a scaling perspective) Standard_D64s_v5 run as per the Java Engineering Group Azure VM SKU SPECjbb2015 guide

@@ -1,73 +1,20 @@
 #!/usr/bin/env bash
 
+# Source in utility functions you can use for any benchmark
+. "../../../perf/benchmark_setup.sh"
+
 # echo out what our config is set to
 function showConfig() {
   echo "=========================================================="
-  echo "Number of runs: ${NUM_OF_RUNS}"
-  echo "Number of groups: ${GROUP_COUNT}"
+  echo "Mode: ${MODE}"
+  echo "Number of Runs: ${NUM_OF_RUNS}"
+  echo "Number of Groups: ${GROUP_COUNT}"
   echo "Number of Transaction Injectors: ${TI_JVM_COUNT}"
+  echo "Controller Options: ${JAVA_OPTS_C}"
+  echo "Transaction Injector Options: ${JAVA_OPTS_TI}"
   echo "Backend Options: ${JAVA_OPTS_BE}"
-  echo "Results dir: ${RESULTS_DIR}"
-  echo "MODE: ${MODE}"
+  echo "Results Directory: ${RESULTS_DIR}"
   echo "=========================================================="
-}
-
-# Function to determine what is set in terms of NUMA, THP et als
-function checkHostReadiness() {
-  echo "=========================================================="
-  echo "Running numactl --show to determine if/how numa is enabled"
-  echo 
-  numactl --show
-  echo "=========================================================="
-}
-
-# Get the total CPU count from the affinity.sh script
-TOTAL_CPU_COUNT=0
-function getTotalCPUs() {
-      # source the affinity script so we can split up the CPUs correctly
-    . "../../../perf/affinity.sh"
-    
-    # Extract total CPU count from affinity.sh
-    TOTAL_CPU_COUNT=$(get_cpu_count)
-
-    if [ -z "$TOTAL_CPU_COUNT" ]; then
-      echo "ERROR: Could not determine total CPU count, exiting"
-      exit 1
-    fi
-
-    echo "CPU Count: $TOTAL_CPU_COUNT"
-}
-
-# Make sure the O/S disks and memory etc are cleared before a run
-function beforeEachRun() {
-    # Call sync to force any pending disk writes. Note the user typically needs to be in the sudoers file for this to work.
-    echo "============================================================="
-    echo "Starting sync to flush any pending disk writes"
-    sync
-    echo "sync completed                                "
-    echo
-
-    # The /proc/sys/vm/drop_caches file is a special interface in the Linux kernel for managing the system's cache.
-    # 3: Clear both the page cache and the dentries/inodes cache (combined effect of 1 and 2).
-    # Note, the user needs permission to write to this file (we use sudo tee for this)
-    echo "Clearing the memory caches                     "
-    echo 3 | sudo tee /proc/sys/vm/drop_caches
-    echo "Memory caches cleared                          "
-    echo
-
-    # The /sys/kernel/mm/transparent_hugepage/enabled file is a special 
-    # interface in the Linux kernel for managing how users can use THP.
-    # madvise: Will allow the JVM to select what to use it for (heap only).
-    # Note, the user needs permission to write to this file (we use sudo tee for this)
-    # TODO That cehck could be a proper check and not just catting output
-    echo "Setting madvise for THP                                      "
-    echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
-    echo 
-    echo "Checking that madvise was set:"
-    echo 
-    cat /sys/kernel/mm/transparent_hugepage/enabled
-    echo "============================================================="
-
 }
 
 # The make script passes in variables as strings and so we need to remove quotes and potentially other special characters
@@ -85,7 +32,7 @@ function runSpecJbbMulti() {
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
 
-    # Some O/S setup before each run
+    # Some O/S setup before each run, see "../../../perf/benchmark_setup.sh"
     beforeEachRun
 
     # Create temp result directory                
@@ -100,7 +47,7 @@ function runSpecJbbMulti() {
     
     # Start logging
     echo "==============================================="
-    echo "Launching SPECjbb2015 in MultiJVM mode...      "
+    echo "Launching SPECjbb2015 in ${MODE} mode...       "
     echo
     echo "Run $runNumber: $timestamp"
     echo
@@ -110,7 +57,7 @@ function runSpecJbbMulti() {
     echo "Starting the Controller JVM"
     # We don't double quote escape all arguments as some of those are being passed in as a list with spaces
     # shellcheck disable=SC2086
-    # TODO check with Monica, won't the controller interfere with thr cpu Range of 0-63 that we have resevered for the TI and BE here?
+    # TODO check with Monica, won't the controller interfere with the cpu Range of 0-63 that we have resevered for the TI and BE here?
     local controllerCommand="${JAVA} ${JAVA_OPTS_C} ${SPECJBB_OPTS_C} -jar ${SPECJBB_JAR} -m MULTICONTROLLER ${MODE_ARGS_C} 2>controller.log 2>&1 | tee controller.out &"
     echo "$controllerCommand"
     eval "${controllerCommand}"
@@ -125,6 +72,7 @@ function runSpecJbbMulti() {
 
     local cpuCount=0
 
+    # Get the cpu count, see "../../../perf/benchmark_setup.sh"
     getTotalCPUs
 
     # Start the TransactionInjector and Backend JVMs for each group
@@ -162,7 +110,7 @@ function runSpecJbbMulti() {
       local backendJvmId=beJVM
       local backendName="$groupId.Backend.${backendJvmId}"
       
-      # Add GC logging to the backend's JVM options. We use the recommendended settings for Microsoft's internal GC analysis tool called Censum
+      # Add GC logging to the backend's JVM options. We use the recommended settings for GCToolkit (https://www.github.com/microsoft/gctoolkit).
       JAVA_OPTS_BE_WITH_GC_LOG="$JAVA_OPTS_BE -Xlog:gc*,gc+ref=debug,gc+phases=debug,gc+age=trace,safepoint:file=${backendName}_gc.log"
 
       echo "Start $BE_NAME"
@@ -178,7 +126,7 @@ function runSpecJbbMulti() {
       sleep 1
 
       # Increment the CPU count so that we use a new range for the next run
-      # TODO This is actually pointless as run and group = 1 in our current experiment
+      # TODO This is actually pointless as we have ru = 1 n and group = 1 in our current experiment
       cpucount=$((cpucount+1))
     done
 
@@ -198,6 +146,7 @@ function runSpecJbbMulti() {
   done
 }
 
+# TODO refactor this function so it has composite naming scheme
 # The main run script for SPECjbb2015 in Composite mode
 function runSpecJbbComposite() {
 

@@ -327,7 +327,8 @@ if [ -z "$AFFINITY_VERBOSE" ]; then
 	AFFINITY_VERBOSE=""
 fi
 
-if [ hash seq 2> /dev/null ]; then
+# Check if the seq command can be found on the system and pipe any errors to /dev/null
+if hash seq 2> /dev/null; then
 	echo "Warning: no system seq detected. Using in-house solution" >&2
 
 	# TODO: z/OS currently does not have support for seq command.
