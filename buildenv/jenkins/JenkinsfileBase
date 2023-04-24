@@ -899,7 +899,7 @@ def testExecution() {
 		} else {
 			buildTest()
 		}
-		if( env.BUILD_LIST.startsWith('jck')) {
+		if(env.BUILD_LIST.startsWith('jck') && !env.SPEC.startsWith('zos')) {
 			sshagent(credentials:["${params.JENKINS_KEY}"], ignoreMissing: true) {
 				runTest()
 			}
