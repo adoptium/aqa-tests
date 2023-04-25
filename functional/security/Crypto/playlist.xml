@@ -25,6 +25,10 @@
 				<platform>.*windows</platform>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4336</comment>
+				<platform>.*solaris</platform>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 -timeoutFactor:2 \
