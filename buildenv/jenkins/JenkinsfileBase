@@ -839,8 +839,6 @@ def post(output_name) {
 
 		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 
-		junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
-
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
 		archiveFile("aqa-tests/TKG/**/*.tap", true)
@@ -920,7 +918,14 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
+
 		addFailedTestsGrinderLink()
+
+		try {
+			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+		} catch (Exception e) {
+			echo "Caught exception: ${e.message}"
+		}
 	}
 }
 
