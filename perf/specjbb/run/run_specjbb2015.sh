@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# source the affinity script so we can split up the CPUs correctly
+. "../../../perf/affinity.sh"
+
 # Source in utility functions you can use for any benchmark
 . "../../../perf/benchmark_setup.sh"
 

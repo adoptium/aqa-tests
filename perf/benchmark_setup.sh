@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Function to determine what is set in terms of NUMA, THP et als
+# Function to determine what is set in terms of NUMA and possibly others et al
 function checkHostReadiness() {
   echo "=========================================================="
   echo "Running numactl --show to determine if/how numa is enabled"
@@ -12,8 +12,6 @@ function checkHostReadiness() {
 # Get the total CPU count from the affinity.sh script
 TOTAL_CPU_COUNT=0
 function getTotalCPUs() {
-    # source the affinity script so we can split up the CPUs correctly
-    . "affinity.sh"
     
     # Extract total CPU count from affinity.sh
     TOTAL_CPU_COUNT=$(get_cpu_count)
