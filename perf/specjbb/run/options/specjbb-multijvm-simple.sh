@@ -2,7 +2,7 @@
 
 # SPECjbb2015 will run in multi-jvm mode
 # That is, the Controller, TransactionInjector and Backend are all in separate JVMs
-#export MODE="multi-jvm"
+export MODE="multi-jvm"
 
 # This will configure a basic run of SPECjbb in multi-jvm mode
 # Therefore, the topography of the run includes 1 group consisting of

@@ -146,7 +146,6 @@ function runSpecJbbMulti() {
   done
 }
 
-# TODO refactor this function so it has composite naming scheme
 # The main run script for SPECjbb2015 in Composite mode
 function runSpecJbbComposite() {
 
