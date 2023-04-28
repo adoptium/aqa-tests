@@ -77,3 +77,11 @@ Framework Benchmarks from [https://github.com/TechEmpower/FrameworkBenchmarks](h
 YCSB from [https://github.com/brianfrankcooper/YCSB/](https://github.com/brianfrankcooper/YCSB/), including ycsb-azurecosmos-load and ycsb-azurecosmos. AQA performance testing currently only supports YCSB with Azure Cosmos DB, but other databases may be added in the future.
 
 Additional benchmarks are being reviewed for addition and if you wish to include more, please comment in the open performance benchmarks [issue 1112](https://github.com/adoptium/aqa-tests/issues/1112).
+
+## Supporting Scripts
+
+There are a number of utility scripts that help with the benchmark runs:
+
+* [benchmark_setup.sh](./benchmark_setup.sh) - A script that has functions you can all to set up the environment for running a benchmark.
+* [affinity.sh](./affinity.sh) - A script with functions you can invoke to determine CPU affinity on a wide range of platforms.
+* [run_with_affinity.sh](./run_with_affinity.sh) - A wrapper script that allows you to run benchmarks with a specific CPU affinity.

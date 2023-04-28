@@ -28,6 +28,8 @@ export SPECJBB_SRC=/Users/aqa-tester/SPECjbb2015-1.03
 
 ## Run
 
+ The aqa-test framework uses [playlist.xml](./playlist.xml) to define the available runs and configures them as [multijvm](./run/options/specjbb-multijvm-simple.sh) or [composite](./run/options/specjbb-composite-simple.sh) and then calls  [run_specjbb2015.sh](./run/run_specjbb2015.sh).
+
 ### multijvm
 
 This test target is part of the `dev` level, and the test target name is, `SPECjbb2015-multijvm-simple`. You can use the following commands to run it:
