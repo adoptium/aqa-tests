@@ -118,6 +118,10 @@ print_test_tag_arg() {
     echo -e "ARG ${test}=${tag}\n" >> ${file}
 }
 
+print_result_comment_arg() {
+    local file=$1
+    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+}
 
 # Select the ubuntu OS packages
 print_ubuntu_pkg() {
@@ -154,8 +158,8 @@ print_jdk_install() {
     echo -e "\nRUN set -eux; \\" \
             "\n\t case \"${platform}\" in \\" \
             "\n\t  *x86-64*) \\" \
-            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_criu_Nightly/lastSuccessfulBuild/buildNumber); \\" \
-            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_criu_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_x86-64_linux_criu_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-x86-64_linux_criu.*tar.gz\"); \\" \
+            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
+            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_x86-64_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-x86-64_linux.*tar.gz\"); \\" \
             "\n\t     ;; \\" \
             "\n\t  *) \\" \
             "\n\t     echo \"Unsupported platform \"; \\" \
@@ -578,6 +582,7 @@ generate_dockerfile() {
     print_legal ${file};
     print_adopt_test ${file} ${test};
     print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
 

@@ -565,6 +565,11 @@ public class JavaTestRunner {
 			extraJvmOptions += " -Dfile.encoding=US-ASCII";
 		}
 
+                // testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to non-group multiJVM
+                if (getJckVersionInt(jckVersionNo) >= 17 && (platform.contains("win") || platform.contains("aix"))) {
+			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
+                }
+
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
 		// If 'other' is specified when executing on Windows, then Windows specific settings such
 		// as systemRoot are rejected, and the JCK harness assumes that DISPLAY is required for GUI tests.

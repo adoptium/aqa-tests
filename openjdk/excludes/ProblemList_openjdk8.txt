@@ -56,11 +56,15 @@ compiler/gcbarriers/PreserveFPRegistersTest.java https://github.com/adoptium/aqa
 gc/TestMemoryMXBeansAndPoolsPresence.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
 gc/g1/mixedgc/TestOldGenCollectionUsage.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
 runtime/CompressedOops/CompressedClassPointers.java https://bugs.openjdk.org/browse/JDK-8234058 linux-ppc64le,aix-all
-runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64
+runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64,aix-all
 gc/concurrentMarkSweep/GuardShrinkWarning.java https://bugs.openjdk.java.net/browse/JDK-8023356 solaris-x64
 compiler/floatingpoint/8207838/TestFloatSyncJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 compiler/floatingpoint/8165673/TestFloatJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 compiler/intrinsics/mathexact/LongMulOverflowTest.java https://bugs.openjdk.org/browse/JDK-8196568 solaris-x64
+runtime/NMT/NMTWithCDS.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/memory/ReserveMemory.java https://github.com/adoptium/aqa-tests/issues/4518#issuecomment-1520797671 aix-all
+runtime/SharedArchiveFile/DefaultUseWithClient.java https://github.com/adoptium/aqa-tests/issues/4270 aix-all
+compiler/8209951/TestCipherBlockChainingEncrypt.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
 ############################################################################
 
 # jdk_awt
@@ -230,8 +234,14 @@ sun/security/pkcs11/tls/TestKeyMaterial.java	https://github.com/adoptium/aqa-tes
 sun/security/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/68	generic-all
 com/sun/crypto/provider/Mac/MacClone.java https://bugs.openjdk.java.net/browse/JDK-7087021 solaris-all
 javax/net/ssl/ServerName/BestEffortOnLazyConnected.java https://bugs.openjdk.org/browse/JDK-8155049 solaris-x64
-sun/security/pkcs11/KeyStore/ClientAuth.sh https://bugs.openjdk.org/browse/JDK-7132249 solaris-x64
+javax/net/ssl/Stapling/HttpsUrlConnClient.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+javax/net/ssl/Stapling/SSLSocketWithStapling.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+javax/net/ssl/TLSCommon/ConcurrentClientAccessTest.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+javax/net/ssl/TLSCommon/TestSessionLocalPrincipal.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+sun/security/pkcs11/KeyStore/ClientAuth.sh https://bugs.openjdk.org/browse/JDK-7132249 solaris-all
 sun/security/pkcs11/sslecc/ClientJSSEServerJSSE.java https://bugs.openjdk.org/browse/JDK-8042583 solaris-x64
+sun/security/pkcs11/fips/ClientJSSEServerJSSE.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+
 ############################################################################
 
 # jdk_security3
@@ -252,8 +262,6 @@ sun/security/krb5/auto/Unreachable.java https://github.com/adoptium/aqa-tests/is
 ############################################################################
 
 # jdk_sound
-
-javax/sound/midi/Devices/InitializationHang.java https://github.com/adoptium/aqa-tests/issues/73	generic-all
 javax/sound/midi/Devices/InitializationHang.java	https://github.com/adoptium/aqa-tests/issues/136	generic-all
 
 ############################################################################
@@ -411,7 +419,11 @@ jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventParNewCMS.java https://github.c
 jdk/jfr/event/runtime/TestNetworkUtilizationEvent.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
 jdk/jfr/javaagent/TestPremainAgent.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
 jdk/jfr/jvm/TestDumpOnCrash.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
-jdk/jfr/api/flightrecorder/TestGetEventTypes.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
+jdk/jfr/javaagent/TestLoadedAgent.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+jdk/jfr/jcmd/TestJcmdSaveToFile.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+jdk/jfr/jcmd/TestJcmdStartWithSettings.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+jdk/jfr/jcmd/TestJcmdStopInvalidFile.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+jdk/jfr/jcmd/TestJcmdStopReadOnlyFile.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
 jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.org/browse/JDK-8247203 linux-aarch64,linux-ppc64le
 jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-8247203 linux-arm,linux-ppc64le
 jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa-tests/issues/3277 windows-all

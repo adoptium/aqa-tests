@@ -189,9 +189,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 						DOCKER_REQUIRED = true
 					}
 					DOCKERIMAGE_TAG = "nightly"
-					if (LEVEL == "sanity" || LEVEL == "extended") {
-						EXTRA_DOCKER_ARGS = '-v ${TEST_JDK_HOME}:/opt/java/openjdk'
-					}
+					EXTRA_DOCKER_ARGS = '-v ${TEST_JDK_HOME}:/opt/java/openjdk'
 				}
 				pipelineJob("$ACTUAL_TEST_JOB_NAME") {
  					description('<h1>THIS IS AN AUTOMATICALLY GENERATED JOB. PLEASE DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1><br><p>This job is defined in <a href="https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/testJobTemplate" target="_blank">testJobTemplate</a> in the https://github.com/adoptium/aqa-tests repo. If you wish to change the job, please modify testJobTemplate script. </p><p>For more information about job parameters, please refer <a href="https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins" target="_blank">How to Run a Grinder Build on Jenkins</a></p>wiki:<p><a href="https://github.com/eclipse-openj9/openj9/wiki/AQA-Lightning-Talk-Series" target="_blank">AQA Lightning Talk Series</a></p><p><a href="https://github.com/eclipse-openj9/openj9/wiki/Reproducing-Test-Failures-Locally" target="_blank">Reproducing Test Failures Locally</a></p>')
