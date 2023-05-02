@@ -126,6 +126,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                     if (downstreamJob.getResult() == 'SUCCESS' || downstreamJob.getResult() == 'UNSTABLE') {
                         echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
                         node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                            cleanWs disableDeferredWipeout: true, deleteDirs: true
                             try {
                                 timeout(time: 2, unit: 'HOURS') {
                                     copyArtifacts(
