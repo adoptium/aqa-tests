@@ -20,12 +20,6 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-ubi-portable-restore  --platform "${PLATFORM}" --node_labels "${NODE_LABELS}" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)"
 		</command>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/4617</comment>
-				<platform>s390x_linux</platform>
-			</disable>
-		</disables>
 		<features>
 			<feature>CRIU:required</feature>
 		</features>
