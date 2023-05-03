@@ -5,7 +5,7 @@
 export MODE="composite"
 
 # Number of runs to execute
-export NUM_OF_RUNS=1
+export NUM_OF_RUNS=5
 
 # This will configure a basic run of SPECjbb in composite mode
 # Therefore, the topography of the run includes 1 group consisting of
