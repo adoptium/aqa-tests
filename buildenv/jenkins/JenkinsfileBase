@@ -649,7 +649,9 @@ def runTest( ) {
 			if (TARGET == 'system_custom') {
 				env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
 			} else {
-				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				// remove suffix, then set CUSTOM_OPTION (i.e., jdk_custom_0 will become jdk_custom)
+				def removeSuffix = TARGET.replaceAll(/_\d+$/, "")
+				CUSTOM_OPTION = "${removeSuffix.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 		}
 		if (!TARGET.startsWith('-f')) {
