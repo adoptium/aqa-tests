@@ -15,6 +15,7 @@ timestamps{
     // Set the AQA_TEST_PIPELINE Jenkins job displayName
     currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
     node(LABEL) {
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
         TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 1
         timeout(time: TIME_LIMIT, unit: 'HOURS') {
             // change openjdk-tests to aqa-tests
