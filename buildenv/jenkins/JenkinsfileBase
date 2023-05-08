@@ -6,6 +6,10 @@ import org.tap4j.model.TestSet;
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
 	String makeTestCmd = "$RESOLVED_MAKE; cd ./aqa-tests/TKG; \$MAKE $testParam"
+	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
+	}
 	try {
 		sh "$tearDownCmd"
 		if (env.DOCKER_REGISTRY_URL && env.DOCKER_REGISTRY_URL_CREDENTIAL_ID) {
@@ -538,6 +542,10 @@ def get_sources() {
 }
 def makeCompileTest(){
 	String makeTestCmd = "bash ./compile.sh ${USE_TESTENV_PROPERTIES}"
+	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
+	}
 	dir('aqa-tests') {
 		if (!env.SPEC.startsWith('zos')) {
 			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
@@ -548,7 +556,6 @@ def makeCompileTest(){
 		}
 	}
 }
-
 
 def buildTest() {
 	stage('Build') {

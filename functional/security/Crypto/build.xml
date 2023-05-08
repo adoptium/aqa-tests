@@ -79,6 +79,18 @@
 			</if>
 		</else>
 	</if>
+	<if>
+		<or>
+			<equals arg1="${JDK_IMPL}" arg2="ibm"  />
+			<equals arg1="${JDK_IMPL}" arg2="openj9" />
+		</or>
+		<then>
+			<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
+		</then>
+		<else>
+			<property name="openj9jtregtimeouthandler" value=""/>
+		</else>
+	</if>
 	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>

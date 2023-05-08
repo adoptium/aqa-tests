@@ -27,8 +27,8 @@ test=derby
 testtarget=""
 platform="linux_x86-64"
 portable="false"
-job_name=""
-build_number=""
+job_name=$JOB_NAME
+build_number=$BUILD_NUMBER
 node_name=""
 node_labels=""
 node_label_micro_architecture=""
@@ -293,22 +293,12 @@ if [ $command_type == "run" ]; then
 
 				restore_ready_checkpoint_image_folder="${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}"
 				tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
-				tagged_restore_ready_checkpoint_image_latest="${restore_ready_checkpoint_image_folder}:latest"
 
 				# Push a docker image with build_num for records
 				echo "tagged_restore_ready_checkpoint_image_num is $tagged_restore_ready_checkpoint_image_num"
 				$container_commit --change='ENTRYPOINT ["/bin/bash", "/test_restore.sh"]' $test-test $tagged_restore_ready_checkpoint_image_num
 				echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_num}"
 				$container_push $tagged_restore_ready_checkpoint_image_num
-
-				# Push another copy as the nightly default latest
-				echo "Change Tag from build_number to latest"
-				$container_tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest
-
-				if [[ "$job_name" == *"$criu_default_image_job_name"* ]]; then
-					echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_latest} to docker registry"
-					$container_push $tagged_restore_ready_checkpoint_image_latest
-				fi
 				$container_logout $docker_registry_url
 			else
 				echo "Docker Registry is not available on this Jenkins"
@@ -338,18 +328,14 @@ if [ $command_type == "load" ]; then
 			fi
 
 			restore_docker_image_name_list=()
-			if [ ! -z "${docker_registry_dir}" ]; then
-				echo "Testing image from specified DOCKER_REGISTRY_DIR"
-				restore_docker_image_name_list+=("${docker_registry_url}/${docker_registry_dir}")
-			else
-				echo "Testing images from nightly builds"
-				image_os_micro_architecture_list=($criu_combo_os_microarch_list)
-				for image_os_micro_architecture in ${image_os_micro_architecture_list[@]}
-				do
-					restore_docker_image_name_list+=("${docker_registry_url}/$criu_default_image_job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_os_micro_architecture}:latest")
-				done
-			fi
-			
+
+			echo "Testing images from nightly builds"
+			image_os_micro_architecture_list=($criu_combo_os_microarch_list)
+			for image_os_micro_architecture in ${image_os_micro_architecture_list[@]}
+			do
+				restore_docker_image_name_list+=("${docker_registry_url}/$job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_os_micro_architecture}:${build_number}")
+			done
+
 			echo "The host machine OS is ${node_label_current_os}, and micro-architecture is ${node_label_micro_architecture}"
 			for restore_docker_image_name in ${restore_docker_image_name_list[@]}
 			do
@@ -390,6 +376,5 @@ if [ $command_type == "clean" ]; then
 	fi
 	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	$container_rm -f restore-test
-	$container_rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:latest
-	$container_rmi -f ${docker_registry_url}/${criu_default_image_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:latest
+	$container_rmi -f ${docker_registry_url}/${job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:${build_number}
 fi
