@@ -197,8 +197,13 @@ def setupParallelEnv() {
 				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
-
-			sh "cd ./aqa-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
+			
+			String unsetLLP = ""
+			//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+			if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+				unsetLLP = "unset LD_LIBRARY_PATH;"
+			}
+			sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
 
 			// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
 			def parallelList = "aqa-tests/TKG/parallelList.mk"
