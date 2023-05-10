@@ -161,7 +161,7 @@ listTAP() {
 	printf '%s\n' *"special.functional"*.tap
 	echo "6. List sanity.system ..."
 	printf '%s\n' *"sanity.system"*.tap
-	echo "7. List extended.openjdk ..."
+	echo "7. List extended.system ..."
 	printf '%s\n' *"extended.system"*.tap
 	echo "8. List sanity.perf ..."
 	printf '%s\n' *"sanity.perf"*.tap
