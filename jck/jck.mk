@@ -100,12 +100,30 @@ ifndef APPLICATION_OPTIONS
    APPLICATION_OPTIONS :=
 endif
 
+ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
+	# TODO: APPLICATION_OPTIONS being overridden.
+	APPLICATION_OPTIONS := customJtx=$(Q)
+	DEV_EXCLUDES_HOME=$(JCK_ROOT)/excludes/dev
+	ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/common.jtx))
+		APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/common.jtx
+	endif
+	ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/$(SPEC).jtx))
+		APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/$(SPEC).jtx
+	endif
+	ifneq (,$(findstring FIPS, $(TEST_FLAG)))
+		ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/fips.jtx))
+			APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/fips.jtx
+		endif
+	endif
+	APPLICATION_OPTIONS+=$(Q)
+endif
+
 JAVA_TO_TEST = $(JAVA_COMMAND)
 ifeq ($(USE_JRE),1)
   JAVA_TO_TEST = $(JRE_COMMAND)
 endif
 
-JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
+JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
 
 ifneq ($(filter aix_ppc-64 zos_390 linux_ppc-64_le linux_390-64, $(SPEC)),)
