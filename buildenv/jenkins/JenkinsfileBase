@@ -197,8 +197,13 @@ def setupParallelEnv() {
 				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
-
-			sh "cd ./aqa-tests/TKG; make genParallelList ${PARALLEL_OPTIONS}"
+			
+			String unsetLLP = ""
+			//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+			if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+				unsetLLP = "unset LD_LIBRARY_PATH;"
+			}
+			sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
 
 			// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
 			def parallelList = "aqa-tests/TKG/parallelList.mk"
@@ -649,7 +654,9 @@ def runTest( ) {
 			if (TARGET == 'system_custom') {
 				env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
 			} else {
-				CUSTOM_OPTION = "${TARGET.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
+				// remove suffix, then set CUSTOM_OPTION (i.e., jdk_custom_0 will become jdk_custom)
+				def removeSuffix = TARGET.replaceAll(/_\d+$/, "")
+				CUSTOM_OPTION = "${removeSuffix.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 		}
 		if (!TARGET.startsWith('-f')) {
