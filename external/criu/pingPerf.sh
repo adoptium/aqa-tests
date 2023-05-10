@@ -18,7 +18,7 @@ pingPerfZipPath=""
 testJDKPath=""
 jdkVersion=""
 restoreImage="ol-instanton-test-pingperf-restore"
-job_name=$JOB_NAME
+docker_image_source_job_name=""
 build_number=$BUILD_NUMBER
 docker_registry_dir=""
 docker_os="ubi"
@@ -183,7 +183,7 @@ pushImage() {
     dockerRegistryLogin
     echo "Pushing docker image..."
 
-    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
     tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
 
     # Push a docker image with build_num for records
@@ -197,12 +197,17 @@ pushImage() {
 
 getImageNameList() {
 
-    echo "Testing images from job_name:build_number : ${job_name}:${build_number}"
-    image_os_combo_list=($CRIU_XLINUX_COMBO_LIST)
-    for image_os_combo in ${image_os_combo_list[@]}
-    do
-        restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:${build_number}")
-    done
+    if [[ $JOB_NAME == "Grinder" ]]; then
+			    echo "Testing specified image from docker_registry_dir"
+				restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/$docker_image_source_job_name:${build_number}")
+    else
+        echo "Testing all images from: ${docker_image_source_job_name}:${build_number}"
+        image_os_combo_list=($CRIU_XLINUX_COMBO_LIST)
+        for image_os_combo in ${image_os_combo_list[@]}
+        do
+            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:${build_number}")
+        done
+    fi
 }
 
 pullImageUnprivilegedRestore() {
@@ -276,11 +281,11 @@ setup() {
     if [ ! -z "${docker_registry_dir}" ]; then
         docker_registry_dir=$(echo "$docker_registry_dir" | tr '[:upper:]' '[:lower:]')  # docker registry link must be lowercase
         IFS=':' read -r -a dir_array <<< "$docker_registry_dir"
-        job_name=${dir_array[0]}
+        docker_image_source_job_name=${dir_array[0]}
         build_number=${dir_array[1]}
         echo "build_number: $build_number"
     fi
-    echo "job_name: $job_name"
+    echo "docker_image_source_job_name: $docker_image_source_job_name"
 
     node_label_micro_architecture=""
     node_label_current_os=""
