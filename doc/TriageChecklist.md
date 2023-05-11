@@ -1,6 +1,6 @@
 ## Triage checklist
 
-You are investigating a test failure.  
+You are investigating a test failure.
 
 ### What tools and information is available to you?
 #### From the Jenkins test job:
@@ -9,7 +9,7 @@ You are investigating a test failure.
 
 ### What actions to best triage the failure?
 
-- Check for any obvious or known explanation of the problem.  This is easier the more 'in tune' you are with issues lists at various repos.  
+- Check for any obvious or known explanation of the problem.  This is easier the more 'in tune' you are with issues lists at various repos.
 
 If there is no obvious cause, you next need to find out if the failure happens on different:
 - implementations (does it fail against both hotspot and openj9?)

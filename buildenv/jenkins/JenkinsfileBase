@@ -197,7 +197,7 @@ def setupParallelEnv() {
 				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
-			
+
 			String unsetLLP = ""
 			//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
 			if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
@@ -385,9 +385,9 @@ def setup() {
 					if (!env.SPEC.startsWith('aix') && !env.SPEC.startsWith('zos')) {
 						riURL = "${artifactoryUrl}/${repoForRi}/Latest/${PLATFORM}/${JDK_VERSION}"
 					}
-				} 
+				}
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
-			} 	
+			}
 		} else {
 			CUSTOMIZED_SDK_URL_OPTION = ""
 		}
@@ -675,7 +675,7 @@ def runTest( ) {
 				sh "/usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX -secIP 000 :0 &"
 				env.DISPLAY = "unix:0"
 				echo "env.DISPLAY is ${env.DISPLAY}"
-				
+
 			} else if (env.SPEC.startsWith('sunos')) {
 				sh "/usr/X11/bin/Xvfb :2 -screen 0 1024x768x24 &"
 				env.DISPLAY = ":2"
@@ -743,7 +743,7 @@ def checkTestResults(results) {
 		summary.appendText("NO TEST FOUND!", false)
 		return
 	}
-	
+
 	if (results["FAILED"] != 0) {
 		currentBuild.result = 'UNSTABLE'
 		echo 'There were test failures, set build result to UNSTABLE.'
@@ -931,7 +931,7 @@ def terminateTestProcesses() {
         def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
         if (statusCode != 0) {
                 echo "rc = ${statusCode}, Unable to terminate all processes."
-        } 
+        }
 }
 
 def getJDKImpl(jvm_version) {
@@ -986,7 +986,7 @@ def archiveFile(filename, forceStoreOnJenkins) {
 	if (!params.ARTIFACTORY_SERVER || forceStoreOnJenkins) {
 		echo "Saving ${filename} file on jenkins."
 		archiveArtifacts artifacts: filename, fingerprint: true, allowEmptyArchive: true
-	} 
+	}
 	if (params.ARTIFACTORY_SERVER) {
 		def pattern = "${env.WORKSPACE}/${filename}"
 		uploadToArtifactory(pattern)
@@ -997,12 +997,12 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
-		
+
 		if (artifactoryRepo.contains(',')) {
 			String[] repos = artifactoryRepo.split(",")
 			artifactoryRepo = repos[0].trim()
 		}
-		
+
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
 		if (artifactoryRoorDir.endsWith("/")) {
 			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
@@ -1162,11 +1162,11 @@ def addFailedTestsGrinderLink(paths=""){
 			def customizedTestCases = [:]
 			if (jdkFailedTestCaseList) {
 				customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
-			} 
+			}
 			if (hotspotFailedTestCaseList) {
 				customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
 			}
-			customizedTestCases.each { target, testcases -> 
+			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
 				tempTestCases = tempTestCases.split(' ').toUnique().join('+')
 				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")

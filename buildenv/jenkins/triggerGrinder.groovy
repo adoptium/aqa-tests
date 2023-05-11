@@ -24,8 +24,8 @@ def launch_grinders(List<Map<String, Object>> json) {
   /**
    Get the parameters specified as a string list.
    Get each of the key-value pairs for each json value.
-   If the issue for a job is closed, and JDK_VERSION and 
-   JDK_IMPL match the parameters specified, 
+   If the issue for a job is closed, and JDK_VERSION and
+   JDK_IMPL match the parameters specified,
    run grinder on it. Otherwise ignore it
    */
 

@@ -6,7 +6,7 @@ On any Pull Request (PR), make a comment starting with the keywords `run aqa` fo
 
 Example:
 ```
-run aqa --sdk_resource nightly --build_list openjdk --target sanity.openjdk --jdk_version 8 11 --jdk_impl hotspot --platform x86-64_linux 
+run aqa --sdk_resource nightly --build_list openjdk --target sanity.openjdk --jdk_version 8 11 --jdk_impl hotspot --platform x86-64_linux
 ```
 
 ## Arguments

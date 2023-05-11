@@ -54,7 +54,7 @@ getSemeruDockerfile() {
             sed -i 's:mkdir -p \/opt\/java\/java-ea; \\:mkdir -p \/opt\/java\/java-ea;:' $semeruDockerfile
             sed -i 's:cd \/opt\/java\/java-ea; \\:COPY NEWJDK\/ \/opt\/java\/java-ea:' $semeruDockerfile
             sed -i 's:tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;:RUN \/opt\/java\/java-ea\/bin\/java --version:' $semeruDockerfile
-    
+
             mkdir NEWJDK
             cp -r $testJDKPath/. NEWJDK/
         else
@@ -70,7 +70,7 @@ prepare() {
         rm -f PingperfFiles.zip
         cp "$pingPerfZipPath" .
         unzip PingperfFiles.zip
-    else 
+    else
         echo "${pingPerfZipPath} does not exist."
         exit 1
     fi
@@ -89,7 +89,7 @@ prepare() {
 
 buildImage() {
     echo "build image at $(pwd)..."
-    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
+    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log
     sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17 ci.docker/releases/latest/beta-instanton
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
 }
@@ -135,7 +135,7 @@ checkLog() {
     echo "check log ..."
     if [ -f ./containerId.log ]; then
         cat ./containerId.log
-    else 
+    else
         echo "./containerId.log does not exist."
         exit 1
     fi
@@ -273,7 +273,7 @@ setup() {
     echo "NODE_LABELS: $NODE_LABELS"
     echo "PLATFORM: $PLATFORM"
     echo "uname -a: $(uname -a)"
-    
+
     if [ -n "$(cat /etc/redhat-release | grep 'Red Hat')" ]; then
         cat /etc/redhat-release
     fi
@@ -290,7 +290,7 @@ setup() {
     node_label_micro_architecture=""
     node_label_current_os=""
     for label in $NODE_LABELS
-    do 
+    do
         if [[ -z "$node_label_micro_architecture" && "$label" == "hw.arch."*"."* ]]; then #hw.arch.x86.skylake
             node_label_micro_architecture=$label
             echo "node_label_micro_architecture is $node_label_micro_architecture"
