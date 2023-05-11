@@ -12,5 +12,5 @@
 # limitations under the License.
 ##############################################################################
 
-export CRIU_XLINUX_COMBO_LIST=sw.os.ubuntu.22-hw.arch.x86.broadwell sw.os.ubuntu.22-hw.arch.x86.amd sw.os.rhel.8-hw.arch.x86.broadwell sw.os.rhel.8-hw.arch.x86.amd sw.os.rhel.8-hw.arch.x86.skylake
-# not available: sw.os.ubuntu.22-hw.arch.x86.skylake
+export CRIU_XLINUX_COMBO_LIST=sw.os.ubuntu.22-hw.arch.x86.broadwell sw.os.ubuntu.22-hw.arch.x86.amd sw.os.rhel.8-hw.arch.x86.broadwell sw.os.rhel.8-hw.arch.x86.amd sw.os.rhel.8-hw.arch.x86.skylake sw.os.rhel.9-hw.arch.x86.amd sw.os.rhel.9-hw.arch.x86.skylake
+# not available: sw.os.ubuntu.22-hw.arch.x86.skylake sw.os.rhel.9-hw.arch.x86.broadwell
