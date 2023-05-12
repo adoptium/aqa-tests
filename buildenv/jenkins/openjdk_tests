@@ -174,13 +174,16 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"]
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.skylake"]
                     ]
         ]
         def imagePullMap = [
             'x86-64_linux' : [
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"]
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
