@@ -18,8 +18,8 @@ pingPerfZipPath=""
 testJDKPath=""
 jdkVersion=""
 restoreImage="ol-instanton-test-pingperf-restore"
-job_name=""
-build_number=""
+docker_image_source_job_name=""
+build_number=$BUILD_NUMBER
 docker_registry_dir=""
 docker_os="ubi"
 node_label_current_os=""
@@ -183,9 +183,8 @@ pushImage() {
     dockerRegistryLogin
     echo "Pushing docker image..."
 
-    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
     tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
-    tagged_restore_ready_checkpoint_image_latest="${restore_ready_checkpoint_image_folder}:latest"
 
     # Push a docker image with build_num for records
     echo "tag $restoreImage $tagged_restore_ready_checkpoint_image_num"
@@ -193,27 +192,20 @@ pushImage() {
     echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_num}"
     sudo podman push $tagged_restore_ready_checkpoint_image_num
 
-    if [[ "$job_name" == *"criu_image_upload"* ]]; then
-        # Push another copy as the nightly default latest
-        echo "tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest"
-        sudo podman tag $tagged_restore_ready_checkpoint_image_num $tagged_restore_ready_checkpoint_image_latest
-        echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_latest} to docker registry"
-        sudo podman push $tagged_restore_ready_checkpoint_image_latest
-    fi
-
     dockerRegistryLogout
 }
 
 getImageNameList() {
-    if [ ! -z "${docker_registry_dir}" ]; then
-        echo "Testing image from specified docker_registry_dir: $docker_registry_dir"
-        restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_registry_dir}")
-	else
-        echo "Testing images from nightly builds"
+
+    if [[ $JOB_NAME == "Grinder" ]]; then
+			    echo "Testing specified image from docker_registry_dir"
+				restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/$docker_image_source_job_name:${build_number}")
+    else
+        echo "Testing all images from: ${docker_image_source_job_name}:${build_number}"
         image_os_combo_list=($CRIU_XLINUX_COMBO_LIST)
         for image_os_combo in ${image_os_combo_list[@]}
         do
-            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/criu_image_upload/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:latest")
+            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:${build_number}")
         done
     fi
 }
@@ -289,11 +281,11 @@ setup() {
     if [ ! -z "${docker_registry_dir}" ]; then
         docker_registry_dir=$(echo "$docker_registry_dir" | tr '[:upper:]' '[:lower:]')  # docker registry link must be lowercase
         IFS=':' read -r -a dir_array <<< "$docker_registry_dir"
-        job_name=${dir_array[0]}
+        docker_image_source_job_name=${dir_array[0]}
         build_number=${dir_array[1]}
-        echo "job_name: $job_name"
         echo "build_number: $build_number"
     fi
+    echo "docker_image_source_job_name: $docker_image_source_job_name"
 
     node_label_micro_architecture=""
     node_label_current_os=""

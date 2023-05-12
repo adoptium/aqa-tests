@@ -162,6 +162,63 @@ timestamps{
             }
             parallel testJobs
         }
+    } else if (!JOB_NAME.contains("_imagePull") && !JOB_NAME.contains("_imageUpload") && params.TARGET == "dev.external" ) {
+        // trigger xxx_imageUpload test job, then xxx_imagePull test job
+        def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
+        if (params.LABEL_ADDITION) {
+            commonLabel += "&&${params.LABEL_ADDITION}" 
+        }
+        def imageUploadMap = [
+            'x86-64_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.skylake"]
+                    ]
+        ]
+        def imagePullMap = [
+            'x86-64_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ]
+        ]
+        if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
+            def imageUploadJobName = "${JOB_NAME}_imageUpload"
+            def imagePullJobName = "${JOB_NAME}_imagePull"
+            generateJobViaAutoGen(imageUploadJobName)
+            generateJobViaAutoGen(imagePullJobName)
+
+            def imageUploadJobs = [:]
+            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+            echo "Trigger ${imageUploadJobName} job ..."
+            for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
+                def labelAddition = imageUploadMap[params.PLATFORM][i].LABEL_ADDITION
+                def newParams = ["LABEL_ADDITION" : labelAddition, "TARGET" : "${target}", "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
+                def childParams = changeParam(params, newParams)
+                imageUploadJobs["${imageUploadJobName}_${i}]"] = {
+                    build job: imageUploadJobName, parameters: childParams
+                }
+            }
+            parallel imageUploadJobs
+
+            def imagePullJobs = [:]
+            echo "Trigger ${imagePullJobName} job ..."
+            for (int i = 0; i < imagePullMap[params.PLATFORM].size(); i++) {
+                def labelAddition = imagePullMap[params.PLATFORM][i].LABEL_ADDITION
+                def newParams = ["LABEL_ADDITION" : labelAddition, "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
+                def childParams = changeParam(params, newParams)
+                imagePullJobs["${imagePullJobName}_${i}]"] = {
+                    build job: imagePullJobName, parameters: childParams
+                }
+            }
+            parallel imagePullJobs
+        } else {
+             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageGenMap: ${imageGenMap} and/or imagePullMap: ${imagePullMap}."
+        } 
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
@@ -466,3 +523,60 @@ def forceCleanWS() {
     }
 }
 
+def changeParam(paramsList, newParams) {
+    def childParams = []
+    // loop through all the params and change the parameters if needed
+    paramsList.each { param ->
+        def value = param.value.toString()
+        newParams.each { newParam ->
+            
+            if (param.key == newParam.key) {
+                value = newParam.value.toString()
+            }
+        }
+        if (value == "true" || value == "false") {
+            childParams << booleanParam(name: param.key, value: value.toBoolean())
+        } else {
+            childParams << string(name: param.key, value: value)
+        }
+    }
+    return childParams
+}
+
+def generateJobViaAutoGen(testJobName) {
+    def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+    if (params.GENERATE_JOBS || !JobHelper.jobIsRunnable(testJobName as String)) {
+        def jobParams = []
+        jobParams << string(name: 'TEST_JOB_NAME', value: testJobName)
+        jobParams << string(name: 'ARCH_OS_LIST', value: params.PLATFORM)
+        jobParams << booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
+
+        def jdk_impl = params.JDK_IMPL ?: ""
+        def jdk_version = params.JDK_VERSION ?: ""
+        if (testJobName.startsWith("Test_openjdk")) {
+            def tokens = testJobName.split('_');
+            def level = ""
+            def group = ""
+            if (tokens.size() > 3) {
+                if (!jdk_version) {
+                    jdk_version = tokens[1]
+                }
+                if (!jdk_impl) {
+                    jdk_impl = tokens[2]
+                }
+                if (tokens[3].contains(".")) {
+                    level = tokens[3].split("\\.")[0]
+                    group = tokens[3].split("\\.")[1]
+                    if (level && group) {
+                        jobParams << string(name: 'LEVELS', value: level)
+                        jobParams << string(name: 'GROUPS', value: group)
+                    }
+                }
+            } 
+        }
+        jobParams << string(name: 'JDK_IMPL', value: jdk_impl)
+        jobParams << string(name: 'JDK_VERSIONS', value: jdk_version)
+
+        build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
+    }
+}

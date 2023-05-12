@@ -62,7 +62,15 @@
 							<property name="jtregTar" value="jtreg_6_1_1"/>
 						</then>
 						<else>
-							<property name="jtregTar" value="jtreg_7_1_1_1"/>
+							<if>
+								<matches pattern="^[2][0]" string="${JDK_VERSION}"/>
+								<then>
+									<property name="jtregTar" value="jtreg_7_1_1_1"/>
+								</then>
+								<else>
+									<property name="jtregTar" value="jtreg_7_2_1"/>
+								</else>
+							</if>
 						</else>
 					</if>
 				</else>

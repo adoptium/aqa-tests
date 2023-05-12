@@ -756,6 +756,12 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 else
 	> ./testenv/testenv.properties
 fi
+
+# unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+if [[ $JDK_IMPL == 'hotspot' && $JDK_VERSION == '8' && $PLATFORM =~ 'alpine-linux' ]]; then
+	unset LD_LIBRARY_PATH
+fi
+
 if [ "$SDKDIR" != "" ]; then
 	getBinaryOpenjdk
 	testJavaVersion
