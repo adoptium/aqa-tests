@@ -82,7 +82,7 @@ prepare() {
     (
         cd ci.docker || exit
         git checkout instanton
-        libertyDockerfilePath="releases/latest/beta-instanton/Dockerfile.ubi.openjdk17"
+        libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
         sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-ea-jdk-ubi-amd64;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
     )
 }
@@ -90,7 +90,7 @@ prepare() {
 buildImage() {
     echo "build image at $(pwd)..."
     sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
-    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta-instanton/Dockerfile.ubi.openjdk17 ci.docker/releases/latest/beta-instanton
+    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta/Dockerfile.ubi.openjdk17 ci.docker/releases/latest/beta
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
 }
 
