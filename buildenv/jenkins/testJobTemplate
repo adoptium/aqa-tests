@@ -144,10 +144,10 @@ def ADOPTOPENJDK_BRANCH = "master"
 def USE_TESTENV_PROPERTIES = false
 def SETUP_JCK_RUN = false
 
-// Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
-// (See https://issues.jenkins.io/browse/JENKINS-48431)
-// Set Repository URL and Branch as build parameters by default
-// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
+// https://issues.jenkins.io/browse/JENKINS-42971 is resolved, but it seems to be a partial fix for Branch Specifier parameter.
+// Repository URL still has problem with lightweight checkout
+// Set Repository URL and Branch Specifier as build parameters by default
+// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL to its explicit value and keep Branch Specifier as parameter
 def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
 def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
 def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
@@ -155,7 +155,6 @@ def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
 LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
 if (LIGHT_WEIGHT_CHECKOUT) {
 	ADOPTOPENJDK_REPO_BUILD_PARAM = ADOPTOPENJDK_REPO
-	ADOPTOPENJDK_BRANCH_BUILD_PARAM = ADOPTOPENJDK_BRANCH
 	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 }
 
@@ -458,7 +457,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										relativeTargetDirectory('aqa-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
-                                                                                wipeOutWorkspace()
+										wipeOutWorkspace()
 										cloneOptions {
 											depth(1)
 											shallow(true)
