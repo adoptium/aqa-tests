@@ -81,7 +81,10 @@ prepare() {
     git clone https://github.com/OpenLiberty/ci.docker.git
     (
         cd ci.docker || exit
-        git checkout instanton
+        openLibertyBranch="instanton"
+        git checkout $openLibertyBranch
+        curCommitID=$(git rev-parse HEAD)
+        echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
         libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
         sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-ea-jdk-ubi-amd64;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
     )
