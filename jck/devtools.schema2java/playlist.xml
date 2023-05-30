@@ -19,7 +19,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema2java/nisttest testsuite=DEVTOOLS; \
+		<command>$(GEN_JTB_GENERIC) tests=schema2java/nisttest testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=schema2java/nisttest testsuite=DEVTOOLS; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -36,7 +38,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema2java/structures testsuite=DEVTOOLS; \
+		<command>$(GEN_JTB_GENERIC) tests=schema2java/structures testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=schema2java/structures testsuite=DEVTOOLS; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
