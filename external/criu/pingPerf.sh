@@ -107,14 +107,13 @@ createRestoreImage() {
 unprivilegedRestore() {
     echo "unprivileged restore $restoreImage ..."
     echo -ne "CONTAINER_ID=" > containerId.log
+    echo "sudo podman run --rm --detach -p 9080:9080 --cap-add=CHECKPOINT_RESTORE --cap-add=SETPCAP $restoreImage"
     sudo podman run \
         --rm \
         --detach \
         -p 9080:9080 \
         --cap-add=CHECKPOINT_RESTORE \
-        --cap-add=NET_ADMIN \
-        --cap-add=SYS_PTRACE \
-        --security-opt seccomp=criuseccompprofile.json \
+        --cap-add=SETPCAP \
         $restoreImage >> containerId.log
 }
 
