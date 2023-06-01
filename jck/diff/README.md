@@ -13,7 +13,7 @@ Given two JCK repos:
 
 ```
 1. Git clone the two JCK given repositories (if they do not already exist in the local  workspace location). 
-2. From the two JCK repos, compare the top level folders (e.g. for jck8c, top level folders would be the ones under <JCK8-REPO>/tree/master/JCK-runtime-8c/tests), as well as the tree inside each of the second level folders (e.g. a second level folder would be <JCK8-REPO>/tree/master/JCK-runtime-8c/tests/api). 
+2. From the two JCK repos, compare the top level folders (e.g. for jck8d, top level folders would be the ones under <JCK8-REPO>/tree/master/JCK-runtime-8c/tests), as well as the tree inside each of the second level folders (e.g. a second level folder would be <JCK8-REPO>/tree/master/JCK-runtime-8c/tests/api). 
 3. If the folders are identical, print output in console to indicate that. 
 4. If any mismatch is detected, generate logs to indicate the differences for users to check. 
 
