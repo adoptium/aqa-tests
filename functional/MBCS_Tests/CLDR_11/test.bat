@@ -19,6 +19,11 @@ call %PWD%\..\data\setup_%LOCALE%.bat
 FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar PrintLanguageTag`) DO SET LANGTAG=%%i
 FOR /F "usebackq" %%i IN (`%JAVA_BIN%\java -cp %PWD%\CLDR_11.jar JavaVersion`) DO SET JAVAVERSION=%%i
 
+if %JAVAVERSION% GTR 11000019 (
+    echo Skip this testcase after 11.0.19
+    exit /b 0
+)
+
 SET USE_ZHTW_WORKAROUND=false
 %JAVA_BIN%\java -cp %PWD%\CLDR_11.jar CheckZHTW
 if ErrorLevel 1 (SET USE_ZHTW_WORKAROUND=true)
