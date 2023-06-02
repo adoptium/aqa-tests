@@ -97,7 +97,7 @@ split()
 
 targetTestPath=$1 
 numOfGrps=$2
-pathPrefix=$(echo "$1" | rev | cut -d"/" -f1 -f2 | rev)
+pathPrefix=$(echo "$1" | rev | cut -d"/" -f1-2 | rev)
 
 split $targetTestPath $numOfGrps $pathPrefix
 
