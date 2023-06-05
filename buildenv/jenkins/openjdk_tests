@@ -177,6 +177,21 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.skylake"]
+                    ],
+            'linux_aarch64' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ],
+            's390x_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
                     ]
         ]
         def imagePullMap = [
@@ -184,6 +199,16 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ],
+            'linux_aarch64' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ],
+            's390x_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
@@ -194,6 +219,11 @@ timestamps{
 
             def imageUploadJobs = [:]
             def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+            // exclude criu-ubi-portable-checkpoint_test on zlinux due to https://github.com/adoptium/aqa-tests/issues/4617
+            if (params.PLATFORM == "s390x_linux") {
+                target = target.minus(",disabled.criu-ubi-portable-checkpoint_test")
+            }
+
             echo "Trigger ${imageUploadJobName} job ..."
             for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
                 def labelAddition = imageUploadMap[params.PLATFORM][i].LABEL_ADDITION
@@ -217,7 +247,7 @@ timestamps{
             }
             parallel imagePullJobs
         } else {
-             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageGenMap: ${imageGenMap} and/or imagePullMap: ${imagePullMap}."
+             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageUploadMap: ${imageUploadMap} and/or imagePullMap: ${imagePullMap}."
         } 
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {

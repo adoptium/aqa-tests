@@ -44,7 +44,6 @@ container_push="docker push"
 container_pull="docker pull"
 container_rm="docker rm"
 container_rmi="docker rmi"
-criu_combo_os_microarch_list=""
 docker_registry_required="false"
 docker_registry_url=""
 docker_registry_dir=""
@@ -57,7 +56,7 @@ imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--criu_combo_os_microarch_list CRIU_XLINUX_COMBO_LIST] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
 supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
@@ -177,9 +176,6 @@ parseCommandLineArgs() {
 
 			"--criu_default_image_job_name" )
 				criu_default_image_job_name="$1"; shift;;
-
-			"--criu_combo_os_microarch_list" )
-				criu_combo_os_microarch_list="$1"; shift;;
 
 			"--test_root" )
 				test_root="$1"; shift;;
@@ -334,7 +330,15 @@ if [ $command_type == "load" ]; then
 				restore_docker_image_name_list+=("${docker_registry_url}/$docker_image_source_job_name:${build_number}")
 			else
 				echo "Testing images from nightly builds"
-				image_os_micro_architecture_list=($criu_combo_os_microarch_list)
+				# - is shell metacharacter. In PLATFORM value, replace - with _
+				platValue=$(echo $PLATFORM | sed "s/-/_/")
+				comboList=CRIU_COMBO_LIST_$platValue
+				if [[ "$PLATFORM" =~ "linux_390-64" ]]; then
+					micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.s390x.//")
+					comboList=$comboList_$micro_architecture
+				fi
+				image_os_micro_architecture_list="${!comboList}"
+				echo "${comboList}: ${image_os_micro_architecture_list}"
 				for image_os_micro_architecture in ${image_os_micro_architecture_list[@]}
 				do
 					restore_docker_image_name_list+=("${docker_registry_url}/$docker_image_source_job_name/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${image_os_micro_architecture}:${build_number}")
