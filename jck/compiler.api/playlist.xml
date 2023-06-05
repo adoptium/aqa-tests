@@ -29,7 +29,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/java_rmi testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=api/java_rmi testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_rmi testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -47,7 +49,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_annotation testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=api/javax_annotation testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_annotation testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -61,7 +65,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_lang testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=api/javax_lang testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_lang testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -83,7 +89,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/javax_tools testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=api/javax_tools testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_tools testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -105,7 +113,9 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=api/signaturetest testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=api/signaturetest testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(GEN_SUMMARY_GENERIC) tests=api/signaturetest testsuite=COMPILER; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>

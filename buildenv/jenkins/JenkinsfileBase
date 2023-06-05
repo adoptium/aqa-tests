@@ -82,6 +82,7 @@ def setupEnv() {
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
 	env.RERUN_LINK = ""
+	env.FAILED_TESTS = ""
 	env.FAILED_TEST_TARGET = ""
 	env.CUSTOM_TARGET_KEY_VALUE =""
 	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
@@ -860,8 +861,7 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-		String failedTests = addFailedTestsGrinderLink()
-		triggerRerunJob(failedTests)
+		addFailedTestsGrinderLink()
 	}
 }
 
@@ -1154,6 +1154,7 @@ def addFailedTestsGrinderLink(paths=""){
 		}
 		if (failedTestList) {
 			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
+			env.FAILED_TESTS= failedTests ?: ""
 			failedTestList = "testList+TESTLIST=" + failedTests
 			String url = env.RERUN_LINK
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
@@ -1174,9 +1175,7 @@ def addFailedTestsGrinderLink(paths=""){
 				echo "Rerun failed ${target} test cases in Grinder with ${target}_custom target: ${customURL}"
 				currentBuild.description += "<br><a href=${customURL}> Rerun failed ${target} test cases in Grinder with ${target}_custom target</a>"
 			}
-			return failedTests;
 		}
-		return null;
 	}
 }
 
@@ -1204,11 +1203,11 @@ def generateJob (newJobs, childTest, testJobName) {
 		}
 	}
 }
-def triggerRerunJob (failedTests) {
+def triggerRerunJob () {
 	// if the JOB_NAME contains _rerun or _testList_, we will not trigger rerun job
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
-		if (rerunIterations > 0 && failedTests) {
+		if (rerunIterations > 0 && env.FAILED_TESTS?.trim()) {
 			stage('Rerun') {
 				def rerunJobName = "${JOB_NAME}_rerun"
 				def newJobs = [:]
@@ -1221,7 +1220,7 @@ def triggerRerunJob (failedTests) {
 					// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
 					// set TARGET to failed tests and set ITERATIONS to rerunIterations
 					if (param.key == "TARGET") {
-						childParams << string(name: param.key, value: "testList TESTLIST=" + failedTests )
+						childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
 					} else if (param.key == "PARALLEL") {
 						childParams << string(name: param.key, value: "None")
 					} else if (param.key == "NUM_MACHINES") {
@@ -1281,8 +1280,7 @@ def run_parallel_tests() {
 
 					archiveAQAvitFiles()
 					if (buildPaths.length() > 0) {
-						String failedTests = addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
-						triggerRerunJob(failedTests)
+						addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
 					}
 				} finally {
 					forceCleanWS()

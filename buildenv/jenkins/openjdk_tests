@@ -340,6 +340,7 @@ timestamps{
             }
             if (currentBuild.result != 'FAILURE') {
                 jenkinsfile.run_parallel_tests()
+                jenkinsfile.triggerRerunJob()
             }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
