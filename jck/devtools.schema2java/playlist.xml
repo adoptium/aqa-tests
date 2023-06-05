@@ -21,8 +21,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=schema2java/nisttest testsuite=DEVTOOLS; \
 		$(EXEC_DEVTOOLS_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=schema2java/nisttest testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema2java/nisttest testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -40,8 +41,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=schema2java/structures testsuite=DEVTOOLS; \
 		$(EXEC_DEVTOOLS_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=schema2java/structures testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema2java/structures testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

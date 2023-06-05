@@ -150,20 +150,21 @@ GEN_JTB_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.o
 GEN_SUMMARY_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) spec=$(SPEC) task=summarygen
 START_AGENT_GENERIC = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy -classpath $(Q)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar$(P)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)/agent.log &
 START_RMIREG = $(TEST_JDK_HOME)/bin/rmiregistry > $(REPORTDIR)$(D)rmiregistry.log &
-START_RMID = $(TEST_JDK_HOME)/bin/rmid -J-Dsun.rmi.activation.execPolicy=none -J-Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policym > $(REPORTDIR)$(D)rmid.log &
+START_RMID = $(TEST_JDK_HOME)/bin/rmid -J-Dsun.rmi.activation.execPolicy=none -J-Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy > $(REPORTDIR)$(D)rmid.log &
 START_TNAMESRV = $(TEST_JDK_HOME)/bin/tnameserv -ORBInitialPort 9876 > $(REPORTDIR)$(D)tnameserv.log &
 EXEC_RUNTIME_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/runtime.jti @$(REPORTDIR)/generated.jtb
 EXEC_COMPILER_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-compiler-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/compiler.jti @$(REPORTDIR)/generated.jtb
 EXEC_DEVTOOLS_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-devtools-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/devtools.jti @$(REPORTDIR)/generated.jtb
 EXEC_RUNTIME_TEST_WITH_AGENT = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST)'
-EXEC_RUNTIME_TEST_WITH_SERVICES = $(EXEC_RUNTIME_TEST)
+EXEC_RUNTIME_TEST_WITH_RMI_SERVICES = $(EXEC_RUNTIME_TEST_WITH_AGENT)
 
 ifeq ($(JDK_VERSION), 8)
-	EXEC_RUNTIME_TEST_WITH_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(START_RMIREG)' '$(START_RMID)' '$(START_TNAMESRV)' '$(EXEC_RUNTIME_TEST)'
+	EXEC_RUNTIME_TEST_WITH_RMI_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(START_RMIREG)' '$(START_RMID)' '$(START_TNAMESRV)' '$(EXEC_RUNTIME_TEST)'
+	EXEC_RUNTIME_TEST_WITH_AGENT = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(START_TNAMESRV)' '$(EXEC_RUNTIME_TEST)'
 endif
 
 ifeq ($(JDK_VERSION), 11)
-	EXEC_RUNTIME_TEST_WITH_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_RMIREG)' '$(START_RMID)' '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST)'
+	EXEC_RUNTIME_TEST_WITH_RMI_SERVICES = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(START_RMIREG)' '$(START_RMID)' '$(EXEC_RUNTIME_TEST)'
 endif
 
 ifeq (8, $(JDK_VERSION))
