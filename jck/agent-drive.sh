@@ -1,9 +1,10 @@
-#!/bin/bash -ue
+#!/bin/bash
 
 jckAgentPID=0
 rmiRegistryPID=0
 rmidPID=0
 tnameservPID=0
+harnessExitCode=0
 
 startJCKAgent() {
 	echo "Starting JCK agent.."
@@ -19,7 +20,7 @@ stopJCKAgent() {
 
 startJCKHarness() {
 	echo "Starting JCK harness.."
-	eval $1
+	eval $1; return $?
 }
 
 startRMIRegistry() {
@@ -61,24 +62,35 @@ stopTNameServ() {
 if [ $# -eq 2 ]; then
 	startJCKAgent "$1"
 	startJCKHarness "$2"
+	harnessExitCode=$?
 	stopJCKAgent
-elif [ $# -eq 4 ]; then
-	startRMIRegistry "$1"
-	startRMID "$2"
-	startJCKAgent "$3"
-	startJCKHarness "$4"
-	stopRMIRegistry
-	stopRMID
-	stopJCKAgent
-elif [ $# -eq 5 ]; then
-	startRMIRegistry "$1"
-	startRMID "$2"
-	startTNameServ "$3"
-	startJCKAgent "$4"
-	startJCKHarness "$5"
-	stopRMIRegistry
-	stopRMID
+elif [ $# -eq 3 ]; then
+	startJCKAgent "$1"
+	startTNameServ "$2"
+	startJCKHarness "$3"
+	harnessExitCode=$?
 	stopJCKAgent
 	stopTNameServ
+elif [ $# -eq 4 ]; then
+	startJCKAgent "$1"
+	startRMIRegistry "$2"
+	startRMID "$3"
+	startJCKHarness "$4"
+	harnessExitCode=$?
 	stopJCKAgent
+	stopRMIRegistry
+	stopRMID
+elif [ $# -eq 5 ]; then
+	startJCKAgent "$1"
+	startRMIRegistry "$2"
+	startRMID "$3"
+	startTNameServ "$4"
+	startJCKHarness "$5"
+	harnessExitCode=$?
+	stopJCKAgent
+	stopRMIRegistry
+	stopRMID
+	stopTNameServ
 fi
+
+exit $harnessExitCode
