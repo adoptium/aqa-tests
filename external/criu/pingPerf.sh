@@ -86,7 +86,8 @@ prepare() {
         curCommitID=$(git rev-parse HEAD)
         echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
         libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
-        sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-ea-jdk-ubi-amd64;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
+        # replace OpenLiberty dockerfile base image
+        sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
     )
 }
 
@@ -99,7 +100,7 @@ buildImage() {
 
 createRestoreImage() {
     echo "create restore image $restoreImage ..."
-    sudo podman run --name ol-instanton-test-checkpoint-container --privileged --env WLP_CHECKPOINT=applications ol-instanton-test-pingperf:latest
+    sudo podman run --name ol-instanton-test-checkpoint-container --privileged --env WLP_CHECKPOINT=afterAppStart ol-instanton-test-pingperf:latest
     sudo podman commit ol-instanton-test-checkpoint-container $restoreImage
     sudo podman rm ol-instanton-test-checkpoint-container
 }
