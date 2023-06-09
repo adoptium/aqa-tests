@@ -16,10 +16,16 @@
 	<include>../criuSettings.mk</include>
 	<test>
 		<testCaseName>criu-ubi-portable-restore_test</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --load --tag "${DOCKERIMAGE_TAG}" --dir criu-ubi-portable-restore --testtarget _cmdLineTester_criu_keepCheckpoint --portable "true" --platform "${PLATFORM}" --node_name "${NODE_NAME}" --node_labels "${NODE_LABELS}" --docker_registry_required "true" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)" --criu_combo_os_microarch_list "$(CRIU_XLINUX_COMBO_LIST)" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS) --tmpfs /run"; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --load --tag "${DOCKERIMAGE_TAG}" --dir criu-ubi-portable-restore --testtarget _cmdLineTester_criu_keepCheckpoint --portable "true" --platform "${PLATFORM}" --node_name "${NODE_NAME}" --node_labels "${NODE_LABELS}" --docker_registry_required "true" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS) --tmpfs /run"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-ubi-portable-restore  --platform "${PLATFORM}" --node_labels "${NODE_LABELS}" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)"
 		</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4617</comment>
+				<platform>s390x_linux</platform>
+			</disable>
+		</disables>
 		<features>
 			<feature>CRIU:required</feature>
 		</features>

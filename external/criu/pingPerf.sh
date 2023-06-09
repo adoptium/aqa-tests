@@ -46,6 +46,8 @@ getSemeruDockerfile() {
             sed -i 's;-H "Authorization: Bearer ${ARTIFACTORY_TOKEN}";--user "${DOCKER_REGISTRY_CREDENTIALS_USR}:${DOCKER_REGISTRY_CREDENTIALS_PSW}";' $semeruDockerfile
             # delete line: ENV JAVA_VERSION .*
             sed -i "s:ENV JAVA_VERSION .*: :" $semeruDockerfile
+            #  delete line: exit 1; as we need to test platforms that do not have ea build yet
+            sed -i '/exit 1;/d' $semeruDockerfile
             # delete line: curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL};
             sed -i '/curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};/d' $semeruDockerfile
             # delete line: echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -;
@@ -205,7 +207,17 @@ getImageNameList() {
 				restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/$docker_image_source_job_name:${build_number}")
     else
         echo "Testing all images from: ${docker_image_source_job_name}:${build_number}"
-        image_os_combo_list=($CRIU_XLINUX_COMBO_LIST)
+        # - is shell metacharacter. In PLATFORM value, replace - with _
+        echo "PLATFORM: ${PLATFORM}"
+        platValue=$(echo $PLATFORM | sed "s/-/_/")
+        comboList=CRIU_COMBO_LIST_$platValue
+        if [[ "$PLATFORM" =~ "linux_390-64" ]]; then
+            micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.s390x.//")
+            comboList=$comboList_$micro_architecture
+        fi
+
+        image_os_combo_list="${!comboList}"
+        echo "${comboList}: ${image_os_combo_list}"
         for image_os_combo in ${image_os_combo_list[@]}
         do
             restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:${build_number}")
