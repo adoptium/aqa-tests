@@ -140,6 +140,10 @@
 				<comment>Disabled on all platforms and Java levels due to backlog/issues/559. To be run manually by CR team</comment>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
@@ -162,6 +166,12 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-javax_annotation_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -179,6 +189,12 @@
 	</test>
 	<test>
 		<testCaseName>jck-compiler-api-javax_lang_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
@@ -202,6 +218,10 @@
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
+			</disable>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
 			</disable>
 		</disables>
 		<variations>
@@ -227,6 +247,10 @@
 				<platform>ppc64_aix</platform>
 				<version>8</version>
 				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
 			</disable>
 		</disables>
 		<variations>
