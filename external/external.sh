@@ -47,6 +47,7 @@ container_rmi="docker rmi"
 docker_registry_required="false"
 docker_registry_url=""
 docker_registry_dir=""
+base_docker_registry_dir="public"
 reportdst="false"
 reportsrc="false"
 docker_args=""
@@ -56,7 +57,7 @@ imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
 supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
@@ -174,6 +175,14 @@ parseCommandLineArgs() {
 				docker_image_source_job_name=${dir_array[0]}
 				build_number=${dir_array[1]};;
 
+			"--base_docker_registry_dir" )
+				if [ -z "$1" ]; then 
+					base_docker_registry_dir="public";
+				else 
+  					base_docker_registry_dir="$1";
+				fi
+				shift;;
+
 			"--criu_default_image_job_name" )
 				criu_default_image_job_name="$1"; shift;;
 
@@ -262,8 +271,18 @@ parseCommandLineArgs "$@"
 # DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "build" ]; then
-	echo "build_image.sh $test $version $impl $docker_os $package $build_type $platform $check_external_custom $imageArg"
-	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $platform $check_external_custom $imageArg
+	# Temporarily ubi image with criu binary is only available internally
+	if [[ $base_docker_registry_dir != "public" ]]; then
+		echo "Private Docker Registry login starts to obtain base Docker Image:"
+		echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
+
+		echo "$container_pull $docker_registry_url/$base_docker_registry_dir:latest"
+		$container_pull $docker_registry_url/$base_docker_registry_dir:latest
+
+		$container_logout $docker_registry_url
+	fi
+	echo "build_image.sh $test $version $impl $docker_os $package $build_type $platform $base_docker_registry_dir $check_external_custom $imageArg"
+	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $platform "$base_docker_registry_dir" $check_external_custom $imageArg
 fi
 
 if [ $command_type == "run" ]; then
