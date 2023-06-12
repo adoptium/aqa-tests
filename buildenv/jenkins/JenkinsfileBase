@@ -351,9 +351,20 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	}
 
 	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
-	if (!fileExists(templatePath)) {
-		sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
-		templatePath = 'testJobTemplate'
+	if (env.NODE_NAME) {
+		echo "${env.NODE_NAME} is allocated ..."
+		if (!fileExists(templatePath)) {
+			sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
+			templatePath = 'testJobTemplate'
+		}
+	} else {
+		echo "Node is not allocated ..."
+		node {
+			if (!fileExists(templatePath)) {
+				sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
+				templatePath = 'testJobTemplate'
+			}
+		}
 	}
 
 	if (params.LIGHT_WEIGHT_CHECKOUT) {
