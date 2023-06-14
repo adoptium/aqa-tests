@@ -1053,7 +1053,7 @@ public class JavatestUtil {
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
 		
-		Matcher matcher = Pattern.compile("jck(\\d+)c?").matcher(jckVersion);
+		Matcher matcher = Pattern.compile("jck(\\d+)[a-f]?").matcher(jckVersion);
 		if (matcher.matches()) {
 			// first group is going to be 8, 9, 10, 11, etc.
 			int jckVerNum = Integer.parseInt(matcher.group(1));
@@ -1182,10 +1182,7 @@ public class JavatestUtil {
 	}
 	
 	private static int getJckVersionInt(String version) {
-		if (version.equals("8c")) {
-			return 8; 
-		} else {
-			return Integer.parseInt(version); 
-		}
+		// Remove any letter suffix before returning e.g. 8d->8
+                return Integer.parseInt(version.replaceFirst("[a-z]$", ""));
 	}
 }
