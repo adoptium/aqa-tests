@@ -94,6 +94,7 @@ def PLATFORM_MAP = [
     'x86-64_alpine-linux' : [
         'SPEC' : 'alpine-linux_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
+        'DockerAgents' : ['default']
     ],
     'x86-32_linux' : [
         'SPEC' : 'linux_x86',
@@ -338,6 +339,14 @@ timestamps{
                                     LABEL += '&&hw.arch.x86'
                                     if (!LABEL.contains('&&sw.tool.docker')) {
                                         LABEL += '&&sw.tool.docker'
+                                        env.DOCKER_REQUIRED = true
+                                    }
+                                }
+                                if (dockerAgentLabel.equals('default') && SPEC.equals('alpine-linux_x86-64')) {
+                                    LABEL = LABEL.minus("&&sw.os.alpine-linux")
+                                    if (!LABEL.contains('&&sw.tool.docker')) {
+                                        LABEL += '&&sw.tool.docker'
+                                        env.DOCKER_REQUIRED = true
                                     }
                                 }
                                 println "Cannot find any idle nodes. Starting run test on docker node, nodeLabel: '${LABEL}', dockerAgentLabel: '${dockerAgentLabel}'"
@@ -445,10 +454,17 @@ def runTest() {
             // Automatically registers foreign file formats with the kernel using binfmt_static to simplify execution of multi-architecture binaries and Docker containers
             // In fact, this command only needs to be executed once
             sh "docker run --rm --privileged multiarch/qemu-user-static --reset -p yes"
+            // Dockerfile: https://github.com/dragonwell-project/docker-qemu-riscv64/blob/master/Dockerfile
             docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').pull()
             // The ${HOME} directory must be mounted, otherwise xvfb will fail to startup
             docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').inside("-v ${env.HOME}:${env.HOME}") {
                 jenkinsfile.testBuild()
+            } else if (dockerAgentLabel.equals('default') && LABEL.contains('&&sw.tool.docker') && SPEC.equals('alpine-linux_x86-64')) {
+                // Dockerfile: https://github.com/dragonwell-releng/aqa-tests-dockerfile/blob/main/alpine-linux_test.Dockerfile
+                docker.image('alibabadragonwelljdk/alpine_test_image').pull()
+                docker.image('alibabadragonwelljdk/alpine_test_image').inside("-v ${env.HOME}:${env.HOME} --network host --privileged -v /etc/hosts:/etc/hosts:ro -v /etc/group:/etc/group:ro -v /etc/passwd:/etc/passwd:ro -v /etc/shadow:/etc/shadow:ro") {
+                    jenkinsfile.testBuild()
+                }
             }
         } else {
             jenkinsfile.testBuild()

@@ -454,7 +454,7 @@ def setup() {
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
 			// on zOS use the user's ssh key
-			if (!env.SPEC.startsWith('zos')) {
+			if (!env.SPEC.startsWith('zos') && !(env.SPEC.contains('alpine-linux') && env.DOCKER_REQUIRED)) {
 				get_sources_with_authentication()
 			} else {
 				get_sources()
@@ -553,7 +553,7 @@ def makeCompileTest(){
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
 	dir('aqa-tests') {
-		if (!env.SPEC.startsWith('zos')) {
+		if (!env.SPEC.startsWith('zos') && !(env.SPEC.contains('alpine-linux') && env.DOCKER_REQUIRED)) {
 			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
 				sh "$makeTestCmd";
 			}
