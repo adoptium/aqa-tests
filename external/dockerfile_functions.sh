@@ -80,6 +80,7 @@ print_image_args() {
     local vm=$4
     local package=$5
     local build=$6
+    local base_docker_registry_dir="$7"
 
     image_name="eclipse-temurin"
     tag=""
@@ -90,12 +91,13 @@ print_image_args() {
     fi
     if [[ "${vm}" == "openj9" ]]; then
         if  [[ "${os}" == "ubuntu" ]]; then
-            image_name="ibm-semeru-runtimes"
-            tag=open-${tag}-focal
+            image_name="docker.io/ibm-semeru-runtimes"
+            tag=open-${tag}
         else
             # os is ubi
-            image_name="registry.access.redhat.com/ubi8/ubi"
-            tag="8.5"
+            # temporarily all ubi based testing use internal base image
+            image_name="$DOCKER_REGISTRY_URL/$base_docker_registry_dir"
+            tag="latest"
         fi
     fi
     image="${image_name}:${tag}"
@@ -118,6 +120,10 @@ print_test_tag_arg() {
     echo -e "ARG ${test}=${tag}\n" >> ${file}
 }
 
+print_result_comment_arg() {
+    local file=$1
+    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+}
 
 # Select the ubuntu OS packages
 print_ubuntu_pkg() {
@@ -154,8 +160,8 @@ print_jdk_install() {
     echo -e "\nRUN set -eux; \\" \
             "\n\t case \"${platform}\" in \\" \
             "\n\t  *x86-64*) \\" \
-            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_criu_Nightly/lastSuccessfulBuild/buildNumber); \\" \
-            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_criu_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_x86-64_linux_criu_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-x86-64_linux_criu.*tar.gz\"); \\" \
+            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
+            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_x86-64_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-x86-64_linux.*tar.gz\"); \\" \
             "\n\t     ;; \\" \
             "\n\t  *) \\" \
             "\n\t     echo \"Unsupported platform \"; \\" \
@@ -353,13 +359,13 @@ print_criu_install() {
 
     if [[ "${os}" == *"ubi"* ]]; then
         if [[ "${platform}" == *"x86-64"* ]]; then
-            echo -e "\nRUN wget -O /usr/sbin/criu https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/criu-build/b1/criu \\" \
-                    "\n\t&& wget -O /usr/lib64/libcriu.so.2.0 https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/criu-build/b1/libcriu.so " \
+            echo -e "\nRUN wget -O /usr/sbin/criu https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/criu-build/b6/criu \\" \
+                    "\n\t&& wget -O /usr/lib64/libcriu.so.2.0 https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/criu-build/b6/libcriu.so.2.0 " \
                     "\n" >> ${file}
 
             echo -e "\nRUN chmod a+x /usr/sbin/criu \\" \
-                    "\n\t&& setcap cap_checkpoint_restore,cap_net_admin,cap_sys_ptrace=eip /usr/sbin/criu \\" \
-                    "\n\t&& export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load \\" \
+                    "\n\t&& setcap cap_checkpoint_restore,cap_sys_ptrace,cap_setpcap=eip /usr/sbin/criu \\" \
+                    "\n\t&& export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load \\" \
                     "\n\t&& cd /usr/lib64 \\" \
                     "\n\t&& ln -s libcriu.so.2.0 libcriu.so \\" \
                     "\n\t&& ln -s libcriu.so.2.0 libcriu.so.2 \\" \
@@ -376,26 +382,26 @@ print_criu_install() {
         #         "\n\t&& apt-get install -y --no-install-recommends criu \\" \
         #         "\n\t&& criu -V \\" \
         #         "\n\t&& setcap cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu" \
-        #         "\n\t&& export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
+        #         "\n\t&& export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
         #         "\n" >> ${file}
 
         # Method 2: build from source code
         echo -e "\n# Install dependent packages for criu" \
                 "\nRUN apt-get update \\" \
-                "\n\t&& apt-get install -y --no-install-recommends iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python-protobuf nftables libcups2-dev libasound2-dev python-ipaddress libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
+                "\n\t&& apt-get install -y --no-install-recommends iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
                 "\n" >> ${file}
 
         echo -e "\n# Build criu and set capabilities" \
                 "\nRUN mkdir -p /tmp \\" \
                 "\n\t&& cd /tmp \\" \
-                "\n\t&& git clone https://github.com/checkpoint-restore/criu.git \\" \
+                "\n\t&& git clone https://github.com/ibmruntimes/criu.git \\" \
                 "\n\t&& cd criu \\" \
                 "\n\t&& git fetch origin \\" \
-                "\n\t&& git reset --hard origin/criu-dev \\" \
+                "\n\t&& git reset --hard origin/march_ea_23 \\" \
                 "\n\t&& make PREFIX=/usr install \\" \
                 "\n\t&& criu -V \\" \
-                "\n\t&& setcap cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
-                "\n\t&& export GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
+                "\n\t&& setcap cap_checkpoint_restore,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
+                "\n\t&& export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
                 "\n" >> ${file}
     fi
 }
@@ -451,7 +457,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+    if [[ "$check_external_custom_test" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -557,14 +563,15 @@ generate_dockerfile() {
     package=$6
     build=$7
     platform=$8
-    check_external_custom_test=$9
+    base_docker_registry_dir="$9"
+    check_external_custom_test=$10
 
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         set_external_custom_test_info ${test} ${check_external_custom_test}
     else
         set_test_info ${test} ${check_external_custom_test}
@@ -577,7 +584,8 @@ generate_dockerfile() {
     echo -n "Writing ${file} ... "
     print_legal ${file};
     print_adopt_test ${file} ${test};
-    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
+    print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
 
@@ -635,7 +643,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};

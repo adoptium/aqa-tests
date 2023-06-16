@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Specjbb suite" default="build" basedir=".">
+    <taskdef resource="net/sf/antcontrib/antlib.xml" />
+    <description>Specjbb suite</description>
+
+    <!-- set global properties for this build -->
+    <property name="DEST" value="${BUILD_ROOT}/perf/specjbb" />
+    <property name="SRC" location="." />
+    <property environment="env"/>
+    <property name="SPECJBB_DEST" value="${DEST}/suite" />
+    <property name="SPECJBB_SRC" value="${env.SPECJBB_SRC}" />
+    <property name="JAVA_BIN" value="${env.TEST_JDK_HOME}/bin/java"/>
+    <property name="SPECJBB_JAR" value="specjbb2015.jar"/>
+
+    <target name="init">
+        <mkdir dir="${DEST}" />
+    </target>
+
+    <target name="exists">
+        <property name="specjbb_dir" value="${dir}"/>
+            <condition property="exists.exists">
+                <and>
+                    <available file="${specjbb_dir}/${SPECJBB_JAR}" type="file"/>
+                </and>
+            </condition>
+    </target>
+
+    <target name="isRunnable">
+        <exec executable="${JAVA_BIN}" resultproperty="isRunnable.result" >
+            <arg line="-jar ${specjbb_dir}/${SPECJBB_JAR} -m COMPOSITE -h"/>
+        </exec>
+        <fail message="Failed to run SPECjbb suite.">
+            <condition>
+                <not>
+                    <equals arg1="${isRunnable.result}" arg2="0"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="dirIsValid">
+        <antcall target="exists">
+            <param name="specjbb_dir" value="${dir}"/>
+        </antcall>
+        <antcall target="isRunnable">
+            <param name="specjbb_dir" value="${dir}"/>
+        </antcall>
+    </target>
+
+    <target name="dstIsValid">
+        <echo message="##### Validating destination SPECjbb dir"/>
+        <antcall target="dirIsValid">
+            <param name="dir" value="${SPECJBB_DEST}"/>
+        </antcall>
+            <condition property="dstIsValid.result">
+                <isset property="dirIsValid.result"/>
+            </condition>
+    </target>
+
+    <target name="srcIsValid">
+        <echo message="##### Validating source SPECjbb dir"/>
+        <antcall target="dirIsValid">
+            <param name="dir" value="${SPECJBB_SRC}"/>
+        </antcall>
+    </target>
+
+    <target name="copySrcToDst">
+        <echo message="##### Copying contents of source SPECjbb dir to destination SPECjbb dir"/>
+        <copy todir="${SPECJBB_DEST}">
+            <fileset dir="${SPECJBB_SRC}"/>
+        </copy>
+    </target>
+
+    <target name="printInput">
+        <echo message="SPECJBB_SRC ${SPECJBB_SRC}"/>
+        <echo message="SPECJBB_DEST ${SPECJBB_DEST}"/>
+        <echo message="SPECJBB_JAR ${SPECJBB_JAR}"/>
+        <echo message="JAVA_BIN ${JAVA_BIN}"/>
+    </target>
+
+    <target name="getSpecjbbSuite" depends="init" if="env.SPECJBB_SRC">
+        <antcall target="printInput"/>
+        <antcall target="srcIsValid"/>
+        <antcall target="copySrcToDst"/>
+        <antcall target="dstIsValid"/>
+    </target>
+
+    <target name="dist" depends="getSpecjbbSuite" description="generate the distribution">
+        <copy todir="${DEST}/run">
+            <fileset dir="${SRC}/run"/>
+        </copy>
+    </target>
+
+    <target name="build">
+        <antcall target="dist" inheritall="true" />
+    </target>
+</project>

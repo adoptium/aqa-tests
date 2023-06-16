@@ -11,7 +11,7 @@ run aqa --sdk_resource nightly --build_list openjdk --target sanity.openjdk --jd
 
 ## Arguments
 
-Most arguments are similar to their [Jenkins Grinder](https://ci.adoptopenjdk.net/job/Grinder) counterparts.
+Most arguments are similar to their [Jenkins Grinder](https://ci.adoptium.net/job/Grinder) counterparts.
 
 All arguments allow more than one parameter. The parameters of each argument will be used to create a matrix job that will test every combination of the parameters.
 

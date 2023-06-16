@@ -17,8 +17,9 @@ set -o pipefail
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
 buildArg=""
+container_build="docker build"
 
-if [ $# -ne 9 ] && [ $# -ne 8 ]; then
+if [ $# -ne 9 ] && [ $# -ne 10 ]; then
 	echo "The supported tests are ${supported_tests}"
 	echo
 	echo "usage: $0 test version vm os package build platform check_external_custom"
@@ -30,14 +31,15 @@ if [ $# -ne 9 ] && [ $# -ne 8 ]; then
 	echo "build   = ${supported_builds}"
 	# TO-DO: ${supported_platforms} will be added when portable tests support more platforms
 	echo "platform" = "mutiple platforms"
+	echo "base_docker_registry_dir" = "public or specified_link"
 	echo "buildArg" = "Optional: customized image"
 	exit -1
 fi
-if [ $# -eq 9 ]; then
-	buildArg="--build-arg IMAGE=$9"
+if [ $# -eq 10 ]; then
+	buildArg="--build-arg IMAGE=$10"
 fi
-check_external_custom=$8
-if [[ ${check_external_custom} -eq 0 ]]; then
+check_external_custom=$9
+if [[ "${check_external_custom}" == "0" ]]; then
 	set_test $1
 fi
 set_version $2
@@ -46,6 +48,7 @@ set_os $4
 set_package $5
 set_build $6
 set_platform $7
+set_base_docker_registry_dir "$8"
 
 # Build the Docker image with the given repo, build, build type and tags.
 function build_image() {
@@ -62,19 +65,22 @@ function build_image() {
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
+	if [[ "$test" == *"criu"* ]]; then
+		container_build="sudo podman build"
+	fi
 
 	echo "#####################################################"
-	echo "INFO: docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
+	echo "INFO: $container_build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/"
 	echo "#####################################################"
-	docker build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
+	$container_build ${buildArg} --no-cache -t ${tags} -f ${file} $(realpath $(dirname "$0"))/
 	if [ $? != 0 ]; then
-		echo "ERROR: Docker build of image: ${tags} from ${file} failed."
+		echo "ERROR: $container_build of image: ${tags} from ${file} failed."
 		exit 1
 	fi
 }
 
 # Handle making the directory for organizing the Dockerfiles
-if [[ ${check_external_custom} -eq 1 ]]; then
+if [[ "${check_external_custom}" == "1" ]]; then
 	dir="$(realpath $(dirname "$0"))/external_custom/dockerfile/${version}/${package}/${os}"
 else
 	dir="$(realpath $(dirname "$0"))/${test}/dockerfile/${version}/${package}/${os}"
@@ -85,7 +91,7 @@ mkdir -p ${dir}
 file="${dir}/Dockerfile.${vm}.${build}"
 
 # Generate Dockerfile
-generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${platform} ${check_external_custom}
+generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${platform} "${base_docker_registry_dir}" ${check_external_custom}
 
 # Check if Dockerfile exists
 if [ ! -f ${file} ]; then

@@ -24,6 +24,12 @@ LANGTAG=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar PrintLanguageTag`
 export LANGTAG
 JAVAVERSION=`${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar JavaVersion`
 export JAVAVERSION
+
+if [ "${JAVAVERSION}" -gt "11000019" ]; then
+    echo "Skip this testcase after 11.0.19"
+    exit 0
+fi
+
 echo "Running ..."
 ${JAVA_BIN}/java -cp ${BASE}/CLDR_11.jar CheckZHTW
 if [ "$?" = "1" ]; then

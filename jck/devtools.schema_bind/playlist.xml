@@ -19,8 +19,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_class testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_class testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_class testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -36,8 +39,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_dom testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_dom testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_dom testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -53,10 +59,13 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_factoryMethod testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_factoryMethod testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_factoryMethod testsuite=DEVTOOLS
+		</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -70,8 +79,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_globalBindings testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_globalBindings testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_globalBindings testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -87,8 +99,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_inlineBinaryData testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_inlineBinaryData testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_inlineBinaryData testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -104,8 +119,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_javaType testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_javaType testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_javaType testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -121,8 +139,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_property testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_property testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_property testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -138,8 +159,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=schema_bind/bind_schemaBindings testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=schema_bind/bind_schemaBindings testsuite=DEVTOOLS; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=schema_bind/bind_schemaBindings testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

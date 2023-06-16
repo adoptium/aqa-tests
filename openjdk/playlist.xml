@@ -16,11 +16,6 @@
 	<include>openjdk.mk</include>
 	<test>
 		<testCaseName>jdk_custom</testCaseName>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -65,6 +60,40 @@
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<!-- langtools_extpath_j9 is a subtest of langtools. Once langtools is fully enabled in openj9/ibm, the langtools_extpath_j9 below can be removed  -->
+	<test>
+		<testCaseName>langtools_extpath_j9</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/15264</comment>
+				<version>19+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(CUSTOM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(JTREG_LANGTOOLS_TEST_DIR)/tools/javap/ExtPath.java$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
 	<test>
 		<testCaseName>hotspot_custom</testCaseName>
 		<variations>
@@ -78,7 +107,7 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)$(HOTSPOT_CUSTOM_TARGET)$(Q); \
+	$(FULLPATH_HOTSPOT_CUSTOM_TARGET); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
@@ -395,6 +424,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -704,6 +734,34 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_lang_j9</testCaseName>
+		<variations>
+			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode501</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx768m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_lang$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_lang_native</testCaseName>
 		<variations>
 			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode150</variation>
@@ -996,6 +1054,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1006,7 +1065,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security1$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -1021,6 +1080,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1031,7 +1091,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security2$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -1053,6 +1113,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1078,6 +1139,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1088,7 +1150,7 @@
 	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security4$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>openjdk</group>
@@ -1320,6 +1382,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1453,6 +1516,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_foreign</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/17399</comment>
+				<version>21+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1516,7 +1586,7 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<platformRequirements>bits.64,^arch.ppc,^arch.390,^arch.riscv,^os.zos,^os.sunos</platformRequirements>
+		<platformRequirements>bits.64,^arch.ppc,^arch.390,^arch.riscv,^arch.loongarch,^os.zos,^os.sunos</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>jdk_instrument</testCaseName>
@@ -1568,6 +1638,11 @@
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
 				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4218#issuecomment-1454300709</comment>
+				<impl>hotspot</impl>
+				<platform>ppc64_aix</platform>
 			</disable>
 		</disables>
 		<variations>
@@ -1634,6 +1709,39 @@
 		<versions>
 			<version>11+</version>
 		</versions>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<!-- ClassesByName2Test is a subtest of jdk_jdi. Once jdk_jdi is fully enabled in openj9/ibm, the classesByName2Test below can be removed  -->
+	<test>
+		<testCaseName>classesByName2Test</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)com$(D)sun$(D)jdi$(D)ClassesByName2Test.java$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<versions>
+			<version>11+</version>
+		</versions>
+		<impls>
+			<impl>ibm</impl>
+			<impl>openj9</impl>
+		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
@@ -1766,6 +1874,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
@@ -1784,6 +1893,7 @@
 		<impls>
 			<impl>hotspot</impl>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 		<groups>
 			<group>openjdk</group>
@@ -2038,6 +2148,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2066,6 +2177,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2094,6 +2206,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2122,6 +2235,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2150,6 +2264,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2178,6 +2293,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>
@@ -2206,6 +2322,7 @@
 		</groups>
 		<impls>
 			<impl>openj9</impl>
+			<impl>ibm</impl>
 		</impls>
 	</test>
 	<test>

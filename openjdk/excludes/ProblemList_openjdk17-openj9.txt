@@ -27,7 +27,6 @@
 # jdk_lang
 
 java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
-java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse-openj9/openj9/issues/5225	generic-all
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse-openj9/openj9/issues/6668	macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
 java/lang/ClassLoader/ExtDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
@@ -50,20 +49,7 @@ java/lang/StackWalker/VerifyStackTrace.java	https://github.com/adoptium/aqa-test
 java/lang/String/CaseConvertSameInstance.java	https://github.com/eclipse-openj9/openj9/issues/6672	generic-all
 java/lang/String/CaseInsensitiveComparator.java	https://github.com/eclipse-openj9/openj9/issues/6665	generic-all
 java/lang/String/CompactString/IndexOf.java		https://github.com/eclipse-openj9/openj9/issues/6673	generic-all
-java/lang/String/concat/CompactStringsInitialCoder.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcat.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatArgCount.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatAssignLHS.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatBoundaries.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatMany.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatManyLongs.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatOrder.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/ImplicitStringConcatShapes.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/StringConcatFactoryInvariants.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/StringConcatFactoryRepeatedConstants.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
-java/lang/String/concat/WithSecurityManager.java	https://github.com/eclipse-openj9/openj9/issues/9656	generic-all
 java/lang/String/EqualsIgnoreCase.java	https://github.com/eclipse-openj9/openj9/issues/6666	generic-all
-java/lang/String/StringRepeat.java	https://github.com/eclipse-openj9/openj9/issues/6667	generic-all
 java/lang/String/UnicodeCasingTest.java https://github.com/eclipse-openj9/openj9/issues/4597 linux-s390x
 java/lang/StringBuffer/HugeCapacity.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/StringBuilder/HugeCapacity.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
@@ -175,6 +161,7 @@ com/sun/management/DiagnosticCommandMBean/DcmdMBeanDoubleInvocationTest.java htt
 com/sun/management/DiagnosticCommandMBean/DcmdMBeanInvocationTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 com/sun/management/DiagnosticCommandMBean/DcmdMBeanPermissionsTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 com/sun/management/DiagnosticCommandMBean/DcmdMBeanTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+com/sun/management/OperatingSystemMXBean/GetFreePhysicalMemorySize.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 
 ############################################################################
 
@@ -238,7 +225,8 @@ java/nio/Buffer/DirectBufferAllocTest.java https://github.com/eclipse-openj9/ope
 java/nio/Buffer/LimitDirectMemory.java	https://github.com/eclipse-openj9/openj9/issues/8063	generic-all
 java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse-openj9/openj9/issues/8065	generic-all
 java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.ibm.com/runtimes/backlog/issues/655 windows-all,linux-s390x,macosx-all
-java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all
+#java/nio/channels/AsyncCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all,z/OS-s390x
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/DatagramChannel/AfterDisconnect.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
@@ -248,9 +236,15 @@ java/nio/channels/DatagramChannel/Loopback.java https://github.ibm.com/runtimes/
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669
-java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all
+java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all,z/OS-s390x
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.ibm.com/runtimes/backlog/issues/684 aix-all
+java/nio/channels/FileChannel/directio/ReadDirect.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/FileChannel/directio/PreadDirect.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/FileChannel/directio/PwriteDirect.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/FileChannel/TempDirectBuffersReclamation.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/FileChannel/directio/WriteDirect.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/nio/channels/Selector/OutOfBand.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
 java/nio/MappedByteBuffer/MapSyncFail.java https://github.com/eclipse-openj9/openj9/issues/6831 generic-all
@@ -283,6 +277,12 @@ java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj
 
 ############################################################################
 
+# jdk_security2
+
+javax/xml/crypto/dsig/SecureValidation.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+
+############################################################################
+
 # jdk_security3
 
 javax/net/ssl/ServerName/SSLEngineExplorerWithCli.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all,aix-all
@@ -291,6 +291,7 @@ javax/net/ssl/SSLEngine/LargePacket.java	https://github.ibm.com/runtimes/backlog
 javax/net/ssl/SSLSocket/Tls13PacketSize.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
 javax/net/ssl/TLSv11/TLSEnginesClosureTest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
 sun/security/ec/TestEC.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+sun/security/ec/ed/TestEdDSA.java https://github.com/adoptium/aqa-tests/issues/4566 z/OS-s390x
 sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/mscapi/CastError.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
 sun/security/mscapi/CngCipher.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
@@ -309,18 +310,28 @@ sun/security/mscapi/SmallPrimeExponentP.java	https://github.ibm.com/runtimes/bac
 sun/security/mscapi/VeryLongAlias.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
 sun/security/pkcs11/Provider/MultipleLogins.sh	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
 sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.ibm.com/runtimes/backlog/issues/795	linux-all
+#sun/security/pkcs12/KeytoolOpensslInteropTest.java is not supported on z/OS
+sun/security/pkcs12/KeytoolOpensslInteropTest.java	https://github.com/adoptium/aqa-tests/issues/1297	z/OS-s390x    
 sun/security/provider/SecureRandom/AbstractDrbg/SpecTest.java	https://github.ibm.com/runtimes/backlog/issues/809	linux-aarch64
 sun/security/provider/SecureRandom/StrongSecureRandom.java	https://github.ibm.com/runtimes/backlog/issues/809	linux-aarch64
 sun/security/rsa/PrivateKeyEqualityTest.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
 sun/security/rsa/pss/SignatureTest2.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
 sun/security/rsa/pss/SignatureTestPSS.java	https://github.ibm.com/runtimes/backlog/issues/795	macosx-all
-sun/security/ssl/CipherSuite/DisabledCurve.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
+#sun/security/ssl/CipherSuite/DisabledCurve.java is excluded as Invalid scenario after removing unsupported binary curves from SSLSocketTemplate.java
+sun/security/ssl/CipherSuite/DisabledCurve.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all,z/OS-s390x
 sun/security/ssl/CipherSuite/NamedGroupsWithCipherSuite.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
 sun/security/ssl/CipherSuite/SupportedGroups.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
 sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/tools/jarsigner/PreserveRawManifestEntryAndDigest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
 
 ########################################################################################################################################################
+
+# jdk_security_4
+
+sun/security/krb5/auto/NoAddresses.java https://github.com/adoptium/aqa-tests/issues/4566 z/OS-s390x
+ 
+######################################################################################################
+
 
 # jdk_sound
 
@@ -340,6 +351,8 @@ sun/security/tools/jarsigner/PreserveRawManifestEntryAndDigest.java	https://gith
 
 # jdk_tools
 
+tools/launcher/MainClassCantBeLoadedTest.java https://github.com/adoptium/aqa-tests/issues/1297	z/OS-s390x
+
 ############################################################################
 
 # jdk_jdi
@@ -352,7 +365,6 @@ java/util/Arrays/TimSortStackSize2.java	https://github.com/eclipse-openj9/openj9
 java/util/Arrays/largeMemory/ParallelPrefix.java https://github.com/eclipse-openj9/openj9/issues/4100 linux-ppc64le
 java/util/BitSet/stream/BitSetStreamTest.java https://github.com/eclipse-openj9/openj9/issues/4720 linux-all
 java/util/Spliterator/SpliteratorCollisions.java	https://github.com/eclipse-openj9/openj9/issues/7090	generic-all
-java/util/concurrent/ArrayBlockingQueue/WhiteBox.java 	https://github.com/eclipse-openj9/openj9/issues/5988 	macosx-all
 java/util/concurrent/forkjoin/FJExceptionTableLeak.java	https://github.com/eclipse-openj9/openj9/issues/3209	generic-all
 java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/eclipse-openj9/openj9/issues/7125	macosx-all,linux-all,aix-all
 java/util/concurrent/TimeUnit/Basic.java https://github.com/adoptium/aqa-tests/issues/1665 windows-all
@@ -400,56 +412,54 @@ vm/verifier/VerifyProtectedConstructor.java	https://github.com/eclipse-openj9/op
 ############################################################################
 
 # jdk_foreign
-java/foreign/TestArrays.java	https://github.com/adoptium/aqa-tests/issues/1701 generic-all
-java/foreign/TestLayouts.java	https://github.com/adoptium/aqa-tests/issues/1701 generic-all
-java/foreign/TestLayoutPaths.java	https://github.com/adoptium/aqa-tests/issues/1701	generic-all
-java/foreign/TestLayoutConstants.java	https://github.com/adoptium/aqa-tests/issues/1702	generic-all
-java/foreign/TestNative.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
-java/foreign/TestHandshake.java https://github.com/eclipse-openj9/openj9/issues/13211 generic-all
+
+# Disabling foreign tests as they are unsupported on z/OS
+java/foreign/enablenativeaccess/TestDriver.java#panama_all_unnamed_module_native_access https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_comma_separated_enable https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_comma_separated_enable_invoke https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_comma_separated_enable_reflection https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_enable_native_access https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_enable_native_access_invoke https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/enablenativeaccess/TestDriver.java#panama_enable_native_access_reflection https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/handles/Driver.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/malloc/TestMixedMallocFree.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/SafeFunctionAccessTest.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 java/foreign/stackwalk/TestStackWalk.java#default_gc https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
 java/foreign/stackwalk/TestStackWalk.java#shenandoah https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
 java/foreign/stackwalk/TestStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/valist/VaListTest.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/StdLibTest.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestAdaptVarHandles.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestAddressHandle.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestDowncall.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestIntrinsics.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMemoryAccess.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMemoryAccessStatics.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMemoryAlignment.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMemoryCopy.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMemoryHandleAsUnsigned.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestMismatch.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestNulls.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestRebase.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestResourceScope.java https://github.com/eclipse-openj9/openj9/issues/13234 generic-all
-java/foreign/TestSegments.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestSlices.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestTypeAccess.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestUpcall.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestUpcallHighArity.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestUpcallStubs.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestVarArgs.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-java/foreign/TestVarHandleCombinators.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
-
-java/foreign/SafeFunctionAccessTest.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/TestFree.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/TestNULLAddress.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/malloc/TestMixedMallocFree.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/virtual/TestVirtualCalls.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/TestUpcallException.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/ThrowingUpcall.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-java/foreign/TestUpcallStructScope.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#default_gc https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#shenandoah https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
-
+java/foreign/StdLibTest.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestCircularInit1.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestCircularInit2.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestCondy.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestDowncall.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestFunctionDescriptor.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestHandshake.java https://github.com/eclipse-openj9/openj9/issues/13211 generic-all
+java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/11027 generic-all
+java/foreign/TestIntrinsics.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestNative.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestNULLAddress.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestNulls.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
+java/foreign/TestUpcall.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestUpcallException.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestUpcallHighArity.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestUpcallStructScope.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestResourceScope.java https://github.com/eclipse-openj9/openj9/issues/16551 generic-all
+java/foreign/TestScopedOperations.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestStringEncoding.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestSymbolLookup.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/TestVarArgs.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/valist/VaListTest.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
+java/foreign/virtual/TestVirtualCalls.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 
 ############################################################################
 
 # com_sun_crypto
 
 ############################################################################
+
+# jdk_container
+jdk/internal/platform/docker/TestDockerCpuMetrics.java https://github.com/eclipse-openj9/openj9/issues/16462 generic-all

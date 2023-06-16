@@ -20,17 +20,19 @@ SET FLAG=0
 
 echo Checking UnicodeData ...
 %JAVA_BIN%\java UnicodeChecker 2>err1.txt
-if ErrorLevel 1 ( SET FLAG=1 )
 echo Checking Blocks ...
 %JAVA_BIN%\java UnicodeBlockChecker 2>err2.txt
-if ErrorLevel 1 ( SET FLAG=1 )
 echo Checking Scripts ...
 %JAVA_BIN%\java UnicodeScriptChecker 2>err3.txt
-if ErrorLevel 1 ( SET FLAG=1 )
 echo Checking PropertyValueAliases ...
 %JAVA_BIN%\java UnicodeScriptChecker3 2>err4.txt
-if ErrorLevel 1 ( SET FLAG=1 )
 echo Checking NormalizationTest ...
 %JAVA_BIN%\java NormalizerTest 2>err5.txt
+
+set SIZE=1
+if exist del out.txt
+copy /b err?.txt out.txt > NUL
+for %%i in (out.txt) do set SIZE=%%~zi
+if %SIZE% GTR 0 set FLAG=1
 
 exit %FLAG%

@@ -39,6 +39,7 @@ TEST_IMAGES_REQUIRED=true
 DEBUG_IMAGES_REQUIRED=true
 CURL_OPTS="s"
 CODE_COVERAGE=false
+ADDITIONAL_ARTIFACTS_REQUIRED=""
 
 usage ()
 {
@@ -146,6 +147,9 @@ parseCommandLineArgs()
 
 			"--curl_opts" )
 				CURL_OPTS="$1"; shift;;
+				
+			"--additional_artifacts_required" )
+				ADDITIONAL_ARTIFACTS_REQUIRED="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -258,10 +262,16 @@ getBinaryOpenjdk()
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
 	fi
-
+	
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
+			if [ "$ADDITIONAL_ARTIFACTS_REQUIRED" == "RI_JDK" ]; then
+				if [[ $file = *?[0-9] ]]; then
+					fileName=$(curl -k ${curl_options} ${file}/ | grep href | sed 's/.*href="//' | sed 's/".*//' |  grep '^[a-zA-Z].*')
+					file=${file}/${fileName}
+				fi 
+			fi 
 			executeCmdWithRetry "${file##*/}" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
 			rt_code=$?
 			if [ $rt_code != 0 ]; then
@@ -380,7 +390,38 @@ getBinaryOpenjdk()
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
-						mv $jar_dir_name ../j2sdk-image
+						# If test sdk has already been expanded, this one must be the additional sdk 
+						isAdditional=0
+						if [ -f "./j2sdk-image/release" ]; then 
+							isAdditional=1
+						else 
+							if [ "$ADDITIONAL_ARTIFACTS_REQUIRED" == "RI_JDK" ]; then 
+								# Check release info
+								if [ -d "./$jar_dir_name/Contents" ]; then # Mac
+									release_info=$( cat ./$jar_dir_name/Contents/Home/release )
+									UNZIPPED_ADDITIONAL_SDK="./$jar_dir_name/Contents/Home/"
+								else 	
+									release_info=$( cat ./$jar_dir_name/release )
+									UNZIPPED_ADDITIONAL_SDK="./$jar_dir_name/"
+								fi
+								if [[ "$release_info" == *"Oracle"* ]]; then
+									isAdditional=1
+								fi
+							fi
+						fi
+						if [ $isAdditional == 1 ]; then
+							if [ -d "$SDKDIR/additionaljdkbinary" ]; then
+								rm -rf $SDKDIR/additionaljdkbinary
+							else
+								mkdir $SDKDIR/additionaljdkbinary
+							fi
+							mv $UNZIPPED_ADDITIONAL_SDK/* $SDKDIR/additionaljdkbinary
+							echo "RI JDK available at $SDKDIR/additionaljdkbinary/"
+							echo "RI JDK version:"
+							$SDKDIR/additionaljdkbinary/bin/java -version
+						else 
+							mv $jar_dir_name ../j2sdk-image
+						fi
 					# The following only needed if openj9 has a different image name convention
 					elif [ "$jar_dir_name" != "j2sdk-image" ]; then
 						mv $jar_dir_name ../j2sdk-image
@@ -479,7 +520,7 @@ executeCmdWithRetry()
 			sleep $sleep_time
 
 			echo "check for $1. If found, the file will be removed."
-			if [ -f "$1" ]; then
+			if [ "$1" != "" ] && [ -f "$1" ]; then
 				echo "remove $1 before retry..."
 				rm $1
 			fi
@@ -514,8 +555,7 @@ getFunctionalTestMaterial()
 	then
 		echo "update to openj9 sha: $OPENJ9_SHA"
 		cd openj9
-		echo "git fetch -q --unshallow"
-		git fetch -q --unshallow
+		executeCmdWithRetry "" "git fetch -q --unshallow"
 		if ! git checkout $OPENJ9_SHA; then
 			echo "SHA not yet found. Continue fetching PR refs and tags..."
 			echo "git fetch -q --tags $OPENJ9_REPO +refs/pull/*:refs/remotes/origin/pr/*"
@@ -716,6 +756,12 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 else
 	> ./testenv/testenv.properties
 fi
+
+# unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+if [[ $JDK_IMPL == 'hotspot' && $JDK_VERSION == '8' && $PLATFORM =~ 'alpine-linux' ]]; then
+	unset LD_LIBRARY_PATH
+fi
+
 if [ "$SDKDIR" != "" ]; then
 	getBinaryOpenjdk
 	testJavaVersion

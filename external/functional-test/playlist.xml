@@ -28,6 +28,12 @@
 	</test>
 	<test>
 		<testCaseName>criu_test</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4410</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir functional-test --testtarget "_testList TESTLIST=cmdLineTester_criu,cmdLineTester_criu_nonPortableRestore,cmdLineTester_criu_security,cmdLineTester_criu_random" --reportdst $(REPORTDIR) --docker_args "-v /var/run/docker.sock:/var/run/docker.sock $(EXTRA_DOCKER_ARGS) --tmpfs /run"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir functional-test
@@ -36,7 +42,7 @@
 			<feature>CRIU:required</feature>
 		</features>
 		<levels>
-			<level>sanity</level>
+			<level>dev</level>
 		</levels>
 		<groups>
 			<group>external</group>

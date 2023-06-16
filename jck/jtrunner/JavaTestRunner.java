@@ -62,11 +62,9 @@ public class JavaTestRunner {
 	private static String nativesLoc;
 	private static String jckConfigLoc;
 	private static String initialJtxFullPath;
-	private static String jtxFullPath;
-	private static String jtxDevFullPath;
-	private static String customJtx;
+	private static String defaultJtxFullPath;
 	private static String kflFullPath;
-	private static String testFlagJtxFullPath;
+	private static String customJtx;
 	private static String krbConfFile;
 	private static String fileUrl;
 
@@ -95,8 +93,9 @@ public class JavaTestRunner {
 	private static String resultDir;
 	private static String pathToJava;
 	private static String secPropsFile;
-	private static String testFlag;
 	private static String task;
+	private static String spec;
+	private static String osShortName;
 
 	private static HashMap<String, String> testArgs = new HashMap<String, String>();
 	private static String jvmOpts = ""; 
@@ -105,9 +104,6 @@ public class JavaTestRunner {
 	private static String suppressOutOfMemoryDumpOptions = "";
 
 	private static int freePort;
-	private static String archName = System.getProperty("os.arch");
-	private static String platform = getOSNameShort();
-	private static boolean isRiscv = archName.toLowerCase().contains("riscv");
 	
 	private static final String RESULTS_ROOT = "resultsRoot";
 	private static final String TEST_ROOT = "testRoot";
@@ -123,6 +119,7 @@ public class JavaTestRunner {
 	private static final String CONFIG_ALT_PATH = "configAltPath"; 
 	private static final String TASK = "task";
 	private static final String CUSTOM_JTX = "customJtx";
+	private static final String SPEC = "spec";
 
 	public static void main(String args[]) throws Exception {
 		ArrayList<String> essentialParameters = new ArrayList<String>(); 
@@ -140,9 +137,10 @@ public class JavaTestRunner {
 		essentialParameters.add(CONFIG_ALT_PATH);
 		essentialParameters.add(TASK);
 		essentialParameters.add(CUSTOM_JTX);
+		essentialParameters.add(SPEC);
 
 		for (String arg : args) {
-			if (arg.contains("=")) { 
+			if (arg.contains("=")) {
 				String [] aPair = arg.split("="); 
 				String key = aPair[0]; 
 				String value = aPair[1];  
@@ -171,9 +169,9 @@ public class JavaTestRunner {
 		}
 		
 		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts"); 
-		testFlag = System.getenv("TEST_FLAG");
 		task = testArgs.get(TASK);
 		customJtx = testArgs.get(CUSTOM_JTX);
+		spec = testArgs.get(SPEC);
 		
 		try { 
 			boolean jtbGenerated = false, testSuccedded = false, summaryGenerated = false;
@@ -208,7 +206,13 @@ public class JavaTestRunner {
 		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH); 
 		testRoot = new File(testArgs.get(TEST_ROOT)).getCanonicalPath();
 		resultDir = new File(testArgs.get(RESULTS_ROOT)).getCanonicalPath();	
-		jckVersionNo = jckVersion.replace("jck", "");	
+		jckVersionNo = jckVersion.replace("jck", "");
+		osShortName = getOSNameShort();
+		
+		if (osShortName == null) {
+			System.out.println("Unknown spec value supplied : " + spec);
+			return false; 
+		}
 
 		File f = new File(jckRoot);
 		File[] files = f.listFiles();
@@ -223,6 +227,7 @@ public class JavaTestRunner {
 					if (!jckVersion.equals(actualJckVersion)) {
 						System.out.println("test-args jckversion " + jckVersion + " does not match actual jckversion " + actualJckVersion + ". Using actual jckversion " + actualJckVersion);
 						jckVersion = actualJckVersion;
+						jckVersionNo = jckVersion.replace("jck", "");
 					}
 				}
 			}
@@ -239,17 +244,18 @@ public class JavaTestRunner {
 		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
 		jtliteJarFullPath = jckBase + File.separator + "lib" + File.separator + "jtlite.jar"; 
 		classesFullPath = jckBase + File.separator + "classes";
-		nativesLoc = jckRoot + File.separator + "natives" + File.separator + platform;
+		
+		nativesLoc = jckRoot + File.separator + "natives" + File.separator + osShortName;
 		// Solaris natives are in /natives/sunos
-		if (platform.equals("solaris")) {
+		if (spec.contains("sunos")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
 
 		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti"; 
-                if (platform.contains("win")) {
-                        // Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
+		if (spec.contains("win")) {
+			// Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
 			fileUrl = "file:///" + jckBase.replace("\\","/") + "/testsuite.jtt";
-                } else {
+		} else {
 			fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 		}
 		System.out.println("Using jti file "+ jtiFile);
@@ -259,71 +265,32 @@ public class JavaTestRunner {
 		// A known failures list (.kfl) file is optional.
 		// The automation here adds any files found (initial or updates) as 'custom' files. 
 		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
-		File initialJtxFile = new File(initialJtxFullPath);
-
-		if (initialJtxFile.exists()) {
-			System.out.println("Using initial excludes list file " + initialJtxFullPath);
+		if (new File(initialJtxFullPath).exists()) {
+			System.out.println("Using initial jtx file:" + initialJtxFullPath);
 		} else {
-			System.out.println("Unable to find initial excludes list file " + initialJtxFullPath);
 			initialJtxFullPath = "";
 		}
-
-		jtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".jtx";
-		File jtxFile = new File(jtxFullPath);
 		
-		if (jtxFile.exists()) {
-			System.out.println("Using additional excludes list file " + jtxFullPath);
+		// Include any default jtx file that came as part of tck repo 
+		defaultJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".jtx";
+		if (new File(defaultJtxFullPath).exists()) {
+			System.out.println("Using default jtx file:" + defaultJtxFullPath);
 		} else {
-			System.out.println("Unable to find additional excludes list file " + jtxFullPath);
-			jtxFullPath = "";
+			defaultJtxFullPath = "";
 		}
 		
-		jtxDevFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-dev.jtx";
-		File jtxDevFile = new File(jtxDevFullPath);
-		
-		if (jtxDevFile.exists()) {
-			System.out.println("Using additional excludes list file " + jtxDevFullPath);
-		} else {
-			System.out.println("Unable to find additional excludes list file " + jtxDevFullPath);
-			jtxDevFullPath = "";
-		}
-		
-		if (customJtx == null) {
-			customJtx = "";
-		} else {
-			File customJtxFile = new File(customJtx);
-			if (customJtxFile.exists()) {
-				System.out.println("Using additional custom excludes list file " + customJtx);
-			} else {
-				System.out.println("Unable to find additional custom excludes list file " + customJtx);
-			}
-		}
-
-		// Look for a known failures list file
+		// Include any known failures list(kfl) file if it came with the tck repo
 		kflFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + ".kfl";
-		File kflFile = new File(kflFullPath);
-		
-		if (kflFile.exists()) { 
-			System.out.println("Using known failures list file " + kflFullPath);
+		if (new File(kflFullPath).exists()) { 
+			System.out.println("Using kfl file: " + kflFullPath);
 		} else {
-			System.out.println("Unable to find known failures list file " + kflFullPath);
 			kflFullPath = "";
 		}
-
-		if (task == null || !task.equals("custom")) {
-			testFlagJtxFullPath = "";
-			if (testFlag != null && testFlag.length() > 0 ) {
-				// Look for a known failures list file specific to TEST_FLAG testing
-				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
-				File testFlagJtxFile = new File(testFlagJtxFullPath);
-				
-				if (testFlagJtxFile.exists()) {
-					System.out.println("Using " + testFlag + " specific failures list file " + testFlagJtxFullPath);
-				} else {
-					System.out.println("Unable to find " + testFlag + " specific failures list file " + testFlagJtxFullPath);
-					testFlagJtxFullPath = "";
-				}
-			}
+		
+		if (customJtx != null && customJtx != "") { 
+			System.out.println("Using custom exclude file(s): " + customJtx);
+		} else {
+			customJtx = "";
 		}
 
 		if (testSuite.equals("RUNTIME") && (tests.contains("api/java_net") || tests.contains("api/java_nio") || tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api"))) {
@@ -459,9 +426,9 @@ public class JavaTestRunner {
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
 		// when running a test via jck_custom.
 		if (task == null || !task.equals("custom")) {  
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + " " + customJtx + "\";\n";
 		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + "\";\n";
 		}
 		
 		fileContent += "runTests" + ";\n";
@@ -476,7 +443,7 @@ public class JavaTestRunner {
 		bw.flush();
 		bw.close();
 
-		if (platform.equals("zos")) {
+		if (spec.contains("zos")) {
 			if(!doIconvFile()) {
 				System.out.println("Failed to convert jtb file encoding for z/OS");
 			}
@@ -505,7 +472,7 @@ public class JavaTestRunner {
 		String pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 		String pathToToolsJar = testJdk + File.separator + "lib" + File.separator + "tools.jar";
 		// Use escaped backslashes for paths on Windows
-		if (platform.contains("win")) {
+		if (spec.contains("win")) {
 			pathToJava = pathToJava.replace("/", "\\") + ".exe";
 			pathToRmic = pathToRmic.replace("/", "\\") + ".exe";
 			pathToLib = pathToLib.replace("/", "\\");
@@ -546,8 +513,13 @@ public class JavaTestRunner {
 			concurrencyString = String.valueOf(concurrency);
 		}
 		
-		if (platform.contains("zos")) {
+		if (spec.contains("zos")) {
 			extraJvmOptions += " -Dfile.encoding=US-ASCII";
+		}
+
+		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to plain multiJVM
+		if (getJckVersionInt(jckVersionNo) >= 17 && (spec.contains("win") || spec.contains("aix"))) {
+			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
 		}
 
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
@@ -563,30 +535,30 @@ public class JavaTestRunner {
 				keyword = "keywords !interactive";
 			}
 
-			if (platform.contains("win")) {
+			if (spec.contains("win")) {
 				libPath = "PATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("alpine-linux")) {
+			} else if (spec.contains("alpine-linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "No";
-			} else if (platform.contains("linux")) {
+			} else if (spec.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("aix")) {
+			} else if (spec.contains("aix")) {
 				libPath = "LIBPATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("zos")) {
+			} else if (spec.contains("zos")) {
 				pathToLib = testJdk + File.separator + "lib";
 				libPath = "LIBPATH";
 				robotAvailable = "No";
-			} else if (platform.contains("osx")) {
+			} else if (spec.contains("osx")) {
 				libPath = "DYLD_LIBRARY_PATH";
 				robotAvailable = "Yes";
-			} else if (platform.contains("solaris")) {
+			} else if (spec.contains("sunos")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
 			} else {
-				System.out.println("Unknown platform:: " + platform);
+				System.out.println("Unknown spec: " + spec);
 				return false; 
 			}
 			
@@ -594,7 +566,7 @@ public class JavaTestRunner {
 			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
 			fileContent += keyword + ";\n";
 
-			if (platform.equals("win")) {
+			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
@@ -608,17 +580,17 @@ public class JavaTestRunner {
 			}
 
 			if ( testsRequireDisplay(tests) ) {
-				if (platform.equals("zos") || platform.equals("alpine-linux")) {
+				if (spec.contains("zos") || spec.contains("alpine-linux")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
 				}
 				else {
-					if ( !platform.equals("win") ) {
+					if ( !spec.contains("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
 						fileContent += "set jck.env.testPlatform.xWindows Yes" + ";\n";
-						if ( !platform.equals("osx") ) { 
+						if ( !spec.contains("osx") ) { 
 							String display = System.getenv("DISPLAY");
 							if ( display == null ) {
-								System.out.println("Error: DISPLAY must be set to run tests " + tests + " on " + platform);
+								System.out.println("Error: DISPLAY must be set to run tests " + tests + " on " + spec);
 								return false; 
 							}
 							else {
@@ -633,7 +605,7 @@ public class JavaTestRunner {
 				keyword += "&!robot";
 			}
 
-			if ( !platform.equals("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
+			if ( !spec.contains("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
 				fileContent += "set jck.env.testPlatform.xWindows \"No\"" + ";\n";
 			}
 
@@ -759,7 +731,7 @@ public class JavaTestRunner {
 			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
 
 			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
-			if (platform.equals("osx")) {
+			if (spec.contains("osx")) {
 				fileContent += "set jck.env.runtime.testExecute.otherEnvVars \" AWT_FORCE_HEADFUL=true \"" + ";\n";
 			}
 		}
@@ -770,7 +742,7 @@ public class JavaTestRunner {
 			keyword = "keywords compiler";
 
 			// Overrides only required on zOS for compiler tests
-			if (platform.equals("zos")) {
+			if (spec.contains("zos")) {
 				pathToLib = testJdk + File.separator + "lib";
 			} 
 
@@ -779,12 +751,12 @@ public class JavaTestRunner {
 			fileContent += keyword + ";\n";
 
 			String cmdAsStringOrFile = "cmdAsString"; // Whether to reference cmd via cmdAsString or cmdAsFile
-			if (platform.equals("win")) {
+			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
 				fileContent += "set jck.env.testPlatform.systemRoot " + System.getenv("WINDIR") + ";\n";
-			} else if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
+			} else if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 				// On jck11+ z/OS and AIX set the testplatform.os Current system
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.testPlatform.os \"Current system\";\n";
@@ -817,7 +789,7 @@ public class JavaTestRunner {
 			
 			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + pathToJava + "\"" + ";\n";
 
-			if (!jckVersion.contains("jck8") && (platform.equals("zos") || platform.equals("aix"))) {
+			if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 				// On jck11+ z/OS and AIX set the compRefExecute file and path separators
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.compiler.compRefExecute.fileSep \"/\";\n";
@@ -839,7 +811,7 @@ public class JavaTestRunner {
 			String jxcCmd = "";				// Required for "java2schema" test
 			String genCmd,impCmd  = "";		// Required for "jaxws" test
 
-			if (platform.equals("win")) {
+			if (spec.contains("win")) {
 				String winscriptdir;
 				if ( jckVersion.contains("jck6") || jckVersion.contains("jck7") || jckVersion.contains("jck8") || jckVersion.contains("jck9") ) {
 					winscriptdir="win32";
@@ -854,32 +826,32 @@ public class JavaTestRunner {
 				jxcCmd = jxcCmd.replace("/", "\\");
 				genCmd = genCmd.replace("/", "\\");
 				impCmd = impCmd.replace("/", "\\");
-			} else if (platform.contains("linux") || platform.equals("aix")) {
+			} else if (spec.contains("linux") || spec.contains("aix")) {
 				xjcCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "linux" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (platform.equals("osx")) {
+			} else if (spec.contains("osx")) {
 				xjcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (platform.equals("zos") || platform.equals("solaris")) {
+			} else if (spec.contains("zos") || spec.contains("sunos")) {
 				pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 				xjcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "wsimport.sh";
 			} else {
-				System.out.println("Unknown platform:: " + platform);
+				System.out.println("Unknown spec: " + spec);
 				return false; 
 			}
 			
 			// bash/ksh required to run schema scripts (cannot be standard sh)
-			if (platform.equals("linux")) {
+			if (spec.contains("linux")) {
 				xjcCmd = "bash "+xjcCmd;
 				jxcCmd = "bash "+jxcCmd;
-			} else if (platform.equals("solaris")) {
+			} else if (spec.contains("sunos")) {
 				xjcCmd = "ksh "+xjcCmd;
 				jxcCmd = "ksh "+jxcCmd;
 			}
@@ -887,7 +859,7 @@ public class JavaTestRunner {
 			fileContent += "concurrency " + concurrencyString + ";\n";
 			fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
 
-			if (platform.equals("win")) {
+			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
@@ -943,7 +915,6 @@ public class JavaTestRunner {
 				}
 
 				String classPath = javatestJarFullPath + File.pathSeparator + classesFullPath; 
-
 				List<String> javatestAgentCmd = new ArrayList<>();
 				javatestAgentCmd.add(pathToJava);
 				javatestAgentCmd.add("-Djavatest.security.allowPropertiesAccess=true");
@@ -987,6 +958,7 @@ public class JavaTestRunner {
 			long timeout = 24;
 			int jckRC = -1;
 			boolean endedWithinTimeLimit = false;
+			boolean isRiscv = spec.contains("riscv");
 			
 			// Use the presence of more than one '/' to signify that we are running a smaller subset of tests.
 			// If one of the highest level subsets of tests is being run it is likely to take a long time.
@@ -995,7 +967,7 @@ public class JavaTestRunner {
 			}
 
 			File f = new File (javatestJarFullPath); 
-			f.setReadable(true); 
+			f.setReadable(true);
 
 			List<String> jckCmd = new ArrayList<>();
 			jckCmd.add(pathToJava);
@@ -1007,17 +979,6 @@ public class JavaTestRunner {
 			System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
 			jck = startSubProcess("jck", jckCmd);
 			
-			//List<String> jckCmd = new ArrayList<>();
-			//jckCmd.add(pathToJava);
-			//jckCmd.add("-jar"); 
-			//jckCmd.add(jtliteJarFullPath);
-			//jckCmd.add("-verbose:max");
-			//jckCmd.add("-config");
-			//jckCmd.add(jtiFile);
-			//jckCmd.add(" @" + newJtbFileRef);
-			//System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
-			//jck = startSubProcess("jck", jckCmd);
-
 			// Block parent for this process to finish
 			endedWithinTimeLimit = jck.waitFor(timeout, TimeUnit.HOURS); 
 			
@@ -1319,47 +1280,30 @@ public class JavaTestRunner {
 	}  
 
 	private static String getOSNameShort() {
-		// get the osName and make it lowercase
-		String osName = System.getProperty("os.name").toLowerCase();
-
-		// set the shortname to the osName if the current system is Linux
-		// or AIX this is all that is needed
-		String osShortName = osName;
-
-		// We need to determine if the platform is Alpine Linux or not
-		if (osName.equals("linux")) {
+		// We need to determine if the spec is Alpine Linux or not
+		if (spec.contains("linux")) {
 			Path alpine = Paths.get("/etc/alpine-release");
 			if (Files.exists(alpine)) {
-				osShortName = "alpine-linux";
+				return "alpine-linux";
 			}
+			return "linux";
 		}
-
-		// if we are on z/OS remove the slash
-		if (osName.equals("z/os")) {
-			osShortName = "zos";
+		if (spec.contains("zos")) {
+			return "zos";
 		}
-
-		// if we are on a Windows machine use win as the shortname
-		if (osName.contains("win")) {
-			osShortName = "win";
+		if (spec.contains("win")) {
+			return "win";
 		}
-
-		// if we are on a Mac use osx as the shortname
-		if (osName.contains("mac")) {
-			osShortName = "osx";
-		}   
-
-		// if we are on BSD use bsd as the shortname
-		if (osName.contains("bsd")) {
-			osShortName = "bsd";
+		if (spec.contains("osx")) {
+			return "osx";
 		}
-
-		// if we are on sunos use solaris as the shortname
-		if (osName.contains("sunos")) {
-			osShortName = "solaris";
+		if (spec.contains("aix")) {
+			return "aix";
 		}
-
-		return osShortName;
+		if (spec.contains("sunos")) {
+			return "solaris";
+		}
+		return null;
 	}
 
 	private static boolean doIconvFile() throws Exception {
