@@ -671,17 +671,17 @@ public class JavaTestRunner {
 						!tests.contains("api/org_omg/PortableServer") ) {
 					fileContent += "set jck.env.runtime.remoteAgent.passiveHost localhost" + ";\n";
 					fileContent += "set jck.env.runtime.remoteAgent.passivePortDefault Yes" + ";\n";
-					
-
-					if ( tests.contains("vm/jdwp") )
+				
+						
+			if ( tests.contains("vm/jdwp") )
 			
 					{
 						fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
 						fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
 					}
 
-					
-				}
+						}	
+				
 			}
 			// Without the following override the following failures occur:
 			// Fatal Error: file:/jck/jck8b/JCK-runtime-8b/tests/api/javax_xml/xmlCore/w3c/ibm/valid/P85/ibm85v01.xml(6,3384): JAXP00010005: The length of entity "[xml]" is "3,381" that exceeds the "1,000" limit set by "FEATURE_SECURE_PROCESSING".
