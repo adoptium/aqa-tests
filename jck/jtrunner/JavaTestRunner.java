@@ -673,12 +673,12 @@ public class JavaTestRunner {
 					fileContent += "set jck.env.runtime.remoteAgent.passivePortDefault Yes" + ";\n";
 				
 						
-			if ( tests.contains("vm/jdwp") )
+			// if ( tests.contains("vm/jdwp") )
 			
-					{
-						fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
-						fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
-					}
+			//		{
+			//			fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
+			//			fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
+			//		} 
 
 						}	
 				
@@ -727,6 +727,13 @@ public class JavaTestRunner {
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.jplis.jplisLivePhase Yes;\n";
 			}
+
+			if ( tests.contains("vm/jdwp") )
+			
+					{
+						fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
+						fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
+					}
 
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
