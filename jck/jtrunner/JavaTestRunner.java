@@ -671,17 +671,15 @@ public class JavaTestRunner {
 						!tests.contains("api/org_omg/PortableServer") ) {
 					fileContent += "set jck.env.runtime.remoteAgent.passiveHost localhost" + ";\n";
 					fileContent += "set jck.env.runtime.remoteAgent.passivePortDefault Yes" + ";\n";
-					fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
-					fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
-						}
+					}
 
 					}
 						
 			// if ( tests.contains("vm/jdwp") )
 			
 					// {
-						fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
-						fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
+						// fileContent += "set jck.env.runtime.jdwp.VMSuspended No" + ";\n";
+						// fileContent += "set jck.env.runtime.jdwp.jdwpOpts -agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=n" + ";\n";
 					// } 
 
 							
