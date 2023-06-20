@@ -220,10 +220,6 @@ timestamps{
 
             def imageUploadJobs = [:]
             def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
-            // exclude criu-ubi-portable-checkpoint_test on zlinux due to https://github.com/adoptium/aqa-tests/issues/4617
-            if (params.PLATFORM == "s390x_linux") {
-                target = target.minus(",disabled.criu-ubi-portable-checkpoint_test")
-            }
 
             echo "Trigger ${imageUploadJobName} job ..."
             for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
