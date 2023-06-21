@@ -87,7 +87,7 @@ public class JavaTestRunner {
 	private static String workDir;
 	private static String newJtbFileRef; 
 	private static int    jckVersionInt;
-	private static String jckVersionLetter;
+	private static String jckVersionLetters;
 	private static String testSuiteFolder;
 	private static String fileContent;
 	private static String testRoot; 
