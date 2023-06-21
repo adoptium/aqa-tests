@@ -85,8 +85,13 @@ prepare() {
         cd ci.docker || exit
         openLibertyBranch="instanton"
         git checkout $openLibertyBranch
+        if [ "$OPENLIBERTY_SHA" != "" ]
+        then
+            git checkout $OPENLIBERTY_SHA
+        fi
         curCommitID=$(git rev-parse HEAD)
         echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
+        
         libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
         # replace OpenLiberty dockerfile base image
         sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
