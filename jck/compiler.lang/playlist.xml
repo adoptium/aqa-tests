@@ -729,6 +729,29 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jck-compiler-lang-EXPR-group1_multijvm</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled temporarily in multijvm mode</comment>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB) tests=lang/EXPR testsuite=COMPILER$(USEQ); \
+		$(START_MULTI_JVM_COMP_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY) tests=lang/EXPR testsuite=COMPILER
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jck-compiler-lang-CLSS-Group1_multijvm</testCaseName>
 		<disables>
 			<disable>
