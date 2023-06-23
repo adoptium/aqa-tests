@@ -520,8 +520,8 @@ public class JavaTestRunner {
 			extraJvmOptions += " -Dfile.encoding=US-ASCII";
 		}
 
-		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to plain multiJVM
-		if (jckVersionInt >= 17 && (spec.contains("win") || spec.contains("aix"))) {
+		// testExecutionType of multiJVM_group on Windows causes memory exhaustion, so limit to plain multiJVM
+		if (jckVersionInt >= 17 && spec.contains("win")) {
 			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
 		}
 
