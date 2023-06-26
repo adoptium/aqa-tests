@@ -193,7 +193,15 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
-                    ]
+                    ],
+            'ppc64le_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p8"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
+            ]
         ]
         def imagePullMap = [
             'x86-64_linux' : [
@@ -210,6 +218,10 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
                         ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
                         ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
+                    ],
+            'ppc64le_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
@@ -222,10 +234,11 @@ timestamps{
             def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
             // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
+            // exclude criu_pingPerf_testCreateRestoreImageAndPushToRegistry on plinux, zlinux and alinux due to https://github.com/adoptium/aqa-tests/issues/4632
             if (params.PLATFORM == "ppc64le_linux") {
                 target = target.minus("disabled.criu-portable-checkpoint_test,")
+                target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,")
             } else if (params.PLATFORM == "s390x_linux" || params.PLATFORM == "aarch64_linux") {
-                // exclude criu_pingPerf_testCreateRestoreImageAndPushToRegistry on zlinux and alinux due to https://github.com/adoptium/aqa-tests/issues/4632
                 target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,")
             }
 
