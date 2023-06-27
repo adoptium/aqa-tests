@@ -85,7 +85,8 @@ public class JavatestUtil {
 	private static String workDir;
 	private static String reportDir;
 	private static String newJtbFileRef; 
-	private static String jckVersionNo;
+	private static int    jckVersionInt;
+	private static String jckVersionLetters;
 	private static String testSuiteFolder;
 	private static String fileContent;
 	private static String testRoot;
@@ -205,8 +206,9 @@ public class JavatestUtil {
 		testJavaForMultiJVMCompTest = testArgs.get(TEST_JAVA_FOR_MULTIJVM_COMP_TEST) == null ? pathToJava : testArgs.get(TEST_JAVA_FOR_MULTIJVM_COMP_TEST);
 		riJavaForMultiJVMCompTest = testArgs.get(RI_JAVA_FOR_MULTIJVM_COMP_TEST) == null ? pathToJava : testArgs.get(RI_JAVA_FOR_MULTIJVM_COMP_TEST);  
 		workDir = testArgs.get(WORK_DIR);
-		jckVersionNo = jckVersion.replace("jck", "");
-		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
+		jckVersionInt = getJckVersionInt(jckVersion);
+		jckVersionLetters = getJckVersionLetters(jckVersion);
+		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionInt + jckVersionLetters;
 		jckBase = jckRoot + File.separator + testSuiteFolder;
 		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
 		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
@@ -215,6 +217,7 @@ public class JavatestUtil {
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + osShortName;
 		reportDir = workDir + File.separator + "report";
 		newJtbFileRef = workDir + File.separator + "generated.jtb";
+		secPropsFile = workDir + File.separator + "security.properties";
 		
 		// Solaris natives are in /natives/sunos
 		if (spec.contains("solaris")) {
@@ -232,6 +235,8 @@ public class JavatestUtil {
 					if (!jckVersion.equals(actualJckVersion)) {
 						System.out.println("test-args jckversion " + jckVersion + " does not match actual jckversion " + actualJckVersion + ". Using actual jckversion " + actualJckVersion);
 						jckVersion = actualJckVersion;
+						jckVersionInt = getJckVersionInt(jckVersion);
+						jckVersionLetters = getJckVersionLetters(jckVersion);
 					}
 				}
 			}
@@ -347,7 +352,6 @@ public class JavatestUtil {
 		
 		if (tests.contains("api/javax_net") ) {
 			// Requires TLS 1.0/1.1 enabling
-			secPropsFile = workDir + File.separator + "security.properties";
 			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, DH keySize < 1024, EC keySize < 224, anon, NULL, include jdk.disabled.namedCurves";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile))); 
@@ -356,11 +360,12 @@ public class JavatestUtil {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
-			// Requires SHA1 enabling for jar signers in jdk-18+
-			secPropsFile = workDir + File.separator + "security.properties";
+		if ( jckVersionInt >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+			// Requires SHA1 enabling for jar signers in jdk-8+
 			System.out.println("Custom security properties to be stored in: " + secPropsFile);
-			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024";
+			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
+			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
+			secPropsContents += "RSA keySize < 1024, DSA keySize < 1024, EC keySize < 224, include jdk.disabled.namedCurves" + "\n";
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(secPropsFile)));
 			bw.write(secPropsContents);
 			bw.flush();
@@ -369,7 +374,6 @@ public class JavatestUtil {
 		
 		if ( tests.contains("api/javax_xml") ) {
 			// Requires SHA1 enabling
-			secPropsFile = workDir + File.separator + "security.properties";
 			System.out.println("Custom security properties to be stored in: " + secPropsFile);
 			String secPropsContents = "jdk.xml.dsig.secureValidationPolicy=\\" + "\n";
 			secPropsContents += "disallowAlg http://www.w3.org/TR/1999/REC-xslt-19991116,\\" + "\n";
@@ -453,7 +457,7 @@ public class JavatestUtil {
 		}
 		
 		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to non-group multiJVM
-		if (getJckVersionInt(jckVersionNo) >= 17 && (spec.contains("win") || spec.contains("aix"))) {
+		if (jckVersionInt >= 17 && (spec.contains("win") || spec.contains("aix"))) {
 			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
 		}
 
@@ -661,7 +665,7 @@ public class JavatestUtil {
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
 
-			if (getJckVersionInt(jckVersionNo) > 11) {
+			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 
@@ -724,7 +728,7 @@ public class JavatestUtil {
 			} else if (jckVersion.contains("jck11")) {
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source 11 \"" + ";\n";
 			} else { // This is the case where JCK Version > 11
-				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source " + jckVersionNo + " --enable-preview\"" + ";\n";
+				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source " + jckVersionInt + " --enable-preview\"" + ";\n";
 			}
 
 			if (tests.contains("api/java_rmi") || tests.equals("api")) {
@@ -743,7 +747,7 @@ public class JavatestUtil {
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
 
-			if (getJckVersionInt(jckVersionNo) > 11) {
+			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 			
@@ -1048,83 +1052,34 @@ public class JavatestUtil {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 18 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ((new File(secPropsFile)).exists()) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
-		
-		Matcher matcher = Pattern.compile("jck(\\d+)[a-f]?").matcher(jckVersion);
-		if (matcher.matches()) {
-			// first group is going to be 8, 9, 10, 11, etc.
-			int jckVerNum = Integer.parseInt(matcher.group(1));
-			// --add-modules options are required to make some modules visible for Java 9 onwards.
-			if (jckVerNum >= 9) {
-				// If the top level api node is being run, add all modules required by the api tests
-				if (tests.equals("api")) {
-					testSpecificJvmOptions = " --add-modules java.xml.crypto,java.sql";
-					if (jckVerNum < 11) {
-						// following modules have been removed from Java 11 and onwards
-						testSpecificJvmOptions += ",java.activation,java.corba,java.xml.ws.annotation,java.se.ee,java.transaction,java.xml.bind,java.xml.ws";
-					}
-				}
-				if (tests.contains("api/javax_crypto") ) {
-					testSpecificJvmOptions = " --add-modules java.xml.crypto";
-				}
-				if (tests.contains("api/javax_sql") ) {
-					testSpecificJvmOptions = " --add-modules java.sql";
-				}
-				if (jckVerNum < 11) {
-					if (tests.contains("api/javax_activation")) {
-						testSpecificJvmOptions = " --add-modules java.activation";
-					}
-					if (tests.contains("api/javax_activity")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/javax_rmi")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/org_omg")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/javax_annotation")) {
-						testSpecificJvmOptions = " --add-modules java.xml.ws.annotation";
-					}
-					if (tests.contains("api/java_lang")) {
-						testSpecificJvmOptions = " --add-modules java.xml.ws.annotation,java.xml.bind,java.xml.ws,java.activation,java.corba";
-					}
-					if (tests.contains("api/javax_transaction") ) {
-						testSpecificJvmOptions = " --add-modules java.transaction";
-					}
-					if (tests.contains("api/javax_xml") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
-					}
-					if (tests.contains("api/modulegraph")) {
-						testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.se.ee,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
-					}
-					if (tests.contains("api/signaturetest")) {
-						testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
-					}
-					if (tests.contains("java2schema") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("xml_schema") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("jaxws") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
-					}
-					if (tests.contains("schema2java") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("schema_bind") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-				}
-				testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
-			}
-		} else {
-			throw new Error("Unexpected jck version : " + jckVersion);
+
+		if (jckVersionInt < 9) {
+			return testSpecificJvmOptions;
 		}
+
+		// --add-modules options are required to make some modules visible for Java 9 onwards.
+
+		// If the top level api node is being run, add all modules required by the api tests
+		if (tests.equals("api")) {
+			testSpecificJvmOptions = " --add-modules java.xml.crypto,java.sql";
+			if (jckVersionInt < 11) {
+				// following modules have been removed from Java 11 and onwards
+				testSpecificJvmOptions += ",java.activation,java.corba,java.xml.ws.annotation,java.se.ee,java.transaction,java.xml.bind,java.xml.ws";
+			}
+		}
+		if (tests.contains("api/javax_crypto") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.crypto";
+		}
+		if (tests.contains("api/javax_sql") ) {
+			testSpecificJvmOptions = " --add-modules java.sql";
+		}
+
+		testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
+
 		return testSpecificJvmOptions;
 	}  
 
@@ -1181,8 +1136,25 @@ public class JavatestUtil {
 		return javaVMName.contains("ibm") || javaVMName.contains("openj9"); 
 	}
 	
+	/**
+	 * Return the jckVersion minus any letters.
+	 */
 	private static int getJckVersionInt(String version) {
-		// Remove any letter suffix before returning e.g. 8d->8
-                return Integer.parseInt(version.replaceFirst("[a-z]$", ""));
+		if (version.matches("^(jck)?[0-9]+[a-z]*$")){
+			return Integer.parseInt(version.replaceAll("[a-z]", ""));
+		}
+
+		throw new Error("Invalid JCK Version found: " + version);
+	}
+	
+	/**
+	 * Return the letters on the end of jckVersion, if any.
+	 */
+	private static String getJckVersionLetters(String version) {
+		if (version.matches("^(jck)?[0-9]+[a-z]*$")){
+			return version.replaceFirst("^jck", "").replaceAll("[0-9]", "");
+		}
+
+		throw new Error("Invalid JCK Version found: " + version);
 	}
 }
