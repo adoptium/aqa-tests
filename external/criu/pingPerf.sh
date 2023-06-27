@@ -94,7 +94,7 @@ prepare() {
         
         libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
         # replace OpenLiberty dockerfile base image
-        sed -i 's;FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi;FROM local-ibm-semeru-runtimes:latest;' $libertyDockerfilePath
+        sed -i 's/FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi/FROM local-ibm-semeru-runtimes:latest/g' $libertyDockerfilePath
     )
 }
 
