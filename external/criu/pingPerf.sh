@@ -83,8 +83,6 @@ prepare() {
     git clone https://github.com/OpenLiberty/ci.docker.git
     (
         cd ci.docker || exit
-        openLibertyBranch="instanton"
-        git checkout $openLibertyBranch
         if [ "$OPENLIBERTY_SHA" != "" ]
         then
             git checkout $OPENLIBERTY_SHA
