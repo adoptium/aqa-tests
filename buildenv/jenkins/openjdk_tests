@@ -234,12 +234,8 @@ timestamps{
             def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
             // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
-            // exclude criu_pingPerf_testCreateRestoreImageAndPushToRegistry on plinux, zlinux and alinux due to https://github.com/adoptium/aqa-tests/issues/4632
             if (params.PLATFORM == "ppc64le_linux") {
                 target = target.minus("disabled.criu-portable-checkpoint_test,")
-                target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,")
-            } else if (params.PLATFORM == "s390x_linux" || params.PLATFORM == "aarch64_linux") {
-                target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,")
             }
 
             echo "Trigger ${imageUploadJobName} job ..."
