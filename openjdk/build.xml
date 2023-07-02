@@ -38,7 +38,7 @@
 			<property name="home.unix" value="${env.HOME}" />
 		</else>
 	</if>
-	
+
 	<property name="REFERENCE_REPO" value="--reference-if-able ${home.unix}/openjdk_cache" />
 
 	<if>
@@ -50,7 +50,7 @@
 			<property name="jtregTar" value="jtreg_5_1_b01"/>
 		</then>
 		<else>
-			<if> 
+			<if>
 				<matches pattern="^[1][17]" string="${JDK_VERSION}"/>
 				<then>
 					<property name="jtregTar" value="jtreg_6_1"/>
@@ -89,11 +89,11 @@
 		 	<property name="openj9jtregtimeouthandler" value=""/>
 	       </else>
 	</if>
-	
+
 	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
-	
+
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-	
+
 	<target name="getJtreg">
 		<mkdir dir="${DEST}"/>
 		<if>
@@ -101,7 +101,7 @@
 				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
 			</not>
 			<then>
-				<if> 
+				<if>
 					<available file="custom_jtreg.tar.gz"/>
 					<then>
 						<echo message="Using custom_jtreg.tar.gz"/>
@@ -133,7 +133,7 @@
 
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
-		     run the config command to allow file paths of 4096 characters 
+		     run the config command to allow file paths of 4096 characters
 		-->
 		<if>
 			<contains string="${SPEC}" substring="win" />
@@ -156,7 +156,7 @@
 				<if>
 					<contains string="${SPEC}" substring="zos"/>
 					<then>
-						<propertyregex 
+						<propertyregex
 							property="JDK_REPO_SPECIFIC"
 							input="${env.JDK_REPO}"
 							regexp="https://github.ibm.com/"
@@ -178,7 +178,7 @@
 					<else>
 						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<if>
-							<equals arg1="${failCode}" arg2="128"/>			
+							<equals arg1="${failCode}" arg2="128"/>
 							<then>
 								<getFileWithRetry file="openjdktemp" command="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp"/>
 								<echo message="git rev-parse ${env.JDK_BRANCH} "/>
@@ -187,7 +187,7 @@
 									<arg value="${env.JDK_BRANCH}"/>
 								</exec>
 								<if>
-									<equals arg1="${code}" arg2="128"/>			
+									<equals arg1="${code}" arg2="128"/>
 									<then>
 										<echo message="git rev-parse origin/${env.JDK_BRANCH}"/>
 										<exec executable="git" failonerror="true" dir="openjdktemp" outputproperty="jdk_sha2" resultproperty="code2">
@@ -195,7 +195,7 @@
 											<arg value="origin/${env.JDK_BRANCH}"/>
 										</exec>
 										<property name="jdk_sha" value="${jdk_sha2}"/>
-									</then>	
+									</then>
 								</if>
 								<if>
 									<not>
@@ -208,7 +208,7 @@
 								<if>
 									<isset property="isZOS" />
 									<then>
-										<propertyregex 
+										<propertyregex
 											property="jdk_sha"
 											input="${jdk_sha}"
 											regexp="\n"
@@ -223,9 +223,9 @@
 									<arg value="-f"/>
 									<arg value="${jdk_sha}"/>
 								</exec>
-							</then>	
-						</if>		
-								
+							</then>
+						</if>
+
 					</else>
 				</if>
 				<if>
@@ -329,13 +329,13 @@
 		<checkGitRepoSha repoDir="openjdk-jdk" />
 		<addTestenvProperties repoDir="openjdk-jdk" repoName="JDK${env.JDK_VERSION}"/>
 	</target>
-	
+
 	<target name="openjdk-jdk.check">
 		<condition property="jdkdir.exists">
 			<available file="openjdk-jdk" type="dir"/>
 		</condition>
 	</target>
-	
+
 	<target name="dist" depends="getDependentLibs, getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>

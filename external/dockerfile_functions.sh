@@ -86,7 +86,7 @@ print_image_args() {
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
-    else 
+    else
         tag="${version}-jdk"
     fi
     if [[ "${vm}" == "openj9" ]]; then
@@ -340,7 +340,7 @@ print_python_install() {
           "\nENV PYTHON_VERSION=\$PYTHON_VERSION" \
           "\n\n# Install python" \
           "\nRUN wget --progress=dot:mega -O python.tar.xz https://www.python.org/ftp/python/\${PYTHON_VERSION}/Python-\${PYTHON_VERSION}.tar.xz \\" >> ${file}
-    
+
     echo -e "\t&& tar -xJf python.tar.xz \\" \
             "\n\t&& cd Python-\${PYTHON_VERSION}  \\" \
             "\n\t&& ./configure --prefix=/usr/local \\" \
@@ -416,7 +416,7 @@ print_maven_install() {
           "\nENV MAVEN_HOME /opt/maven" \
           "\n\n# Install Maven" \
           "\nRUN  wget --no-verbose --no-check-certificate --no-cookies https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/\${MAVEN_VERSION}/apache-maven-\${MAVEN_VERSION}-bin.tar.gz \\" >> ${file}
-    
+
     echo -e "\t&& tar -zvxf apache-maven-\${MAVEN_VERSION}-bin.tar.gz -C /opt/ \\" \
             "\n\t&& ln -s /opt/apache-maven-\${MAVEN_VERSION} /opt/maven \\" \
             "\n\t&& rm -f apache-maven-\${MAVEN_VERSION}-bin.tar.gz" \
@@ -624,7 +624,7 @@ generate_dockerfile() {
     if [[ ! -z ${jdk_install} ]]; then
         print_jdk_install ${file} ${os} ${platform};
     fi
-    
+
     if [[ ! -z ${maven_version} ]]; then
         print_maven_install ${file} ${maven_version};
     fi
