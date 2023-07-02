@@ -88,6 +88,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                 def level = targetTokens[0];
                 def group = targetTokens[1];
                 def parameters = [
+                    string(name: 'TEST_JOB_NAME', value: TEST_JOB_NAME),
                     string(name: 'LEVELS', value: level),
                     string(name: 'GROUPS', value: group),
                     string(name: 'JDK_VERSIONS', value: JDK_VERSION),

@@ -19,8 +19,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/boeingData testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/boeingData testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/boeingData testsuite=RUNTIME
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -41,8 +44,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/msData testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/msData testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/msData testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -63,8 +69,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/nistData/atomic testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/nistData/atomic testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/nistData/atomic testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -85,8 +94,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/nistData/list testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/nistData/list testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/nistData/list testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -107,8 +119,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/nistData/union testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/nistData/union testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/nistData/union testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -121,8 +136,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=xml_schema/sunData testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=xml_schema/sunData testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=xml_schema/sunData testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

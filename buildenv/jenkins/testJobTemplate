@@ -51,7 +51,7 @@ if (!binding.hasVariable('DOCKER_REGISTRY_DIR')) DOCKER_REGISTRY_DIR = ""
 if (!binding.hasVariable('DOCKER_REGISTRY_URL_CREDENTIAL_ID')) DOCKER_REGISTRY_URL_CREDENTIAL_ID = ""
 if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
-if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = false
+if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = true
 if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
 if (!binding.hasVariable('JDK_REPO')) JDK_REPO = ""
 if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
@@ -144,10 +144,10 @@ def ADOPTOPENJDK_BRANCH = "master"
 def USE_TESTENV_PROPERTIES = false
 def SETUP_JCK_RUN = false
 
-// Jenkins does not support using Repository URL and Branch build parameters with lightweight checkout together
-// (See https://issues.jenkins.io/browse/JENKINS-48431)
-// Set Repository URL and Branch as build parameters by default
-// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL and Branch to its explicit value
+// https://issues.jenkins.io/browse/JENKINS-42971 is resolved, but it seems to be a partial fix for Branch Specifier parameter.
+// Repository URL still has problem with lightweight checkout
+// Set Repository URL and Branch Specifier as build parameters by default
+// If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL to its explicit value and keep Branch Specifier as parameter
 def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
 def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
 def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
@@ -155,7 +155,6 @@ def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
 LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
 if (LIGHT_WEIGHT_CHECKOUT) {
 	ADOPTOPENJDK_REPO_BUILD_PARAM = ADOPTOPENJDK_REPO
-	ADOPTOPENJDK_BRANCH_BUILD_PARAM = ADOPTOPENJDK_BRANCH
 	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 }
 
@@ -180,6 +179,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 				if (GROUP == "jck" && JCK_GIT_REPO_PREFIX && !ACTUAL_JCK_GIT_REPO) {
 					ACTUAL_JCK_GIT_REPO = "${JCK_GIT_REPO_PREFIX}/JCK${JDK_VERSION}-unzipped.git"
 				}
+
+				def BUILDS_TO_KEEP_MULTIPLIER = 1
+				if (ACTUAL_TEST_JOB_NAME.contains('_imageUpload') || ACTUAL_TEST_JOB_NAME.contains('_imagePull')) {
+					BUILDS_TO_KEEP_MULTIPLIER = 5
+				}
+				def ACTUAL_BUILDS_TO_KEEP = BUILDS_TO_KEEP * BUILDS_TO_KEEP_MULTIPLIER
 
 				def DOCKER_REQUIRED = false
 				def DOCKERIMAGE_TAG = ""
@@ -458,7 +463,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										relativeTargetDirectory('aqa-tests')
 										cleanBeforeCheckout()
 										pruneStaleBranch()
-                                                                                wipeOutWorkspace()
+										wipeOutWorkspace()
 										cloneOptions {
 											depth(1)
 											shallow(true)
@@ -471,8 +476,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							}
 						}
 						logRotator {
-							numToKeep(BUILDS_TO_KEEP)
-							artifactNumToKeep(BUILDS_TO_KEEP)
+							numToKeep(ACTUAL_BUILDS_TO_KEEP)
+							artifactNumToKeep(ACTUAL_BUILDS_TO_KEEP)
 							daysToKeep(DAYS_TO_KEEP)
 							artifactDaysToKeep(DAYS_TO_KEEP)
 						}

@@ -177,6 +177,11 @@ function set_platform() {
     platform=$1
 }
 
+# Set base_docker_registry_dir
+function set_base_docker_registry_dir() {
+    base_docker_registry_dir="$1"
+}
+
 # Reading properties of test.properties file
 function getProperty() {
     PROP_KEY=$1

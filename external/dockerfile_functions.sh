@@ -80,6 +80,7 @@ print_image_args() {
     local vm=$4
     local package=$5
     local build=$6
+    local base_docker_registry_dir="$7"
 
     image_name="eclipse-temurin"
     tag=""
@@ -94,8 +95,9 @@ print_image_args() {
             tag=open-${tag}
         else
             # os is ubi
-            image_name="registry.access.redhat.com/ubi8/ubi"
-            tag="8.6"
+            # temporarily all ubi based testing use internal base image
+            image_name="$DOCKER_REGISTRY_URL/$base_docker_registry_dir"
+            tag="latest"
         fi
     fi
     image="${image_name}:${tag}"
@@ -455,7 +457,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+    if [[ "$check_external_custom_test" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -561,14 +563,15 @@ generate_dockerfile() {
     package=$6
     build=$7
     platform=$8
-    check_external_custom_test=$9
+    base_docker_registry_dir="$9"
+    check_external_custom_test=$10
 
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         set_external_custom_test_info ${test} ${check_external_custom_test}
     else
         set_test_info ${test} ${check_external_custom_test}
@@ -581,7 +584,7 @@ generate_dockerfile() {
     echo -n "Writing ${file} ... "
     print_legal ${file};
     print_adopt_test ${file} ${test};
-    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
@@ -640,7 +643,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};

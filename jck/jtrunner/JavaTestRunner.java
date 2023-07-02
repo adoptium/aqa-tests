@@ -86,7 +86,8 @@ public class JavaTestRunner {
 	private static String reportDir; 
 	private static String workDir;
 	private static String newJtbFileRef; 
-	private static String jckVersionNo;
+	private static int    jckVersionInt;
+	private static String jckVersionLetters;
 	private static String testSuiteFolder;
 	private static String fileContent;
 	private static String testRoot; 
@@ -206,7 +207,8 @@ public class JavaTestRunner {
 		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH); 
 		testRoot = new File(testArgs.get(TEST_ROOT)).getCanonicalPath();
 		resultDir = new File(testArgs.get(RESULTS_ROOT)).getCanonicalPath();	
-		jckVersionNo = jckVersion.replace("jck", "");
+		jckVersionInt = getJckVersionInt(jckVersion);
+		jckVersionLetters = getJckVersionLetters(jckVersion);
 		osShortName = getOSNameShort();
 		
 		if (osShortName == null) {
@@ -227,7 +229,8 @@ public class JavaTestRunner {
 					if (!jckVersion.equals(actualJckVersion)) {
 						System.out.println("test-args jckversion " + jckVersion + " does not match actual jckversion " + actualJckVersion + ". Using actual jckversion " + actualJckVersion);
 						jckVersion = actualJckVersion;
-						jckVersionNo = jckVersion.replace("jck", "");
+						jckVersionInt = getJckVersionInt(jckVersion);
+						jckVersionLetters = getJckVersionLetters(jckVersion);
 					}
 				}
 			}
@@ -238,7 +241,7 @@ public class JavaTestRunner {
 			return false; 
 		}
 
-		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionNo;
+		testSuiteFolder = "JCK-" + testSuite.toString().toLowerCase() + "-" + jckVersionInt + jckVersionLetters;
 		jckBase = jckRoot + File.separator + testSuiteFolder; 
 		jckPolicyFileFullPath = jckBase + File.separator + "lib" + File.separator + "jck.policy";
 		javatestJarFullPath = jckBase + File.separator + "lib" + File.separator + "javatest.jar";
@@ -344,7 +347,7 @@ public class JavaTestRunner {
 			bw.close();
 		}
 
-		if ( getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
+		if ( jckVersionInt >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util")) ) {
 			// Requires SHA1 enabling for jar signers in jdk-11+
 			String secPropsContents = "jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, DSA keySize < 1024, include jdk.disabled.namedCurves\n";
 			secPropsContents += "jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1 jdkCA & usage TLSServer, \\" + "\n";
@@ -517,8 +520,8 @@ public class JavaTestRunner {
 			extraJvmOptions += " -Dfile.encoding=US-ASCII";
 		}
 
-		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to plain multiJVM
-		if (getJckVersionInt(jckVersionNo) >= 17 && (spec.contains("win") || spec.contains("aix"))) {
+		// testExecutionType of multiJVM_group on Windows causes memory exhaustion, so limit to plain multiJVM
+		if (jckVersionInt >= 17 && spec.contains("win")) {
 			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
 		}
 
@@ -723,7 +726,7 @@ public class JavaTestRunner {
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
 
-			if (getJckVersionInt(jckVersionNo) > 11) {
+			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 
@@ -780,7 +783,7 @@ public class JavaTestRunner {
 			} else if (jckVersion.contains("jck11")) {
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source 11 \"" + ";\n";
 			} else { // This is the case where JCK Version > 11
-				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source " + jckVersionNo + " --enable-preview\"" + ";\n";
+				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source " + jckVersionInt + " --enable-preview\"" + ";\n";
 			} 
 
 			if (tests.contains("api/java_rmi") || tests.equals("api")) {
@@ -798,7 +801,7 @@ public class JavaTestRunner {
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
 
-			if (getJckVersionInt(jckVersionNo) > 11) {
+			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 
@@ -898,131 +901,133 @@ public class JavaTestRunner {
 	}
 
 	public static boolean execute() throws Exception {
-		if (testExecutionType.equals("multijvm") && withAgent.equals("off")) {
-			Process javatestAgent = null;
-			Process rmiRegistry = null;
-			Process rmid = null;
-			Process tnameserv = null;
-			Process jck = null; 
-
-			if ( (testSuite.equals("RUNTIME")) && (tests.contains("api/java_util") || tests.contains("api/java_net") || tests.contains("api/java_rmi")  || tests.contains("api/javax_management") 
-					|| tests.contains("api/org_omg") || tests.contains("api/javax_xml") || tests.equals("api") || tests.contains("vm/jdwp") || tests.equals("vm")) ) {
-				String addModules = "";
-				// JCK 9/10 javatest agents need to be given access to non default modules.
-				// JCK 8 doesn't support modules, JCK11 and beyond have removed these two modules: java.xml.ws,java.corba.
-				if ( jckVersion.contains("jck9") || jckVersion.contains("jck10") ) {
-					addModules = "--add-modules java.xml.ws,java.corba";
-				}
-
-				String classPath = javatestJarFullPath + File.pathSeparator + classesFullPath; 
-				List<String> javatestAgentCmd = new ArrayList<>();
-				javatestAgentCmd.add(pathToJava);
-				javatestAgentCmd.add("-Djavatest.security.allowPropertiesAccess=true");
-				javatestAgentCmd.add("-Djava.security.policy=" + jckPolicyFileFullPath);
-				if (!addModules.equals("")) {
-					javatestAgentCmd.add(addModules);
-				}
-				javatestAgentCmd.add("-classpath"); 
-				javatestAgentCmd.add(classPath);
-				javatestAgentCmd.add("com.sun.javatest.agent.AgentMain");
-				javatestAgentCmd.add("-passive");
-				javatestAgent = startSubProcess("com.sun.javatest.agent.AgentMain",javatestAgentCmd);
-
-				// We only need RMI registry and RMI activation daemon processes for tests under api/java_rmi
-				if (tests.contains("api/java_rmi") && 
-					(jckVersion.contains("jck8") || jckVersion.contains("jck11") || jckVersion.contains("jck16"))) {
-					String pathToRmiRegistry = testJdk + File.separator + "bin" + File.separator + "rmiregistry";
-					List<String> rmiRegistryCmd = new ArrayList<>();
-					rmiRegistryCmd.add(pathToRmiRegistry);
-					rmiRegistry = startSubProcess("rmiregistry", rmiRegistryCmd); 
-
-					String pathToRmid = testJdk + File.separator + "bin" + File.separator + "rmid";
-					List<String> rmidCmd = new ArrayList<>();
-					rmidCmd.add(pathToRmid);
-					rmidCmd.add("-J-Dsun.rmi.activation.execPolicy=none"); 
-					rmidCmd.add("-J-Djava.security.policy=" + jckPolicyFileFullPath); 
-					rmid = startSubProcess("rmid", rmidCmd); 
-				}
-
-				// tnameserv has been removed from jdk11. We only should need it for jck8
-				if (jckVersion.contains("jck8")) { 
-					String pathToTnameserv = testJdk + File.separator + "bin" + File.separator + "tnameserv";
-					List<String> tnameservCmd = new ArrayList<>();
-					tnameservCmd.add(pathToTnameserv);
-					tnameservCmd.add("-ORBInitialPort");
-					tnameservCmd.add("9876");
-					tnameserv = startSubProcess("tnameserve", tnameservCmd); 
-				}
-			}
-
-			long timeout = 24;
-			int jckRC = -1;
-			boolean endedWithinTimeLimit = false;
-			boolean isRiscv = spec.contains("riscv");
-			
-			// Use the presence of more than one '/' to signify that we are running a smaller subset of tests.
-			// If one of the highest level subsets of tests is being run it is likely to take a long time.
-			if ( tests.chars().filter(c -> c == '/').count() > 1 && !isRiscv ) {
-				timeout = 4;
-			}
-
-			File f = new File (javatestJarFullPath); 
-			f.setReadable(true);
-
-			List<String> jckCmd = new ArrayList<>();
-			jckCmd.add(pathToJava);
-			jckCmd.add("-jar"); 
-			jckCmd.add(javatestJarFullPath);
-			jckCmd.add("-config");
-			jckCmd.add(jtiFile);
-			jckCmd.add(" @" + newJtbFileRef);
-			System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
-			jck = startSubProcess("jck", jckCmd);
-			
-			// Block parent for this process to finish
-			endedWithinTimeLimit = jck.waitFor(timeout, TimeUnit.HOURS); 
-			
-			try {
-				jckRC = jck.exitValue();
-			} catch (IllegalThreadStateException e) {
-				// If the 'jck' process "hangs" for some reasons, exitValue() will result in this exception.
-				// Attempt to forcibly terminate the process at that point.
-				jck.destroy();
-				endedWithinTimeLimit = false;
-			}
-
-			// The Compiler -ANNOT, EXPR and LMBD may take over 6 hours to run on some machines.
-			if (javatestAgent != null) {
-				System.out.println("Stopping javatest agent"); 
-				javatestAgent.destroy();
-			}
-			if (rmiRegistry != null) {
-				System.out.println("Stopping rmiregistry"); 
-				rmiRegistry.destroy();
-			}
-			if (rmid != null) {
-				System.out.println("Stopping rmid"); 
-				rmid.destroy();
-			}
-			if (tnameserv != null) {
-				System.out.println("Stopping tnameserver"); 
-				tnameserv.destroy();
-			}
-			
-			boolean result;
-			if (jckRC != 0) {
-				System.out.println("JCK subprocess returned a non-zero value");
-				result = false; 
-			} else if (!endedWithinTimeLimit) {
-				System.out.println("Test did not finish within timeout");
-				result = false; 
-			} else {
-				result = true; 
-			}
-			return result; 
+		if (!(testExecutionType.equals("multijvm") && withAgent.equals("off"))) {
+			//TODO: Error message sounds odd to me. Will raise an issue to address.
+			System.out.println("Only non-multijvm tests are supported with Agent turned off");
+			return false;
 		}
-		System.out.println("Only non-multijvm tests are supported with Agent turned off");
-		return false; 
+
+		Process javatestAgent = null;
+		Process rmiRegistry = null;
+		Process rmid = null;
+		Process tnameserv = null;
+		Process jck = null; 
+
+		if ( (testSuite.equals("RUNTIME")) && (tests.contains("api/java_util") || tests.contains("api/java_net") || tests.contains("api/java_rmi")  || tests.contains("api/javax_management") 
+				|| tests.contains("api/org_omg") || tests.contains("api/javax_xml") || tests.equals("api") || tests.contains("vm/jdwp") || tests.equals("vm")) ) {
+			String addModules = "";
+			// JCK 9/10 javatest agents need to be given access to non default modules.
+			// JCK 8 doesn't support modules, JCK11 and beyond have removed these two modules: java.xml.ws,java.corba.
+			if ( jckVersion.contains("jck9") || jckVersion.contains("jck10") ) {
+				addModules = "--add-modules java.xml.ws,java.corba";
+			}
+
+			String classPath = javatestJarFullPath + File.pathSeparator + classesFullPath; 
+			List<String> javatestAgentCmd = new ArrayList<>();
+			javatestAgentCmd.add(pathToJava);
+			javatestAgentCmd.add("-Djavatest.security.allowPropertiesAccess=true");
+			javatestAgentCmd.add("-Djava.security.policy=" + jckPolicyFileFullPath);
+			if (!addModules.equals("")) {
+				javatestAgentCmd.add(addModules);
+			}
+			javatestAgentCmd.add("-classpath"); 
+			javatestAgentCmd.add(classPath);
+			javatestAgentCmd.add("com.sun.javatest.agent.AgentMain");
+			javatestAgentCmd.add("-passive");
+			javatestAgent = startSubProcess("com.sun.javatest.agent.AgentMain",javatestAgentCmd);
+
+			// We only need RMI registry and RMI activation daemon processes for tests under api/java_rmi
+			if (tests.contains("api/java_rmi") && 
+				(jckVersion.contains("jck8") || jckVersion.contains("jck11") || jckVersion.contains("jck16"))) {
+				String pathToRmiRegistry = testJdk + File.separator + "bin" + File.separator + "rmiregistry";
+				List<String> rmiRegistryCmd = new ArrayList<>();
+				rmiRegistryCmd.add(pathToRmiRegistry);
+				rmiRegistry = startSubProcess("rmiregistry", rmiRegistryCmd); 
+
+				String pathToRmid = testJdk + File.separator + "bin" + File.separator + "rmid";
+				List<String> rmidCmd = new ArrayList<>();
+				rmidCmd.add(pathToRmid);
+				rmidCmd.add("-J-Dsun.rmi.activation.execPolicy=none"); 
+				rmidCmd.add("-J-Djava.security.policy=" + jckPolicyFileFullPath); 
+				rmid = startSubProcess("rmid", rmidCmd); 
+			}
+
+			// tnameserv has been removed from jdk11. We only should need it for jck8
+			if (jckVersion.contains("jck8")) { 
+				String pathToTnameserv = testJdk + File.separator + "bin" + File.separator + "tnameserv";
+				List<String> tnameservCmd = new ArrayList<>();
+				tnameservCmd.add(pathToTnameserv);
+				tnameservCmd.add("-ORBInitialPort");
+				tnameservCmd.add("9876");
+				tnameserv = startSubProcess("tnameserve", tnameservCmd); 
+			}
+		}
+
+		long timeout = 24;
+		int jckRC = -1;
+		boolean endedWithinTimeLimit = false;
+		boolean isRiscv = spec.contains("riscv");
+		
+		// Use the presence of more than one '/' to signify that we are running a smaller subset of tests.
+		// If one of the highest level subsets of tests is being run it is likely to take a long time.
+		if ( tests.chars().filter(c -> c == '/').count() > 1 && !isRiscv ) {
+			timeout = 4;
+		}
+
+		File f = new File (javatestJarFullPath); 
+		f.setReadable(true);
+
+		List<String> jckCmd = new ArrayList<>();
+		jckCmd.add(pathToJava);
+		jckCmd.add("-jar"); 
+		jckCmd.add(javatestJarFullPath);
+		jckCmd.add("-config");
+		jckCmd.add(jtiFile);
+		jckCmd.add(" @" + newJtbFileRef);
+		System.out.println("Running JCK in " + testExecutionType + " way with Agent " + withAgent);
+		jck = startSubProcess("jck", jckCmd);
+		
+		// Block parent for this process to finish
+		endedWithinTimeLimit = jck.waitFor(timeout, TimeUnit.HOURS); 
+		
+		try {
+			jckRC = jck.exitValue();
+		} catch (IllegalThreadStateException e) {
+			// If the 'jck' process "hangs" for some reasons, exitValue() will result in this exception.
+			// Attempt to forcibly terminate the process at that point.
+			jck.destroy();
+			endedWithinTimeLimit = false;
+		}
+
+		// The Compiler -ANNOT, EXPR and LMBD may take over 6 hours to run on some machines.
+		if (javatestAgent != null) {
+			System.out.println("Stopping javatest agent"); 
+			javatestAgent.destroy();
+		}
+		if (rmiRegistry != null) {
+			System.out.println("Stopping rmiregistry"); 
+			rmiRegistry.destroy();
+		}
+		if (rmid != null) {
+			System.out.println("Stopping rmid"); 
+			rmid.destroy();
+		}
+		if (tnameserv != null) {
+			System.out.println("Stopping tnameserver"); 
+			tnameserv.destroy();
+		}
+		
+		boolean result;
+		if (jckRC != 0) {
+			System.out.println("JCK subprocess returned a non-zero value");
+			result = false; 
+		} else if (!endedWithinTimeLimit) {
+			System.out.println("Test did not finish within timeout");
+			result = false; 
+		} else {
+			result = true; 
+		}
+		return result;
 	}
 
 	private static boolean generateSummary() {
@@ -1199,83 +1204,87 @@ public class JavaTestRunner {
 	private static String getTestSpecificJvmOptions(String jckVersion, String tests) {
 		String testSpecificJvmOptions = "";
 		
-		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (getJckVersionInt(jckVersionNo) >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
+		if ( tests.contains("api/javax_net") || tests.contains("api/javax_xml") || (jckVersionInt >= 8 && (tests.contains("api/java_net") || tests.contains("api/java_util"))) ) {
 			// Needs extra security.properties
 			testSpecificJvmOptions += " -Djava.security.properties=" + secPropsFile;
 		}
 		
-		Matcher matcher = Pattern.compile("jck(\\d+)[bc]?").matcher(jckVersion);
-		if (matcher.matches()) {
-			// first group is going to be 8, 9, 10, 11, etc.
-			int jckVerNum = Integer.parseInt(matcher.group(1));
-			// --add-modules options are required to make some modules visible for Java 9 onwards.
-			if (jckVerNum >= 9) {
-				// If the top level api node is being run, add all modules required by the api tests
-				if (tests.equals("api")) {
-					testSpecificJvmOptions = " --add-modules java.xml.crypto,java.sql";
-					if (jckVerNum < 11) {
-						// following modules have been removed from Java 11 and onwards
-						testSpecificJvmOptions += ",java.activation,java.corba,java.xml.ws.annotation,java.se.ee,java.transaction,java.xml.bind,java.xml.ws";
-					}
-				}
-				if (tests.contains("api/javax_crypto") ) {
-					testSpecificJvmOptions = " --add-modules java.xml.crypto";
-				}
-				if (tests.contains("api/javax_sql") ) {
-					testSpecificJvmOptions = " --add-modules java.sql";
-				}
-				if (jckVerNum < 11) {
-					if (tests.contains("api/javax_activation")) {
-						testSpecificJvmOptions = " --add-modules java.activation";
-					}
-					if (tests.contains("api/javax_activity")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/javax_rmi")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/org_omg")) {
-						testSpecificJvmOptions = " --add-modules java.corba";
-					}
-					if (tests.contains("api/javax_annotation")) {
-						testSpecificJvmOptions = " --add-modules java.xml.ws.annotation";
-					}
-					if (tests.contains("api/java_lang")) {
-						testSpecificJvmOptions = " --add-modules java.xml.ws.annotation,java.xml.bind,java.xml.ws,java.activation,java.corba";
-					}
-					if (tests.contains("api/javax_transaction") ) {
-						testSpecificJvmOptions = " --add-modules java.transaction";
-					}
-					if (tests.contains("api/javax_xml") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
-					}
-					if (tests.contains("api/modulegraph")) {
-						testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.se.ee,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
-					}
-					if (tests.contains("api/signaturetest")) {
-						testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
-					}
-					if (tests.contains("java2schema") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("xml_schema") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("jaxws") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
-					}
-					if (tests.contains("schema2java") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-					if (tests.contains("schema_bind") ) {
-						testSpecificJvmOptions = " --add-modules java.xml.bind";
-					}
-				}
-				testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
-			}
-		} else {
-			throw new Error("Unexpected jck version : " + jckVersion);
+		if (jckVersionInt < 9) {
+			return testSpecificJvmOptions;
 		}
+
+		// --add-modules options are required to make some modules visible for Java 9 onwards.
+
+		// If the top level api node is being run, add all modules required by the api tests
+		if (tests.equals("api")) {
+			testSpecificJvmOptions = " --add-modules java.xml.crypto,java.sql";
+			if (jckVersionInt < 11) {
+				// following modules have been removed from Java 11 and onwards
+				testSpecificJvmOptions += ",java.activation,java.corba,java.xml.ws.annotation,java.se.ee,java.transaction,java.xml.bind,java.xml.ws";
+			}
+		}
+		if (tests.contains("api/javax_crypto") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.crypto";
+		}
+		if (tests.contains("api/javax_sql") ) {
+			testSpecificJvmOptions = " --add-modules java.sql";
+		}
+
+		if (jckVersionInt >= 11) {
+			testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
+			return testSpecificJvmOptions;
+		}
+
+		// Additional options required for jdk10 and below.
+
+		if (tests.contains("api/javax_activation")) {
+			testSpecificJvmOptions = " --add-modules java.activation";
+		}
+		if (tests.contains("api/javax_activity")) {
+			testSpecificJvmOptions = " --add-modules java.corba";
+		}
+		if (tests.contains("api/javax_rmi")) {
+			testSpecificJvmOptions = " --add-modules java.corba";
+		}
+		if (tests.contains("api/org_omg")) {
+			testSpecificJvmOptions = " --add-modules java.corba";
+		}
+		if (tests.contains("api/javax_annotation")) {
+			testSpecificJvmOptions = " --add-modules java.xml.ws.annotation";
+		}
+		if (tests.contains("api/java_lang")) {
+			testSpecificJvmOptions = " --add-modules java.xml.ws.annotation,java.xml.bind,java.xml.ws,java.activation,java.corba";
+		}
+		if (tests.contains("api/javax_transaction") ) {
+			testSpecificJvmOptions = " --add-modules java.transaction";
+		}
+		if (tests.contains("api/javax_xml") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
+		}
+		if (tests.contains("api/modulegraph")) {
+			testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.se.ee,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
+		}
+		if (tests.contains("api/signaturetest")) {
+			testSpecificJvmOptions = " --add-modules java.activation,java.corba,java.transaction,java.xml.bind,java.xml.ws,java.xml.ws.annotation";
+		}
+		if (tests.contains("java2schema") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind";
+		}
+		if (tests.contains("xml_schema") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind";
+		}
+		if (tests.contains("jaxws") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind,java.xml.ws";
+		}
+		if (tests.contains("schema2java") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind";
+		}
+		if (tests.contains("schema_bind") ) {
+			testSpecificJvmOptions = " --add-modules java.xml.bind";
+		}
+			
+		testSpecificJvmOptions += " -Djdk.attach.allowAttachSelf=true";
+		
 		return testSpecificJvmOptions;
 	}  
 
@@ -1334,11 +1343,26 @@ public class JavaTestRunner {
 		return javaVMName.contains("ibm") || javaVMName.contains("openj9"); 
 	}
 	
+	/**
+	 * Return the jckVersion minus any letters.
+	 */
 	private static int getJckVersionInt(String version) {
-		if (version.equals("8c") || version.equals("8b")) {
-			return 8; 
-		} else {
-			return Integer.parseInt(version); 
+		if (version.matches("^(jck)?[0-9]+[a-z]*$")){
+			return Integer.parseInt(version.replaceAll("[a-z]", ""));
 		}
+
+		throw new Error("Invalid JCK Version found: " + version);
+	}
+	
+	/**
+	 * Return the letters on the end of jckVersion, if any.
+	 */
+	private static String getJckVersionLetters(String version) {
+		if (version.matches("^(jck)?[0-9]+[a-z]*$")){
+			String subVersion = version.replaceFirst("^jck", "");
+			return subVersion.replaceAll("[0-9]", "");
+		}
+
+		throw new Error("Invalid JCK Version found: " + version);
 	}
 }
