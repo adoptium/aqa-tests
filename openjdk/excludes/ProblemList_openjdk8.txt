@@ -14,30 +14,19 @@
 
 # hotspot_all
 
-compiler/7184394/TestAESMain.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
-compiler/7184394/TestAESMain.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
-compiler/intrinsics/sha/TestSHA.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
+# compiler/7184394/TestAESMain.java https://github.com/adoptium/infrastructure/issues/2893 
+compiler/7184394/TestAESMain.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,solaris-sparcv9
+compiler/intrinsics/sha/TestSHA.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+
 ############################################################################
 
 # hotspot_jre
 
-runtime/7110720/Test7110720.sh https://github.com/adoptium/adoptium/issues/58 aix-all
 compiler/c2/Test8202414.java https://bugs.openjdk.java.net/browse/JDK-8251152 linux-arm
 compiler/tiered/Level2RecompilationTest.java https://github.com/adoptium/aqa-tests/issues/2671 linux-ppc64le,aix-all,linux-arm,windows-x86
-compiler/6894807/IsInstanceTest.java https://github.com/adoptium/adoptium/issues/58 aix-all
-gc/metaspace/TestMetaspaceMemoryPool.java https://github.com/adoptium/aqa-tests/issues/2708 generic-all
-runtime/CDSCompressedKPtrs/CDSCompressedKPtrs.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/CDSCompressedKPtrs/CDSCompressedKPtrsError.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/CdsDifferentObjectAlignment.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/CdsSameObjectAlignment.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/LimitSharedSizes.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/PrintSharedArchiveAndExit.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/SharedArchiveFile.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/SharedArchiveFile/SpaceUtilizationCheck.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
-runtime/7110720/Test7110720.sh https://github.com/adoptium/aqa-tests/issues/2818 aix-all
+# compiler/6894807/IsInstanceTest.java https://github.com/adoptium/adoptium/issues/58 aix-all
 compiler/6894807/IsInstanceTest.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
 compiler/8004051/Test8004051.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
-gc/g1/TestHumongousCodeCacheRoots.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
 compiler/criticalnatives/argumentcorruption/Test8167409.sh https://github.com/adoptium/aqa-tests/issues/2984 linux-arm
 compiler/c2/cr6340864/TestByteVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
 compiler/c2/cr6340864/TestDoubleVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
@@ -46,27 +35,39 @@ compiler/c2/cr6340864/TestIntVect.java https://bugs.openjdk.java.net/browse/JDK-
 compiler/c2/cr6340864/TestLongVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
 compiler/c2/cr6340864/TestShortVect.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
 compiler/codegen/TestCharVect2.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
-#compiler/EscapeAnalysis/TestGetClass.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
+# compiler/EscapeAnalysis/TestGetClass.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/escapeAnalysis/TestGetClass.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
 compiler/rangechecks/RangeCheckEliminationScaleNotOne.java https://bugs.openjdk.java.net/browse/JDK-8252473 linux-arm,windows-x86
-gc/g1/Test2GbHeap.java https://bugs.openjdk.java.net/browse/JDK-8154787 linux-arm
-gc/g1/TestHumongousShrinkHeap.java https://bugs.openjdk.java.net/browse/JDK-8041506 linux-arm
-gc/whitebox/TestConcMarkCycleWB.java https://bugs.openjdk.java.net/browse/JDK-8067368 linux-arm
-runtime/StackGap/testme.sh https://bugs.openjdk.java.net/browse/JDK-8201536 linux-arm
-#https://github.com/adoptium/aqa-tests/issues/3250 linux-arm
-compiler/gcbarriers/PreserveFPRegistersTest.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
-gc/TestMemoryMXBeansAndPoolsPresence.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
-gc/g1/mixedgc/TestOldGenCollectionUsage.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
-runtime/CompressedOops/CompressedClassPointers.java https://bugs.openjdk.org/browse/JDK-8234058 linux-ppc64le,aix-all
-runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64,aix-all
-gc/concurrentMarkSweep/GuardShrinkWarning.java https://bugs.openjdk.java.net/browse/JDK-8023356 solaris-x64
 compiler/floatingpoint/8207838/TestFloatSyncJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 compiler/floatingpoint/8165673/TestFloatJNIArgs.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 compiler/intrinsics/mathexact/LongMulOverflowTest.java https://bugs.openjdk.org/browse/JDK-8196568 solaris-x64
+compiler/gcbarriers/PreserveFPRegistersTest.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
+compiler/8209951/TestCipherBlockChainingEncrypt.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+gc/g1/TestHumongousCodeCacheRoots.java https://github.com/adoptium/aqa-tests/issues/2818 aix-all
+gc/g1/Test2GbHeap.java https://bugs.openjdk.java.net/browse/JDK-8154787 linux-arm
+gc/g1/TestHumongousShrinkHeap.java https://bugs.openjdk.java.net/browse/JDK-8041506 linux-arm
+gc/whitebox/TestConcMarkCycleWB.java https://bugs.openjdk.java.net/browse/JDK-8067368 linux-arm
+gc/metaspace/TestMetaspaceMemoryPool.java https://github.com/adoptium/aqa-tests/issues/2708 generic-all
+gc/TestMemoryMXBeansAndPoolsPresence.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
+gc/g1/mixedgc/TestOldGenCollectionUsage.java https://github.com/adoptium/aqa-tests/issues/3297 linux-arm
+gc/concurrentMarkSweep/GuardShrinkWarning.java https://bugs.openjdk.java.net/browse/JDK-8023356 solaris-x64
+runtime/CDSCompressedKPtrs/CDSCompressedKPtrs.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/CDSCompressedKPtrs/CDSCompressedKPtrsError.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/CdsDifferentObjectAlignment.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/CdsSameObjectAlignment.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/LimitSharedSizes.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/PrintSharedArchiveAndExit.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/SharedArchiveFile.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+runtime/SharedArchiveFile/SpaceUtilizationCheck.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
+# runtime/7110720/Test7110720.sh https://github.com/adoptium/adoptium/issues/58 aix-all
+runtime/7110720/Test7110720.sh https://github.com/adoptium/aqa-tests/issues/2818 aix-all
+runtime/StackGap/testme.sh https://bugs.openjdk.java.net/browse/JDK-8201536 linux-arm
+runtime/CompressedOops/CompressedClassPointers.java https://bugs.openjdk.org/browse/JDK-8234058 linux-ppc64le,aix-all
+runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64,aix-all
 runtime/NMT/NMTWithCDS.java https://github.com/adoptium/aqa-tests/issues/2659 linux-ppc64le,aix-all
 runtime/memory/ReserveMemory.java https://github.com/adoptium/aqa-tests/issues/4518#issuecomment-1520797671 aix-all
 runtime/SharedArchiveFile/DefaultUseWithClient.java https://github.com/adoptium/aqa-tests/issues/4270 aix-all
-compiler/8209951/TestCipherBlockChainingEncrypt.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
+
 ############################################################################
 
 # jdk_awt
@@ -75,64 +76,63 @@ compiler/8209951/TestCipherBlockChainingEncrypt.java https://github.com/adoptium
 
 # jdk_beans
 
-java/beans/Introspector/Test8027648.java	https://github.com/adoptium/aqa-tests/issues/117	linux-all
-java/beans/PropertyEditor/6380849/TestPropertyEditor.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestColorClass.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestColorClassJava.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestColorClassNull.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestColorClassValue.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestFontClass.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestFontClassJava.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestFontClassNull.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/PropertyEditor/TestFontClassValue.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/117	generic-all
-java/beans/EventHandler/Test6179222.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/EventHandler/Test6788531.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/PropertyChangeSupport/Test4682386.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/PropertyChangeSupport/TestSynchronization.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/Statement/Test4653179.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLDecoder/8028054/TestConstructorFinder.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLDecoder/spec/TestObject.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test4631471.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test4652928.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test4822050.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test4903007.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test6437265.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test6501431.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/Test6570354.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/java_awt_BorderLayout.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/java_awt_CardLayout.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/java_awt_GridBagLayout.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_BoxLayout.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_JButton.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_JLayeredPane.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_JSplitPane.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_JTree.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_OverlayLayout.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_border_TitledBorder.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/javax_swing_plaf_BorderUIResource_TitledBorderUIResource.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
-java/beans/XMLEncoder/sun_swing_PrintColorUIResource.java	https://github.com/adoptium/aqa-tests/issues/136	macosx-all
+java/beans/Introspector/Test8027648.java https://github.com/adoptium/aqa-tests/issues/117 linux-all
+java/beans/PropertyEditor/6380849/TestPropertyEditor.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestColorClass.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestColorClassJava.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestColorClassNull.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestColorClassValue.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestFontClass.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestFontClassJava.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestFontClassNull.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/PropertyEditor/TestFontClassValue.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/117 generic-all
+java/beans/EventHandler/Test6179222.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/EventHandler/Test6788531.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/PropertyChangeSupport/Test4682386.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/PropertyChangeSupport/TestSynchronization.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/Statement/Test4653179.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLDecoder/8028054/TestConstructorFinder.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLDecoder/spec/TestObject.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test4631471.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test4652928.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test4822050.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test4903007.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test6437265.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test6501431.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/Test6570354.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/java_awt_BorderLayout.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/java_awt_CardLayout.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/java_awt_GridBagLayout.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_BoxLayout.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_JButton.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_JLayeredPane.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_JSplitPane.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_OverlayLayout.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_border_TitledBorder.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/javax_swing_plaf_BorderUIResource_TitledBorderUIResource.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
+java/beans/XMLEncoder/sun_swing_PrintColorUIResource.java https://github.com/adoptium/aqa-tests/issues/136 macosx-all
 
 ############################################################################
 
 # jdk_lang
 
-java/lang/ClassLoader/Assert.java	https://github.com/adoptium/aqa-tests/issues/1012	aix-all
-java/lang/Math/HypotTests.java	https://github.com/adoptium/aqa-tests/issues/128	linux-all
-#java/lang/ProcessBuilder/Basic.java same issue with alpine linux, exclude by linux-all for now
-java/lang/ProcessBuilder/Basic.java	https://bugs.openjdk.org/browse/JDK-8282219	aix-all,solaris-x64,linux-all
-java/lang/invoke/MethodHandles/CatchExceptionTest.java  https://bugs.openjdk.java.net/browse/JDK-8146623 linux-s390x,linux-arm
+java/lang/ClassLoader/Assert.java https://github.com/adoptium/aqa-tests/issues/1012 aix-all
+java/lang/Math/HypotTests.java https://github.com/adoptium/aqa-tests/issues/128 linux-all
+# java/lang/ProcessBuilder/Basic.java same issue with alpine linux, exclude by linux-all for now
+java/lang/ProcessBuilder/Basic.java https://bugs.openjdk.org/browse/JDK-8282219 aix-all,solaris-x64,linux-all
+java/lang/invoke/MethodHandles/CatchExceptionTest.java https://bugs.openjdk.java.net/browse/JDK-8146623 linux-s390x,linux-arm
 java/lang/instrument/BootClassPath/BootClassPathTest.sh https://bugs.openjdk.java.net/browse/JDK-8256405 macosx-all
-
 
 ############################################################################
 
 # jdk_management
 
-java/lang/management/MemoryMXBean/LowMemoryTest2.sh	https://github.com/adoptium/aqa-tests/issues/157	linux-all
-com/sun/management/DiagnosticCommandMBean/DcmdMBeanPermissionsTest.java https://github.com/adoptium/aqa-tests/issues/55	generic-all
-com/sun/management/OperatingSystemMXBean/GetCommittedVirtualMemorySize.java		https://github.com/adoptium/aqa-tests/issues/134	macosx-all
+java/lang/management/MemoryMXBean/LowMemoryTest2.sh https://github.com/adoptium/aqa-tests/issues/157 linux-all
+com/sun/management/DiagnosticCommandMBean/DcmdMBeanPermissionsTest.java https://github.com/adoptium/aqa-tests/issues/55 generic-all
+com/sun/management/OperatingSystemMXBean/GetCommittedVirtualMemorySize.java https://github.com/adoptium/aqa-tests/issues/134 macosx-all
 sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
@@ -150,91 +150,93 @@ javax/management/remote/mandatory/connection/RMIConnector_NPETest.java https://b
 
 # jdk_math
 
-java/math/BigInteger/LargeValueExceptions.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/math/BigInteger/LargeValueExceptions.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 
 ############################################################################
 
 # jdk_net
 
-java/net/Inet4Address/PingThis.java	https://github.com/adoptium/infrastructure/issues/1127	aix-all
-java/net/InetAddress/BadDottedIPAddress.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
+java/net/Inet4Address/PingThis.java https://github.com/adoptium/infrastructure/issues/1127 aix-all
+java/net/InetAddress/BadDottedIPAddress.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
 java/net/Inet6Address/B6206527.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
-java/net/Inet6Address/B6558853.java	https://github.com/adoptium/aqa-tests/issues/827	macosx-all
-java/net/InetAddress/CachedUnknownHostName.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
+java/net/Inet6Address/B6558853.java https://github.com/adoptium/aqa-tests/issues/827 macosx-all
+java/net/InetAddress/CachedUnknownHostName.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
 java/net/InetAddress/CheckJNI.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
-java/net/InetAddress/IPv4Formats.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
-java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/net/MulticastSocket/SetGetNetworkInterfaceTest.java	https://github.com/adoptium/aqa-tests/issues/1011	aix-all
-# java/net/MulticastSocket/SetLoopbackMode.java on aix issue	https://github.com/adoptium/aqa-tests/issues/1011
-java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all,macosx-all
-# java/net/MulticastSocket/Test.java https://github.com/adoptium/aqa-tests/issues/1011	aix-all
-java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x,aix-all,macosx-all
+java/net/InetAddress/IPv4Formats.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
+java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
+java/net/MulticastSocket/SetGetNetworkInterfaceTest.java https://github.com/adoptium/aqa-tests/issues/1011 aix-all
+# java/net/MulticastSocket/SetLoopbackMode.java on aix issue https://github.com/adoptium/aqa-tests/issues/1011
+java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all,macosx-all
+# java/net/MulticastSocket/Test.java https://github.com/adoptium/aqa-tests/issues/1011 aix-all
+java/net/MulticastSocket/Test.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all,macosx-all
 java/net/Socket/LinkLocal.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
-java/net/SocketPermission/Wildcard.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
-java/net/Socks/SocksV4Test.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
+java/net/SocketPermission/Wildcard.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
+java/net/Socks/SocksV4Test.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
 java/net/ipv6tests/B6521014.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
-java/net/ipv6tests/UdpTest.java	https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
-java/net/ipv6tests/TcpTest.java https://github.com/adoptium/infrastructure/issues/1085   macosx-all
-com/sun/net/httpserver/Test1.java	https://github.com/adoptium/aqa-tests/issues/827 linux-ppc64le
-sun/net/www/http/ChunkedOutputStream/checkError.java	https://github.com/adoptium/aqa-tests/issues/1261	windows-all,linux-all
+java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
+java/net/ipv6tests/TcpTest.java https://github.com/adoptium/infrastructure/issues/1085 macosx-all
+com/sun/net/httpserver/Test1.java https://github.com/adoptium/aqa-tests/issues/827 linux-ppc64le
+sun/net/www/http/ChunkedOutputStream/checkError.java https://github.com/adoptium/aqa-tests/issues/1261 windows-all,linux-all
 sun/net/www/protocol/https/HttpsURLConnection/ImpactOnSNI.java https://bugs.openjdk.java.net/browse/JDK-8155049 solaris-x64
-java/net/MulticastSocket/SetOutgoingIf.java  https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/3292 aix-all
+
 ############################################################################
 
 # jdk_io
 
-java/io/Serializable/concurrentClassDescLookup/ConcurrentClassDescLookup.java	https://github.com/adoptium/aqa-tests/issues/1261 windows-all
+java/io/Serializable/concurrentClassDescLookup/ConcurrentClassDescLookup.java https://github.com/adoptium/aqa-tests/issues/1261 windows-all
 
 ############################################################################
-
 
 # jdk_nio
 
 java/nio/MappedByteBuffer/Truncate.java https://github.com/adoptium/aqa-tests/issues/1052 linux-s390x
-java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
+java/nio/channels/AsynchronousSocketChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java    https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/nio/channels/DatagramChannel/Promiscuous.java                  https://github.com/adoptium/infrastructure/issues/699    linux-s390x
-java/nio/channels/SocketChannel/Connect.java	https://github.com/adoptium/aqa-tests/issues/156	macosx-all
-java/nio/channels/ServerSocketChannel/AdaptServerSocket.java	https://github.com/adoptium/aqa-tests/issues/821	windows-all
-java/nio/channels/ServerSocketChannel/Basic.java	https://github.com/adoptium/aqa-tests/issues/821	windows-all
-java/nio/channels/DatagramChannel/SendToUnresolved.java	https://github.com/adoptium/aqa-tests/issues/827	linux-all
-java/nio/channels/Selector/RacyDeregister.java	https://bugs.openjdk.java.net/browse/JDK-8161083	aix-all
-java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/aqa-tests/issues/593	aix-all
-sun/nio/ch/TestMaxCachedBufferSize.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-sun/nio/cs/FindDecoderBugs.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
-sun/nio/cs/OLD/TestIBMDB.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
+java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
+java/nio/channels/SocketChannel/Connect.java https://github.com/adoptium/aqa-tests/issues/156 macosx-all
+java/nio/channels/ServerSocketChannel/AdaptServerSocket.java https://github.com/adoptium/aqa-tests/issues/821 windows-all
+java/nio/channels/ServerSocketChannel/Basic.java https://github.com/adoptium/aqa-tests/issues/821 windows-all
+java/nio/channels/DatagramChannel/SendToUnresolved.java https://github.com/adoptium/aqa-tests/issues/827 linux-all
+java/nio/channels/Selector/RacyDeregister.java https://bugs.openjdk.java.net/browse/JDK-8161083 aix-all
+java/nio/channels/AsyncCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/593 aix-all
+sun/nio/ch/TestMaxCachedBufferSize.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+sun/nio/cs/FindDecoderBugs.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+sun/nio/cs/OLD/TestIBMDB.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/file/Files/walkFileTree/find.sh https://github.com/adoptium/aqa-tests/issues/3714 linux-all
+
 ############################################################################
 
 # jdk_rmi
 
-java/rmi/activation/Activatable/extLoadedImpl/ext.sh	https://github.com/adoptium/aqa-tests/issues/819 macosx-all
-java/rmi/transport/dgcDeadLock/DGCDeadLock.java	https://github.com/adoptium/aqa-tests/issues/1259	macosx-all
-sun/rmi/runtime/Log/6409194/NoConsoleOutput.java https://bugs.openjdk.java.net/browse/JDK-8156798	generic-all
+java/rmi/activation/Activatable/extLoadedImpl/ext.sh https://github.com/adoptium/aqa-tests/issues/819 macosx-all
+java/rmi/transport/dgcDeadLock/DGCDeadLock.java https://github.com/adoptium/aqa-tests/issues/1259 macosx-all
+sun/rmi/runtime/Log/6409194/NoConsoleOutput.java https://bugs.openjdk.java.net/browse/JDK-8156798 generic-all
 java/rmi/Naming/legalRegistryNames/LegalRegistryNames.java https://bugs.openjdk.java.net/browse/JDK-8005619 solaris-x64
 java/rmi/activation/Activatable/shutdownGracefully/ShutdownGracefully.java https://bugs.openjdk.org/browse/JDK-8085192 linux-all
 java/rmi/activation/Activatable/nonExistentActivatable/NonExistentActivatable.java https://bugs.openjdk.org/browse/JDK-8005436 linux-all
+
 ############################################################################
 
 # jdk_security
 
 com/sun/crypto/provider/KeyAgreement/SupportedDHParamGens.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
-com/sun/crypto/provider/KeyAgreement/SupportedDHParamGens.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
-java/security/KeyPairGenerator/SolarisShortDSA.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
-java/security/MessageDigest/TestDigestIOStream.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
+com/sun/crypto/provider/KeyAgreement/SupportedDHParamGens.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/security/KeyPairGenerator/SolarisShortDSA.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/security/MessageDigest/TestDigestIOStream.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 javax/xml/crypto/dsig/LineFeedOnlyTest.java https://github.com/adoptium/aqa-tests/issues/2356 windows-all
-sun/security/pkcs11/KeyStore/SecretKeysBasic.sh	https://bugs.openjdk.java.net/browse/JDK-8189603	linux-all,macosx-all,windows-all
-sun/security/pkcs11/Secmod/AddTrustedCert.java	https://github.com/adoptium/aqa-tests/issues/125	linux-all
-sun/security/pkcs11/Signature/TestDSAKeyLength.java	https://github.com/adoptium/aqa-tests/issues/70 linux-all
-sun/security/pkcs11/ec/TestECDH.java	https://github.com/adoptium/aqa-tests/issues/70	linux-all
-sun/security/pkcs11/ec/TestECDSA.java	https://github.com/adoptium/aqa-tests/issues/70	linux-all
-sun/security/pkcs11/ec/TestECGenSpec.java	https://github.com/adoptium/aqa-tests/issues/70	linux-all
-sun/security/pkcs11/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/68	linux-all
-sun/security/pkcs11/tls/TestKeyMaterial.java	https://github.com/adoptium/aqa-tests/issues/71	linux-all
-sun/security/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/68	generic-all
+sun/security/pkcs11/KeyStore/SecretKeysBasic.sh https://bugs.openjdk.java.net/browse/JDK-8189603 linux-all,macosx-all,windows-all
+sun/security/pkcs11/Secmod/AddTrustedCert.java https://github.com/adoptium/aqa-tests/issues/125 linux-all
+sun/security/pkcs11/Signature/TestDSAKeyLength.java https://github.com/adoptium/aqa-tests/issues/70 linux-all
+sun/security/pkcs11/ec/TestECDH.java https://github.com/adoptium/aqa-tests/issues/70 linux-all
+sun/security/pkcs11/ec/TestECDSA.java https://github.com/adoptium/aqa-tests/issues/70 linux-all
+sun/security/pkcs11/ec/TestECGenSpec.java https://github.com/adoptium/aqa-tests/issues/70 linux-all
+sun/security/pkcs11/rsa/TestCACerts.java https://github.com/adoptium/aqa-tests/issues/68 linux-all
+sun/security/pkcs11/tls/TestKeyMaterial.java https://github.com/adoptium/aqa-tests/issues/71 linux-all
+sun/security/rsa/TestCACerts.java https://github.com/adoptium/aqa-tests/issues/68 generic-all
 com/sun/crypto/provider/Mac/MacClone.java https://bugs.openjdk.java.net/browse/JDK-7087021 solaris-all
 javax/net/ssl/ServerName/BestEffortOnLazyConnected.java https://bugs.openjdk.org/browse/JDK-8155049 solaris-x64
 javax/net/ssl/Stapling/HttpsUrlConnClient.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
@@ -244,17 +246,16 @@ javax/net/ssl/TLSCommon/TestSessionLocalPrincipal.java https://github.com/adopti
 sun/security/pkcs11/KeyStore/ClientAuth.sh https://bugs.openjdk.org/browse/JDK-7132249 solaris-all
 sun/security/pkcs11/sslecc/ClientJSSEServerJSSE.java https://bugs.openjdk.org/browse/JDK-8042583 solaris-x64
 sun/security/pkcs11/fips/ClientJSSEServerJSSE.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9
-sun/security/pkcs11/fips/TestTLS12.java https://bugs.openjdk.org/browse/JDK-8029661 linux-ppc64le
 
 ############################################################################
 
 # jdk_security3
 
-sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
-sun/security/pkcs11/Secmod/TestNssDbSqlite.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
-sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
-sun/security/tools/jarsigner/diffend.sh	https://github.com/adoptium/infrastructure/issues/2623	linux-all
-sun/security/tools/jarsigner/emptymanifest.sh	https://github.com/adoptium/infrastructure/issues/2623	linux-all
+sun/security/lib/cacerts/VerifyCACerts.java https://github.com/adoptium/aqa-tests/issues/2123 generic-all
+sun/security/pkcs11/Secmod/TestNssDbSqlite.java https://github.com/adoptium/aqa-tests/issues/2123 generic-all
+sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java https://github.com/adoptium/aqa-tests/issues/2123 generic-all
+sun/security/tools/jarsigner/diffend.sh https://github.com/adoptium/infrastructure/issues/2623 linux-all
+sun/security/tools/jarsigner/emptymanifest.sh https://github.com/adoptium/infrastructure/issues/2623 linux-all
 sun/security/rsa/SignatureTest.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
 sun/security/tools/keytool/WeakAlg.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
 sun/security/tools/keytool/standard.sh https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
@@ -275,7 +276,8 @@ sun/security/krb5/auto/Unreachable.java https://github.com/adoptium/aqa-tests/is
 ############################################################################
 
 # jdk_sound
-javax/sound/midi/Devices/InitializationHang.java	https://github.com/adoptium/aqa-tests/issues/136	generic-all
+
+javax/sound/midi/Devices/InitializationHang.java https://github.com/adoptium/aqa-tests/issues/136 generic-all
 
 ############################################################################
 
@@ -300,6 +302,7 @@ sun/text/IntHashtable/Bug4170614Test.sh https://bugs.openjdk.java.net/browse/JDK
 ############################################################################
 
 # jdk_tools
+
 demo/jvmti/gctest/Gctest.java https://github.com/adoptium/aqa-tests/issues/2655 generic-all
 demo/jvmti/heapTracker/HeapTrackerTest.java https://github.com/adoptium/aqa-tests/issues/2655 generic-all
 demo/jvmti/heapViewer/HeapViewerTest.java https://github.com/adoptium/aqa-tests/issues/2655 generic-all
@@ -310,70 +313,72 @@ demo/jvmti/waiters/WaitersTest.java https://github.com/adoptium/aqa-tests/issues
 demo/zipfs/ZipFSOutputStreamTest.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
 sun/tools/clhsdb/Basic.sh https://github.com/adoptium/aqa-tests/issues/2665 generic-all
 sun/tools/hsdb/Basic.sh https://github.com/adoptium/aqa-tests/issues/2665 generic-all
-#Following test cases with solaris are tracked by https://github.com/adoptium/aqa-tests/issues/3618 solaris-x64
-sun/tools/jstatd/TestJstatdDefaults.java	https://github.com/adoptium/aqa-tests/issues/115	linux-all,solaris-x64
-sun/tools/jstatd/TestJstatdExternalRegistry.java	https://bugs.openjdk.java.net/browse/JDK-8081569	linux-all,solaris-x64
-sun/tools/jstatd/TestJstatdPort.java	https://bugs.openjdk.java.net/browse/JDK-8081569	linux-all,solaris-x64
-sun/tools/jstatd/TestJstatdPortAndServer.java	https://bugs.openjdk.java.net/browse/JDK-8081569	linux-all,solaris-x64
-sun/tools/jstatd/TestJstatdServer.java	https://github.com/adoptium/aqa-tests/issues/115	linux-all,solaris-x64
+# Following test cases with solaris are tracked by https://github.com/adoptium/aqa-tests/issues/3618 solaris-x64
+sun/tools/jstatd/TestJstatdDefaults.java https://github.com/adoptium/aqa-tests/issues/115 linux-all,solaris-x64
+sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all,solaris-x64
+sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all,solaris-x64
+sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all,solaris-x64
+sun/tools/jstatd/TestJstatdServer.java https://github.com/adoptium/aqa-tests/issues/115 linux-all,solaris-x64
 sun/tools/native2ascii/Native2AsciiTests.sh https://github.com/adoptium/aqa-tests/issues/2667 windows-all
 sun/misc/Version/Version.java https://bugs.openjdk.java.net/browse/JDK-8244548 generic-all
-com/sun/tools/attach/StartManagementAgent.java	https://github.com/adoptium/aqa-tests/issues/115	generic-all
-tools/pack200/CommandLineTests.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
-tools/pack200/CommandLineTests.java	https://github.com/adoptium/aqa-tests/issues/1051	linux-s390x
+com/sun/tools/attach/StartManagementAgent.java https://github.com/adoptium/aqa-tests/issues/115 generic-all
+# tools/pack200/CommandLineTests.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
+tools/pack200/CommandLineTests.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,solaris-sparcv9
 tools/pack200/Pack200Test.java https://github.com/adoptium/aqa-tests/issues/2657 generic-all
 tools/launcher/RunpathTest.java https://bugs.openjdk.java.net/browse/JDK-8286118 linux-arm
 sun/jvmstat/monitor/MonitoredVm/MonitorVmStartTerminate.java https://github.com/adoptium/infrastructure/issues/2565 solaris-x64
 sun/jvmstat/monitor/MonitoredVm/CR6672135.java https://github.com/adoptium/aqa-tests/issues/3691 windows-x64
 
 ###############################################################################
+
 # jdk_jdi
 
-com/sun/jdi/JdbMethodExitTest.sh                https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/Redefine-g.sh                       https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/AllLineLocations.java               https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/EarlyReturnTest.java                https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/MethodExitReturnValuesTest.java     https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/NativeInstanceFilter.java           https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/PopAndStepTest.java                 https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/PopAsynchronousTest.java            https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/PopSynchronousTest.java             https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/RedefineCrossStart.java             https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/redefineMethod/RedefineTest.java    https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
-com/sun/jdi/PrivateTransportTest.sh             https://github.com/adoptium/aqa-tests/issues/2154 windows-all
+com/sun/jdi/JdbMethodExitTest.sh https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/Redefine-g.sh https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/AllLineLocations.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/EarlyReturnTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/MethodExitReturnValuesTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/NativeInstanceFilter.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/PopAndStepTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/PopAsynchronousTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/PopSynchronousTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/RedefineCrossStart.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/redefineMethod/RedefineTest.java https://github.com/adoptium/aqa-tests/issues/2408 linux-s390x
+com/sun/jdi/PrivateTransportTest.sh https://github.com/adoptium/aqa-tests/issues/2154 windows-all
+
 ############################################################################
 
 # jdk_util
 
-java/util/Arrays/TimSortStackSize2.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/Arrays/TimSortStackSize2.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/util/Calendar/CalendarRegression.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
 java/util/Calendar/JapanEraNameCompatTest.java https://bugs.openjdk.java.net/browse/JDK-8218781 generic-all
-java/util/Locale/LocaleProviders.sh	https://github.com/adoptium/aqa-tests/issues/1261	windows-all
-java/util/Random/RandomTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/ResourceBundle/Control/Bug6530694.java	https://github.com/adoptium/aqa-tests/issues/137	macosx-all
-java/util/Spliterator/SpliteratorTraversingAndSplittingTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/Locale/LocaleProviders.sh https://github.com/adoptium/aqa-tests/issues/1261 windows-all
+java/util/Random/RandomTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/ResourceBundle/Control/Bug6530694.java https://github.com/adoptium/aqa-tests/issues/137 macosx-all
+java/util/Spliterator/SpliteratorTraversingAndSplittingTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/util/TimeZone/HongKong.java https://bugs.openjdk.java.net/browse/JDK-8031145 generic-all
-java/util/concurrent/locks/Lock/TimedAcquireLeak.java	https://github.com/adoptium/aqa-tests/issues/1259	macosx-all
-java/util/logging/TestLoggerWeakRefLeak.java	https://github.com/adoptium/aqa-tests/issues/1259	macosx-all
-java/util/stream/boottest/java/util/stream/SpinedBufferTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/CountLargeTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/ExplodeOpTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/FlatMapOpTest.java https://bugs.openjdk.java.net/browse/JDK-8173112    linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/SliceOpTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/StreamSpliteratorTest.java	https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://bugs.openjdk.java.net/browse/JDK-8173112    linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/TabulatorsTest.java    https://bugs.openjdk.java.net/browse/JDK-8173112    linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/TeeOpTest.java         https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/ForEachOpTest.java     https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/ConcatOpTest.java      https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/DistinctOpTest.java    https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/SortedOpTest.java      https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/StreamLinkTest.java    https://github.com/adoptium/aqa-tests/issues/2263   linux-arm
-sun/util/calendar/zi/TestZoneInfo310.java		https://github.com/eclipse-openj9/openj9/issues/1131	generic-all
+java/util/concurrent/locks/Lock/TimedAcquireLeak.java https://github.com/adoptium/aqa-tests/issues/1259 macosx-all
+java/util/logging/TestLoggerWeakRefLeak.java https://github.com/adoptium/aqa-tests/issues/1259 macosx-all
+java/util/stream/boottest/java/util/stream/SpinedBufferTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/CountLargeTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/ExplodeOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/FlatMapOpTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x,linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/SliceOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/StreamSpliteratorTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/TabulatorsTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x,linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/TeeOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/ForEachOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/ConcatOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/DistinctOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/SortedOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/StreamLinkTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
+sun/util/calendar/zi/TestZoneInfo310.java https://github.com/eclipse-openj9/openj9/issues/1131 generic-all
 java/util/Locale/Bug8040211.java https://github.com/adoptium/aqa-tests/issues/2420 linux-aarch64
-java/util/stream/test/org/openjdk/tests/java/util/stream/MapOpTest.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-883704362   linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/MapOpTest.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-883704362 linux-arm
 
 ############################################################################
 
@@ -385,13 +390,14 @@ java/util/stream/test/org/openjdk/tests/java/util/stream/MapOpTest.java https://
 
 com/sun/jndi/ldap/DeadSSLLdapTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/2351 generic-all
 com/sun/jndi/ldap/LdapDnsProviderTest.java https://github.com/adoptium/aqa-tests/issues/2355 generic-all
-jdk/lambda/vm/InterfaceAccessFlagsTest.java	https://github.com/adoptium/aqa-tests/issues/126	linux-all
+jdk/lambda/vm/InterfaceAccessFlagsTest.java https://github.com/adoptium/aqa-tests/issues/126 linux-all
 com/sun/jndi/ldap/RemoveNamingListenerTest.java https://bugs.openjdk.java.net/browse/JDK-8202117 aix-all
 
 ############################################################################
 
 # jdk_imageio
-#javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
+
+# javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github.com/adoptium/aqa-tests/issues/3242 solaris-all
 javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github.com/adoptium/aqa-tests/issues/2321 aix-all,solaris-all
 
 ############################################################################
@@ -401,7 +407,7 @@ javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github
 jdk/jfr/api/flightrecorder/TestGetEventTypes.java https://bugs.openjdk.org/browse/JDK-8309729 solaris-sparcv9
 jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-882618581 generic-all
 jdk/jfr/jcmd/TestJcmdDumpPathToGCRoots.java https://github.com/adoptium/aqa-tests/issues/2766 generic-all
-#linux-arm https://github.com/adoptium/aqa-tests/issues/3301
+# jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 generic-all
 jdk/jfr/event/io/TestInstrumentation.java https://bugs.openjdk.java.net/browse/JDK-8202142 generic-all
 jdk/jfr/event/compiler/TestCompilerPhase.java https://github.com/adoptium/aqa-tests/issues/3046 generic-all
@@ -413,7 +419,7 @@ jdk/jfr/event/gc/detailed/TestEvacuationInfoEvent.java https://github.com/adopti
 jdk/jfr/event/gc/detailed/TestG1HeapRegionTypeChangeEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/gc/detailed/TestG1MMUEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/gc/detailed/TestPromotionEventWithG1.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
-#jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventG1.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
+# jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventG1.java https://github.com/adoptium/aqa-tests/issues/3254 solaris-sparcv9
 jdk/jfr/event/gc/heapsummary/TestHeapSummaryEventG1.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm,solaris-sparcv9
 jdk/jfr/event/gc/objectcount/TestObjectCountAfterGCEventWithG1ConcurrentMark.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/gc/stacktrace/TestG1HumongousAllocationPendingStackTrace.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
@@ -443,4 +449,3 @@ jdk/jfr/jcmd/TestJcmdStopReadOnlyFile.java https://github.com/adoptium/aqa-tests
 jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.org/browse/JDK-8247203 linux-aarch64,linux-ppc64le
 jdk/jfr/api/consumer/TestRecordedFrame.java https://bugs.openjdk.java.net/browse/JDK-8247203 linux-arm,linux-ppc64le
 jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa-tests/issues/3277 windows-all
-
