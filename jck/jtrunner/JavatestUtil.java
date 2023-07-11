@@ -220,7 +220,7 @@ public class JavatestUtil {
 		secPropsFile = workDir + File.separator + "security.properties";
 		
 		// Solaris natives are in /natives/sunos
-		if (spec.contains("solaris")) {
+		if (spec.contains("sunos")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
 		
