@@ -220,7 +220,7 @@ public class JavatestUtil {
 		secPropsFile = workDir + File.separator + "security.properties";
 		
 		// Solaris natives are in /natives/sunos
-		if (spec.contains("solaris")) {
+		if (spec.contains("sunos")) {
 			nativesLoc = jckRoot + File.separator + "natives" + File.separator + "sunos";
 		}
 		
@@ -787,7 +787,7 @@ public class JavatestUtil {
 				jxcCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "schemagen.sh";
 				genCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsgen.sh";
 				impCmd = jckBase + File.separator + "macos" + File.separator + "bin" + File.separator + "wsimport.sh";
-			} else if (spec.contains("zos") || spec.contains("solaris")) {
+			} else if (spec.contains("zos") || spec.contains("sunos")) {
 				pathToJavac = testJdk + File.separator + "bin" + File.separator + "javac";
 				xjcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "xjc.sh";
 				jxcCmd = jckBase + File.separator + "solaris" + File.separator + "bin" + File.separator + "schemagen.sh";
