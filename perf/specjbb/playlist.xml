@@ -12,14 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
     <include>run/testenv.mk</include>
+    <!--
+        The minimum hardware requirement to run this test is 8GB of memory and 8 CPU cores
+        see specjbb/run/options/specjbb-multijvm-simple.sh for more details
+    -->
     <test>
-        <!-- The minimum hardware requirement to run this test is 8GB of memory and 8 CPU cores -->
-        <!-- see specjbb/run/options/specjbb-multijvm-simple.sh for more details -->
-
         <testCaseName>SPECjbb2015-multijvm-simple</testCaseName>
-        <command>. $(Q)$(RUN_OPTIONS)$(D)specjbb-multijvm-simple.sh$(Q); bash $(Q)$(RUN_SCRIPTS)$(D)run_multi.sh$(Q); $(TEST_STATUS)</command>
+        <command>. $(Q)$(RUN_OPTIONS_DIR)$(D)specjbb-multijvm-simple.sh$(Q); bash $(Q)$(RUN_SCRIPTS_DIR)$(D)run_specjbb2015.sh$(Q); $(TEST_STATUS)</command>
+        <levels>
+            <level>dev</level>
+        </levels>
+        <groups>
+            <group>perf</group>
+        </groups>
+        <vendors>
+            <vendor>microsoft</vendor>
+        </vendors>
+    </test>
+    <!--
+        The minimum hardware requirement to run this test is 4GB of memory and 4 CPU cores
+        see specjbb/run/options/specjbb-composite-simple.sh for more details
+    -->
+    <test>
+        <testCaseName>SPECjbb2015-composite-simple</testCaseName>
+        <command>. $(Q)$(RUN_OPTIONS_DIR)$(D)specjbb-composite-simple.sh$(Q); bash $(Q)$(RUN_SCRIPTS_DIR)$(D)run_specjbb2015.sh$(Q); $(TEST_STATUS)</command>
         <levels>
             <level>dev</level>
         </levels>

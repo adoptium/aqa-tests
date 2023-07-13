@@ -1,0 +1,2 @@
+YCSB_VERSION:=0.17.0
+YCSB_WORKLOAD:=workloadc

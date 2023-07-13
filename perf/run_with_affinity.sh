@@ -43,9 +43,15 @@ while [ -n "$1" ]; do
 	esac
 	shift
 done
-	
+
+pwd
+echo "load in ${TEST_ROOT}/perf/affinity.sh"
 . "${TEST_ROOT}/perf/affinity.sh" > /dev/null 2>&1
-setServerDBLoadAffinities --server-physcpu-num $SERVER_PHYSCPU_NUM --smt $SMT > /dev/null 2>&1
+echo "loaded ${TEST_ROOT}/perf/affinity.sh"
+
+echo "Set affinities with --server-physcpu-num ${SERVER_PHYSCPU_NUM} --smt ${SMT}"
+setServerDBLoadAffinities --server-physcpu-num "${SERVER_PHYSCPU_NUM}" --smt "${SMT}" > /dev/null 2>&1
+echo "Affinities set"
 
 if [ -z "${SERVER_AFFINITY_CMD}" ]; then
     echo "Warning!!! Affinity is NOT set. Affinity tool may NOT be installed/supported."

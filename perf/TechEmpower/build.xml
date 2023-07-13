@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<project name="TechEmpower" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>TechEmpower</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/perf/TechEmpower" />
+	<property name="SRC" location="." />
+
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+
+	<target name="getTFB" depends="init" description="Clone the distribution">
+		<var name="DIR_NAME" value="FrameworkBenchmarks"/>
+		<if>
+			<available file="${DIR_NAME}" type="dir" />
+			<then>
+				<echo message="${DIR_NAME} exists. Hence, not cloning it." />
+			</then>
+			<else>
+				<echo message="Cloning TechEmpower Framework Benchmarks"/>
+				<var name="git_command" value="clone --depth 1 -b master https://github.com/TechEmpower/FrameworkBenchmarks.git"/>
+				<echo message="git ${git_command}" />
+				<exec executable="git" failonerror="false" dir=".">
+					<arg line="${git_command}" />
+				</exec>
+			</else>
+		</if>
+	</target>
+
+	<target name="dist" depends="getTFB" description="Generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${SRC}"/>
+		</copy>
+	</target>
+	
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
