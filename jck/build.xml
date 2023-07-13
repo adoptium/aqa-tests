@@ -38,7 +38,7 @@
 		<isset property="isZOS"/>
 	</condition>
 	
-	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="master">
+	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="main">
 		<isset property="env.JCK_GIT_BRANCH"/>
 	</condition>
 	
@@ -176,7 +176,7 @@
 										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 											<arg value="reset" />
 											<arg value="--hard" />
-											<arg value="origin/master" />
+											<arg value="origin/main" />
 										</exec>
 										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 											<arg value="clean" />
