@@ -802,7 +802,7 @@ public class JavatestUtil {
 			if (spec.contains("linux")) {
 				xjcCmd = "bash "+xjcCmd;
 				jxcCmd = "bash "+jxcCmd;
-			} else if (spec.contains("solaris")) {
+			} else if (spec.contains("sunos")) {
 				xjcCmd = "ksh "+xjcCmd;
 				jxcCmd = "ksh "+jxcCmd;
 			}
