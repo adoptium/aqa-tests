@@ -40,22 +40,17 @@ getSemeruDockerfile() {
             echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion-ea/jdk/ubi/ubi8/Dockerfile.open.releases.full"
             curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion-ea/jdk/ubi/ubi8/Dockerfile.open.releases.full
             semeruDockerfile="Dockerfile.open.releases.full"
-            # replace artifactory credential
-            sed -i 's:# Set your Artifactory credentials here or pass them at build time:ARG DOCKER_REGISTRY_CREDENTIALS_USR:' $semeruDockerfile
-            sed -i 's:ARG ARTIFACTORY_TOKEN:ARG DOCKER_REGISTRY_CREDENTIALS_PSW:' $semeruDockerfile
-            sed -i 's;-H "Authorization: Bearer ${ARTIFACTORY_TOKEN}";--user "${DOCKER_REGISTRY_CREDENTIALS_USR}:${DOCKER_REGISTRY_CREDENTIALS_PSW}";' $semeruDockerfile
-            # delete line: ENV JAVA_VERSION .*
-            sed -i "s:ENV JAVA_VERSION .*: :" $semeruDockerfile
-            #  delete line: exit 1; as we need to test platforms that do not have ea build yet
-            sed -i '/exit 1;/d' $semeruDockerfile
-            # delete line: curl -LfsSo /tmp/openjdk.tar.xz ${BINARY_URL};
-            sed -i '/curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};/d' $semeruDockerfile
-            # delete line: echo "${ESUM} */tmp/openjdk.tar.xz" | sha256sum -c -;
-            sed -i '/echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" \| sha256sum -c -;/d' $semeruDockerfile
-            # replace commands to copy new jdk
-            sed -i 's:mkdir -p \/opt\/java\/java-ea; \\:mkdir -p \/opt\/java\/java-ea;:' $semeruDockerfile
-            sed -i 's:cd \/opt\/java\/java-ea; \\:COPY NEWJDK\/ \/opt\/java\/java-ea:' $semeruDockerfile
-            sed -i 's:tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;:RUN \/opt\/java\/java-ea\/bin\/java --version:' $semeruDockerfile
+
+            findCommandAndReplace '# Set your Artifactory credentials here or pass them at build time' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR' $semeruDockerfile
+            findCommandAndReplace 'ARG ARTIFACTORY_TOKEN' 'ARG DOCKER_REGISTRY_CREDENTIALS_PSW' $semeruDockerfile
+            findCommandAndReplace '\-H \"Authorization: Bearer \${ARTIFACTORY_TOKEN}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
+            findCommandAndReplace 'ENV JAVA_VERSION .*' " " $semeruDockerfile
+            findCommandAndReplace 'exit 1; \\' " " $semeruDockerfile
+            findCommandAndReplace 'curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};' " " $semeruDockerfile
+            findCommandAndReplace 'echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" | sha256sum -c -;' " " $semeruDockerfile
+            findCommandAndReplace 'mkdir -p \/opt\/java\/java-ea; \\' "mkdir -p \/opt\/java\/java-ea;" $semeruDockerfile
+            findCommandAndReplace 'cd \/opt\/java\/java-ea; \\' "COPY NEWJDK\/ \/opt\/java\/java-ea" $semeruDockerfile
+            findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/java-ea\/bin\/java --version" $semeruDockerfile
 
             mkdir NEWJDK
             cp -r $testJDKPath/. NEWJDK/
@@ -92,8 +87,29 @@ prepare() {
         
         libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
         # replace OpenLiberty dockerfile base image
-        sed -i 's/FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi/FROM local-ibm-semeru-runtimes:latest/g' $libertyDockerfilePath
+        findCommandAndReplace 'FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi' "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
     )
+}
+
+findCommandAndReplace() {
+    local oldCmd="$1"
+    local newCmd="$2"
+    local fileName="$3"
+    # Default sed delimiter is ":"
+    local sedDelimiter=":"
+    if [ ! -z "$4" ]; then
+        sedDelimiter="$4"
+    fi
+
+    echo "start grep: grep -c \"$oldCmd\" $fileName"
+    local occurrences=$(grep -c "$oldCmd" $fileName)
+    if [[ $occurrences -eq 0 ]]; then
+        echo "Error: The command '$oldCmd' was not found in $fileName."
+        exit 1
+    else
+	echo "replace command is 's$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter'"
+        sed -i "s$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter" $fileName
+    fi
 }
 
 buildImage() {
