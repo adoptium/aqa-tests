@@ -19,16 +19,16 @@
   * your own set of JCK test materials (JCK test source under OCTLA License): jck8d or jck9
   * ant 1.10.1 or above with ant-contrib.jar
 
-1. Create an empty folder where your JCK test materials will be stored. For example `makedir /jck`
+1. Create an empty folder where your JCK test materials will be stored. For example `makedir /jck`.
 
 2. Export `JCK_GIT_REPO=<test_material_repo | test_material_folder>` as an environment variable or pass it in when run as a make command.
-* If your test material is stored in a git repository it will be cloned to the empty folder created in step 1. For example `export JCK_GIT_REPO=git@github.com:<org>/<repo>.git`
-* Otherwise put your unarchived jck test materials into the empty folder created in step 1 and point `JCK_GIT_REPO` to this folder. For example `export JCK_GIT_REPO=/jck/jck8d`
+* If your test material is stored in a git repository it will be cloned to the empty folder created in step 1. For example `export JCK_GIT_REPO=git@github.com:<org>/<repo>.git`.
+* Otherwise put your unarchived jck test materials into the empty folder created in step 1 and point `JCK_GIT_REPO` to this folder. For example `export JCK_GIT_REPO=/jck/jck8d`.
 
-3. Export `JCK_ROOT=/jck/<test_material_folder>` as an environment variable or pass it in when run as a make command. For example `export JCK_ROOT=/jck/jck8d`
-* Optional. The default value is `<openjdk-test>/../../../jck_root/JCK$(JDK_VERSION)-unzipped`
+3. Export `JCK_ROOT=/jck/<test_material_folder>` as an environment variable or pass it in when run as a make command. For example `export JCK_ROOT=/jck/jck8d`.
+* Optional. The default value is `<openjdk-test>/../../../jck_root/JCK$(JDK_VERSION)-unzipped`.
 
-4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable
+4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable.
 
 5. If you want to compile jck test only, export `BUILD_LIST=jck`. The other steps will stay the same as instructed in [aqa-tests/README.md](https://github.com/adoptium/aqa-tests/blob/master/README.md).
 
@@ -51,7 +51,7 @@ There is a custom JCK test target `jck_custom`. This is used to run custom JCK t
 
 4. If you need to add extra Java options to JCK tests, you could export `EXTRA_OPTIONS="<java_options>"`. Then extra added Java options would be added to JCK test during execution.
 
-5. Follow the steps remaining in [aqa-tests/README.md](https://github.com/adoptium/aqa-tests/blob/master/README.md)
+5. Follow the steps remaining in [aqa-tests/README.md](https://github.com/adoptium/aqa-tests/blob/master/README.md).
 
 
 # How-to Run JCK test targets within Docker container
