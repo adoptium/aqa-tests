@@ -166,19 +166,6 @@ def setupParallelEnv() {
 				childJobNum = 20
 			}
 		} else if (params.PARALLEL == "Dynamic") {
-			String PARALLEL_OPTIONS = "TEST=${TARGET}"
-			if (params.NUM_MACHINES) {
-				int numOfMachines = getNumMachines()
-				PARALLEL_OPTIONS += " NUM_MACHINES=${numOfMachines} TEST_TIME="
-			} else if (params.TEST_TIME) {
-				PARALLEL_OPTIONS += " TEST_TIME=${params.TEST_TIME} NUM_MACHINES="
-			} else {
-				PARALLEL_OPTIONS += " TEST_TIME= NUM_MACHINES="
-			}
-			if (params.TRSS_URL) {
-				PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
-			}
-
 			try {
 				//get cached TRSS JSON data
 				timeout(time: 1, unit: 'HOURS') {
@@ -200,36 +187,37 @@ def setupParallelEnv() {
 				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
 			}
 
-			String unsetLLP = ""
-			//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
-			if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
-				unsetLLP = "unset LD_LIBRARY_PATH;"
+			String PARALLEL_OPTIONS = "TEST=${TARGET}"
+			if (params.TRSS_URL) {
+				PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 			}
-			sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
-
-			// get NUM_LIST from parallelList.mk. NUM_LIST can be different than numOfMachines
-			def parallelList = "aqa-tests/TKG/parallelList.mk"
 			int NUM_LIST = -1
-			if (fileExists("${parallelList}")) {
-				if (SPEC.startsWith('zos')) {
-					echo 'Converting parallelList.mk file from ebcdic to ascii...'
-					sh "iconv -f ibm-1047 -t iso8859-1 ${parallelList} > ${parallelList}.ascii; rm ${parallelList}; mv ${parallelList}.ascii ${parallelList}"
+			int MAX_NUM_MACHINES = Math.min(20, getMachineLimit());
+			if (params.NUM_MACHINES) {
+				int numOfMachines = getNumMachines()
+				PARALLEL_OPTIONS += " NUM_MACHINES=${numOfMachines} TEST_TIME="
+				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+			} else if (params.TEST_TIME) {
+				String PARALLEL_OPTIONS_TEMP = PARALLEL_OPTIONS
+				PARALLEL_OPTIONS += " TEST_TIME=${params.TEST_TIME} NUM_MACHINES="
+				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+				if (NUM_LIST > MAX_NUM_MACHINES) {
+					echo "TEST_TIME (${params.TEST_TIME} minutes) is not possible as it exceeds the machine limit."
+					echo "Regenerate parallel list with NUM_MACHINES=${MAX_NUM_MACHINES}."
+					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
+					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				}
-				echo "read parallelList.mk file: ${parallelList}"
-				def properties = readProperties file: "${parallelList}"
-				if (properties.NUM_LIST) {
-					NUM_LIST = properties.NUM_LIST.toInteger()
-				}
+			} else {
+				PARALLEL_OPTIONS += " TEST_TIME= NUM_MACHINES="
+				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 			}
-			if (!params.NUM_MACHINES && params.TEST_TIME && NUM_LIST > getMachineLimit()) {
-				assert false : "Build failed. TEST_TIME (${params.TEST_TIME} minutes) is not possible as there are not enough worker machines. Please provide a larger TEST_TIME."
-			} else if ( NUM_LIST > 0) {
+
+			if (NUM_LIST > 0) {
 				childJobNum = NUM_LIST
 				echo "Saving parallelList.mk file on jenkins..."
 				dir('aqa-tests/TKG') {
 					archiveArtifacts artifacts: 'parallelList.mk', fingerprint: true, allowEmptyArchive: false
 				}
-
 			} else {
 				assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 			}
@@ -296,11 +284,35 @@ def setupParallelEnv() {
 
 }
 
+// Returns NUM_LIST from parallelList.mk. 
+// NUM_LIST can be different than numOfMachines.
+def genParallelList(PARALLEL_OPTIONS) {
+	String unsetLLP = ""
+	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
+	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+		unsetLLP = "unset LD_LIBRARY_PATH;"
+	}
+	sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
+	def parallelList = "aqa-tests/TKG/parallelList.mk"
+	int NUM_LIST = -1
+	if (fileExists("${parallelList}")) {
+		if (SPEC.startsWith('zos')) {
+			echo 'Converting parallelList.mk file from ebcdic to ascii...'
+			sh "iconv -f ibm-1047 -t iso8859-1 ${parallelList} > ${parallelList}.ascii; rm ${parallelList}; mv ${parallelList}.ascii ${parallelList}"
+		}
+		echo "read parallelList.mk file: ${parallelList}"
+		def properties = readProperties file: "${parallelList}"
+		if (properties.NUM_LIST) {
+			NUM_LIST = properties.NUM_LIST.toInteger()
+		}
+	}
+	return NUM_LIST
+}
 
 // Returns num
 // num = params.NUM_MACHINES. If it is not provided, the default value is 1
 // num cannot be greater than machines limit
-def getNumMachines(){
+def getNumMachines() {
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	int limit = getMachineLimit()
 	echo "machine limit is ${limit}"
@@ -874,12 +886,9 @@ def testBuild() {
 			setup()
 			addGrinderLink()
 			// prepare environment and compile test projects
-			if( params.PARALLEL && params.PARALLEL != "None" ) {
-				if ((params.PARALLEL == "NodesByIterations" || params.PARALLEL == "Dynamic") && NUM_MACHINES == 1) {
-					testExecution()
-				} else {
-					setupParallelEnv()
-				}
+			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
+				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
+				setupParallelEnv()
 			} else {
 				testExecution()
 			}
@@ -1252,7 +1261,7 @@ def triggerRerunJob () {
 }
 
 def run_parallel_tests() {
-	if (params.PARALLEL && params.PARALLEL != "None" && NUM_MACHINES > 1) {
+	if (params.PARALLEL && params.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			node {
