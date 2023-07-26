@@ -215,7 +215,7 @@ AQAvit plays a vital role in providing support to developers using the OpenJDK b
 
 - Issue Resolution: - By identifying and highlighting potential problems, AQAvit supports the iterative bug-fixing process, leading to the continuous improvement of the OpenJDK builds.
 
-## Why Adoptium AQAvit Uses the '3 Layer Cake' Architecture
+## Why AQAvit Uses the '3 Layer Cake' Architecture
 
 The Adoptium Quality Assurance (AQA) process plays a crucial role in ensuring the reliability, stability, and security of OpenJDK builds distributed by the Eclipse Adoptium project. AQA employs the '3 Layer Cake' architecture, consisting of three layers - Test Result Summary Service (TRSS), CI Systems, and TaskKitGen (TKG). This documentation explores the rationale behind the adoption of the '3 Layer Cake' architecture and its significance in delivering high-quality Java runtimes.
 
