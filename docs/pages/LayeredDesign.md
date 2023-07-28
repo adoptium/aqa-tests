@@ -10,7 +10,9 @@ The '3 Layer Cake' architecture in Adoptium AQA comprises three interconnected l
 
 - **Test Result Summary Service (TRSS):** TRSS serves as the top layer and is responsible for monitoring multiple CI servers, generating graphical aggregate summaries, providing deep historical data, and offering search, sort, and filter capabilities. It also supports pluggable parsers, forming the basis for deep analytics and deep learning services.
 
-- **CI Systems:** The middle layer consists of various Continuous Integration (CI) systems such as Jenkins, Tekton, Azure DevOps (AzDo), GitHub Actions, and others. CI systems schedule regular builds, distribute tests across multiple nodes and platforms, and provide basic GUI views of test results. They also enable basic forms of parallelization.
+- **The CI layer:** The middle layer is the Continuous Integration (CI) layer and can be occupied by one or more systems such as Jenkins, Tekton, Azure DevOps (AzDo), GitHub Actions, and others.  We use Jenkins heavily for daily and release work at the Adoptium project.  The CI layer is responsible for scheduling builds, distributing tests across multiple nodes and platforms, and providing basic GUI views of test results. They also enable basic forms of parallelization.  
+
+We purposefully keep this layer with fewer enhancements or special features which allows us to be more portable and ensures we have the option to swap this layer out with different types of CI servers as needed.  It also means we do not have to duplicate functionality across the many different types of systems that can occupy this layer.
 
 - **TaskKitGen (TKG):** The bottom layer, TKG, categorizes logically, generates test targets based on playlists (level/platform/version/implementation-specific), and executes tests via common command-line or make target patterns. TKG adds tests through auto-detected directories, standardizes exclusion, and dynamically generates test playlists for smart parallelization.
 
