@@ -5,7 +5,7 @@ The Eclipse AQAvit project consists of several Github repositories and the main 
 Let's explore the different ways users can leverage the work being done at the AQAvit project:
 
 ### 1. AQAvit Verification:
-AQAvit is primarily used for verification testing of the OpenJDK builds. This application involves a comprehensive suite of automated tests that assess different aspects of the builds to verify their correctness and adherence to Java SE specifications. Key aspects covered by AQAvit verification include:
+AQAvit is primarily used for verification testing of the OpenJDK builds. This application involves verifying an OpenJDK build against a specific version of the test material.  All tests must be shown to pass and the results of this automated testing must be shared publicly along with transparent reporting of any test exclusions.  The automated tests cover a range of quality criteria including: 
 
 - Functional Correctness: - AQAvit tests the functional correctness of the OpenJDK builds, ensuring that they execute Java applications and libraries as expected and according to the Java SE standard.
 
