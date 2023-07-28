@@ -20,7 +20,7 @@ This layer is responsible for categorizing tests into logical groups, generating
 
 ### The Rationale Behind '3 Layer Cake' Architecture:
 
-The adoption of the '3 Layer Cake' architecture in Adoptium AQA is driven by several key reasons:
+The adoption of the '3 Layer Cake' architecture in AQAvit is driven by several key reasons:
 
 - **Modular Testing Approach:** The '3 Layer Cake' architecture provides a modular testing approach, dividing responsibilities among three layers. This modularity allows for easy maintenance, upgrades, and improvements of individual layers, promoting flexibility and adaptability to evolving testing needs.
 
