@@ -1,4 +1,4 @@
-## Applications of AQAvit in Adoptium Quality Assurance (AQA)
+## The Scope of Adoptium Quality Assurance (AQA)
 
 AQAvit is a critical component of the Adoptium Quality Assurance (AQA) process, designed to ensure the reliability and excellence of OpenJDK builds distributed by the Eclipse Adoptium project. AQAvit serves various applications in the AQA workflow, contributing to the delivery of high-quality Java runtimes for developers and users. Let's explore the specific applications of AQAvit:
 
