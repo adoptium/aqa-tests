@@ -18,7 +18,8 @@ AQAvit verification is focussed on testing for 'quality'.  Compatibility testing
 ### 2. Developer Support:
 AQAvit plays a vital role in providing support to developers using the OpenJDK builds. This application involves ongoing testing, continuous integration, and bug tracking to assist developers in the following ways:
 
-- Swift Feedback and Bug Identification: - AQAvit's automated tests provide quick feedback on newly committed code changes, enabling developers to identify and address issues promptly.
+- Publicly available test results: - AQAvit's automated tests run regularly at the Eclipse [Adoptium Jenkins server](https://ci.adoptium.net/). 
+ Test results are visible through the Jenkins server directly and also through the [public TRSS instance](https://trss.adoptium.net/).  These regular results provide quick feedback on newly committed code changes, enabling developers to identify and address issues promptly.
 
 - Continuous Integration (CI) Pipeline: AQAvit is integrated into the CI pipeline, ensuring that developers have access to up-to-date builds for their development and testing needs.
 
