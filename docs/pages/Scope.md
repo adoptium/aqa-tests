@@ -11,7 +11,9 @@ AQAvit is primarily used for verification testing of the OpenJDK builds. This ap
 
 - Performance Benchmarking: - AQAvit includes performance tests to benchmark the OpenJDK builds, ensuring that they meet acceptable performance criteria for a wide range of applications.
 
-- Compatibility Testing: AQAvit verifies the compatibility of the OpenJDK builds with different Java APIs and libraries, ensuring that applications developed using these builds run smoothly without compatibility issues.
+- Security Testing: AQAvit verifies OpenJDK builds against several security test suites and for known vulnerabilities.
+
+AQAvit verification is focussed on testing for 'quality'.  Compatibility testing is done as part of the [Eclipse Temurin Compliance project](https://projects.eclipse.org/projects/adoptium.temurin-compliance) and is outside of the scope of AQAvit.
 
 ### 2. Developer Support:
 AQAvit plays a vital role in providing support to developers using the OpenJDK builds. This application involves ongoing testing, continuous integration, and bug tracking to assist developers in the following ways:
