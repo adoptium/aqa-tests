@@ -6,7 +6,7 @@ The Adoptium Quality Assurance (AQA) process which is encapsulated within the [E
 
 ![LayeredDesign_3LayerCake](../diagrams/LayeredDesign_3LayerCake.jpg)
 
-The '3 Layer Cake' architecture in Adoptium AQA comprises three interconnected layers, each responsible for specific aspects of testing and build validation:
+The '3 Layer Cake' architecture in AQAvit comprises three independent but interconnected layers, each responsible for specific aspects of testing and build validation:
 
 - **Test Result Summary Service (TRSS):** TRSS serves as the top layer and is responsible for monitoring multiple CI servers, generating graphical aggregate summaries, providing deep historical data, and offering search, sort, and filter capabilities. It also supports pluggable parsers, forming the basis for deep analytics and deep learning services.
 
