@@ -21,7 +21,11 @@ AQAvit plays a vital role in providing support to development teams.  It support
 - Publicly available test results: - AQAvit's automated tests run regularly at the Eclipse [Adoptium Jenkins server](https://ci.adoptium.net/). 
  Test results are visible through the Jenkins server directly and also through the [public TRSS instance](https://trss.adoptium.net/).  These regular results provide quick feedback on newly committed code changes, enabling developers to identify and address issues promptly.
 
-- Continuous Integration (CI) Pipeline: AQAvit is integrated into the CI pipeline, ensuring that developers have access to up-to-date builds for their development and testing needs.
+- Continuous Integration (CI) Pipelines and Pull Request testing: AQA tests are integrated into the Temurin build pipelines and run automatically with each new Temurin build.  In addition to the build pipeline, AQA tests can be triggered via a standalone AQA Test Pipeline or Grinder job, both of which can pull the OpenJDK binary they are intended to test from either the [Adoptium API](https://api.adoptium.net/), a previously run Jenkins job or from any public URL that may be hosting a JDK binary available for testing.  
+
+Since AQA tests can be run via the [run-aqa Github action](https://github.com/adoptium/run-aqa), Pull request (PR) testing can be incorporated into a development workflow and tuned to specific developer needs.
+
+This ensures that developers have access to up-to-date and customized builds for their development and testing needs.
 
 - Bug Tracking and Reporting: - AQAvit contributes to the bug tracking and reporting system in the AQA process, allowing developers to log and track issues that arise during testing or are reported by the community.
 
