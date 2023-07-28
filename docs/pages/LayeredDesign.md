@@ -14,7 +14,9 @@ The '3 Layer Cake' architecture in Adoptium AQA comprises three interconnected l
 
 We purposefully keep this layer with fewer enhancements or special features which allows us to be more portable and ensures we have the option to swap this layer out with different types of CI servers as needed.  It also means we do not have to duplicate functionality across the many different types of systems that can occupy this layer.
 
-- **TaskKitGen (TKG):** The bottom layer, TKG, categorizes logically, generates test targets based on playlists (level/platform/version/implementation-specific), and executes tests via common command-line or make target patterns. TKG adds tests through auto-detected directories, standardizes exclusion, and dynamically generates test playlists for smart parallelization.
+- **TestKitGen (TKG):** The base layer, [TKG](https://github.com/adoptium/TKG), is feature-rich and the only required layer in order to run tests on a particular machine via the command line.  For developers wanting to debug or test on a particular machine, it is sufficient to run tests in this way.
+
+This layer is responsible for categorizing tests into logical groups, generating test targets based on playlists, filtering tests by various tags in the playlists (level/platform/architecture/micro-architecture/version/implementation/vendor), and executing tests via common command-line or make target patterns. TKG can discover and add tests through auto-detected directories, allow for a standardized method of test exclusion, and dynamically divide test targets for smart parallelization and efficient use of machine resources.  The latter feature is particularly helpful when combined with the other layers, since TKG can interact with the other layers.  TKG can query TRSS instances for historical information and provide the CI layer with a smarter division of test targets based on the historical average execution times on that CI system across different platforms, versions, and test categories.
 
 ### The Rationale Behind '3 Layer Cake' Architecture:
 
