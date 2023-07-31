@@ -71,7 +71,7 @@ We currently utilize both the OpenJDK regression test suite and the Eclipse Open
 Both of these test groups, which we call “openjdk” and “functional” are typically unit tests designed to verify the APIs and features of the JDK.  By thorough coverage of the APIs and coverage of the JEPs/JSRs, we identify interoperability issues and consistency results.  Both test suites are continuously augmented at their source projects/repositories, OpenJDK and Eclipse OpenJ9 respectively.  For this reason, we have chosen to include portions of these as part of AQA, since the tests are being kept current and relevant to the changes to the binaries we test.
 
 While there are different JDK implementations (ranging from different garbage collection policies to different code generation options to different JVM technologies), they all draw from OpenJDK.  Functional correctness and consistency can be measured through a common set of quality metrics.
-2.2.2 System and Load Tests
+#### 2.2.2 System and Load Tests
 This category of testing includes tests designed and written from a system-wide perspective.  Quality engineers have written these tests from a consumer perspective, designing common customer scenarios based on feedback and observation from service professionals and consumer feedback.  Importantly, this test group also includes load and stress testing which is important to enterprise consumers.  These tests ask the question, “what level of load can this binary take before it breaks?”.
 
 Some of these load and stress tests fire up thousands of threads and iterate 10’s of thousands of times.  The tests can also be tuned, so that as binaries become more resilient, we can increase the load to further stress and push the load bar higher.
