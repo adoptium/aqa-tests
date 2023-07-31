@@ -32,7 +32,7 @@ The `ci` root is used to define labels related to the role of machines in the co
 
 ## Usage Guidelines
 
-When creating or configuring Jenkins pipeline scripts, use the appropriate labels from the schema to specify the machines on which the jobs should run. For example, if a job requires a machine with Ubuntu 16.04 and 64-bit architecture, you can use labels like `sw.os.ubuntu.16`, `hw.bits.64`, and `x86_64`.
+When creating or configuring Jenkins pipeline scripts, use the appropriate labels from the schema to specify the machines on which the jobs should run. For example, if a job requires a machine with Ubuntu 16.04 and 64-bit architecture, you can use labels like `sw.os.ubuntu.16`, `hw.bits.64`, and `hw.arch.x86`.
 
 To maintain consistency and avoid conflicts, please adhere to this labelling schema when adding new labels or modifying existing ones. Feel free to contribute to this schema as we encounter new requirements, but remember to document any changes made for better understanding and future reference.
 
