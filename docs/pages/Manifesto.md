@@ -55,7 +55,7 @@ We believe open languages deserve open tests.  This means test source should be 
 
 Transparent processes strengthen confidence.  Consumers get to see test results directly and know a certain quality bar was achieved, rather than just be told some testing was done.  Open tests get scrutinized, get fixed, get loved.
 
-Open testing engages more people and helps to drive innovation and build community.  Being able to see and compare test results across implementations also creates a healthy and competitive ecosystem that ultimately benefits all.
+Open testing engages more people and helps to drive innovation and build communities.  Being able to see and compare test results across implementations also creates a healthy and competitive ecosystem that ultimately benefits all.
 
 <a name="diverseRobust"></a>
 
