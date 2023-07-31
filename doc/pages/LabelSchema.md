@@ -21,7 +21,7 @@ The `hw` root is used to define labels related to the hardware attributes of the
 ## Software Labels (sw)
 The sw root deals with labels related to the software attributes of the machines in the Jenkins build environment.
 
-- **sw.os:** Specifies the operating system running on the machine. This label indicates the operating system distribution and version. Examples include `rhel` (Red Hat Enterprise Linux), ubuntu (Ubuntu Linux), `sles` (SUSE Linux Enterprise Server), `aix` (IBM AIX), `osx` (Apple macOS), `windows` (Microsoft Windows), and `zos` (IBM z/OS). For operating systems with multiple versions, version numbers may be appended, such as rhel.6, ubuntu.16, and windows.10.
+- **sw.os:** Specifies the operating system running on the machine. This label indicates the operating system distribution and version. Examples include `rhel` (Red Hat Enterprise Linux), `ubuntu` (Ubuntu Linux), `sles` (SUSE Linux Enterprise Server), `aix` (IBM AIX), `osx` (Apple macOS), `windows` (Microsoft Windows), and `zos` (IBM z/OS). For operating systems with multiple versions, version numbers may be appended, such as `rhel.6`, `ubuntu.16`, and `windows.10`.
 - **sw.tool:** Indicates various software tools installed on the machines. This label is used to identify specific software packages or tools that are essential for Jenkins jobs and builds. Examples include `gcc.xx` (different versions of the GNU Compiler Collection), `docker.xx` (Docker container runtime), `hypervisor.kvm` (Kernel-based Virtual Machine), and more.
 
 ## Continuous Integration Labels (ci)
