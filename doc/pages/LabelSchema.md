@@ -36,7 +36,7 @@ When creating or configuring Jenkins pipeline scripts, use the appropriate label
 
 To maintain consistency and avoid conflicts, please adhere to this labelling schema when adding new labels or modifying existing ones. Feel free to contribute to this schema as we encounter new requirements, but remember to document any changes made for better understanding and future reference.
 
-## Contributions
+## Extending the Schema
 Extending this labelling schema is sometimes needed. As we encounter new requirements or use cases, we may consider adding new labels to the schema.  However, it's crucial to document any changes made for clarity and to ensure proper communication among all users of the AQAvit Jenkins pipelines.  
 
 The reason there is a schema, is to ensure proper interoperability across Jenkins servers while avoiding duplication or label 'bloat' due to users of the Jenkins scripts diverging and using their own set of labels.
