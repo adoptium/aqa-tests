@@ -4,7 +4,7 @@ It serves as a guide for testers and developers using AQAvit Grinder to perform 
 The reference provides detailed explanations and instructions for each configuration parameter, enabling users to customize their test jobs effectively.
 
 ## Access Permissions
-For access permissions to the Grinder job at ci.adoptium.net, you need to be added to the test-triage Github team (requires [2FA](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication) on your Github account).
+For access permissions to the Grinder job at ci.adoptium.net, you need to be part of the `test-triage` Github team (requires [2FA](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication) on your Github account).
 
 ## Grouping and Granularity
 We have many tests, so it is important to be able to slice and dice them in different ways to be efficient with testing, debugging, and triage.
