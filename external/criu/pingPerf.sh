@@ -41,9 +41,8 @@ getSemeruDockerfile() {
             curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion-ea/jdk/ubi/ubi8/Dockerfile.open.releases.full
             semeruDockerfile="Dockerfile.open.releases.full"
 
-            findCommandAndReplace '# Set your Artifactory credentials here or pass them at build time' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR' $semeruDockerfile
-            findCommandAndReplace 'ARG ARTIFACTORY_TOKEN' 'ARG DOCKER_REGISTRY_CREDENTIALS_PSW' $semeruDockerfile
-            findCommandAndReplace '\-H \"Authorization: Bearer \${ARTIFACTORY_TOKEN}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
+            findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
+            findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
             findCommandAndReplace 'ENV JAVA_VERSION .*' " " $semeruDockerfile
             findCommandAndReplace 'exit 1; \\' " " $semeruDockerfile
             findCommandAndReplace 'curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};' " " $semeruDockerfile
