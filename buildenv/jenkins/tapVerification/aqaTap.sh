@@ -143,6 +143,10 @@ listRerun() {
 	echo "list rerun in Grinder..."
 	echo "============================"
 	find . -name "*Grinder_*" | xargs grep 'ok '
+	echo "============================"
+	echo "list rerun in rerun build..."
+	echo "============================"
+	find . -name "*_rerun*" | xargs grep 'ok '
 }
 
 listTAP() {
