@@ -68,6 +68,11 @@
 				<version>16+</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4711#issuecomment-1683178303</comment>
+				<version>11</version>
+				<platform>aarch64_windows</platform>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
 		$(TEST_STATUS)</command>
