@@ -164,6 +164,17 @@ CC=gcc
 CFLAGS=-fPIC -I$(SOLARIS_PATH) -I$(LINUX_PATH) -I$(SRC_PATH)
 LDFLAGS=-shared 
 
+# need to add c99 flags for p/zlinux as of JDK21
+ifeq ($(shell test $(JDK_VERSION) -ge 21; echo $$?),0)
+	ifeq ($(OS),linux)
+		ifeq ($(ARCH),ppc64le)
+			CFLAGS+=-std=gnu99
+		else ifeq ($(ARCH),s390x)
+			CFLAGS+=-std=gnu99
+		endif
+	endif
+endif
+
 ifeq ($(OS),osx)
 	CC=gcc
 	ifeq ($(ARCH),arm64)
