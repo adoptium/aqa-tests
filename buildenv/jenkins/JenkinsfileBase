@@ -816,7 +816,7 @@ def post(output_name) {
 			xunit (
 					tools: [Custom(customXSL: "$WORKSPACE/aqa-tests/jck/xUnit.xsl",
 							deleteOutputFiles: true,
-							failIfNotNew: true,
+							failIfNotNew: false,
 							pattern: "**/TKG/output_*/**/report.xml",
 							skipNoTestFiles: true,
 							stopProcessingIfError: true)]
