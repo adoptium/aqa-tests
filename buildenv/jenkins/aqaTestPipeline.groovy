@@ -16,6 +16,7 @@ def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 def APPLICATION_OPTIONS = (params.APPLICATION_OPTIONS) ?: ""
 def SETUP_JCK_RUN = params.SETUP_JCK_RUN ?: false
+def LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
 
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
@@ -31,6 +32,8 @@ def suffix = ""
 if (TEST_FLAG) {
     suffix = "_" + TEST_FLAG.toLowerCase().trim()
 }
+
+def fail = false
 JDK_VERSIONS.each { JDK_VERSION ->
     PLATFORMS.each { PLATFORM ->
         String[] tokens = PLATFORM.split('_')
@@ -94,7 +97,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                     string(name: 'JDK_VERSIONS', value: JDK_VERSION),
                     string(name: 'ARCH_OS_LIST', value: PLATFORM),
                     string(name: 'JDK_IMPL', value: jdk_impl),
-                    booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
+                    booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: LIGHT_WEIGHT_CHECKOUT)
                 ]
                 build job: 'Test_Job_Auto_Gen', parameters: parameters, propagate: true
             }
@@ -112,7 +115,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         string(name: 'PARALLEL', value: PARALLEL),
                         string(name: 'NUM_MACHINES', value: NUM_MACHINES.toString()),
                         booleanParam(name: 'GENERATE_JOBS', value: AUTO_AQA_GEN),
-                        booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false),
+                        booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: LIGHT_WEIGHT_CHECKOUT),
                         string(name: 'TIME_LIMIT', value: TIME_LIMIT.toString()),
                         string(name: 'TRSS_URL', value: TRSS_URL),
                         string(name: 'LABEL', value: LABEL),
@@ -122,8 +125,8 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir),
                         booleanParam(name: 'SETUP_JCK_RUN', value: SETUP_JCK_RUN)
                     ], wait: true
-                    def result = downstreamJob.getResult()
-                    echo " ${TEST_JOB_NAME} result is ${result}"
+                    def downstreamJobResult = downstreamJob.getResult()
+                    echo " ${TEST_JOB_NAME} result is ${downstreamJobResult}"
                     if (downstreamJob.getResult() == 'SUCCESS' || downstreamJob.getResult() == 'UNSTABLE') {
                         echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
                         node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
@@ -139,6 +142,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                     )
                                 }
                             } catch (Exception e) {
+                                echo 'Exception: ' + e.toString()
                                 echo "Cannot run copyArtifacts from job ${TEST_JOB_NAME}. Skipping copyArtifacts..."
                             }
                             try {
@@ -146,12 +150,13 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                     archiveArtifacts artifacts: "*.tap", fingerprint: true
                                 }
                             } catch (Exception e) {
+                                echo 'Exception: ' + e.toString()
                                 echo "Cannot archiveArtifacts from job ${TEST_JOB_NAME}. "
                             }
                         }
-                    } else {
-                        echo " ${TEST_JOB_NAME} result is ${result}"
-                        currentBuild.result = "FAILURE"
+                    }
+                    if (downstreamJobResult != "SUCCESS") {
+                        fail = true
                     }
                 }
             } else {
@@ -161,3 +166,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
     }
 }
 parallel JOBS
+if (fail) {
+    currentBuild.result = "FAILURE"
+}
+
