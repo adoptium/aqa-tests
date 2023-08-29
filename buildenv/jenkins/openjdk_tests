@@ -282,7 +282,8 @@ timestamps{
                     }
                 }
 
-            if (params.TEST_FLAG == "FIPS") {
+            // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
+            if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
                 LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
                 env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
             }
