@@ -231,7 +231,7 @@ timestamps{
             generateJobViaAutoGen(imagePullJobName)
 
             def imageUploadJobs = [:]
-            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
             // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
             if (params.PLATFORM == "ppc64le_linux") {

@@ -22,6 +22,7 @@ docker_image_source_job_name=""
 build_number=$BUILD_NUMBER
 docker_registry_dir=""
 docker_os="ubi"
+docker_os_version="8"
 node_label_current_os=""
 node_label_micro_architecture=""
 restore_docker_image_name_list=()
@@ -37,20 +38,23 @@ getSemeruDockerfile() {
     if [[ ! -f "Dockerfile.open.releases.full" ]]; then
 
         if [[ $jdkVersion ]]; then
-            echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/ubi/ubi8/Dockerfile.open.releases.full"
-            curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/ubi/ubi8/Dockerfile.open.releases.full
             semeruDockerfile="Dockerfile.open.releases.full"
+            if [[ $docker_os == "ubi" ]]; then
+                echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${docker_os}${docker_os_version}/${semeruDockerfile}"
+                curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${docker_os}${docker_os_version}/${semeruDockerfile}
+                findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
+                findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
+                findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile
+            else # docker_os is ubuntu
+                echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${semeruDockerfile}"
+                curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${semeruDockerfile}
+            fi
 
-            findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
-            findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
-            findCommandAndReplace 'ENV JAVA_VERSION .*' " " $semeruDockerfile
-            findCommandAndReplace 'exit 1; \\' " " $semeruDockerfile
             findCommandAndReplace 'curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};' " " $semeruDockerfile
             findCommandAndReplace 'echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" | sha256sum -c -;' " " $semeruDockerfile
             findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile
             findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile
             findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile
-            findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile
 
             mkdir NEWJDK
             cp -r $testJDKPath/. NEWJDK/
@@ -84,10 +88,16 @@ prepare() {
         fi
         curCommitID=$(git rev-parse HEAD)
         echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
-        
-        libertyDockerfilePath="releases/latest/beta/Dockerfile.ubi.openjdk17"
-        # replace OpenLiberty dockerfile base image
-        findCommandAndReplace 'FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-ubi' "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+        if [[ $docker_os == "ubi" ]]; then
+            # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11
+            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk17"
+            # replace OpenLiberty dockerfile base image
+            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-${jdkVersion}-jdk-${docker_os}" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+        else # docker_os is ubuntu
+            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk${jdkVersion}"
+            findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+
+        fi
     )
 }
 
@@ -115,7 +125,8 @@ findCommandAndReplace() {
 buildImage() {
     echo "build image at $(pwd)..."
     sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
-    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta/Dockerfile.ubi.openjdk17 ci.docker/releases/latest/beta
+    # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11, need to add jdkVersion for ubuntu support later
+    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta/Dockerfile.${docker_os}.openjdk17 ci.docker/releases/latest/beta
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
 }
 
@@ -207,7 +218,7 @@ pushImage() {
     dockerRegistryLogin
     echo "Pushing docker image..."
 
-    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
     tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
 
     # Push a docker image with build_num for records
@@ -239,7 +250,7 @@ getImageNameList() {
         echo "${comboList}: ${image_os_combo_list}"
         for image_os_combo in ${image_os_combo_list[@]}
         do
-            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${PLATFORM}-${image_os_combo}:${build_number}")
+            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${image_os_combo}:${build_number}")
         done
     fi
 }
@@ -360,24 +371,32 @@ elif [ "$1" == "testCreateRestoreImageOnly" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
     jdkVersion=$4
+    docker_os=$5
+    docker_os_version=$6
     testCreateRestoreImageOnly
 elif [ "$1" == "testUnprivilegedRestoreOnly" ]; then
     testUnprivilegedRestoreOnly
 elif [ "$1" == "testPrivilegedRestoreOnly" ]; then
     testPrivilegedRestoreOnly
 elif [ "$1" == "pullImageUnprivilegedRestore" ]; then
-    docker_registry_dir=$2 #docker_registry_dir can be empty
+    docker_os=$2
+    docker_os_version=$3
+    docker_registry_dir=$4 #docker_registry_dir can be empty
     setup
     pullImageUnprivilegedRestore
 elif [ "$1" == "pullImagePrivilegedRestore" ]; then
-    docker_registry_dir=$2 #docker_registry_dir can be empty
+    docker_os=$2
+    docker_os_version=$3
+    docker_registry_dir=$4 #docker_registry_dir can be empty
     setup
     pullImagePrivilegedRestore
 elif [ "$1" == "testCreateRestoreImageAndPushToRegistry" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
     jdkVersion=$4
-    docker_registry_dir=$5
+    docker_os=$5
+    docker_os_version=$6
+    docker_registry_dir=$7
     setup
     testCreateRestoreImageOnly
     pushImage
@@ -385,11 +404,15 @@ elif [ "$1" == "testCreateImageAndUnprivilegedRestore" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
     jdkVersion=$4
+    docker_os=$5
+    docker_os_version=$6
     testCreateImageAndUnprivilegedRestore
 elif [ "$1" == "testCreateImageAndPrivilegedRestore" ]; then
     pingPerfZipPath=$2
     testJDKPath=$3
     jdkVersion=$4
+    docker_os=$5
+    docker_os_version=$6
     testCreateImageAndPrivilegedRestore
 else
     echo "unknown command"
