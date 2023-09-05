@@ -19,12 +19,12 @@ jobs:
       id: workflow_run_info
     # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
     - name: Checkout current repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: 'main'
     # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
     - name: Checkout main TKG repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: 'adoptium/TKG.git'
         ref: 'master'
