@@ -7,25 +7,24 @@ WORKSPACE="$(pwd)"/workspace
 GIT_REPO="$(pwd)"/pr
 JCK_VERSION=""
 JCK_UPDATE_NUMBER=""
-DOWNLOAD_URL=""
+JCK_GIT_REPO=""
+ARTIFACTORY_DOWNLOAD_URL=""
 ARTIFACTORY_TOKEN=""
 GIT_REPO_NAME=""
 GIT_USER=""
 GIT_DEV_BRANCH="autoBranch"
 GIT_TOKEN=""
 JCK_FOLDER_SUFFIX=""
-JAVA_SDK_URL=""
 
 usage ()
 {
-	echo 'Usage : jckupdater.sh  [--jck_version|-j ] : indicate JCK version to update.'
+	echo 'Usage : jckupdater.sh  [--jck_version|-j ] : Indicate JCK version to update.'
 	echo '                [--artifactory_token|-at] : Token to access JCK artifactory: https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local.'
-	echo '                [--git_username|-u] : Indicate GIT username.'
+	echo '                [--artifactory_url|-au] : Artifactory server URL to download JCK material'
+	echo '                [--jck-repo|-repo] : JCK GIT repo to update.'
 	echo '                [--git_token|-gt] : Git API Token to create PR.'
-	echo '                [--git_dev_branch|-gb ] :  Optional. GIT_DEV_BRANCH name to clone repo. Default is main'
-	echo '                [--java_home|-java] : optional. JAVA_HOME path. '
-	echo '                [--java_sdk_url|-sdk_url] : optional. JAVA_SDK_URL to download JDK. Default is JDK17'
-
+	echo '                [--git_dev_branch|-gb ] :  Optional. GIT_DEV_BRANCH name to clone repo. Default is autoBranch'
+	echo '                [--java_home|-java] : Optional. JAVA_HOME path. '
 
 }
 
@@ -39,11 +38,11 @@ parseCommandLineArgs()
 			"--jck_version" | "-j" )
 				JCK_VERSION="$1"; shift;;
 
-			"--git_username" | "-u")
-				GIT_USER="$1"; shift;;
-
 			"--artifactory_token" | "-at")
 				ARTIFACTORY_TOKEN="$1"; shift;;
+			
+			"--jck-repo" | "-repo")
+				JCK_GIT_REPO="$1"; shift;;
 
 			"--java_home" | "-java" )
 			 	JAVA_HOME="$1"; shift;;
@@ -54,8 +53,8 @@ parseCommandLineArgs()
 			"--git_dev_branch" | "-gb")
 				GIT_DEV_BRANCH="$1"; shift;;
 
-			"--java_sdk_url" | "-sdk_url")
-				JAVA_SDK_URL="$1"; shift;;
+			"--artifactory_url" | "-au")
+				ARTIFACTORY_DOWNLOAD_URL="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -73,12 +72,17 @@ setup(){
 	echo "WORKSPACE=$WORKSPACE"
 	echo "GIT_REPO=$GIT_REPO"
 	echo "JCK_VERSION=$JCK_VERSION"
-	echo "GIT_DEV_BRANCH=$GIT_DEV_BRANCH"
-	echo "GIT_USER=$GIT_USER"
+	echo "JCK_GIT_REPO=$JCK_GIT_REPO"
 
-	# update GIT_REPO_NAME based on the provided JCK_VERSION
-	GIT_REPO_NAME="JCK${JCK_VERSION}-unzipped.git"
+	#Extract GIT_USER and GIT_REPO_NAME  from JCK_GIT_REPO
+	IFS=":" read -ra parts <<< "$JCK_GIT_REPO"
+	IFS="/" read -ra userAndRepo <<< "${parts[1]}"
+	GIT_USER="${userAndRepo[0]}"
+	GIT_REPO_NAME="${userAndRepo[1]}"
+
 	echo "GIT_REPO_NAME=$GIT_REPO_NAME"
+	echo "GIT_USER=$GIT_USER"
+	echo "GIT_DEV_BRANCH=$GIT_DEV_BRANCH"
 	
 	JCK=$JCK_VERSION
 	JCK_FOLDER_SUFFIX=$JCK_VERSION
@@ -91,8 +95,12 @@ setup(){
 		JCK_FOLDER_SUFFIX="$JCK_VERSION"a
 	fi
 	echo "JCK_FOLDER_SUFFIX=" $JCK_FOLDER_SUFFIX
-	DOWNLOAD_URL="https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local/${JCK}/tck/"
-	echo "DOWNLOAD_URL=$DOWNLOAD_URL"
+	#check if given ARTIFACTORY_DOWNLOAD_URL is complete till JCK/tck to download material
+	if ! echo "$ARTIFACTORY_DOWNLOAD_URL" | grep -q "${JCK}/tck/"; then 
+		ARTIFACTORY_DOWNLOAD_URL="${ARTIFACTORY_DOWNLOAD_URL}/${JCK}/tck/"
+	fi
+	
+	echo "ARTIFACTORY_DOWNLOAD_URL=$ARTIFACTORY_DOWNLOAD_URL"
 	echo ""
 
 	mkdir $WORKSPACE
@@ -133,7 +141,7 @@ executeCmdWithRetry()
 
 
 list() {
-	file_list=$(curl -ks -H X-JFrog-Art-Api:${ARTIFACTORY_TOKEN} "${DOWNLOAD_URL}")
+	file_list=$(curl -ks -H X-JFrog-Art-Api:${ARTIFACTORY_TOKEN} "${ARTIFACTORY_DOWNLOAD_URL}")
 
 	# Use grep to filter out the content within <a href=""> tags
 	file_names=$(echo "$file_list" | grep -o '<a href="[^"]*">' | sed 's/<a href="//;s/">//')	
@@ -177,16 +185,16 @@ getJCKSources() {
 	rm -rf build.txt
 	echo "download jck materials..."
 	
-	DOWNLOAD_URL=$DOWNLOAD_URL$JCK_UPDATE_NUMBER
-	echo $DOWNLOAD_URL
+	ARTIFACTORY_DOWNLOAD_URL=$ARTIFACTORY_DOWNLOAD_URL$JCK_UPDATE_NUMBER
+	echo $ARTIFACTORY_DOWNLOAD_URL
 
 	list #get list of files to download
 	
 	IFS=$'\n' read -r -d '' -a file_names_array <<< "$file_names"
 
-	if [ "${DOWNLOAD_URL}" != "" ]; then
+	if [ "${ARTIFACTORY_DOWNLOAD_URL}" != "" ]; then
 		for file in "${file_names_array[@]:1}"; do
-			url="$DOWNLOAD_URL$file"
+			url="$ARTIFACTORY_DOWNLOAD_URL$file"
 			executeCmdWithRetry "${file##*/}" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk -H X-JFrog-Art-Api:${ARTIFACTORY_TOKEN} $url"
 
 			rt_code=$?
@@ -203,11 +211,12 @@ getJCKSources() {
 
 #install Java
 get_JAVA_SDK(){
-
-		cd $WORKSPACE/../../../../openjdkbinary/j2sdk-image
-		JAVA_SDK_PATH="$(pwd)"
-		echo $JAVA_SDK_PATH
-		$JAVA_SDK_PATH/bin/java -version
+		if [[ $JAVA_HOME = "" ]] ; then
+			cd $WORKSPACE/../../../../openjdkbinary/j2sdk-image
+			JAVA_SDK_PATH="$(pwd)"
+			echo $JAVA_SDK_PATH
+			$JAVA_SDK_PATH/bin/java -version
+		fi
 }
 
 #Unpack downloaded jar files 
@@ -341,7 +350,7 @@ begin_time="$(date -u +%s)"
 
 parseCommandLineArgs "$@"
 
-if [ "$JCK_VERSION" != "" ] && [ "$GIT_USER" != "" ] && [ "$ARTIFACTORY_TOKEN" != "" ] && [ "$GIT_TOKEN" != "" ]  ; then
+if [ "$JCK_VERSION" != "" ] && [ "$JCK_GIT_REPO" != "" ] && [ "$GIT_TOKEN" != "" ] && [ "$ARTIFACTORY_TOKEN" != "" ] && [ "$ARTIFACTORY_DOWNLOAD_URL" != "" ]  ; then
 	cleanup
 	setup
 	isLatestUpdate

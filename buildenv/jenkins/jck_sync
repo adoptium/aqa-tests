@@ -1,158 +1,34 @@
 #!groovy
 
-def PLATFORM_MAP = [
-    'arm_linux' : [
-        'SPEC' : 'linux_arm',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch32',
-    ],
-    'aarch64_mac' : [
-        'SPEC' : 'osx_aarch64',
-        'LABEL' : 'ci.role.test&&hw.arch.aarch64&&(sw.os.osx||sw.os.mac)',
-    ],
-    'aarch64_linux' : [
-        'SPEC' : 'linux_aarch64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
-    ],
-    'aarch64_windows' : [
-        'SPEC' : 'windows_aarch64',
-        'LABEL' : 'ci.role.test&&sw.os.windows&&hw.arch.aarch64',
-    ],
-    'aarch64_alpine-linux' : [
-        'SPEC' : 'alpine-linux_aarch64',
-        'LABEL' : 'ci.role.test&&hw.arch.aarch64&&sw.os.alpine-linux',
-    ],
-    'ppc32_aix' : [
-        'SPEC' : 'aix_ppc',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
-    ],
-    'ppc32_linux' : [
-        'SPEC' : 'linux_ppc',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
-    ],
-    'ppc64_aix' : [
-        'SPEC' : 'aix_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.aix',
-    ],
-    'ppc64_linux' : [
-        'SPEC' : 'linux_ppc-64',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64&&sw.os.linux',
-    ],
-    'ppc64le_linux' : [
-        'SPEC' : 'linux_ppc-64_le',
-        'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
-    ],
-    'riscv64_linux' : [
-        'SPEC' : 'linux_riscv64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv',
-        'DockerAgents' : ['default']
-    ],
-    'riscv64_linux_xl' : [
-        'SPEC' : 'linux_riscv64',
-        'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.riscv&&hw.bits.64',
-    ],
-    's390_linux' : [
-        'SPEC' : 'linux_390',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux&&hw.bits.32',
-    ],
-    's390x_linux_zt' : [
-        'SPEC' : 'linux_390-64_zt',
-        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.linux',
-    ],
-    's390x_linux' : [
-        'SPEC' : 'linux_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
-    ],
-    's390x_zos' : [
-        'SPEC' : 'zos_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
-    ],
-    's390x_zos_xl' : [
-        'SPEC' : 'zos_390-64',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
-    ],
-    's390x_zos_zt' : [
-        'SPEC' : 'zos_390-64_zt',
-        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.zos',
-    ],
-    's390_zos_zt' : [
-        'SPEC' : 'zos_390_zt',
-        'LABEL' : 'ci.role.test&&hw.arch.znext&&sw.os.zos',
-    ],
-    's390_zos' : [
-        'SPEC' : 'zos_390',
-        'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos',
-    ],
-    'sparcv9_solaris' : [
-        'SPEC' : 'sunos_sparcv9-64',
-        'LABEL' : 'ci.role.test&&hw.arch.sparcv9&&sw.os.sunos',
-    ],
-    'x86-64_solaris' : [
-        'SPEC' : 'sunos_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.sunos',
-    ],
-    'x86-64_alpine-linux' : [
-        'SPEC' : 'alpine-linux_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.alpine-linux',
-    ],
-    'x86-32_linux' : [
-        'SPEC' : 'linux_x86',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-    ],
-    'x86-32_windows' : [
-        'SPEC' : 'win_x86',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
-    ],
-    'x86-64_linux' : [
-        'SPEC' : 'linux_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-        'DynamicAgents' : ['azure', 'fyre']
-    ],
-    'x86-64_mac' : [
-        'SPEC' : 'osx_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&(sw.os.osx||sw.os.mac)',
-    ],
-    'x86-64_windows' : [
-        'SPEC' : 'win_x86-64',
-        'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
-    ],
-]
-
 timestamps{
     stage('Setup') {
-            if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
-                    SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-                    if (params.LABEL) {
-                        LABEL = params.LABEL
-                    } else {
-                        LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-                    }
+            SPEC = params.PLATFORM
+            if (params.LABEL !="") {
+                LABEL = params.LABEL
+            } else {
+                LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
+            }
             node(LABEL) {
+                println "SPEC: ${SPEC}"
+                println "LABEL: ${LABEL}"
                 echo "clone the SCM GIT repo"
                 try {
-                    def retry_count = 0
-                    def sleep_time = 180
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
                     // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
                     ref_cache = "${env.HOME}/openjdk_cache"
-                    retry(5) {
-                        if (retry_count > 0) {
-                            sleep(sleep_time)
-                        }
-                        retry_count++
-                        timeout(time: 1, unit: 'HOURS') {
-                            forceCleanWS()
-                        }
-                        checkout scm: [$class: 'GitSCM',
-                        branches: [[name: "${scm.branches[0].name}"]],
-                        extensions: [
-                            [$class: 'CleanBeforeCheckout'],
-                            [$class: 'CloneOption', reference: ref_cache],
-                            [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                        userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                        ]
-                        }
-                     syncJckMaterial()
+                    timeout(time: 1, unit: 'HOURS') {
+                        forceCleanWS()
+                    }
+                    checkout scm: [$class: 'GitSCM',
+                    branches: [[name: "${scm.branches[0].name}"]],
+                    extensions: [
+                        [$class: 'CleanBeforeCheckout'],
+                        [$class: 'CloneOption', reference: ref_cache],
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                    ]
+
+                    syncJckMaterial()
 
                     } catch (Exception e) {
                         println("Exception: " + e.toString())
@@ -166,10 +42,16 @@ timestamps{
 
                     }
                 }
-            } else {
-                assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
-        }
     }
+}
+
+def getGitRepoBranch(defaultOwnerBranch, repo) {
+	String[] actualRepoBranch = defaultOwnerBranch.split(":")
+	String owner = actualRepoBranch[0].trim()
+	String repoURL = "https://github.com/${owner}/${repo}.git"
+	actualRepoBranch[0] = repoURL
+	actualRepoBranch[1] = actualRepoBranch[1].trim()
+	return actualRepoBranch
 }
 
 def forceCleanWS() {
@@ -187,64 +69,65 @@ def forceCleanWS() {
 
 def syncJckMaterial(){
         echo "Starting script to sync JCK materials ....."
-
-        def JCK_VERSION = params.JDK_VERSION ?: ""
-        def GIT_DEV_BRANCH = params.JCK_GIT_BRANCH ?: ""
-        def JAVA_HOME = params.JAVA_HOME ?: ""
-        def JAVA_SDK_URL = params.JAVA_SDK_URL ?: ""
-        def JCK_GIT_REPO = params.JCK_GIT_REPO ?: ""
-        def JCK_VERSION_FLAG = JCK_VERSION ? "-j" : ""
-        def GIT_DEV_BRANCH_FLAG = GIT_DEV_BRANCH ? "-gb" : ""
-        def JAVA_HOME_FLAG = JAVA_HOME ? "-java" : ""
-        def JAVA_SDK_URL_FLAG = JAVA_SDK_URL ? "-sdk_url" : ""
-        def GIT_USER = params.GIT_USER ?: ""
+        def JCK_VERSION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}": ""
+        def GIT_DEV_BRANCH = params.JCK_GIT_BRANCH ? "-gb ${params.JCK_GIT_BRANCH}": ""
+        def JAVA_HOME = params.JAVA_HOME ? "-java ${params.JAVA_HOME}": ""
+        def ARTIFACTORY_URL = params.ARTIFACTORY_URL ? "-au ${params.ARTIFACTORY_URL}": ""
+        def JCK_GIT_REPO = params.JCK_GIT_REPO ? "-repo ${params.JCK_GIT_REPO}": ""
         def EXITCODE = 0
-        def jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-
         stage('Build') {
                 script {
-                        jenkinsfile.setup()
+                        getJavaSDK()
 
                         withCredentials([
                             usernamePassword(credentialsId: "${params.ARTIFACTORY_CREDENTIALS}",
 						usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_CREDENTIALS'),
                             string(credentialsId: "${params.GIT_CREDENTIALS}",variable: 'GIT_CREDENTIALS')
                         ]) {
-                                // IF no custom GIT user provided, use runtimes main repo for j9build.
-                                if (GIT_USER == "j9build"){
-                                    GIT_USER= "runtimes"
-                                }
-                                echo "GIT user -- ${GIT_USER}"
                                 def currentDirectory = sh(script: 'pwd', returnStdout: true).trim()
                                 dir("${currentDirectory}/aqa-tests/jck/jck-semiauto-updater") {
                                     sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true){
-                                        def SCRIPT = "./jckupdater.sh ${JCK_VERSION_FLAG} ${JCK_VERSION} -at ${ARTIFACTORY_CREDENTIALS} -u ${GIT_USER} -gt ${GIT_CREDENTIALS} ${GIT_DEV_BRANCH_FLAG} ${GIT_DEV_BRANCH} ${JAVA_HOME_FLAG} ${JAVA_HOME} ${JAVA_SDK_URL_FLAG} ${JAVA_SDK_URL}"
+                                        def SCRIPT = "./jckupdater.sh ${JCK_VERSION} -at ${ARTIFACTORY_CREDENTIALS} ${JCK_GIT_REPO}  -gt ${GIT_CREDENTIALS}  ${ARTIFACTORY_URL}  ${GIT_DEV_BRANCH}  ${JAVA_HOME} "
                                         echo "${SCRIPT}"
                                         EXITCODE = sh(script: "${SCRIPT}", returnStatus: true)
                                         echo "EXITCODE= ${EXITCODE}"
                                         if (EXITCODE == 2) {
-                                            echo "script returned exit code 2, No new update available. Marking the job as SUCCESS. "
+                                            echo "Script returned exit code 2, No new update available. Marking the job as SUCCESS. "
                                         } else if (EXITCODE == 0) {
-                                            echo "script returned exit code 0, new update is available and PR is created, proceeding to Stage 2."
+                                            echo "Script returned exit code 0, new update is available and PR is created."
                                         } else {
                                             error("script failed with exit code ${EXITCODE}")
                                         }
                                     }
-                                   
                                 }
                         }
                     }
                 }
-        stage('SanityTest') {
-                script{
-                    if (EXITCODE==0){
-                        jenkinsfile.addJobDescription()
-                        jenkinsfile.addGrinderLink()
-                        jenkinsfile.testExecution()
-                        jenkinsfile.terminateTestProcesses()
-                    }
-                }
-        }
     }
 
+//Download JAVA SDK 
+def getJavaSDK(){
 
+        JDK_VERSION_OPTION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}" : ""
+        JDK_IMPL_OPTION = params.JDK_IMPL ? "-i ${params.JDK_IMPL}" : ""
+        CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
+        CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
+        OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+        String[] tkg = getGitRepoBranch("adoptium:master", "TKG")
+        TKG_REPO = tkg[0]
+        TKG_BRANCH = tkg[1]
+
+        if(!params.USE_TESTENV_PROPERTIES){
+            OPENJ9_REPO_OPTION = "--openj9_repo ${params.OPENJ9_REPO}"
+            OPENJ9_BRANCH_OPTION = "--openj9_branch ${params.OPENJ9_BRANCH}"
+            TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
+            TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
+        }
+
+        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} "
+        dir("${WORKSPACE}/aqa-tests") {
+            sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
+                sh "$GET_SH_CMD"
+	            }
+        }
+    }

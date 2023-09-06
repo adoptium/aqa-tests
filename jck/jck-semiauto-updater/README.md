@@ -1,6 +1,6 @@
 # Overview 
 
-The jckupdater.sh script automates the process of obtaining JCK materials from https://eu.artifactory.swg-devops.com/ui/repos/tree/General/jim-jck-generic-local site and pushing them in the IBM internal repository.
+The jckupdater.sh script automates the process of obtaining JCK materials from https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local site and pushing them in the IBM internal repository.
 
 # How to run the script
 
@@ -11,12 +11,12 @@ The following instructions may be used to run jckupdater.sh to make a JCK update
 
 ```
 JCK_VERSION - The JCK version for which the update is being performed (e.g. 8, 11, 12 etc)
-GIT_USER - The GIT user to be used to create the PR.
-TOKEN - Artifactory token to download JCK resources from https://eu.artifactory.swg-devops.com/ui/repos/tree/General/jim-jck-generic-local
+JCK_GIT_REPO - The JCK GIT repo to update.(e.g. git@github.ibm.com:runtimes/JCK8-unzipped.git)
+ARTIFACTORY_TOKEN - Artifactory token to download JCK resources from https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local
+ARTIFACTORY_DOWNLOAD_URL - Artifactory server URL to download JCK resources. Default value is https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local
 GIT_TOKEN - GIT user's API Token to create PR.
-DEVELOPER_BRANCH - Branch to Pull and merge resources. Default value main.
+GIT_DEV_BRANCH - Branch to Pull and merge resources. Default value autoBranch.
 JAVA_HOME - Path to JDK on system. Optional.
-JAVA_SDK_URL - URL to download JDK. Optional.
 
 ```
 
