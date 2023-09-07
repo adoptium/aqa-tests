@@ -565,6 +565,10 @@ public class JavaTestRunner {
 				return false; 
 			}
 			
+			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
+				keyword += "&!robot";
+			}
+
 			fileContent += "concurrency " + concurrencyString + ";\n";
 			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
 			fileContent += keyword + ";\n";
@@ -602,10 +606,6 @@ public class JavaTestRunner {
 						}
 					}
 				}
-			}
-
-			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				keyword += "&!robot";
 			}
 
 			if ( !spec.contains("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
@@ -902,8 +902,7 @@ public class JavaTestRunner {
 
 	public static boolean execute() throws Exception {
 		if (!(testExecutionType.equals("multijvm") && withAgent.equals("off"))) {
-			//TODO: Error message sounds odd to me. Will raise an issue to address.
-			System.out.println("Only non-multijvm tests are supported with Agent turned off");
+			System.out.println("Only multijvm tests are supported with Agent turned off");
 			return false;
 		}
 
