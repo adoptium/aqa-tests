@@ -501,6 +501,10 @@ public class JavatestUtil {
 				return false; 
 			}
 			
+			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
+				keyword += "&!robot";
+			}
+			
 			fileContent += "concurrency " + concurrencyString + ";\n";
 			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
 			fileContent += keyword + ";\n";
@@ -538,10 +542,6 @@ public class JavatestUtil {
 						}
 					}
 				}
-			}
-
-			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				keyword += "&!robot";
 			}
 
 			if ( !spec.contains("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
