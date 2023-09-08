@@ -92,7 +92,7 @@ prepare() {
             # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11
             libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk17"
             # replace OpenLiberty dockerfile base image
-            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-${jdkVersion}-jdk-${docker_os}" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-${docker_os}" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
         else # docker_os is ubuntu
             libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk${jdkVersion}"
             findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
