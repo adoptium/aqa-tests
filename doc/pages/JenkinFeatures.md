@@ -35,7 +35,7 @@ Repositories where we pull test material from. Unless you are testing test code,
 
 ## Non-AQA Test Repositories
 Additional test repositories that can be overlaid onto existing AQA test material for extra testing.
-This is used for laying down smoke tests in the temurin-build repository and installer tests in the installer repository, along with any private vendor tests that cannot be run in the open.
+This is used for laying down any test material, particularly useful for running private tests that cannot be open-sourced.  Examples of how these parameters are used can be seen by looking at the smoke tests in the temurin-build repository and some MSI tests in the installer repository.  TKG can discover any test material, as long as you tell it where to look (through setting these parameters), and that these repositories contain build instructions (via build.xml ant scripts) and execution instructions (via playlist.xml files).
 
 - `VENDOR_TEST_REPOS`: optional, comma-separated list of repositories containing additional test material.
 - `VENDOR_TEST_BRANCHES`: optional, comma-separated list of branches for additional test material.
