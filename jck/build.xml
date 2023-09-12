@@ -161,6 +161,28 @@
 										</delete>
 									</then>
 								</if>
+								<echo message="Ensure JCK repo remoteUrl in cache matches what user asked for..." />
+								<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="exist.remote.url">
+									<arg value="config" />
+									<arg value="remote.origin.url" />
+								</exec>
+								<echo message="Existing remoteURL: '${exist.remote.url}'" />
+								<if>
+									<not>
+										<equals arg1="${exist.remote.url}" arg2="${JCK_GIT_REPO_USED}" />
+									</not>
+									<then>
+										<echo message="Updating remoteUrl to: '${JCK_GIT_REPO_USED}'" />
+										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" resultproperty="return.code">
+											<arg value="config" />
+											<arg value="remote.origin.url" />
+											<arg value="${JCK_GIT_REPO_USED}" />											
+										</exec>
+									</then>
+									<else>
+										<echo message="Existing remoteURL '${exist.remote.url}' matches what user asked for '${JCK_GIT_REPO_USED}'" />
+									</else>
+								</if>
 								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
 								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" resultproperty="return.code">
 									<arg value="pull" />
