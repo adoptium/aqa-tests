@@ -195,7 +195,6 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
                     ],
             'ppc64le_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p8"],
                         // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
                         // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
@@ -220,8 +219,8 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
                     ],
             'ppc64le_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
@@ -233,9 +232,11 @@ timestamps{
             def imageUploadJobs = [:]
             def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
-            // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
             if (params.PLATFORM == "ppc64le_linux") {
+                // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
                 target = target.minus("disabled.criu-portable-checkpoint_test,")
+                // exclude criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8 on plinux due to github_ibm/runtimes/backlog/issues/1207
+                target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,")
             }
 
             echo "Trigger ${imageUploadJobName} job ..."

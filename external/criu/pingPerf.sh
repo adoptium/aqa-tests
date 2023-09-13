@@ -243,15 +243,25 @@ getImageNameList() {
         comboList=CRIU_COMBO_LIST_$platValue
         if [[ "$PLATFORM" =~ "linux_390-64" ]]; then
             micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.s390x.//")
-            comboList=$comboList_$micro_architecture
+            comboList="${comboList}_${micro_architecture}"
+        elif [[ "$PLATFORM" =~ "linux_ppc-64" ]]; then
+            micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.ppc64le.//")
+            comboList="${comboList}_${micro_architecture}"
         fi
 
         image_os_combo_list="${!comboList}"
-        echo "${comboList}: ${image_os_combo_list}"
+        echo "comboList: ${comboList}"
+        echo "image_os_combo_list: ${image_os_combo_list}"
         for image_os_combo in ${image_os_combo_list[@]}
         do
             restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${image_os_combo}:${build_number}")
         done
+        if [[ -z "$restore_docker_image_name_list" ]]; then
+            echo "Error: restore_docker_image_name_list is empty."
+            exit 1
+        else
+            echo "restore_docker_image_name_list: $restore_docker_image_name_list"
+        fi
     fi
 }
 
