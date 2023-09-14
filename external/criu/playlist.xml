@@ -16,13 +16,7 @@
 	<include>../criuSettings.mk</include>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndUnprivilegedRestore_ubi8</testCaseName>
-		<disables>
-			<disable>
-				<comment>runtimes_backlog_issues_1207</comment>
-				<platform>ppc64le_linux</platform>
-			</disable>
-		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -38,7 +32,7 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndUnprivilegedRestore_ubi9</testCaseName>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndUnprivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -54,13 +48,7 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndPrivilegedRestore_ubi8</testCaseName>
-		<disables>
-			<disable>
-				<comment>runtimes_backlog_issues_1207</comment>
-				<platform>ppc64le_linux</platform>
-			</disable>
-		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -76,7 +64,7 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_testCreateImageAndPrivilegedRestore_ubi9</testCaseName>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateImageAndPrivilegedRestore $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -97,7 +85,7 @@
 				<comment>runtimes_backlog_issues_879</comment>
 			</disable>
 		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8" "$(DOCKER_REGISTRY_DIR)"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "8" "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -118,7 +106,7 @@
 				<comment>runtimes_backlog_issues_879</comment>
 			</disable>
 		</disables>
-		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9" "$(DOCKER_REGISTRY_DIR)"; \
+		<command>$(TEST_ROOT)/external/criu/pingPerf.sh testCreateRestoreImageAndPushToRegistry $(TEST_ROOT)/external/criu/upload/PingperfFiles.zip $(TEST_ROOT)/external/criu/upload/ubi.repo $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9" "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
 		</command>
@@ -134,12 +122,6 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_pullImageUnprivilegedRestore_ubi8</testCaseName>
-		<disables>
-			<disable>
-				<comment>runtimes_backlog_issues_1207</comment>
-				<platform>ppc64le_linux</platform>
-			</disable>
-		</disables>
 		<command>$(TEST_ROOT)/external/criu/pingPerf.sh pullImageUnprivilegedRestore "ubi" "8" "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean
@@ -172,12 +154,6 @@
 	</test>
 	<test>
 		<testCaseName>criu_pingPerf_pullImagePrivilegedRestore_ubi8</testCaseName>
-		<disables>
-			<disable>
-				<comment>runtimes_backlog_issues_1207</comment>
-				<platform>ppc64le_linux</platform>
-			</disable>
-		</disables>
 		<command>$(TEST_ROOT)/external/criu/pingPerf.sh pullImagePrivilegedRestore "ubi" "8" "$(DOCKER_REGISTRY_DIR)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)/external/criu/pingPerf.sh clean

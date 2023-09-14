@@ -15,6 +15,7 @@
 set -e
 
 pingPerfZipPath=""
+ubiRepoFilePath="" # Temporarily This file is only for plinux ubi8
 testJDKPath=""
 jdkVersion=""
 restoreImage="ol-instanton-test-pingperf-restore"
@@ -42,6 +43,9 @@ getSemeruDockerfile() {
             if [[ $docker_os == "ubi" ]]; then
                 echo "curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${docker_os}${docker_os_version}/${semeruDockerfile}"
                 curl -OLJSks https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersion/jdk/${docker_os}/${docker_os}${docker_os_version}/${semeruDockerfile}
+                if [[ ${PLATFORM} == *"ppc"*  &&  $docker_os_version == "8" ]]; then
+                    findCommandAndReplace 'FROM registry.access.redhat.com/ubi8/ubi:latest' 'FROM registry.access.redhat.com/ubi8/ubi:latest \n COPY ubi.repo /etc/yum.repos.d/ \n ' $semeruDockerfile ";"
+                fi
                 findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
                 findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
                 findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile
@@ -74,6 +78,16 @@ prepare() {
     else
         echo "${pingPerfZipPath} does not exist."
         exit 1
+    fi
+
+    if [[ ${PLATFORM} == *"ppc"* && $docker_os == "ubi" && $docker_os_version == "8" ]]; then
+        if [ -f "$ubiRepoFilePath" ]; then
+            rm -f ubi.repo
+            cp "$ubiRepoFilePath" .
+        else
+            echo "${ubiRepoFilePath} does not exist."
+            exit 1
+        fi
     fi
 
     getCriuseccompproFile
@@ -360,8 +374,9 @@ setup() {
 
 if [ "$1" == "prepare" ]; then
     pingPerfZipPath=$2
-    testJDKPath=$3
-    jdkVersion=$4
+    ubiRepoFilePath=$3
+    testJDKPath=$4
+    jdkVersion=$5
     prepare
 elif [ "$1" == "buildImage" ]; then
     buildImage
@@ -379,10 +394,11 @@ elif [ "$1" == "clean" ]; then
     clean
 elif [ "$1" == "testCreateRestoreImageOnly" ]; then
     pingPerfZipPath=$2
-    testJDKPath=$3
-    jdkVersion=$4
-    docker_os=$5
-    docker_os_version=$6
+    ubiRepoFilePath=$3
+    testJDKPath=$4
+    jdkVersion=$5
+    docker_os=$6
+    docker_os_version=$7
     testCreateRestoreImageOnly
 elif [ "$1" == "testUnprivilegedRestoreOnly" ]; then
     testUnprivilegedRestoreOnly
@@ -402,27 +418,30 @@ elif [ "$1" == "pullImagePrivilegedRestore" ]; then
     pullImagePrivilegedRestore
 elif [ "$1" == "testCreateRestoreImageAndPushToRegistry" ]; then
     pingPerfZipPath=$2
-    testJDKPath=$3
-    jdkVersion=$4
-    docker_os=$5
-    docker_os_version=$6
-    docker_registry_dir=$7
+    ubiRepoFilePath=$3
+    testJDKPath=$4
+    jdkVersion=$5
+    docker_os=$6
+    docker_os_version=$7
+    docker_registry_dir=$8
     setup
     testCreateRestoreImageOnly
     pushImage
 elif [ "$1" == "testCreateImageAndUnprivilegedRestore" ]; then
     pingPerfZipPath=$2
-    testJDKPath=$3
-    jdkVersion=$4
-    docker_os=$5
-    docker_os_version=$6
+    ubiRepoFilePath=$3
+    testJDKPath=$4
+    jdkVersion=$5
+    docker_os=$6
+    docker_os_version=$7
     testCreateImageAndUnprivilegedRestore
 elif [ "$1" == "testCreateImageAndPrivilegedRestore" ]; then
     pingPerfZipPath=$2
-    testJDKPath=$3
-    jdkVersion=$4
-    docker_os=$5
-    docker_os_version=$6
+    ubiRepoFilePath=$3
+    testJDKPath=$4
+    jdkVersion=$5
+    docker_os=$6
+    docker_os_version=$7
     testCreateImageAndPrivilegedRestore
 else
     echo "unknown command"
