@@ -625,6 +625,7 @@ def buildTest() {
 			try {
 				timeout(time: 2, unit: 'HOURS') {
 					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("2"), target: 'aqa-tests/external/criu/'
+					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("3"), target: 'aqa-tests/external/criu/'
 				}
 			} catch (Exception e) {
 				echo 'Exception: ' + e.toString()
