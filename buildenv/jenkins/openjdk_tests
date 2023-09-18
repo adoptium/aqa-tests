@@ -235,8 +235,6 @@ timestamps{
             if (params.PLATFORM == "ppc64le_linux") {
                 // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
                 target = target.minus("disabled.criu-portable-checkpoint_test,")
-                // exclude criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8 on plinux due to github_ibm/runtimes/backlog/issues/1207
-                target = target.minus("disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,")
             }
 
             echo "Trigger ${imageUploadJobName} job ..."
