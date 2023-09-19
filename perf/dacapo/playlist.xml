@@ -29,6 +29,12 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-avrora</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4745#issuecomment-1710101571</comment>
+				<version>21+</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) avrora; \
 		$(TEST_STATUS)</command>
 		<levels>
