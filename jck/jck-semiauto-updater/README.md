@@ -15,7 +15,7 @@ JCK_GIT_REPO - The JCK GIT repo to update.(e.g. git@github.ibm.com:runtimes/JCK8
 ARTIFACTORY_TOKEN - Artifactory token to download JCK resources from https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local
 ARTIFACTORY_DOWNLOAD_URL - Artifactory server URL to download JCK resources. Default value is https://eu.artifactory.swg-devops.com/artifactory/jim-jck-generic-local
 GIT_TOKEN - GIT user's API Token to create PR.
-GIT_DEV_BRANCH - Branch to Pull and merge resources. Default value autoBranch.
+JCK_GIT_BRANCH - Branch to Pull and merge resources. Default value autoBranch.
 JAVA_HOME - Path to JDK on system. Optional.
 
 ```

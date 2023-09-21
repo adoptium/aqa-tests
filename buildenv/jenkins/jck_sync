@@ -2,20 +2,16 @@
 
 timestamps{
     stage('Setup') {
-            SPEC = params.PLATFORM
             if (params.LABEL !="") {
                 LABEL = params.LABEL
             } else {
                 LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
             }
             node(LABEL) {
-                println "SPEC: ${SPEC}"
                 println "LABEL: ${LABEL}"
                 echo "clone the SCM GIT repo"
                 try {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
-                    // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
-                    ref_cache = "${env.HOME}/openjdk_cache"
                     timeout(time: 1, unit: 'HOURS') {
                         forceCleanWS()
                     }
@@ -23,7 +19,7 @@ timestamps{
                     branches: [[name: "${scm.branches[0].name}"]],
                     extensions: [
                         [$class: 'CleanBeforeCheckout'],
-                        [$class: 'CloneOption', reference: ref_cache],
+                        [$class: 'CloneOption'],
                         [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
                     userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
                     ]
@@ -45,15 +41,6 @@ timestamps{
     }
 }
 
-def getGitRepoBranch(defaultOwnerBranch, repo) {
-	String[] actualRepoBranch = defaultOwnerBranch.split(":")
-	String owner = actualRepoBranch[0].trim()
-	String repoURL = "https://github.com/${owner}/${repo}.git"
-	actualRepoBranch[0] = repoURL
-	actualRepoBranch[1] = actualRepoBranch[1].trim()
-	return actualRepoBranch
-}
-
 def forceCleanWS() {
     try {
         cleanWs disableDeferredWipeout: true, deleteDirs: true
@@ -70,11 +57,9 @@ def forceCleanWS() {
 def syncJckMaterial(){
         echo "Starting script to sync JCK materials ....."
         def JCK_VERSION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}": ""
-        def GIT_DEV_BRANCH = params.JCK_GIT_BRANCH ? "-gb ${params.JCK_GIT_BRANCH}": ""
-        def JAVA_HOME = params.JAVA_HOME ? "-java ${params.JAVA_HOME}": ""
+        def JCK_GIT_BRANCH = params.JCK_GIT_BRANCH ? "-gb ${params.JCK_GIT_BRANCH}": ""
         def ARTIFACTORY_URL = params.ARTIFACTORY_URL ? "-au ${params.ARTIFACTORY_URL}": ""
         def JCK_GIT_REPO = params.JCK_GIT_REPO ? "-repo ${params.JCK_GIT_REPO}": ""
-        def EXITCODE = 0
         stage('Build') {
                 script {
                         getJavaSDK()
@@ -87,9 +72,9 @@ def syncJckMaterial(){
                                 def currentDirectory = sh(script: 'pwd', returnStdout: true).trim()
                                 dir("${currentDirectory}/aqa-tests/jck/jck-semiauto-updater") {
                                     sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true){
-                                        def SCRIPT = "./jckupdater.sh ${JCK_VERSION} -at ${ARTIFACTORY_CREDENTIALS} ${JCK_GIT_REPO}  -gt ${GIT_CREDENTIALS}  ${ARTIFACTORY_URL}  ${GIT_DEV_BRANCH}  ${JAVA_HOME} "
+                                        def SCRIPT = "./jckupdater.sh ${JCK_VERSION} -at ${ARTIFACTORY_CREDENTIALS} ${JCK_GIT_REPO}  -gt ${GIT_CREDENTIALS}  ${ARTIFACTORY_URL}  ${JCK_GIT_BRANCH}"
                                         echo "${SCRIPT}"
-                                        EXITCODE = sh(script: "${SCRIPT}", returnStatus: true)
+                                        def EXITCODE = sh(script: "${SCRIPT}", returnStatus: true)
                                         echo "EXITCODE= ${EXITCODE}"
                                         if (EXITCODE == 2) {
                                             echo "Script returned exit code 2, No new update available. Marking the job as SUCCESS. "
@@ -111,23 +96,11 @@ def getJavaSDK(){
         JDK_VERSION_OPTION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}" : ""
         JDK_IMPL_OPTION = params.JDK_IMPL ? "-i ${params.JDK_IMPL}" : ""
         CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
-        CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
-        OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
-        String[] tkg = getGitRepoBranch("adoptium:master", "TKG")
-        TKG_REPO = tkg[0]
-        TKG_BRANCH = tkg[1]
 
-        if(!params.USE_TESTENV_PROPERTIES){
-            OPENJ9_REPO_OPTION = "--openj9_repo ${params.OPENJ9_REPO}"
-            OPENJ9_BRANCH_OPTION = "--openj9_branch ${params.OPENJ9_BRANCH}"
-            TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
-            TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
-        }
-
-        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} "
+        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} "
         dir("${WORKSPACE}/aqa-tests") {
             sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
                 sh "$GET_SH_CMD"
-	            }
+	        }
         }
     }

@@ -10,9 +10,9 @@ JCK_UPDATE_NUMBER=""
 JCK_GIT_REPO=""
 ARTIFACTORY_DOWNLOAD_URL=""
 ARTIFACTORY_TOKEN=""
-GIT_REPO_NAME=""
+JCK_REPO_NAME=""
 GIT_USER=""
-GIT_DEV_BRANCH="autoBranch"
+JCK_GIT_BRANCH="autoBranch"
 GIT_TOKEN=""
 JCK_FOLDER_SUFFIX=""
 
@@ -23,7 +23,7 @@ usage ()
 	echo '                [--artifactory_url|-au] : Artifactory server URL to download JCK material'
 	echo '                [--jck-repo|-repo] : JCK GIT repo to update.'
 	echo '                [--git_token|-gt] : Git API Token to create PR.'
-	echo '                [--git_dev_branch|-gb ] :  Optional. GIT_DEV_BRANCH name to clone repo. Default is autoBranch'
+	echo '                [--jck_git_branch|-gb ] :  Optional. JCK_GIT_BRANCH name to clone repo. Default is autoBranch'
 	echo '                [--java_home|-java] : Optional. JAVA_HOME path. '
 
 }
@@ -50,8 +50,8 @@ parseCommandLineArgs()
 			"--git_token" | "-gt" )
 			 	GIT_TOKEN="$1"; shift;;
 
-			"--git_dev_branch" | "-gb")
-				GIT_DEV_BRANCH="$1"; shift;;
+			"--jck_git_branch" | "-gb")
+				JCK_GIT_BRANCH="$1"; shift;;
 
 			"--artifactory_url" | "-au")
 				ARTIFACTORY_DOWNLOAD_URL="$1"; shift;;
@@ -74,15 +74,15 @@ setup(){
 	echo "JCK_VERSION=$JCK_VERSION"
 	echo "JCK_GIT_REPO=$JCK_GIT_REPO"
 
-	#Extract GIT_USER and GIT_REPO_NAME  from JCK_GIT_REPO
+	#Extract GIT_USER and JCK_REPO_NAME  from JCK_GIT_REPO
 	IFS=":" read -ra parts <<< "$JCK_GIT_REPO"
 	IFS="/" read -ra userAndRepo <<< "${parts[1]}"
 	GIT_USER="${userAndRepo[0]}"
-	GIT_REPO_NAME="${userAndRepo[1]}"
+	JCK_REPO_NAME="${userAndRepo[1]}"
 
-	echo "GIT_REPO_NAME=$GIT_REPO_NAME"
+	echo "JCK_REPO_NAME=$JCK_REPO_NAME"
 	echo "GIT_USER=$GIT_USER"
-	echo "GIT_DEV_BRANCH=$GIT_DEV_BRANCH"
+	echo "JCK_GIT_BRANCH=$JCK_GIT_BRANCH"
 	
 	JCK=$JCK_VERSION
 	JCK_FOLDER_SUFFIX=$JCK_VERSION
@@ -244,13 +244,13 @@ extract() {
 #Clone GIT branch.
 gitClone()
 {
-	echo "Checking out git@github.ibm.com:$GIT_USER/$GIT_REPO_NAME and reset to git@github.ibm.com:runtimes/$GIT_REPO_NAME main branch in dir $GIT_REPO"
+	echo "Checking out git@github.ibm.com:$GIT_USER/$JCK_REPO_NAME and reset to git@github.ibm.com:runtimes/$JCK_REPO_NAME main branch in dir $GIT_REPO"
 	cd $GIT_REPO
 	git init
-	git remote add origin git@github.ibm.com:$GIT_USER/"$GIT_REPO_NAME"
-	git remote add upstream git@github.ibm.com:runtimes/"$GIT_REPO_NAME"
+	git remote add origin git@github.ibm.com:$GIT_USER/"$JCK_REPO_NAME"
+	git remote add upstream git@github.ibm.com:runtimes/"$JCK_REPO_NAME"
 	git remote -v
-	git checkout -b $GIT_DEV_BRANCH
+	git checkout -b $JCK_GIT_BRANCH
 	git fetch upstream main
 	git reset --hard upstream/main
 	git branch -v
@@ -299,9 +299,9 @@ checkChangesAndCommit() {
 		git config --global user.name "$GIT_USER"
 		git add -A .
 		#Commit and push to origin
-		echo "Pushing the changes to git branch: $GIT_DEV_BRANCH..."
+		echo "Pushing the changes to git branch: $JCK_GIT_BRANCH..."
 		git commit -am "Initial commit for JCK$JCK_FOLDER_SUFFIX $JCK_WITHOUT_BACKSLASH update"
-		git push origin $GIT_DEV_BRANCH
+		git push origin $JCK_GIT_BRANCH
 		echo "Changes committed successfully."
 		#Call only if there are any changes to commit.
 		createPR
@@ -309,32 +309,32 @@ checkChangesAndCommit() {
 }
 
 
-#Create PR from GIT_DEV_BRANCH to main branch. PR will not be merged.
+#Create PR from JCK_GIT_BRANCH to main branch. PR will not be merged.
 #Call only if there are any changes to commit.
 createPR(){
 	cd $GIT_REPO
 
 	# Add the base repository as a remote
 
-	## Create a PR from GIT_DEV_BRANCH to main branch.
+	## Create a PR from JCK_GIT_BRANCH to main branch.
 	## Will not merge PR and wait for review.
 
 	title="JCK$JCK_VERSION $JCK_WITHOUT_BACKSLASH udpate"
 	body="This is a new pull request for the JCK$JCK_VERSION $JCK_WITHOUT_BACKSLASH udpate"
-	echo " Creating PR from $GIT_DEV_BRANCH to main branch"
+	echo " Creating PR from $JCK_GIT_BRANCH to main branch"
 	url="https://api.github.ibm.com/repos/$GIT_USER/JCK$JCK_VERSION-unzipped/pulls"
 
 	response=$(curl -X POST \
 	-H "Authorization: token $GIT_TOKEN" \
         -H "Content-Type: application/json" \
-        -d "{\"title\":\"$title\",\"body\":\"$body\",\"head\":\"$GIT_USER:$GIT_DEV_BRANCH\",\"base\":\"main\"}" \
+        -d "{\"title\":\"$title\",\"body\":\"$body\",\"head\":\"$GIT_USER:$JCK_GIT_BRANCH\",\"base\":\"main\"}" \
         "$url")
 	
 	# Assuming $response contains the JSON response
-	pr_number=$(echo "$response" | grep -o '"number": *[0-9]*' | awk -F':' '{print $2}' | tr -d ' ,"')
+	PR_NUMBER=$(echo "$response" | grep -o '"number": *[0-9]*' | awk -F':' '{print $2}' | tr -d ' ,"')
 
-	# $pr_number now contains the PR number
-	echo "PR Number=$pr_number"
+	# $PR_NUMBER now contains the PR number
+	echo "PR_NUMBER=$PR_NUMBER"
 }
 
 cleanup() {
