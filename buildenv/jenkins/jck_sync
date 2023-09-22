@@ -98,6 +98,15 @@ def syncJckMaterial(){
                     }
             }
 
+        stage('Splitter'){
+            script{
+                //if (EXITCODE ==0){
+                    target_Folder_check()
+                    //getSplitter()
+                //}
+            }
+        }
+
         stage('SanityTest') {
                script{
                    if (EXITCODE == 0){
@@ -166,6 +175,46 @@ def extractNumber(output) {
         }
     }
     return 0
+}
+
+def target_Folder_check(){
+            env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
+            echo "TEST_JDK_HOME == ${env.TEST_JDK_HOME}"
+            def logFile = "test.log"
+            def COMMENT=""
+            dir("${WORKSPACE}/aqa-tests/jck/jck_target_folder_check") {
+                sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true){
+                    def JCK_GIT_BRANCH = params.JCK_GIT_BRANCH ?: ""
+                    echo "${JCK_GIT_BRANCH}"
+                    def SCRIPT = "./jck_target_folder_check.sh ${params.JCK_GIT_REPO} ${WORKSPACE} ${JCK_GIT_BRANCH}"
+                    def specificLine = "New test folder detected:"
+
+                    def EXITCODE = sh(script: "${SCRIPT} >${logFile}", returnStatus: true)
+                    echo "EXITCODE for jck_target_folder_check = ${EXITCODE}"
+                    sh "cat ${logFile}"
+                        
+                    // Use 'grep' to check if any new folders are detected
+                    def grepCommand = "grep '${specificLine}' ${logFile} || true"
+                    def grepResult = sh(script: grepCommand, returnStatus: true)
+
+                    // grep last few lines after Done! to create comment
+                    def fileContents = readFile(file: logFile).trim()
+                    def delimiter = 'Done!'
+                    def parts = fileContents.split(delimiter)
+                    def linesAfterDone = parts[1].trim()
+                    def lines = linesAfterDone.split('\n')
+                    def commentBody = lines.collect { it.trim() }.join('\\r\\n')
+
+                    if (grepResult == 0)  {
+                        echo "No new folders detected. No need to update playlist.xml '"
+                        COMMENT="No new folders detected. No need to update playlist.xml \\r\\n ``` ${commentBody} "
+                    } else {
+                        echo "New folders detected. Need to update playlist.xml'"
+                        COMMENT="New folders detected. Need to update playlist.xml \\r\\n ``` ${commentBody} "
+                    }
+                }
+            }
+            createComment(COMMENT)
 }
 
 def createComment(TestComment) {
