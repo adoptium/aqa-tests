@@ -100,10 +100,10 @@ def syncJckMaterial(){
 
         stage('Splitter'){
             script{
-                //if (EXITCODE ==0){
+                if (EXITCODE ==0){
                     target_Folder_check()
-                    //getSplitter()
-                //}
+                    getSplitter()
+                }
             }
         }
 
@@ -217,13 +217,84 @@ def target_Folder_check(){
             createComment(COMMENT)
 }
 
+def getSplitter(){
+    dir("${WORKSPACE}/aqa-tests/jck/splitter") {
+        def JDK_VERSION= params.JDK_VERSION
+        if (JDK_VERSION == "8") {
+            JDK_VERSION = "8d"
+        } else if (JDK_VERSION == "11"){
+             JDK_VERSION = "11a"
+        }
+        def TESTS_MAP = ['ANNOT': ['GROUP' : 5,],
+            'CLSS' : ['GROUP' : 10,],
+            'CONV' : ['GROUP' : 5,],
+            'DASG' : ['GROUP' : 5,],
+            'EXPR' : ['GROUP' : 11,],
+            'INTF' : ['GROUP' : 5,],
+            'LMBD' : ['GROUP' : 5,],
+            'NAME' : ['GROUP' : 5,],
+            'TYPE' : ['GROUP' : 5,],
+            'STMT' : ['GROUP' : 5,],
+        ]
+        def TARGET_TO_SPLIT = "${WORKSPACE}/test/JCK-compiler-${JDK_VERSION}/tests/lang"
+        def SCRIPT=""
+        def COMMENT=""
+        def PR_NEEDED = false
+        def testClasstList = []
+        def mkFileName = "${WORKSPACE}/aqa-tests/jck/jck.mk"
+        TESTS_MAP.each { key, value ->
+            if (value.containsKey('GROUP')) {
+                def groupValue = value['GROUP']
+                echo "Calling splitter.sh for TESTS: $key and GROUP:$groupValue"
+                TARGET="${TARGET_TO_SPLIT}/${key}"
+                SCRIPT = "./splitter.sh ${TARGET} ${groupValue}"
+                def logFileName = "${key}.log"
+                def EXITCODE = sh(script: "${SCRIPT} > ${logFileName}", returnStatus: true)
+
+                echo "EXITCODE in splitter =${EXITCODE}"
+                if (key == "CLSS"){
+                    key="CLASS"
+                }
+
+                def lastLine = null
+                // Read the last line starting with COMPILER_LANG_${key}_TESTS_GROUP from logFileName.log
+                def logFileContents = readFile(file: logFileName).trim().split('\n')
+                for (int i = logFileContents.size() - 1; i >= 0; i--) {
+                    def line = logFileContents[i]
+                    if (line.startsWith("COMPILER_LANG_${key}_TESTS_GROUP")) {
+                        lastLine = line
+                        break
+                    }
+                }
+                // Check if the last line is present in jck.mk
+                def mkFileContents = readFile(file: mkFileName).trim()
+                //echo "Last test group in ${logFileName}: ${lastLine}"
+                if (lastLine && mkFileContents.contains(lastLine)) {
+                    //echo "The line is present in $mkFileName"
+                    echo "No need to create PR for --- $key"
+                } else {
+                    echo "We need to update $mkFileName and create PR for --- $key"
+                    testClasstList.add(key)
+                    PR_NEEDED=true
+                }
+            }
+        }
+        if (PR_NEEDED){
+            echo "create comment as PR_NEEDED is ${PR_NEEDED}"
+            COMMENT=" Splitter.sh resulted in new test groups.\\r\\nWe need to create PR to update jck.mk file for below test group\\r\\n" + testClasstList.join(", ")
+        } else {
+            COMMENT =" No need to creat PR to update jck.mk file."
+        }
+        createComment(COMMENT)
+    }
+}
+
 def createComment(TestComment) {
             withCredentials([
                 string(credentialsId: "${params.GIT_CREDENTIALS}",variable: 'GIT_CREDENTIALS')
             ]) {
                 def JCK_GIT_REPO = params.JCK_GIT_REPO
                 def GIT_USER = JCK_GIT_REPO.split(':')[1].split('/')[0]
-
                 JDK_VERSION = params.JDK_VERSION
                 def comment_url="https://github.ibm.com/api/v3/repos/${GIT_USER}/JCK${JDK_VERSION}-unzipped/issues/${PR}/comments"
                 def COMMENT = "${TestComment}"

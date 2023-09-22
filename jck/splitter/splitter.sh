@@ -24,7 +24,10 @@ split()
 	
 	testPathPrefix=$3
     numOfIndices=numOfGrps+1; 
-    
+    testName=$(echo "$testPathPrefix" | awk -F'/' '{print $NF}')
+	if [[ ${testName} = "CLSS" ]]; then
+	        testName="CLASS"
+	fi
 	# Read in the sub-tests into an array 
 	
 	i=0
@@ -87,7 +90,7 @@ split()
 		for ((i=0; i<$numOfGrps; i++));
 		do
 			value=${groups[$i]}
-			printf "%s\n\n" "GROUP ($i) = ${value%?}"
+			printf "%s\n\n" "COMPILER_LANG_${testName}_TESTS_GROUP$((i+1))=\$(Q)${value%?}\$(Q)"
 		done
 		printf "%s\n\n" "Total subtests processed = $totalCounted"
 	else 
@@ -97,7 +100,7 @@ split()
 
 targetTestPath=$1 
 numOfGrps=$2
-pathPrefix=$(echo "$1" | rev | cut -d"/" -f1 -f2 | rev)
+pathPrefix=$(echo "$1" | rev | cut -d"/" -f1-2 | rev)
 
 split $targetTestPath $numOfGrps $pathPrefix
 
