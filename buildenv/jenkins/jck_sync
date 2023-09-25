@@ -12,9 +12,6 @@ timestamps{
                 echo "clone the SCM GIT repo"
                 try {
                     def gitConfig = scm.getUserRemoteConfigs().get(0)
-                    timeout(time: 1, unit: 'HOURS') {
-                        forceCleanWS()
-                    }
                     checkout scm: [$class: 'GitSCM',
                     branches: [[name: "${scm.branches[0].name}"]],
                     extensions: [
@@ -38,19 +35,6 @@ timestamps{
 
                     }
                 }
-    }
-}
-
-def forceCleanWS() {
-    try {
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
-    } catch (Exception e) {
-        echo 'Exception: ' + e.toString()
-        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-        sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
-        // call cleanWs() again
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
     }
 }
 
@@ -96,11 +80,16 @@ def getJavaSDK(){
         JDK_VERSION_OPTION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}" : ""
         JDK_IMPL_OPTION = params.JDK_IMPL ? "-i ${params.JDK_IMPL}" : ""
         CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
+        CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
 
-        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} "
+        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION}"
         dir("${WORKSPACE}/aqa-tests") {
-            sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
-                sh "$GET_SH_CMD"
-	        }
+            if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+				sh "$GET_SH_CMD"
+			    }
+		    } else {
+			    sh "$GET_SH_CMD"
+		    }
         }
     }
