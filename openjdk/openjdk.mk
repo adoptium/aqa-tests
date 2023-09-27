@@ -198,7 +198,10 @@ endif
 
 VENDOR_PROBLEM_LIST_FILE:=
 ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft))
-	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
+	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
+	ifneq (,$(wildcard $(VENDOR_FILE)))
+		VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)$(VENDOR_FILE)$(Q)
+	endif
 endif
 
 # --add-modules jdk.incubator.foreign is removed for JDK19+
