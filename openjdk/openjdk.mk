@@ -46,7 +46,7 @@ endif
 # Upstream OpenJDK, roughly, sets concurrency based on the
 # following: min(NPROCS/2, MEM_IN_GB/2).
 MEM := $(shell expr $(MEMORY_SIZE) / 2048)
-CORE := $(shell expr $(NPROCS) / 2)
+CORE := $(shell expr $(NPROCS))
 CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
