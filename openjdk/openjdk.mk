@@ -11,9 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
-NPROCS:=2
+NPROCS:=1
 # Memory size in MB
-MEMORY_SIZE:=4096
+MEMORY_SIZE:=1024
 
 OS:=$(shell uname -s)
 
@@ -46,7 +46,7 @@ endif
 # Upstream OpenJDK, roughly, sets concurrency based on the
 # following: min(NPROCS/2, MEM_IN_GB/2).
 MEM := $(shell expr $(MEMORY_SIZE) / 2048)
-CORE := $(shell expr $(NPROCS))
+CORE := $(shell expr $(NPROCS) / 2)
 CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
@@ -60,7 +60,7 @@ JTREG_CONC ?= 0
 ifeq ($(JTREG_CONC), 0)
 	JTREG_CONC := $(CONC)
 	ifeq ($(JTREG_CONC), 0)
-                JTREG_CONC := 1
+		JTREG_CONC := 1
 	endif
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
