@@ -165,6 +165,8 @@ ifeq ($(shell test $(JDK_VERSION) -ge 21; echo $$?),0)
 			CFLAGS+=-std=gnu99
 		else ifeq ($(ARCH),s390x)
 			CFLAGS+=-std=gnu99
+		else ifeq ($(ARCH),x86_64)
+			CFLAGS+=-std=gnu99
 		endif
 	endif
 endif
