@@ -69,15 +69,8 @@
 			</then>
 		</elseif>
 		<elseif>
-			<!-- version 21 -->
-			<matches pattern="^21$" string="${JDK_VERSION}"/>
-			<then>
-				<property name="jtregTar" value="jtreg_7_2_1"/>
-			</then>
-		</elseif>
-		<elseif>
-			<!-- version 22 -->
-			<matches pattern="^22$" string="${JDK_VERSION}"/>
+			<!-- version 21, 22 -->
+			<matches pattern="^2[12]$" string="${JDK_VERSION}"/>
 			<then>
 				<property name="jtregTar" value="jtreg_7_3_1_1"/>
 			</then>
