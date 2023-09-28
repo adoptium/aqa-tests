@@ -58,7 +58,7 @@ endif
 JTREG_CONC ?= 0
 # Allow JTREG_CONC be set via parameter
 ifeq ($(JTREG_CONC), 0)
-	JTREG_CONC := $(CORE)
+	JTREG_CONC := $(MEM)
 	ifeq ($(JTREG_CONC), 0)
                 JTREG_CONC := 5
 	endif
