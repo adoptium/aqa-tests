@@ -11,9 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
-NPROCS:=1
+NPROCS:=2
 # Memory size in MB
-MEMORY_SIZE:=1024
+MEMORY_SIZE:=4096
 
 OS:=$(shell uname -s)
 
@@ -60,7 +60,7 @@ JTREG_CONC ?= 0
 ifeq ($(JTREG_CONC), 0)
 	JTREG_CONC := $(CONC)
 	ifeq ($(JTREG_CONC), 0)
-		JTREG_CONC := 1
+                JTREG_CONC := 5
 	endif
 endif
 EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
