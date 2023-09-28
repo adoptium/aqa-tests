@@ -44,7 +44,7 @@ def syncJckMaterial(){
         def JCK_GIT_BRANCH = params.JCK_GIT_BRANCH ? "-gb ${params.JCK_GIT_BRANCH}": ""
         def ARTIFACTORY_URL = params.ARTIFACTORY_URL ? "-au ${params.ARTIFACTORY_URL}": ""
         def JCK_GIT_REPO = params.JCK_GIT_REPO ? "-repo ${params.JCK_GIT_REPO}": ""
-        stage('Build') {
+        stage('JCKUpdater') {
                 script {
                         getJavaSDK()
 
