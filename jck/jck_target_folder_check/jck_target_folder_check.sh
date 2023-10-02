@@ -69,7 +69,7 @@ genTestFolderList() {
 	cd $JCK_ROOT/*-compiler-$ver/tests
 	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/compiler-dirs.txt
 
-	if [ $ver == "8d" ]; then
+	if [ $ver == "8d" ]; then 
 		cd $JCK_ROOT/*-devtools-$ver/tests
 		find . -maxdepth 2 -mindepth 2 -type d > $outputdir/devtools-dirs.txt
 	fi
@@ -210,4 +210,3 @@ end_time="$(date -u +%s)"
 date 
 elapsed="$(($end_time-$begin_time))"
 echo "Total process took ~ $elapsed seconds."
-
