@@ -47,7 +47,6 @@ def syncJckMaterial(){
         def JCK_GIT_REPO = params.JCK_GIT_REPO ? "-repo ${params.JCK_GIT_REPO}": ""
         def EXITCODE = 1
         stage('JCKUpdater') {
-                script {
                         getJavaSDK()
 
                         withCredentials([
@@ -59,69 +58,57 @@ def syncJckMaterial(){
                                 dir("${currentDirectory}/aqa-tests/jck/jck-semiauto-updater") {
                                     sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true){
                                         def SCRIPT = "./jckupdater.sh ${JCK_VERSION} -at  \"\$ARTIFACTORY_CREDENTIALS\" ${JCK_GIT_REPO}  -gt \"\$GIT_CREDENTIALS\"  ${ARTIFACTORY_URL}  ${JCK_GIT_BRANCH} "
-                                        echo "${SCRIPT}"
                                         def tempOutputFile = "temp_output.txt"
                                         EXITCODE = sh(script: "${SCRIPT} > ${tempOutputFile}",  returnStatus: true)
-                                        echo "EXITCODE= ${EXITCODE}"
                                         def scriptOutput = readFile(tempOutputFile).trim()
                                         echo "jckupdater script output:"
                                         echo scriptOutput
                                         if (EXITCODE == 2) {
-                                            echo "Script returned exit code 2, No new update available. Marking the job as SUCCESS. "
+                                            echo "Script returned exit code 2, No new update available. The job is completed without further action. "
                                         } else if (EXITCODE == 0) {
                                             echo "Script returned exit code 0, new update is available and PR is created."
                                             def matcher = (scriptOutput =~ /PR_NUMBER=\s*(\d+)/)
                                             PR_NUMBER = matcher ? matcher[0][1] : null
-                                            echo "PR_NUMBER = ${PR_NUMBER}"
+                                            if (PR_NUMBER == null || PR_NUMBER == 0) {
+                                                echo "Error: PR_NUMBER not found in script output."
+                                                error "PR_NUMBER not found in script output."
+                                            } else {
+                                                echo "PR created with number : ${PR_NUMBER}"
+                                            }
                                         } else {
                                             error("script failed with exit code ${EXITCODE}")
                                         }
                                     }
                                 }
                         }
-                    }
+        }
+        stage('Test') {
+                if (EXITCODE ==0){
+                def CHILD_JOB_NAME="Grinder_JCK"
+                def BUILD_URL="${JENKINS_URL}job/${CHILD_JOB_NAME}/"
+                def CHILD_PARAMS = []
+                if (JCK_GIT_BRANCH.isEmpty()){
+                        JCK_GIT_BRANCH = "autoBranch" //default branch name given in JCKUpdater.sh
                 }
-
-        stage('SanityTest') {
-               script{
-                   if (EXITCODE == 0){
-                    def TEST_PLATFORM="x86-64_linux,x86-64_windows"
-                    def PLATFORMS = TEST_PLATFORM.trim().split("\\s*,\\s*");
-                    def CHILD_JOB_NAME="Grinder_JCK"
-                    def testJobs = [:]
-                    def buildNumbers = [:]
-                    def buildResults = [:]
-                    def build_url="${JENKINS_URL}/job/${CHILD_JOB_NAME}/"
-                    PLATFORMS.each { PLATFORM ->
-                        def childParams = []
-                        params.each { param ->
-                            if (param.key == "PLATFORM") {
-                                childParams << string(name: param.key, value: PLATFORM)
-                            } else {
-                                def value = param.value.toString()
-                                if (value == "true" || value == "false") {
-                                    childParams << booleanParam(name: param.key, value: value.toBoolean())
-                                } else {
-                                    childParams << string(name: param.key, value: value)
-                                }
-                            }
+                // loop through all the params and change the parameters if needed
+                params.each { param ->
+                    def value = param.value.toString()
+                    if (param.key == "JCK_GIT_BRANCH") {
+                        if (value.trim() == ""){
+                            value = "autoBranch" //default branch name given in JCKUpdater.sh script
                         }
-
-                        testJobs["openjdk${JDK_VERSION}_${PLATFORM}"] = {
-                            def buildInfo = build job: CHILD_JOB_NAME, parameters: childParams
-                            // Store the build number in the map
-                            buildNumbers[PLATFORM] = buildInfo.number
-                            buildResults[PLATFORM] = buildInfo.result
+                        CHILD_PARAMS << string(name: param.key, value: value)
+                    } else {
+                        if (value == "true" || value == "false") {
+                            CHILD_PARAMS << booleanParam(name: param.key, value: value.toBoolean())
+                        } else {
+                            CHILD_PARAMS << string(name: param.key, value: value)
                         }
                     }
-                    parallel testJobs
-                    def COMMENT=""
-                    PLATFORMS.each { PLATFORM ->
-                        echo "Job openjdk${JDK_VERSION}_${PLATFORM} (Build ${buildNumbers[PLATFORM]}) completed with status: ${buildResults[PLATFORM]}"
-                        COMMENT= COMMENT +"Job [${PLATFORM} #${buildNumbers[PLATFORM]}](${build_url}${buildNumbers[PLATFORM]}) completed with status: ${buildResults[PLATFORM]}\\r\\n"
-                    }
-                    createComment(COMMENT)
                 }
+                def BUILD_INFO = build job: CHILD_JOB_NAME, parameters: CHILD_PARAMS
+                def COMMENT="Job [#${BUILD_INFO.number}](${BUILD_URL}${BUILD_INFO.number}) completed with status: ${BUILD_INFO.result}"
+                createComment(COMMENT)
             }
         }
     }
@@ -134,7 +121,7 @@ def getJavaSDK(){
         CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
         CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
 
-        GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION}"
+        GET_SH_CMD = "./get.sh -s `pwd`/.. -p x86-64_linux -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION}"
         dir("${WORKSPACE}/aqa-tests") {
             if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
 			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -150,23 +137,21 @@ def createComment(Comment) {
             withCredentials([
                 string(credentialsId: "${params.GIT_CREDENTIALS}",variable: 'GIT_CREDENTIALS')
             ]) {
-                def JCK_GIT_REPO = params.JCK_GIT_REPO
-                def GIT_USER = JCK_GIT_REPO.split(':')[1].split('/')[0]
-
-                JDK_VERSION = params.JDK_VERSION
-                def comment_url="https://github.ibm.com/api/v3/repos/${GIT_USER}/JCK${JDK_VERSION}-unzipped/issues/${PR_NUMBER}/comments"
-                def COMMENT = "${Comment}"
-                def curlCommand = """
+                def DOMAIN = params.JCK_GIT_REPO.split(/[@:]/)
+                def REPO = DOMAIN[2].split('\\.')
+                def COMMENT_URL="https://${DOMAIN[1]}/api/v3/repos/${REPO[0]}/issues/${PR_NUMBER}/comments"
+                def BODY = "${Comment}"
+                def CURL_COMMAND = """
                     curl -X POST -H "Authorization: token \"\$GIT_CREDENTIALS\"" \\
                     -d '{
-                    "body":"$COMMENT"
-                    }' "$comment_url"
+                    "body":"$BODY"
+                    }' "$COMMENT_URL"
                 """
-                def exitCode = sh(script: curlCommand, returnStatus: true, returnStdout: true)
-                if (exitCode == 0) {
-                    echo "Comment added successfully."
+                def STATUS = sh(script: CURL_COMMAND, returnStatus: true, returnStdout: true)
+                if (STATUS == 0) {
+                    echo "Comment added successfully to PR https://${DOMAIN[1]}/${REPO[0]}/pull/${PR_NUMBER} "
                 } else {
-                    error "Failed to add a comment."
+                    error "Failed to add a comment to PR https://${DOMAIN[1]}/${REPO[0]}/pull/${PR_NUMBER}"
                 }
             }
 }
