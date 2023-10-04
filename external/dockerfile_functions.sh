@@ -410,7 +410,7 @@ print_criu_install() {
                     "\n\t&& echo \"Pin: release a=jammy-proposed\" >> /etc/apt/preferences.d/proposed-updates \\" \
                     "\n\t&& echo \"Pin-Priority: 400\" >> /etc/apt/preferences.d/proposed-updates \\" \
                     "\n\t&& apt-get update \\" \
-                    "\n\t&& apt-get install -y libc6=2.35-0ubuntu3.3 \\" \
+                    "\n\t&& apt-get install -y libc6=2.35-0ubuntu3.4 \\" \
                     "\n\t&& /lib/ld64.so.1 --list-tunables " \
                     "\n" >> ${file}
         fi
