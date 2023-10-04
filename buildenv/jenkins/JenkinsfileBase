@@ -1224,7 +1224,7 @@ def triggerRerunJob () {
 				def newJobs = [:]
 				def childParams = []
 				echo "allocate a node for generating rerun job ..."
-				node {
+				node (env.SETUP_LABEL) {
 					generateJob(newJobs, rerunJobName, rerunJobName)
 					parallel newJobs
 
@@ -1265,7 +1265,7 @@ def run_parallel_tests() {
 	if (params.PARALLEL && params.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			node {
+			node (env.SETUP_LABEL) {
 				forceCleanWS()
 				try {
 					def buildPaths = ""
