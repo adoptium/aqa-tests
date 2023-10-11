@@ -1,0 +1,273 @@
+#!groovy
+
+timestamps{
+    stage('Setup') {
+        def SYNC_LABEL = params.SYNC_LABEL ?: "ci.role.test&&hw.arch.x86&&sw.os.linux"
+        println "SYNC_LABEL: ${SYNC_LABEL}"
+        node(SYNC_LABEL) {
+            echo "clone the SCM GIT repo"
+            try {
+                def gitConfig = scm.getUserRemoteConfigs().get(0)
+                // Adopt windows machines require env here https://github.com/adoptium/aqa-tests/issues/1803
+                // ref_cache = "${env.HOME}/openjdk_cache"
+                timeout(time: 1, unit: 'HOURS') {
+                    forceCleanWS()
+                }
+                checkout scm: [$class: 'GitSCM',
+                branches: [[name: "${scm.branches[0].name}"]],
+                extensions: [
+                    [$class: 'CleanBeforeCheckout'],
+                    [$class: 'CloneOption'],// reference: ref_cache],
+                    [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                ]
+                getJavaSDK()
+                def scriptPR = targetFolderCheck()
+                scriptPR = getSplitter(scriptPR)
+                if (scriptPR){
+                    createPRForScripts()
+                }
+            } catch (Exception e) {
+                println("Exception: " + e.toString())
+                // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
+                    // if there is an exception, set currentBuild.result to ABORTED/FAILURE
+                if (e.toString().contains("FlowInterruptedException")) {
+                    println("Exception: " + e.toString())
+                    currentBuild.result = 'ABORTED'
+                } else {
+                    println("Exception: " + e.toString())
+                    currentBuild.result = 'FAILURE'
+                }
+            }
+        }
+    }
+}
+
+def forceCleanWS() {
+    try {
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    } catch (Exception e) {
+        echo 'Exception: ' + e.toString()
+        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+        sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+        // call cleanWs() again
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    }
+}
+
+def getJavaSDK(){
+    def JDK_VERSION_OPTION = params.JDK_VERSION ? "-j ${params.JDK_VERSION}" : ""
+    def CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
+    def CLONE_OPENJ9_OPTION = "--clone_openj9 false"
+    def PLATFORM_OPTION = "-p x86-64_linux"
+    def GET_SH_CMD = "./get.sh -s `pwd`/.. ${PLATFORM_OPTION} ${JDK_VERSION_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} "
+    dir("${WORKSPACE}/aqa-tests") {
+        if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
+			withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+			sh "$GET_SH_CMD"
+			}
+		} else {
+			sh "$GET_SH_CMD"
+		}
+    }
+}
+
+def targetFolderCheck(){
+    stage('FolderCheck') {
+    env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
+    echo "TEST_JDK_HOME == ${env.TEST_JDK_HOME}"
+    def logFile = "test.log"
+    def comment=""
+    def scriptPR = false
+    dir("${WORKSPACE}/aqa-tests/jck/jck_target_folder_check") {
+        sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true){
+            def JCK_GIT_BRANCH = params.JCK_GIT_BRANCH ?: "autoBranch" //default branch name in jckupdater.sh
+            def SCRIPT = "./jck_target_folder_check.sh ${params.JCK_GIT_REPO} ${WORKSPACE} ${JCK_GIT_BRANCH}"
+            def specificLine = "New test folder detected:"
+
+            def STATUS = sh(script: "${SCRIPT} >${logFile}", returnStatus: true)
+            echo "EXITCODE for jck_target_folder_check = ${STATUS}"
+            sh "cat ${logFile}"
+                        
+            // Use 'grep' to check if any new folders are detected
+            def grepCommand = "grep '${specificLine}' ${logFile}"
+            def grepResult = sh(script: grepCommand, returnStatus: true, returnStdout: true)
+            // grep last few lines after Done! to create comment
+            def fileContents = readFile(file: logFile).trim()
+            def delimiter = 'Done!'
+            def parts = fileContents.split(delimiter)
+            def linesAfterDone = parts[1].trim()
+            def lines = linesAfterDone.split('\n')
+            def commentBody = lines.collect { it.trim() }.join('\\r\\n')
+
+            if (grepResult == 0)  {
+                echo "New folders detected. Need to update playlist.xml'"
+                comment="New folders detected. Need to update playlist.xml \\r\\n ``` ${commentBody} "
+                scriptPR=udpateFolderCheck(logFile)
+            } else {
+                echo "No new folders detected. No need to update playlist.xml '"
+                comment="No new folders detected. No need to update playlist.xml \\r\\n ``` ${commentBody} "
+                }
+            }
+        }
+        createComment(comment)
+        return scriptPR
+    }
+}
+def udpateFolderCheck(file){
+    def ADOPTIUM_GIT_USER = params.ADOPTIUM_GIT_USER ?: ""
+    if (ADOPTIUM_GIT_USER == "" || ADOPTIUM_GIT_USER == null){
+        echo "No PR will be created as ADOPTIUM_GIT_USER value is null. "
+        return false
+    } else {
+        dir("${WORKSPACE}/aqa-tests/jck") {
+            def logfile="${WORKSPACE}/aqa-tests/jck/jck_target_folder_check/$file"
+            def SCRIPT = "./jck_target_folder_check/update_jck_target_folder.sh ${WORKSPACE}/aqa-tests/jck $logfile"
+            STATUS = sh(script: "${SCRIPT}",  returnStatus: true)    
+            if (STATUS == 0){
+                def commit="update folder check "
+                def filePath='**/playlist.xml' 
+                pushChangesToRepo(commit, filePath,false)
+            } else {
+                echo "Update_jck_target_folder script resulted non zero return status."
+                return false
+            }
+        }
+    return true
+    }
+}
+
+def getSplitter(scriptPR){
+    stage('Splitter') {
+        dir("${WORKSPACE}/aqa-tests/jck/splitter") {
+            def JDK_VERSION= params.JDK_VERSION
+            def tempOutputFile = "SplitterOutput.txt"
+            def SCRIPT = "./testUpdater.sh ${WORKSPACE} ${JDK_VERSION}"
+            def response = sh(script: "${SCRIPT} > ${tempOutputFile}",  returnStatus: true)
+            def scriptOutput = readFile(tempOutputFile).trim()
+            def comment=""
+            echo scriptOutput
+            if (scriptOutput =~ /PR_NEEDED=true/){
+                def match = (scriptOutput =~ /Class_List=(.*)/)
+                def testClassList = match[0][1].split()
+                comment=" Splitter.sh resulted in new test groups.\\r\\n We need to create PR to update jck.mk file for below test group\\r\\n " 
+                comment+=testClassList.join(',')
+                filePath= "${WORKSPACE}/aqa-tests/jck/jck${JDK_VERSION}.mk"
+                commit= "update jck.mk"
+                pushChangesToRepo(commit,filePath,scriptPR)
+                scriptPR=true
+            } else {
+                comment =" No need to create PR to update jck.mk file."
+            }
+            createComment(comment)
+            return scriptPR
+        }
+    }
+}
+
+def pushChangesToRepo(commit,target,scriptPR){
+    def ADOPTIUM_GIT_USER = params.ADOPTIUM_GIT_USER ?: ""
+
+    if (ADOPTIUM_GIT_USER == "" || ADOPTIUM_GIT_USER == null){
+        echo "No PR will be created as ADOPTIUM_GIT_USER value is null. "
+        return false
+    } else {
+        sshagent(credentials:["${params.ADOPTIUM_SSH_CREDS}"], ignoreMissing: true){
+            dir("${WORKSPACE}/aqa-tests/jck") {
+                if (!scriptPR){
+                    try {
+                        sh """
+                            git remote remove origin
+                            git remote remove upstream
+                        """
+                    } catch (Exception e) {
+                        echo "Error removing remote: ${e.message}"
+                    }
+                    def origin ="git@github.com:${ADOPTIUM_GIT_USER}/aqa-tests.git"
+                    def upstream ="git@github.com:adoptium/aqa-tests.git"
+                    sh """
+                        git remote add origin ${origin}
+                        git remote add upstream ${upstream}
+                        git fetch upstream
+                        git checkout -b autoTest
+                        git config --global user.email "${ADOPTIUM_GIT_USER}@in.ibm.com"
+                        git config --global user.name "${ADOPTIUM_GIT_USER}"
+                    """
+                }
+            sh """
+                git add ${target}
+                git commit -m \"${commit}\"
+                git push origin autoTest
+            """
+            }
+        }
+    }
+}
+
+def createPRForScripts() {
+    stage('CreatePR') {
+        def ADOPTIUM_GIT_USER = params.ADOPTIUM_GIT_USER ?: ""
+        if (ADOPTIUM_GIT_USER == ""){
+            echo "No PR will be created as ADOPTIUM_GIT_USER value is not provided. "
+        } else {
+            withCredentials([
+                string(credentialsId: "${params.ADOPTIUM_GIT_CREDENTIALS}",variable: 'ADOPTIUM_GIT_TOKEN')
+            ]){
+                dir("${WORKSPACE}/aqa-tests") {
+                    sshagent(credentials:["${params.ADOPTIUM_SSH_CREDS}"], ignoreMissing: true){
+                    title="Update jck.mk and playlist.xml file"
+                    body="Creating PR to update jck.mk and playlist file"
+                    echo " Creating PR for jck.mk and playlist.xml file"
+                    url="https://api.github.com/repos/${ADOPTIUM_GIT_USER}/aqa-tests/pulls"
+                    def CURL_COMMAND = """
+                        curl -X POST "${url}" \\
+                        -H "Authorization: token \"\$ADOPTIUM_GIT_TOKEN\"" \\
+                        -H "Content-Type: application/json" \\
+                        -d '{
+                            "title": "${title}",
+                            "body": "${body}",
+                            "head": "${ADOPTIUM_GIT_USER}:autoTest",
+                            "base": "jcksync"
+                        }'
+                    """
+                    def response = sh(script: CURL_COMMAND, returnStdout: true)
+                    def matcher = (response =~ /"number":\s*(\d+)/)
+                    def prNumber = matcher ? matcher[0][1] : null
+                    prURL= "https://github.com/${ADOPTIUM_GIT_USER}/aqa-tests/pull/"
+                    comment=" PR #[${(prNumber)}](${prURL}${(prNumber)}) is created with changes in jck.mk and playlist.xml file .. "
+                    createComment(comment)
+                    }
+                }
+            }
+        }
+    }
+}
+
+def createComment(comment) {
+    withCredentials([
+        string(credentialsId: "${params.GIT_CREDENTIALS}",variable: 'GIT_CREDENTIALS')
+    ]) {
+        def PR_NUMBER = params.PR_NUMBER ?:0
+        if (PR_NUMBER == 0){
+            echo "No PR created to comment"
+        }else{
+            def DOMAIN = params.JCK_GIT_REPO.split(/[@:]/)
+            def REPO = DOMAIN[2].split('\\.')
+            def COMMENT_URL="https://${DOMAIN[1]}/api/v3/repos/${REPO[0]}/issues/${PR_NUMBER}/comments"
+            def PR_URL="https://${DOMAIN[1]}/${REPO[0]}/pull/${PR_NUMBER}"
+            def CURL_COMMAND = """
+                curl -X POST -H "Authorization: token \"\$GIT_CREDENTIALS\"" \\
+                -d '{
+                "body":"${comment}"
+                }' "$COMMENT_URL"
+            """
+            def STATUS = sh(script: CURL_COMMAND, returnStatus: true, returnStdout: true)
+            if (STATUS == 0) {
+                echo ("Comment added successfully to PR ${PR_URL} ")
+            } else {
+                error ("Failed to add a comment to PR ${PR_URL} ")
+            }
+        }
+    }
+}

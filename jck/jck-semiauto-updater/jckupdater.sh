@@ -337,6 +337,20 @@ createPR(){
 	echo "PR_NUMBER=$PR_NUMBER"
 }
 
+test() {
+
+	echo "Inside jckupdater script"
+	response='{
+	"url": "https://github.ibm.com/api/v3/repos/kapil-powar/JCK8-unzipped/pulls/4",
+	"number": 8,
+	"id": 12262634
+	}'
+	echo "Response -- $response"
+	pr_number=$(echo "$response" | grep -o '"number": *[0-9]*' | awk -F':' '{print $2}' | tr -d ' ,"')
+
+	echo "PR_NUMBER=$pr_number"
+}
+
 cleanup() {
 	echo "Starting clean up dir $WORKSPACE and $GIT_REPO ........"
 	rm -rf $WORKSPACE
@@ -351,14 +365,15 @@ begin_time="$(date -u +%s)"
 parseCommandLineArgs "$@"
 
 if [ "$JCK_VERSION" != "" ] && [ "$JCK_GIT_REPO" != "" ] && [ "$GIT_TOKEN" != "" ] && [ "$ARTIFACTORY_TOKEN" != "" ] && [ "$ARTIFACTORY_DOWNLOAD_URL" != "" ]  ; then
-	cleanup
-	setup
-	isLatestUpdate
-	extract
-	gitClone
-	copyFilestoGITRepo
-	checkChangesAndCommit
-	cleanup
+	# cleanup
+	# setup
+	# isLatestUpdate
+	# extract
+	# gitClone
+	# copyFilestoGITRepo
+	# checkChangesAndCommit
+	# cleanup
+	test
 else 
 	echo "Please provide missing arguments"
 	usage; exit 1

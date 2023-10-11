@@ -24,9 +24,18 @@ split()
 	
 	testPathPrefix=$3
     numOfIndices=numOfGrps+1; 
-    
-	# Read in the sub-tests into an array 
+    lastPrefix=$(echo "$testPathPrefix" | awk -F'/' '{print $NF}')
+	firstPrefix=$(echo "$pathPrefix" | awk -F'/' '{print $1}' | tr '[:lower:]' '[:upper:]')
+	if [[ ${lastPrefix} = "CLSS" ]]; then
+	        lastPrefix="CLASS"
+	fi
 	
+	if [[ $testPathPrefix == *"vm/verifier"* ]]; then
+		testName=VERIFIER_INSTRUCTIONS
+	else
+		testName=COMPILER_${firstPrefix}_${lastPrefix}
+	fi
+	# Read in the sub-tests into an array
 	i=0
 	while read line
 	do
@@ -87,7 +96,7 @@ split()
 		for ((i=0; i<$numOfGrps; i++));
 		do
 			value=${groups[$i]}
-			printf "%s\n\n" "GROUP ($i) = ${value%?}"
+			printf "%s\n\n" "${testName}_TESTS_GROUP$((i+1))=\$(Q)${value%?}\$(Q)"
 		done
 		printf "%s\n\n" "Total subtests processed = $totalCounted"
 	else 
@@ -97,7 +106,11 @@ split()
 
 targetTestPath=$1 
 numOfGrps=$2
-pathPrefix=$(echo "$1" | rev | cut -d"/" -f1 -f2 | rev)
+if [[ "$1" == *"vm/verifier"* ]]; then
+	pathPrefix=$(echo "$1" | rev | cut -d"/" -f1-3 | rev)
+else
+	pathPrefix=$(echo "$1" | rev | cut -d"/" -f1-2 | rev)
+fi
 
 split $targetTestPath $numOfGrps $pathPrefix
 

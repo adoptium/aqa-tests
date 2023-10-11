@@ -55,8 +55,10 @@ genTargetList() {
 }
 
 genTestFolderList() {
-	if [ "$VERSION" -eq 8 ] ; then 
-		ver="$VERSION"c
+	if [ "$VERSION" -eq 8 ] ; then
+		ver="$VERSION"d
+	elif [ "$VERSION" -eq 11 ] ; then
+		ver="$VERSION"a
 	else 
 		ver="$VERSION"
 	fi 
@@ -67,7 +69,7 @@ genTestFolderList() {
 	cd $JCK_ROOT/*-compiler-$ver/tests
 	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/compiler-dirs.txt
 
-	if [ $ver == "8c" ]; then 
+	if [ $ver == "8d" ]; then
 		cd $JCK_ROOT/*-devtools-$ver/tests
 		find . -maxdepth 2 -mindepth 2 -type d > $outputdir/devtools-dirs.txt
 	fi
@@ -96,24 +98,23 @@ crossCheckTestFoldersIn() {
 		existingTargets=$( cat "${listOfExistingTargets}" )
 		if [[ ! " $existingTargets " =~ $tokenToSearch ]] ; then
 			echo "New test folder detected: $line | Please add target: jck-$tokenToSearch"
-			command='<command>$(JCK_CMD_TEMPLATE) -test-args=$(Q)tests='${tokens[1]}/${tokens[2]}',jckRoot=$(JCK_ROOT),jckversion=$(JCK_VERSION),testsuite='$testTypeToUpper'$(Q); \'
-			status='$(TEST_STATUS)</command>'
+			command='<command>$(GEN_JTB_GENERIC) tests='${tokens[1]}/${tokens[2]}' testsuite='$testTypeToUpper'; \
+	$(EXEC_'${testTypeToUpper}'_TEST); \
+	$(TEST_STATUS); \
+	$(GEN_SUMMARY_GENERIC) tests='${tokens[1]}/${tokens[2]}' testsuite='$testTypeToUpper'
+	</command>'
 			echo "<test>"
 			echo "	<testCaseName>jck-$tokenToSearch</testCaseName>"
 			echo "	<variations>"
 			echo "		<variation>NoOptions</variation>"
 			echo "	</variations>"
 			echo "	$command"
-			echo "	$status"
 			echo "	<levels>"
 			echo "		<level>extended</level>"
 			echo "	</levels>"
 			echo "	<groups>"
 			echo "		<group>jck</group>"
 			echo "	</groups>"
-			echo "	<versions>"
-			echo "		<version>$VERSION+</version>"
-			echo "	</versions>"
 			echo "</test>"
 			count=$((count +1))	
 		fi
@@ -131,7 +132,7 @@ setup() {
 		echo "Using existing test repo at: $workspace/test"
 	else 
 		echo "Git cloning test materials from $repo..."
-		git clone --depth 1 -q $repo $workspace/test
+		git clone --depth 1 -q -b $BRANCH $repo $workspace/test
 		if [ $? != 0 ]; then 
 			exit 1
 		fi
@@ -146,6 +147,7 @@ main() {
 	echo "TEST_ROOT = $TEST_ROOT"
 	echo "workspace = $workspace"
 	echo "TEST_JDK_HOME = $TEST_JDK_HOME"
+	echo "GIT Branch = $BRANCH"
 	
 	export outputdir=$workspace/output
 	mkdir $workspace/output
@@ -167,22 +169,24 @@ usage() {
 date
 begin_time="$(date -u +%s)"
 
-if [ "$#" -eq 3 ]; then
+if [ "$#" -eq 4 ]; then
 	# The script is running from a build which sends in three parameters. 
 	# No setup() is needed in this case.   
 	export VERSION=$(echo "$1" | sed 's/[^0-9]*//g')
 	export JCK_ROOT=$2
 	export TEST_ROOT=$3
+	export BRANCH=$4
 	export workspace=`pwd`/crosscheck
 	mkdir $workspace
 	main 
-elif [ "$#" -eq 2 ]; then
+elif [ "$#" -eq 3 ]; then
 	# We are running locally, where two parameters are sent in: test repo and workspace location.
 	# The script expects openjdk-test to be already checked out under workspace  
 	# Also, We will need setup() in this case. 
 	export repo=$1
 	export VERSION=$(echo "$repo" | sed 's/[^0-9]*//g')
 	export workspace=$2
+	export BRANCH=$3
 	if [ ! -d "$workspace/aqa-tests" ] ; then
 		echo "Please manually check out aqa-tests under $workspace"
 		exit 1
