@@ -422,14 +422,24 @@ def setup() {
 		OPENJ9_BRANCH_OPTION = ""
 		TKG_REPO_OPTION = ""
 		TKG_BRANCH_OPTION = ""
-		if(!params.USE_TESTENV_PROPERTIES){
-			OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
-			OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
-			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
-			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
-		}
+		OPENJ9_SHA_OPTION = ""
 		CLONE_OPENJ9_OPTION = (params.CLONE_OPENJ9) ? "--clone_openj9 ${params.CLONE_OPENJ9}" : ""
-		OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+		// if CLONE_OPENJ9 parameter is not set, only clone openj9 if we are running functional tests
+		if (CLONE_OPENJ9_OPTION == "") {
+			if (env.BUILD_LIST.contains('functional')) {
+				CLONE_OPENJ9_OPTION = "--clone_openj9 true"
+				// If USE_TESTENV_PROPERTIES = false, set Openj9 repo and brnach. 
+				// Otherwise, testenv.properties will be used.
+				// And the Openj9 repo and brnach values will be set in get.sh
+				if(!params.USE_TESTENV_PROPERTIES) {
+					OPENJ9_REPO_OPTION = "--openj9_repo ${OPENJ9_REPO}"
+					OPENJ9_BRANCH_OPTION = "--openj9_branch ${OPENJ9_BRANCH}"
+					OPENJ9_SHA_OPTION = (params.OPENJ9_SHA) ? "--openj9_sha ${params.OPENJ9_SHA}" : ""
+				}
+			} else {
+				CLONE_OPENJ9_OPTION = "--clone_openj9 false"
+			}
+		}
 		JDK_VERSION_OPTION = env.JDK_VERSION ? "-j ${env.JDK_VERSION}" : ""
 		JDK_IMPL_OPTION = env.JDK_IMPL ? "-i ${env.JDK_IMPL}" : ""
 
@@ -446,6 +456,9 @@ def setup() {
 			String[] stf = getGitRepoBranch(params.STF_OWNER_BRANCH, "adoptium:master", "STF")
 			env.STF_REPO = stf[0]
 			env.STF_BRANCH = stf[1]
+
+			TKG_REPO_OPTION = "--tkg_repo ${TKG_REPO}"
+			TKG_BRANCH_OPTION = "--tkg_branch ${TKG_BRANCH}"
 		}
 		// vendor test
 		// expect VENDOR_TEST_* to be comma separated string parameters
