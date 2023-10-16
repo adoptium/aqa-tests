@@ -2602,4 +2602,21 @@
 			<group>jck</group>
 		</groups>
 	</test>	
+	<test>
+		<testCaseName>jck-compiler-lang-TEST</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) tests=lang/TEST testsuite=COMPILER; \
+		$(EXEC_COMPILER_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=lang/TEST testsuite=COMPILER
+		</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
 </playlist>

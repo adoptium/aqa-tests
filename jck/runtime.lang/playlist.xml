@@ -418,4 +418,21 @@
 			<group>jck</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>jck-runtime-lang-TEST</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) tests=lang/TEST testsuite=RUNTIME; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=lang/TEST testsuite=RUNTIME
+		</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
 </playlist>
