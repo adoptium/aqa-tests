@@ -583,74 +583,77 @@ getFunctionalTestMaterial()
 	fi
 
 	rm -rf openj9
+}
 
-	if [ "$VENDOR_REPOS" != "" ]; then
-		declare -a vendor_repos_array
-		declare -a vendor_branches_array
-		declare -a vendor_shas_array
-		declare -a vendor_dirs_array
+getVendorTestMaterial() {
+	echo "get vendor test material..."
+	cd $TESTDIR
 
-		# convert VENDOR_REPOS to array
-		vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
+	declare -a vendor_repos_array
+	declare -a vendor_branches_array
+	declare -a vendor_shas_array
+	declare -a vendor_dirs_array
 
-		if [ "$VENDOR_BRANCHES" != "" ]; then
-			# convert VENDOR_BRANCHES to array
-			vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
-		fi
+	# convert VENDOR_REPOS to array
+	vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
 
-		if [ "$VENDOR_SHAS" != "" ]; then
-			#convert VENDOR_SHAS to array
-			vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
-		fi
-
-		if [ "$VENDOR_DIRS" != "" ]; then
-			#convert VENDOR_DIRS to array
-			vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
-		fi
-
-		for i in "${!vendor_repos_array[@]}"; do
-			# clone vendor source
-			repoURL=${vendor_repos_array[$i]}
-			branch=${vendor_branches_array[$i]}
-			sha=${vendor_shas_array[$i]}
-			dir=${vendor_dirs_array[$i]}
-			dest="vendor_${i}"
-
-			branchOption=""
-			if [ "$branch" != "" ]; then
-				branchOption="-b $branch"
-			fi
-
-			echo "git clone ${branchOption} $repoURL $dest"
-			git clone -q --depth 1 $branchOption $repoURL $dest
-
-			if [ "$sha" != "" ]; then
-				cd $dest
-				echo "git fetch -q --unshallow"
-				git fetch -q --unshallow
-				echo "update to $sha"
-				git checkout $sha
-				cd $TESTDIR
-			fi
-
-			# move resources
-			if [ "$dir" != "" ] && [ -d $dest/$dir ]; then
-				echo "Stage $dest/$dir to $TESTDIR/$dir"
-				# already in TESTDIR, thus copy $dir to current directory
-				cp -r $dest/$dir ./
-				if [[ "$PLATFORM" == *"zos"* ]]; then
-					cp -r $dest/.git ./$dir
-				fi
-			else
-				echo "Stage $dest to $TESTDIR"
-				# already in TESTDIR, thus copy the entire vendor repo content to current directory
-				cp -r $dest/* ./
-			fi
-
-			# clean up
-			rm -rf $dest
-		done
+	if [ "$VENDOR_BRANCHES" != "" ]; then
+		# convert VENDOR_BRANCHES to array
+		vendor_branches_array=(`echo $VENDOR_BRANCHES | sed 's/,/\n/g'`)
 	fi
+
+	if [ "$VENDOR_SHAS" != "" ]; then
+		#convert VENDOR_SHAS to array
+		vendor_shas_array=(`echo $VENDOR_SHAS | sed 's/,/\n/g'`)
+	fi
+
+	if [ "$VENDOR_DIRS" != "" ]; then
+		#convert VENDOR_DIRS to array
+		vendor_dirs_array=(`echo $VENDOR_DIRS | sed 's/,/\n/g'`)
+	fi
+
+	for i in "${!vendor_repos_array[@]}"; do
+		# clone vendor source
+		repoURL=${vendor_repos_array[$i]}
+		branch=${vendor_branches_array[$i]}
+		sha=${vendor_shas_array[$i]}
+		dir=${vendor_dirs_array[$i]}
+		dest="vendor_${i}"
+
+		branchOption=""
+		if [ "$branch" != "" ]; then
+			branchOption="-b $branch"
+		fi
+
+		echo "git clone ${branchOption} $repoURL $dest"
+		git clone -q --depth 1 $branchOption $repoURL $dest
+
+		if [ "$sha" != "" ]; then
+			cd $dest
+			echo "git fetch -q --unshallow"
+			git fetch -q --unshallow
+			echo "update to $sha"
+			git checkout $sha
+			cd $TESTDIR
+		fi
+
+		# move resources
+		if [ "$dir" != "" ] && [ -d $dest/$dir ]; then
+			echo "Stage $dest/$dir to $TESTDIR/$dir"
+			# already in TESTDIR, thus copy $dir to current directory
+			cp -r $dest/$dir ./
+			if [[ "$PLATFORM" == *"zos"* ]]; then
+				cp -r $dest/.git ./$dir
+			fi
+		else
+			echo "Stage $dest to $TESTDIR"
+			# already in TESTDIR, thus copy the entire vendor repo content to current directory
+			cp -r $dest/* ./
+		fi
+
+		# clean up
+		rm -rf $dest
+	done
 }
 
 testJavaVersion()
@@ -781,4 +784,8 @@ fi
 
 if [ $CLONE_OPENJ9 != "false" ]; then
 	getFunctionalTestMaterial
+fi
+
+if [ "$VENDOR_REPOS" != "" ]; then
+	getVendorTestMaterial
 fi
