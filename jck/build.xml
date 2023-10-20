@@ -92,31 +92,42 @@
 			<available file="${JCK_ROOT_USED}" type="dir" />
 			<then>
 				<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
-				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="localSHA">
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code">
 					<arg line="rev-parse"/>
 					<arg line="HEAD"/>
 				</exec>
-				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
-					<arg line="ls-remote"/>
-					<arg line="${JCK_GIT_REPO_USED}"/>
-					<arg line="${jck_branch}"/>
-				</exec>
-				<loadresource property="localSHATrimmed">
-					<propertyresource name="localSHA"/>
-					<filterchain>
-						<tokenfilter>
-							<trim/>
-						</tokenfilter>
-						<striplinebreaks/>
-					</filterchain>
-				</loadresource>
-					
-				<echo message="LocalSHA = --${localSHATrimmed}--"/>
-				<echo message="RemoteSHA= --${remoteSHA}--"/>
+				<if>
+					<not>
+						<equals arg1="${return.code}" arg2="0"/>
+					</not>
+					<then>
+						<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." />
+						<delete dir="${JCK_ROOT_USED}" failonerror="true" />
+					</then>
+					<else>
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA">
+							<arg line="ls-remote"/>
+							<arg line="${JCK_GIT_REPO_USED}"/>
+							<arg line="${jck_branch}"/>
+						</exec>
+						<loadresource property="localSHATrimmed">
+							<propertyresource name="localSHA"/>
+							<filterchain>
+								<tokenfilter>
+									<trim/>
+								</tokenfilter>
+								<striplinebreaks/>
+							</filterchain>
+						</loadresource>
+							
+						<echo message="LocalSHA = --${localSHATrimmed}--"/>
+						<echo message="RemoteSHA= --${remoteSHA}--"/>
 
-				<condition property="local-material-uptodate">
-					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
-				</condition>
+						<condition property="local-material-uptodate">
+							<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
+						</condition>
+					</else>
+				</if>
 			</then>
 		</if>	
 		<if>
