@@ -1,0 +1,128 @@
+#!groovy
+
+timestamps{
+    stage('Setup') {
+        def CHECK_LABEL = params.CHECK_LABEL ?: "ci.role.test&&hw.arch.x86&&sw.os.linux"
+        println "CHECK_LABEL: ${CHECK_LABEL}"
+        node(CHECK_LABEL) {
+            //echo ("clone the SCM GIT repo")
+            try {
+                def gitConfig = scm.getUserRemoteConfigs().get(0)
+                timeout(time: 1, unit: 'HOURS') {
+                        forceCleanWS()
+                    }
+                checkout scm: [$class: 'GitSCM',
+                branches: [[name: "${scm.branches[0].name}"]],
+                extensions: [
+                    [$class: 'CleanBeforeCheckout'],
+                    [$class: 'CloneOption'],
+                    [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
+                userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                ]
+                automateAPICheck()
+            } catch (Exception e) {
+                // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
+                // if there is an exception, set currentBuild.result to ABORTED/FAILURE
+                if (e.toString().contains("The job is completed without further action")){
+                    println("JCKUpdater script returned exit code 2, as no new update available. The job is completed without further action.")
+                    currentBuild.result = "SUCCESS"
+                } else if (e.toString().contains("FlowInterruptedException")) {
+                    currentBuild.result = 'ABORTED'
+                    println("Exception: " + e.toString())
+                } else {
+                    currentBuild.result = 'FAILURE'
+                    println("Exception: " + e.toString())
+                }
+            }
+        }
+    }
+}
+def forceCleanWS() {
+    try {
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    } catch (Exception e) {
+        echo 'Exception: ' + e.toString()
+        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+        sh "rm -rf ${env.WORKSPACE}/aqa-tests/TKG"
+        // call cleanWs() again
+        cleanWs disableDeferredWipeout: true, deleteDirs: true
+    }
+}
+
+def automateAPICheck() {
+    echo ("checking if new JCK material is available .....")
+    def ARTIFACTORY_API_URL_OPTION = params.ARTIFACTORY_API_URL ? "-au ${params.ARTIFACTORY_API_URL}": ""
+    stage('API_CHECK') {
+        withCredentials([
+            usernamePassword(credentialsId: "${params.ARTIFACTORY_CREDENTIALS}",
+			usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_CREDENTIALS')
+        ]){
+            // def currentDirectory = sh(script: 'pwd', returnStdout: true).trim()
+            dir("${WORKSPACE}/aqa-tests/jck/jck-semiauto-updater"){
+                def SCRIPT ="./update-check.sh ${ARTIFACTORY_API_URL_OPTION} -at \"\$ARTIFACTORY_CREDENTIALS\" "
+                def tempOutputFile = "temp_output.txt"
+                def EXITCODE = sh(script: "${SCRIPT} > ${tempOutputFile}",  returnStatus: true)
+
+                if (EXITCODE == 0) {
+                    def scriptOutput = readFile(tempOutputFile).trim()
+                    def jdkList = [:]
+                    testJobs = [:]
+                    echo ("Automate API script output:")
+                    echo scriptOutput
+
+                    jdkList= getJDKList(scriptOutput)
+                    jdkList.each { key, value ->
+                        println("JDK number: $key")
+                        def CHILD_JOB_NAME="JCK_Sync"
+                        def BUILD_URL="${JENKINS_URL}job/${CHILD_JOB_NAME}/"
+                        def CHILD_PARAMS = []
+                        def JCK_GIT_REPO = "git@github.ibm.com:runtimes/JCK${key}-unzipped.git"
+                        params.each { param ->
+                            def variable = param.value.toString()
+                            if (param.key == "JDK_VERSION") {
+                                variable = "${key}"
+                                CHILD_PARAMS << string(name: param.key, value: variable)
+                            } else if (param.key == "JCK_GIT_REPO") {
+                                variable = "${JCK_GIT_REPO}"
+                                CHILD_PARAMS << string(name: param.key, value: variable)
+                            } else {
+                                if (variable == "true" || variable == "false") {
+                                    CHILD_PARAMS << booleanParam(name: param.key, value: variable.toBoolean())
+                                } else {
+                                    CHILD_PARAMS << string(name: param.key, value: variable)
+                                }
+                            }
+                        }
+                        //def BUILD_INFO = build job: CHILD_JOB_NAME, parameters: CHILD_PARAMS
+                        testJobs["JCK_Sync${key}"] = {
+                            build job: CHILD_JOB_NAME, parameters: CHILD_PARAMS
+                        }
+                    }
+                    parallel testJobs
+                } else {
+                    error ("script failed with exit code ${EXITCODE}")
+                }            
+            }
+        }
+    }
+}
+
+def getJDKList(scriptOutput)
+{
+    def pattern = /JDK=(.+)/
+    def matcher = (scriptOutput =~ pattern)
+    def stringWithoutJDK
+    if (matcher.find()) {
+        stringWithoutJDK = matcher.group(1).trim()
+    }
+    def commaSeparatedValues = stringWithoutJDK?.split(',')
+    def keyValueMap = [:]
+    commaSeparatedValues?.each { value ->
+        def spaceSeparatedValues = value.trim().split(/\s+/)
+        def key = spaceSeparatedValues[0]
+        def remainingPart = spaceSeparatedValues[1..-1].join(' ')
+        keyValueMap[key] = remainingPart
+    }
+    return keyValueMap
+}
