@@ -165,12 +165,12 @@ getBinaryOpenjdk()
 {
 	echo "get jdk binary..."
 	cd $SDKDIR
-	mkdir -p openjdkbinary
-	cd openjdkbinary
+	mkdir -p jdkbinary
+	cd jdkbinary
 
 	if [ "$SDK_RESOURCE" != "upstream" ]; then
-		if [ "$(ls -A $SDKDIR/openjdkbinary)" ]; then
-			echo "$SDKDIR/openjdkbinary is not an empty directory, please empty it or specify a different SDK directory."
+		if [ "$(ls -A $SDKDIR/jdkbinary)" ]; then
+			echo "$SDKDIR/jdkbinary is not an empty directory, please empty it or specify a different SDK directory."
 			echo "This directory is used to download SDK resources into it and the script will not overwrite its contents."
 			exit 1
 		fi
@@ -349,7 +349,7 @@ getBinaryOpenjdk()
 			# Otherwise, files will be extracted under ./tmp
 			if [[ "$jar_name" =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]]; then
 				extract_dir="./j2sdk-image"
-				if [ -d "$SDKDIR/openjdkbinary/j2sdk-image/jre" ]; then
+				if [ -d "$SDKDIR/jdkbinary/j2sdk-image/jre" ]; then
 					extract_dir="./j2sdk-image/jre"
 				fi
 				echo "Uncompressing $jar_name over $extract_dir..."
@@ -364,10 +364,10 @@ getBinaryOpenjdk()
 					fi
 				fi
 			else
-				if [ -d "$SDKDIR/openjdkbinary/tmp" ]; then
-					rm -rf $SDKDIR/openjdkbinary/tmp/*
+				if [ -d "$SDKDIR/jdkbinary/tmp" ]; then
+					rm -rf $SDKDIR/jdkbinary/tmp/*
 				else
-					mkdir $SDKDIR/openjdkbinary/tmp
+					mkdir $SDKDIR/jdkbinary/tmp
 				fi
 				echo "Uncompressing file: $jar_name ..."
 				if [[ $jar_name == *zip ]] || [[ $jar_name == *jar ]]; then
@@ -379,7 +379,7 @@ getBinaryOpenjdk()
 					gzip -cd $jar_name | (cd tmp && tar xof -)
 				fi
 
-				cd $SDKDIR/openjdkbinary/tmp
+				cd $SDKDIR/jdkbinary/tmp
 				jar_dirs=`ls -d */`
 				jar_dir_array=(${jar_dirs//\\n/ })
 				len=${#jar_dir_array[@]}
@@ -429,7 +429,7 @@ getBinaryOpenjdk()
 				elif [ "$len" -gt 1 ]; then
 					mv ../tmp ../j2sdk-image
 				fi
-				cd $SDKDIR/openjdkbinary
+				cd $SDKDIR/jdkbinary
 			fi
 		done
 
@@ -660,7 +660,7 @@ testJavaVersion()
 {
 	# use environment variable TEST_JDK_HOME to run java -version
 	if [ "$TEST_JDK_HOME" = "" ]; then
-		TEST_JDK_HOME=$SDKDIR/openjdkbinary/j2sdk-image
+		TEST_JDK_HOME=$SDKDIR/jdkbinary/j2sdk-image
 	fi
 	_java=${TEST_JDK_HOME}/bin/java
 	_release=${TEST_JDK_HOME}/release
