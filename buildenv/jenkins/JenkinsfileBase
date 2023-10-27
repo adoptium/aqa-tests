@@ -12,8 +12,17 @@ def makeTest(testParam) {
 	}
 	try {
 		sh "$tearDownCmd"
-		if (env.DOCKER_REGISTRY_URL && env.DOCKER_REGISTRY_URL_CREDENTIAL_ID) {
-			withCredentials([usernamePassword(credentialsId: "${env.DOCKER_REGISTRY_URL_CREDENTIAL_ID}", usernameVariable: 'DOCKER_REGISTRY_CREDENTIALS_USR', passwordVariable: 'DOCKER_REGISTRY_CREDENTIALS_PSW')]) {
+		if (env.DOCKER_REGISTRY_URL && env.DOCKER_REGISTRY_URL_CREDENTIAL_ID && env.BASE_DOCKER_REGISTRY_CREDENTIAL_ID) {
+			withCredentials([
+				usernamePassword(credentialsId: "${env.DOCKER_REGISTRY_URL_CREDENTIAL_ID}", usernameVariable: 'DOCKER_REGISTRY_CREDENTIALS_USR', passwordVariable: 'DOCKER_REGISTRY_CREDENTIALS_PSW'),
+				usernamePassword(credentialsId: "${env.BASE_DOCKER_REGISTRY_CREDENTIAL_ID}", usernameVariable: 'BASE_DOCKER_REGISTRY_CREDENTIAL_USR', passwordVariable: 'BASE_DOCKER_REGISTRY_CREDENTIAL_PSW')
+			]) {
+				sh "$makeTestCmd"
+			}
+		} else if (env.DOCKER_REGISTRY_URL && env.DOCKER_REGISTRY_URL_CREDENTIAL_ID) {
+			withCredentials([
+				usernamePassword(credentialsId: "${env.DOCKER_REGISTRY_URL_CREDENTIAL_ID}", usernameVariable: 'DOCKER_REGISTRY_CREDENTIALS_USR', passwordVariable: 'DOCKER_REGISTRY_CREDENTIALS_PSW'),
+			]) {
 				sh "$makeTestCmd"
 			}
 		} else {
@@ -89,6 +98,7 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_URL = params.DOCKER_REGISTRY_URL ? params.DOCKER_REGISTRY_URL : ""
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
+	env.BASE_DOCKER_REGISTRY_CREDENTIAL_ID = params.BASE_DOCKER_REGISTRY_CREDENTIAL_ID ? params.BASE_DOCKER_REGISTRY_CREDENTIAL_ID : ""
 	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 	env.TKG_ITERATIONS = params.TKG_ITERATIONS ? "${params.TKG_ITERATIONS}".toInteger() : 1
 	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false

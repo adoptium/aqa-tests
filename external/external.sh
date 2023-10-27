@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-# script runs in 4 modes - build / run / load / clean
+# script runs in 5 modes - prepare / build / run / load / clean
 
 set -e
 tag=nightly
@@ -47,7 +47,8 @@ container_rmi="docker rmi"
 docker_registry_required="false"
 docker_registry_url=""
 docker_registry_dir=""
-base_docker_registry_dir="public"
+base_docker_registry_url="default"
+base_docker_registry_dir="default"
 reportdst="false"
 reportsrc="false"
 docker_args=""
@@ -57,7 +58,7 @@ imageArg=""
 
 
 usage () {
-	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
+	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_url baseDockerRegistryUrl] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
 supported_tests="external_custom aot camel criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
@@ -175,9 +176,17 @@ parseCommandLineArgs() {
 				docker_image_source_job_name=${dir_array[0]}
 				build_number=${dir_array[1]};;
 
+			"--base_docker_registry_url" )
+				if [ -z "$1" ]; then 
+					base_docker_registry_url="default";
+				else 
+  					base_docker_registry_url="$1";
+				fi
+				shift;;
+
 			"--base_docker_registry_dir" )
 				if [ -z "$1" ]; then 
-					base_docker_registry_dir="public";
+					base_docker_registry_dir="default";
 				else 
   					base_docker_registry_dir="$1";
 				fi
@@ -197,6 +206,9 @@ parseCommandLineArgs() {
 
 			"--testtarget" )
 				testtarget="$1"; shift;;
+
+			"--prepare" | "-p" )
+				command_type=prepare;;
 
 			"--build" | "-b" )
 				command_type=build;;
@@ -270,17 +282,34 @@ parseCommandLineArgs "$@"
 # set DOCKER_HOST env variables
 # DOCKER_HOST=$(docker-ip $test-test)
 
-if [ $command_type == "build" ]; then
-	# Temporarily ubi image with criu binary is only available internally
-	if [[ $base_docker_registry_dir != "public" ]]; then
-		echo "Private Docker Registry login starts to obtain base Docker Image:"
-		echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $docker_registry_url
+if [ $command_type == "prepare" ]; then
+	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry no login.
+	if [[ $base_docker_registry_url != "default" ]]; then
+		echo "Base Docker Registry login starts to obtain Base Docker Image:"
+		# Temporarily criu-ubi image with criu binary is only available internally
+		if [[ "${test}" != *"criu-ubi"* ]]; then
+			echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
+		else 
+			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $base_docker_registry_url
+		fi
 
-		echo "$container_pull $docker_registry_url/$base_docker_registry_dir:latest"
-		$container_pull $docker_registry_url/$base_docker_registry_dir:latest
+		if [[ $base_docker_registry_dir == "default" ]]; then
+			base_docker_image_name="eclipse-temurin:${JDK_VERSION}-jdk"
+			if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
+				base_docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
+			fi
+		else
+			base_docker_image_name="$base_docker_registry_dir:latest"
+		fi
 
-		$container_logout $docker_registry_url
+		echo "$container_pull $base_docker_registry_url/$base_docker_image_name"
+		$container_pull $base_docker_registry_url/$base_docker_image_name
+
+		$container_logout $base_docker_registry_url
 	fi
+fi
+
+if [ $command_type == "build" ]; then
 	echo "build_image.sh $test $version $impl $docker_os $package $build_type $platform $base_docker_registry_dir $check_external_custom $imageArg"
 	source $(dirname "$0")/build_image.sh $test $version $impl $docker_os $package $build_type $platform "$base_docker_registry_dir" $check_external_custom $imageArg
 fi
