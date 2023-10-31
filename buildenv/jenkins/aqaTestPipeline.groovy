@@ -17,6 +17,8 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 def APPLICATION_OPTIONS = (params.APPLICATION_OPTIONS) ?: ""
 def SETUP_JCK_RUN = params.SETUP_JCK_RUN ?: false
 def LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
+def DOCKER_REGISTRY_URL = (params.DOCKER_REGISTRY_URL) ?: ""
+def DOCKER_REGISTRY_URL_CREDENTIAL_ID = (params.DOCKER_REGISTRY_URL_CREDENTIAL_ID) ?: ""
 
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
@@ -122,6 +124,8 @@ JDK_VERSIONS.each { JDK_VERSION ->
                         string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
                         string(name: 'TEST_FLAG', value: TEST_FLAG),
                         string(name: 'APPLICATION_OPTIONS', value: APPLICATION_OPTIONS),
+                        string(name: 'DOCKER_REGISTRY_URL', value: DOCKER_REGISTRY_URL),
+                        string(name: 'DOCKER_REGISTRY_URL_CREDENTIAL_ID', value: DOCKER_REGISTRY_URL_CREDENTIAL_ID),
                         booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir),
                         booleanParam(name: 'SETUP_JCK_RUN', value: SETUP_JCK_RUN)
                     ], wait: true
