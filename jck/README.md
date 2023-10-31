@@ -92,7 +92,7 @@ docker run -it -v <path_to_aqa-tests_root>:/test  -v <jck_material_root>:/jck op
 // within docker container
 cd /test
 bash get.sh --testdir /test --customizedURL https://api.adoptopenjdk.net/openjdk8-openj9/nightly/x64_linux/latest/binary --sdkdir /java 
-export TEST_JDK_HOME=/java/openjdkbinary/j2sdk-image
+export TEST_JDK_HOME=/java/jdkbinary/j2sdk-image
 export BUILD_LIST=jck
 export JCK_GIT_REPO=git@github.com:mypretendcompany/jck8tests.git
 export JCK_ROOT=/jck/jck8tests

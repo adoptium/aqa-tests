@@ -66,7 +66,7 @@ def setupEnv() {
 	CLOUD_PROVIDER = params.CLOUD_PROVIDER ? params.CLOUD_PROVIDER : ""
 	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
-	env.TEST_JDK_HOME = "$WORKSPACE/openjdkbinary/j2sdk-image"
+	env.TEST_JDK_HOME = "$WORKSPACE/jdkbinary/j2sdk-image"
 	env.JVM_VERSION = params.JVM_VERSION ? params.JVM_VERSION : ""
 	env.JVM_OPTIONS = params.JVM_OPTIONS ? params.JVM_OPTIONS : ""
         env.APPLICATION_OPTIONS = params.APPLICATION_OPTIONS ? params.APPLICATION_OPTIONS : ""
@@ -408,7 +408,7 @@ def setup() {
 
 		if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 			timeout(time: 1, unit: 'HOURS') {
-				dir('openjdkbinary') {
+				dir('jdkbinary') {
 					step([$class: 'CopyArtifact',
 							fingerprintArtifacts: true,
 							flatten: true,
@@ -508,14 +508,14 @@ def setup_jck_interactives() {
 	if (jckRunDirExists) {
 		def jdkDir = ""
 		if (PLATFORM.contains("windows")) {
-			jdkDir = sh(script: "unzip -l `pwd`/openjdkbinary/${tarBall} | head -n 4 | tail -n 1 | xargs -n 1 echo | tail -n 1", returnStdout: true).trim().replaceFirst(".\$","")
+			jdkDir = sh(script: "unzip -l `pwd`/jdkbinary/${tarBall} | head -n 4 | tail -n 1 | xargs -n 1 echo | tail -n 1", returnStdout: true).trim().replaceFirst(".\$","")
 			if (PLATFORM.contains("x86-32_windows")) {
 				jdkDir = "${jdkDir}_32"
 			} else if (PLATFORM.contains("x86-64_windows")) {
 				jdkDir = "${jdkDir}_64"
 			}
 		} else {
-			jdkDir =  sh(script: "tar -tf `pwd`/openjdkbinary/${tarBall} | head -1", returnStdout: true).trim().replaceFirst(".\$","")
+			jdkDir =  sh(script: "tar -tf `pwd`/jdkbinary/${tarBall} | head -1", returnStdout: true).trim().replaceFirst(".\$","")
 		}
 		def jckRunDir = "${targetDir}/${jdkDir}"
 		def jckRunJDKExists = sh(script: """
@@ -646,12 +646,12 @@ def buildTest() {
 			}
 		}
 
-		if (fileExists('openjdkbinary/openjdk-test-image')) {
-			env.TESTIMAGE_PATH = "$WORKSPACE/openjdkbinary/openjdk-test-image"
+		if (fileExists('jdkbinary/openjdk-test-image')) {
+			env.TESTIMAGE_PATH = "$WORKSPACE/jdkbinary/openjdk-test-image"
 		}
 
-		if (fileExists('openjdkbinary/openjdk-test-image/openj9')) {
-			env.NATIVE_TEST_LIBS = "$WORKSPACE/openjdkbinary/openjdk-test-image/openj9"
+		if (fileExists('jdkbinary/openjdk-test-image/openj9')) {
+			env.NATIVE_TEST_LIBS = "$WORKSPACE/jdkbinary/openjdk-test-image/openj9"
 		}
 
 		if (!params.DYNAMIC_COMPILE) {
@@ -667,7 +667,7 @@ def buildTest() {
 
 		if (params.CODE_COVERAGE) {
 			echo "Clean gcda files before generating new Code Coverage info"
-			sh "find ${WORKSPACE}/openjdkbinary/j2sdk-image -name '*.gcda' -type f -delete"
+			sh "find ${WORKSPACE}/jdkbinary/j2sdk-image -name '*.gcda' -type f -delete"
 		}
 	}
 }
@@ -730,9 +730,9 @@ def runTest( ) {
 
 		if (params.CODE_COVERAGE) {
 			echo 'Generating Code Coverage Reports...'
-			dir("$WORKSPACE/openjdkbinary/j2sdk-image") {
+			dir("$WORKSPACE/jdkbinary/j2sdk-image") {
 				// Current lcov generates "Cannot open source file" info, but does not affect results, since Build and Test paths difference are corrected after summary.
-				sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => ${WORKSPACE}/openjdkbinary/j2sdk-image/jenkins/workspace/'"
+				sh "lcov --capture --quiet --directory . --output-file codeCoverageInfoOrigin.info --rc geninfo_adjust_src_path='/home/jenkins/workspace/ => ${WORKSPACE}/jdkbinary/j2sdk-image/jenkins/workspace/'"
 				sh "lcov --quiet --output-file codeCoverageInfoFinal.info --remove codeCoverageInfoOrigin.info '/usr/include/*' '/usr/local/*' '/home/*/attrlookup.gperf'"
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
@@ -873,7 +873,7 @@ def post(output_name) {
 		if (params.CODE_COVERAGE) {
 			echo "Archive Code Coverage Report"
 			def code_coverage_report_tar_name = "${output_name}_code_coverage_report${suffix}"
-			dir("${WORKSPACE}/openjdkbinary/j2sdk-image") {
+			dir("${WORKSPACE}/jdkbinary/j2sdk-image") {
 				if (tar_cmd.startsWith('tar')) {
 					sh "${tar_cmd} - ${pax_opt} codeCoverageInfoFinal.info code_coverage_report ${tar_cmd_suffix} > ${code_coverage_report_tar_name}"
 				} else {

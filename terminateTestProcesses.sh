@@ -8,7 +8,7 @@ if [ "$OS" = "Windows_NT" ]; then
 
   # Match anything that is most likely a test job or process related
   match_str="(CommandLine like '%java%jck%' or \
-             CommandLine like '%openjdkbinary%java%' or \
+             CommandLine like '%jdkbinary%java%' or \
              CommandLine like '%java%javatest%' or \
              CommandLine like '%java%-Xfuture%' or \
              CommandLine like '%rmid%' or \
@@ -42,7 +42,7 @@ else
   echo "Unix type machine.."
 
   # Match anything that is most likely a jck test job or process related
-  match_str="java.*jck|openjdkbinary.*java|java.*javatest|java.*-Xfuture|X.*vfb|rmid|rmiregistry|tnameserv|make"
+  match_str="java.*jck|jdkbinary.*java|java.*javatest|java.*-Xfuture|X.*vfb|rmid|rmiregistry|tnameserv|make"
 
   # Ignore Jenkins agent and grep cmd
   ignore_str="remoting.jar|agent.jar|grep"
