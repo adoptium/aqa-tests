@@ -52,31 +52,27 @@
         <mkdir dir="${DEST}" />
     </target>
     <if>
-        <or>
-            <matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-            <matches pattern="^[1][023456]" string="${JDK_VERSION}"/>
-        </or>
+        <!-- versions 8-10, 12-16 -->
+        <matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
         <then>
             <property name="jtregTar" value="jtreg_5_1_b01"/>
         </then>
+        <elseif>
+            <!-- versions 11, 17 -->
+            <matches pattern="^1[17]$" string="${JDK_VERSION}"/>
+            <then>
+                <property name="jtregTar" value="jtreg_6_1"/>
+            </then>
+        </elseif>
+        <elseif>
+            <!-- version 21, 22 -->
+            <matches pattern="^2[12]$" string="${JDK_VERSION}"/>
+            <then>
+                <property name="jtregTar" value="jtreg_7_3_1_1"/>
+            </then>
+        </elseif>
         <else>
-            <if>
-                <matches pattern="^[1][17]" string="${JDK_VERSION}"/>
-                <then>
-                    <property name="jtregTar" value="jtreg_6_1"/>
-                </then>
-                <else>
-                    <if>
-                        <matches pattern="^[1][89]" string="${JDK_VERSION}"/>
-                        <then>
-                            <property name="jtregTar" value="jtreg_6_1_1"/>
-                        </then>
-                        <else>
-                            <property name="jtregTar" value="jtreg_7_1_1_1"/>
-                        </else>
-                    </if>
-                </else>
-            </if>
+            <fail message="Unsupported JDK version: ${JDK_VERSION}"/>
         </else>
     </if>
     <if>
