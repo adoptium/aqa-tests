@@ -48,15 +48,15 @@
 			<property name="jtregTar" value="jtreg_5_1_b01"/>
 		</then>
 		<elseif>
-			<!-- versions 11, 17 -->
-			<matches pattern="^1[17]$" string="${JDK_VERSION}"/>
+			<!-- versions 11 -->
+			<matches pattern="^1[1]$" string="${JDK_VERSION}"/>
 			<then>
 				<property name="jtregTar" value="jtreg_6_1"/>
 			</then>
 		</elseif>
 		<elseif>
-			<!-- version 21, 22 -->
-			<matches pattern="^2[12]$" string="${JDK_VERSION}"/>
+			<!-- version 17, 21, 22 -->
+			<matches pattern="^1[7]|2[12]$" string="${JDK_VERSION}"/>
 			<then>
 				<property name="jtregTar" value="jtreg_7_3_1_1"/>
 			</then>
