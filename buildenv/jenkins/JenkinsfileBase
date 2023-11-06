@@ -868,6 +868,18 @@ def post(output_name) {
 			if (env.BUILD_LIST.startsWith('external')) {
 				archiveFile("**/Dockerfile.*", true)
 			}
+
+			if (params.ARCHIVE_TEST_RESULTS && !env.JDK_VERSION.contains(',') && env.BUILD_LIST.contains('jck')) {
+				def natives_tar_name = "natives${suffix}"
+				def natives_dir = "${WORKSPACE}/../../jck_root/JCK${env.JDK_VERSION}-unzipped/natives"
+				if (tar_cmd.startsWith('tar')) {
+					sh "${tar_cmd} - ${pax_opt} ${natives_dir} ${tar_cmd_suffix} > ${natives_tar_name}"
+				} else {
+					sh "${tar_cmd} ${natives_tar_name} ${pax_opt} ${natives_dir} ${tar_cmd_suffix}"
+				}
+				archiveFile(natives_tar_name, false)
+			}
+
 		}
 
 		if (params.CODE_COVERAGE) {
