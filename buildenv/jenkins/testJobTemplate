@@ -49,6 +49,7 @@ if (!binding.hasVariable('CUSTOMIZED_SDK_URL_CREDENTIAL_ID')) CUSTOMIZED_SDK_URL
 if (!binding.hasVariable('DOCKER_REGISTRY_URL')) DOCKER_REGISTRY_URL = ""
 if (!binding.hasVariable('DOCKER_REGISTRY_DIR')) DOCKER_REGISTRY_DIR = ""
 if (!binding.hasVariable('DOCKER_REGISTRY_URL_CREDENTIAL_ID')) DOCKER_REGISTRY_URL_CREDENTIAL_ID = ""
+if (!binding.hasVariable('BASE_DOCKER_REGISTRY_CREDENTIAL_ID')) BASE_DOCKER_REGISTRY_CREDENTIAL_ID = ""
 if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = true
@@ -325,6 +326,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							stringParam('DOCKER_REGISTRY_URL', DOCKER_REGISTRY_URL, "Only use this if you need to access a docker registry")
 							stringParam('DOCKER_REGISTRY_DIR', DOCKER_REGISTRY_DIR, "Only use this if you need to specify the directory in docker registry")
 							stringParam('DOCKER_REGISTRY_URL_CREDENTIAL_ID', DOCKER_REGISTRY_URL_CREDENTIAL_ID, "Only use this if the docker registry you access needs credential")
+							stringParam('BASE_DOCKER_REGISTRY_CREDENTIAL_ID', BASE_DOCKER_REGISTRY_CREDENTIAL_ID, "Only use this if base docker registry credential is needed to avoid reach limit")
 							stringParam('UPSTREAM_JOB_NAME', "", '''Upstream job name from the same Jenkins server to download JDK. e.g., UploadFile<br/>
 							Only set when SDK_RESOURCE=upstream. It has to be used together with UPSTREAM_JOB_NUMBER <br/>''')
 							stringParam('UPSTREAM_JOB_NUMBER', "", '''Upstream job number from the same Jenkins server to download JDK. e.g., 40<br/>
