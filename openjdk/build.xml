@@ -41,81 +41,8 @@
 
 	<property name="REFERENCE_REPO" value="--reference-if-able ${home.unix}/openjdk_cache"/>
 
-	<if>
-		<!-- versions 8-10, 12-16 -->
-		<matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
-		<then>
-			<property name="jtregTar" value="jtreg_5_1_b01"/>
-		</then>
-		<elseif>
-			<!-- version 11 -->
-			<matches pattern="^11$" string="${JDK_VERSION}"/>
-			<then>
-				<property name="jtregTar" value="jtreg_6_1"/>
-			</then>
-		</elseif>
-		<elseif>
-			<!-- versions 17, 21, 22 -->
-			<matches pattern="^(17|2[12])$" string="${JDK_VERSION}"/>
-			<then>
-				<property name="jtregTar" value="jtreg_7_3_1_1"/>
-			</then>
-		</elseif>
-		<else>
-			<fail message="Unsupported JDK version: ${JDK_VERSION}"/>
-		</else>
-	</if>
-
-	<if>
-		<or>
-			<equals arg1="${JDK_IMPL}" arg2="ibm"/>
-			<equals arg1="${JDK_IMPL}" arg2="openj9"/>
-		</or>
-		<then>
-			<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
-		</then>
-		<else>
-			<property name="openj9jtregtimeouthandler" value=""/>
-		</else>
-	</if>
-
-	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
-
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-
-	<target name="getJtreg" depends="getDependentLibs">
-		<mkdir dir="${DEST}"/>
-		<if>
-			<available file="${LIB_DIR}/${jtregTar}.tar.gz"/>
-			<then>
-				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
-			</then>
-			<elseif>
-				<available file="custom_jtreg.tar.gz"/>
-				<then>
-					<echo message="Using custom_jtreg.tar.gz"/>
-					<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
-				</then>
-			</elseif>
-		</if>
-		<exec executable="gzip" failonerror="true">
-			<arg line="-df ${jtregTar}.tar.gz"/>
-		</exec>
-		<if>
-			<contains string="${SPEC}" substring="zos"/>
-			<then>
-				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar}.tar -C ${DEST}"/>
-				</exec>
-			</then>
-			<else>
-				<exec executable="sh" failonerror="true">
-					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'"/>
-				</exec>
-			</else>
-		</if>
-	</target>
-
+	
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
 			 run the config command to allow file paths of 4096 characters
@@ -141,12 +68,7 @@
 				<if>
 					<contains string="${SPEC}" substring="zos"/>
 					<then>
-						<propertyregex
-							property="JDK_REPO_SPECIFIC"
-							input="${env.JDK_REPO}"
-							regexp="https://github.ibm.com/"
-							replace="git@github.ibm.com:"
-							defaultValue="${env.JDK_REPO}"/>
+						<propertyregex property="JDK_REPO_SPECIFIC" input="${env.JDK_REPO}" regexp="https://github.ibm.com/" replace="git@github.ibm.com:" defaultValue="${env.JDK_REPO}"/>
 					</then>
 					<else>
 						<property name="JDK_REPO_SPECIFIC" value="${env.JDK_REPO}"/>
@@ -193,16 +115,11 @@
 								<if>
 									<isset property="isZOS"/>
 									<then>
-										<propertyregex
-											property="jdk_sha"
-											input="${jdk_sha}"
-											regexp="\n"
-											replace=""
-											override="true"/>
+										<propertyregex property="jdk_sha" input="${jdk_sha}" regexp="\n" replace="" override="true"/>
 									</then>
 								</if>
 								<echo message="git checkout -q -f ${jdk_sha} "/>
-								<exec executable="git" failonerror="true" dir="openjdktemp" >
+								<exec executable="git" failonerror="true" dir="openjdktemp">
 									<arg value="checkout"/>
 									<arg value="-q"/>
 									<arg value="-f"/>
@@ -327,7 +244,7 @@
 		</copy>
 	</target>
 
-	<target name="build" >
+	<target name="build">
 		<antcall target="dist" inheritall="true"/>
 	</target>
 </project>

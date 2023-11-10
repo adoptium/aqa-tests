@@ -15,131 +15,58 @@
 -->
 
 <project name="ssl-tests Security Functional tests" default="build" basedir=".">
-    <taskdef resource="net/sf/antcontrib/antlib.xml" />
-    <description>
-        ssl-tests Security Functional tests
-    </description>
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		ssl-tests Security Functional tests
+	</description>
 
-    <!-- set global properties for this build -->
-    <property name="DEST" value="${BUILD_ROOT}/functional/security/ssl-tests" />
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/functional/security/ssl-tests" />
 
-    <!--Properties for this particular build-->
-    <property name="src" location="./ssl-tests" />
+	<!--Properties for this particular build-->
+	<property name="src" location="./ssl-tests" />
 
-    <target name="ssltests.check">
-        <condition property="ssltestsTestdir.exists">
-            <available file="ssl-tests" type="dir"/>
-        </condition>
-    </target>
+	<target name="ssltests.check">
+		<condition property="ssltestsTestdir.exists">
+			<available file="ssl-tests" type="dir"/>
+		</condition>
+	</target>
 
-    <if>
-        <contains string="${SPEC}" substring="zos"/>
-        <then>
-            <property name="GIT_REPO" value="git@github.com:" />
-        </then>
-        <else>
-            <property name="GIT_REPO" value="https://github.com/" />
-        </else>
-    </if>
-    <target name="getSsltestsTest" depends="ssltests.check" unless="ssltestsTestdir.exists">
-        <exec executable="git" failonerror="true">
-            <arg value="clone" />
-            <arg value="${GIT_REPO}rh-openjdk/ssl-tests.git" />
-        </exec>
-    </target>
+	<if>
+		<contains string="${SPEC}" substring="zos"/>
+		<then>
+			<property name="GIT_REPO" value="git@github.com:" />
+		</then>
+		<else>
+			<property name="GIT_REPO" value="https://github.com/" />
+		</else>
+	</if>
+	<target name="getSsltestsTest" depends="ssltests.check" unless="ssltestsTestdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="${GIT_REPO}rh-openjdk/ssl-tests.git" />
+		</exec>
+	</target>
 
-    <target name="init">
-        <mkdir dir="${DEST}" />
-    </target>
-    <if>
-        <!-- versions 8-10, 12-16 -->
-        <matches pattern="^([89]|1[02-6])$" string="${JDK_VERSION}"/>
-        <then>
-            <property name="jtregTar" value="jtreg_5_1_b01"/>
-        </then>
-        <elseif>
-            <!-- versions 11, 17 -->
-            <matches pattern="^1[17]$" string="${JDK_VERSION}"/>
-            <then>
-                <property name="jtregTar" value="jtreg_6_1"/>
-            </then>
-        </elseif>
-        <elseif>
-            <!-- version 21, 22 -->
-            <matches pattern="^2[12]$" string="${JDK_VERSION}"/>
-            <then>
-                <property name="jtregTar" value="jtreg_7_3_1_1"/>
-            </then>
-        </elseif>
-        <else>
-            <fail message="Unsupported JDK version: ${JDK_VERSION}"/>
-        </else>
-    </if>
-    <if>
-        <or>
-            <equals arg1="${JDK_IMPL}" arg2="ibm"  />
-            <equals arg1="${JDK_IMPL}" arg2="openj9" />
-        </or>
-        <then>
-            <property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
-        </then>
-        <else>
-            <property name="openj9jtregtimeouthandler" value=""/>
-        </else>
-    </if>
-    <property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
 
-    <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-    <target name="getJtreg">
-        <mkdir dir="${DEST}"/>
-        <if>
-            <not>
-                <available file="${LIB_DIR}/${jtregTar}.tar.gz" />
-            </not>
-            <then>
-                <if>
-                    <available file="custom_jtreg.tar.gz"/>
-                    <then>
-                        <echo message="Using custom_jtreg.tar.gz"/>
-                        <copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
-                    </then>
-                </if>
-            </then>
-            <else>
-                <copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
-            </else>
-        </if>
-        <exec executable="gzip" failonerror="true">
-            <arg line="-df ${jtregTar}.tar.gz" />
-        </exec>
-        <if>
-            <contains string="${SPEC}" substring="zos" />
-            <then>
-                <exec executable="tar" failonerror="true">
-                    <arg line="xfo ${jtregTar}.tar -C ${DEST}" />
-                </exec>
-            </then>
-            <else>
-                <exec executable="sh" failonerror="true">
-                    <arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
-                </exec>
-            </else>
-        </if>
-    </target>
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+   
+	<target name="dist" depends="getJtreg,getSsltestsTest" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml,*.mk" />
+		</copy>
+	</target>
 
-    <target name="dist" depends="getDependentLibs,getJtreg,getSsltestsTest" description="generate the distribution">
-        <copy todir="${DEST}">
-            <fileset dir="${src}" includes="*.xml,*.mk" />
-        </copy>
-    </target>
+	<target name="clean" depends="dist" description="clean up">
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}" />
+	</target>
 
-    <target name="clean" depends="dist" description="clean up">
-        <!-- Delete the ${build} directory trees -->
-        <delete dir="${build}" />
-    </target>
-
-    <target name="build" >
-        <antcall target="clean" inheritall="true" />
-    </target>
+	<target name="build" >
+		<antcall target="clean" inheritall="true" />
+	</target>
 </project>
 
