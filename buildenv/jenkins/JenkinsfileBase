@@ -188,9 +188,9 @@ def setupParallelEnv() {
 			}
 
 			try {
-				//get pre-staged jars from test.getDependency build
-				timeout(time: 2, unit: 'HOURS') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+				// Only json-simple.jar is needed for compiling TKG
+				timeout(time: 15, unit: 'MINUTES') {
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "json-simple.jar", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 				}
 			} catch (Exception e) {
 				echo 'Exception: ' + e.toString()
@@ -624,29 +624,39 @@ def buildTest() {
 
 		try {
 			//get pre-staged jars from test.getDependency build before test compilation
-			timeout(time: 2, unit: 'HOURS') {
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+			timeout(time: 15, unit: 'MINUTES') {
+				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "json-simple.jar", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
 			}
-		} catch (Exception e) {
-			echo 'Exception: ' + e.toString()
-			echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
-		}
-
-		try {
-			if (env.BUILD_LIST.startsWith('system')) {
+			if (env.BUILD_LIST.contains('functional')) {
+				timeout(time: 60, unit: 'MINUTES') {
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", excludes: "json-simple.jar, jtreg*.*, openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+				}
+				// jtreg is needed in dev.functional and extended.functional (for ssl-tests and CryptoTest)
+				if (params.TARGET.contains('dev.functional') || params.TARGET.contains('extended.functional')) {
+					timeout(time: 60, unit: 'MINUTES') {
+						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "jtreg*.*,openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+					}
+				}
+			}
+			if (env.BUILD_LIST.contains('openjdk')) {
+				timeout(time: 60, unit: 'MINUTES') {
+					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "jtreg*.*,openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+				}
+			} 
+			if (env.BUILD_LIST.contains('system')) {
 				//get pre-staged test jars from systemtest.getDependency build before system test compilation
-				timeout(time: 2, unit: 'HOURS') {
+				timeout(time: 60, unit: 'MINUTES') {
 					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'aqa-tests'
 				}
 			}
 		} catch (Exception e) {
 			echo 'Exception: ' + e.toString()
-			echo 'Cannot run copyArtifacts from systemtest.getDependency. Skipping copyArtifacts...'
+			echo 'Cannot run copyArtifacts from test.getDependency/systemtest.getDependency. Skipping copyArtifacts...'
 		}
 
 		if (BUILD_LIST.contains("external")){
 			try {
-				timeout(time: 2, unit: 'HOURS') {
+				timeout(time: 60, unit: 'MINUTES') {
 					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("2"), target: 'aqa-tests/external/criu/'
 					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("3"), target: 'aqa-tests/external/criu/'
 				}
