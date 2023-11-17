@@ -51,7 +51,7 @@ public class JavatestUtil {
 	private static String testExecutionType;
 	private static String withAgent;
 	private static String interactive;
-	private static String extraJvmOptions;
+	private static String extraJvmOptions = "";
 	private static String concurrencyString;
 	private static String jckVersion;
 	private static String config;
@@ -177,7 +177,14 @@ public class JavatestUtil {
 			} 
 		}
 		
-		jvmOpts = System.getProperty("jvm.options").trim() + " " + System.getProperty("other.opts");
+		String otherOptions = System.getProperty("other.options");
+		String jvmOptions = System.getProperty("jvm.options");
+		if (otherOptions != null) {
+			jvmOpts += otherOptions.trim() + " ";
+		}
+		if (jvmOptions != null) {
+			jvmOpts += jvmOptions.trim() + " ";
+		} 
 		testFlag = System.getenv("TEST_FLAG");
 		task = testArgs.get(TASK).trim();
 		customJtx = testArgs.get(CUSTOM_JTX) == null ? "" : testArgs.get(CUSTOM_JTX);
@@ -419,7 +426,6 @@ public class JavatestUtil {
 		String robotAvailable = "";
 		String hostname = "";
 		String ipAddress = "";
-		extraJvmOptions = jvmOpts;
 		
 		// Use escaped backslashes for paths on Windows
 		if (spec.contains("win")) {
@@ -664,13 +670,14 @@ public class JavatestUtil {
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
 			}
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
 
 			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
 			if (spec.contains("osx")) {
@@ -746,6 +753,7 @@ public class JavatestUtil {
 			}
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			if (jckVersionInt > 11) {
 				extraJvmOptions += " --enable-preview -Xfuture ";
@@ -753,7 +761,7 @@ public class JavatestUtil {
 			
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			if (!testExecutionType.equals("multijvm")) { 
-				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";
+				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
 			}
 		}
 		// Devtools settings
@@ -839,9 +847,10 @@ public class JavatestUtil {
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
+			
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " \"" + ";\n";	
+			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";	
 		}
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
