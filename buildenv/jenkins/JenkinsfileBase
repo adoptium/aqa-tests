@@ -104,6 +104,7 @@ def setupEnv() {
 	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false
 	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
+	env.LIB_DIR="${WORKSPACE}/../../testDependency/lib"
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -623,26 +624,22 @@ def buildTest() {
 		}
 
 		try {
-			//get pre-staged jars from test.getDependency build before test compilation
-			timeout(time: 15, unit: 'MINUTES') {
-				copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "json-simple.jar", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+			// check pre-stage test libs on the machine
+			// check for each lib. If lib does not exist, donwload it.
+			// If lib exists, SHA will be checked. Re-download if SHA does not match.
+			timeout(time: 20, unit: 'MINUTES') {
+				def customUrl = "https://ci.adoptium.net/job/test.getDependency/lastSuccessfulBuild/artifact/"
+				if (PLATFORM.contains("windows")) {
+					env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
+				}
+				sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 			}
-			if (env.BUILD_LIST.contains('functional')) {
-				timeout(time: 60, unit: 'MINUTES') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", excludes: "json-simple.jar, jtreg*.*, openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
-				}
-				// jtreg is needed in dev.functional and extended.functional (for ssl-tests and CryptoTest)
-				if (params.TARGET.contains('dev.functional') || params.TARGET.contains('extended.functional')) {
-					timeout(time: 60, unit: 'MINUTES') {
-						copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "jtreg*.*,openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
-					}
-				}
-			}
-			if (env.BUILD_LIST.contains('openjdk')) {
-				timeout(time: 60, unit: 'MINUTES') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "jtreg*.*,openj9jtregtimeouthandler.*", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
-				}
-			} 
+ 		} catch (Exception e) {
+			echo 'Exception: ' + e.toString()
+			echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
+		}
+
+		try {
 			if (env.BUILD_LIST.contains('system')) {
 				//get pre-staged test jars from systemtest.getDependency build before system test compilation
 				timeout(time: 60, unit: 'MINUTES') {
