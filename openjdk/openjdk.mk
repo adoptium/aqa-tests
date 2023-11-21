@@ -178,6 +178,7 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	TEST_VARIATION_JIT_PREVIEW:=-XX:-JITServerTechPreviewMessage
 	TEST_VARIATION_JIT_AGGRESIVE:=-Xjit:enableAggressiveLiveness
 	TIMEOUT_HANDLER:=-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q)
+	EXTRA_OPTIONS := -Xverbosegclog $(EXTRA_OPTIONS)
 endif
 
 # if cannot find the problem list file, set to default file
