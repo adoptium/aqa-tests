@@ -285,12 +285,16 @@ parseCommandLineArgs "$@"
 if [ $command_type == "prepare" ]; then
 	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry no login.
 	if [[ $base_docker_registry_url != "default" ]]; then
-		echo "Base Docker Registry login starts to obtain Base Docker Image:"
-		# Temporarily criu-ubi image with criu binary is only available internally
-		if [[ "${test}" != *"criu-ubi"* ]]; then
-			echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
-		else 
-			echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $base_docker_registry_url
+		# Container credential check. Temporarily criu-ubi image with criu binary is only available internally
+		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR || ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
+			echo "Base Docker Registry login starts to obtain Base Docker Image:"
+			if [[ "${test}" != *"criu-ubi"* ]]; then
+				echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
+			else 
+				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $base_docker_registry_url
+			fi
+		else
+			echo "No credential available for container registry, will proceed without login..."
 		fi
 
 		if [[ $base_docker_registry_dir == "default" ]]; then
@@ -305,7 +309,9 @@ if [ $command_type == "prepare" ]; then
 		echo "$container_pull $base_docker_registry_url/$base_docker_image_name"
 		$container_pull $base_docker_registry_url/$base_docker_image_name
 
-		$container_logout $base_docker_registry_url
+		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR || ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
+			$container_logout $base_docker_registry_url
+		fi
 	fi
 fi
 
@@ -409,11 +415,10 @@ if [ $command_type == "load" ]; then
 			exit 1
 		fi
 	else # no need private docker registry
-		docker_image_name="eclipse-temurin:${JDK_VERSION}-jdk"
+		docker_image_name="docker.io/library/eclipse-temurin:${JDK_VERSION}-jdk"
 		if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
-			docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
+			docker_image_name="docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
 		fi
-		$container_pull $docker_image_name
 		test_script_path="$test_root/external/$test/test.sh"
 		chmod a+x $test_script_path
 		mount_test_script="-v $test_script_path:/test.sh"
