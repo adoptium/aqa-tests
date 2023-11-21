@@ -1047,6 +1047,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security1</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1073,6 +1080,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security2</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -1104,6 +1118,11 @@
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
 				<platform>.*windows.*</platform>
 				<version>8</version>
+			</disable>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
 			</disable>
 		</disables>
 		<variations>
@@ -1852,6 +1871,13 @@
 	</test>
 	<test>
 		<testCaseName>jdk_security_infra</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1089</comment>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
+		</disables>	
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
