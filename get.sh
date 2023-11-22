@@ -307,60 +307,61 @@ getBinaryOpenjdk()
 		done
 	fi
 
-	jar_files=`ls`
-	jar_file_array=(${jar_files//\\n/ })
-	last_index=$(( ${#jar_file_array[@]} - 1 ))
+	jdk_files=`ls`
+	jdk_file_array=(${jdk_files//\\n/ })
+	last_index=$(( ${#jdk_file_array[@]} - 1 ))
 
 	if [[ $last_index == 0 ]]; then
 		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]]; then
-			nested_zip="${jar_file_array[0]}"
+			nested_zip="${jdk_file_array[0]}"
 			echo "${nested_zip} is a nested zip"
 			unzip -q $nested_zip -d .
 			rm $nested_zip
-			jar_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
+			jdk_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
 			echo "Found files under ${nested_zip}:"
-			echo "${jar_files}"
-			jar_file_array=(${jar_files//\\n/ })
-			last_index=$(( ${#jar_file_array[@]} - 1 ))
+			echo "${jdk_files}"
+			jdk_file_array=(${jdk_files//\\n/ })
+			last_index=$(( ${#jdk_file_array[@]} - 1 ))
 		fi
 	fi
 
-	# if $jar_file_array contains debug-image, move debug-image element to the end of the array
+	# if $jdk_file_array contains debug-image, move debug-image element to the end of the array
 	# debug image jar needs to be extracted after jdk as debug image jar extraction location depends on jdk structure
 	# debug image jar extracts into j2sdk-image/jre dir if it exists. Otherwise, extracts into j2sdk-image dir
-	for i in "${!jar_file_array[@]}"; do
-		if [[ "${jar_file_array[$i]}" =~ "debug-image" ]] || [[ "${jar_file_array[$i]}" =~ "debugimage" ]]; then
+	for i in "${!jdk_file_array[@]}"; do
+		if [[ "${jdk_file_array[$i]}" =~ "debug-image" ]] || [[ "${jdk_file_array[$i]}" =~ "debugimage" ]]; then
 			if [ "$i" -ne "$last_index" ]; then
-				debug_image_jar="${jar_file_array[$i]}"
+				debug_image_jar="${jdk_file_array[$i]}"
 
 				# remove the element
-				unset jar_file_array[$i]
+				unset jdk_file_array[$i]
 
 				# add $debug_image_jar to the end of the array
-				jar_file_array=( "${jar_file_array[@]}" "${debug_image_jar}" )
+				jdk_file_array=( "${jdk_file_array[@]}" "${debug_image_jar}" )
 				break
 			fi
 		fi
 	done
 
-	for jar_name in "${jar_file_array[@]}"
-		do
-			# if jar_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
-			# Otherwise, files will be extracted under ./tmp
-			if [[ "$jar_name" =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]]; then
+	for file_name in "${jdk_file_array[@]}"
+	do
+		if [[ ! "$file_name" =~ "sbom" ]]; then
+			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]]; then
+				# if file_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
+				# Otherwise, files will be extracted under ./tmp
 				extract_dir="./j2sdk-image"
 				if [ -d "$SDKDIR/jdkbinary/j2sdk-image/jre" ]; then
 					extract_dir="./j2sdk-image/jre"
 				fi
-				echo "Uncompressing $jar_name over $extract_dir..."
-				if [[ $jar_name == *zip ]] || [[ $jar_name == *jar ]]; then
-					unzip -q $jar_name -d $extract_dir
+				echo "Uncompressing $file_name over $extract_dir..."
+				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
+					unzip -q $file_name -d $extract_dir
 				else
 					# some debug-image tar has parent folder ... strip it
 					if tar --version 2>&1 | grep GNU 2>&1; then
-						gzip -cd $jar_name | tar xof - -C $extract_dir --strip 1
+						gzip -cd $file_name | tar xof - -C $extract_dir --strip 1
 					else
-						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$jar_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
+						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$file_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
 					fi
 				fi
 			else
@@ -369,14 +370,14 @@ getBinaryOpenjdk()
 				else
 					mkdir $SDKDIR/jdkbinary/tmp
 				fi
-				echo "Uncompressing file: $jar_name ..."
-				if [[ $jar_name == *zip ]] || [[ $jar_name == *jar ]]; then
-					unzip -q $jar_name -d ./tmp
-				elif [[ $jar_name == *.pax* ]]; then
+				echo "Uncompressing file: $file_name ..."
+				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
+					unzip -q $file_name -d ./tmp
+				elif [[ $file_name == *.pax* ]]; then
 					cd ./tmp
-					pax -p xam -rzf ../$jar_name
+					pax -p xam -rzf ../$file_name
 				else
-					gzip -cd $jar_name | (cd tmp && tar xof -)
+					gzip -cd $file_name | (cd tmp && tar xof -)
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
@@ -431,7 +432,8 @@ getBinaryOpenjdk()
 				fi
 				cd $SDKDIR/jdkbinary
 			fi
-		done
+		fi
+	done
 
 	if [ "$PLATFORM" = "s390x_zos" ]; then
 		chmod -R 755 j2sdk-image
@@ -442,7 +444,7 @@ checkURL() {
 	local filename="$1"
 	if [[ $filename =~ "test-image" ]]; then
 		required=$TEST_IMAGES_REQUIRED
-	elif [[ $filename =~ "debug-image" ]] || [[ "$jar_name" =~ "debugimage" ]]; then
+	elif [[ $filename =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]]; then
 		required=$DEBUG_IMAGES_REQUIRED
 	fi
 }
