@@ -19,12 +19,6 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir aot --platform "${PLATFORM}" --node_labels "${NODE_LABELS}"
 		</command>
-		<disables>
-			<disable>
-				<comment>Disable until next release https://github.com/eclipse-openj9/openj9/pull/15812#issuecomment-1235566485</comment>
-				<platform>aarch64_linux</platform>
-			</disable>
-		</disables>
 		<features>
 			<feature>AOT:applicable</feature>
 		</features>
