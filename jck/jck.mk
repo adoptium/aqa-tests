@@ -126,7 +126,7 @@ ifeq ($(USE_JRE),1)
   JAVA_TO_TEST = $(JRE_COMMAND)
 endif
 
-JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavaTestRunner resultsRoot=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
+JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil workdir=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
 
 ifneq ($(filter aix_ppc-64 zos_390 linux_ppc-64_le linux_390-64, $(SPEC)),)
