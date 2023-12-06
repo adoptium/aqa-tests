@@ -193,8 +193,10 @@ ifneq ($(filter 11 16, $(JDK_VERSION)),)
 endif
 
 FEATURE_PROBLEM_LIST_FILE:=
-ifneq (,$(findstring FIPS, $(TEST_FLAG))) 
-	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
+ifneq (,$(findstring FIPS140_2, $(TEST_FLAG))) 
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_2.txt$(Q)
+else ifneq (,$(findstring FIPS140_3_OpenJcePlus, $(TEST_FLAG)))
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
