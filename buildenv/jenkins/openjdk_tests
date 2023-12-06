@@ -285,6 +285,10 @@ timestamps{
             if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
                 LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
                 env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+            } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
+                String[] tokens = TEST_FLAG.split('_')
+                def opts = tokens[2];
+                env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
             }
 
             // Temporarily exclude ubuntu 22 machines for criu sanity.external pipeline
