@@ -189,13 +189,19 @@ def setupParallelEnv() {
 			}
 
 			try {
-				// Only json-simple.jar is needed for compiling TKG
-				timeout(time: 15, unit: 'MINUTES') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "test.getDependency", filter: "json-simple.jar", selector: lastSuccessful(), target: 'aqa-tests/TKG/lib'
+				// check pre-stage test libs on the machine
+				// check for each lib. If lib does not exist, donwload it.
+				// If lib exists, SHA will be checked. Re-download if SHA does not match.
+				timeout(time: 20, unit: 'MINUTES') {
+					def customUrl = "https://ci.adoptium.net/job/test.getDependency/lastSuccessfulBuild/artifact/"
+					if (PLATFORM.contains("windows")) {
+						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
+					}
+					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
 			} catch (Exception e) {
 				echo 'Exception: ' + e.toString()
-				echo 'Cannot run copyArtifacts from test.getDependency. Skipping copyArtifacts...'
+				echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
 			}
 
 			String PARALLEL_OPTIONS = "TEST=${TARGET}"
