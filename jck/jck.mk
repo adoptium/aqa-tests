@@ -113,11 +113,21 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/$(SPEC).jtx))
 		APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/$(SPEC).jtx
 	endif
-	ifneq (,$(findstring FIPS, $(TEST_FLAG)))
-		ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/fips.jtx))
-			APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/fips.jtx
+	
+	# TEST_FLAG may contain multiple values. i.e., TEST_FLAG=FIPS140_2,CRIU
+	FIPS_FLAG =
+	ifneq (,$(findstring FIPS140_2, $(TEST_FLAG)))
+		FIPS_FLAG:=FIPS140_2
+	else ifneq (,$(findstring FIPS140_3_OpenJcePlusFIPS, $(TEST_FLAG)))
+		FIPS_FLAG:=FIPS140_3_OpenJcePlusFIPS
+	endif
+
+	ifneq ($(FIPS_FLAG),)
+		ifneq (,$(wildcard $(DEV_EXCLUDES_HOME)/$(FIPS_FLAG).jtx))
+			APPLICATION_OPTIONS+=$(DEV_EXCLUDES_HOME)/$(FIPS_FLAG).jtx
 		endif
 	endif
+	
 	APPLICATION_OPTIONS+=$(Q)
 endif
 
