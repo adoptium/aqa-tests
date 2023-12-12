@@ -286,7 +286,7 @@ if [ $command_type == "prepare" ]; then
 	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry no login.
 	if [[ $base_docker_registry_url != "default" ]]; then
 		# Container credential check. 
-		# Temporarily criu-ubi image with criu binary is only available internally
+		# Temporarily host criu-ubi image with criu binary on internal/private hub.  In that case, provide USR/PSW for access 
 		if [[ "${test}" == *"criu-ubi"* && ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
 			BASE_DOCKER_REGISTRY_CREDENTIAL_USR=$DOCKER_REGISTRY_CREDENTIALS_USR
 			BASE_DOCKER_REGISTRY_CREDENTIAL_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW
