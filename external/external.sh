@@ -285,14 +285,15 @@ parseCommandLineArgs "$@"
 if [ $command_type == "prepare" ]; then
 	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry no login.
 	if [[ $base_docker_registry_url != "default" ]]; then
-		# Container credential check. Temporarily criu-ubi image with criu binary is only available internally
-		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR || ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
+		# Container credential check. 
+		# Temporarily host criu-ubi image with criu binary on internal/private hub.  In that case, provide USR/PSW for access 
+		if [[ "${test}" == *"criu-ubi"* && ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
+			BASE_DOCKER_REGISTRY_CREDENTIAL_USR=$DOCKER_REGISTRY_CREDENTIALS_USR
+			BASE_DOCKER_REGISTRY_CREDENTIAL_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW
+		fi
+		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR ]]; then
 			echo "Base Docker Registry login starts to obtain Base Docker Image:"
-			if [[ "${test}" != *"criu-ubi"* ]]; then
-				echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
-			else 
-				echo $DOCKER_REGISTRY_CREDENTIALS_PSW | $container_login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $base_docker_registry_url
-			fi
+			echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
 		else
 			echo "No credential available for container registry, will proceed without login..."
 		fi
