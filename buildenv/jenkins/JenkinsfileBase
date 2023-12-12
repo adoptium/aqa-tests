@@ -429,7 +429,7 @@ def setup() {
 					step([$class: 'CopyArtifact',
 							fingerprintArtifacts: true,
 							flatten: true,
-							filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z",
+							filter: "**/*.tar.gz,**/*.tgz,**/*.zip,**/*.jar,**/*.Z,**/*sbom*.json",
 							projectName: "${params.UPSTREAM_JOB_NAME}",
 							selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.UPSTREAM_JOB_NUMBER}"]])
 				}
