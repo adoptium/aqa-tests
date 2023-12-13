@@ -402,19 +402,6 @@ print_criu_install() {
                 "\n\t&& criu -V " \
                 "\n" >> ${file}
 
-        # zlinux temporarily requires libc package from jammy-proposed repository
-        if [[ "${platform}" == *"390"* ]]; then
-            echo -e "\nRUN echo \"deb http://ports.ubuntu.com/ubuntu-ports jammy-proposed restricted main multiverse universe\" >> /etc/apt/sources.list.d/ubuntu-jammy-proposed.list \\" \
-                    "\n\t&& echo \"# Configure apt to allow selective installs of packages from proposed\" > /etc/apt/preferences.d/proposed-updates \\" \
-                    "\n\t&& echo \"Package: libc6*\" >> /etc/apt/preferences.d/proposed-updates \\" \
-                    "\n\t&& echo \"Pin: release a=jammy-proposed\" >> /etc/apt/preferences.d/proposed-updates \\" \
-                    "\n\t&& echo \"Pin-Priority: 400\" >> /etc/apt/preferences.d/proposed-updates \\" \
-                    "\n\t&& apt-get update \\" \
-                    "\n\t&& apt-get install -y libc6=2.35-0ubuntu3.4 \\" \
-                    "\n\t&& /lib/ld64.so.1 --list-tunables " \
-                    "\n" >> ${file}
-        fi
-
         echo -e "\nRUN setcap cap_checkpoint_restore,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
                 "\n\t&& export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
                 "\n" >> ${file}
