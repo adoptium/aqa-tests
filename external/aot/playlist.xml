@@ -19,6 +19,12 @@
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir aot --platform "${PLATFORM}" --node_labels "${NODE_LABELS}"
 		</command>
+		<disables>
+			<disable>
+				<comment>semeru docker image has no support for P8 machines https://github.ibm.com/runtimes/backlog/issues/917</comment>
+				<platform>ppc64le_linux</platform>
+			</disable>
+		</disables>
 		<features>
 			<feature>AOT:applicable</feature>
 		</features>
