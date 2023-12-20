@@ -464,9 +464,9 @@ def runTest() {
             // Automatically registers foreign file formats with the kernel using binfmt_static to simplify execution of multi-architecture binaries and Docker containers
             // In fact, this command only needs to be executed once
             sh "docker run --rm --privileged multiarch/qemu-user-static --reset -p yes"
-            docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').pull()
+            docker.image('adoptium/ubuntu2004_build_image:linux-riscv64').pull()
             // The ${HOME} directory must be mounted, otherwise xvfb will fail to startup
-            docker.image('alibabadragonwell/riscv-normal-qemu_6.0.0-rvv-1.0:latest').inside("-v ${env.HOME}:${env.HOME}") {
+            docker.image('adoptium/ubuntu2004_build_image:linux-riscv64').inside("-v ${env.HOME}:${env.HOME}") {
                 jenkinsfile.testBuild()
             }
         } else {
