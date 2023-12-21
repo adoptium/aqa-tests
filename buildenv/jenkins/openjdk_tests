@@ -267,7 +267,13 @@ timestamps{
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-            dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
+            // Block dockerAgents on adoptium CI for riscv64 until we make it work
+            // This will allow RISC-V test jobs to queue up and not hang
+            if ( env.JENKINS_URL.contains("ci.adoptium.net")) {
+                dockerAgents = null
+            } else {
+                dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
+            }
             dockerAgentLabel = ''
             if (params.LABEL) {
                 LABEL = params.LABEL
