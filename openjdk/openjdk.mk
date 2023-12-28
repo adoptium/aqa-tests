@@ -16,6 +16,7 @@ NPROCS:=1
 MEMORY_SIZE:=1024
 
 OS:=$(shell uname -s)
+ARCH:=$(shell uname -m)
 
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
@@ -94,6 +95,11 @@ VMOPTION_HEADLESS :=
 libcVendor = $(shell ldd --version 2>&1 | sed -n '1s/.*\(musl\).*/\1/p')
 
 ifeq ($(libcVendor),musl)
+	JTREG_KEY_OPTIONS := -k:'!headful'
+	VMOPTION_HEADLESS := -Djava.awt.headless=true
+endif
+# RISC-V is built in headless mode for now. See https://github.com/adoptium/ci-jenkins-pipelines/pull/867
+ifeq ($(ARCH),riscv64)
 	JTREG_KEY_OPTIONS := -k:'!headful'
 	VMOPTION_HEADLESS := -Djava.awt.headless=true
 endif
