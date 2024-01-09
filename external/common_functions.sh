@@ -14,7 +14,7 @@
 #
 
 # Supported versions
-supported_versions="8 11 17"
+supported_versions="8 11 17 21 22"
 
 # Supported JVMs
 supported_jvms="hotspot openj9"
