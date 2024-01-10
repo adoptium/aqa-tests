@@ -1,0 +1,19 @@
+name: 'Disabled Tests Linter'
+on:
+  pull_request:
+    paths:
+    - 'openjdk/excludes/*'
+    - '**/playlist.xml'
+
+jobs:
+  disableTestsLinter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Run exclude_parser.py on ProblemList files
+        run: find ./openjdk/excludes -name "ProblemList*" | python3 ./scripts/disabled_tests/exclude_parser.py -v > /dev/null
+
+      - name: Run playlist_parser.py on playlist.xml files
+        run: find . -name "playlist.xml" | python3 ./scripts/disabled_tests/playlist_parser.py -v > /dev/null
