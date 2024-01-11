@@ -1877,6 +1877,9 @@
 				<impl>openj9</impl>
 				<testflag>fips140_2</testflag>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4808</comment>
+			</disable>
 		</disables>	
 		<variations>
 			<variation>Mode150</variation>
@@ -1898,15 +1901,38 @@
 		<levels>
 			<level>extended</level>
 		</levels>
-		<impls>
-			<impl>hotspot</impl>
-			<impl>openj9</impl>
-			<impl>ibm</impl>
-		</impls>
 		<groups>
 			<group>openjdk</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>jdk_security_infra_zos</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_security_infra$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<platformRequirements>os.zos</platformRequirements>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+
 	<test>
 		<testCaseName>jdk_native_sanity</testCaseName>
 		<variations>
