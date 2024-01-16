@@ -327,6 +327,14 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-philosophers</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4976</comment>
+				<version>17+</version>
+				<impl>hotspot</impl>
+				<platform>riscv64_linux</platform>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
 		$(TEST_STATUS)</command>
 		<levels>
