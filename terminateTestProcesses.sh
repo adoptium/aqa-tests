@@ -38,6 +38,8 @@ if [ "$OS" = "Windows_NT" ]; then
   else
       echo Woohoo - no rogue processes detected!
   fi
+elif [ `uname` = "Darwin" ]; then
+  echo "Mac type machine.. do not terminate any remaining processes as Orka mac VMs are not process isolated, see: https://github.com/adoptium/aqa-tests/issues/4964"
 else
   echo "Unix type machine.."
 
