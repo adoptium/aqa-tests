@@ -500,7 +500,7 @@ print_clone_project() {
     # Cause Test name to be capitalized
     test_tag="$(sanitize_test_names ${test} | tr a-z A-Z)_TAG"
     git_branch_tag="master"
-    if [[ "$test_tag" != *"PORTABLE"* ]]; then
+    if [[ "$test_tag" != *"CRIU"* ]]; then
         git_branch_tag=$test_tag
     fi
 
