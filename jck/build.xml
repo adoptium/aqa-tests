@@ -53,11 +53,16 @@
 	<available file="${vs14_vcvarsall_filename}" property="vs14_available"/>
 	<property name="vs10_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\vcvarsall.bat"/>
 	<available file="${vs10_vcvarsall_filename}" property="vs10_available"/>
+	<property name="vs22_vcvarsall_filename" location="c:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Auxiliary\\Build\\vcvarsall.bat"/>
+	<available file="${vs22_vcvarsall_filename}" property="vs22_available"/>
 	<condition property="vcvarsall_filename" value="${vs14_vcvarsall_filename}">
 		<isset property="vs14_available"/>
 	</condition>
 	<condition property="vcvarsall_filename" value="${vs10_vcvarsall_filename}">
 		<isset property="vs10_available"/>
+	</condition>
+	<condition property="vcvarsall_filename" value="${vs22_vcvarsall_filename}">
+		<isset property="vs22_available"/>
 	</condition>
 	<condition property="windows_native_compiler_present" value="true">
 		<isset property="vcvarsall_filename"/>
