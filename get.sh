@@ -639,6 +639,10 @@ getVendorTestMaterial() {
 			cd $TESTDIR
 		fi
 
+		echo "check vendor repo sha"
+		repoName=$(basename $repoURL .git)
+		checkRepoSHA $dest $repoName
+
 		# move resources
 		if [ "$dir" != "" ] && [ -d $dest/$dir ]; then
 			echo "Stage $dest/$dir to $TESTDIR/$dir"
