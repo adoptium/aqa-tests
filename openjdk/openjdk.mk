@@ -206,7 +206,7 @@ endif
 FEATURE_PROBLEM_LIST_FILE:=
 ifneq (,$(findstring FIPS140_2, $(TEST_FLAG))) 
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_2.txt$(Q)
-else ifneq (,$(findstring FIPS140_3_OpenJcePlus, $(TEST_FLAG)))
+else ifneq (,$(findstring FIPS140_3_OpenJCEPlus, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
 endif
 

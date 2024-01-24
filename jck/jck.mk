@@ -118,7 +118,7 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	FIPS_FLAG =
 	ifneq (,$(findstring FIPS140_2, $(TEST_FLAG)))
 		FIPS_FLAG:=FIPS140_2
-	else ifneq (,$(findstring FIPS140_3_OpenJcePlusFIPS, $(TEST_FLAG)))
+	else ifneq (,$(findstring FIPS140_3_OpenJCEPlusFIPS, $(TEST_FLAG)))
 		FIPS_FLAG:=FIPS140_3_OpenJcePlusFIPS
 	endif
 
