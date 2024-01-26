@@ -1199,7 +1199,6 @@ def addFailedTestsGrinderLink(paths=""){
 								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
 								// Remove #id suffixed to the openjdk testcase name. Jtreg doesn't work with it.
-								failedTestCasesInfo = failedTestCasesInfo.replaceAll(/#id\d{1,}/, "")
 								if (failedtest.startsWith("jdk_")) {
 									jdkFailedTestCaseList += "${failedTestCasesInfo} "
 								} else {
@@ -1228,7 +1227,7 @@ def addFailedTestsGrinderLink(paths=""){
 			}
 			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
-				tempTestCases = tempTestCases.split(' ').toUnique().join('+')
+				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
 				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")
 				customURL = customURL.replace(env.CUSTOM_TARGET_KEY_VALUE, "CUSTOM_TARGET=$tempTestCases")
 				echo "Rerun failed ${target} test cases in Grinder with ${target}_custom target: ${customURL}"
