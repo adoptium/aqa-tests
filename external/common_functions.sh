@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Supported versions
-supported_versions="8 11 17 21 22"
-
 # Supported JVMs
 supported_jvms="hotspot openj9"
 
@@ -31,30 +27,6 @@ supported_builds="full"
 
 # Supported tests
 supported_tests="external_custom camel criu-functional criu-portable-checkpoint criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring zookeeper"
-
-function check_version() {
-    version=$1
-
-    for current_version in ${supported_versions}
-    do
-        if [[ "${version}" == "${current_version}" ]]; then
-            return 1
-        fi
-    done
-
-    return 0
-}
-
-# Set a valid version
-function set_version() {
-    version=$1
-
-    if (check_version ${version}); then
-        echo "ERROR: Invalid Version: ${version}"
-        echo "Usage: $0 [${supported_versions}]"
-        exit 1
-    fi
-}
 
 function check_os() {
     os=$1
@@ -213,7 +185,7 @@ function set_test_info() {
     check_external_custom_test=$2
     cd ../
     path_to_file=$(pwd)
-    echo ${path_to_file}    
+    echo ${path_to_file}
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
     test_options=$(getProperty "test_options")
