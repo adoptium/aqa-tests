@@ -29,7 +29,7 @@ export DYNAMIC_COMPILE=true
 export BUILD_LIST=functional
 
 cd /aqa-tests
-./get.sh
+./get.sh --openj9_repo https://github.com/kangyining/openj9.git --openj9_branch softmxTest
 cd /aqa-tests/TKG
 
 set -e
