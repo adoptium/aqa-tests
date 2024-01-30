@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+	<test>
+		<testCaseName>openJcePlusTests</testCaseName>
+		<disables>
+			<disable>
+				<comment>only applicable for Semeru atm</comment>
+				<vendor>eclipse</vendor>
+			</disable>
+			<disable>
+				<comment>Only applicable on aix, pliunx, xlinux and wins64 atm</comment>
+				<platform>^((?!(ppc64_aix|ppc64le_linux|x86-64_linux|x86-64_windows)).)*$</platform>
+			</disable>
+		</disables>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) \
+	-cp $(Q)$(LIB_DIR)$(D)junit4.jar$(P)$(LIB_DIR)$(D)hamcrest-core.jar$(P)$(LIB_DIR)$(D)bcprov-jdk18on.jar$(P)$(TEST_RESROOT)$(D)openjceplus-tests.jar$(Q) \
+	--add-exports=java.base/sun.security.util=ALL-UNNAMED \
+	--add-exports=openjceplus/com.ibm.crypto.plus.provider.ock=ALL-UNNAMED \
+	ibm.jceplus.junit.TestAll; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+		<versions>
+			<version>17</version>
+		</versions>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+</playlist>
