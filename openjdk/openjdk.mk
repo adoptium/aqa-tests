@@ -87,7 +87,7 @@ else
 ifneq ($(OS),OS/390)
 	JTREG_TIMEOUT_OPTION =  -timeoutFactor:8
 else
-	JTREG_TIMEOUT_OPTION =  -timeoutFactor:2
+	JTREG_TIMEOUT_OPTION =  -timeoutFactor:16
 endif
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
