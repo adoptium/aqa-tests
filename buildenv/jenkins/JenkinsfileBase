@@ -401,6 +401,8 @@ def setup() {
 		if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
 			// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
 			CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
+		} else if (params.SDK_RESOURCE != 'customized') {
+			CUSTOMIZED_SDK_URL_OPTION = ""
 		} else if (params.CUSTOMIZED_SDK_URL) {
 			SDK_RESOURCE = "customized"
 			CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
@@ -420,10 +422,10 @@ def setup() {
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
 			}
 		} else {
-			CUSTOMIZED_SDK_URL_OPTION = ""
+			error("SDK_RESOURCE set as customized, please provide the sdk url as CUSTOMIZED_SDK_URL")
 		}
 
-		if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
+		if (SDK_RESOURCE == 'upstream') {
 			timeout(time: 1, unit: 'HOURS') {
 				dir('jdkbinary') {
 					step([$class: 'CopyArtifact',
