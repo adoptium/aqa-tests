@@ -43,6 +43,7 @@ java/lang/invoke/FindAccessTest.java  https://github.com/eclipse-openj9/openj9/i
 java/lang/invoke/lambda/LambdaStackTrace.java https://github.com/eclipse-openj9/openj9/issues/3394 generic-all
 java/lang/invoke/LFCaching/LFMultiThreadCachingTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/invoke/MethodHandlesGeneralTest.java https://github.com/eclipse-openj9/openj9/issues/7043 generic-all
+java/lang/invoke/MethodHandleProxies/WrapperHiddenClassTest.java https://github.com/eclipse-openj9/openj9/issues/18805 generic-all
 java/lang/invoke/PrivateInvokeTest.java https://github.com/eclipse-openj9/openj9/issues/7071 generic-all
 java/lang/invoke/SpecialInterfaceCall.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/invoke/VarHandle/AccessMode/OptimalMapSize.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -92,6 +93,8 @@ java/lang/StackWalker/LocalsAndOperands.java#id0  https://github.com/adoptium/aq
 java/lang/StackWalker/LocalsAndOperands.java#id1  https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/StackWalker/ReflectionFrames.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/StackWalker/VerifyStackTrace.java https://github.com/adoptium/aqa-tests/issues/1273 generic-all
+java/lang/StackWalker/CallerSensitiveMethod/Main.java https://github.com/eclipse-openj9/openj9/issues/18696 generic-all
+java/lang/StackWalker/GetCallerClassTest.java https://github.com/eclipse-openj9/openj9/issues/18697 generic-all
 java/lang/String/CaseConvertSameInstance.java https://github.com/eclipse-openj9/openj9/issues/6672 generic-all
 java/lang/String/CaseInsensitiveComparator.java https://github.com/eclipse-openj9/openj9/issues/6665 generic-all
 java/lang/String/CompactString/IndexOf.java  https://github.com/eclipse-openj9/openj9/issues/6673 generic-all
@@ -433,6 +436,7 @@ java/util/Arrays/TimSortStackSize2.java https://github.com/eclipse-openj9/openj9
 java/util/BitSet/stream/BitSetStreamTest.java https://github.com/eclipse-openj9/openj9/issues/4720 linux-all
 java/util/concurrent/forkjoin/FJExceptionTableLeak.java https://github.com/eclipse-openj9/openj9/issues/3209 generic-all
 java/util/concurrent/locks/Lock/TimedAcquireLeak.java https://github.com/eclipse-openj9/openj9/issues/7125 macosx-all,linux-all,aix-all
+java/util/concurrent/locks/Lock/OOMEInAQS.java https://github.com/eclipse-openj9/openj9/issues/16659 generic-all
 java/util/concurrent/SynchronousQueue/Fairness.java https://github.com/eclipse-openj9/openj9/issues/18771 generic-all
 java/util/concurrent/TimeUnit/Basic.java https://github.com/adoptium/aqa-tests/issues/1665 windows-all
 java/util/logging/CheckZombieLockTest.java https://bugs.openjdk.java.net/browse/JDK-8148972 macosx-all,linux-all
@@ -499,6 +503,8 @@ java/foreign/valist/VaListTest.java https://github.com/adoptium/aqa-tests/issues
 
 # com_sun_crypto
 
+com/sun/crypto/provider/Cipher/AEAD/AEADBufferTest.java https://github.com/eclipse-openj9/openj9/issues/18703 generic-all
+
 ############################################################################
 
 # serviceability
@@ -555,6 +561,10 @@ serviceability/jvmti/RedefineClasses/RedefinePreviousVersions.java https://githu
 serviceability/jvmti/vthread/ToggleNotifyJvmtiTest/ToggleNotifyJvmtiTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 serviceability/jvmti/vthread/FollowReferences/VThreadStackRefTest.java#default https://github.com/eclipse-openj9/openj9/issues/18426 generic-all
 serviceability/jvmti/vthread/FollowReferences/VThreadStackRefTest.java#no-vmcontinuations https://github.com/eclipse-openj9/openj9/issues/18426 generic-all
+serviceability/jvmti/vthread/HeapDump/VThreadInHeapDump.java https://github.com/eclipse-openj9/openj9/issues/18811 generic-all
+serviceability/jvmti/vthread/GetThreadStateMountedTest/GetThreadStateMountedTest.java https://github.com/eclipse-openj9/openj9/issues/18810 generic-all
+serviceability/jvmti/thread/GetStackTrace/GetStackTraceAndRetransformTest/GetStackTraceAndRetransformTest.java https://github.com/eclipse-openj9/openj9/issues/18809 generic-all
+serviceability/jvmti/GetClassFields/FilteredFields/FilteredFieldsTest.java https://github.com/eclipse-openj9/openj9/issues/18807 generic-all
 
 # jdk_container
 jdk/internal/platform/docker/TestDockerCpuMetrics.java https://github.com/eclipse-openj9/openj9/issues/16462 generic-all
