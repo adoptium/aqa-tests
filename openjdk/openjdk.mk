@@ -64,7 +64,7 @@ ifeq ($(JTREG_CONC), 0)
 		JTREG_CONC := 1
 	endif
 endif
-EXTRA_JTREG_OPTIONS += -concurrency:$(JTREG_CONC)
+EXTRA_JTREG_OPTIONS += -concurrency:2
 
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
