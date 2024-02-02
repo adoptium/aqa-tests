@@ -19,7 +19,7 @@ OS:=$(shell uname -s)
 ARCH:=$(shell uname -m)
 
 ifeq ($(OS),Linux)
-	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
+	NPROCS:=$(shell nproc)
 	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [ -r /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`; else CGMEM=`expr $${KMEMMB} \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
 endif
 ifeq ($(OS),Darwin)
@@ -64,7 +64,7 @@ ifeq ($(JTREG_CONC), 0)
 		JTREG_CONC := 1
 	endif
 endif
-EXTRA_JTREG_OPTIONS += -concurrency:2
+EXTRA_JTREG_OPTIONS += -concurrency:$(CONC)
 
 JTREG_BASIC_OPTIONS += -agentvm
 # Only run automatic tests
@@ -85,7 +85,7 @@ ifeq ($(ARCH), riscv64)
 else
 # Multiple by 8 the timeout numbers, except on zOS use 2
 ifneq ($(OS),OS/390)
-	JTREG_TIMEOUT_OPTION =  -timeoutFactor:40
+	JTREG_TIMEOUT_OPTION =  -timeoutFactor:8
 else
 	JTREG_TIMEOUT_OPTION =  -timeoutFactor:2
 endif
