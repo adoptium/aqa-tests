@@ -25,11 +25,7 @@
 				<platform>^((?!(ppc64_aix|ppc64le_linux|x86-64_linux|x86-64_windows)).)*$</platform>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) \
-	-cp $(Q)$(LIB_DIR)$(D)junit4.jar$(P)$(LIB_DIR)$(D)hamcrest-core.jar$(P)$(LIB_DIR)$(D)bcprov-jdk18on.jar$(P)$(TEST_RESROOT)$(D)openjceplus-tests.jar$(Q) \
-	--add-exports=java.base/sun.security.util=ALL-UNNAMED \
-	--add-exports=openjceplus/com.ibm.crypto.plus.provider.ock=ALL-UNNAMED \
-	ibm.jceplus.junit.TestAll; \
+		<command>ant -f ${BUILD_ROOT}/functional/OpenJcePlusTests/test.xml -DTEST_JAVA=$(Q)$(JAVA_COMMAND)$(Q) launch_test; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
