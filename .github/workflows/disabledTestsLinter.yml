@@ -12,6 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3 python3-lxml
+
       - name: Run exclude_parser.py on ProblemList files
         run: find ./openjdk/excludes -name "ProblemList*" | python3 ./scripts/disabled_tests/exclude_parser.py -v > /dev/null
 
