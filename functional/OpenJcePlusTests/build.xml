@@ -84,6 +84,9 @@
 		</jar>
 		<copy todir="${DEST}">
 			<fileset dir="${src}/../../" includes="*.xml,*.mk" />
+			<fileset dir="${LIB_DIR}/" includes="junit4.jar" />
+			<fileset dir="${LIB_DIR}/" includes="hamcrest-core.jar" />
+			<fileset dir="${LIB_DIR}/" includes="bcprov-jdk18on.jar" />
 		</copy>
 	</target>
 
