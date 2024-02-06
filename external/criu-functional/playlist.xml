@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>criu-functional</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-functional --testtarget "_testList TESTLIST=cmdLineTester_criu_security,cmdLineTester_criu_random" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS) --tmpfs /run"; \
