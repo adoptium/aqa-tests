@@ -397,33 +397,40 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 def setup() {
 	stage('Setup') {
 		setupEnv()
-
-		if (params.SDK_RESOURCE == 'nightly' && params.CUSTOMIZED_SDK_URL) {
-			// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
-			CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
-		} else if (params.CUSTOMIZED_SDK_URL) {
-			SDK_RESOURCE = "customized"
-			CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
-			if (params.ADDITIONAL_ARTIFACTS_REQUIRED == "RI_JDK") {
-				def server = Artifactory.server params.ARTIFACTORY_SERVER
-				def artifactoryUrl = server.getUrl()
-				def repoForRi = ''
-				def riURL = ''
-				if (params.ARTIFACTORY_REPO.contains(',')) {
-					String[] repos = params.ARTIFACTORY_REPO.split(",")
-					// Assumption: ARTIFACTORY_REPO=X,Y (X=to upload results, Y=to download ri)
-					repoForRi = repos[1].trim()
-					if (!env.SPEC.startsWith('aix') && !env.SPEC.startsWith('zos')) {
-						riURL = "${artifactoryUrl}/${repoForRi}/Latest/${PLATFORM}/${JDK_VERSION}"
+		if (params.CUSTOMIZED_SDK_URL) {
+			if (params.SDK_RESOURCE == 'nightly') {
+				// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
+				CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
+			} else if (!params.SDK_RESOURCE || params.SDK_RESOURCE == 'customized') { 
+				SDK_RESOURCE = "customized"
+				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
+				if (params.ADDITIONAL_ARTIFACTS_REQUIRED == "RI_JDK") {
+					def server = Artifactory.server params.ARTIFACTORY_SERVER
+					def artifactoryUrl = server.getUrl()
+					def repoForRi = ''
+					def riURL = ''
+					if (params.ARTIFACTORY_REPO.contains(',')) {
+						String[] repos = params.ARTIFACTORY_REPO.split(",")
+						// Assumption: ARTIFACTORY_REPO=X,Y (X=to upload results, Y=to download ri)
+						repoForRi = repos[1].trim()
+						if (!env.SPEC.startsWith('aix') && !env.SPEC.startsWith('zos')) {
+							riURL = "${artifactoryUrl}/${repoForRi}/Latest/${PLATFORM}/${JDK_VERSION}"
+						}
 					}
+					CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
 				}
-				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL} ${riURL}'"
+			} else {
+				error("SDK_RESOURCE: ${params.SDK_RESOURCE} and CUSTOMIZED_SDK_URL: ${params.CUSTOMIZED_SDK_URL} combo is not supported!")
 			}
 		} else {
-			CUSTOMIZED_SDK_URL_OPTION = ""
+			if (params.SDK_RESOURCE == 'customized') { 
+				error("SDK_RESOURCE: ${params.SDK_RESOURCE}, please provide CUSTOMIZED_SDK_URL")
+			} else {
+				CUSTOMIZED_SDK_URL_OPTION = ""
+			}
 		}
 
-		if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
+		if (SDK_RESOURCE == 'upstream') {
 			timeout(time: 1, unit: 'HOURS') {
 				dir('jdkbinary') {
 					step([$class: 'CopyArtifact',
