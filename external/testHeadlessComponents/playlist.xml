@@ -14,10 +14,10 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
 	<test>
-		<testCaseName>wildfly_test</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir wildfly --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
-		$(TEST_STATUS); \
-		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir wildfly
+		<testCaseName>THC</testCaseName>
+		<command> 
+			export OJDK_VERSION_NUMBER=$JDK_VERSION; \
+			./testHeadlessComponents.sh
 		</command>
 		<levels>
 			<level>extended</level>
