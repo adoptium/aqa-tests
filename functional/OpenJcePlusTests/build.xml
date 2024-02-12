@@ -28,6 +28,7 @@
 	<property name="build" location="./bin" />
 	<property name="LIB" value="junit4,hamcrest_core,bcprov_jdk18on"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+	<property environment="env" />
 
 	<target name="openJcePlusTests.check">
 		<condition property="openJcePlusTests.exists">
@@ -36,19 +37,26 @@
 	</target>
 
 	<if>
-		<contains string="${SPEC}" substring="zos"/>
+		<isset property="env.OPENJCEPLUS_GIT_REPO"/>
 		<then>
-			<property name="GIT_REPO" value="git@github.com:" />
+			<property name="openjceplusGitRepo" value="${env.OPENJCEPLUS_GIT_REPO}"/>
 		</then>
 		<else>
-			<property name="GIT_REPO" value="https://github.com/" />
+			<property name="openjceplusGitRepo" value="https://github.com/IBM/OpenJCEPlus.git"/>
 		</else>
 	</if>
+	<if>
+		<isset property="env.OPENJCEPLUS_GIT_BRANCH"/>
+		<then>
+			<property name="openjceplusGitBranch" value="${env.OPENJCEPLUS_GIT_BRANCH}"/>
+		</then>
+		<else>
+			<property name="openjceplusGitBranch" value="main"/>
+		</else>
+	</if>
+
 	<target name="getOpenJcePlusTests" depends="openJcePlusTests.check" unless="openJcePlusTests.exists">
-		<exec executable="git" failonerror="true">
-			<arg value="clone" />
-			<arg value="${GIT_REPO}IBM/OpenJCEPlus.git" />
-		</exec>
+		<getFileWithRetry file="OpenJCEPlus" command="git clone --depth 1 -q ${openjceplusGitRepo} -b ${openjceplusGitBranch} OpenJCEPlus"/>
 		<delete dir="./OpenJCEPlus/src/main" />
 	</target>
 
