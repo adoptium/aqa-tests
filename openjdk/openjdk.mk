@@ -20,7 +20,10 @@ ARCH:=$(shell uname -m)
 
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell nproc)
-	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -r /sys/fs/cgroup/memory.max && $(cat /sys/fs/cgroup/memory.max) =~ ^[0-9]+$ ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max`; echo "DEBUG: Using memory.max to calculate concurrency."; elif [[ -r /sys/fs/cgroup/memory/memory.limit_in_bytes && $(cat /sys/fs/cgroup/memory/memory.limit_in_bytes) =~ ^[0-9]+$ ]]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`; echo "DEBUG: Using memory.limit_in_bytes to calculate concurrency."; else CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; echo "DEBUG: Using /proc/meminfo to calculate concurrency."; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -f "/.dockerenv" ]]; then CGRPV=`stat -f --format '%T' /sys/fs/cgroup`; if [[ "_$$CGRPV" == "_cgroup2fs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; elif [[ "_$$CGRPV" == "_tmpfs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+	//debug code
+	MEMORY_DEBUG:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -f "/.dockerenv" ]]; then CGRPV=`stat -f --format '%T' /sys/fs/cgroup`; echo "DEBUG10 $$(CGPRV) "; if [[ "_$$CGRPV" == "_cgroup2fs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; echo "DEBUG11 $$(CGMEM) "; elif [[ "_$$CGRPV" == "_tmpfs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; echo "DEBUG12 $$(CGMEM) "; fi; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; echo "DEBUG13 $$(CGMEM) "; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+	
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
