@@ -20,10 +20,37 @@ ARCH:=$(shell uname -m)
 
 ifeq ($(OS),Linux)
 	NPROCS:=$(shell nproc)
-	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -f "/.dockerenv" ]]; then CGRPV=`stat -f --format '%T' /sys/fs/cgroup`; if [[ "_$$CGRPV" == "_cgroup2fs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; elif [[ "_$$CGRPV" == "_tmpfs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
-	//debug code
-	MEMORY_DEBUG:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -f "/.dockerenv" ]]; then CGRPV=`stat -f --format '%T' /sys/fs/cgroup`; echo "DEBUG10 $$(CGPRV) "; if [[ "_$$CGRPV" == "_cgroup2fs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; echo "DEBUG11 $$(CGMEM) "; elif [[ "_$$CGRPV" == "_tmpfs" ]]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; echo "DEBUG12 $$(CGMEM) "; fi; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; echo "DEBUG13 $$(CGMEM) "; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
-	$(warning $(MEMORY_DEBUG))
+	// This is the MEMORY_SIZE script below, with formatting for readability.
+	//
+	// // The number of megabytes of memory this machine has.
+	// KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; 
+	//
+	// // If this machine/container uses cgroups to limit the amount of 
+	// // memory available to us, we should use that as out memory size.
+	// if [[ -r /sys/fs/cgroup/memory.max ]]; then
+	//     // Use this to identify memory maximum (bytes) for cgroup v2.
+	//     CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; 
+	// else
+	//     // Else use this file for memory maximum (bytes) on cgroup v1.
+	//     CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; 
+	// fi; 
+	//
+	// // If those files were empty, or didn't exist, or had non-numbers
+	// // in them, then use /proc/meminfo (converted to bytes).
+	// if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then
+	//     CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; 
+	// fi; 
+	//
+	// CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; 
+	//
+	// // Between memory limits in the cgroup and memory on the machine,
+	// // use the lower limit. This protects us against situations
+	// // where the cgroup has a value which is much bigger/smaller than
+	// // the limits on the machine overall. We've seen both.
+	// if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then 
+	//     echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; 
+	// fi
+	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -r /sys/fs/cgroup/memory.max ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; else CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
