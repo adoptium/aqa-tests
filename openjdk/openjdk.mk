@@ -50,7 +50,7 @@ ifeq ($(OS),Linux)
 	# if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then 
 	#     echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; 
 	# fi
-	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -r /sys/fs/cgroup/memory.max ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; else CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; if [[ ! $$(CGMEM) =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [[ -r /sys/fs/cgroup/memory.max ]]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; else CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; if [[ ! $${CGMEM} =~ ^[0-9]+$$ ]]; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
