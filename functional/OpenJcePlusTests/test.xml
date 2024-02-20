@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 {the "License"};
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="Launcher script for OpenJcePlusTests" default="help" basedir=".">
+	<target name="help">
+		<echo>Ant script to run the tests for ibm.jceplus.junit.TestAll.
+		</echo>
+	</target>
+
+	<target name="launch_test">
+		<echo message="Running ibm.jceplus.junit.TestAll in ${user.dir}" />
+		<echo message="Command: ${TEST_JAVA} -cp junit4.jar:hamcrest-core.jar:bcprov-jdk18on.jar:openjceplus-tests.jar --add-exports=java.base/sun.security.util=ALL-UNNAMED --add-exports=openjceplus/com.ibm.crypto.plus.provider.ock=ALL-UNNAMED ibm.jceplus.junit.TestAll" />
+		<mkdir dir="junitreports" />
+		<java jvm="${TEST_JAVA}"
+				classname="org.apache.tools.ant.launch.Launcher"
+				fork="true"
+				failonerror="true"
+				dir="${basedir}"
+				timeout="3600000"
+				taskname="test">
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar" />
+			</classpath>
+			<jvmarg value="-showversion" />
+			<arg value="-buildfile" />
+			<arg file="${ant.file}" />
+			<arg value="test" />
+		</java>
+	</target>
+	<target name="test">
+		<junit fork="yes" printsummary="on" showoutput="yes" haltonfailure="yes">
+			<jvmarg line="--add-exports=java.base/sun.security.util=ALL-UNNAMED" />
+			<jvmarg line="--add-exports=openjceplus/com.ibm.crypto.plus.provider.ock=ALL-UNNAMED" />
+			<classpath>
+				<pathelement location="junit4.jar" />
+				<pathelement location="hamcrest-core.jar" />
+				<pathelement location="bcprov-jdk18on.jar" />
+				<pathelement location="openjceplus-tests.jar" />
+			</classpath>
+			<formatter type="xml" />
+			<test name="ibm.jceplus.junit.TestAll" todir="junitreports"/>
+		</junit>
+		<echo message="ALL TESTS COMPLETED" />
+	</target>
+</project>

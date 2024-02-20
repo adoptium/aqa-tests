@@ -117,10 +117,11 @@ prepare() {
         curCommitID=$(git rev-parse HEAD)
         echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
         if [[ $docker_os == "ubi" ]]; then
-            # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11
-            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk17"
+            # Temporarily OpenLiberty ubi dockerfile only supports openjdk 21, using it for 11 and 17 too
+            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk21"
             # replace OpenLiberty dockerfile base image
-            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-17-jdk-${docker_os}" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-21-jre-${docker_os}9-minimal" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
+            findCommandAndReplace "microdnf" "yum" $libertyDockerfilePath
         else # docker_os is ubuntu
             libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk${jdkVersion}"
             findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
@@ -154,7 +155,7 @@ buildImage() {
     echo "build image at $(pwd)..."
     sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
     # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11, need to add jdkVersion for ubuntu support later
-    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta/Dockerfile.${docker_os}.openjdk17 ci.docker/releases/latest/beta
+    sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/beta/Dockerfile.${docker_os}.openjdk21 ci.docker/releases/latest/beta
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
 }
 
