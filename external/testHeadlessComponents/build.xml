@@ -37,7 +37,7 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" description="generate the distribution">
+	<target name="dist" depends="getTestHeadlessComponents" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
