@@ -1,27 +1,49 @@
 <?xml version="1.0"?>
-<project name="Wildfly-Test" default="build" basedir=".">
+<project name="testHeadlessComponents" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
-		Build wildfly-test Docker image
+		Test of correct behavior of swing components in both headfull and headless jre environment.
 	</description>
-	<import file="${TEST_ROOT}/external/build.xml"/>
-
+	
 	<!-- set properties for this build -->
-	<property name="TEST" value="wildfly" />
-	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="TEST" value="testHeadlessComponents" />
+	<property name="DEST" value="${BUILD_ROOT}/external/testHeadlessComponents" />
 	<property name="src" location="." />
+
+	<target name="THC.check">
+		<condition property="THCdir.exists">
+			<available file="testHeadlessComponents" type="dir"/>
+		</condition>
+	</target>
+
+	<if>
+		<contains string="${SPEC}" substring="zos"/>
+		<then>
+			<property name="GIT_REPO" value="git@github.com:" />
+		</then>
+		<else>
+			<property name="GIT_REPO" value="https://github.com/" />
+		</else>
+	</if>
+
+	<target name="getTestHeadlessComponents" depends="THC.check" unless="THCdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="${GIT_REPO}rh-openjdk/testHeadlessComponents.git" />
+		</exec>
+	</target>
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
+	<target name="dist" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
 	</target>
 
 	<target name="build">
-		<antcall target="dist" inheritall="true" />
+		<antcall target="clean" inheritall="true" />
 	</target>
 </project>
