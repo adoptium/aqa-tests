@@ -10,7 +10,7 @@ Nothing special is required, just install the java package or unpack the portabl
 ### ENV variables:
 The test utilizes *JAVA_HOME variable, so if it is not set it will not work correctly! In case of testing portable packages please set it up first.
 BOOTJDK_DIR - directory to store bootjdk which is used to compile the code in case we are testing jre only installation. Uses ~/bootjdk by default and uses Adoptium latest build of relevant jdk for this purpose.
-BOOTJDK_ARCHIVE_DIR - directory for downloading the portable jdk archive before unpacking into BOOTJDK_DIR. Uses $WORKSPACE/bootjdkarchive by default.
+BOOTJDK_ARCHIVE_DIR - in case the user wants to use arbitrary jdk build, he can provide path to its archive and it will be used in jre execution. Creates $WORKSPACE/bootjdkarchive and downloads latest temurin archive if not set.
 WORKSPACE - directory where the testsuite is going to execute all the tests. ~/workspace by default
 TMPRESULTS - this is a location where the logfiles will be after the testsuite finishes. Same as WORKSPACE by default.
 *JREJDK - This tells the testsuite whether we are testing jre or jdk.
