@@ -83,11 +83,11 @@
 						</exec>
 					</then>
 					<else>
-						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
-						<echo message="failCode is ${failCode} "/>
+						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" resultproperty="fcode" errorproperty="errorProp"/>
 						<if>
-							<equals arg1="${failCode}" arg2="128"/>
+							<equals arg1="${fcode}" arg2="128"/>
 							<then>
+								<echo message="failCode is ${fcode} and errorProp is ${errorProp} "/>
 								<getFileWithRetry file="openjdktemp" command="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp"/>
 								<echo message="git rev-parse ${env.JDK_BRANCH} "/>
 								<exec executable="git" failonerror="false" dir="openjdktemp" outputproperty="jdk_sha1" resultproperty="code" errorproperty="errorProp">
