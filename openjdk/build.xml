@@ -222,12 +222,14 @@
 					<isset property="OPENJDK_SHA_ISSET"/>
 					<then>
 						<getFileWithRetry file="openjdk-jdk" command="git clone -q ${REFERENCE_REPO} ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
+						<echo message="3 failCode is ${failCode} "/>
 						<exec executable="git" failonerror="true" dir="openjdk-jdk">
 							<arg line="checkout ${env.OPENJDK_SHA}"/>
 						</exec>
 					</then>
 					<else>
 						<getFileWithRetry file="openjdk-jdk" command="git clone --depth 1 -q ${REFERENCE_REPO} ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
+						<echo message="4 failCode is ${failCode} "/>
 					</else>
 				</if>
 			</else>
