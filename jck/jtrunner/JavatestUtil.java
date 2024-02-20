@@ -94,6 +94,7 @@ public class JavatestUtil {
 	private static String secPropsFile;
 	private static String testFlag;
 	private static String task;
+	private static String isCustomTarget = "notCustomTarget";
 	private static String agentHost;
 	private static String testJavaForMultiJVMCompTest;
 	private static String riJavaForMultiJVMCompTest;
@@ -123,6 +124,7 @@ public class JavatestUtil {
 	private static final String WORK_DIR = "workdir";
 	private static final String SPEC = "spec";
 	private static final String CUSTOM_JTX = "customJtx";
+	private static final String IS_CUSTOM_TARGET = "isCustomTarget";
 
 	public static void main(String args[]) throws Exception {
 		ArrayList<String> essentialParameters = new ArrayList<String>(); 
@@ -144,6 +146,7 @@ public class JavatestUtil {
 		essentialParameters.add(WORK_DIR);
 		essentialParameters.add(SPEC);
 		essentialParameters.add(CUSTOM_JTX);
+		essentialParameters.add(IS_CUSTOM_TARGET);
 
 		for (String arg : args) {
 			if (arg.contains("=")) {
@@ -855,7 +858,8 @@ public class JavatestUtil {
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
 		// when running a test via jck_custom.
-		if (task == null || !task.equals("custom")) {  
+		
+		if (testArgs.get(IS_CUSTOM_TARGET) == null) {
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + " " + customJtx + "\";\n";
 		} else {
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + "\";\n";
