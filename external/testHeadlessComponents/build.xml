@@ -12,7 +12,7 @@
 
 	<target name="THC.check">
 		<condition property="THCdir.exists">
-			<available file="testHeadlessComponents" type="dir"/>
+			<available file="TestHeadlessComponents" type="dir"/>
 		</condition>
 	</target>
 
@@ -29,7 +29,7 @@
 	<target name="getTestHeadlessComponents" depends="THC.check" unless="THCdir.exists">
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
-			<arg value="${GIT_REPO}rh-openjdk/testHeadlessComponents.git" />
+			<arg value="${GIT_REPO}rh-openjdk/TestHeadlessComponents.git" />
 		</exec>
 	</target>
 
