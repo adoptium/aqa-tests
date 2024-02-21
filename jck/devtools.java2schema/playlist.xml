@@ -14,6 +14,26 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
+		<testCaseName>jckdevtools_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) testsuite=DEVTOOLS tests=$(JCKDEVTOOLS_CUSTOM_TARGET) isCustomTarget="isCustomTarget"; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) testsuite=DEVTOOLS tests=$(JCKDEVTOOLS_CUSTOM_TARGET) isCustomTarget="isCustomTarget"
+		</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
 		<testCaseName>jck-devtools-java2schema-CustomizedMapping</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>

@@ -857,7 +857,7 @@ public class JavatestUtil {
 		}
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
-		// when running a test via jck_custom.
+		// when running a test via jck***_custom.
 		
 		if (testArgs.get(IS_CUSTOM_TARGET) == null) {
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + " " + customJtx + "\";\n";

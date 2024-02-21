@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<!-- jck_custom might need to add extr augument like testsuite, task, otherwise difficult to GEN_JTB_GENERIC  GEN_SUMMARY_GENERIC -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck_custom</testCaseName>
+		<testCaseName>jckruntime_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) tests=$(JCK_CUSTOM_TARGET) isCustomTarget="isCustomTarget"; \
+		<command>$(GEN_JTB_GENERIC) testsuite=RUNTIME tests=$(JCKRUNTIME_CUSTOM_TARGET) isCustomTarget="isCustomTarget"; \
 		$(EXEC_RUNTIME_TEST); \
 		$(TEST_STATUS); \
-		$(GEN_SUMMARY_GENERIC) tests=$(JCK_CUSTOM_TARGET) isCustomTarget="isCustomTarget"
+		$(GEN_SUMMARY_GENERIC) testsuite=RUNTIME tests=$(JCKRUNTIME_CUSTOM_TARGET) isCustomTarget="isCustomTarget"
 		</command>
 		<levels>
 			<level>extended</level>
