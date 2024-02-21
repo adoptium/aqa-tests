@@ -85,8 +85,9 @@
 					</then>
 					<else>
 						<echo>About to run the git clone command</echo>
-						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
+						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" resultproperty="status1"/>
 						<if>
+							<echo>resultproperty is: ${status1}</echo>
 							<equals arg1="${failCode}" arg2="128"/>
 							<then>
 								<echo message="2 failCode is ${failCode} "/>
