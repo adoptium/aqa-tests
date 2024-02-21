@@ -84,6 +84,7 @@
 						</exec>
 					</then>
 					<else>
+						<echo>About to run the git clone command</echo>
 						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<if>
 							<equals arg1="${failCode}" arg2="128"/>
@@ -228,6 +229,7 @@
 						</exec>
 					</then>
 					<else>
+						<echo>About to run the git clone command 2</echo>
 						<getFileWithRetry file="openjdk-jdk" command="git clone --depth 1 -q ${REFERENCE_REPO} ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
 						<echo message="4 failCode is ${failCode} "/>
 					</else>
