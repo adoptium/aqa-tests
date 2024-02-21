@@ -57,6 +57,7 @@
 
 	<target name="getOpenJcePlusTests" depends="openJcePlusTests.check" unless="openJcePlusTests.exists">
 		<getFileWithRetry file="OpenJCEPlus" command="git clone --depth 1 -q ${openjceplusGitRepo} -b ${openjceplusGitBranch} OpenJCEPlus"/>
+		<checkGitRepoSha repoDir="OpenJCEPlus"/>
 		<delete dir="./OpenJCEPlus/src/main" />
 	</target>
 
