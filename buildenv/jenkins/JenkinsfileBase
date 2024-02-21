@@ -1182,6 +1182,9 @@ def addGrinderLink() {
 		url = url.replace(rerunIterations,"RERUN_ITERATIONS=0")
 	}
 
+	// reset LIGHT_WEIGHT_CHECKOUT to false in Rerun in Grinder link
+	url = url.replace("LIGHT_WEIGHT_CHECKOUT=true", "LIGHT_WEIGHT_CHECKOUT=false")
+
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
 	echo "Rerun in Grinder: ${url}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
