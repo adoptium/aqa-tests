@@ -156,7 +156,7 @@ public class JavatestUtil {
 				
 				// We only load testArgs with key,value pairs that are needed by the JavatestUtil 
 				if (essentialParameters.contains(key)) {
-					// This is a special case for JCK where we may supply multiple sub-folders to run
+					// This is a special case to supply multiple sub-folders separating by semicolon( another option is directively supply with double quoted multiple sub-folders separating by space.
 					if(value.contains(";")) {
 						value = value.trim().replace("\n", "").replace("\r", "");
 						String [] tests = value.split(";");
