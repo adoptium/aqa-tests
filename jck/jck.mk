@@ -11,9 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##############################################################################
-ifndef JCK_CUSTOM_TARGET
-JCK_CUSTOM_TARGET ?=api/java_math/BigInteger
-endif
+JCKRUNTIME_CUSTOM_TARGET ?= api/java_math/BigInteger
+JCKCOMPILER_CUSTOM_TARGET ?= api/javax_lang/model/element/Element/index.html
+JCKDEVTOOLS_CUSTOM_TARGET ?= java2schema/CustomizedMapping/classes/XmlRootElement/name/Name001.html
 
 # Environment variable OSTYPE is set to cygwin if running under cygwin.
 # Set our own macro to indicate we're running under cygwin.
@@ -91,11 +91,6 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
       OTHER_OPTS += -XstartOnFirstThread
     endif
   endif
-endif
-
-# If testsuite is not specified, default to RUNTIME
-ifeq (,$(findstring testsuite, $(JCK_CUSTOM_TARGET)))
-   override JCK_CUSTOM_TARGET := $(JCK_CUSTOM_TARGET) testsuite=RUNTIME
 endif
 
 # Additional JavaTestRunner options can be added via APPLICATION_OPTIONS

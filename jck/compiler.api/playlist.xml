@@ -15,6 +15,23 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
+		<testCaseName>jckcompiler_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) testsuite=COMPILER tests=$(JCKCOMPILER_CUSTOM_TARGET) isCustomTarget="isCustomTarget"; \
+		$(EXEC_COMPILER_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) testsuite=COMPILER tests=$(JCKCOMPILER_CUSTOM_TARGET) isCustomTarget="isCustomTarget"
+		</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>jck-compiler-api-java_rmi</testCaseName>
 		<disables>
 			<disable>
