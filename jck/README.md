@@ -41,7 +41,7 @@ This test directory contains:
 
 # How-to Run customized JCK test targets
 
-There are three custom JCK test target `jckruntime_custom, jckcompiler_custom, jckdevtools_custom`. They are used to run custom JCK test targets in JCK runtime, compiler and devtools testsuite respectively. Take jckrutime_custom as example:
+There are three custom JCK test targets `jckruntime_custom, jckcompiler_custom, jckdevtools_custom`. They are used to run custom JCK test targets in JCK runtime, compiler and devtools testsuites respectively. Take jckruntime_custom as example:
 
 1. Follow the Steps 1 - 4 mentioned above. 
 
