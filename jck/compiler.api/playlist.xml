@@ -19,10 +19,10 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) testsuite=COMPILER tests=$(JCKCOMPILER_CUSTOM_TARGET) isCustomTarget="isCustomTarget"; \
+		<command>$(GEN_JTB_GENERIC) testsuite=COMPILER tests="$(JCKCOMPILER_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"; \
 		$(EXEC_COMPILER_TEST); \
 		$(TEST_STATUS); \
-		$(GEN_SUMMARY_GENERIC) testsuite=COMPILER tests=$(JCKCOMPILER_CUSTOM_TARGET) isCustomTarget="isCustomTarget"
+		$(GEN_SUMMARY_GENERIC) testsuite=COMPILER tests="$(JCKCOMPILER_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
 		</command>
 		<levels>
 			<level>extended</level>
