@@ -22,9 +22,8 @@
             export OTOOL_garbageCollector=ALL ; \
             export DURATION=24 ; \
             export TMPRESULTS=$(Q)$(REPORTDIR)$(D)report$(Q); \
-            pushd $TMPRESULTS ; \
+            cd $TMPRESULTS ; \
               bash $(TEST_ROOT)$(D)functional$(D)churn$(D)churn$(D)run.sh; \
-            popd; \
             $(TEST_STATUS)
 		</command>
 		<levels>
