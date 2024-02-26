@@ -50,6 +50,19 @@
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
+		<condition property="isMac">
+                    <os family="mac" />
+                </condition>
+
+                <exec executable="ruby" failonerror="true" if="isMac">
+                    <arg value="-e" />
+                    <arg value="'$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'" />
+                </exec>
+
+                <exec executable="brew" failonerror="true" if="isMac">
+                    <arg value="install" />
+                    <arg value="bash" />
+                </exec>
 	</target>
 
 	<target name="dist" depends="getTestHeadlessComponents" description="generate the distribution">
