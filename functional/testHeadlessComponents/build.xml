@@ -50,22 +50,26 @@
 
 	<target name="init">
 		<mkdir dir="${DEST}"/>
+		<antcall target="installBrewBash" if "isMac">
 		<condition property="isMac">
-                    <os family="mac" />
-                </condition>
+        		<os family="mac" />
+		</condition>
+        </target>
 
-                <exec executable="ruby" failonerror="true" if="isMac">
-                    <arg value="-e" />
-                    <arg value="'$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'" />
-                </exec>
 
-                <exec executable="brew" failonerror="true" if="isMac">
-                    <arg value="install" />
-                    <arg value="bash" />
-                </exec>
+	<target name="installBrewBash">
+		<exec executable="ruby" failonerror="true">
+			<arg value="-e" />
+			<arg value="'$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'" />
+		</exec>
+
+		<exec executable="brew" failonerror="true">
+			<arg value="install" />
+			<arg value="bash" />
+		</exec>
 	</target>
 
-	<target name="dist" depends="getTestHeadlessComponents, init" description="generate the distribution">
+	<target name="dist" depends="getTestHeadlessComponents" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
