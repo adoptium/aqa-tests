@@ -39,7 +39,7 @@ if [ "$?" -eq "2" ]; then
     branchExists=$(git ls-remote --heads $workingRepo ${workingTag})
     if [[ -z ${branchExists} ]]; then
       workingTagPrefix=${workingTag//"-ga"/""}
-      latestTag=$(git ls-remote --sort='-version:refname' --refs --tags $workingRepo ${workingTagPrefix}\* | cut -d '/' -f 3 | grep -v "_adopt" | head -n1 )
+      latestTag=$(git ls-remote --refs --tags $workingRepo ${workingTagPrefix}\* | cut -d '/' -f 3 | grep -v "_adopt" | tail -n1 )
         if [[ $latestTag ]]; then
           echo "Override contents of $teFile, export $repoFromPropFile=$latestTag"
           export $repoFromPropFile=$latestTag
