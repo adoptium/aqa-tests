@@ -61,4 +61,28 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>churn_custom</testCaseName>
+		<command> 
+            export OTOOL_JDK_VERSION="$(JDK_VERSION)" ; \
+            export JREJDK="jdk" ; \
+            export OTOOL_garbageCollector="${CHURN_GCS}" ; \
+            export DURATION="${CHURN_DURATION}" ; \
+            export TMPRESULTS="$(Q)$(REPORTDIR)$(D)report$(Q)"; \
+            cd $TMPRESULTS ; \
+              bash "$(TEST_ROOT)$(D)functional$(D)churn$(D)churn$(D)run.sh"; \
+            $(TEST_STATUS)
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<platformRequirementsList>
+			<platformRequirements>os.linux</platformRequirements>
+			<platformRequirements>os.win</platformRequirements>
+			<platformRequirements>os.osx</platformRequirements>
+		</platformRequirementsList>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
 </playlist>
