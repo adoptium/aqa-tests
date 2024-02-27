@@ -15,7 +15,10 @@
 #!/usr/bin/env bash
 
 # Check for whether the tag values of the JDKxx_BRANCH variable in the 
-# testenv.properties file exists
+# testenv.properties file exists.  Handle cases where the value is a branch, tag or SHA
+# If the value does not exist, strip off -ga and try finding the closest / latest tag 
+# with the same prefix
+
 
 teFile=$1
 jdkVersion=$2
@@ -44,6 +47,15 @@ if [ "$?" -eq "2" ]; then
     # tag name does not exist, check if branch name exists
     branchExists=$(git ls-remote --heads $workingRepo ${workingTag})
     if [[ -z ${branchExists} ]]; then
+      # check if it is a SHA value
+      if [[ "$workingTag" =~ ^[a-zA-Z0-9]{7,40}$ ]]; then
+        # check if the SHA exists in the repository
+        shaExists=$(git ls-remote --heads --tags $workingRepo)
+        if [[ $shaExists =~ "$workingTag" ]]; then
+          echo "SHA $workingTag exists on $workingRepo"
+          exit 0
+        fi
+      fi
       # strip out '-ga' from the tag name since it does not exist
       workingTagPrefix=${workingTag//"-ga"/""}
 
