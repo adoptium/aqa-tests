@@ -83,7 +83,7 @@
 						</exec>
 					</then>
 					<else>
-						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp" />
+						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<if>
 							<equals arg1="${failCode}" arg2="128"/>
 							<then>
