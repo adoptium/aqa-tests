@@ -27,7 +27,7 @@ usage ()
 	echo 'Usage : checkTags.sh testenv.properties JDK_VERSION'
 }
 
-function prop {
+getProperty() {
   grep "${1}" ${teFile} | cut -d'=' -f2
 }
 
@@ -36,14 +36,18 @@ setProperty(){
   mv $teFile.tmp $teFile
 }
 
-workingTag="$(prop ${branchFromPropFile})"
-workingRepo="$(prop ${repoFromPropFile})"
+workingTag="$(getProperty ${branchFromPropFile})"
+workingRepo="$(getProperty ${repoFromPropFile})"
 
 git ls-remote --exit-code -t $workingRepo $workingTag
 if [ "$?" -eq "2" ]; then
+    # tag name does not exist, check if branch name exists
     branchExists=$(git ls-remote --heads $workingRepo ${workingTag})
     if [[ -z ${branchExists} ]]; then
+      # strip out '-ga' from the tag name since it does not exist
       workingTagPrefix=${workingTag//"-ga"/""}
+
+      # find the latest tag name with the same workingTagPrefix as the ga tag that does not currently exist
       latestTag=$(git ls-remote --refs --tags $workingRepo ${workingTagPrefix}\* | cut -d '/' -f 3 | grep -v "_adopt" | tail -n1 )
         if [[ $latestTag ]]; then
           echo "Override non-existent $workingTag with $branchFromPropFile=$latestTag and write to $teFile "
