@@ -54,7 +54,7 @@ if [ "$?" -eq "2" ]; then
           export $branchFromPropFile=$latestTag
           setProperty $branchFromPropFile $latestTag 
         else
-          echo "Unable to resolve the latest $branchFromPropFile tag from $repoFromPropFile"
+          echo "Unable to resolve the latest $branchFromPropFile=$workingTag tag from $repoFromPropFile"
           exit 1
         fi
       else
