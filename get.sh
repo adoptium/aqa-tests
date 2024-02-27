@@ -777,7 +777,7 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 		source ./testenv/testenv.properties
 	fi
 	echo "Running checkTags with $teFile and $JDK_VERSION"
-	./scripts/checkTags.sh $teFile $JDK_VERSION
+	./scripts/testenv/checkTags.sh $teFile $JDK_VERSION
 else
 	> ./testenv/testenv.properties
 fi
