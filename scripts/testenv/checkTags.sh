@@ -43,6 +43,7 @@ if [ "$?" -eq "2" ]; then
         if [[ $latestTag ]]; then
           echo "Override contents of $teFile, export $repoFromPropFile=$latestTag"
           export $repoFromPropFile=$latestTag
+          export JDK_BRANCH=$latestTag
         else
           echo "Unable to resolve the latest $branchFromPropFile tag from $repoFromPropFile"
           exit 1
