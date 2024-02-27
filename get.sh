@@ -763,16 +763,21 @@ checkOpenJ9RepoSHA()
 
 parseCommandLineArgs "$@"
 if [ "$USE_TESTENV_PROPERTIES" = true ]; then
+    teFile="./testenv/testenv.properties"
 	if [[ "$PLATFORM" == *"zos"* ]]; then
 		echo "load ./testenv/testenv_zos.properties"
 		source ./testenv/testenv_zos.properties
+		teFile="./testenv/testenv_zos.properties"
 	elif [[ "$PLATFORM" == *"arm"* ]] && [[ "$JDK_VERSION" == "8" ]] ; then
 		echo "load ./testenv/testenv_arm32.properties"
 		source ./testenv/testenv_arm32.properties
+		teFile="./testenv/testenv_arm32.properties"
 	else
 		echo "load ./testenv/testenv.properties"
 		source ./testenv/testenv.properties
 	fi
+	echo "Running checkTags with $teFile and $JDK_VERSION"
+	./scripts/checkTags.sh $teFile $JDK_VERSION
 else
 	> ./testenv/testenv.properties
 fi
