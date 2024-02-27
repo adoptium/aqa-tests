@@ -14,13 +14,36 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
-		<testCaseName>churn</testCaseName>
-<!--            export DURATION=18000 ; \-->
+		<testCaseName>churn_1m_all</testCaseName>
 		<command> 
             export OTOOL_JDK_VERSION=$(JDK_VERSION) ; \
             export JREJDK="jdk" ; \
             export OTOOL_garbageCollector=ALL ; \
-            export DURATION=24 ; \
+            export DURATION=60 ; \
+            export TMPRESULTS=$(Q)$(REPORTDIR)$(D)report$(Q); \
+            cd $TMPRESULTS ; \
+              bash $(TEST_ROOT)$(D)functional$(D)churn$(D)churn$(D)run.sh; \
+            $(TEST_STATUS)
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<platformRequirementsList>
+			<platformRequirements>os.linux</platformRequirements>
+			<platformRequirements>os.win</platformRequirements>
+			<platformRequirements>os.osx</platformRequirements>
+		</platformRequirementsList>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>churn_5h_all</testCaseName>
+		<command> 
+            export OTOOL_JDK_VERSION=$(JDK_VERSION) ; \
+            export JREJDK="jdk" ; \
+            export OTOOL_garbageCollector=ALL ; \
+            export DURATION=18000 ; \
             export TMPRESULTS=$(Q)$(REPORTDIR)$(D)report$(Q); \
             cd $TMPRESULTS ; \
               bash $(TEST_ROOT)$(D)functional$(D)churn$(D)churn$(D)run.sh; \
