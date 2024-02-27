@@ -31,6 +31,11 @@ function prop {
   grep "${1}" ${teFile} | cut -d'=' -f2
 }
 
+setProperty(){
+  awk -v pat="^$1=" -v newval="$1=$2" '{ if ($0 ~ pat) print newval; else print $0; }' $teFile > $teFile.tmp
+  mv $teFile.tmp $teFile
+}
+
 workingTag="$(prop ${branchFromPropFile})"
 workingRepo="$(prop ${repoFromPropFile})"
 
@@ -41,9 +46,9 @@ if [ "$?" -eq "2" ]; then
       workingTagPrefix=${workingTag//"-ga"/""}
       latestTag=$(git ls-remote --refs --tags $workingRepo ${workingTagPrefix}\* | cut -d '/' -f 3 | grep -v "_adopt" | tail -n1 )
         if [[ $latestTag ]]; then
-          echo "Override contents of $teFile, export $repoFromPropFile=$latestTag"
-          export $repoFromPropFile=$latestTag
-          export JDK_BRANCH=$latestTag
+          echo "Override non-existent $workingTag with $branchFromPropFile=$latestTag and write to $teFile "
+          export $branchFromPropFile=$latestTag
+          setProperty $branchFromPropFile $latestTag 
         else
           echo "Unable to resolve the latest $branchFromPropFile tag from $repoFromPropFile"
           exit 1
