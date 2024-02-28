@@ -110,7 +110,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                 // loop through all the params and change the parameters if needed
                 params.each { param ->
                     if ( param.key == "PLATFORMS" || param.key == "TARGETS" || param.key == "TOP_LEVEL_SDK_URL" 
-                    || param.key == "AUTO_AQA_GEN" || param.key == "JDK_VERSIONS" || param.key == "VARIANT") {
+                    || param.key == "AUTO_AQA_GEN" || param.key == "JDK_VERSIONS" || param.key == "VARIANT" || param.key == "PIPELINE_DISPLAY_NAME") {
                         // do not need to pass the param to child jobs
                     } else if (param.key == "SDK_RESOURCE") {
                         childParams << string(name: param.key, value: sdk_resource_value)
