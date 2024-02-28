@@ -62,7 +62,7 @@ if [ "$?" -eq "2" ]; then
       # find the latest tag name with the same workingTagPrefix as the ga tag that does not currently exist
       latestTag=$(git ls-remote --refs --tags $workingRepo ${workingTagPrefix}\* | cut -d '/' -f 3 | grep -v "_adopt" | tail -n1 )
         if [[ $latestTag ]]; then
-          echo "Override non-existent $workingTag with $branchFromPropFile=$latestTag and write to $teFile "
+          echo "Update $teFile with $branchFromPropFile=$latestTag instead of non-existent $workingTag"
           export $branchFromPropFile=$latestTag
           setProperty $branchFromPropFile $latestTag 
         else
