@@ -1198,6 +1198,9 @@ def addFailedTestsGrinderLink(paths=""){
 		def failedTestList = ""
 		def jdkFailedTestCaseList = ""
 		def hotspotFailedTestCaseList = ""
+		def jckRuntimeFailedTestCaseList = ""
+		def jckCompilerFailedTestCaseList = ""
+		def jckDevtoolsFailedTestCaseList = ""
 		List<String> buildPaths = paths.split(',')
 		for (def buildPath: buildPaths) {
 			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
@@ -1210,15 +1213,20 @@ def addFailedTestsGrinderLink(paths=""){
 					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
 						failedTestList += "${failedtest},"
-						if (env.BUILD_LIST.contains('openjdk')) {
+						if (env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('jck')) {
 							def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
 							if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
 								failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
 								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
-								// Remove #id suffixed to the openjdk testcase name. Jtreg doesn't work with it.
 								if (failedtest.startsWith("jdk_")) {
 									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+								} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
+									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+								} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
+									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+								} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
+									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
 								} else {
 									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
 								}
@@ -1242,6 +1250,15 @@ def addFailedTestsGrinderLink(paths=""){
 			}
 			if (hotspotFailedTestCaseList) {
 				customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
+			}
+			if (jckRuntimeFailedTestCaseList) {
+				customizedTestCases['jckruntime'] = "${jckRuntimeFailedTestCaseList}"
+			}
+			if (jckCompilerFailedTestCaseList) {
+				customizedTestCases['jckcompiler'] = "${jckCompilerFailedTestCaseList}"
+			}
+			if (jckDevtoolsFailedTestCaseList) {
+				customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
 			}
 			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
