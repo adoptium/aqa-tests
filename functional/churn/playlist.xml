@@ -71,6 +71,11 @@
 	</test>
 	<test>
 		<testCaseName>churn_custom</testCaseName>
+		<disables>
+			<disable>
+				<comment>Can run disabled.churn_custom in Grinder, meant for dev use not regular automated tests.</comment>
+			</disable>
+		</disables>
 		<command> 
             export OTOOL_JDK_VERSION="$(JDK_VERSION)" ; \
             export JREJDK="jdk" ; \
