@@ -17,7 +17,7 @@ The support for compressed ops is handled by AQAvit itself. It is currently not 
 Similarly the java version and JAVA_HOME are handled by AQAvit.
 
 ### Executing the testsuite
-The `BUILD_LIST of functional/churn` contains three targets:
+The `BUILD_LIST of system/churn` contains three targets:
  * _churn_1m_allGCs
  * _churn_5h_allGCs
  * _churn_custom
