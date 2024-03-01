@@ -74,6 +74,11 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/3381#issuecomment-1082095158</comment>
 				<version>17</version>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5117</comment>
+				<version>22+</version>
+				<impl>hotspot</impl>
+			</disable>
 		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
