@@ -25,11 +25,11 @@ The `BUILD_LIST of system/churn` contains three targets:
 There are major differences in them:
  * churn_1m_allGCs - is testing ground, which runs each GC only for aprox 10 seconds, to simply see if the setup works
  * churn_5h_allGCs - Is running each GC a bit over, which runs each GC for aprox hour and half. A minimum, which can find some real GC issue.
- * churn_custom - this one is to support development, when run on the commandline you need to export at least DURATION and/or OTOOL_garbageCollector (+ many more optional, see [upstream readme](https://github.com/rh-openjdk/churn/blob/master/README)  to select DURATION in seconds and GC(or GCs). So it allows you to test your custom GC - if churn supports that, despite what other churn options suggest (eg `default` or `ALL` thinks).  When running in a Jenkins Grinder job, those are wrapped in TODO_CHURN_GCS and TODO_CHURN_DURATION
+ * churn_custom - this one is to support development, when run on the commandline you need to export at least DURATION and/or OTOOL_garbageCollector (+ many more optional, see [upstream readme](https://github.com/rh-openjdk/churn/blob/master/README)  to select DURATION in seconds and GC(or GCs). So it allows you to test your custom GC - if churn supports that, despite what other churn options suggest (eg `default` or `ALL` thinks).  When running in a Jenkins Grinder job, those are wrapped in CHURN_GCS and CHURN_DURATION
 
 churn_1m_allGCs and churn_5h_allGCs are using pony `ALL` keyword, which is interpreted (based on hardcoded list) as all GC in tested JVM. The set time is divided among them.
-Note, that if you use `churn_custom` and enumeration, eg `CHURN_GCS="zgc g1"` then the time will not be divided. The `CHURN_DURATION` is in seconds
-The `CHURN_GCS="defaultgc"`will set the tested GC to default GC as run.sh think is right. So be aware. Although it is maintained, if your custom JDK have custom GC, it is unlikely to be known
+Note, that if you use `churn_custom` and enumeration, set `CHURN_GCS="ALL"` anyway,  then the time will not be divided. The `CHURN_DURATION` is in seconds. If you use set, off GCs, eg `CHURN_GCS="zgc shenandoah"`, each willt ake the full CHURN_DURATION.
+The `CHURN_GCS="defaultgc"`will set the tested GC to default GC as run.sh think is right. So be aware. Although it is maintained, if your custom JDK have custom GC, it is unlikely to be known. If it have different default gc, it will correctly fail.
 
 ### Reading results
 tap file and compressed junit xmlfile are generated. Use eg https://github.com/jenkinsci/report-jtreg-plugin or https://plugins.jenkins.io/tap/ to read them.
