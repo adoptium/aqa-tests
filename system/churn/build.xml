@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="churn" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Test targeting garbage collector(s)
+	</description>
+	
+	<!-- set properties for this build -->
+	<property name="TEST" value="churn" />
+	<property name="DEST" value="${BUILD_ROOT}/system/churn" />
+	<property name="src" location="./churn" />
+
+	<target name="THC.check">
+		<condition property="THCdir.exists">
+			<available file="churn" type="dir"/>
+		</condition>
+	</target>
+
+	<if>
+		<contains string="${SPEC}" substring="zos"/>
+		<then>
+			<property name="GIT_REPO" value="git@github.com:" />
+		</then>
+		<else>
+			<property name="GIT_REPO" value="https://github.com/" />
+		</else>
+	</if>
+
+	<target name="getChurn" depends="THC.check" unless="THCdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="${GIT_REPO}rh-openjdk/churn.git" />
+		</exec>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="dist" depends="getChurn" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>
