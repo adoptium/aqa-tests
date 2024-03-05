@@ -532,7 +532,7 @@ public class JavatestUtil {
 			}
 
 			if ( testsRequireDisplay(tests) ) {
-				if (spec.contains("zos") || spec.contains("alpine-linux")) {
+				if (spec.contains("zos") || spec.contains("alpine-linux") || spec.contains("riscv")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
 				}
 				else {
