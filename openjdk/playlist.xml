@@ -839,6 +839,11 @@
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
 	$(Q)$(OPENJDK_DIR)$(D)test$(D)jdk$(D)java$(D)lang$(D)ref$(D)FinalizeOverride.java$(Q); \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/9651</comment>
+			</disable>
+		</disables>
 		<versions>
 			<version>11+</version>
 		</versions>
