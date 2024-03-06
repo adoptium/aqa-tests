@@ -106,7 +106,7 @@ def setupEnv() {
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	env.LIB_DIR="${WORKSPACE}/../../testDependency/lib"
 	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/IBM/OpenJCEPlus.git"
-	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "main"
+	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "java${params.JDK_VERSION}"
 
 
 	if (JOB_NAME.contains("Grinder")) {
