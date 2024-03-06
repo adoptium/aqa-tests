@@ -51,7 +51,7 @@
 			<property name="openjceplusGitBranch" value="${env.OPENJCEPLUS_GIT_BRANCH}"/>
 		</then>
 		<else>
-			<property name="openjceplusGitBranch" value="main"/>
+			<property name="openjceplusGitBranch" value="java${JDK_VERSION}"/>
 		</else>
 	</if>
 
@@ -111,12 +111,15 @@
 				<and>
 					<equals arg1="${JDK_VENDOR}" arg2="ibm" />
 					<equals arg1="${JDK_IMPL}" arg2="openj9" />
-					<equals arg1="${JDK_VERSION}" arg2="17" />
+					<not>
+						<matches string="${JDK_VERSION}" pattern="^(8|11)$$" />
+					</not>
 					<or>
 						<contains string="${SPEC}" substring="aix_ppc-64"/>
 						<contains string="${SPEC}" substring="linux_ppc-64_le"/>
 						<contains string="${SPEC}" substring="linux_x86-64"/>
 						<contains string="${SPEC}" substring="win_x86-64"/>
+						<contains string="${SPEC}" substring="linux_390-64"/>
 					</or>
 				</and>
 			</or>
