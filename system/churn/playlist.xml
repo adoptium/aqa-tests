@@ -83,7 +83,7 @@
             if [ "x${CHURN_TAP}" == "x" ] ; then  export CHURN_TAP=false  ; fi ; \
             export TMPRESULTS="$(Q)$(REPORTDIR)$(D)report$(Q)"; \
             cd $TMPRESULTS ; \
-              bash "$(TEST_ROOT)$(D)system$(D)churn$(D)churn$(D)run.sh" $APPLICATION_OPTIONS; \
+              bash "$(TEST_ROOT)$(D)system$(D)churn$(D)churn$(D)run.sh" $(APPLICATION_OPTIONS); \
             $(TEST_STATUS)
 		</command>
 		<levels>
