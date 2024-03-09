@@ -14,34 +14,6 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
-		<testCaseName>churn_1m_allGCs</testCaseName>
-		<command> 
-            export JREJDK="jdk" ; \
-            export OTOOL_garbageCollector="ALL" ; \
-            export DURATION="60" ; \
-            if [ "x${CHURN_TAP}" == "x" ] ; then  export CHURN_TAP=false  ; fi ; \
-            export TMPRESULTS="$(Q)$(REPORTDIR)$(D)report$(Q)"; \
-            cd $TMPRESULTS ; \
-              bash "$(TEST_ROOT)$(D)system$(D)churn$(D)churn$(D)run.sh"; \
-            $(TEST_STATUS)
-		</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<platformRequirementsList>
-			<platformRequirements>os.linux</platformRequirements>
-			<platformRequirements>os.win</platformRequirements>
-			<platformRequirements>os.osx</platformRequirements>
-		</platformRequirementsList>
-		<groups>
-			<group>system</group>
-		</groups>
-		<vendors>
-			<vendor>eclipse</vendor>
-			<vendor>redhat</vendor>
-		</vendors>
-	</test>
-	<test>
 		<testCaseName>churn_5h_allGCs</testCaseName>
 		<command> 
             export JREJDK="jdk" ; \
