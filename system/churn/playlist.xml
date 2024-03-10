@@ -52,7 +52,7 @@
             export JREJDK="jdk" ; \
             export OTOOL_garbageCollector="${CHURN_GCS}" ; \
             export DURATION="${CHURN_DURATION}" ; \
-            if [ "x${CHURN_TAP}" == "x" ] ; then  export CHURN_TAP=false  ; fi ; \
+            if [ "x${CHURN_TAP}" == "x" ] ; then  export CHURN_TAP=true  ; fi ; \
             export TMPRESULTS="$(Q)$(REPORTDIR)$(D)report$(Q)"; \
             cd $TMPRESULTS ; \
               bash "$(TEST_ROOT)$(D)system$(D)churn$(D)churn$(D)run.sh" $(APPLICATION_OPTIONS); \

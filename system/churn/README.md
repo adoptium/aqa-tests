@@ -28,7 +28,7 @@ churn_5h_allGCs is using pony `ALL` keyword, which is interpreted (based on hard
 Note, that if you use `churn_custom` and enumeration, set `CHURN_GCS="ALL"` anyway,  then the time will not be divided. The `CHURN_DURATION` is in seconds. If you use set, off GCs, eg `CHURN_GCS="zgc shenandoah"`, each willt ake the full CHURN_DURATION.
 The `CHURN_GCS="defaultgc"`will set the tested GC to default GC as run.sh think is right. So be aware. Although it is maintained, if your custom JDK have custom GC, it is unlikely to be known. If it have different default gc, it will correctly fail.
 
-Where the variabels shoudl work for you (and have prefference), the churn_custom is accepting `$APPLICATION_OPTIONS`. So from ginder, you may use APPLICATION_OPTIONS="zgc 50000" and it will be used.
+Where the variabels shoudl work for you (and have prefference), the churn_custom is accepting  GCs and duration via `$(APPLICATION_OPTIONS)`. So from ginder, you may use APPLICATION_OPTIONS field and set it ag as `"zgc shenandoah" 50000` and it will be used.
 
 ### Reading results
 tap file and compressed junit xmlfile are generated. Use eg https://github.com/jenkinsci/report-jtreg-plugin or https://plugins.jenkins.io/tap/ to read them.
