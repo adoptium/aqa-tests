@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<project name="Mockito Tests" default="test" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+    	Mockito Tests
+    </description>
+	<property name="LIB" value="mockito_core,byte_buddy,mockito_junit_jupiter,junit_jupiter_api" />
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+    <!-- Define property placeholders -->
+    <property name="src.dir" value="src"/>
+    <property name="test.dir" value="test"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
+    <!-- Initialize directory structure -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+    </target>
+    <!-- Compile main source files -->
+    <target name="compile-src" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.dir}">
+            <classpath>
+                <pathelement location="${LIB_DIR}/mockito-core.jar"/>
+				<pathelement location="${LIB_DIR}/byte-buddy.jar"/>
+				<pathelement location="${LIB_DIR}/mockito-junit-jupiter.jar"/>
+				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    <!-- Compile test source files -->
+    <target name="compile-test" depends="compile-src">
+        <javac srcdir="${test.dir}" destdir="${build.dir}">
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <fileset dir="${lib.dir}" includes="junit-jupiter-api-*.jar"/>
+                <fileset dir="${lib.dir}" includes="mockito-core-*.jar"/>
+				<fileset dir="${lib.dir}" includes="byte-buddy-*.jar"/>
+				<fileset dir="${lib.dir}" includes="mockito_junit_jupiter-*.jar"/>
+                <!-- Add other JUnit and Mockito jars as needed -->
+            </classpath>
+        </javac>
+    </target>
+    <!-- Run tests -->
+    <target name="test" depends="compile-test">
+        <junit printsummary="yes" haltonfailure="yes">
+            <formatter type="brief" usefile="false"/>
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <fileset dir="${lib.dir}" includes="junit-jupiter-api-*.jar"/>
+                <fileset dir="${lib.dir}" includes="mockito-core-*.jar"/>
+				<fileset dir="${lib.dir}" includes="byte-buddy-*.jar"/>
+				<fileset dir="${lib.dir}" includes="mockito_junit_jupiter-*.jar"/>
+                <!-- Add other JUnit and Mockito runtime jars as needed -->
+            </classpath>
+            <batchtest fork="yes" todir="${build.dir}/test-results">
+                <fileset dir="${test.dir}" includes="**/*Test.java"/>
+            </batchtest>
+        </junit>
+    </target>
+</project>
