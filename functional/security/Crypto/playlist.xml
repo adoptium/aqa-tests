@@ -32,8 +32,7 @@
 			</disable>
 		</disables>
 		<command>
-			cd $(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(Q); \
-			SKIP_AGENT_TESTS=1 ./run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
+			SKIP_AGENT_TESTS=1 $(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
 		</command>
 		<features>
 			<feature>FIPS140_2:nonapplicable</feature>
