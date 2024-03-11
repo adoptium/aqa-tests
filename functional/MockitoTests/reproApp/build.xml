@@ -19,7 +19,7 @@ limitations under the License.
     	Reproapp Functional Mockito Tests
     </description>
     <import file="${TEST_ROOT}/functional/build.xml"/>
-	<property name="LIB" value="testng,jcommander" />
+	<property name="LIB" value="mockito-core,byte-buddy,maven-jar-plugin" />
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -44,8 +44,9 @@ limitations under the License.
 		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
 			<src path="${src}" />
 			<classpath>
-				<pathelement location="${LIB_DIR}/testng.jar"/>
-				<pathelement location="${LIB_DIR}/jcommander.jar"/>
+				<pathelement location="${LIB_DIR}/mockito-core.jar"/>
+				<pathelement location="${LIB_DIR}/byte-buddy.jar"/>
+				<pathelement location="${LIB_DIR}/maven-jar-plugin.jar"/>
 			</classpath>
 		</javac>
 	</target>
