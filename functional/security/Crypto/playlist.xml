@@ -31,13 +31,10 @@
 				<platform>.*solaris</platform>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 -timeoutFactor:2 \
-		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-		-r $(Q)$(REPORTDIR)$(D)report$(Q) \
-		-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-		$(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(Q); \
-		$(TEST_STATUS)</command>
+		<command>
+			cd $(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(Q); \
+			SKIP_AGENT_TESTS=1 ./run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
+		</command>
 		<features>
 			<feature>FIPS140_2:nonapplicable</feature>
 		</features>
