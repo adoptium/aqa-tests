@@ -1,15 +1,11 @@
-package org.example;
-
+package main.java.test;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-class MainTest {
-
+public class MainTest {
     class Some {}
 
     @Test
     public void reproduceCrash() {
         Mockito.mock(Some.class);
     }
-
 }
