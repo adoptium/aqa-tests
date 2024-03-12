@@ -41,12 +41,18 @@
 	</test>
 	<test>
 		<testCaseName>example_functional</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5132</comment>
+				<platform>ppc64le_linux</platform>
+			</disable>
+		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test --testtarget _testExample --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --version ${JDK_VERSION} --impl ${JDK_IMPL} --dir functional-test
 		</command>
 		<levels>
-			<level>special</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>external</group>
