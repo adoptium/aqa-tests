@@ -24,7 +24,7 @@ There are major differences in them:
  * churn_5h_allGCs - Is running each GC a bit over, which runs each GC for aprox hour and half. A minimum, which can find some real GC issue.
  * churn_custom - this one is to support development, when run on the commandline you need to export at least DURATION and/or OTOOL_garbageCollector (+ many more optional, see [upstream readme](https://github.com/rh-openjdk/churn/blob/master/README)  to select DURATION in seconds and GC(or GCs). So it allows you to test your custom GC - if churn supports that, despite what other churn options suggest (eg `default` or `ALL` thinks).  When running in a Jenkins Grinder job, those are wrapped in CHURN_GCS and CHURN_DURATION
 
-churn_5h_allGCs is using pony `ALL` keyword, which is interpreted (based on hardcoded list) as all GC in tested JVM. The set time is divided among them.
+churn_5h_allGCs is using pony `ALL` keyword, which is interpreted (based on hardcoded list) as all GCs in tested JVM. The set time is divided among them.
 Note, that if you use `churn_custom` and enumeration, set `CHURN_GCS="ALL"` anyway,  then the time will not be divided. The `CHURN_DURATION` is in seconds. If you use set, off GCs, eg `CHURN_GCS="zgc shenandoah"`, each willt ake the full CHURN_DURATION.
 The `CHURN_GCS="defaultgc"`will set the tested GC to default GC as run.sh think is right. So be aware. Although it is maintained, if your custom JDK have custom GC, it is unlikely to be known. If it have different default gc, it will correctly fail.
 
