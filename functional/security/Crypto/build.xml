@@ -54,7 +54,7 @@
 	
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	
-	<target name="dist" depends="getJtreg,getCryptoTest" description="generate the distribution">
+	<target name="dist" depends="getCryptoTest" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,*.mk" />
 		</copy>
