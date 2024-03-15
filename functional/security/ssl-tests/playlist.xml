@@ -16,6 +16,7 @@
 	<test>
 		<testCaseName>ssl-tests</testCaseName>
 		<command>
+			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
 			$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
 		</command>
 		<levels>
