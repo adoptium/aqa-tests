@@ -32,6 +32,7 @@
 			</disable>
 		</disables>
 		<command>
+			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
 			SKIP_AGENT_TESTS=1 $(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
 		</command>
 		<features>
