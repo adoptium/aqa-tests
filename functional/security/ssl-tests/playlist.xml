@@ -15,13 +15,10 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>ssl-tests</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-		-a -xml -v:fail,error,time,nopass,summary -timeoutFactor:2 \
-		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-		-r $(Q)$(REPORTDIR)$(D)report$(Q) \
-		-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-		$(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)jtreg-wrappers$(Q); \
-		$(TEST_STATUS)</command>
+		<command>
+			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
+			$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
+		</command>
 		<levels>
 			<level>dev</level>
 		</levels>
