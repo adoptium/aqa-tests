@@ -34,6 +34,7 @@ public class UnicodeChecker {
     blockTable.put("CJK Ideograph Extension F","CJK UNIFIED IDEOGRAPHS EXTENSION F");
     blockTable.put("CJK Ideograph Extension G","CJK UNIFIED IDEOGRAPHS EXTENSION G");
     blockTable.put("CJK Ideograph Extension H","CJK UNIFIED IDEOGRAPHS EXTENSION H");
+    blockTable.put("CJK Ideograph Extension I","CJK UNIFIED IDEOGRAPHS EXTENSION I");
     blockTable.put("Plane 15 Private Use","SUPPLEMENTARY PRIVATE USE AREA A");
     blockTable.put("Plane 16 Private Use","SUPPLEMENTARY PRIVATE USE AREA B");
 
