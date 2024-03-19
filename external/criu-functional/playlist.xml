@@ -32,4 +32,29 @@
 			<group>external</group>
 		</groups>
 	</test>
+	<test>
+		<testCaseName>criu-functional-softmx</testCaseName>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-functional --testtarget "_testList TESTLIST=disabled.cmdLineTester_criu_softmx" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-functional
+		</command>
+		<disables>
+			<disable>
+				<comment>Only applicable on xlinux, plinux, and zlinux atm</comment>
+				<platform>^((?!(x86-64_linux|ppc64le_linux|s390x_linux)).)*$</platform>
+			</disable>
+		</disables>
+		<features>
+			<feature>CRIU:required</feature>
+		</features>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+	</test>
 </playlist>
