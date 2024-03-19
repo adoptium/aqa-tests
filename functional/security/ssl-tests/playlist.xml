@@ -15,6 +15,13 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>ssl-tests</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19164</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<command>
 			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
 			$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
