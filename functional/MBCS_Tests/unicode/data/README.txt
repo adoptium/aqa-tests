@@ -90,3 +90,17 @@ https://www.unicode.org/Public/15.0.0/ucd/Scripts.txt
 UnicodeData-15.0.0.txt
 https://www.unicode.org/Public/15.0.0/ucd/UnicodeData.txt
 
+Blocks-15.1.0.txt
+https://www.unicode.org/Public/15.1.0/ucd/Blocks.txt
+
+NormalizationTest-15.1.0.txt
+https://www.unicode.org/Public/15.1.0/ucd/NormalizationTest.txt
+
+PropertyValueAliases-15.1.0.txt
+https://www.unicode.org/Public/15.1.0/ucd/PropertyValueAliases.txt
+
+Scripts-15.1.0.txt
+https://www.unicode.org/Public/15.1.0/ucd/Scripts.txt
+
+UnicodeData-15.1.0.txt
+https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt
