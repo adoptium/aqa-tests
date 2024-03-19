@@ -333,6 +333,12 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5010</comment>
+				<impl>hotspot</impl>
+				<platform>ppc64_aix</platform>
+				<version>21+</version>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)philosophers.json$(Q) philosophers; \
 		$(TEST_STATUS)</command>
