@@ -489,6 +489,9 @@ public class JavatestUtil {
 			} else if (spec.contains("alpine-linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "No";
+			} else if (spec.contains("riscv64")) {
+				libPath = "LD_LIBRARY_PATH";
+				robotAvailable = "No";
 			} else if (spec.contains("linux")) {
 				libPath = "LD_LIBRARY_PATH";
 				robotAvailable = "Yes";
