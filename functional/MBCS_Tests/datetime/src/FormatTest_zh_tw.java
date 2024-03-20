@@ -124,9 +124,12 @@ public class FormatTest_zh_tw{
                             Locale.TRADITIONAL_CHINESE));
         if (11_000_000L <= version && version < 13_000_000L) {
             assertEquals("1 01 1 \u7b2c1\u5b63 1", str);
-        } else if (version >= 13_000_000L) {
-            //Updated by JDK-8221432: Upgrade CLDR to Version 35.1
+        } else if (13_000_000L <= version && version < 22_000_000L) {
+            // Updated by JDK-8221432: Upgrade CLDR to Version 35.1
             assertEquals("1 01 \u7b2c1\u5b63 \u7b2c1\u5b63 1", str);
+        } else if (version >= 22_000_000L) {
+            // Updated by JDK-8284840: Upgrade CLDR to Version 42.0
+            assertEquals("1 01 1 \u7b2c1\u5b63 1", str);
         }
     }
 
