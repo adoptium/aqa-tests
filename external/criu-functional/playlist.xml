@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>criu-functional</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-functional --testtarget "_testList TESTLIST=cmdLineTester_criu_security,cmdLineTester_criu_random" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-functional --testtarget "_testList TESTLIST=disabled.cmdLineTester_criu_softmx" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-functional
 		</command>
