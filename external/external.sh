@@ -61,7 +61,7 @@ usage () {
 	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_url baseDockerRegistryUrl] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
 }
 
-supported_tests="external_custom aot camel criu-functional criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
+supported_tests="external_custom aot camel criu-functional criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins jtreg-buffer functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tomcat tomee wildfly wycheproof netty spring"
 
 function check_test() {
     test=$1
