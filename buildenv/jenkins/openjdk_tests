@@ -297,9 +297,9 @@ timestamps{
                 env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
             }
 
-            // Temporarily exclude ubuntu 22 machines for criu sanity.external pipeline
-            if (JOB_NAME.contains ("sanity.external") && JOB_NAME.contains("_criu")) {
-                LABEL += "&&!sw.os.ubuntu.22"
+            // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
+            if (JOB_NAME.contains ("sanity.external")) {
+                LABEL += "&&!sw.os.cent.7"
             }
 
             if (params.DOCKER_REQUIRED) {
