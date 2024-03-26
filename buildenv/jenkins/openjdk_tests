@@ -297,7 +297,7 @@ timestamps{
                 env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
             }
 
-            // Temporarily exclude Cent machines for sanity.external pipeline due to docker issue
+            // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
             if (JOB_NAME.contains ("sanity.external")) {
                 LABEL += "&&!sw.os.cent.7"
             }
