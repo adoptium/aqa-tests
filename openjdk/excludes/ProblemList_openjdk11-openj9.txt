@@ -222,7 +222,8 @@ java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse-op
 java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
-java/nio/channels/DatagramChannel/BasicMulticastTests.java  https://github.com/eclipse-openj9/openj9/issues/12795   aix-all
+#java/nio/channels/DatagramChannel/BasicMulticastTests.java  on macosx-all under https://github.ibm.com/runtimes/backlog/issues/1053
+java/nio/channels/DatagramChannel/BasicMulticastTests.java https://github.com/eclipse-openj9/openj9/issues/12795 aix-all,macosx-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
@@ -230,6 +231,7 @@ java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669  https://github.com/adoptium/aqa-tests/issues/1297
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
 java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 generic-all
+java/nio/channels/Pipe/PipeInterrupt.java https://github.com/eclipse-openj9/openj9/issues/18479 windows-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
 java/nio/file/Files/InputStreamTest.java	https://github.com/adoptium/aqa-tests/issues/2789	generic-all
@@ -245,7 +247,7 @@ java/nio/file/Files/probeContentType/Basic.java https://github.com/eclipse-openj
 ############################################################################
 
 # jdk_rmi
-
+java/rmi/activation/Activatable/nestedActivate/NestedActivate.java https://github.ibm.com/runtimes/backlog/issues/1004 windows-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java	https://github.com/eclipse-openj9/openj9/issues/7592	generic-all
 java/rmi/Naming/legalRegistryNames/LegalRegistryNames.java https://github.ibm.com/runtimes/backlog/issues/867 macosx-x64
