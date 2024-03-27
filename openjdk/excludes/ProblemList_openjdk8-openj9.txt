@@ -192,9 +192,11 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse-openj9/
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/AsynchronousSocketChannel/CompletionHandlerRelease.java https://github.com/eclipse-openj9/openj9/issues/12167 aix-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
+java/nio/channels/DatagramChannel/BasicMulticastTests.java https://github.ibm.com/runtimes/backlog/issues/1053 macosx-all
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.ibm.com/runtimes/backlog/issues/783	generic-all
 java/nio/channels/DatagramChannel/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699   generic-all
 java/nio/channels/DatagramChannel/SendToUnresolved.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
+java/nio/channels/Pipe/PipeInterrupt.java https://github.com/eclipse-openj9/openj9/issues/18479 windows-all
 java/nio/channels/Selector/KeySets.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/Selector/RacyDeregister.java	https://bugs.openjdk.java.net/browse/JDK-8161083	aix-all
 java/nio/channels/ServerSocketChannel/AdaptServerSocket.java	https://github.com/adoptium/aqa-tests/issues/821	windows-all
@@ -223,7 +225,8 @@ java/rmi/activation/Activatable/downloadParameterClass/DownloadParameterClass.ja
 java/rmi/activation/Activatable/extLoadedImpl/ext.sh	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/forceLogSnapshot/ForceLogSnapshot.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/inactiveGroup/InactiveGroup.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
-java/rmi/activation/Activatable/nestedActivate/NestedActivate.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all
+#java/rmi/activation/Activatable/nestedActivate/NestedActivate.java on windows-all issue https://github.ibm.com/runtimes/backlog/issues/1004
+java/rmi/activation/Activatable/nestedActivate/NestedActivate.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all,windows-all
 java/rmi/activation/Activatable/restartCrashedService/RestartCrashedService.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/restartLatecomer/RestartLatecomer.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/restartService/RestartService.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
@@ -265,6 +268,7 @@ sun/security/pkcs11/ec/TestECGenSpec.java	https://github.com/adoptium/aqa-tests/
 sun/security/pkcs11/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/125	linux-all
 sun/security/pkcs11/tls/TestKeyMaterial.java	https://github.com/adoptium/aqa-tests/issues/71	linux-all
 sun/security/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/125	generic-all
+sun/security/ssl/SSLSocketImpl/AsyncSSLSocketClose.java  https://github.com/eclipse-openj9/openj9/issues/18575 aix-all
 sun/security/ssl/SSLSocketImpl/SSLSocketCloseHang.java	https://github.com/adoptium/aqa-tests/issues/125	generic-all
 sun/security/tools/jarsigner/diffend.sh	https://github.com/adoptium/aqa-tests/issues/125	linux-all
 sun/security/tools/jarsigner/emptymanifest.sh	https://github.com/adoptium/aqa-tests/issues/125	generic-all
