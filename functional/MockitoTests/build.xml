@@ -13,61 +13,64 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="Mockito Tests" default="test" basedir=".">
+<project name="Mockito Tests" default="build" basedir=".">
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
     	Mockito Tests
     </description>
-	<property name="LIB" value="mockito_core,byte_buddy,mockito_junit_jupiter,junit_jupiter_api" />
+    <import file="${TEST_ROOT}/functional/build.xml"/>
+	<property name="LIB" value="mockito_core,byte_buddy,mockito_junit_jupiter,junit_jupiter_api,maven_surefire_plugin,maven_jar_plugin" />
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-    <!-- Define property placeholders -->
-    <property name="src.dir" value="src"/>
-    <property name="test.dir" value="test"/>
-    <property name="build.dir" value="build"/>
-    <property name="lib.dir" value="lib"/>
-    <!-- Initialize directory structure -->
-    <target name="init">
-        <mkdir dir="${build.dir}"/>
-    </target>
-    <!-- Compile main source files -->
-    <target name="compile-src" depends="init">
-        <javac srcdir="${src.dir}" destdir="${build.dir}">
-            <classpath>
-                <pathelement location="${LIB_DIR}/mockito-core.jar"/>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/functional/MockitoTests" />
+
+	<!--Properties for this particular build-->
+	<property name="src" location="./src" />
+	<property name="build" location="./bin" />
+	
+	<target name="init">
+		<mkdir dir="${DEST}" />
+		<mkdir dir="${build}" />
+	</target>
+	
+	<target name="compile" depends="init,getDependentLibs" description="Using java ${JDK_VERSION} to compile the source  ">
+		<echo>Ant version is ${ant.version}</echo>
+		<echo>============COMPILER SETTINGS============</echo>
+		<echo>===fork:                         yes</echo>
+		<echo>===executable:                   ${compiler.javac}</echo>
+		<echo>===debug:                        on</echo>
+		<echo>===destdir:                      ${DEST}</echo>
+		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
+			<src path="${src}" />
+			<classpath>
+				<pathelement location="${LIB_DIR}/mockito-core.jar"/>
 				<pathelement location="${LIB_DIR}/byte-buddy.jar"/>
 				<pathelement location="${LIB_DIR}/mockito-junit-jupiter.jar"/>
 				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar"/>
-            </classpath>
-        </javac>
-    </target>
-    <!-- Compile test source files -->
-    <target name="compile-test" depends="compile-src">
-        <javac srcdir="${test.dir}" destdir="${build.dir}">
-            <classpath>
-                <pathelement path="${build.dir}"/>
-                <fileset dir="${lib.dir}" includes="junit-jupiter-api-*.jar"/>
-                <fileset dir="${lib.dir}" includes="mockito-core-*.jar"/>
-				<fileset dir="${lib.dir}" includes="byte-buddy-*.jar"/>
-				<fileset dir="${lib.dir}" includes="mockito_junit_jupiter-*.jar"/>
-                <!-- Add other JUnit and Mockito jars as needed -->
-            </classpath>
-        </javac>
-    </target>
-    <!-- Run tests -->
-    <target name="test" depends="compile-test">
-        <junit printsummary="yes" haltonfailure="yes">
-            <formatter type="brief" usefile="false"/>
-            <classpath>
-                <pathelement path="${build.dir}"/>
-                <fileset dir="${lib.dir}" includes="junit-jupiter-api-*.jar"/>
-                <fileset dir="${lib.dir}" includes="mockito-core-*.jar"/>
-				<fileset dir="${lib.dir}" includes="byte-buddy-*.jar"/>
-				<fileset dir="${lib.dir}" includes="mockito_junit_jupiter-*.jar"/>
-                <!-- Add other JUnit and Mockito runtime jars as needed -->
-            </classpath>
-            <batchtest fork="yes" todir="${build.dir}/test-results">
-                <fileset dir="${test.dir}" includes="**/*Test.java"/>
-            </batchtest>
-        </junit>
-    </target>
+				<pathelement location="${LIB_DIR}/maven-surefire-plugin.jar"/>
+				<pathelement location="${LIB_DIR}/maven-jar-plugin.jar"/>
+			</classpath>
+		</javac>
+	</target>
+		
+	<target name="dist" depends="compile" description="generate the distribution">
+		<jar jarfile="${DEST}/MockitoTests.jar" filesonly="true">
+			<fileset dir="${build}" />
+			<fileset dir="${src}/../" includes="*.properties,*.xml" />
+		</jar>
+		<copy todir="${DEST}">
+			<fileset dir="${src}/../" includes="*.xml" />
+			<fileset dir="${src}/../" includes="*.mk" />
+		</copy>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}" />
+	</target>
+
+	<target name="build" >
+		<antcall target="clean" inheritall="true" />
+	</target>
 </project>

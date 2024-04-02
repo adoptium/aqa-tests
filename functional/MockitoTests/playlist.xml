@@ -13,6 +13,16 @@
 # limitations under the License.
 -->
 
-<playlist>
-    <test name="org.example.MainTest"/>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
+	<test>
+		<testCaseName>MockitoTests</testCaseName>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TESTNG)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(Q) org.testng.TestNG $(Q)$(TEST_RESROOT)$(D)testng.xml$(Q) -d $(REPORTDIR) -testnames MockitoTests -groups $(TEST_GROUP) -excludegroups $(DEFAULT_EXCLUDE); \
+		$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
 </playlist>
