@@ -1,10 +1,10 @@
 # External jtreg-buffer Tests
 
-jtreg-buffer are tests, which under normal circumstances would end in OpenJDK regression test repositories, u they did not.
-However, original authors disapeared, usptream did not accepted the change, or there was not proper time, or the author was simply lazy.
-Those tests are pulled from https://github.com/rh-openjdk/jtreg-buffer repository. Buffer, like queue for waiting to be usptreamed.
-On long run, all those tests shoud be upstreamed but it is aprox 2years of man work and maybe usptream will not accept them all.
-If there is such test on  yor side, feel free to contribute.
+jtreg-buffer are tests, which under normal circumstances would end in OpenJDK regression test repositories, but they did not.
+However, original authors disappeared, upstream did not accepted the change, or there was not proper time, or the author was simply lazy.
+Those tests are pulled from https://github.com/rh-openjdk/jtreg-buffer repository. Buffer, like queue for waiting to be upstreamed.
+On long run, all those tests should be upstreamed but it is approx 2years of man work and maybe upstreamed will not accept them all.
+If there is such test on  your side, feel free to contribute.
 
 ## Running jtreg-buffer tests locally
 To run any AQA tests locally, you follow the same pattern:
@@ -18,7 +18,7 @@ To run any AQA tests locally, you follow the same pattern:
    6. `cd TKG`
    7. export required environment variables, BUILD_LIST and EXTRA_DOCKER_ARGS (eg `export BUILD_LIST=external/jtreg-buffer` and `export EXTRA_DOCKER_ARGS="-v $TEST_JDK_HOME:/opt/java/openjdk"`)
    8. `make compile` (This fetches test material and compiles it, based on build.xml files in the test directories)
-   9. runthe TARGET `make _jtreg-buffer-test` (When you defined BUILD_LIST to point to a directory in aqa-tests/external, then this is a testCaseName from the playlist.xml file within the directory you chose)
+   9. run the TARGET `make _jtreg-buffer-test` (When you defined BUILD_LIST to point to a directory in aqa-tests/external, then this is a testCaseName from the playlist.xml file within the directory you chose)
 
 When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory. This is unadvisable! Limit what you compile and run, BUILD_LIST=external/`<someSubDirectory>`, and TARGET=`<testCaseNameFromSubdirPlaylist>`
 
