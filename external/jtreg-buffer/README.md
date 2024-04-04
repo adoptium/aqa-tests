@@ -2,7 +2,6 @@
 
 jtreg-buffer are tests, which ideally should end in OpenJDK regression test repositories.
 These tests are pulled from the https://github.com/rh-openjdk/jtreg-buffer repository.
-On long run, all those tests should be upstreamed but it is approx 2years of man work and maybe upstreamed will not accept them all.
 If there is such test on  your side, feel free to contribute.
 
 ## Running jtreg-buffer tests locally
