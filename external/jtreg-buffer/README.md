@@ -1,7 +1,6 @@
 # External jtreg-buffer Tests
 
 jtreg-buffer are tests, which ideally should end in OpenJDK regression test repositories.
-However, original authors disappeared, upstream did not accepted the change, or there was not proper time, or the author was simply lazy.
 Those tests are pulled from https://github.com/rh-openjdk/jtreg-buffer repository. Buffer, like queue for waiting to be upstreamed.
 On long run, all those tests should be upstreamed but it is approx 2years of man work and maybe upstreamed will not accept them all.
 If there is such test on  your side, feel free to contribute.
