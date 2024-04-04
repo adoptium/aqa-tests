@@ -13,7 +13,7 @@
 #
 
 source $(dirname "$0")/test_base_functions.sh
-#Set up Java to be used by the jtreg-buffer test
+# Set up Java to be used by the jtreg-buffer test
 echo_setup
 printenv
 
