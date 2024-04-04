@@ -16,7 +16,8 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>MockitoTests</testCaseName>
-		<command></command>
+		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(Q) org.junit.runner.JUnitCore org.example.MainTest; \
+		$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -30,4 +31,5 @@
 			<impl>openj9</impl>
 		</impls>
 	</test>
+
 </playlist>
