@@ -20,4 +20,5 @@ printenv
 set -ex
 
 bash run.sh $JAVA_HOME
+cp test.*.tar.gz  /testResults/
 set +e
