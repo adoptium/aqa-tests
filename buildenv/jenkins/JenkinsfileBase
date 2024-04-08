@@ -108,11 +108,22 @@ def setupEnv() {
 	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/IBM/OpenJCEPlus.git"
 	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "java${params.JDK_VERSION}"
 
+	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
+	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
 		def currentDateTime = currentDate.format("yyyyMMddHHmmss", TimeZone.getTimeZone('UTC'))
 		env.TAP_NAME = "${JOB_NAME}_${currentDateTime}.tap"
+		// If personal repo and branch are set, test jobs need to be regenerated (with LIGHT_WEIGHT_CHECKOUT = false)
+		// to take personal repo and branch.
+		// Therefore, set LIGHT_WEIGHT_CHECKOUTto false and GENERATE_JOBS to true.
+		// This is a known Jenkins issue: https://issues.jenkins.io/browse/JENKINS-42971
+		if (!ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+			env.LIGHT_WEIGHT_CHECKOUT = false
+			env.GENERATE_JOBS = true
+			echo "ADOPTOPENJDK_REPO is set to personal repo in Grinder. Auto-set LIGHT_WEIGHT_CHECKOUT: ${env.LIGHT_WEIGHT_CHECKOUT} and GENERATE_JOBS: ${env.GENERATE_JOBS}"
+		}
 	} else {
 		env.TAP_NAME = "${JOB_NAME}.tap"
 	}
@@ -389,8 +400,8 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 		templatePath = 'testJobTemplate'
 	}
 
-	if (params.LIGHT_WEIGHT_CHECKOUT) {
-		jobParams.put('LIGHT_WEIGHT_CHECKOUT', params.LIGHT_WEIGHT_CHECKOUT)
+	if (env.LIGHT_WEIGHT_CHECKOUT) {
+		jobParams.put('LIGHT_WEIGHT_CHECKOUT', env.LIGHT_WEIGHT_CHECKOUT)
 	}
 
 	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
@@ -1274,7 +1285,7 @@ def addFailedTestsGrinderLink(paths=""){
 
 def generateJob (newJobs, childTest, testJobName) {
 	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-	if (params.GENERATE_JOBS) {
+	if (env.GENERATE_JOBS) {
 		newJobs[childTest] = {
 			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
 			createJob(testJobName, PLATFORM)
