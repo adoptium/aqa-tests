@@ -227,7 +227,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos. Can only be changed in grinders and generated child jobs.")
+							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos. Changes will only be used in grinders and generated child jobs.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch.")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
 							stringParam('OPENJ9_BRANCH', "master", "OpenJ9 branch")
