@@ -1,9 +1,9 @@
-package org.example;
+package test.java;
 
-import org.mockito.Mockito;
 import java.util.ArrayList;
+import org.mockito.Mockito;
 
-public class SegmentationErrorDemo {
+public class Main {
     public static void main(String[] args) {
         Mockito.mock(ArrayList.class);
     }
