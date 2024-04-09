@@ -17,7 +17,7 @@
 	<test>
 		<testCaseName>MockitoTests</testCaseName>
 		<command>
-			$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(P)$(RESOURCES_DIR)junit-platform-console-standalone-1.10.2.jar$(Q) org.junit.platform.console.ConsoleLauncher --scan-classpath --include-classname=test.java.*; \
+			$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(P)$(LIB_DIR)$(D)junit-platform-console-standalone.jar$(Q) org.junit.platform.console.ConsoleLauncher --scan-classpath --include-classname=test.java.*; \
 			$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
