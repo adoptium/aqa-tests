@@ -58,8 +58,6 @@ getSemeruDockerfile() {
                 curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}
             fi
 
-            findCommandAndReplace 'curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};' " " $semeruDockerfile
-            findCommandAndReplace 'echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" | sha256sum -c -;' " " $semeruDockerfile
             findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile
             findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile
             findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile
