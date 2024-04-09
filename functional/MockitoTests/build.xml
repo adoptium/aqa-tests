@@ -19,7 +19,7 @@ limitations under the License.
     	Mockito Tests
     </description>
     <import file="${TEST_ROOT}/functional/build.xml"/>
-	<property name="LIB" value="junit_jupiter_api,junit_platform_console_standalone" />
+	<property name="LIB" value="mockito_core,junit_jupiter_api,junit_platform_console_standalone" />
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -44,6 +44,7 @@ limitations under the License.
 		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
 			<src path="${src}" />
 			<classpath>
+				<pathelement location="${LIB_DIR}/mockito-core.jar"/>
 				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar"/>
 				<pathelement location="${LIB_DIR}/junit-platform-console-standalone.jar"/>
 			</classpath>
