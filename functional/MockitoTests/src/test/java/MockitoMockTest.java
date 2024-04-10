@@ -3,11 +3,9 @@ package test.java;
 import java.util.ArrayList;
 import org.mockito.Mockito;
 
-public class Segmentation {
+public class MockitoMockTest {
     public static void main(String[] args) {
-        System.out.println("This is to trigger a SegmentationError!");
+        System.out.println("Call Mockito.mock(ArrayList.class)");
         Mockito.mock(ArrayList.class);
     }
-
 }
-

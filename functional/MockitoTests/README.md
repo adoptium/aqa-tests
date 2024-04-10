@@ -12,10 +12,13 @@ There are two OpenJ9 user issues where a crash with Mockito is reported:
     - More Testcases would be added later as required
 
 # This Mockito test cases will help identify the above crashes in our builds.
-Test case 1: test.java.MainTest.java
-Test case 2: test.java.SegmentationErrorDemo 
+Test case added: test.java.MockitoMockTest
+
+# Next test case to be added
+Test case: test.java.MockitoJunitTest(TBD)
 
 # Dependencies Required:
     - mockito-core
-    - junit-platform-console-standalone
-    - junit-jupiter-api
+    - byte-buddy
+    - byte-buddy-agent
+    - objenesis
