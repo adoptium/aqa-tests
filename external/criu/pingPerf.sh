@@ -39,9 +39,6 @@ getSemeruDockerfile() {
     if [[ ! -f "Dockerfile.open.releases.full" ]]; then
         if [[ $jdkVersion ]]; then
             jdkVersionDir=$jdkVersion
-            if [[ $jdkVersion == "21" ]]; then
-                jdkVersionDir="$jdkVersion-ea"
-            fi
             semeruDockerfile="Dockerfile.open.releases.full"
             semeruDockerfileUrlBase="https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersionDir/jdk/${docker_os}"
             if [[ $docker_os == "ubi" ]]; then
@@ -61,18 +58,9 @@ getSemeruDockerfile() {
                 curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}
             fi
 
-            findCommandAndReplace 'curl -LfsSo \/tmp\/openjdk.tar.gz ${BINARY_URL};' " " $semeruDockerfile
-            findCommandAndReplace 'echo "\${ESUM} \*\/tmp\/openjdk.tar.gz" | sha256sum -c -;' " " $semeruDockerfile
-            if [[ $jdkVersion == "21" ]]; then
-                findCommandAndReplace 'mkdir -p \/opt\/java\/java-ea; \\' "mkdir -p \/opt\/java\/java-ea;" $semeruDockerfile
-                findCommandAndReplace 'cd \/opt\/java\/java-ea; \\' "COPY NEWJDK\/ \/opt\/java\/java-ea" $semeruDockerfile
-                findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/java-ea\/bin\/java --version" $semeruDockerfile
-            else
-                findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile
-                findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile
-                findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile
-
-            fi
+            findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile
+            findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile
+            findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile
 
             mkdir NEWJDK
             cp -r $testJDKPath/. NEWJDK/
