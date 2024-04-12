@@ -946,7 +946,7 @@ def post(output_name) {
 		addFailedTestsGrinderLink()
 
 		try {
-			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/JTwork/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 		} catch (Exception e) {
 			echo "Caught exception: ${e.message}"
 		}
