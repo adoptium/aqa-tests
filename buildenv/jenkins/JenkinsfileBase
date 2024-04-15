@@ -106,6 +106,7 @@ def setupEnv() {
 	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	env.LIB_DIR = JOB_NAME.contains("SmokeTests") ? "${WORKSPACE}/../../../../../testDependency/lib" : "${WORKSPACE}/../../testDependency/lib"
+	env.SYSTEM_LIB_DIR = JOB_NAME.contains("SmokeTests") ? "${WORKSPACE}/../../../../../testDependency/system_lib" : "${WORKSPACE}/../../testDependency/system_lib"
 	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/ibmruntimes/OpenJCEPlus.git"
 	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "semeru-java${params.JDK_VERSION}"
 
@@ -211,6 +212,10 @@ def setupParallelEnv() {
 					def customUrl = getCustomUrl()
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
+						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
+					}
+					if (env.BUILD_LIST == 'system') {
+						env.LIB_DIR = env.SYSTEM_LIB_DIR
 					}
 					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
@@ -652,32 +657,24 @@ def buildTest() {
 		}
 
 		try {
-			// check pre-stage test libs on the machine
-			// check for each lib. If lib does not exist, donwload it.
-			// If lib exists, SHA will be checked. Re-download if SHA does not match.
-			timeout(time: 20, unit: 'MINUTES') {
-				def customUrl = getCustomUrl()
-				if (PLATFORM.contains("windows")) {
-					env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
+				// check pre-stage test libs on the machine
+				// check for each lib. If lib does not exist, donwload it.
+				// If lib exists, SHA will be checked. Re-download if SHA does not match.
+				timeout(time: 20, unit: 'MINUTES') {
+					def customUrl = getCustomUrl()
+					if (PLATFORM.contains("windows")) {
+						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
+						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
+					}
+					if (env.BUILD_LIST == 'system') {
+						env.LIB_DIR = env.SYSTEM_LIB_DIR
+					}
+					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
-				sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
+			} catch (Exception e) {
+					echo 'Exception: ' + e.toString()
+					echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
 			}
- 		} catch (Exception e) {
-			echo 'Exception: ' + e.toString()
-			echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
-		}
-
-		try {
-			if (env.BUILD_LIST.contains('system')) {
-				//get pre-staged test jars from systemtest.getDependency build before system test compilation
-				timeout(time: 60, unit: 'MINUTES') {
-					copyArtifacts fingerprintArtifacts: true, projectName: "systemtest.getDependency", selector: lastSuccessful(), target: 'aqa-tests'
-				}
-			}
-		} catch (Exception e) {
-			echo 'Exception: ' + e.toString()
-			echo 'Cannot run copyArtifacts from test.getDependency/systemtest.getDependency. Skipping copyArtifacts...'
-		}
 
 		if (BUILD_LIST.contains("external")){
 			try {
