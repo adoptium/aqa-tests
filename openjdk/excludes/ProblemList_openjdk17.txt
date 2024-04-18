@@ -243,6 +243,8 @@ sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aq
 
 # jdk_tools
 
+## linux-riscv64 excluded tests are tracked with https://github.com/adoptium/aqa-tests/issues/4976
+
 sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
@@ -250,20 +252,43 @@ sun/tools/jstat/jstatLineCounts1.sh https://bugs.openjdk.java.net/browse/JDK-824
 sun/tools/jstat/jstatLineCounts2.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm
 sun/tools/jstat/jstatLineCounts3.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm
 sun/tools/jstat/jstatLineCounts4.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm
-tools/jpackage/share/AddLauncherTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all
+tools/jpackage/linux/AppAboutUrlTest.java#id0 https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/AppCategoryTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/LinuxBundleNameTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/MaintainerTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/PackageDepsTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/ReleaseTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/ShortcutHintTest.java#id0 https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/linux/jdk/jpackage/tests/UsrTreeTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/AddLauncherTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-riscv64
 tools/jpackage/share/AppImagePackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/EmptyFolderPackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/FileAssociationsTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all
+tools/jpackage/share/ArgumentsTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/EmptyFolderTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/EmptyFolderPackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-riscv64
+tools/jpackage/share/FileAssociationsTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-riscv64
 tools/jpackage/share/IconTest.java https://github.com/adoptium/infrastructure/issues/2291 linux-aarch64
 # The following 8 tests under tools/jpackage/share/ excluded on linux-aarch64 the tracked issue is https://github.com/adoptium/infrastructure/issues/2291
-tools/jpackage/share/InstallDirTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/LicenseTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/MultiLauncherTwoPhaseTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/InstallDirTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
+tools/jpackage/share/LicenseTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
+tools/jpackage/share/MultiLauncherTwoPhaseTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
 tools/jpackage/share/MultiNameTwoPhaseTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
 tools/jpackage/share/RuntimePackageTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/SimplePackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/jdk/jpackage/tests/BasicTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
+tools/jpackage/share/SimplePackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/AppVersionTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/BasicTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/CookedRuntimeTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/DotInNameTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/JLinkOptionsTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/JavaOptionsEqualsTest.java#id0 https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/JavaOptionsEqualsTest.java#id1 https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/JavaOptionsTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/MainClassTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/ModulePathTest2.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/ModulePathTest3.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/ModulePathTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/MultipleJarAppTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/NoMPathRuntimeTest.java https://github.com/adoptium/aqa-tests/issues/4976 linux-riscv64
+tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64,linux-riscv64
 tools/jpackage/windows/WinDirChooserTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinInstallerUiTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/windows/WinL10nTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
