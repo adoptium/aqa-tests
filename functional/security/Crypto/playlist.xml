@@ -49,5 +49,47 @@
 		<groups>
 			<group>functional</group>
 		</groups>
+		<vendors>
+			<vendor>redhat</vendor>
+		</vendors>
+	</test>
+	<test>
+		<testCaseName>CryptoTests_jtreg</testCaseName>
+		<disables>
+			<disable>
+				<comment>for redhat, please see CryptoTests</comment>
+				<vendor>redhat</vendor>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16712</comment>
+				<version>19+</version>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/16710</comment>
+				<platform>.*windows</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4336</comment>
+				<platform>.*solaris</platform>
+			</disable>
+		</disables>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 -timeoutFactor:2 \
+		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+		-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+		-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+		$(Q)$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(Q); \
+		$(TEST_STATUS)</command>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+		</features>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
 	</test>
 </playlist>

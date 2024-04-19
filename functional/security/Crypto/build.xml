@@ -42,10 +42,8 @@
 		</else>
 	</if>
 	<target name="getCryptoTest" depends="cryptoTest.check" unless="cryptoTestdir.exists">
-		<exec executable="git" failonerror="true">
-			<arg value="clone" />
-			<arg value="${GIT_REPO}rh-openjdk/CryptoTest.git" />
-		</exec>
+		<getFileWithRetry file="CryptoTest" command="git clone --depth 1 -q ${GIT_REPO}rh-openjdk/CryptoTest.git -b master CryptoTest"/>
+		<checkGitRepoSha repoDir="CryptoTest"/>
 	</target>
 	
 	<target name="init">
