@@ -21,6 +21,10 @@
 				<comment>https://github.com/eclipse-openj9/openj9/issues/19331</comment>
 				<platform>.*zos.*</platform>
 			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19354</comment>
+				<version>23+</version>
+			</disable>
 		</disables>
 		<command>
 			$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(P)$(LIB_DIR)$(D)mockito-core.jar$(P)$(LIB_DIR)$(D)byte-buddy.jar$(P)$(LIB_DIR)$(D)byte-buddy-agent.jar$(P)$(LIB_DIR)$(D)objenesis.jar$(Q) test.java.MockitoMockTest ; \
