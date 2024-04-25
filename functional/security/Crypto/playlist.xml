@@ -35,6 +35,10 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/4336</comment>
 				<platform>.*solaris</platform>
 			</disable>
+			<disable>
+				<comment>This target is for those using GH actions or the Jenkins jtreg-plugin. The run.sh script provides extra functionality, tarring of results, downloading of bespoke jtreg.jar from a particular untagged commit SHA that is not yet upstreamed to a release version of jtreg that is used to see complete output in jtr.xml files. In addition, it simplifies enable/disable of kerberos-based tests which needs remote, pre-set KDC.
+				</comment>
+			</disable>
 		</disables>
 		<command>
 			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
@@ -49,17 +53,10 @@
 		<groups>
 			<group>functional</group>
 		</groups>
-		<vendors>
-			<vendor>redhat</vendor>
-		</vendors>
 	</test>
 	<test>
 		<testCaseName>CryptoTests_jtreg</testCaseName>
 		<disables>
-			<disable>
-				<comment>for redhat, please see CryptoTests</comment>
-				<vendor>redhat</vendor>
-			</disable>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/16712</comment>
 				<version>19+</version>
