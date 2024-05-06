@@ -105,8 +105,8 @@ def setupEnv() {
 	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	env.LIB_DIR = JOB_NAME.contains("SmokeTests") ? "${WORKSPACE}/../../../../../testDependency/lib" : "${WORKSPACE}/../../testDependency/lib"
-	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/IBM/OpenJCEPlus.git"
-	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "java${params.JDK_VERSION}"
+	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/ibmruntimes/OpenJCEPlus.git"
+	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "semeru-java${params.JDK_VERSION}"
 
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
