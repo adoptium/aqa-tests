@@ -35,9 +35,19 @@ def testBuild() {
 				archiveArtifacts '**/systemtest_prereqs/asm/asm.jar'
 				archiveArtifacts '**/systemtest_prereqs/tools/tools.jar'
 			} else {
-				sh 'curl -Os https://raw.githubusercontent.com/adoptium/TKG/master/scripts/getDependencies.pl'
-				sh 'perl ./getDependencies.pl -path . -task default'
-				archiveArtifacts '*.jar, *.zip, *.txt, *.gz'
+				def TKG_OWNER_BRANCH = params.TKG_OWNER_BRANCH ?: "adoptium:master"
+				def tokens = TKG_OWNER_BRANCH.split(':');
+				if (tokens.size() == 2) {
+					def owner = tokens[0];
+					def branch = tokens[1];
+					sh "curl -Os https://raw.githubusercontent.com/${owner}/TKG/${branch}/scripts/getDependencies.pl"
+					sh 'perl ./getDependencies.pl -path . -task default'
+					archiveArtifacts '*.jar, *.zip, *.txt, *.gz'
+				} else {
+					assert false : "TKG_OWNER_BRANCH ${TKG_OWNER_BRANCH} is not expected format. (i.e., TKG_OWNER_BRANCH=adoptium:master)"
+				}
+
+
 			}
 		} finally {
 			cleanWs()
