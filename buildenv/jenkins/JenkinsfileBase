@@ -1350,19 +1350,28 @@ def triggerRerunJob () {
 					def rerunJob = build job: rerunJobName, parameters: childParams, propagate: false
 					def jobResult = rerunJob.getResult()
 					def buildId = rerunJob.getNumber()
-					try {
-						echo "${rerunJobName} #${buildId} completed with status ${jobResult}"
+					echo "${rerunJobName} #${buildId} completed with status ${jobResult}"
+					node (env.SETUP_LABEL) {
 						timeout(time: 1, unit: 'HOURS') {
-							copyArtifacts (projectName: "${rerunJobName}", 
-							selector: specific("${buildId}"), 
-							filter: "**/*.tap",
-							target:"${rerunJobName}/${buildId}")
+							try {
+								copyArtifacts (projectName: "${rerunJobName}",
+								selector: specific("${buildId}"),
+								filter: "**/*.tap",
+								target:"${rerunJobName}/${buildId}")
+							} catch (Exception e) {
+								echo 'Exception: ' + e.toString()
+								echo "Cannot copy *.tap from ${rerunJobName} with buildid ${buildId} . Skipping copyArtifacts..."
+							}
+							
+							try {
+								step([$class: "TapPublisher", testResults: "${rerunJobName}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+								archiveFile("${rerunJobName}/${buildId}/**/*.tap", true)
+							} catch (Exception e) {
+								echo 'Exception: ' + e.toString()
+								echo "Cannot archive tap files from ${rerunJobName} with buildid ${buildId}. Exit ..."
+							}
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-						archiveFile("${name}/${buildId}/**/*.tap", true)
-					} catch (Exception e) {
-						echo 'Exception: ' + e.toString()
-						echo "Cannot copy *.tap from ${rerunJobName} with buildid ${buildId} . Skipping copyArtifacts..."
+					
 					}
 				}
 			}
