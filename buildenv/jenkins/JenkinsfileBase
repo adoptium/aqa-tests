@@ -1360,7 +1360,7 @@ def triggerRerunJob () {
 								target:"${rerunJobName}/${buildId}")
 							} catch (Exception e) {
 								echo 'Exception: ' + e.toString()
-								echo "Cannot copy *.tap from ${rerunJobName} with buildid ${buildId} . Skipping copyArtifacts..."
+								echo "Cannot copy *.tap from ${rerunJobName} with build id ${buildId} . Skipping copyArtifacts..."
 							}
 							
 							try {
