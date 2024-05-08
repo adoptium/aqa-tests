@@ -56,8 +56,47 @@
 	</if>
 
 	<target name="getOpenJcePlusTests" depends="openJcePlusTests.check" unless="openJcePlusTests.exists">
-		<getFileWithRetry file="OpenJCEPlus" command="git clone --depth 1 -q ${openjceplusGitRepo} -b ${openjceplusGitBranch} OpenJCEPlus"/>
-		<checkGitRepoSha repoDir="OpenJCEPlus"/>
+		<getFileWithRetry file="OpenJCEPlus" command="git clone -q ${openjceplusGitRepo} OpenJCEPlus"/>
+		<echo message="git rev-parse ${openjceplusGitBranch} "/>
+		<exec executable="git" failonerror="false" dir="OpenJCEPlus" outputproperty="repo_sha1" resultproperty="code">
+			<arg value="rev-parse"/>
+			<arg value="${openjceplusGitBranch}"/>
+		</exec>
+		<if>
+			<equals arg1="${code}" arg2="128"/>
+			<then>
+				<echo message="git rev-parse origin/${openjceplusGitBranch}"/>
+				<exec executable="git" failonerror="true" dir="OpenJCEPlus" outputproperty="repo_sha2" resultproperty="code2">
+					<arg value="rev-parse"/>
+					<arg value="origin/${openjceplusGitBranch}"/>
+				</exec>
+				<property name="repo_sha" value="${repo_sha2}"/>
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="repo_sha"/>
+			</not>
+			<then>
+				<property name="repo_sha" value="${repo_sha1}"/>
+			</then>
+		</if>
+		<if>
+			<isset property="isZOS"/>
+			<then>
+				<propertyregex property="repo_sha" input="${repo_sha}" regexp="\n" replace="" override="true"/>
+			</then>
+		</if>
+		<echo message="git checkout -q -f ${repo_sha} "/>
+		<exec executable="git" failonerror="true" dir="OpenJCEPlus">
+			<arg value="checkout"/>
+			<arg value="-q"/>
+			<arg value="-f"/>
+			<arg value="${repo_sha}"/>
+		</exec>
+		<checkGitRepoSha repoDir="OpenJCEPlus" />
+		<addTestenvProperties repoDir="OpenJCEPlus" repoName="OpenJCEPlus"/>
+
 		<delete dir="./OpenJCEPlus/src/main" />
 	</target>
 
