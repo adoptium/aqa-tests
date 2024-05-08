@@ -1368,7 +1368,7 @@ def triggerRerunJob () {
 								archiveFile("${rerunJobName}/${buildId}/**/*.tap", true)
 							} catch (Exception e) {
 								echo 'Exception: ' + e.toString()
-								echo "Cannot archive tap files from ${rerunJobName} with buildid ${buildId}. Exit ..."
+								echo "Cannot archive tap files from ${rerunJobName} with build id ${buildId}. Exit ..."
 							}
 						}
 					
