@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set +x
-set -eo pipefail
 
 if [[ $USE_TESTENV_PROPERTIES == true ]]; then
     testenv_file="./testenv/testenv.properties"
