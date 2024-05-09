@@ -1,18 +1,29 @@
 #!/usr/bin/env bash
 set +x
+set -e
 
-if [[ $USE_TESTENV_PROPERTIES == true ]]; then
+if [ $USE_TESTENV_PROPERTIES = true ]; then
     testenv_file="./testenv/testenv.properties"
-    if [[ "$PLATFORM" == *"zos"* ]]; then
-        testenv_file="./testenv/testenv_zos.properties"
-    fi
-    if [[ "$PLATFORM" == *"arm"* ]] && [[ "$JDK_VERSION" == "8" ]]; then
-        testenv_file="./testenv/testenv_arm32.properties"
-    fi
+    case "$PLATFORM" in
+        *zos*)
+            testenv_file="./testenv/testenv_zos.properties"
+            ;;
+        *)
+            ;;
+    esac
+    case "$PLATFORM" in
+        *arm*)
+            if [ "$JDK_VERSION" = "8" ]; then
+                testenv_file="./testenv/testenv_arm32.properties"
+            fi
+            ;;
+        *)
+            ;;
+    esac
     while read line; do
         export $line
     done <$testenv_file
-    if [[ $JDK_IMPL == "openj9" ]] || [[ $JDK_IMPL == "ibm" ]]; then
+    if [ $JDK_IMPL = "openj9" ] || [ $JDK_IMPL = "ibm" ]; then
         repo=JDK${JDK_VERSION}_OPENJ9_REPO
         branch=JDK${JDK_VERSION}_OPENJ9_BRANCH
 
