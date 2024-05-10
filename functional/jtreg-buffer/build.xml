@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="jtreg-buffer" default="build" basedir=".">
+     <taskdef resource="net/sf/antcontrib/antlib.xml" />
+     <description>
+          Set of tests, running not yet upstreamed jtreg tests, or jtreg tests which were not
+          accepted for some reason, and still have reason to keep.
+     </description>
+
+     <!-- set properties for this build -->
+     <property name="TEST" value="jtreg-buffer" />
+     <property name="DEST" value="${BUILD_ROOT}/functional/jtreg-buffer" />
+     <property name="src" location="./jtreg-buffer" />
+
+     <target name="jtreg-buffer.check">
+          <condition property="jtreg-buffer.exists">
+               <available file="jtreg-buffer" type="dir" />
+          </condition>
+     </target>
+
+     <if>
+          <contains string="${SPEC}" substring="zos" />
+          <then>
+               <property name="GIT_REPO" value="git@github.com:" />
+          </then>
+          <else>
+               <property name="GIT_REPO" value="https://github.com/" />
+          </else>
+     </if>
+     <target name="getJtreg-buffer" depends="jtreg-buffer.check" unless="jtreg-buffer.exists">
+          <getFileWithRetry file="jtreg-buffer"
+               command="git clone --depth 1 -q ${GIT_REPO}rh-openjdk/jtreg-buffer.git -b main jtreg-buffer" />
+          <checkGitRepoSha repoDir="jtreg-buffer" />
+     </target>
+
+     <target name="init">
+          <mkdir dir="${DEST}" />
+     </target>
+
+     <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml" />
+
+
+     <target name="dist" depends="getJtreg,getJtreg-buffer" description="generate the distribution">
+          <copy todir="${DEST}">
+               <fileset dir="${src}" includes="*.xml,*.mk" />
+          </copy>
+     </target>
+
+     <target name="clean" depends="dist" description="clean up">
+          <!-- Delete the ${build} directory trees -->
+          <delete dir="${build}" />
+     </target>
+
+     <target name="build">
+          <antcall target="clean" inheritall="true" />
+     </target>
+</project>
