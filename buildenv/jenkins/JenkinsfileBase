@@ -1348,7 +1348,32 @@ def triggerRerunJob () {
 				}
 
 				if (childParams) {
-					build job: rerunJobName, parameters: childParams, propagate: false
+					def rerunJob = build job: rerunJobName, parameters: childParams, propagate: false
+					def jobResult = rerunJob.getResult()
+					def buildId = rerunJob.getNumber()
+					echo "${rerunJobName} #${buildId} completed with status ${jobResult}"
+					node (env.SETUP_LABEL) {
+						timeout(time: 1, unit: 'HOURS') {
+							try {
+								copyArtifacts (projectName: "${rerunJobName}",
+								selector: specific("${buildId}"),
+								filter: "**/*.tap",
+								target:"${rerunJobName}/${buildId}")
+							} catch (Exception e) {
+								echo 'Exception: ' + e.toString()
+								echo "Cannot copy *.tap from ${rerunJobName} with build id ${buildId} . Skipping copyArtifacts..."
+							}
+							
+							try {
+								step([$class: "TapPublisher", testResults: "${rerunJobName}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+								archiveFile("${rerunJobName}/${buildId}/**/*.tap", true)
+							} catch (Exception e) {
+								echo 'Exception: ' + e.toString()
+								echo "Cannot archive tap files from ${rerunJobName} with build id ${buildId}. Exit ..."
+							}
+						}
+					
+					}
 				}
 			}
 		}
