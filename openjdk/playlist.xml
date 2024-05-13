@@ -1194,6 +1194,39 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>javax_net_ssl_fips</testCaseName>
+		<disables>
+			<disable>
+				<comment>placeholder for now until the tests in javax/net/ssl are updated for FIPS</comment>
+			</disable>
+		</disables>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q) $(JVM_OPTIONS) -Xmx512m $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR)/javax/net/ssl/$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:required</feature>
+		</features>
+		<impls>
+			<impl>ibm</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_sound</testCaseName>
 		<disables>
 			<disable>
