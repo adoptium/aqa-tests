@@ -12,1709 +12,1534 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
-	<test>
-		<testCaseName>jcstress_BooleanFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BooleanFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FloatFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FloatFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_LongFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t LongFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DoubleFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DoubleFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ShortFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ShortFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CharFencedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CharFencedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SyncBarrier2Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SyncBarrier2Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SyncBarrier3Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SyncBarrier3Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SyncBarrier1Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SyncBarrier1Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SyncBarrier0Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SyncBarrier0Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReentrantRWLockMutexTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReentrantRWLockMutexTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SynchronizedMutexPoolTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SynchronizedMutexPoolTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReentrantLockMutexTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReentrantLockMutexTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SynchronizedMutexTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SynchronizedMutexTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StampedLockPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StampedLockPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StampedLockTransitionTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StampedLockTransitionTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadMXBeanAlloc</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadMXBeanAlloc; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>git_ibm/runtimes/backlog/issues/979</comment>
-				<impl>openj9</impl>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnfencedReadTwiceTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnfencedReadTwiceTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FencedDekkerTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FencedDekkerTest; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/16178 runtimes/backlog/979</comment>
-				<impl>openj9</impl>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FencedAcquireReleaseTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FencedAcquireReleaseTest; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/16178 runtimes/backlog/988</comment>
-				<impl>openj9</impl>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnfencedDekkerTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnfencedDekkerTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FencedReadTwiceTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FencedReadTwiceTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnfencedAcquireReleaseTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnfencedAcquireReleaseTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnfencedPublicationTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnfencedPublicationTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FencedPublicationTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FencedPublicationTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeLocalDCL</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeLocalDCL; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeDCL</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeDCL; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Holder</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Holder; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SynchronizedCL</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SynchronizedCL; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SafeDCL</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SafeDCL; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FinalWrapper</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FinalWrapper; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/16569</comment>
-				<impl>openj9</impl>
-				<platform>.*(aarch64_mac|ppc64_aix).*</platform>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SafeLocalDCL</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SafeLocalDCL; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ScalarReplacedVolatileBarrierTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ScalarReplacedVolatileBarrierTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_PowerSCViolation</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t PowerSCViolation; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReadTwiceOverVolatileReadTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReadTwiceOverVolatileReadTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DoubleVolatileTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DoubleVolatileTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ObservedVolatileBarrierTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ObservedVolatileBarrierTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileIncrementAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileIncrementAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnobservedVolatileBarrierTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnobservedVolatileBarrierTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileIRIWTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileIRIWTest; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>runtimes/backlog/988</comment>
-				<impl>openj9</impl>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_LazySetTransitivityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t LazySetTransitivityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DekkerTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerTest; \
-			$(TEST_STATUS)</command>
-		<disables>
-			<disable>
-				<comment>git_ibm/runtimes/backlog/issues/973 and 979</comment>
-				<impl>openj9</impl>
-				<version>8+</version>
-			</disable>
-		</disables>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_RelaxedIRIWTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t RelaxedIRIWTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileAcquireReleaseTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileAcquireReleaseTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReadAfterReadTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReadAfterReadTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReadAfterVolatileReadTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReadAfterVolatileReadTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_OpaqueIRIWTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t OpaqueIRIWTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StringBufferTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StringBufferTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BigDecimalString</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BigDecimalString; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StringBuilderTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StringBuilderTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StringBufferAppendTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StringBufferAppendTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BigIntegerStringLen</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BigIntegerStringLen; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BigDecimalStringLen</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BigDecimalStringLen; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BigIntegerString</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BigIntegerString; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadLocalSharing</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadLocalSharing; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteBufferIntAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteBufferIntAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DirectByteBufferIntAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DirectByteBufferIntAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeIntAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeIntAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CharBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CharBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DoubleBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DoubleBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FloatBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FloatBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_LongBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t LongBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteBufferViewsAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteBufferViewsAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ShortBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ShortBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DirectByteBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DirectByteBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntBufferAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntBufferAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DirectByteBufferViewsAtomicityTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DirectByteBufferViewsAtomicityTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_LongAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t LongAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileFloatAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileFloatAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FloatAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FloatAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CharAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CharAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileDoubleAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileDoubleAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DoubleAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DoubleAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ShortAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ShortAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileByteAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileByteAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileIntAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileIntAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileLongAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileLongAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileShortAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileShortAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileCharAtomicityTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileCharAtomicityTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_TimeUnitSleepTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t TimeUnitSleepTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_VolatileBusyLoopTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t VolatileBusyLoopTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CurrentThreadIsInterruptedMethodTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CurrentThreadIsInterruptedMethodTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_WeakReferenceTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t WeakReferenceTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadInterruptedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadInterruptedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_PlainBusyLoopTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t PlainBusyLoopTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReentrantLockNonInterruptiblyTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReentrantLockNonInterruptiblyTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CurrentThreadIsInterruptedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CurrentThreadIsInterruptedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ObjectWaitInfiniteTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ObjectWaitInfiniteTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadInterruptedMethodTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadInterruptedMethodTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadSleepTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadSleepTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeBusyLoopTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeBusyLoopTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CurrentThreadIsInterruptedBreakTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CurrentThreadIsInterruptedBreakTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadInterruptedBreakTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadInterruptedBreakTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ReentrantLockInterruptiblyTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ReentrantLockInterruptiblyTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ObjectWaitTimedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ObjectWaitTimedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicBooleanPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicBooleanPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicBooleanInitialValueTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicBooleanInitialValueTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerArrayPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerArrayPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerInitialValueTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerInitialValueTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerArrayInitialValueTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerArrayInitialValueTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerArrayInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerArrayInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicIntegerFieldUpdaterPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicIntegerFieldUpdaterPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongArrayInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongArrayInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongArrayInitialValueTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongArrayInitialValueTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongFieldUpdaterPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongFieldUpdaterPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongInitialValueTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongInitialValueTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_AtomicLongArrayPairwiseTests</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t AtomicLongArrayPairwiseTests; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ByteBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ByteBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DoubleBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DoubleBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_LongBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t LongBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FloatBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FloatBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_CharBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t CharBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DirectByteBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DirectByteBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ShortBufferInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ShortBufferInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ArrayInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ArrayInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeIntTearingTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeIntTearingTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeArrayInterleaveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeArrayInterleaveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadPoolExecutorSizesTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadPoolExecutorSizesTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadPoolExecutorKeepAliveTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadPoolExecutorKeepAliveTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeAddLong1</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeAddLong1; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeReadTwiceOverVolatileReadTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeReadTwiceOverVolatileReadTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafePutOrderedTwice</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafePutOrderedTwice; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafeAddLong42</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafeAddLong42; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnsafePublication</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnsafePublication; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Sevcik_01_Redundant_WAR_Elimination</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Sevcik_01_Redundant_WAR_Elimination; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Sevcik_03_RoachMotel</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Sevcik_03_RoachMotel; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Sevcik_02_Redundant_RAR_Elimination</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Sevcik_02_Redundant_RAR_Elimination; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Sevcik_04_IrrelevantRead</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Sevcik_04_IrrelevantRead; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_Sevcik_05_IllegalTransform</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t Sevcik_05_IllegalTransform; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_SampleTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t SampleTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BoundedSingleTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BoundedSingleTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnboundedSingleTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnboundedSingleTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StringBoundedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StringBoundedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_StringUnboundedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t StringUnboundedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntUnboundedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntUnboundedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_IntBoundedTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t IntBoundedTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_UnboundedDoubleTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t UnboundedDoubleTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_BoundedDoubleTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t BoundedDoubleTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_HashMapFailureTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t HashMapFailureTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DekkerRelaxation2Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerRelaxation2Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_DekkerRelaxation1Test</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t DekkerRelaxation1Test; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_FutureTaskSetTest</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t FutureTaskSetTest; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
-	<test>
-		<testCaseName>jcstress_ThreadNames</testCaseName>
-		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t ThreadNames; \
-			$(TEST_STATUS)</command>
-		<levels>
-			<level>dev</level>
-		</levels>
-		<groups>
-			<group>system</group>
-		</groups>
-	</test>
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<test>
+	<testCaseName>jcstress.atomics.booleans.AtomicBooleanInitialValueTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.booleans.AtomicBooleanInitialValueTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerArrayInitialValueTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerArrayInitialValueTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerArrayInterleaveTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerArrayInterleaveTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerInitialValueTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerInitialValueTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongArrayInitialValueTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongArrayInitialValueTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongArrayInterleaveTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongArrayInterleaveTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongInitialValueTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongInitialValueTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.collections</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.collections; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.FencedAcquireReleaseTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.FencedAcquireReleaseTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.FencedDekkerTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.FencedDekkerTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.FencedPublicationTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.FencedPublicationTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.FencedReadTwiceTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.FencedReadTwiceTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.UnfencedAcquireReleaseTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.UnfencedAcquireReleaseTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.UnfencedDekkerTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.UnfencedDekkerTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.UnfencedPublicationTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.UnfencedPublicationTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.UnfencedReadTwiceTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.UnfencedReadTwiceTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.mutex.SynchronizedMutexPoolTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.mutex.SynchronizedMutexPoolTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.mutex.SynchronizedMutexTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.mutex.SynchronizedMutexTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.mxbeans</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.mxbeans; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.sample</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.sample; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.ArrayInterleaveTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.ArrayInterleaveTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.UnsafeArrayInterleaveTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.UnsafeArrayInterleaveTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.UnsafeIntTearingTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.UnsafeIntTearingTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.threadlocal</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.threadlocal; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.GetAndAddTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.GetAndAddTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.GetAndAddTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.GetAndAddTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.executors</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.executors; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.future</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.future; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.crosscache</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.crosscache; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.varhandles</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.varhandles; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.barriers</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.barriers; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.oota</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.oota; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.unsafe</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.unsafe; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.booleans.AtomicBooleanPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.booleans.AtomicBooleanPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.lock</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.lock; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.StoreLoadFenceTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.StoreLoadFenceTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.strings</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.strings; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.init.primitives</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.init.primitives; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.buffers</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.buffers; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.arrays</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.arrays; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.fields.sync</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.fields.sync; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.fields.volatiles</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.fields.volatiles; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.CASTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.CASTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.GetAndSetTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.GetAndSetTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.CASTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.CASTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.GetAndSetTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.GetAndSetTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.arrays</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.arrays; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.defaultValues.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.defaultValues.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.defaultValues.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.defaultValues.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.init.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.init.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.init.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.init.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.initClass.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.initClass.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.initClass.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.initClass.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.initLen.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.initLen.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.initLen.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.initLen.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.countdownlatch</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.countdownlatch; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.stamped.StampedLockTransitionTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.stamped.StampedLockTransitionTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.arraycopy.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.arraycopy.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.arraycopy.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.arraycopy.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.clone.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.clone.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.clone.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.clone.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.clone.objects</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.clone.objects; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.copyof.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.copyof.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.copyof.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.copyof.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.manual.arrays.large</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.manual.arrays.large; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.manual.arrays.small</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.manual.arrays.small; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.copy.manual.objects</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.copy.manual.objects; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.LoadStoreFenceTest1</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.LoadStoreFenceTest1; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.LoadStoreFenceTest2</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.LoadStoreFenceTest2; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.singletons</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.singletons; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.interrupt</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.interrupt; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.volatiles</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.volatiles; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.fields.conflict</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.fields.conflict; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteArray.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteArray.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteArray.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteArray.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.direct.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.direct.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.direct.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.direct.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.heap.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.heap.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.heap.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.heap.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.causality</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.causality; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteArray.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteArray.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteArray.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteArray.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteBuffer.direct.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.direct.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteBuffer.direct.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.direct.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteBuffer.heap.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.heap.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.byteBuffer.heap.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.heap.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.defaultValues.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.defaultValues.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.init.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.init.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.initClass.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.initClass.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.tearing.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.tearing.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.LoadLoadFenceTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.LoadLoadFenceTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.StoreStoreFenceTest1</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.StoreStoreFenceTest1; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.fences.varHandles.StoreStoreFenceTest2</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.fences.varHandles.StoreStoreFenceTest2; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.atomic.AtomicBoolean</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.atomic.AtomicBoolean; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.arrays</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.arrays; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.accessAtomic.varHandles.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.accessAtomic.varHandles.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.CAETest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.CAETest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteArray.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteArray.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteArray.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteArray.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.direct.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.direct.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.direct.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.direct.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.heap.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.heap.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.heap.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.heap.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.CAETest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.CAETest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.arrays</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.arrays; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.coherence.varHandles.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.coherence.varHandles.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.primitives</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.primitives; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.buffers</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.buffers; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.WeakCASContendStrongTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.WeakCASContendStrongTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.arrays.WeakCASTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.arrays.WeakCASTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.WeakCASContendStrongTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.WeakCASContendStrongTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomicity.varHandles.fields.WeakCASTest</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomicity.varHandles.fields.WeakCASTest; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.mutex.ReentrantLockMutexTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.mutex.ReentrantLockMutexTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.mutex.ReentrantRWLockMutexTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.mutex.ReentrantRWLockMutexTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.volatiles</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.volatiles; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerArrayPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerArrayPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerFieldUpdaterPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerFieldUpdaterPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.integer.AtomicIntegerPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongArrayPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongArrayPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongFieldUpdaterPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongFieldUpdaterPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.atomics.longs.AtomicLongPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.atomics.longs.AtomicLongPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteArray.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteArray.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteArray.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteArray.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.direct.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.direct.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.direct.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.direct.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.heap.big</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.heap.big; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.heap.little</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.heap.little; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.atomic.AtomicInteger</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.atomic.AtomicInteger; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.atomic.AtomicLong</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.atomic.AtomicLong; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.arrays</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.arrays; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.acqrel.varHandles.fields</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.acqrel.varHandles.fields; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.memeffects.basic.atomicupdaters</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.memeffects.basic.atomicupdaters; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.locks.stamped.StampedLockPairwiseTests</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.locks.stamped.StampedLockPairwiseTests; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.seqcst.sync</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.seqcst.sync; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
+<test>
+	<testCaseName>jcstress.seqcst.volatiles</testCaseName>
+       <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)jcstress-tests-all-20240222.jar$(Q) $(APPLICATION_OPTIONS) -t org.openjdk.jcstress.tests.seqcst.volatiles; \
+       $(TEST_STATUS)</command>
+	<levels>
+		<level>dev</level>
+	</levels>
+	<groups>
+		<group>system</group>
+	</groups>
+</test>
 </playlist>
