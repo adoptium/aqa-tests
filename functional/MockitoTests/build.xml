@@ -19,7 +19,7 @@ limitations under the License.
     	Mockito Tests
 	</description>
 	<import file="${TEST_ROOT}/functional/build.xml"/>
-	<property name="LIB" value="byte_buddy,byte_buddy_agent,objenesis,mockito_core" />
+	<property name="LIB" value="byte_buddy,byte_buddy_agent,objenesis,mockito_core,junit_jupiter_api" />
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -45,6 +45,7 @@ limitations under the License.
 			<src path="${src}" />
 			<classpath>
 				<pathelement location="${LIB_DIR}/mockito-core.jar"/>
+				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar"/>
 			</classpath>
 		</javac>
 	</target>
