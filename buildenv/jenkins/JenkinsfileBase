@@ -40,7 +40,7 @@ def setupEnv() {
 	env.JOBSTARTTIME = sh(script: 'LC_TIME=C date +"%a, %d %b %Y %T %z"', returnStdout: true).trim()
 
 	// Terminate any previous test related processes that are running
-        terminateTestProcesses()
+	terminateTestProcesses()
 
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
@@ -208,7 +208,7 @@ def setupParallelEnv() {
 				// check for each lib. If lib does not exist, donwload it.
 				// If lib exists, SHA will be checked. Re-download if SHA does not match.
 				timeout(time: 20, unit: 'MINUTES') {
-					def customUrl = "https://ci.adoptium.net/job/test.getDependency/lastSuccessfulBuild/artifact/"
+					def customUrl = getCustomUrl()
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 					}
@@ -316,7 +316,7 @@ def setupParallelEnv() {
 
 }
 
-// Returns NUM_LIST from parallelList.mk. 
+// Returns NUM_LIST from parallelList.mk.
 // NUM_LIST can be different than numOfMachines.
 def genParallelList(PARALLEL_OPTIONS) {
 	String unsetLLP = ""
@@ -416,7 +416,7 @@ def setup() {
 			if (params.SDK_RESOURCE == 'nightly') {
 				// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
 				CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
-			} else if (!params.SDK_RESOURCE || params.SDK_RESOURCE == 'customized') { 
+			} else if (!params.SDK_RESOURCE || params.SDK_RESOURCE == 'customized') {
 				SDK_RESOURCE = "customized"
 				CUSTOMIZED_SDK_URL_OPTION = "-c '${params.CUSTOMIZED_SDK_URL}'"
 				if (params.ADDITIONAL_ARTIFACTS_REQUIRED == "RI_JDK") {
@@ -438,7 +438,7 @@ def setup() {
 				error("SDK_RESOURCE: ${params.SDK_RESOURCE} and CUSTOMIZED_SDK_URL: ${params.CUSTOMIZED_SDK_URL} combo is not supported!")
 			}
 		} else {
-			if (params.SDK_RESOURCE == 'customized') { 
+			if (params.SDK_RESOURCE == 'customized') {
 				error("SDK_RESOURCE: ${params.SDK_RESOURCE}, please provide CUSTOMIZED_SDK_URL")
 			} else {
 				CUSTOMIZED_SDK_URL_OPTION = ""
@@ -467,7 +467,7 @@ def setup() {
 		if (CLONE_OPENJ9_OPTION == "") {
 			if (env.BUILD_LIST.contains('functional')) {
 				CLONE_OPENJ9_OPTION = "--clone_openj9 true"
-				// If USE_TESTENV_PROPERTIES = false, set Openj9 repo and brnach. 
+				// If USE_TESTENV_PROPERTIES = false, set Openj9 repo and brnach.
 				// Otherwise, testenv.properties will be used.
 				// And the Openj9 repo and brnach values will be set in get.sh
 				if(!params.USE_TESTENV_PROPERTIES) {
@@ -656,7 +656,7 @@ def buildTest() {
 			// check for each lib. If lib does not exist, donwload it.
 			// If lib exists, SHA will be checked. Re-download if SHA does not match.
 			timeout(time: 20, unit: 'MINUTES') {
-				def customUrl = "https://ci.adoptium.net/job/test.getDependency/lastSuccessfulBuild/artifact/"
+				def customUrl = getCustomUrl()
 				if (PLATFORM.contains("windows")) {
 					env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 				}
@@ -1014,10 +1014,10 @@ def testExecution() {
 def terminateTestProcesses() {
 	echo "PROCESSCATCH: Terminating any hung/left over test processes:"
 
-        def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
-        if (statusCode != 0) {
-                echo "rc = ${statusCode}, Unable to terminate all processes."
-        }
+	def statusCode=sh(script:"aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus:true)
+	if (statusCode != 0) {
+			echo "rc = ${statusCode}, Unable to terminate all processes."
+	}
 }
 
 def getJDKImpl(jvm_version) {
@@ -1053,6 +1053,16 @@ def getJenkinsDomain() {
 		domainName = match
 	}
 	return domainName
+}
+
+def getCustomUrl() {
+	def jenkinsDomain = getJenkinsDomain()
+	if (jenkinsDomain.contains("hyc-runtimes")) {
+		jenkinsDomain = "openj9-jenkins.osuosl.org"
+	}
+	def customUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
+	echo "Custom URL: ${customUrl}"
+	return customUrl
 }
 
 def archiveAQAvitFiles() {
@@ -1363,7 +1373,7 @@ def triggerRerunJob () {
 								echo 'Exception: ' + e.toString()
 								echo "Cannot copy *.tap from ${rerunJobName} with build id ${buildId} . Skipping copyArtifacts..."
 							}
-							
+
 							try {
 								step([$class: "TapPublisher", testResults: "${rerunJobName}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 								archiveFile("${rerunJobName}/${buildId}/**/*.tap", true)
@@ -1372,7 +1382,7 @@ def triggerRerunJob () {
 								echo "Cannot archive tap files from ${rerunJobName} with build id ${buildId}. Exit ..."
 							}
 						}
-					
+
 					}
 				}
 			}
