@@ -16,7 +16,7 @@ If this is an openjdk test failure, there are a couple of steps to creating a us
       - Check test debug output.
 
 2. **Using a bug template when filling out the details of the defect, to help others triage and fix the defect. As some of the issues in this repo are for enhancements, we will not at this time provide this as the default template. For now, when reporting a test failure, cut and paste this text into the issue and provide as much of the details as possible (in future, we can update the test reporting system to supply this information in this format as output of the test):**
-
+```
 Test category:
 Testsuite name:
 Test name(s):
@@ -31,10 +31,10 @@ Regression: yes|no|unsure [notes, if yes, what build introduced]
 Exception/Error from Log:
 Error log file (if available): link to the file
 
-Steps to reproduce:
-
+Steps to reproduce
+```
 **An example of this template filled out would then be:**
-
+```
 Test category: openjdk
 Testsuite name: jdk_rmi
 Test name(s): java/rmi/activation/rmidViaInheritedChannel/InheritedChannelNotServerSocket.java
@@ -54,7 +54,6 @@ Steps to reproduce:
 1) Re-include test.  (Search the Test class name in ProblemList.txt find the exclude line and comment the line
 In this case looking for a group called jdk_rmi and an entry like this, "java/rmi/activation/rmidViaInheritedChannel/InheritedChannelNotServerSocket.java 154 macosx-all")
 2) make jdk_rmi_SE80_0  (assuming you are running with the test material already setup, if not follow openjdk-tests/README.md instructions to set up test material first, then run the make target).
-
-
+```
 
 
