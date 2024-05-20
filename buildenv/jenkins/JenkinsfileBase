@@ -6,13 +6,7 @@ import org.tap4j.model.TestSet;
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
 	// Note: keyword source cannot be used in Jenkins script. Therefore, using "." instead.
-	String makeTestCmd
-	//Add a if statement 
-	if (DYNAMIC_COMPILE == "true") {
-		makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
-	} else {
-		makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests;cd ./TKG; \$MAKE $testParam"
-	}
+	String makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
 	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
