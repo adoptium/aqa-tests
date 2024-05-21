@@ -13,7 +13,7 @@
 			<level>extended</level>
 			<level>special</level>
 		</levels>
-		<groups>
+		<groups> 
 			<group>system</group>
 		</groups>
 	</test>
@@ -52,6 +52,35 @@
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>MiniMix_10m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/3819</comment>
+				<version>11+</version>
+				<impl>hotspot</impl>
+				<platform>ppc64_aix|s390x_linux|ppc64le_linux</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/4976</comment>
+				<impl>hotspot</impl>
+				<platform>riscv64_linux</platform>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=10m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q);\
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
