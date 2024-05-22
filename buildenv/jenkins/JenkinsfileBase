@@ -768,7 +768,12 @@ def runTest( ) {
 					echo "env.DISPLAY is ${env.DISPLAY}"
 					makeTest("${RUNTEST_CMD}")
 				}
-			} else {
+			} else if (BUILD_LIST.contains('external')) {
+				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+					makeTest("${RUNTEST_CMD}")
+				}
+			}
+			else {
 				makeTest("${RUNTEST_CMD}")
 			}
 		}
