@@ -26,7 +26,7 @@
 	<!--Properties for this particular build-->
 	<property name="src" location="./OpenJCEPlus/src/" />
 	<property name="build" location="./bin" />
-	<property name="LIB" value="junit4,hamcrest_core,bcprov_jdk18on"/>
+	<property name="LIB" value="junit4,hamcrest_core,bcprov_jdk18on,junit_vintage_engine,junit_platform_suite,junit_jupiter_api,junit_jupiter_engine,junit_jupiter_params,junit_platform_suite_api"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	<property environment="env" />
 
@@ -121,6 +121,12 @@
 				<pathelement location="${LIB_DIR}/junit4.jar" />
 				<pathelement location="${LIB_DIR}/hamcrest-core.jar" />
 				<pathelement location="${LIB_DIR}/bcprov-jdk18on.jar" />
+				<pathelement location="${LIB_DIR}/junit-vintage-engine.jar" />
+				<pathelement location="${LIB_DIR}/junit-platform-suite.jar" />
+				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar" />
+				<pathelement location="${LIB_DIR}/junit-jupiter-engine.jar" />
+				<pathelement location="${LIB_DIR}/junit-jupiter-params.jar" />
+				<pathelement location="${LIB_DIR}/junit-platform-suite-api.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -131,10 +137,16 @@
 			<fileset dir="${src}/../../" includes="*.properties,*.xml" />
 		</jar>
 		<copy todir="${DEST}">
-			<fileset dir="${src}/../../" includes="*.xml,*.mk" />
+			<fileset dir="${src}/../../" includes="*.xml,*.mk,*.jar" />
 			<fileset dir="${LIB_DIR}/" includes="junit4.jar" />
 			<fileset dir="${LIB_DIR}/" includes="hamcrest-core.jar" />
 			<fileset dir="${LIB_DIR}/" includes="bcprov-jdk18on.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-vintage-engine.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-platform-suite.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-api.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-engine.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-params.jar" />
+			<fileset dir="${LIB_DIR}/" includes="junit-platform-suite-api.jar" />
 		</copy>
 	</target>
 
