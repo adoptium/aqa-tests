@@ -33,7 +33,28 @@ limitations under the License.
 		<mkdir dir="${DEST}" />
 		<mkdir dir="${build}" />
 	</target>
-	
+
+	<target name="check-jdk-version">
+		<exec executable="java" outputproperty="JDK_VERSION}">
+			<arg value="-version"/>
+		</exec>
+		<echo message="JDK version: ${JDK_VERSION}}"/>
+	</target>
+
+	<target name="verify-jdk" depends="check-jdk-version">
+		<condition property="jdk.ok">
+			<matches string="${JDK_VERSION}}" pattern="^(8|9|10)$$"/>
+		</condition>
+		<if>
+			<not>
+				<isset property="jdk.ok"/>
+			</not>
+			<then>
+				<antcall target="clean" inheritall="true"/>
+					<fail message="JDK 8, 9, or 10 is required to build this project."/>
+			</then>
+		</if>
+	</target>
 	<target name="compile" depends="init,getDependentLibs" description="Using java ${JDK_VERSION} to compile the source  ">
 		<echo>Ant version is ${ant.version}</echo>
 		<echo>============COMPILER SETTINGS============</echo>
