@@ -250,16 +250,12 @@ getBinaryOpenjdk()
 				info_url="https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm"
 			fi
 		else
-			download_url="https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
+			download_url="https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptium?project=jdk https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/sbom/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
 			info_url="https://api.adoptium.net/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=${JDK_IMPL}&os=${os}&project=jdk&vendor=eclipse"
 
 			if [ "$JDK_VERSION" != "8" ]; then
 				download_url+=" https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
 				info_url+=" https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
-			fi
-
-			if [ "$JDK_VERSION" -ge "21" ]; then
-				download_url+=" https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/sbom/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
 			fi
 		fi
 	else
