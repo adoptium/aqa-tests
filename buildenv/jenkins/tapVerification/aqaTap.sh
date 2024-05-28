@@ -152,7 +152,7 @@ checkFailed() {
 	echo "============================"
 	echo "List failed tests in $(pwd)"
 	echo "============================"
-	if grep -R 'not ok ' . ; then 
+	if grep -R 'not ok ' . ; then
 		echo "[ERROR]: There are failed tests"
 		exit 1
 	else
@@ -175,14 +175,14 @@ findCmd() {
 	fileName=$2
 	echo "----------------------------"
 	echo "$1. List $fileName ..."
-	if [ "$(find . -name "$fileName")" ]; then
-		find . -name "$fileName" | sort
-		numFiles=$(find . -name "$fileName" -type f -print | wc -l)
+	if [ "$(find . -name "$fileName" ! -name "*_rerun*.tap")" ]; then
+		find . -name "$fileName" ! -name "*_rerun*.tap" | sort
+		numFiles=$(find . -name "$fileName" -type f ! -name "*_rerun*.tap" -print | wc -l)
 		echo "Total num of Files:$numFiles"
 		fileNameWithoutExt=${fileName//".tap"/""}
 		if [ $numFiles == 1 ]; then
-			if [ "$(find . -name "${fileNameWithoutExt}_testList*")" ]; then
-				find . -name "${fileNameWithoutExt}_testList*"
+			if [ "$(find . -name "${fileNameWithoutExt}_testList*" ! -name "*_rerun*.tap")"  ]; then
+				find . -name "${fileNameWithoutExt}_testList*" ! -name "*_rerun*.tap"
 				echo "Found 1 testList file. Looks like this is a parallel run, so multiple testList files are expected."
 				echo "[ERROR]: Missing testList TAP files"
 				exit 1
@@ -190,7 +190,7 @@ findCmd() {
 		else
 			for (( i=0; i < $numFiles; ++i ))
 			do
-				if [ "$(find . -name "${fileNameWithoutExt}_testList_${i}*")" == "" ]; then
+				if [ "$(find . -name "${fileNameWithoutExt}_testList_${i}*" ! -name "*_rerun*.tap")" == "" ]; then
 					echo "[ERROR]: Missing ${fileNameWithoutExt}_testList_${i}* TAP file"
 					exit 1
 				fi
