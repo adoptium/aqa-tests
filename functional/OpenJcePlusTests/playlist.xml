@@ -21,8 +21,8 @@
 				<vendor>eclipse</vendor>
 			</disable>
 			<disable>
-				<comment>Only applicable on aix, pliunx, xlinux, wins64 and zlinux atm</comment>
-				<platform>^((?!(ppc64_aix|ppc64le_linux|x86-64_linux|x86-64_windows|s390x_linux)).)*$</platform>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19205</comment>
+				<!-- platform>^((?!(ppc64_aix|ppc64le_linux|x86-64_linux|x86-64_windows|s390x_linux)).)*$</platform -->
 			</disable>
 		</disables>
 		<command>ant -f ${BUILD_ROOT}/functional/OpenJcePlusTests/test.xml -DTEST_JAVA=$(Q)$(JAVA_COMMAND)$(Q) launch_test; \
