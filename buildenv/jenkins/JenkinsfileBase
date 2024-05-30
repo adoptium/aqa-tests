@@ -50,7 +50,7 @@ def setupEnv() {
 
 	env.SPEC = "${SPEC}"
 	if(!params.USE_TESTENV_PROPERTIES){
-		ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
+		env.ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
 		OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
 		String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "adoptium:master", "TKG")
 		TKG_REPO = tkg[0]
@@ -58,14 +58,14 @@ def setupEnv() {
 		//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 		env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 		if (env.SPEC.startsWith('zos')) {
-			ADOPTOPENJDK_REPO = ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
+			env.ADOPTOPENJDK_REPO = env.ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 		}
 		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
 	}
 
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
-	ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
+	env.ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
 	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
 	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
 	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
@@ -121,7 +121,7 @@ def setupEnv() {
 		// to take personal repo and branch.
 		// Therefore, set LIGHT_WEIGHT_CHECKOUTto false and GENERATE_JOBS to true.
 		// This is a known Jenkins issue: https://issues.jenkins.io/browse/JENKINS-42971
-		if (!ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+		if (!env.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
 			env.LIGHT_WEIGHT_CHECKOUT = false
 			env.GENERATE_JOBS = true
 			echo "ADOPTOPENJDK_REPO is set to personal repo in Grinder. Auto-set LIGHT_WEIGHT_CHECKOUT: ${env.LIGHT_WEIGHT_CHECKOUT} and GENERATE_JOBS: ${env.GENERATE_JOBS}"
@@ -1072,7 +1072,7 @@ def archiveAQAvitFiles() {
 		if (params.ARTIFACTORY_SERVER) {
 			def currentDate = new Date()
 			def currentDateTime = currentDate.format("yyyyMMddHHmmss", TimeZone.getTimeZone('UTC'))
-			def uploadDir = "AQAvit/${JDK_IMPL}/${ADOPTOPENJDK_BRANCH}/${JDK_VERSION}/${PLATFORM}/${currentDateTime}"
+			def uploadDir = "AQAvit/${JDK_IMPL}/${env.ADOPTOPENJDK_BRANCH}/${JDK_VERSION}/${PLATFORM}/${currentDateTime}"
 			uploadToArtifactory("${env.WORKSPACE}/**/*.tap", uploadDir)
 		}
 	}

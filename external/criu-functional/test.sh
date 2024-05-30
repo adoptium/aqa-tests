@@ -27,6 +27,7 @@ export JDK_VERSION=
 echo "TEST_JDK_HOME has been unset, use auto-detect instead."
 export DYNAMIC_COMPILE=true
 export BUILD_LIST=functional
+echo "USE_TESTENV_PROPERTIES is $USE_TESTENV_PROPERTIES"
 
 cd /aqa-tests
 ./get.sh

@@ -457,10 +457,10 @@ print_environment_variable() {
 
 print_home_path() {
     local file=$1
-    local github_url=$2
+    local aqa_tests_repo=$2
 
     # Get Github folder name
-    local folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    local folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
     echo -e "ENV TEST_HOME /${folder}\n" >> ${file}
 }
 
@@ -506,28 +506,29 @@ print_testInfo_env() {
             "\nENV JDK_VERSION=${version}" \
             "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
+    echo -e "\nENV USE_TESTENV_PROPERTIES ${USE_TESTENV_PROPERTIES} \n" >> ${file}
 }
 
 print_clone_project() {
     local file=$1
     local test=$2
-    local github_url=$3
+    local aqa_tests_repo=$3
+    local aqa_tests_branch=$4
 
     # Cause Test name to be capitalized
     test_tag="$(sanitize_test_names ${test} | tr a-z A-Z)_TAG"
-    git_branch_tag="master"
     if [[ "$test_tag" != *"CRIU"* && "$test_tag" != *"TCK"* ]]; then
-        git_branch_tag=$test_tag
+        aqa_tests_branch=$test_tag
     fi
 
     # Get Github folder name
-    folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
     echo -e "# Clone ${test} source" \
             "\nENV ${test_tag}=\$${test_tag}" \
-            "\nRUN git clone ${github_url}" \
+            "\nRUN git clone ${aqa_tests_repo}" \
             "\nWORKDIR /${folder}/" \
-            "\nRUN git checkout \$${git_branch_tag}" \
+            "\nRUN git checkout ${aqa_tests_branch}" \
             "\nWORKDIR /" \
             "\n" >> ${file}
 }
@@ -656,9 +657,9 @@ generate_dockerfile() {
         print_test_results ${file};
     fi
 
-    print_home_path ${file} ${github_url};
+    print_home_path ${file} ${ADOPTOPENJDK_REPO};
     print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
-    print_clone_project ${file} ${test} ${github_url};
+    print_clone_project ${file} ${test} ${ADOPTOPENJDK_REPO} ${ADOPTOPENJDK_BRANCH} ;
     print_test_files ${file} ${test} ${localPropertyFile};
 
     if [[ "$check_external_custom_test" == "1" ]]; then
