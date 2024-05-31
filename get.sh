@@ -54,7 +54,7 @@ usage ()
 	echo '                [--customized_sourceURL|-S ] : indicate sdk source url if sdk source is set as customized.'
 	echo '                [--username ] : indicate username required if customized url requiring authorization is used'
 	echo '                [--password ] : indicate password required if customized url requiring authorization is used'
-	echo '                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true'
+	echo '                [--clone_openj9 ] : optional. true or false. Clone openj9 if this flag is set to true. Default to true'
 	echo '                [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided'
 	echo '                [--openj9_sha ] : optional. OpenJ9 pull request sha.'
 	echo '                [--openj9_branch ] : optional. OpenJ9 branch.'
@@ -141,13 +141,13 @@ parseCommandLineArgs()
 
 			"--debug_images_required" )
 				DEBUG_IMAGES_REQUIRED="$1"; shift;;
-			
+
 			"--code_coverage" )
 				CODE_COVERAGE="$1"; shift;;
 
 			"--curl_opts" )
 				CURL_OPTS="$1"; shift;;
-				
+
 			"--additional_artifacts_required" )
 				ADDITIONAL_ARTIFACTS_REQUIRED="$1"; shift;;
 
@@ -262,7 +262,7 @@ getBinaryOpenjdk()
 		download_url=""
 		echo "--sdkdir is set to $SDK_RESOURCE. Therefore, skip download jdk binary"
 	fi
-	
+
 	if [ "${download_url}" != "" ]; then
 		for file in $download_url
 		do
@@ -270,8 +270,8 @@ getBinaryOpenjdk()
 				if [[ $file = *?[0-9] ]]; then
 					fileName=$(curl -k ${curl_options} ${file}/ | grep href | sed 's/.*href="//' | sed 's/".*//' |  grep '^[a-zA-Z].*')
 					file=${file}/${fileName}
-				fi 
-			fi 
+				fi
+			fi
 			executeCmdWithRetry "${file##*/}" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $file"
 			rt_code=$?
 			if [ $rt_code != 0 ]; then
@@ -391,17 +391,17 @@ getBinaryOpenjdk()
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
-						# If test sdk has already been expanded, this one must be the additional sdk 
+						# If test sdk has already been expanded, this one must be the additional sdk
 						isAdditional=0
-						if [ -f "./j2sdk-image/release" ]; then 
+						if [ -f "./j2sdk-image/release" ]; then
 							isAdditional=1
-						else 
-							if [ "$ADDITIONAL_ARTIFACTS_REQUIRED" == "RI_JDK" ]; then 
+						else
+							if [ "$ADDITIONAL_ARTIFACTS_REQUIRED" == "RI_JDK" ]; then
 								# Check release info
 								if [ -d "./$jar_dir_name/Contents" ]; then # Mac
 									release_info=$( cat ./$jar_dir_name/Contents/Home/release )
 									UNZIPPED_ADDITIONAL_SDK="./$jar_dir_name/Contents/Home/"
-								else 	
+								else
 									release_info=$( cat ./$jar_dir_name/release )
 									UNZIPPED_ADDITIONAL_SDK="./$jar_dir_name/"
 								fi
@@ -420,7 +420,7 @@ getBinaryOpenjdk()
 							echo "RI JDK available at $SDKDIR/additionaljdkbinary/"
 							echo "RI JDK version:"
 							$SDKDIR/additionaljdkbinary/bin/java -version
-						else 
+						else
 							mv $jar_dir_name ../j2sdk-image
 						fi
 					# The following only needed if openj9 has a different image name convention
@@ -533,7 +533,7 @@ executeCmdWithRetry()
 		count=$(( $count + 1 ))
 	done
 	set -e
-	return "$rt_code"	
+	return "$rt_code"
 }
 
 getFunctionalTestMaterial()
@@ -776,7 +776,7 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 		echo "load ./testenv/testenv.properties"
 		source ./testenv/testenv.properties
 	fi
-	if [[ $JDK_IMPL != "openj9" && $JDK_IMPL != "ibm" ]]; then   
+	if [[ $JDK_IMPL != "openj9" && $JDK_IMPL != "ibm" ]]; then
 		echo "Running checkTags with $teFile and $JDK_VERSION"
 		./scripts/testenv/checkTags.sh $teFile $JDK_VERSION
 	fi

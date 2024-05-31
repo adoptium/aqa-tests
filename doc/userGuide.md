@@ -200,7 +200,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
                 [--sdk_resource|-r ] : optional. Indicate where to download an sdk from - releases, nightly, upstream or customized
 
                 [--customizedURL|-c ] : optional. If downloading an sdk and if sdk source is set as customized, indicates sdk url
-                [--clone_openj9 ] : optional. ture or false. Clone openj9 if this flag is set to true. Default to true
+                [--clone_openj9 ] : optional. true or false. Clone openj9 if this flag is set to true. Default to true
                 [--openj9_repo ] : optional. OpenJ9 git repo. Default value https://github.com/eclipse-openj9/openj9.git is used if not provided
                 [--openj9_sha ] : optional. OpenJ9 pull request sha
                 [--openj9_branch ] : optional. OpenJ9 branch
