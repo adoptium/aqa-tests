@@ -2736,4 +2736,35 @@
 		</vendors>
 		<platformRequirements>spec.linux_x86-64</platformRequirements>
 	</test>
+	<test>
+		<testCaseName>langtools_all</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19605</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19605</comment>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx768m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_LANGTOOLS_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_LANGTOOLS_TEST_DIR)$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
 </playlist>
