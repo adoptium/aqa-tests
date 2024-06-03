@@ -2221,6 +2221,18 @@
 	</test>
 	<test>
 		<testCaseName>jdk_vector</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19360</comment>
+				<impl>openj9</impl>
+				<version>17</version>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19360</comment>
+				<impl>ibm</impl>
+				<version>17</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
