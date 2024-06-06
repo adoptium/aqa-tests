@@ -1,134 +1,218 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * This Generator can generate aprox 7-36 groups, based on limit
+ * Limnit 60 - 75 groups, from those  17 "small gathering"
+ * Limnit 100 - 53 groups, from those  19 "small gathering"
+ * Limnit 250 - 26 groups, from those  14 "small gathering"
+ * Limnit 500 - 15 groups, from those  11 "small gathering"
+ * Limit 1000 - 9 groups, from those  6 "small gathering"
+ * Limit 2000 - 6 groups, from those  3 "small gathering"
+ * Note that it do not splig big generated classes. Those have some 2000 tests, and will remain not split
+ * <p>
+ * Note, that LIMIT is not strictly honored. It is jsut saying, that if there LIMIT of testes or more, it wil not be grouped.
+ * Note, that NOT_MERGE_ABLE_GROUPS may nopt be complete. It depends on size of LIMIT, and I had not tried all.
+ */
 public class Generate {
 
-    //all groups with this or fewer members will be unified by preffix - if prefix is not one of excluded
-    //it is interesting that for 02022024 limit 10 (and excludelist) generated 161 targets. And with 100 it is 139 (two more items
-    // had to be added to exclude list
-    private static final int LIMIT = 100;
-    //those namespaces can match more than just themselves, so must stay alone
-    private static final String[] EXCLUDE_LIST =
-            new String[]{"org.openjdk.jcstress.tests", "org.openjdk.jcstress.tests.accessAtomic.fields",
-                    "org.openjdk.jcstress.tests.atomicity", "org.openjdk.jcstress.tests.atomicity.varHandles.arrays",
-                    "org.openjdk.jcstress.tests.atomicity.varHandles.fields", "org.openjdk.jcstress.tests.atomics",
-                    "org.openjdk.jcstress.tests.atomics.booleans", "org.openjdk.jcstress.tests.fences",
-                    "org.openjdk.jcstress.tests.fences.varHandles", "org.openjdk.jcstress.tests.locks",
-                    "org.openjdk.jcstress.tests.memeffects.basic", "org.openjdk.jcstress.tests.tearing",
-                    "org.openjdk.jcstress.tests.atomics.integer", "org.openjdk.jcstress.tests.atomics.longs",
+    // longest generated classes have 2131 tests
+    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
+    private static final boolean smallGroups = true;
+    //those namespaces can match more than just themselves, so can not be "nicely" merged (but will be gathered in small.groups if possible)
+    private static final String[] NOT_MERGE_ABLE_GROUPS =
+            new String[]{
+                    "org.openjdk.jcstress.tests",
+                    "org.openjdk.jcstress.tests.acqrel",
+                    "org.openjdk.jcstress.tests.copy",
+                    "org.openjdk.jcstress.tests.tearing",
+                    "org.openjdk.jcstress.tests.init",
+                    "org.openjdk.jcstress.tests.accessAtomic",
+                    "org.openjdk.jcstress.tests.coherence",
+                    "org.openjdk.jcstress.tests.atomicity",
+                    "org.openjdk.jcstress.tests.atomicity.varHandles",
+                    "org.openjdk.jcstress.tests.atomicity.varHandles.arrays",
+                    "org.openjdk.jcstress.tests.atomicity.varHandles.fields",
+                    "org.openjdk.jcstress.tests.atomics",
+                    "org.openjdk.jcstress.tests.atomics.booleans",
+                    "org.openjdk.jcstress.tests.atomics.integer",
+                    "org.openjdk.jcstress.tests.atomics.longs",
+                    "org.openjdk.jcstress.tests.fences",
+                    "org.openjdk.jcstress.tests.fences.varHandles",
+                    "org.openjdk.jcstress.tests.locks",
                     "org.openjdk.jcstress.tests.locks.mutex",
-                    "org.openjdk.jcstress.tests.locks.stamped","org.openjdk.jcstress.tests.memeffects.basic.atomic"
+                    "org.openjdk.jcstress.tests.locks.stamped",
+                    "org.openjdk.jcstress.tests.memeffects.basic",
+                    "org.openjdk.jcstress.tests.memeffects.basic.atomic",
+                    "org.openjdk.jcstress.tests.acqrel.varHandles",
+                    "org.openjdk.jcstress.tests.accessAtomic.fields",
+                    "org.openjdk.jcstress.tests.accessAtomic.varHandles",
+                    "org.openjdk.jcstress.tests.coherence.varHandles"
             };
+    private static final String template = """
+            <test>
+            	<testCaseName>-TARGET-</testCaseName>
+            	<!-- -COMMENT-  -->
+                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -t -REGEX-; \\
+                   $(TEST_STATUS)</command>
+            	<levels>
+            		<level>dev</level>
+            	</levels>
+            	<groups>
+            		<group>system</group>
+            	</groups>
+            </test>""";
+    private static final String header = """
+            <?xml version='1.0' encoding='UTF-8'?>
+            <!--
+            # Licensed under the Apache License, Version 2.0 (the "License");
+            # you may not use this file except in compliance with the License.
+            # You may obtain a copy of the License at
+            #
+            #      https://www.apache.org/licenses/LICENSE-2.0
+            #
+            # Unless required by applicable law or agreed to in writing, software
+            # distributed under the License is distributed on an "AS IS" BASIS,
+            # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            # See the License for the specific language governing permissions and
+            # limitations under the License.
+            -->
+            <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">""";
+    private static final String footer = "</playlist>";
+    private static URLClassLoader jarFileClasses;
 
-    private static class GroupWithCases implements Comparable<GroupWithCases> {
-        final String group;
-        int count = 1;
+    private static int getJcstressTests(String clazz) throws Exception {
+        Class cl = jarFileClasses.loadClass(clazz);
+        int tests = getMethodsAnnotatedWith(cl, new String[]{"Actor", "Arbiter"}).size();
+        return tests;
+    }
 
-        public GroupWithCases(String group) {
-            this.group = group;
+    public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final String[] annotationTypeNames) {
+        final List<Method> methods = new ArrayList<Method>();
+        Class<?> klass = type;
+        while (klass != Object.class) {
+            for (final Method method : klass.getDeclaredMethods()) {
+                if (isAnnotationPresent(method, annotationTypeNames)) {
+                    methods.add(method);
+                }
+            }
+            klass = klass.getSuperclass();
         }
+        return methods;
+    }
 
-        public GroupWithCases(String group, int count) {
-            this.group = group;
-            this.count = count;
+    private static boolean isAnnotationPresent(Method method, String[] annotationTypeNames) {
+        for (Annotation annotation : method.getAnnotations()) {
+            for (String annotationTypeName : annotationTypeNames) {
+                if (annotation.annotationType().getSimpleName().equals(annotationTypeName)) {
+                    return true;
+                }
+            }
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            GroupWithCases that = (GroupWithCases) o;
-            return Objects.equals(group, that.group);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(group);
-        }
-
-        @Override
-        public int compareTo(GroupWithCases that) {
-            return this.group.compareTo(that.group);
-        }
-
-        public void add() {
-            count++;
-        }
-
-        public void add(int i) {
-            count += i;
-        }
-
-        @Override
-        public String toString() {
-            return group + ": " + count;
-        }
-
-        public String toTarget() {
-            return group.replace("org.openjdk.jcstress.tests.", "jcstress.");
-        }
-
-        public String title() {
-            return "target " + toTarget() + " will run " + count + " tests in -t " + group;
-        }
+        return false;
     }
 
     public static void main(String... args) throws Exception {
-        String jar = "../../jcstress/jcstress.jar";
+        String jar = "../../../ci-jenkins-pipelines/tools/code-tools/jcstress/jcstress-20240222.jar";
         if (args.length > 0) {
             jar = args[0];
         }
+        File jarFile = new File(jar);
+        if (!jarFile.exists()) {
+            throw new RuntimeException(jar + " does not exists");
+        }
+        URL[] cp = {jarFile.toURI().toURL()};
+        jarFileClasses = new URLClassLoader(cp);
         String jarName = new File(jar).getName();
-        List<String> tests = listTestsFromJars(jar);
-        System.err.println("total tests: " + tests.size());
-        List<GroupWithCases> groups1 = groupTests(tests);
-        System.err.println("Groups 1: " + groups1.size());
-        //print(groups1);
-        List<GroupWithCases> groups2 = mergeSmallGroups(groups1);
-        System.err.println("Groups 2 : " + groups2.size());
-        //print(groups2);
-        Collections.sort(groups2);
-        System.err.println("Checksum!");
-        int issues = checksum(groups2, tests, false, false, true);
-        if (issues > 0) {
-            throw new RuntimeException("Some (" + issues + ") targets run more then they should. Enhance blacklist, commit and rerun");
+        System.err.println("Loading " + jarFile.getAbsolutePath());
+        System.err.println("Limit is " + LIMIT + "; no group with more then " + LIMIT + " of tests should be merged down.");
+        List<GroupWithCases> tests = listTestsFromJars(jar);
+        System.err.println("total tests files: " + tests.size());
+        print(tests);
+        List<GroupWithCases> groups = tests;
+        int i = 0;
+        while (true) {
+            i++;
+            List<GroupWithCases> bigCandidate = groupTests(groups);
+            if (bigCandidate.size() == groups.size()) {
+                break;
+            }
+            groups = bigCandidate;
+            System.err.println("Natural Groups " + i + " : " + groups.size());
+            print(groups);
         }
-        sortByCount(groups2);
-        System.out.println(header);
-        for (GroupWithCases group: groups2) {
-            System.out.println(template
-                    .replace("-JARFILE-", jarName)
-                    .replace("-TARGET-", group.toTarget())
-                    .replace("-REGEX-", group.group));
+        if (smallGroups) {
+            int x = 0;
+            while (true) {
+                x++;
+                List<GroupWithCases> bigCandidate = mergeSmallGroups(x, groups);
+                if (bigCandidate.size() == groups.size()) {
+                    break;
+                }
+                groups = bigCandidate;
+                System.err.println("Small Groups " + x + " : " + groups.size());
+                print(groups);
+            }
         }
-        System.out.println(footer);
+        Collections.sort(groups);
+        System.err.println("Checksum:");
+        checksum(groups, tests, false, true, true);
+        System.err.println("Passed!");
+        sortByCount(groups);
+        print(groups);
+        if ("true".equals(System.getenv("JUST_REGEXES"))) {
+            for (GroupWithCases group : groups) {
+                System.out.println(group.regex);
+            }
+        } else {
+            System.out.println(header);
+            int q = 0;
+            for (GroupWithCases group : groups) {
+                q++;
+                System.out.println(template
+                        .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
+                        .replace("-JARFILE-", jarName)
+                        .replace("-TARGET-", group.toTarget())
+                        .replace("-REGEX-", group.regex));
+            }
+            System.out.println(footer);
+        }
 
 
     }
 
-    private static int checksum(List<GroupWithCases> groups2, List<String> tests, boolean passes, boolean warning, boolean errors) {
+    private static void checksum(List<GroupWithCases> groups, List<GroupWithCases> tests, boolean passes, boolean warning, boolean errors) {
         int issues = 0;
-        for (GroupWithCases group : groups2) {
+        int totalcounter = 0;
+        List<GroupWithCases> matched = new ArrayList<>(tests.size());
+        for (GroupWithCases group : groups) {
             int counter = 0;
-            for (String test : tests) {
-                if (test.matches(".*" + group.group + ".*")) {
+            for (GroupWithCases test : tests) {
+                if (test.name.matches(".*(" + group.regex + ").*")) {
                     counter++;
+                    totalcounter++;
+                    matched.add(test);
                 }
             }
-            if (counter == group.count) {
+            if (counter == group.classes) {
                 if (passes) {
                     title1(group);
                     System.err.println("OK " + counter);
                 }
-            } else if (counter < group.count) {
+            } else if (counter < group.classes) {
                 if (warning) {
                     title1(group);
                     System.err.println("warning " + counter);
@@ -142,38 +226,50 @@ public class Generate {
                 issues++;
             }
         }
-        return issues;
+        if (issues == 0 && totalcounter != tests.size()) {
+            for (GroupWithCases test : tests) {
+                if (!matched.contains(test)) {
+                    System.err.println("Never matched: " + test);
+                }
+            }
+            throw new RuntimeException("Some tests were lost on the fly! Expected " + tests.size() + " got " + totalcounter);
+        }
+        if (issues > 0) {
+            throw new RuntimeException("Some (" + issues + ") targets run more then they should. Enhance blacklist, commit and rerun");
+        }
     }
 
     private static void title1(GroupWithCases group) {
-        System.err.println("target " + group.toTarget() + " expects " + group.count + " hits for -t " + group.group + "; got:");
+        System.err.println("target " + group.toTarget() + " expects " + group.classes + " hits for -t " + group.regex + "; got:");
     }
 
-
-    private static List<GroupWithCases> mergeSmallGroups(List<GroupWithCases> groups1) {
-        List<String> exludes = Arrays.stream(EXCLUDE_LIST).toList();
+    private static List<GroupWithCases> mergeSmallGroups(int id, List<GroupWithCases> groups1) {
+        GroupWithCases candidate = new GroupWithCases("small.groups." + id, "", 0, 0);
         List<GroupWithCases> groups2 = new ArrayList<>(150);
         for (GroupWithCases origGroup : groups1) {
-            String groupName = origGroup.group.substring(0, origGroup.group.lastIndexOf('.'));
-            if (origGroup.count > LIMIT || exludes.contains(groupName)) {
+            if (origGroup.tests >= LIMIT) {
                 groups2.add(origGroup);
             } else {
-                GroupWithCases candidate = new GroupWithCases(groupName, origGroup.count);
-                int i = groups2.indexOf(candidate);
-                if (i >= 0) {
-                    groups2.get(i).add(candidate.count);
+                if (candidate.tests < LIMIT) {
+                    candidate.add(origGroup.tests, origGroup.classes);
+                    candidate.appendRegex(origGroup.regex);
                 } else {
-                    groups2.add(candidate);
+                    groups2.add(origGroup);
                 }
             }
+        }
+        if (candidate.classes > 0) {
+            groups2.add(candidate);
         }
         return groups2;
     }
 
     private static void print(List<GroupWithCases> groups1) {
-        sortByCount(groups1);
-        for (GroupWithCases group : groups1) {
-            System.err.println(group);
+        if ("true".equals(System.getenv("VERBOSE"))) {
+            sortByCount(groups1);
+            for (GroupWithCases group : groups1) {
+                System.err.println(group);
+            }
         }
     }
 
@@ -181,25 +277,26 @@ public class Generate {
         Collections.sort(groups1, new Comparator<GroupWithCases>() {
             @Override
             public int compare(GroupWithCases t1, GroupWithCases t2) {
-                return t1.count - t2.count;
+                return t1.tests - t2.tests;
             }
         });
     }
 
-    private static List<GroupWithCases> groupTests(List<String> tests) {
-        List<String> exludes = Arrays.stream(EXCLUDE_LIST).toList();
+    private static List<GroupWithCases> groupTests(List<GroupWithCases> tests) throws Exception {
+        List<String> exludes = Arrays.stream(NOT_MERGE_ABLE_GROUPS).toList();
         List<GroupWithCases> groups1 = new ArrayList<>(300);
-        for (String test : tests) {
-            String groupName = test.substring(0, test.lastIndexOf('.'));
+        for (GroupWithCases test : tests) {
+            String groupName = test.name.substring(0, test.name.lastIndexOf('.'));
             GroupWithCases candidate;
-            if (exludes.contains(groupName)) {
-                candidate = new GroupWithCases(test);
+            if (exludes.contains(groupName) || test.tests > LIMIT) {
+                candidate = test;
             } else {
-                candidate = new GroupWithCases(groupName);
+                candidate = new GroupWithCases(groupName, false);
+                candidate.add(test.tests, test.classes);
             }
             int i = groups1.indexOf(candidate);
             if (i >= 0) {
-                groups1.get(i).add();
+                groups1.get(i).add(candidate.tests, candidate.classes);
             } else {
                 groups1.add(candidate);
             }
@@ -207,50 +304,120 @@ public class Generate {
         return groups1;
     }
 
-    private static List<String> listTestsFromJars(String jar) throws IOException, InterruptedException {
+    private static List<GroupWithCases> listTestsFromJars(String jar) throws Exception {
         ProcessBuilder ps = new ProcessBuilder("java", "-jar", jar, "-l");
+        long totalTest = 0;
         ps.redirectErrorStream(true);
         Process pr = ps.start();
         BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-        List<String> tests = new ArrayList<>(500);
+        List<GroupWithCases> tests = new ArrayList<>(500);
         String line;
         while ((line = in.readLine()) != null) {
             if (line.startsWith("org.")) {
-                if (!line.contains(".samples.") && line.contains(".tests.")) tests.add(line);
+                if (!line.contains(".samples.") && line.contains(".tests.")) {
+                    GroupWithCases clazz = new GroupWithCases(line, true);
+                    totalTest += clazz.tests;
+                    tests.add(clazz);
+                }
             }
         }
         pr.waitFor();
         in.close();
+        System.err.println("Total test cases: " + totalTest);
         return tests;
     }
 
-    private static  final String template= """
-            <test>
-            	<testCaseName>-TARGET-</testCaseName>
-                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -t -REGEX-; \\
-                   $(TEST_STATUS)</command>
-            	<levels>
-            		<level>dev</level>
-            	</levels>
-            	<groups>
-            		<group>system</group>
-            	</groups>
-            </test>""";
-    private static  final String header= """
-<?xml version='1.0' encoding='UTF-8'?>
-<!--
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
--->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">""";
-    private static  final String footer= "</playlist>";
+    private static class GroupWithCases implements Comparable<GroupWithCases> {
+        final String name;
+        String regex;
+        int tests;
+        int classes;
+
+        public GroupWithCases(String name, boolean clazz) throws Exception {
+            this.name = name;
+            this.regex = name;
+            if (clazz) {
+                String innerGroup = name;
+                while (true) {
+                    try {
+                        int testsFound = getJcstressTests(innerGroup);
+                        tests = testsFound;
+                        classes = 1;
+                        break;
+                    } catch (ClassNotFoundException ex) {
+                        innerGroup = replaceLast(innerGroup, "\\.", "$");
+                        if (!innerGroup.contains(".")) {
+                            throw ex;
+                        }
+                    }
+                }
+            } else {
+                tests = 0;
+                classes = 0;
+            }
+        }
+
+        public GroupWithCases(String name, String regex, int tests, int classes) {
+            this.name = name;
+            this.regex = regex;
+            this.tests = tests;
+            this.classes = classes;
+        }
+
+        private String replaceLast(String string, String what, String by) {
+            String reverse = new StringBuffer(string).reverse().toString();
+            Matcher matcher = Pattern.compile(what).matcher(reverse);
+            reverse = matcher.replaceFirst(matcher.quoteReplacement(by));
+            string = new StringBuffer(reverse).reverse().toString();
+            return string;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            GroupWithCases that = (GroupWithCases) o;
+            return Objects.equals(name, that.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
+        }
+
+        @Override
+        public int compareTo(GroupWithCases that) {
+            return this.name.compareTo(that.name);
+        }
+
+        public void add(int tests, int classes) {
+            this.tests += tests;
+            this.classes += classes;
+        }
+
+        @Override
+        public String toString() {
+            return toStringNoRegex() + " via (" + regex + ")";
+        }
+
+        public String toStringNoRegex() {
+            return name + ": classes " + classes + "/tests " + tests;
+        }
+
+        public String toTarget() {
+            return name.replace("org.openjdk.jcstress.tests.", "jcstress.");
+        }
+
+        public String title() {
+            return "target " + toTarget() + " will run " + tests + " tests in -t " + regex;
+        }
+
+        public void appendRegex(String regex) {
+            if (this.regex.isEmpty()) {
+                this.regex = regex;
+            } else {
+                this.regex = this.regex + "|" + regex;
+            }
+        }
+    }
 }
