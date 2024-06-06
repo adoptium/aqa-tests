@@ -11,12 +11,12 @@ import java.util.Objects;
 
 public class Generate {
 
-    //all groups with this or less memebrs will be unified by preffix - if preffix is not one of excluded
-    //it is interesting that for 02022024 limit 10 (and excludelist) generated 161 targets. An d with 100 it is 139 (two more items
-    // had to be added to excludelist
+    //all groups with this or fewer members will be unified by preffix - if prefix is not one of excluded
+    //it is interesting that for 02022024 limit 10 (and excludelist) generated 161 targets. And with 100 it is 139 (two more items
+    // had to be added to exclude list
     private static final int LIMIT = 100;
-    //those namesapces can match more then just themselves, so must stay alone
-    private static final String[] excludelist =
+    //those namespaces can match more than just themselves, so must stay alone
+    private static final String[] EXCLUDE_LIST =
             new String[]{"org.openjdk.jcstress.tests", "org.openjdk.jcstress.tests.accessAtomic.fields",
                     "org.openjdk.jcstress.tests.atomicity", "org.openjdk.jcstress.tests.atomicity.varHandles.arrays",
                     "org.openjdk.jcstress.tests.atomicity.varHandles.fields", "org.openjdk.jcstress.tests.atomics",
@@ -151,7 +151,7 @@ public class Generate {
 
 
     private static List<GroupWithCases> mergeSmallGroups(List<GroupWithCases> groups1) {
-        List<String> exludes = Arrays.stream(excludelist).toList();
+        List<String> exludes = Arrays.stream(EXCLUDE_LIST).toList();
         List<GroupWithCases> groups2 = new ArrayList<>(150);
         for (GroupWithCases origGroup : groups1) {
             String groupName = origGroup.group.substring(0, origGroup.group.lastIndexOf('.'));
@@ -187,7 +187,7 @@ public class Generate {
     }
 
     private static List<GroupWithCases> groupTests(List<String> tests) {
-        List<String> exludes = Arrays.stream(excludelist).toList();
+        List<String> exludes = Arrays.stream(EXCLUDE_LIST).toList();
         List<GroupWithCases> groups1 = new ArrayList<>(300);
         for (String test : tests) {
             String groupName = test.substring(0, test.lastIndexOf('.'));
@@ -237,6 +237,20 @@ public class Generate {
             	</groups>
             </test>""";
     private static  final String header= """
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">""";
     private static  final String footer= "</playlist>";
 }
