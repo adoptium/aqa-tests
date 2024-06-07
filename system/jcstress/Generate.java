@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -66,7 +67,7 @@ public class Generate {
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
-                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -t -REGEX-; \\
+                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -t "-REGEX-"; \\
                    $(TEST_STATUS)</command>
             	<levels>
             		<level>dev</level>
@@ -93,6 +94,8 @@ public class Generate {
             <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">""";
     private static final String footer = "</playlist>";
     private static URLClassLoader jarFileClasses;
+    private static String jvm;
+    private static File jarFile;
 
     private static int getJcstressTests(String clazz) throws Exception {
         Class cl = jarFileClasses.loadClass(clazz);
@@ -130,7 +133,7 @@ public class Generate {
         if (args.length > 0) {
             jar = args[0];
         }
-        File jarFile = new File(jar);
+        jarFile = new File(jar);
         if (!jarFile.exists()) {
             throw new RuntimeException(jar + " does not exists");
         }
@@ -139,7 +142,9 @@ public class Generate {
         String jarName = new File(jar).getName();
         System.err.println("Loading " + jarFile.getAbsolutePath());
         System.err.println("Limit is " + LIMIT + "; no group with more then " + LIMIT + " of tests should be merged down.");
-        List<GroupWithCases> tests = listTestsFromJars(jar);
+        ProcessHandle processHandle = ProcessHandle.current();
+        jvm = processHandle.info().command().orElse("java");
+        List<GroupWithCases> tests = listTestsFromJars(jvm, jar);
         System.err.println("total tests files: " + tests.size());
         print(tests);
         List<GroupWithCases> groups = tests;
@@ -177,6 +182,56 @@ public class Generate {
             for (GroupWithCases group : groups) {
                 System.out.println(group.regex);
             }
+        } else if ("do".equals(System.getenv("JUST_REGEXES")) || "test".equals(System.getenv("JUST_REGEXES"))) {
+            int cores = Integer.parseInt(System.getenv("CORES") == null ? "1" : System.getenv("CORES"));
+            final List<GroupWithCases> results = new ArrayList<>();
+            //It may happen ne will kill it in runtime.. good to print at least something
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    System.out.println("Exited");
+                    System.out.println("Results gathered: " + results.size());
+                    if (results.isEmpty()) {
+                        return;
+                    }
+                    sortByCount(results);
+                    Collections.reverse(results);
+                    int longest = results.get(0).tests;
+                    long totalTime = 0;
+                    for (GroupWithCases time : results) {
+                        totalTime += (long) (time.tests);
+                        int percent = (time.tests / (longest / 100));
+                        String prefix = "";
+                        if (time.tests < 30) {
+                            prefix = "Error? ";
+                        }
+                        System.out.println(prefix + time.name + " with " + time.classes + "tests took " + time.tests + "s (" + percent + "%)");
+                    }
+                    System.out.println("Total time: " + totalTime / 60l + " minutes");
+                }
+            });
+            System.out.println("Starting measuring individual targets on " + cores + " core(s) with" + jvm);
+            for (GroupWithCases group : groups) {
+                Date start = new Date();
+                System.out.println(start + " starting " + group.toStringNoRegex());
+                ProcessBuilder ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-c", cores + "", "-t", group.toSelector());
+                for (String cmd : ps.command()) {
+                    System.out.print(cmd + " ");
+                }
+                System.out.println();
+                ps.redirectErrorStream(true);
+                Process pr = ps.start();
+                BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.println(line); //?
+                }
+                pr.waitFor();
+                in.close();
+                Date finished = new Date();
+                long deltaSeconds = (finished.getTime() - start.getTime()) / 1000l;
+                results.add(new GroupWithCases(group.name, group.regex, (int) deltaSeconds, group.tests));
+                System.out.println(finished + " finished " + group.name + " in " + (deltaSeconds / 60) + " minutes");
+            }
         } else {
             System.out.println(header);
             int q = 0;
@@ -186,7 +241,7 @@ public class Generate {
                         .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
                         .replace("-JARFILE-", jarName)
                         .replace("-TARGET-", group.toTarget())
-                        .replace("-REGEX-", group.regex));
+                        .replace("-REGEX-", group.toSelector()));
             }
             System.out.println(footer);
         }
@@ -201,7 +256,7 @@ public class Generate {
         for (GroupWithCases group : groups) {
             int counter = 0;
             for (GroupWithCases test : tests) {
-                if (test.name.matches(".*(" + group.regex + ").*")) {
+                if (test.name.matches(".*(" + group.regex + ")")) {
                     counter++;
                     totalcounter++;
                     matched.add(test);
@@ -291,12 +346,13 @@ public class Generate {
             if (exludes.contains(groupName) || test.tests > LIMIT) {
                 candidate = test;
             } else {
-                candidate = new GroupWithCases(groupName, false);
+                candidate = new GroupWithCases(groupName, test.regex, false);
                 candidate.add(test.tests, test.classes);
             }
             int i = groups1.indexOf(candidate);
             if (i >= 0) {
                 groups1.get(i).add(candidate.tests, candidate.classes);
+                groups1.get(i).appendRegex(candidate.regex);
             } else {
                 groups1.add(candidate);
             }
@@ -304,8 +360,8 @@ public class Generate {
         return groups1;
     }
 
-    private static List<GroupWithCases> listTestsFromJars(String jar) throws Exception {
-        ProcessBuilder ps = new ProcessBuilder("java", "-jar", jar, "-l");
+    private static List<GroupWithCases> listTestsFromJars(String jvm, String jar) throws Exception {
+        ProcessBuilder ps = new ProcessBuilder(jvm, "-jar", jar, "-l");
         long totalTest = 0;
         ps.redirectErrorStream(true);
         Process pr = ps.start();
@@ -334,8 +390,12 @@ public class Generate {
         int classes;
 
         public GroupWithCases(String name, boolean clazz) throws Exception {
+            this(name, name, clazz);
+        }
+
+        public GroupWithCases(String name, String regex, boolean clazz) throws Exception {
             this.name = name;
-            this.regex = name;
+            this.regex = regex;
             if (clazz) {
                 String innerGroup = name;
                 while (true) {
@@ -418,6 +478,10 @@ public class Generate {
             } else {
                 this.regex = this.regex + "|" + regex;
             }
+        }
+
+        public String toSelector() {
+            return regex.replace("|", "||");
         }
     }
 }
