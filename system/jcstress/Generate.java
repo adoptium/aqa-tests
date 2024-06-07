@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class Generate {
 
     // longest generated classes have 2131 tests
-    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
+    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "2000" : System.getenv("LIMIT"));
     private static final boolean smallGroups = true;
     //those namespaces can match more than just themselves, so can not be "nicely" merged (but will be gathered in small.groups if possible)
     private static final String[] NOT_MERGE_ABLE_GROUPS =
@@ -189,7 +189,7 @@ public class Generate {
             //warning, many tests needs two or more cores
             int cores = Integer.parseInt(System.getenv("CORES") == null ? "2" : System.getenv("CORES"));
             final List<GroupWithCases> results = new ArrayList<>();
-            //It may happen ne will kill it in runtime.. good to print at least something
+            //It may happen we will kill it in runtime... good to print at least something
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     System.out.println("Exited");
@@ -214,9 +214,11 @@ public class Generate {
                 }
             });
             System.out.println("Starting measuring individual targets on " + cores + " core(s) with" + jvm);
+            int counter = 0;
             for (GroupWithCases group : groups) {
+                counter++;
                 Date start = new Date();
-                System.out.println(start + " starting " + group.toStringNoRegex());
+                System.out.println(counter + "/" + groups.size() + " " + start + " starting " + group.toStringNoRegex());
                 ProcessBuilder ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-c", cores + "", "-t", group.toSelector());
                 for (String cmd : ps.command()) {
                     System.out.print(cmd + " ");
@@ -226,13 +228,31 @@ public class Generate {
                 Process pr = ps.start();
                 BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
                 String line;
+                long fakeTime = -1;
                 while ((line = in.readLine()) != null) {
-                    System.out.println(line); //?
+                    System.out.println(line);
+                    if ("test".equals(System.getenv("JUST_REGEXES"))) {
+                        if (line.contains("Initial completion estimate:")) {
+                            line = line.replaceAll(".*Initial completion estimate: ", "").replaceAll(" left;.*", "");
+                            pr.destroy();
+                            System.out.println("Terminated for " + line);
+                            if (line.contains("d+")) {
+                                String[] daysHours = line.split("d\\+");
+                                fakeTime = hhmmss(daysHours[1]) + (Integer.parseInt(daysHours[0]) * 24 * 60 * 60);
+                            } else {
+                                fakeTime = hhmmss(line);
+                            }
+                            break;
+                        }
+                    }
                 }
                 pr.waitFor();
                 in.close();
                 Date finished = new Date();
                 long deltaSeconds = (finished.getTime() - start.getTime()) / 1000l;
+                if (fakeTime > -1) {
+                    deltaSeconds = fakeTime;
+                }
                 results.add(new GroupWithCases(group.name, group.regex, (int) deltaSeconds, group.tests));
                 System.out.println(finished + " finished " + group.name + " in " + (deltaSeconds / 60) + " minutes");
             }
@@ -257,6 +277,11 @@ public class Generate {
         }
 
 
+    }
+
+    private static long hhmmss(String line) {
+        String[] hms = line.split(":");
+        return (Integer.parseInt(hms[0]) * 60 * 60) + (Integer.parseInt(hms[1]) * 60) + (Integer.parseInt(hms[2]));
     }
 
     private static void checksum(List<GroupWithCases> groups, List<GroupWithCases> tests, boolean passes, boolean warning, boolean errors) {
