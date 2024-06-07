@@ -183,7 +183,8 @@ public class Generate {
                 System.out.println(group.regex);
             }
         } else if ("do".equals(System.getenv("JUST_REGEXES")) || "test".equals(System.getenv("JUST_REGEXES"))) {
-            int cores = Integer.parseInt(System.getenv("CORES") == null ? "1" : System.getenv("CORES"));
+            //warning, many tests needs two or more cores
+            int cores = Integer.parseInt(System.getenv("CORES") == null ? "2" : System.getenv("CORES"));
             final List<GroupWithCases> results = new ArrayList<>();
             //It may happen ne will kill it in runtime.. good to print at least something
             Runtime.getRuntime().addShutdownHook(new Thread() {
