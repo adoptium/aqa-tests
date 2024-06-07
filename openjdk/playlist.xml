@@ -96,13 +96,23 @@
 	</test>
 	<test>
 		<testCaseName>hotspot_custom</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5357</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5357</comment>
+				<impl>ibm</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(JTREG_BASIC_OPTIONS) -nativepath:"$(TESTIMAGE_PATH)/hotspot/jtreg/native" -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
@@ -115,9 +125,6 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_container</testCaseName>

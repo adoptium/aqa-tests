@@ -728,7 +728,8 @@ def runTest( ) {
 				env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
 			} else {
 				// remove suffix, then set CUSTOM_OPTION (i.e., jdk_custom_0 will become jdk_custom)
-				def removeSuffix = TARGET.replaceAll(/_\d+$/, "")
+				def removeDisabled = TARGET.replaceAll("disabled.", "")
+				def removeSuffix = removeDisabled.replaceAll(/_\d+$/, "")
 				CUSTOM_OPTION = "${removeSuffix.toUpperCase()}_TARGET='${CUSTOM_TARGET}'"
 			}
 		}
