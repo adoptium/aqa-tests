@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class Generate {
 
     // longest generated classes have 2131 tests
-    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "10" : System.getenv("LIMIT"));
+    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
     private static final boolean smallGroups = true;
     //those namespaces can match more than just themselves, so can not be "nicely" merged (but will be gathered in small.groups if possible)
     private static final String[] NOT_MERGE_ABLE_GROUPS =
