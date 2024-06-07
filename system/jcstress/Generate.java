@@ -67,7 +67,7 @@ public class Generate {
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
-                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -t "-REGEX-"; \\
+                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -CORES- -t "-REGEX-"; \\
                    $(TEST_STATUS)</command>
             	<levels>
             		<level>dev</level>
@@ -233,6 +233,11 @@ public class Generate {
                 System.out.println(finished + " finished " + group.name + " in " + (deltaSeconds / 60) + " minutes");
             }
         } else {
+            int cores = Integer.parseInt(System.getenv("CORES") == null ? "0" : System.getenv("CORES"));
+            String coresString = "-c " + cores;
+            if (cores <= 0) {
+                coresString = "";
+            }
             System.out.println(header);
             int q = 0;
             for (GroupWithCases group : groups) {
@@ -240,6 +245,7 @@ public class Generate {
                 System.out.println(template
                         .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
                         .replace("-JARFILE-", jarName)
+                        .replace("-CORES-", coresString)
                         .replace("-TARGET-", group.toTarget())
                         .replace("-REGEX-", group.toSelector()));
             }
