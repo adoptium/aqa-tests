@@ -17,12 +17,15 @@ import java.util.regex.Pattern;
 
 /**
  * This Generator can generate aprox 7-36 groups, based on limit
- * Limnit 60 - 75 groups, from those  17 "small gathering"
- * Limnit 100 - 53 groups, from those  19 "small gathering"
- * Limnit 250 - 26 groups, from those  14 "small gathering"
- * Limnit 500 - 15 groups, from those  11 "small gathering"
+ * Limit 5 - 236 groups, from those  9 "small gathering" (~10minutes per group)
+ * Limit 50 - 83 groups, from those  17 "small gathering" (~90minutes per group)
+ * Limit 100 - 53 groups, from those  19 "small gathering" (~4h per group)
+ * Limit 250 - 26 groups, from those  14 "small gathering"
+ * Limit 500 - 15 groups, from those  11 "small gathering"
  * Limit 1000 - 9 groups, from those  6 "small gathering"
- * Limit 2000 - 6 groups, from those  3 "small gathering"
+ * Limit 2000 - 6 groups, from those  3 "small gathering" (~1.5day each)
+ * Limit 50000 - 5 groups, from those  1 "small gathering" (unklnown, slector to long)
+ * al tests in batch ~11.5 of day
  * Note that it do not splig big generated classes. Those have some 2000 tests, and will remain not split
  * <p>
  * Note, that LIMIT is not strictly honored. It is jsut saying, that if there LIMIT of testes or more, it wil not be grouped.
@@ -31,7 +34,7 @@ import java.util.regex.Pattern;
 public class Generate {
 
     // longest generated classes have 2131 tests
-    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
+    private static final int LIMIT = Integer.parseInt(System.getenv("LIMIT") == null ? "10" : System.getenv("LIMIT"));
     private static final boolean smallGroups = true;
     //those namespaces can match more than just themselves, so can not be "nicely" merged (but will be gathered in small.groups if possible)
     private static final String[] NOT_MERGE_ABLE_GROUPS =
