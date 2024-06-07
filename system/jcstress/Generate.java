@@ -488,7 +488,8 @@ public class Generate {
         }
 
         public String toSelector() {
-            return regex.replace("|", "||");
+            //currently no op, but there were attempts to repalce | operator by different ones
+            return regex;
         }
     }
 }
