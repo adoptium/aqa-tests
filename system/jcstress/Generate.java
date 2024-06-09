@@ -194,7 +194,7 @@ public class Generate {
 
     private static List<GroupWithCases> mergeSmallGroupsToNaturalOnes(List<GroupWithCases> groups) throws Exception {
         int i = 0;
-        final Map<String, Integer> splitGroupsCounters = new HashMap();
+        final Map<String, Integer> splitGroupsCounters = new HashMap<>();
         while (true) {
             i++;
             List<GroupWithCases> bigCandidate = groupTests(groups, splitGroupsCounters);
