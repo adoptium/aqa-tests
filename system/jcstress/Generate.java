@@ -256,10 +256,11 @@ public class Generate {
         return jar;
     }
 
-    private static int getJcstressTests(String clazz) throws Exception {
+    private static TestDetails getJcstressTests(String clazz) throws Exception {
         Class cl = jarFileClasses.loadClass(clazz);
-        int tests = getMethodsAnnotatedWith(cl, new String[]{"Actor", "Arbiter"}).size();
-        return tests;
+        int arbiters = getMethodsAnnotatedWith(cl, new String[]{"Arbiter"}).size();
+        int actors = getMethodsAnnotatedWith(cl, new String[]{"Actor"}).size();
+        return new ActorArbiter(actors, arbiters);
     }
 
     public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final String[] annotationTypeNames) {
@@ -363,7 +364,7 @@ public class Generate {
             if (fakeTime > -1) {
                 deltaSeconds = fakeTime;
             }
-            results.add(new GroupWithCases(group.name, group.regex, (int) deltaSeconds, group.tests));
+            results.add(new GroupWithCases(group.name, group.regex, new Time((int) deltaSeconds), group.tests.getMainOne()));
             String would = "";
             if (OutputType.TEST == getOutputStyle()) {
                 would = " would ";
@@ -465,13 +466,13 @@ public class Generate {
     }
 
     private static List<GroupWithCases> mergeSmallGroups(int id, List<GroupWithCases> groups1) {
-        GroupWithCases candidate = new GroupWithCases("small.groups." + id, "", 0, 0);
+        GroupWithCases candidate = new GroupWithCases("small.groups." + id, "", new ActorArbiter(0, 0), 0);
         List<GroupWithCases> groups2 = new ArrayList<>(150);
         for (GroupWithCases origGroup : groups1) {
-            if (origGroup.tests > LIMIT) {
+            if (origGroup.tests.getMainOne() > LIMIT) {
                 groups2.add(origGroup);
             } else {
-                if (candidate.tests <= LIMIT) {
+                if (candidate.tests.getMainOne() <= LIMIT) {
                     candidate.add(origGroup.tests, origGroup.classes);
                     candidate.appendRegex(origGroup.regex);
                 } else {
@@ -498,7 +499,7 @@ public class Generate {
         Collections.sort(groups1, new Comparator<GroupWithCases>() {
             @Override
             public int compare(GroupWithCases t1, GroupWithCases t2) {
-                return t1.tests - t2.tests;
+                return t1.tests.getMainOne() - t2.tests.getMainOne();
             }
         });
     }
@@ -518,7 +519,7 @@ public class Generate {
                 int currentId = splitGroupsCounters.getOrDefault(groupName, 1);
                 String groupNameWithId = groupName + "-" + wrap(currentId, 3);
                 GroupWithCases candidate;
-                if (exludes.contains(groupName) || test.tests > LIMIT) {
+                if (exludes.contains(groupName) || test.tests.getMainOne() > LIMIT) {
                     candidate = test;
                 } else {
                     candidate = new GroupWithCases(groupNameWithId, test.regex, false);
@@ -529,7 +530,7 @@ public class Generate {
                     GroupWithCases foundGroup = groups1.get(i);
                     foundGroup.add(candidate.tests, candidate.classes);
                     foundGroup.appendRegex(candidate.regex);
-                    if (foundGroup.tests > LIMIT) {
+                    if (foundGroup.tests.getMainOne() > LIMIT) {
                         splitGroupsCounters.put(groupName, currentId + 1);
                     }
                 } else {
@@ -537,7 +538,7 @@ public class Generate {
                 }
             } else {
                 GroupWithCases candidate;
-                if (exludes.contains(groupName) || test.tests > LIMIT) {
+                if (exludes.contains(groupName) || test.tests.getMainOne() > LIMIT) {
                     candidate = test;
                 } else {
                     candidate = new GroupWithCases(groupName, test.regex, false);
@@ -603,7 +604,7 @@ public class Generate {
             if (line.startsWith("org.")) {
                 if (!line.contains(".samples.") && line.contains(".tests.")) {
                     GroupWithCases clazz = new GroupWithCases(line, true);
-                    totalTest += clazz.tests;
+                    totalTest += clazz.tests.getMainOne();
                     tests.add(clazz);
                 }
             }
@@ -650,6 +651,7 @@ public class Generate {
         }
     }
 
+
     public static void calculateStats(List<GroupWithCases> results) {
         System.out.println("Exiting");
         System.out.println("Results gathered: " + results.size() + "; 100% time of longest group, n% time of ideal group");
@@ -659,27 +661,27 @@ public class Generate {
         //first total time
         long totalTime = 0;
         for (GroupWithCases time : results) {
-            totalTime += (long) (time.tests);
+            totalTime += (long) (time.tests.getMainOne());
         }
         long avgTimeExpected = totalTime / results.size();
         //now details
         sortByCount(results);
         Collections.reverse(results);
-        int longest = results.get(0).tests;
+        int longest = results.get(0).tests.getMainOne();
         long maxTime = Long.MIN_VALUE;
         long minTime = Long.MAX_VALUE;
         int forLongestPercentAvg = 0;
         int forAvgPercentAvg = 0;
         for (GroupWithCases time : results) {
-            if (time.tests > maxTime) {
-                maxTime = time.tests;
+            if (time.tests.getMainOne() > maxTime) {
+                maxTime = time.tests.getMainOne();
             }
-            if (time.tests < minTime) {
-                minTime = time.tests;
+            if (time.tests.getMainOne() < minTime) {
+                minTime = time.tests.getMainOne();
             }
-            int percentLongest = ((time.tests * 100) / longest);
+            int percentLongest = ((time.tests.getMainOne() * 100) / longest);
             forLongestPercentAvg += percentLongest;
-            long percentAvg = ((time.tests * 100) / avgTimeExpected);
+            long percentAvg = ((time.tests.getMainOne() * 100) / avgTimeExpected);
             //differences by both directions from 100%
             String sign = "";
             if (percentAvg > 100) {
@@ -692,10 +694,10 @@ public class Generate {
             ;
             forAvgPercentAvg += percentAvg;
             String prefix = "";
-            if (time.tests < 30) {
+            if (time.tests.getMainOne() < 30) {
                 prefix = "Error? ";
             }
-            System.out.println(prefix + time.name + " with " + time.classes + "tests took " + time.tests + "s [" + secondsToDays(time.tests) + "] (" + percentLongest + "%)(" + sign + percentAvg + "%)");
+            System.out.println(prefix + time.name + " with " + time.classes + "tests took " + time.tests + " [" + secondsToDays(time.tests.getMainOne()) + "] (" + percentLongest + "%)(" + sign + percentAvg + "%)");
         }
         System.out.println("Total time: " + totalTime / 60l + " minutes [" + secondsToDays(totalTime) + "]");
         System.out.println("Ideal avg time: " + avgTimeExpected / 60l + " minutes [" + secondsToDays(avgTimeExpected) + "] (100%)");
@@ -712,7 +714,7 @@ public class Generate {
     private static class GroupWithCases implements Comparable<GroupWithCases> {
         final String name;
         String regex;
-        int tests;
+        TestDetails tests;
         int classes;
 
         public GroupWithCases(String name, boolean clazz) throws Exception {
@@ -726,8 +728,7 @@ public class Generate {
                 String innerGroup = name;
                 while (true) {
                     try {
-                        int testsFound = getJcstressTests(innerGroup);
-                        tests = testsFound;
+                        tests = getJcstressTests(innerGroup);
                         classes = 1;
                         break;
                     } catch (ClassNotFoundException ex) {
@@ -738,15 +739,15 @@ public class Generate {
                     }
                 }
             } else {
-                tests = 0;
+                tests = new ActorArbiter(0, 0);
                 classes = 0;
             }
         }
 
-        public GroupWithCases(String name, String regex, int tests, int classes) {
+        public GroupWithCases(String name, String regex, TestDetails testDetails, int classes) {
             this.name = name;
             this.regex = regex;
-            this.tests = tests;
+            this.tests = testDetails;
             this.classes = classes;
         }
 
@@ -776,8 +777,8 @@ public class Generate {
             return this.name.compareTo(that.name);
         }
 
-        public void add(int tests, int classes) {
-            this.tests += tests;
+        public void add(TestDetails toAdd, int classes) {
+            this.tests.add(toAdd);
             this.classes += classes;
         }
 
@@ -811,4 +812,68 @@ public class Generate {
             return regex;
         }
     }
+
+    private interface TestDetails {
+        int getMainOne();
+
+        int getAll();
+
+        void add(Object testDetails);
+
+    }
+
+    private static class ActorArbiter implements TestDetails {
+
+        int actors;
+        int arbiters;
+
+        public ActorArbiter(int actors, int arbiters) {
+            this.actors = actors;
+            this.arbiters = arbiters;
+        }
+
+        public int getMainOne() {
+            return actors + arbiters;
+        }
+
+        public int getAll() {
+            return actors + arbiters;
+        }
+
+        public void add(Object testDetails) {
+            this.actors += ((ActorArbiter) testDetails).actors;
+            this.arbiters += ((ActorArbiter) testDetails).arbiters;
+        }
+
+        @Override
+        public String toString() {
+            return getMainOne() + "(ac/ar:" + actors + "/" + arbiters + ")";
+        }
+    }
+
+    private static class Time implements TestDetails {
+        final int time;
+
+        public Time(int time) {
+            this.time = time;
+        }
+
+        public int getMainOne() {
+            return time;
+        }
+
+        public int getAll() {
+            return time;
+        }
+
+        public void add(Object testDetails) {
+            throw new IllegalArgumentException("Time can not be added");
+        }
+
+        @Override
+        public String toString() {
+            return getMainOne() + "s";
+        }
+    }
+
 }
