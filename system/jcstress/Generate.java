@@ -230,6 +230,11 @@ public class Generate {
         } else {
             System.err.println("Small groups will not be created. Intentional?");
         }
+        if (parseUseFQN()) {
+            System.err.println("FQNs will be used in selectors");
+        } else {
+            System.err.println("Only N from FQN will be used. This saves space, but risks duplicate matches");
+        }
         if (getCoresForPlaylist() == 0) {
             System.err.println("Cores limit for final playlist is not used. Intentional?");
         } else {
@@ -627,6 +632,15 @@ public class Generate {
         }
     }
 
+
+    private static boolean parseUseFQN() {
+        if ("false".equals(System.getenv("FQN"))) {
+            throw new IllegalArgumentException("Selectors without FQN are known to cause mishmashes.");
+        } else {
+            return true;
+        }
+    }
+
     private static String[] parseSplitImsplittable() {
         if ("true".equals(System.getenv("SPLIT_ALL"))) {
             return new String[0];
@@ -723,7 +737,20 @@ public class Generate {
 
         public GroupWithCases(String name, String regex, boolean clazz) throws Exception {
             this.name = name;
-            this.regex = regex;
+            if (clazz) {
+                if (parseUseFQN()) {
+                    this.regex = regex;
+                } else {
+                    int nameIndex = regex.lastIndexOf('.');
+                    if (nameIndex < 0) {
+                        this.regex = regex;
+                    } else {
+                        this.regex = regex.substring(nameIndex+1);
+                    }
+                }
+            } else {
+                this.regex = regex;
+            }
             if (clazz) {
                 String innerGroup = name;
                 while (true) {
