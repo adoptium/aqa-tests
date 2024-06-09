@@ -41,10 +41,7 @@ import java.util.regex.Pattern;
  * Limit 5000 - 3 groups, from those  3 "small groups" (unknown, selector argument to long for one of groups)
  * Limit 50000 - 1 groups, from those 1 "small groups" (unknown, selector argument to long)
  * all tests in batch ~11.5 of day
- * The minimal 2.5 which is invalidating huge groups a bit, are  the two excluded egorg.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles,
- * Which were not
-Initializing and probing the target VM:
-split in this setup. If more cores was used, those must be split.
+ * The minimal 2.5 which is invalidating huge groups a bit, are  the two excluded gorg.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles,
  * <p>
  * Note, that LIMIT is not strictly honored. It is jsut saying, that if there LIMIT of testes or more, it wil not be grouped.
  * So in worse scenario, LIMIT-1+LIMIT-1 will join to group of size of (2*LIMIT)-2, but it is very rare,
@@ -234,11 +231,10 @@ public class Generate {
             System.err.println("Small groups will not be created. Intentional?");
         }
         if (getCoresForPlaylist() == 0) {
-            System.err.println("Cores limit for final playlist is not used");
+            System.err.println("Cores limit for final playlist is not used. Intentional?");
         } else {
-            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional?");
+            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ".");
         }
-        System.err.println("Cores for testing (if run) is " + getCoresForTest());
         if (getOutputStyle() == OutputType.GENERATE) {
             System.err.println("Output will print playlist");
         } else {
@@ -312,8 +308,8 @@ public class Generate {
     }
 
     private static void testTimesByRunningJcstress(List<GroupWithCases> groups) throws IOException, InterruptedException {
-        //warning, many tests needs two or more cores
-        int cores = getCoresForTest();
+        //warning, many tests needs two or more cores!
+        int cores = getCoresForPlaylist();
         final List<GroupWithCases> results = new ArrayList<>();
         //It may happen we will kill it in runtime... good to print at least something
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -328,7 +324,12 @@ public class Generate {
             counter++;
             Date start = new Date();
             System.err.println(counter + "/" + groups.size() + " " + start + " starting " + group.toStringNoRegex());
-            ProcessBuilder ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-c", cores + "", "-t", group.toSelector());
+            ProcessBuilder ps;
+            if (cores <= 0) {
+                ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-t", group.toSelector());
+            } else {
+                ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-c", cores + "", "-t", group.toSelector());
+            }
             for (String cmd : ps.command()) {
                 System.err.print(cmd + " ");
             }
@@ -382,10 +383,6 @@ public class Generate {
 
     private static int getCoresForPlaylist() {
         return getCores(0);
-    }
-
-    private static int getCoresForTest() {
-        return getCores(2);
     }
 
     private static int getCores(int def) {
@@ -589,7 +586,13 @@ public class Generate {
     }
 
     private static List<GroupWithCases> listTestsClassesWithCasesFromJcStressJar(String jvm, String jar) throws Exception {
-        ProcessBuilder ps = new ProcessBuilder(jvm, "-jar", jar, "-l");
+        int cores = getCoresForPlaylist();
+        ProcessBuilder ps;
+        if (cores <= 0) {
+            ps = new ProcessBuilder(jvm, "-jar", jar, "-l");
+        } else {
+            ps = new ProcessBuilder(jvm, "-jar", jar, "-c", cores + "", "-l");
+        }
         long totalTest = 0;
         ps.redirectErrorStream(true);
         Process pr = ps.start();
@@ -674,14 +677,17 @@ public class Generate {
             if (time.tests < minTime) {
                 minTime = time.tests;
             }
-            int percentLongest = ((time.tests*100) /longest);
+            int percentLongest = ((time.tests * 100) / longest);
             forLongestPercentAvg += percentLongest;
-            long percentAvg = ((time.tests*100)/ avgTimeExpected);
+            long percentAvg = ((time.tests * 100) / avgTimeExpected);
             //differences by both directions from 100%
+            String sign = "";
             if (percentAvg > 100) {
                 percentAvg = percentAvg - 100;
+                sign = "+";
             } else {
                 percentAvg = 100 - percentAvg;
+                sign = "-";
             }
             ;
             forAvgPercentAvg += percentAvg;
@@ -689,12 +695,12 @@ public class Generate {
             if (time.tests < 30) {
                 prefix = "Error? ";
             }
-            System.out.println(prefix + time.name + " with " + time.classes + "tests took " + time.tests + "s [" + secondsToDays(time.tests) + "] (" + percentLongest + "%)(" + percentAvg + "%)");
+            System.out.println(prefix + time.name + " with " + time.classes + "tests took " + time.tests + "s [" + secondsToDays(time.tests) + "] (" + percentLongest + "%)(" + sign + percentAvg + "%)");
         }
         System.out.println("Total time: " + totalTime / 60l + " minutes [" + secondsToDays(totalTime) + "]");
         System.out.println("Ideal avg time: " + avgTimeExpected / 60l + " minutes [" + secondsToDays(avgTimeExpected) + "] (100%)");
-        System.out.println("Max seen  time: " + maxTime / 60l + " minutes [" + secondsToDays(maxTime) + "] (" + ((maxTime*100) / avgTimeExpected) + "%)");
-        System.out.println("Min seen  time: " + minTime / 60l + " minutes [" + secondsToDays(minTime) + "] (" + ((minTime*100) / avgTimeExpected) + "%)");
+        System.out.println("Max seen  time: " + maxTime / 60l + " minutes [" + secondsToDays(maxTime) + "] (" + ((maxTime * 100) / avgTimeExpected) + "%)");
+        System.out.println("Min seen  time: " + minTime / 60l + " minutes [" + secondsToDays(minTime) + "] (" + ((minTime * 100) / avgTimeExpected) + "%)");
         System.out.println("Avg differecne from longest: " + forLongestPercentAvg / results.size() + "%");
         System.out.println("Avg differecne from ideal: " + (100 - (forAvgPercentAvg / results.size())) + "%");
     }
