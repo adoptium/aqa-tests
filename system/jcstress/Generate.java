@@ -635,7 +635,7 @@ public class Generate {
 
     private static boolean parseUseFQN() {
         if ("false".equals(System.getenv("FQN"))) {
-            throw new IllegalArgumentException("Selectors without FQN are known to cause mishmashes.");
+            return false;
         } else {
             return true;
         }
@@ -741,12 +741,7 @@ public class Generate {
                 if (parseUseFQN()) {
                     this.regex = regex;
                 } else {
-                    int nameIndex = regex.lastIndexOf('.');
-                    if (nameIndex < 0) {
-                        this.regex = regex;
-                    } else {
-                        this.regex = regex.substring(nameIndex+1);
-                    }
+                    this.regex = regex.replace("org.openjdk.jcstress.", "");
                 }
             } else {
                 this.regex = regex;
