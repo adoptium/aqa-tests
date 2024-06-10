@@ -65,7 +65,7 @@ set -exo pipefail
   uname -a | tee -a $outfile
   head -n 40 /proc/meminfo | tee -a $outfile
   tail -n 40 /proc/cpuinfo | tee -a $outfile
-  date  | tee  $outfile
+  date  | tee -a $outfile
   echo "</pre></details>" | tee -a $outfile
   for SPLIT_ALL in false true ; do
     echo starting SPLIT_ALL=$SPLIT_ALL | tee -a $outfile
