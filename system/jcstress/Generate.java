@@ -111,7 +111,7 @@ public class Generate {
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
-                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -CORES- -t "-REGEX-"; \\
+                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -TB-  -CORES- -t "-REGEX-"; \\
                    $(TEST_STATUS)</command>
             	<levels>
             		<level>dev</level>
@@ -228,7 +228,7 @@ public class Generate {
         if (splitBigBases) {
             System.err.println("Huge groups will be split to more subsets. Exclude list is of length of " + NOT_SPLIT_ABLE_GROUPS.length);
         } else {
-            System.err.println("Small groups will not be created. Intentional?");
+            System.err.println("Huge groups will NOT be split to more subsets. Intentional?");
         }
         if (parseUseFQN()) {
             System.err.println("FQNs will be used in selectors");
@@ -236,9 +236,14 @@ public class Generate {
             System.err.println("Only N from FQN will be used. This saves space, but risks duplicate matches");
         }
         if (getCoresForPlaylist() == 0) {
-            System.err.println("Cores limit for final playlist is not used. Intentional?");
+            System.err.println("Cores limit for final playlist is not used");
         } else {
-            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ".");
+            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional?");
+        }
+        if (isTimeBudgetSet()) {
+            System.err.println("Time budget is " + getCoresForPlaylist() + ". Intentional?");
+        } else {
+            System.err.println("Time budget is not used. Intentional?");
         }
         if (getOutputStyle() == OutputType.GENERATE) {
             System.err.println("Output will print playlist");
@@ -294,10 +299,14 @@ public class Generate {
     }
 
     private static void printPlaylist(String jarName, List<GroupWithCases> groups) {
+        String timeBudgetString = "";
+        if (isTimeBudgetSet()) {
+            timeBudgetString = "-tb " + getTimeBudget();
+        }
         int cores = getCoresForPlaylist();
-        String coresString = "-c " + cores;
-        if (cores <= 0) {
-            coresString = "";
+        String coresString = "";
+        if (cores > 0) {
+            coresString = "-c " + cores;
         }
         System.out.println(header);
         int q = 0;
@@ -307,15 +316,18 @@ public class Generate {
                     .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
                     .replace("-JARFILE-", jarName)
                     .replace("-CORES-", coresString)
+                    .replace("-TB-", timeBudgetString)
                     .replace("-TARGET-", group.toTarget())
                     .replace("-REGEX-", group.toSelector()));
         }
         System.out.println(footer);
     }
 
+    private static boolean isTimeBudgetSet() {
+        return !(getTimeBudget() == null || getTimeBudget().trim().equals("0") || getTimeBudget().trim().equals(""));
+    }
+
     private static void testTimesByRunningJcstress(List<GroupWithCases> groups) throws IOException, InterruptedException {
-        //warning, many tests needs two or more cores!
-        int cores = getCoresForPlaylist();
         final List<GroupWithCases> results = new ArrayList<>();
         //It may happen we will kill it in runtime... good to print at least something
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -324,18 +336,16 @@ public class Generate {
                 calculateStats(results);
             }
         });
-        System.err.println("Starting measuring individual targets on " + cores + " core(s) with" + jvm);
+        System.err.println("Starting measuring individual targets on " + getCoresForPlaylist() + " core(s) with" + jvm);
         int counter = 0;
         for (GroupWithCases group : groups) {
             counter++;
             Date start = new Date();
             System.err.println(counter + "/" + groups.size() + " " + start + " starting " + group.toStringNoRegex());
-            ProcessBuilder ps;
-            if (cores <= 0) {
-                ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-t", group.toSelector());
-            } else {
-                ps = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath(), "-c", cores + "", "-t", group.toSelector());
-            }
+            List<String> args = getBasicJcstressCommand(jvm);
+            args.add("-t");
+            args.add(group.toSelector());
+            ProcessBuilder ps = new ProcessBuilder(args.toArray(new String[0]));
             for (String cmd : ps.command()) {
                 System.err.print(cmd + " ");
             }
@@ -393,6 +403,13 @@ public class Generate {
 
     private static int getCores(int def) {
         return Integer.parseInt(System.getenv("CORES") == null ? "" + def : System.getenv("CORES"));
+    }
+
+    /**
+     * @return time with unit. Eg 100s or 30m
+     */
+    private static String getTimeBudget() {
+        return System.getenv("TIME_BUDGET") == null ? "30m" : System.getenv("TIME_BUDGET");
     }
 
     private static OutputType getOutputStyle() {
@@ -592,13 +609,9 @@ public class Generate {
     }
 
     private static List<GroupWithCases> listTestsClassesWithCasesFromJcStressJar(String jvm, String jar) throws Exception {
-        int cores = getCoresForPlaylist();
-        ProcessBuilder ps;
-        if (cores <= 0) {
-            ps = new ProcessBuilder(jvm, "-jar", jar, "-l");
-        } else {
-            ps = new ProcessBuilder(jvm, "-jar", jar, "-c", cores + "", "-l");
-        }
+        List<String> args = getBasicJcstressCommand(jvm);
+        args.add("-l");
+        ProcessBuilder ps = new ProcessBuilder(args.toArray(new String[0]));
         long totalTest = 0;
         ps.redirectErrorStream(true);
         Process pr = ps.start();
@@ -620,8 +633,26 @@ public class Generate {
         return tests;
     }
 
+    private static List<String> getBasicJcstressCommand(String jvm) {
+        List<String> args = new ArrayList<>();
+        args.add(jvm);
+        args.add("-jar");
+        args.add(jarFile.getAbsolutePath());
+        //warning, many tests needs two or more cores!
+        int cores = getCoresForPlaylist();
+        if (cores > 0) {
+            args.add("-c");
+            args.add(cores + "");
+        }
+        if (isTimeBudgetSet()) {
+            args.add("-tb");
+            args.add(getTimeBudget());
+        }
+        return args;
+    }
+
     private static int parseLimit() {
-        return Integer.parseInt(System.getenv("LIMIT") == null ? "75" : System.getenv("LIMIT"));
+        return Integer.parseInt(System.getenv("LIMIT") == null ? "200" : System.getenv("LIMIT"));
     }
 
     private static boolean parseSmallGroups() {
@@ -634,17 +665,15 @@ public class Generate {
 
 
     private static boolean parseUseFQN() {
-        if ("false".equals(System.getenv("FQN"))) {
-            return false;
-        } else {
+        if ("true".equals(System.getenv("FQN"))) {
             return true;
+        } else {
+            return false;
         }
     }
 
     private static String[] parseSplitImsplittable() {
-        if ("true".equals(System.getenv("SPLIT_ALL"))) {
-            return new String[0];
-        } else {
+        if ("false".equals(System.getenv("SPLIT_ALL"))) {
             // those groups are  known to contain a lot of tests,
             // however are known to run very quickly, so we do not want them to be split
             return new String[]{
@@ -653,7 +682,8 @@ public class Generate {
                     "org.openjdk.jcstress.tests.seqcst.sync.*",
                     "org.openjdk.jcstress.tests.seqcst.volatiles.*",
             };
-
+        } else {
+            return new String[0];
         }
     }
 
@@ -698,7 +728,10 @@ public class Generate {
             long percentAvg = ((time.tests.getMainOne() * 100) / avgTimeExpected);
             //differences by both directions from 100%
             String sign = "";
-            if (percentAvg > 100) {
+            if (percentAvg == 100) {
+                percentAvg = 100 - percentAvg;
+                sign = "";
+            } else if (percentAvg > 100) {
                 percentAvg = percentAvg - 100;
                 sign = "+";
             } else {
