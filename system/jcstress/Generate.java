@@ -333,7 +333,7 @@ public class Generate {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                calculateStats(results);
+                calculateStats(results, groups);
             }
         });
         System.err.println("Starting measuring individual targets on " + getCoresForPlaylist() + " core(s) with" + jvm);
@@ -696,9 +696,9 @@ public class Generate {
     }
 
 
-    public static void calculateStats(List<GroupWithCases> results) {
+    public static void calculateStats(List<GroupWithCases> results, List<GroupWithCases> resultsExpected) {
         System.out.println("Exiting");
-        System.out.println("Results gathered: " + results.size() + "; 100% time of longest group, n% time of ideal group");
+        System.out.println("Results gathered: " + results.size() + " of expected " + resultsExpected.size() + "; 100% time of longest group, n% time of ideal group from really run results");
         if (results.isEmpty()) {
             return;
         }
@@ -708,6 +708,12 @@ public class Generate {
             totalTime += (long) (time.tests.getMainOne());
         }
         long avgTimeExpected = totalTime / results.size();
+        if (isTimeBudgetSet()) {
+            System.out.println(" - The calculations from real run are provided. They are based on meassured times and real results (not expected results)");
+            System.out.println(" - You had -tb " + getTimeBudget() + " set, so yours expected avg tim is " + getTimeBudget() + " and not the measured real values bellow");
+            System.out.println(" - Your workload should have run " + resultsExpected.size()+ " * " + getTimeBudget() +" but run " + secondsToDays(totalTime) + " and was finished " + results.size()+ " from " + resultsExpected.size());
+            System.out.println(" - See https://bugs.openjdk.org/browse/CODETOOLS-7903750");
+        }
         //now details
         sortByCount(results);
         Collections.reverse(results);
