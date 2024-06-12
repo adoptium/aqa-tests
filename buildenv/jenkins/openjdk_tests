@@ -499,6 +499,7 @@ def runTest() {
                     errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
                     errorList.add(".*unzip: command not found.*");
                     errorList.add(".*ant: command not found.*");
+                    errorList.add(".*ERROR: Cannot delete workspace :\s?Unable to delete .*");
 
                     // nightly/weekly builds should not have git clone issue
                     if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
