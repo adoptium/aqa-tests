@@ -336,9 +336,41 @@
 					<chmod file="${SYSTEMTEST_DEST}/openj9-systemtest/openj9.test.sharedClasses.jvmti/bin/native/**" perm="755"/>
 				</then>
 		</if>
-		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
-			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**" />
-		</copy>
+		<condition property="system_lib_dir_not_set" value="true" else="false">
+			<not>
+				<isset property="env.SYSTEM_LIB_DIR"/>
+			</not>
+		</condition>
+		<if>
+			<equals arg1="${system_lib_dir_not_set}" arg2="true"/>
+			<then>
+				<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs"/>
+				<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
+					<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**"/>
+				</copy>
+			</then>
+		</if>
+		<condition property="isSVTTestRepo" value="true">
+			<isset property="env.isSVTTestRepo"/>
+		</condition>
+		<condition property="isSVTTestRepo" value="false">
+   		 	<not>
+				<isset property="env.isSVTTestRepo"/>
+			</not>
+		</condition>
+		<if>
+			<equals arg1="${isSVTTestRepo}" arg2="true"/>
+			<then>
+				<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs"/>
+				<mkdir dir="${TEST_ROOT}/systemtest_prereqs"/>
+				<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
+					<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
+				</copy>
+				<copy todir="${TEST_ROOT}/systemtest_prereqs/">
+					<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
+				</copy>
+			</then>
+		</if>
 	</target>
 
 	<!-- target to build all projects in the repository.  -->

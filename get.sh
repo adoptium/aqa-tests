@@ -621,7 +621,7 @@ getVendorTestMaterial() {
 		sha=${vendor_shas_array[$i]}
 		dir=${vendor_dirs_array[$i]}
 		dest="vendor_${i}"
-
+		echo "vendor repo is $repoURL"
 		branchOption=""
 		if [ "$branch" != "" ]; then
 			branchOption="-b $branch"
@@ -636,6 +636,10 @@ getVendorTestMaterial() {
 				echo "Skip git clone $repoURL"
 				continue
 			fi
+		fi
+
+		if [[ "$repoURL" =~ "SVTTestRepo" ]]; then
+			isSVTTestRepo=true
 		fi
 
 		echo "git clone ${branchOption} $repoURL $dest"
@@ -763,7 +767,7 @@ checkOpenJ9RepoSHA()
 
 parseCommandLineArgs "$@"
 if [ "$USE_TESTENV_PROPERTIES" = true ]; then
-    teFile="./testenv/testenv.properties"
+	teFile="./testenv/testenv.properties"
 	if [[ "$PLATFORM" == *"zos"* ]]; then
 		echo "load ./testenv/testenv_zos.properties"
 		source ./testenv/testenv_zos.properties

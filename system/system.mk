@@ -71,15 +71,19 @@ ifdef JVM_OPTIONS
   APPLICATION_OPTIONS := $(APPLICATION_OPTIONS) -jvmArgs $(Q)$(JVM_OPTIONS)$(Q)
 endif
 
+ifndef SYSTEM_LIB_DIR
+  SYSTEM_LIB_DIR=$(SYSTEMTEST_RESROOT)/systemtest_prereqs
+endif
+
 define SYSTEMTEST_CMD_TEMPLATE
 perl $(SYSTEMTEST_RESROOT)$(D)STF$(D)stf.core$(D)scripts$(D)stf.pl \
   -test-root=$(Q)$(SYSTEMTEST_RESROOT)$(D)STF;$(SYSTEMTEST_RESROOT)$(D)aqa-systemtest$(OPENJ9_PRAM)$(Q) \
-  -systemtest-prereqs=$(Q)$(SYSTEMTEST_RESROOT)$(D)systemtest_prereqs$(Q) \
+  -systemtest-prereqs=$(Q)$(SYSTEM_LIB_DIR)$(D)$(Q) \
   -java-args=$(SQ)$(JAVA_ARGS)$(SQ) \
   -results-root=$(REPORTDIR)
 endef
 
-# Default test to be run for system_custom in regular system test builds 
+# Default test to be run for system_custom in regular system test builds
 CUSTOM_TARGET ?= -test=ClassloadingLoadTest
 
 ifneq ($(JDK_VERSION),8)
