@@ -1357,10 +1357,18 @@ def triggerRerunJob () {
 							if (env.RERUN_TESTCASES) {
 								childParams << string(name: param.key, value: env.RERUN_CUSTOMTARGET)
 							} else {
-								childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+								if (env.FAILED_TESTS.contains("_custom")) {
+									childParams << string(name: param.key, value: env.FAILED_TESTS)
+								} else {
+									childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+								}
 							}
 						} else if (param.key == "CUSTOM_TARGET") {
+							if (env.RERUN_TESTCASES) {
 								childParams << string(name: param.key, value: env.RERUN_TESTCASES)
+							} else {
+								childParams << string(name: param.key, value: param.value.toString())
+							}
 						} else if (param.key == "PARALLEL") {
 							childParams << string(name: param.key, value: "None")
 						} else if (param.key == "NUM_MACHINES") {
