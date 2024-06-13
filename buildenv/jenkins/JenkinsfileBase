@@ -1343,7 +1343,12 @@ def triggerRerunJob () {
 						// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
 						// set TARGET to failed tests and set ITERATIONS to rerunIterations
 						if (param.key == "TARGET") {
-							childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+							if (env.FAILED_TESTS.contains("_custom")) {
+								// custom target can only support one target per run
+								childParams << string(name: param.key, value: env.FAILED_TESTS)
+							} else {
+								childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+							}
 						} else if (param.key == "PARALLEL") {
 							childParams << string(name: param.key, value: "None")
 						} else if (param.key == "NUM_MACHINES") {
