@@ -20,76 +20,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * The estimated times are highly CORES sensitive. Some tests do not even run with CORES=1!
- * Some groups, eg org.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles are highly affected by cores (2->2hours 4=>45days!)
- * other groups are slightly less affected by cores, but still are.
- * <p>
- * This table was genrated with CORES=2 in TEST mode (thus with aprox 75% accuracy).
- * jcstress20240202  4400classes with 11500 tests.
- * Note, that `%like longest/ideal` is better closer to bigger/bigger.
- * all: 2 cores and org.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles not split:
- * all: MAX_NATURAL_ITERATIONS=Integer.max_value SMALL_GROUPS=true SPLIT_BIG_BASES=true
- * Limit 5 - 1207 groups, from those  8 "small groups" (not tried... yet... to long...)
- * split_exl Limit 10 - 603 groups, from those  7 "small groups" (0.5hours each. %like longest/ideal %17%/? (6m-2.5h)
- * split_all Limit 10 - 603 groups, from those  7 "small groups" (0.5hours each. %like longest/ideal %68%/81? (26m-38mm)
- * Limit 50 - 128 groups, from those  6 "small groups" (~2.5hhours each. %like longest/ideal %60/85% (45m-3.5h)
- * Limit 100 - 60 groups, from those  7 "small groups" (~4.5hours each. %like longest/ideal %63/79% (2.5h-7h)
- * Limit 250 - 25 groups, from those  4 "small groups" (~11hours each. %like longest/ideal 63%/77% (2.5h-17h)
- * Limit 500 - 14 groups, from those  4 "small groups" (~20hours each. %like longest/ideal 59%/60% (1.5h-1d 9h)
- * Limit 1000 - 9 groups, from those  5 "small groups" (~1day 6hours each. %like longest/ideal 42%/41% (2.5h-3d)
- * Limit 2000 - 6 groups, from those  4 "small groups" (~2day each, %like longest/ideal 41%/9% (2.5h-4d)
- * Limit 5000 - 3 groups, from those  3 "small groups" (unknown, selector argument to long for one of groups)
- * Limit 50000 - 1 groups, from those 1 "small groups" (unknown, selector argument to long)
- * all tests in batch ~11.5 of day
- * The minimal 2.5 which is invalidating huge groups a bit, are  the two excluded gorg.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles,
- * <p>
- * Note, that LIMIT is not strictly honored. It is jsut saying, that if there LIMIT of testes or more, it wil not be grouped.
- * So in worse scenario, LIMIT-1+LIMIT-1 will join to group of size of (2*LIMIT)-2, but it is very rare,
- * and in addition the time of one test is very far from being constant, so this deviation in size of grtoup (LIMIT+1, <2*LIMIT)-2> is minimal.
- * If small groups are enagetOutputSbled, and they should be, there wil nearly always be some leftover group with size <= LIMIT
- * <p>
- */
 
-/*
-  echo "You can self diagnostic various iterations aka:"
 
-#!/bin/bash
-set -exo pipefail
-  javac Generate.java
-  #jcstress_jar=jcstress-20240222.jar
-  outfile=details.html
-  OUTPUT=test
-  failures=0
-  all=0
-  echo "<html><body><details><pre>" | tee -a $outfile
-  uname -a | tee -a $outfile
-  head -n 40 /proc/meminfo | tee -a $outfile
-  tail -n 40 /proc/cpuinfo | tee -a $outfile
-  date  | tee -a $outfile
-  echo "</pre></details>" | tee -a $outfile
-  for SPLIT_ALL in false true ; do
-    echo starting SPLIT_ALL=$SPLIT_ALL | tee -a $outfile
-    echo "<details>" | tee -a $outfile
-    for LIMIT in 2000 1000 500 250 100 50 10; do
-      echo starting SPLIT_ALL=$SPLIT_ALL LIMIT=$LIMIT | tee -a $outfile
-      echo "<details>" | tee -a $outfile
-      for CORES in 1 2 3 4 8; do
-        echo running SPLIT_ALL=$SPLIT_ALL LIMIT=$LIMIT CORES=$CORES | tee -a $outfile
-        echo "<details>" | tee -a $outfile
-        echo "<pre>" | tee -a $outfile
-        let all=$all+1
-        echo "id: $all" " failed: $failures" | tee -a $outfile
-        OUTPUT=$OUTPUT SPLIT_ALL=$SPLIT_ALL LIMIT=$LIMIT CORES=$CORES java Generate $jcstress_jar | tee -a $outfile || let failures=$failures+1
-        echo "</pre>" | tee -a $outfile
-        echo "</details>" | tee -a $outfile
-      done
-      echo "</details>" | tee -a $outfile
-    done
-    echo "</details>" | tee -a $outfile
-  done
-  date  | tee -a  $outfile
- */
 public class Generate {
 
     // longest generated classes have 2131 tests
@@ -676,12 +608,12 @@ public class Generate {
         return args;
     }
 
-    private static int parseLimit() {
+    private static int  parseLimit() {
         return Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
     }
 
     private static boolean parseSmallGroups() {
-        if ("true".equals(System.getenv("SMALL_GROUPS"))) {
+            if ("true".equals(System.getenv("SMALL_GROUPS"))) {
             return true;
         } else {
             return false;
