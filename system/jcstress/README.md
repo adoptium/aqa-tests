@@ -212,6 +212,8 @@ org.openjdk.jcstress.tests.seqcst.volatiles: classes 489/tests 2131(ac/ar:1642/4
 </pre>
 </details>
 
+*Each rutime generator is run, it first verify, that all tests will be run, and that each will be run only once.*
+
 ## Control variables
 In order of importance and reasonability
  * OUTPUT - one of  
