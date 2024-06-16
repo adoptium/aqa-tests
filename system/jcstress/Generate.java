@@ -21,12 +21,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 public class Generate {
 
     // longest generated classes have 2131 tests
     private static final int LIMIT = parseLimit();
-        private static final int MAX_NATURAL_ITERATIONS = parseMaxNaturalIterations();
+    private static final int MAX_NATURAL_ITERATIONS = parseMaxNaturalIterations();
 
     private static final boolean SMALL_GROUPS = parseSmallGroups();
 
@@ -136,7 +135,7 @@ public class Generate {
         final Map<String, Integer> splitGroupsCounters = new HashMap<>();
         while (true) {
             i++;
-            if (i>MAX_NATURAL_ITERATIONS) {
+            if (i > MAX_NATURAL_ITERATIONS) {
                 break;
             }
             List<GroupWithCases> bigCandidate = groupTests(groups, splitGroupsCounters);
@@ -259,7 +258,7 @@ public class Generate {
                 .replace("-CORES-", coresString)
                 .replace("-TB-", "-tb 1h")
                 .replace("-TARGET-", "all")
-                .replace("-REGEX-",".*"));
+                .replace("-REGEX-", ".*"));
         int q = 0;
         for (GroupWithCases group : groups) {
             q++;
@@ -608,12 +607,12 @@ public class Generate {
         return args;
     }
 
-    private static int  parseLimit() {
+    private static int parseLimit() {
         return Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
     }
 
     private static boolean parseSmallGroups() {
-            if ("true".equals(System.getenv("SMALL_GROUPS"))) {
+        if ("true".equals(System.getenv("SMALL_GROUPS"))) {
             return true;
         } else {
             return false;
@@ -624,7 +623,6 @@ public class Generate {
         //for very long, default was Integer.MAX_VALUE
         return Integer.parseInt(System.getenv("MAX_NATURAL_ITERATIONS") == null ? "3" : System.getenv("MAX_NATURAL_ITERATIONS"));
     }
-
 
 
     private static boolean parseUseFQN() {
@@ -674,7 +672,7 @@ public class Generate {
         if (isTimeBudgetSet()) {
             System.out.println(" - The calculations from real run are provided. They are based on meassured times and real results (not expected results)");
             System.out.println(" - You had -tb " + getTimeBudget() + " set, so yours expected avg tim is " + getTimeBudget() + " and not the measured real values bellow");
-            System.out.println(" - Your workload should have run " + resultsExpected.size()+ " * " + getTimeBudget() +" but run " + secondsToDays(totalTime) + " and was finished " + results.size()+ " from " + resultsExpected.size());
+            System.out.println(" - Your workload should have run " + resultsExpected.size() + " * " + getTimeBudget() + " but run " + secondsToDays(totalTime) + " and was finished " + results.size() + " from " + resultsExpected.size());
             System.out.println(" - See https://bugs.openjdk.org/browse/CODETOOLS-7903750");
         }
         //now details
@@ -725,6 +723,15 @@ public class Generate {
 
     private enum OutputType {
         GENERATE, DO, TEST, STATS, REGEXES
+    }
+
+    private interface TestDetails {
+        int getMainOne();
+
+        int getAll();
+
+        void add(Object testDetails);
+
     }
 
     private static class GroupWithCases implements Comparable<GroupWithCases> {
@@ -835,15 +842,6 @@ public class Generate {
             //currently no op, but there were attempts to repalce | operator by different ones or to use more interesting wildchars
             return regex;
         }
-    }
-
-    private interface TestDetails {
-        int getMainOne();
-
-        int getAll();
-
-        void add(Object testDetails);
-
     }
 
     private static class ActorArbiter implements TestDetails {
