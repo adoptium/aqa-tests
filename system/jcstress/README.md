@@ -11,6 +11,8 @@ The generator is slightly over-engineered but do its job quite well. It takes on
 
 **It is necessary that default usage of the generator always prints the playlist.xml as it shuold be**
 
+Adjust the defaults in `Generate.java` if you change them. `javac Generate.java` and `java Generate.java <pathToJcstressJar>` should do the job.
+
 Except the generation the class can also print final standalone statistics or regexes for future research. It can also calculate estimated time of all groups by forking and killing jcstress jar (of course this feature is useless with `-tb`). It can also run all the jcstress groups, and calculate precise times. Current implementation looks like:
 <details>
 <summary>Setup</summary>
@@ -253,10 +255,10 @@ org.openjdk.jcstress.tests.atomicity.varHandles
  It is obvious, that the `Generate.java` can create pretty balanced groups by number of tests, but it proved to be not exactly useful, as single jcsrtress tests do not have constant duration. The `-tb` is usually not honoured, it is common to exceed it by 200% but also by 20000% - https://bugs.openjdk.org/browse/CODETOOLS-7903750
 
  ### Algorithm:
-  * the natural groups are finished first. They are creating by grouping by packages.
-    * this runs in iterations, and by defualt breaks when iteration merges nothing
+  * the natural groups are finished first. They are created by grouping packages.
+    * this runs in iterations, and by default breaks when iteration merges nothing
     * if `MAX_NATURAL_ITERATIONS` is enabled, then it stops merging after MAX_NATURAL_ITERATIONS of iterations.
-    * each group with less then `LIMIT` of members is merged to another with shares namesapce
+    * each group with less then `LIMIT` of members is merged to another with shares namespace
     * if `SPLIT_BIG_BASES` is enabled, then each namespaces will be split so it do not exceed LIMIT.
   * if `SMALL_GROUPS` are enabled then all leftovers smaller then LIMIT are merged to unnatural groups at the end.
     * Again, once this artificial group reaches limit no more tests is added 
