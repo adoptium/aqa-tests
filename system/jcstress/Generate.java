@@ -44,7 +44,7 @@ public class Generate {
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
-                <!-- -DISABLED-  -->
+                -DISABLED-
                    <command>
                      if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="-CORES-" ; else JC_CORES="-c $JC_CORES" ;fi\\
                      if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\\
@@ -195,7 +195,7 @@ public class Generate {
     }
 
     private static String readArg(String[] args) throws MalformedURLException {
-        String jar = "../../../ci-jenkins-pipelines/tools/code-tools/jcstress/jcstress-20240222.jar";
+        String jar = "../../../ci-jenkins-pipelines/tools/code-tools/jcstress/jcstress-tests-all-20240222.jar";
         if (args.length > 0) {
             jar = args[0];
         }

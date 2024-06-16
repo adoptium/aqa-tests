@@ -16,7 +16,7 @@
 <test>
 	<testCaseName>all</testCaseName>
 	<!-- The only enabled target running all  -->
-    <!--   -->
+    
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="-tb 1h" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -33,11 +33,11 @@
 <test>
 	<testCaseName>jcstress.mxbeans</testCaseName>
 	<!-- 1/82 org.openjdk.jcstress.tests.mxbeans: classes 1/tests 2(ac/ar:2/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -54,11 +54,11 @@
 <test>
 	<testCaseName>jcstress.threadlocal</testCaseName>
 	<!-- 2/82 org.openjdk.jcstress.tests.threadlocal: classes 1/tests 2(ac/ar:2/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -75,11 +75,11 @@
 <test>
 	<testCaseName>jcstress.collections</testCaseName>
 	<!-- 3/82 org.openjdk.jcstress.tests.collections: classes 1/tests 3(ac/ar:2/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -96,11 +96,11 @@
 <test>
 	<testCaseName>jcstress.sample</testCaseName>
 	<!-- 4/82 org.openjdk.jcstress.tests.sample: classes 1/tests 3(ac/ar:2/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -117,11 +117,11 @@
 <test>
 	<testCaseName>jcstress.future</testCaseName>
 	<!-- 5/82 org.openjdk.jcstress.tests.future: classes 2/tests 5(ac/ar:4/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -138,11 +138,11 @@
 <test>
 	<testCaseName>jcstress.executors</testCaseName>
 	<!-- 6/82 org.openjdk.jcstress.tests.executors: classes 2/tests 6(ac/ar:4/2)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -159,11 +159,11 @@
 <test>
 	<testCaseName>jcstress.varhandles</testCaseName>
 	<!-- 7/82 org.openjdk.jcstress.tests.varhandles: classes 3/tests 6(ac/ar:6/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -180,11 +180,11 @@
 <test>
 	<testCaseName>jcstress.unsafe</testCaseName>
 	<!-- 8/82 org.openjdk.jcstress.tests.unsafe: classes 5/tests 10(ac/ar:10/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -201,11 +201,11 @@
 <test>
 	<testCaseName>jcstress.oota</testCaseName>
 	<!-- 9/82 org.openjdk.jcstress.tests.oota: classes 5/tests 13(ac/ar:13/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -222,11 +222,11 @@
 <test>
 	<testCaseName>jcstress.interrupt</testCaseName>
 	<!-- 10/82 org.openjdk.jcstress.tests.interrupt: classes 15/tests 15(ac/ar:15/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -243,11 +243,11 @@
 <test>
 	<testCaseName>jcstress.fences</testCaseName>
 	<!-- 11/82 org.openjdk.jcstress.tests.fences: classes 8/tests 16(ac/ar:16/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -264,11 +264,11 @@
 <test>
 	<testCaseName>jcstress.strings</testCaseName>
 	<!-- 12/82 org.openjdk.jcstress.tests.strings: classes 7/tests 17(ac/ar:14/3)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -285,11 +285,11 @@
 <test>
 	<testCaseName>jcstress.countdownlatch</testCaseName>
 	<!-- 13/82 org.openjdk.jcstress.tests.countdownlatch: classes 10/tests 24(ac/ar:24/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -306,11 +306,11 @@
 <test>
 	<testCaseName>jcstress.atomics</testCaseName>
 	<!-- 14/82 org.openjdk.jcstress.tests.atomics: classes 13/tests 28(ac/ar:26/2)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -327,11 +327,11 @@
 <test>
 	<testCaseName>jcstress.copy.clone</testCaseName>
 	<!-- 15/82 org.openjdk.jcstress.tests.copy.clone: classes 14/tests 28(ac/ar:28/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -348,11 +348,11 @@
 <test>
 	<testCaseName>jcstress.copy.manual</testCaseName>
 	<!-- 16/82 org.openjdk.jcstress.tests.copy.manual: classes 14/tests 28(ac/ar:28/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -369,11 +369,11 @@
 <test>
 	<testCaseName>jcstress.singletons</testCaseName>
 	<!-- 17/82 org.openjdk.jcstress.tests.singletons: classes 14/tests 28(ac/ar:28/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -390,11 +390,11 @@
 <test>
 	<testCaseName>jcstress.defaultValues</testCaseName>
 	<!-- 18/82 org.openjdk.jcstress.tests.defaultValues: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -411,11 +411,11 @@
 <test>
 	<testCaseName>jcstress.defaultValues.arrays</testCaseName>
 	<!-- 19/82 org.openjdk.jcstress.tests.defaultValues.arrays: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -432,11 +432,11 @@
 <test>
 	<testCaseName>jcstress.init.arrays</testCaseName>
 	<!-- 20/82 org.openjdk.jcstress.tests.init.arrays: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -453,11 +453,11 @@
 <test>
 	<testCaseName>jcstress.initClass</testCaseName>
 	<!-- 21/82 org.openjdk.jcstress.tests.initClass: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -474,11 +474,11 @@
 <test>
 	<testCaseName>jcstress.initClass.arrays</testCaseName>
 	<!-- 22/82 org.openjdk.jcstress.tests.initClass.arrays: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -495,11 +495,11 @@
 <test>
 	<testCaseName>jcstress.initLen.arrays</testCaseName>
 	<!-- 23/82 org.openjdk.jcstress.tests.initLen.arrays: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -516,11 +516,11 @@
 <test>
 	<testCaseName>jcstress.locks</testCaseName>
 	<!-- 24/82 org.openjdk.jcstress.tests.locks: classes 18/tests 36(ac/ar:36/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -537,11 +537,11 @@
 <test>
 	<testCaseName>jcstress.volatiles</testCaseName>
 	<!-- 25/82 org.openjdk.jcstress.tests.volatiles: classes 15/tests 39(ac/ar:39/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -558,11 +558,11 @@
 <test>
 	<testCaseName>jcstress.causality</testCaseName>
 	<!-- 26/82 org.openjdk.jcstress.tests.causality: classes 18/tests 43(ac/ar:43/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -579,11 +579,11 @@
 <test>
 	<testCaseName>jcstress.init</testCaseName>
 	<!-- 27/82 org.openjdk.jcstress.tests.init: classes 26/tests 52(ac/ar:52/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -600,11 +600,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic</testCaseName>
 	<!-- 28/82 org.openjdk.jcstress.tests.accessAtomic: classes 27/tests 54(ac/ar:54/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -621,11 +621,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic.fields</testCaseName>
 	<!-- 29/82 org.openjdk.jcstress.tests.accessAtomic.fields: classes 18/tests 54(ac/ar:36/18)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -642,11 +642,11 @@
 <test>
 	<testCaseName>jcstress.coherence</testCaseName>
 	<!-- 30/82 org.openjdk.jcstress.tests.coherence: classes 27/tests 54(ac/ar:54/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -663,11 +663,11 @@
 <test>
 	<testCaseName>jcstress.tearing.arrays</testCaseName>
 	<!-- 31/82 org.openjdk.jcstress.tests.tearing.arrays: classes 18/tests 54(ac/ar:36/18)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -684,11 +684,11 @@
 <test>
 	<testCaseName>jcstress.copy.arraycopy.arrays</testCaseName>
 	<!-- 32/82 org.openjdk.jcstress.tests.copy.arraycopy.arrays: classes 28/tests 56(ac/ar:56/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -705,11 +705,11 @@
 <test>
 	<testCaseName>jcstress.copy.clone.arrays</testCaseName>
 	<!-- 33/82 org.openjdk.jcstress.tests.copy.clone.arrays: classes 28/tests 56(ac/ar:56/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -726,11 +726,11 @@
 <test>
 	<testCaseName>jcstress.copy.copyof.arrays</testCaseName>
 	<!-- 34/82 org.openjdk.jcstress.tests.copy.copyof.arrays: classes 28/tests 56(ac/ar:56/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -747,11 +747,11 @@
 <test>
 	<testCaseName>jcstress.copy.manual.arrays</testCaseName>
 	<!-- 35/82 org.openjdk.jcstress.tests.copy.manual.arrays: classes 28/tests 56(ac/ar:56/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -768,11 +768,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic.varHandles.byteArray</testCaseName>
 	<!-- 36/82 org.openjdk.jcstress.tests.accessAtomic.varHandles.byteArray: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -789,11 +789,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.direct</testCaseName>
 	<!-- 37/82 org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.direct: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -810,11 +810,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic.varHandles.byteBuffer.heap</testCaseName>
 	<!-- 38/82 org.openjdk.jcstress.tests.accessAtomic.varHandles.byteBuffer.heap: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -831,11 +831,11 @@
 <test>
 	<testCaseName>jcstress.coherence.varHandles.byteArray</testCaseName>
 	<!-- 39/82 org.openjdk.jcstress.tests.coherence.varHandles.byteArray: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -852,11 +852,11 @@
 <test>
 	<testCaseName>jcstress.coherence.varHandles.byteBuffer.direct</testCaseName>
 	<!-- 40/82 org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.direct: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -873,11 +873,11 @@
 <test>
 	<testCaseName>jcstress.coherence.varHandles.byteBuffer.heap</testCaseName>
 	<!-- 41/82 org.openjdk.jcstress.tests.coherence.varHandles.byteBuffer.heap: classes 36/tests 72(ac/ar:72/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -894,11 +894,11 @@
 <test>
 	<testCaseName>jcstress.tearing</testCaseName>
 	<!-- 42/82 org.openjdk.jcstress.tests.tearing: classes 29/tests 87(ac/ar:58/29)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -915,11 +915,11 @@
 <test>
 	<testCaseName>jcstress.accessAtomic.varHandles</testCaseName>
 	<!-- 43/82 org.openjdk.jcstress.tests.accessAtomic.varHandles: classes 54/tests 108(ac/ar:108/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -936,11 +936,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.arrays.WeakCASContendStrongTest</testCaseName>
 	<!-- 44/82 org.openjdk.jcstress.tests.atomicity.varHandles.arrays.WeakCASContendStrongTest: classes 36/tests 108(ac/ar:72/36)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -957,11 +957,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.arrays.WeakCASTest</testCaseName>
 	<!-- 45/82 org.openjdk.jcstress.tests.atomicity.varHandles.arrays.WeakCASTest: classes 36/tests 108(ac/ar:72/36)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -978,11 +978,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.fields.WeakCASContendStrongTest</testCaseName>
 	<!-- 46/82 org.openjdk.jcstress.tests.atomicity.varHandles.fields.WeakCASContendStrongTest: classes 36/tests 108(ac/ar:72/36)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -999,11 +999,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.fields.WeakCASTest</testCaseName>
 	<!-- 47/82 org.openjdk.jcstress.tests.atomicity.varHandles.fields.WeakCASTest: classes 36/tests 108(ac/ar:72/36)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1020,11 +1020,11 @@
 <test>
 	<testCaseName>jcstress.coherence.varHandles</testCaseName>
 	<!-- 48/82 org.openjdk.jcstress.tests.coherence.varHandles: classes 54/tests 108(ac/ar:108/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1041,11 +1041,11 @@
 <test>
 	<testCaseName>jcstress.atomics.integer.AtomicIntegerArrayPairwiseTests</testCaseName>
 	<!-- 49/82 org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerArrayPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1062,11 +1062,11 @@
 <test>
 	<testCaseName>jcstress.atomics.integer.AtomicIntegerFieldUpdaterPairwiseTests</testCaseName>
 	<!-- 50/82 org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerFieldUpdaterPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1083,11 +1083,11 @@
 <test>
 	<testCaseName>jcstress.atomics.integer.AtomicIntegerPairwiseTests</testCaseName>
 	<!-- 51/82 org.openjdk.jcstress.tests.atomics.integer.AtomicIntegerPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1104,11 +1104,11 @@
 <test>
 	<testCaseName>jcstress.atomics.longs.AtomicLongArrayPairwiseTests</testCaseName>
 	<!-- 52/82 org.openjdk.jcstress.tests.atomics.longs.AtomicLongArrayPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1125,11 +1125,11 @@
 <test>
 	<testCaseName>jcstress.atomics.longs.AtomicLongFieldUpdaterPairwiseTests</testCaseName>
 	<!-- 53/82 org.openjdk.jcstress.tests.atomics.longs.AtomicLongFieldUpdaterPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1146,11 +1146,11 @@
 <test>
 	<testCaseName>jcstress.atomics.longs.AtomicLongPairwiseTests</testCaseName>
 	<!-- 54/82 org.openjdk.jcstress.tests.atomics.longs.AtomicLongPairwiseTests: classes 55/tests 111(ac/ar:110/1)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1167,11 +1167,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.fields.sync</testCaseName>
 	<!-- 55/82 org.openjdk.jcstress.tests.acqrel.fields.sync: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1188,11 +1188,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.fields.volatiles</testCaseName>
 	<!-- 56/82 org.openjdk.jcstress.tests.acqrel.fields.volatiles: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1209,11 +1209,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.arrays.acqrel</testCaseName>
 	<!-- 57/82 org.openjdk.jcstress.tests.acqrel.varHandles.arrays.acqrel: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1230,11 +1230,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.arrays.volatiles</testCaseName>
 	<!-- 58/82 org.openjdk.jcstress.tests.acqrel.varHandles.arrays.volatiles: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1251,11 +1251,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.fields.acqrel</testCaseName>
 	<!-- 59/82 org.openjdk.jcstress.tests.acqrel.varHandles.fields.acqrel: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1272,11 +1272,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.fields.volatiles</testCaseName>
 	<!-- 60/82 org.openjdk.jcstress.tests.acqrel.varHandles.fields.volatiles: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1293,11 +1293,11 @@
 <test>
 	<testCaseName>jcstress.atomicity</testCaseName>
 	<!-- 61/82 org.openjdk.jcstress.tests.atomicity: classes 63/tests 126(ac/ar:126/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1314,11 +1314,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.arrays</testCaseName>
 	<!-- 62/82 org.openjdk.jcstress.tests.atomicity.varHandles.arrays: classes 47/tests 141(ac/ar:94/47)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1335,11 +1335,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.fields</testCaseName>
 	<!-- 63/82 org.openjdk.jcstress.tests.atomicity.varHandles.fields: classes 47/tests 141(ac/ar:94/47)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1356,11 +1356,11 @@
 <test>
 	<testCaseName>jcstress.memeffects.basic</testCaseName>
 	<!-- 64/82 org.openjdk.jcstress.tests.memeffects.basic: classes 78/tests 156(ac/ar:156/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1377,11 +1377,11 @@
 <test>
 	<testCaseName>jcstress.locks.mutex</testCaseName>
 	<!-- 65/82 org.openjdk.jcstress.tests.locks.mutex: classes 80/tests 160(ac/ar:160/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1398,11 +1398,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.byteArray</testCaseName>
 	<!-- 66/82 org.openjdk.jcstress.tests.atomicity.varHandles.byteArray: classes 54/tests 162(ac/ar:108/54)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1419,11 +1419,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.direct</testCaseName>
 	<!-- 67/82 org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.direct: classes 54/tests 162(ac/ar:108/54)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1440,11 +1440,11 @@
 <test>
 	<testCaseName>jcstress.atomicity.varHandles.byteBuffer.heap</testCaseName>
 	<!-- 68/82 org.openjdk.jcstress.tests.atomicity.varHandles.byteBuffer.heap: classes 54/tests 162(ac/ar:108/54)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1461,11 +1461,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteArray.big</testCaseName>
 	<!-- 69/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteArray.big: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1482,11 +1482,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteArray.little</testCaseName>
 	<!-- 70/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteArray.little: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1503,11 +1503,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.direct.big</testCaseName>
 	<!-- 71/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.direct.big: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1524,11 +1524,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.direct.little</testCaseName>
 	<!-- 72/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.direct.little: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1545,11 +1545,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.heap.big</testCaseName>
 	<!-- 73/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.heap.big: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1566,11 +1566,11 @@
 <test>
 	<testCaseName>jcstress.acqrel.varHandles.byteBuffer.heap.little</testCaseName>
 	<!-- 74/82 org.openjdk.jcstress.tests.acqrel.varHandles.byteBuffer.heap.little: classes 84/tests 168(ac/ar:168/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1587,11 +1587,11 @@
 <test>
 	<testCaseName>jcstress.memeffects.basic.atomic.AtomicInteger</testCaseName>
 	<!-- 75/82 org.openjdk.jcstress.tests.memeffects.basic.atomic.AtomicInteger: classes 96/tests 192(ac/ar:192/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1608,11 +1608,11 @@
 <test>
 	<testCaseName>jcstress.memeffects.basic.atomic.AtomicLong</testCaseName>
 	<!-- 76/82 org.openjdk.jcstress.tests.memeffects.basic.atomic.AtomicLong: classes 96/tests 192(ac/ar:192/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1629,11 +1629,11 @@
 <test>
 	<testCaseName>jcstress.memeffects.basic.atomicupdaters.AtomicIntegerFieldUpdater</testCaseName>
 	<!-- 77/82 org.openjdk.jcstress.tests.memeffects.basic.atomicupdaters.AtomicIntegerFieldUpdater: classes 96/tests 192(ac/ar:192/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1650,11 +1650,11 @@
 <test>
 	<testCaseName>jcstress.memeffects.basic.atomicupdaters.AtomicLongFieldUpdater</testCaseName>
 	<!-- 78/82 org.openjdk.jcstress.tests.memeffects.basic.atomicupdaters.AtomicLongFieldUpdater: classes 96/tests 192(ac/ar:192/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1671,11 +1671,11 @@
 <test>
 	<testCaseName>jcstress.fences.varHandles</testCaseName>
 	<!-- 79/82 org.openjdk.jcstress.tests.fences.varHandles: classes 98/tests 196(ac/ar:196/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1692,11 +1692,11 @@
 <test>
 	<testCaseName>jcstress.locks.stamped.StampedLockPairwiseTests</testCaseName>
 	<!-- 80/82 org.openjdk.jcstress.tests.locks.stamped.StampedLockPairwiseTests: classes 225/tests 450(ac/ar:450/0)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1713,11 +1713,11 @@
 <test>
 	<testCaseName>jcstress.seqcst.sync</testCaseName>
 	<!-- 81/82 org.openjdk.jcstress.tests.seqcst.sync: classes 489/tests 2131(ac/ar:1642/489)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
@@ -1734,11 +1734,11 @@
 <test>
 	<testCaseName>jcstress.seqcst.volatiles</testCaseName>
 	<!-- 82/82 org.openjdk.jcstress.tests.seqcst.volatiles: classes 489/tests 2131(ac/ar:1642/489)  -->
-    <!--                    <disables>
+                       <disables>
                      <disable>
                        <comment>all targets except main one are for manual usage only</comment>
                      </disable>
-                   </disables>  -->
+                   </disables>
        <command>
          if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="" ; else JC_CORES="-c $JC_CORES" ;fi\
          if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\
