@@ -48,7 +48,7 @@ public class Generate {
                    <command>
                      if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="-CORES-" ; else JC_CORES="-c $JC_CORES" ;fi\\
                      if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\\
-                     $(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $JC_TIME_BUDGET  $JC_CORES  $(APPLICATION_OPTIONS) -t "-REGEX-"; \\
+                     $(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $JC_TIME_BUDGET  $JC_CORES -t "-REGEX-"; \\
                      $(TEST_STATUS)
                    </command>
             	<levels>
