@@ -212,7 +212,7 @@ org.openjdk.jcstress.tests.seqcst.volatiles: classes 489/tests 2131(ac/ar:1642/4
 </pre>
 </details>
 
-*Each rutime generator is run, it first verify, that all tests will be run, and that each will be run only once.* Also, in `test` mode (and ofcourse in `do` mode) it verifies, that each group can be launched. Because the `|` expressions may grow very long, and under some circumstances may flow out of shell's boundaries.
+*Each runtime generator is run, it first **verify**, that **all** tests will be **run**, and that **each** will be run exactly **once**.* Also, in `test` mode (and of course in `do` mode) it verifies, that each group can be launched. Because the `|` expressions may grow very long, and under some circumstances may flow out of shell's boundaries.
 
 ## Control variables
 In order of importance and reasonability
@@ -252,7 +252,7 @@ org.openjdk.jcstress.tests.atomicity.varHandles
 
  It is obvious, that the `Generate.java` can create pretty balanced groups by number of tests, but it proved to be not exactly useful, as single jcsrtress tests do not have constant duration. The `-tb` is usually not honoured, it is common to exceed it by 200% but also by 20000% - https://bugs.openjdk.org/browse/CODETOOLS-7903750
 
- Algorithm:
+ ### Algorithm:
   * the natural groups are finished first. They are creating by grouping by packages.
     * this runs in iterations, and by defualt breaks when iteration merges nothing
     * if `MAX_NATURAL_ITERATIONS` is enabled, then it stops merging after MAX_NATURAL_ITERATIONS of iterations.
