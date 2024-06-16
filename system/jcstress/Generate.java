@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
  * This table was genrated with CORES=2 in TEST mode (thus with aprox 75% accuracy).
  * jcstress20240202  4400classes with 11500 tests.
  * Note, that `%like longest/ideal` is better closer to bigger/bigger.
- * 2 cores and org.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles not split:
+ * all: 2 cores and org.openjdk.jcstress.tests.seqcst.sync and org.openjdk.jcstress.tests.seqcst.volatiles not split:
+ * all: MAX_NATURAL_ITERATIONS=Integer.max_value SMALL_GROUPS=true SPLIT_BIG_BASES=true
  * Limit 5 - 1207 groups, from those  8 "small groups" (not tried... yet... to long...)
  * split_exl Limit 10 - 603 groups, from those  7 "small groups" (0.5hours each. %like longest/ideal %17%/? (6m-2.5h)
  * split_all Limit 10 - 603 groups, from those  7 "small groups" (0.5hours each. %like longest/ideal %68%/81? (26m-38mm)
@@ -93,8 +94,9 @@ public class Generate {
 
     // longest generated classes have 2131 tests
     private static final int LIMIT = parseLimit();
+        private static final int MAX_NATURAL_ITERATIONS = parseMaxNaturalIterations();
 
-    private static final boolean smallGroups = parseSmallGroups();
+    private static final boolean SMALL_GROUPS = parseSmallGroups();
 
     //those namespaces will not be merged together. This is literal eaquls comparison
     private static final String[] NOT_MERGE_ABLE_GROUPS = new String[]{
@@ -104,15 +106,20 @@ public class Generate {
             "org.openjdk.jcstress.tests",
     };
 
-    private static final boolean splitBigBases = parseSplitBigBases();
+    private static final boolean SPLIT_BIG_BASES = parseSplitBigBases();
 
     private static final String[] NOT_SPLIT_ABLE_GROUPS = parseSplitImsplittable();
-    private static final String template = """
+    private static final String TEMPLATE = """
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
-                   <command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) -TB-  -CORES- -t "-REGEX-"; \\
-                   $(TEST_STATUS)</command>
+                <!-- -DISABLED-  -->
+                   <command>
+                     if [ "x${JC_CORES}" = "x" ] ; then export JC_CORES="-CORES-" ; else JC_CORES="-c $JC_CORES" ;fi\\
+                     if [ "x${JC_TIME_BUDGET}" = "x" ] ; then export JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $JC_TIME_BUDGET" ;fi\\
+                     $(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $JC_TIME_BUDGET  $JC_CORES  $(APPLICATION_OPTIONS) -t "-REGEX-"; \\
+                     $(TEST_STATUS)
+                   </command>
             	<levels>
             		<level>dev</level>
             	</levels>
@@ -120,7 +127,7 @@ public class Generate {
             		<group>system</group>
             	</groups>
             </test>""";
-    private static final String header = """
+    private static final String HEADER = """
             <?xml version='1.0' encoding='UTF-8'?>
             <!--
             # Licensed under the Apache License, Version 2.0 (the "License");
@@ -136,7 +143,7 @@ public class Generate {
             # limitations under the License.
             -->
             <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">""";
-    private static final String footer = "</playlist>";
+    private static final String FOOTER = "</playlist>";
     private static URLClassLoader jarFileClasses;
     private static String jvm;
     private static File jarFile;
@@ -151,7 +158,7 @@ public class Generate {
         print(tests);
         List<GroupWithCases> groups = tests;
         groups = mergeSmallGroupsToNaturalOnes(groups);
-        if (smallGroups) {
+        if (SMALL_GROUPS) {
             groups = mergeSmallRemainingTestsToArtificialOnes(groups);
         }
         Collections.sort(groups);
@@ -197,6 +204,9 @@ public class Generate {
         final Map<String, Integer> splitGroupsCounters = new HashMap<>();
         while (true) {
             i++;
+            if (i>MAX_NATURAL_ITERATIONS) {
+                break;
+            }
             List<GroupWithCases> bigCandidate = groupTests(groups, splitGroupsCounters);
             if (bigCandidate.size() == groups.size()) {
                 break;
@@ -220,16 +230,17 @@ public class Generate {
     private static void setAndPrintSetup() {
         System.err.println("Loading " + jarFile.getAbsolutePath());
         System.err.println("Limit is " + LIMIT + "; no group with more then " + LIMIT + " of tests should be merged to bigger ones. Exclude list is of length of " + NOT_MERGE_ABLE_GROUPS.length);
-        if (smallGroups) {
+        if (SMALL_GROUPS) {
             System.err.println("Small groups will be created.");
         } else {
             System.err.println("Small groups will not be created. Intentional?");
         }
-        if (splitBigBases) {
+        if (SPLIT_BIG_BASES) {
             System.err.println("Huge groups will be split to more subsets. Exclude list is of length of " + NOT_SPLIT_ABLE_GROUPS.length);
         } else {
             System.err.println("Huge groups will NOT be split to more subsets. Intentional?");
         }
+        System.err.println("Max count of natural grouping iterations is " + MAX_NATURAL_ITERATIONS);
         if (parseUseFQN()) {
             System.err.println("FQNs will be used in selectors");
         } else {
@@ -308,11 +319,25 @@ public class Generate {
         if (cores > 0) {
             coresString = "-c " + cores;
         }
-        System.out.println(header);
+        System.out.println(HEADER);
+        System.out.println(TEMPLATE
+                .replace("-DISABLED-", "")
+                .replace("-COMMENT-", "The only enabled target running all")
+                .replace("-JARFILE-", jarName)
+                .replace("-CORES-", coresString)
+                .replace("-TB-", "-tb 1h")
+                .replace("-TARGET-", "all")
+                .replace("-REGEX-",".*"));
         int q = 0;
         for (GroupWithCases group : groups) {
             q++;
-            System.out.println(template
+            System.out.println(TEMPLATE
+                    .replace("-DISABLED-", "" +
+                            "                   <disables>\n" +
+                            "                     <disable>\n" +
+                            "                       <comment>all targets except main one are for manual usage only</comment>\n" +
+                            "                     </disable>\n" +
+                            "                   </disables>")
                     .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
                     .replace("-JARFILE-", jarName)
                     .replace("-CORES-", coresString)
@@ -320,7 +345,7 @@ public class Generate {
                     .replace("-TARGET-", group.toTarget())
                     .replace("-REGEX-", group.toSelector()));
         }
-        System.out.println(footer);
+        System.out.println(FOOTER);
     }
 
     private static boolean isTimeBudgetSet() {
@@ -409,7 +434,7 @@ public class Generate {
      * @return time with unit. Eg 100s or 30m
      */
     private static String getTimeBudget() {
-        return System.getenv("TIME_BUDGET") == null ? "30m" : System.getenv("TIME_BUDGET");
+        return System.getenv("TIME_BUDGET") == null ? null : System.getenv("TIME_BUDGET");
     }
 
     private static OutputType getOutputStyle() {
@@ -537,7 +562,7 @@ public class Generate {
             } else {
                 groupName = test.name.substring(0, subtestIndex);
             }
-            if (splitBigBases && !isExcludedFromSplitting(groupName)) {
+            if (SPLIT_BIG_BASES && !isExcludedFromSplitting(groupName)) {
                 int currentId = splitGroupsCounters.getOrDefault(groupName, 1);
                 String groupNameWithId = groupName + "-" + wrap(currentId, 3);
                 GroupWithCases candidate;
@@ -652,16 +677,22 @@ public class Generate {
     }
 
     private static int parseLimit() {
-        return Integer.parseInt(System.getenv("LIMIT") == null ? "200" : System.getenv("LIMIT"));
+        return Integer.parseInt(System.getenv("LIMIT") == null ? "100" : System.getenv("LIMIT"));
     }
 
     private static boolean parseSmallGroups() {
-        if ("false".equals(System.getenv("SMALL_GROUPS"))) {
-            return false;
-        } else {
+        if ("true".equals(System.getenv("SMALL_GROUPS"))) {
             return true;
+        } else {
+            return false;
         }
     }
+
+    private static int parseMaxNaturalIterations() {
+        //for very long, default was Integer.MAX_VALUE
+        return Integer.parseInt(System.getenv("MAX_NATURAL_ITERATIONS") == null ? "3" : System.getenv("MAX_NATURAL_ITERATIONS"));
+    }
+
 
 
     private static boolean parseUseFQN() {
@@ -688,10 +719,10 @@ public class Generate {
     }
 
     private static boolean parseSplitBigBases() {
-        if ("false".equals(System.getenv("SPLIT_BIG_BASES"))) {
-            return false;
-        } else {
+        if ("true".equals(System.getenv("SPLIT_BIG_BASES"))) {
             return true;
+        } else {
+            return false;
         }
     }
 
