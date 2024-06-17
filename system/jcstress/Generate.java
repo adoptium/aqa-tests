@@ -257,7 +257,7 @@ public class Generate {
                 .replace("-JARFILE-", jarName)
                 .replace("-CORES-", coresString)
                 .replace("-TB-", "-tb 1h")
-                .replace("-TARGET-", "all")
+                .replace("-TARGET-", "jcstress.all")
                 .replace("-REGEX-", ".*"));
         int q = 0;
         for (GroupWithCases group : groups) {
