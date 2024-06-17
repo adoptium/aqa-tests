@@ -11,7 +11,7 @@ The generator is slightly over-engineered but do its job quite well. It takes on
 
 **It is necessary that default usage of the generator always prints the playlist.xml as it shuold be**
 
-Adjust the defaults in `Generate.java` if you change them. `javac Generate.java` and `java Generate.java <pathToJcstressJar>` should do the job.
+Adjust the defaults in `Generate.java` if you change them. `javac Generate.java` and `java Generate.java <pathToJcstressJar> > playlist.xml` should do the job.
 
 Except the generation the class can also print final standalone statistics or regexes for future research. It can also calculate estimated time of all groups by forking and killing jcstress jar (of course this feature is useless with `-tb`). It can also run all the jcstress groups, and calculate precise times. Current implementation looks like:
 <details>
