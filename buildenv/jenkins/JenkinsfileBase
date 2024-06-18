@@ -1294,6 +1294,7 @@ def addFailedTestsGrinderLink(paths=""){
 				def testCases=customizedTestCases.values().first()
 				def customTarget=customizedTestCases.keySet().first()
 				def testCaseSize=testCases.count(' ')
+				// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
 				if (testCaseSize < 80) {
 					env.RERUN_CUSTOMTARGET="${customTarget}_custom"
 					env.RERUN_TESTCASES="${testCases}"
