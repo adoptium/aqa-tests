@@ -232,8 +232,9 @@ java/util/concurrent/TimeUnit/Basic.java https://github.com/adoptium/aqa-tests/i
 
 ############################################################################
 
-# jvm_compiler
+# hotspot_compiler
 
+compiler/arguments/CheckCICompilerCount.java https://github.com/adoptium/aqa-tests/issues/5378 windows-x86
 compiler/arraycopy/TestCloneAccess.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/arraycopy/TestCloneAccessStressGCM.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
 compiler/c2/cr6340864/TestByteVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
@@ -328,3 +329,34 @@ build/AbsPathsInImage.java https://github.com/adoptium/aqa-tests/issues/3234 lin
 # jdk_container/hotspot_container
 
 containers/docker/TestMemoryWithCgroupV1.java https://bugs.openjdk.org/browse/JDK-8297274 linux-all
+
+############################################################################
+
+# hotspot_gc
+
+gc/shenandoah/compiler/TestBarrierAboveProj.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+gc/shenandoah/jni/CriticalNativeStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+
+############################################################################
+
+# hotspot_runtime
+
+runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
+runtime/logging/loadLibraryTest/LoadLibraryTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
+runtime/os/TestHugePageDecisionsAtVMStartup.java#THP_enabled https://bugs.openjdk.org/browse/JDK-8324580 linux-all
+
+############################################################################
+
+# hotspot_serviceability
+
+serviceability/dcmd/jvmti/AttachFailed/AttachReturnError.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
+serviceability/dtrace/DTraceOptionsTest.java#enabled https://github.com/adoptium/aqa-tests/issues/5397 linux-s390x
+serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatArrayCorrectnessTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/CDSJMapClstats.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbFindPC.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbFindPC.java#id1 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbJhisto.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbJstackXcompStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbJstack.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
