@@ -1266,6 +1266,7 @@ def addFailedTestsGrinderLink(paths=""){
 		if (failedTestList) {
 			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
 			env.FAILED_TESTS= failedTests ?: ""
+			env.RERUN_TESTCASES=""
 			failedTestList = "testList+TESTLIST=" + failedTests
 			String url = env.RERUN_LINK
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
@@ -1286,6 +1287,17 @@ def addFailedTestsGrinderLink(paths=""){
 			}
 			if (jckDevtoolsFailedTestCaseList) {
 				customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
+			}
+			
+			if (customizedTestCases.size() == 1) {
+				def testCases=customizedTestCases.values().first()
+				def customTarget=customizedTestCases.keySet().first()
+				def testCaseSize=testCases.count(' ')
+				// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
+				if (testCaseSize < 80) {
+					env.RERUN_CUSTOMTARGET="${customTarget}_custom"
+					env.RERUN_TESTCASES="${testCases}"
+				}
 			}
 			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
@@ -1342,7 +1354,21 @@ def triggerRerunJob () {
 						// set PARALLEL, NUM_MACHINES and TEST_TIME to default values
 						// set TARGET to failed tests and set ITERATIONS to rerunIterations
 						if (param.key == "TARGET") {
-							childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+							if (env.RERUN_TESTCASES) {
+								childParams << string(name: param.key, value: env.RERUN_CUSTOMTARGET)
+							} else {
+								if (env.FAILED_TESTS.contains("_custom")) {
+									childParams << string(name: param.key, value: env.FAILED_TESTS)
+								} else {
+									childParams << string(name: param.key, value: "testList TESTLIST=" + env.FAILED_TESTS)
+								}
+							}
+						} else if (param.key == "CUSTOM_TARGET") {
+							if (env.RERUN_TESTCASES) {
+								childParams << string(name: param.key, value: env.RERUN_TESTCASES)
+							} else {
+								childParams << string(name: param.key, value: param.value.toString())
+							}
 						} else if (param.key == "PARALLEL") {
 							childParams << string(name: param.key, value: "None")
 						} else if (param.key == "NUM_MACHINES") {
