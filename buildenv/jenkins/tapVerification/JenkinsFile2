@@ -1,0 +1,46 @@
+pipeline {
+    agent { label 'ci.role.test&&hw.arch.x86&&sw.os.linux' }
+    parameters {
+    	string(name: 'FILE_URL', defaultValue: '', description: 'URL to the uploaded artifacts')
+    	string(name: 'Release_PipelineJob_Name', defaultValue: '', description: 'Jenkins Pipeline job name')
+    	string(name: 'Release_PipelineJob_Number', defaultValue: '', description: 'Jenkins Pipeline job number')
+    }
+    stages {
+        stage('Download and archive Artifacts') {
+            steps {
+            	script {
+					def tarDir = 'AQAvitTaps'
+					def tarTap = 'AQAvitTapFiles.tar.gz'
+					timeout(time: 1, unit: 'HOURS') {
+						try {
+							copyArtifacts (projectName: "${Release_PipelineJob_Name}",
+								selector: specific("${Release_PipelineJob_Number}"),
+								filter: '${tarDir}/${tarTap}',
+								target: "${tarDir}/"
+							)
+						} catch (Exception e) {
+							echo 'Exception: ' + e.toString()
+							echo "Cannot copy AQAvitTaps/AQAvitTapFiles.tar.gz from ${Release_PipelineJob_Name} with build id ${Release_PipelineJob_Number} . Skipping copyArtifacts..."
+						}
+					}
+                	
+                    def fileUrl = params.FILE_URL
+                    def fileName = "Grinder.tar.gz"
+                    sh """
+                    	cd ${tarDir}/
+                    	curl -L -o ${fileName} ${fileUrl}
+                    	//untar Grinder.tar.gz
+                    	//untar AQAvitTapFiles.tar.gz
+                    	//tar new AQAvitTapFiles.tar.gz
+                    """
+					archiveArtifacts artifacts: "${tarDir}/${tarTap}", allowEmptyArchive: true
+                }
+            }
+        }
+    }
+    post {
+    	always {
+    		cleanWs()
+    	}
+    }
+}
