@@ -2,35 +2,35 @@ pipeline {
     agent { label 'ci.role.test&&hw.arch.x86&&sw.os.linux' }
     parameters {
         string(name: 'RELEASE_TRIAGE_ISSUE_NUMBER', defaultValue: '', description: 'Triage issue number')
-		string(name: 'RELEASE_TRIAGE_REPO', defaultValue: 'adoptium/aqa-tests', description: 'Triage repo')
-		string(name: 'Release_PipelineJob_Name', defaultValue: '', description: 'Jenkins Pipeline job name')
-    	string(name: 'Release_PipelineJob_Numbers', defaultValue: '', description: 'Jenkins Pipeline job number, Comma separate numbers') // update to a list, support multiple build job
+        string(name: 'RELEASE_TRIAGE_REPO', defaultValue: 'adoptium/aqa-tests', description: 'Triage repo')
+        string(name: 'Release_PipelineJob_Name', defaultValue: '', description: 'Jenkins Pipeline job name')
+        string(name: 'Release_PipelineJob_Numbers', defaultValue: '', description: 'Jenkins Pipeline job number, Comma separated numbers')
     }
     stages {
-        stage('Download Taps') { 
+        stage('Tap Collection') { 
             steps {
                 script {
                     def issueUrl = "https://api.github.com/repos/${RELEASE_TRIAGE_REPO}/issues/${RELEASE_TRIAGE_ISSUE_NUMBER}"
                     def tapsDir = 'TAPs'
                     sh """
-                    	if [ ! -d "${tapsDir}" ]; then
-                    		mkdir -p "${tapsDir}"
-                    	fi
+                        if [ ! -d "${tapsDir}" ]; then
+                            mkdir -p "${tapsDir}"
+                        fi
                     """
-					def commentsUrl = "${issueUrl}/comments"
-					def issueFile = 'issue.json'
-					def commentsFile = 'comments.json'
-					withCredentials([string(credentialsId: "${params.GITHUB_CREDENTIAL}", variable: 'GITHUB_TOKEN')]) {
-						sh """
-							curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3-json" ${issueUrl} -o ${issueFile}
-							curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3-json" ${commentsUrl} -o ${commentsFile}
-						"""
-					}
+                    def commentsUrl = "${issueUrl}/comments"
+                    def issueFile = 'issue.json'
+                    def commentsFile = 'comments.json'
+                    withCredentials([string(credentialsId: "${params.GITHUB_CREDENTIAL}", variable: 'GITHUB_TOKEN')]) {
+                        sh """
+                            curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3-json" ${issueUrl} -o ${issueFile}
+                            curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3-json" ${commentsUrl} -o ${commentsFile}
+                            """
+                    }
 
-					def issue = readJSON file: "${issueFile}"
-					def comments = readJSON file: "${commentsFile}"
-		
-					// Function to download attachments from text
+                    def issue = readJSON file: "${issueFile}"
+                    def comments = readJSON file: "${commentsFile}"
+
+                    // Function to download attachments from text
                     def downloadAttachments = { text ->
                         text.split('\r\n').each { line ->
                             if (line.contains("https://github.com/${RELEASE_TRIAGE_REPO}/files/") && line.endsWith(')')) {
@@ -57,26 +57,32 @@ pipeline {
                             filter: "AQAvitTaps/${tapTars}", 
                             fingerprintArtifacts: true, 
                             projectName: "build-scripts/openjdk21-pipeline",  //"${Release_PipelineJob_Name}"
-                            selector: specific('290'), //"${build}.toInteger()"
-                            target: "${Release_PipelineJob_Name}_${build}"
+                            selector: specific("${build}"), //"${build}.toInteger()"
+                            target: "${build}/",
+                            flatten: true
                         )
-                        sh """
-                            tar -xzvf ${Release_PipelineJob_Name}_${build}/${tapTars} -C ${tapsDir}
-                            cd ${tapsDir}/
-                            tar -czf ${tapTars} *
-                        """
+                        sh "tar -xzvf ${build}/${tapTars} -C ${tapsDir}"
                     }
-                    
+
+                    sh """
+                        cd ${tapsDir}/
+                        tar -czf ${tapTars} *
+                    """   
                     archiveArtifacts artifacts: "${tapsDir}/${tapTars}", allowEmptyArchive: true
-                    
                 }
+            }
+        }
+
+        stage('Verification') {
+            steps { 
+                echo "Taps verification jobs"
             }
         }
     }
     
     post {
-    	always {
-    		cleanWs()
-    	}
-	}
+        always {
+            cleanWs()
+        }
+    }
 }
