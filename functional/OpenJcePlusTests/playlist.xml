@@ -25,7 +25,8 @@
 				<platform>^((?!(ppc64_aix|ppc64le_linux|x86-64_linux|x86-64_windows|s390x_linux)).)*$</platform>
 			</disable>
 		</disables>
-		<command>ant -f ${BUILD_ROOT}/functional/OpenJcePlusTests/test.xml -DTEST_JAVA=$(Q)$(JAVA_COMMAND)$(Q) launch_test; \
+		<command>cp -r ${TEST_RESROOT}/* ${REPORTDIR}/. ; \
+		ant -f test.xml -DTEST_JAVA=$(Q)$(JAVA_COMMAND)$(Q) launch_test; \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
