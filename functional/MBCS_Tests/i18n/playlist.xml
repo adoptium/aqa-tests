@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TestConfig/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>MBCS_Tests_i18n_ja_JP_linux</testCaseName>
 		<command>LANG=ja_JP.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
@@ -32,6 +32,13 @@ limitations under the License.
 		<testCaseName>MBCS_Tests_i18n_ko_KR_linux</testCaseName>
 		<command>LANG=ko_KR.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19083</comment>
+				<version>22+</version>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<platformRequirements>os.linux</platformRequirements>
 		<levels>
 			<level>special</level>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../system.mk</include>
 	<!--
 	We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
@@ -99,7 +99,6 @@
 			<impl>ibm</impl>
 		</impls>
 	</test>
-	<!-- Exclude the following test on Linux ppc64le & s390x. Reason: adoptium/aqa-systemtest/issues/79 -->
 	<test>
 		<testCaseName>SC_Softmx_JitAot</testCaseName>
 		<variations>
@@ -138,7 +137,7 @@
 			<impl>openj9</impl>
 			<impl>ibm</impl>
 		</impls>
-		<platformRequirements>os.linux,^arch.ppc,^arch.390</platformRequirements>
+		<platformRequirements>os.linux</platformRequirements>
 	</test>
 	<test>
 		<testCaseName>SharedClasses.SCM01.SingleCL</testCaseName>

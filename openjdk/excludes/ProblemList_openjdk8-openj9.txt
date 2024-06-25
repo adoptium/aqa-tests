@@ -57,6 +57,7 @@ java/lang/invoke/RicochetTest.java		https://github.com/eclipse-openj9/openj9/iss
 java/lang/invoke/VarargsArrayTest.java		https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/invoke/lambda/LambdaStackTrace.java		https://github.com/eclipse-openj9/openj9/issues/1128	generic-all
 java/lang/ref/EarlyTimeout.java		https://github.com/eclipse-openj9/openj9/issues/1128	generic-all
+java/lang/ref/FinalizeOverride.java https://github.com/eclipse-openj9/openj9/issues/9651 generic-all
 java/lang/ref/FinalizerHistogramTest.java		https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/ref/NullQueue.java		https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/ref/OOMEInReferenceHandler.java		https://github.com/adoptium/aqa-tests/issues/1297	generic-all
@@ -192,9 +193,11 @@ java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/eclipse-openj9/
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/AsynchronousSocketChannel/CompletionHandlerRelease.java https://github.com/eclipse-openj9/openj9/issues/12167 aix-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.ibm.com/runtimes/backlog/issues/783	macosx-all,linux-s390x
-java/nio/channels/DatagramChannel/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699   linux-s390x
+java/nio/channels/DatagramChannel/BasicMulticastTests.java https://github.ibm.com/runtimes/backlog/issues/1053 macosx-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.ibm.com/runtimes/backlog/issues/783	generic-all
+java/nio/channels/DatagramChannel/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699   generic-all
 java/nio/channels/DatagramChannel/SendToUnresolved.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
+java/nio/channels/Pipe/PipeInterrupt.java https://github.com/eclipse-openj9/openj9/issues/18479 windows-all
 java/nio/channels/Selector/KeySets.java	https://github.com/eclipse-openj9/openj9/issues/1130	generic-all
 java/nio/channels/Selector/RacyDeregister.java	https://bugs.openjdk.java.net/browse/JDK-8161083	aix-all
 java/nio/channels/ServerSocketChannel/AdaptServerSocket.java	https://github.com/adoptium/aqa-tests/issues/821	windows-all
@@ -223,7 +226,8 @@ java/rmi/activation/Activatable/downloadParameterClass/DownloadParameterClass.ja
 java/rmi/activation/Activatable/extLoadedImpl/ext.sh	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/forceLogSnapshot/ForceLogSnapshot.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/inactiveGroup/InactiveGroup.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
-java/rmi/activation/Activatable/nestedActivate/NestedActivate.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all
+#java/rmi/activation/Activatable/nestedActivate/NestedActivate.java on windows-all issue https://github.ibm.com/runtimes/backlog/issues/1004
+java/rmi/activation/Activatable/nestedActivate/NestedActivate.java	https://github.com/adoptium/aqa-tests/issues/830	macosx-all,windows-all
 java/rmi/activation/Activatable/restartCrashedService/RestartCrashedService.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/restartLatecomer/RestartLatecomer.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/activation/Activatable/restartService/RestartService.java	https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
@@ -232,13 +236,17 @@ java/rmi/activation/CommandEnvironment/SetChildEnv.java		https://github.com/ecli
 java/rmi/activation/rmidViaInheritedChannel/InheritedChannelNotServerSocket.java	https://github.ibm.com/runtimes/backlog/issues/622	windows-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
+java/rmi/Naming/legalRegistryNames/LegalRegistryNames.java https://github.ibm.com/runtimes/backlog/issues/867 macosx-x64
+java/rmi/Naming/DefaultRegistryPort.java https://github.ibm.com/runtimes/backlog/issues/867 macosx-x64
 java/rmi/registry/readTest/readTest.sh		https://github.com/eclipse-openj9/openj9/issues/13259	windows-all
 java/rmi/registry/serialFilter/RegistryFilterTest.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/server/UnicastRemoteObject/unexportObject/UnexportLeak.java	https://github.com/eclipse-openj9/openj9/issues/4094	generic-all
 java/rmi/server/RMISocketFactory/useSocketFactory/activatable/UseCustomSocketFactory.java	https://github.com/eclipse-openj9/openj9/issues/4685	linux-ppc64le
 java/rmi/server/RMISocketFactory/useSocketFactory/unicast/TCPEndpointReadBug.java	https://github.com/eclipse-openj9/openj9/issues/8515	generic-all
+java/rmi/server/RMISocketFactory/useSocketFactory/unicast/UseCustomSocketFactory.java   https://github.ibm.com/runtimes/backlog/issues/1024 windows-x64
 java/rmi/server/RemoteObject/notExtending/NotExtending.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
 java/rmi/server/RemoteServer/AddrInUse.java		https://github.com/eclipse-openj9/openj9/issues/3377	generic-all
+java/rmi/server/Unreferenced/leaseCheckInterval/LeaseCheckInterval.java https://github.com/eclipse-openj9/openj9/issues/12948 windows-x64
 java/rmi/transport/dgcDeadLock/DGCDeadLock.java	https://github.com/adoptium/aqa-tests/issues/1259	macosx-all
 java/rmi/transport/handshakeTimeout/HandshakeTimeout.java	https://github.ibm.com/runtimes/backlog/issues/722	macosx-all
 java/rmi/transport/runtimeThreadInheritanceLeak/RuntimeThreadInheritanceLeak.java		https://github.com/eclipse-openj9/openj9/issues/1144	generic-all
@@ -261,6 +269,7 @@ sun/security/pkcs11/ec/TestECGenSpec.java	https://github.com/adoptium/aqa-tests/
 sun/security/pkcs11/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/125	linux-all
 sun/security/pkcs11/tls/TestKeyMaterial.java	https://github.com/adoptium/aqa-tests/issues/71	linux-all
 sun/security/rsa/TestCACerts.java	https://github.com/adoptium/aqa-tests/issues/125	generic-all
+sun/security/ssl/SSLSocketImpl/AsyncSSLSocketClose.java  https://github.com/eclipse-openj9/openj9/issues/18575 aix-all
 sun/security/ssl/SSLSocketImpl/SSLSocketCloseHang.java	https://github.com/adoptium/aqa-tests/issues/125	generic-all
 sun/security/tools/jarsigner/diffend.sh	https://github.com/adoptium/aqa-tests/issues/125	linux-all
 sun/security/tools/jarsigner/emptymanifest.sh	https://github.com/adoptium/aqa-tests/issues/125	generic-all
@@ -295,8 +304,22 @@ sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java	https://github.com/
 ############################################################################
 # jdk_security4
 
+sun/security/krb5/auto/rcache_usemd5.sh https://github.com/eclipse-openj9/openj9/issues/18980 linux-all
 sun/security/krb5/auto/ReplayCacheTestProc.java https://github.com/adoptium/aqa-tests/issues/2349 generic-all
 sun/security/krb5/auto/Unreachable.java https://github.com/eclipse-openj9/openj9/issues/13253 aix-all,macosx-all
+
+############################################################################
+
+# jdk_security_infra
+
+security/infra/java/security/cert/CertPathValidator/certification/GoogleCA.java https://bugs.openjdk.org/browse/JDK-8309088 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/AmazonCA.java https://bugs.openjdk.org/browse/JDK-8309088 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/EntrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/DTrustCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
+security/infra/java/security/cert/CertPathValidator/certification/HaricaCA.java https://github.com/adoptium/aqa-tests/issues/2074 generic-all
 
 ############################################################################
 
@@ -381,6 +404,7 @@ com/sun/jndi/ldap/LdapDnsProviderTest.java https://github.com/adoptium/aqa-tests
 
 # jdk_imageio
 
+javax/imageio/plugins/jpeg/JPEGsNotAcceleratedTest.java https://github.com/eclipse-openj9/openj9/issues/19527 windows-all
 javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github.com/adoptium/aqa-tests/issues/2321 aix-all
 
 ############################################################################
@@ -392,4 +416,10 @@ jdk/internal/platform/docker/TestDockerMemoryMetrics.java https://github.com/ecl
 ############################################################################
 
 # jdk_container
+jdk/internal/platform/docker/TestDockerBasic.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
 jdk/internal/platform/docker/TestDockerCpuMetrics.java https://github.com/eclipse-openj9/openj9/issues/16462 generic-all
+jdk/internal/platform/docker/TestDockerMemoryMetrics.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
+jdk/internal/platform/docker/TestGetFreeSwapSpaceSize.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
+
+
+

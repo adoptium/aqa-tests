@@ -11,8 +11,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
+	<test>
+		<testCaseName>jckdevtools_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) testsuite=DEVTOOLS tests="$(JCKDEVTOOLS_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"; \
+		$(EXEC_DEVTOOLS_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) testsuite=DEVTOOLS tests="$(JCKDEVTOOLS_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
 	<test>
 		<testCaseName>jck-devtools-java2schema-CustomizedMapping</testCaseName>
 		<variations>
@@ -20,8 +40,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=java2schema/CustomizedMapping testsuite=DEVTOOLS; \
 		$(EXEC_DEVTOOLS_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=java2schema/CustomizedMapping testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=java2schema/CustomizedMapping testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -39,8 +60,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=java2schema/DefaultMapping testsuite=DEVTOOLS; \
 		$(EXEC_DEVTOOLS_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=java2schema/DefaultMapping testsuite=DEVTOOLS; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=java2schema/DefaultMapping testsuite=DEVTOOLS
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>

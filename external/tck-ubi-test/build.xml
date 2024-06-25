@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="tck-ubi-test" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build tck-ubi-test Docker image
+	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
+	<import file="${TEST_ROOT}/jck/build.xml"/>
+
+	<!-- set properties for this build -->
+	<property name="TEST" value="tck-ubi-test" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<mkdir dir="${BUILD_ROOT}/external/${TEST}/jck_root"/>
+	<property name="env.JCK_ROOT" value="${BUILD_ROOT}/external/${TEST}/jck_root/JCK${JDK_VERSION}-unzipped" />
+	<property name="src" location="." />
+
+	<target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>
+
+	<target name="stage_jck_material" description="stage jck material">
+		<copy todir="${DEST_EXTERNAL}/${TEST}">
+			<fileset dir="${TEST_ROOT}/jck/" includes="*.sh"/>
+		</copy>
+		<echo message="${DEST_EXTERNAL}/${TEST}/update_git_material.sh ${env.JCK_ROOT} ${env.JCK_GIT_REPO} ${env.JCK_GIT_BRANCH} ${isZOS}"  />
+		<exec executable="bash" failonerror="true">
+			<arg value="${DEST_EXTERNAL}/${TEST}/update_git_material.sh"/>
+			<arg value="${env.JCK_ROOT}" />
+			<arg value="${env.JCK_GIT_REPO}" />
+			<arg value="${env.JCK_GIT_BRANCH}" />
+			<arg value="${isZOS}" />
+		</exec>
+	</target>
+
+	<target name="build_image" depends="move_scripts,clean_image" description="build the image">
+		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} --docker_os 'ubi' --platform ${env.SPEC} --base_docker_registry_dir 'ubi9/ubi' --docker_registry_url 'registry.access.redhat.com' --docker_args ${extra_docker_args} " />
+		<exec executable="bash" failonerror="true">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--build"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+			<arg value="--docker_os"/>
+			<arg value="ubi"/>
+			<arg value="--platform"/>
+			<arg value="${env.SPEC}"/>
+			<arg value="--base_docker_registry_dir"/>
+			<arg value="ubi9/ubi"/>
+			<arg value="--docker_registry_url"/>
+			<arg value="registry.access.redhat.com"/>
+			<arg value="--docker_args"/>
+			<arg value="${extra_docker_args}"/>
+		</exec>
+	</target>
+
+	<target name="dist" depends="stage_jck_material,build_image" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk"/>
+		</copy>
+	</target>
+
+	<target name="build">
+		<antcall target="dist" inheritall="true" />
+	</target>
+</project>

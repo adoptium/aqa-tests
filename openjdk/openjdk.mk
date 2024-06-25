@@ -16,10 +16,41 @@ NPROCS:=1
 MEMORY_SIZE:=1024
 
 OS:=$(shell uname -s)
+ARCH:=$(shell uname -m)
 
 ifeq ($(OS),Linux)
-	NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
-	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [ -r /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`; else CGMEM=`expr $${KMEMMB} \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1048576`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
+	NPROCS:=$(shell nproc)
+	# This is the MEMORY_SIZE script below, with formatting for readability.
+	#
+	# // The number of megabytes of memory this machine has.
+	# KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; 
+	#
+	# // If this machine/container uses cgroups to limit the amount of 
+	# // memory available to us, we should use that as out memory size.
+	# if [ -r /sys/fs/cgroup/memory.max ]; then
+	#     // Use this to identify memory maximum (bytes) for cgroup v2.
+	#     CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; 
+	# else
+	#     // Else use this file for memory maximum (bytes) on cgroup v1.
+	#     CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; 
+	# fi; 
+	#
+	# // If those files were empty, or didn't exist, or had non-numbers
+	# // in them, then use /proc/meminfo (converted to bytes).
+	# if echo "$${CGMEM}" | grep -Eqv '^[0-9]+$$' ; then
+	#     CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; 
+	# fi; 
+	#
+	# CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; 
+	#
+	# // Between memory limits in the cgroup and memory on the machine,
+	# // use the lower limit. This protects us against situations
+	# // where the cgroup has a value which is much bigger/smaller than
+	# // the limits on the machine overall. We've seen both.
+	# if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then 
+	#     echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; 
+	# fi
+	MEMORY_SIZE:=$(shell KMEMMB=`awk '/^MemTotal:/{print int($$2/1024)}' /proc/meminfo`; if [ -r /sys/fs/cgroup/memory.max ]; then CGMEM=`cat /sys/fs/cgroup/memory.max 2>1`; else CGMEM=`cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>1`; fi; if echo "$${CGMEM}" | grep -Eqv '^[0-9]+$$' ; then CGMEM=`expr $${KMEMMB} \* 1024 \* 1024`; fi; CGMEMMB=`expr $${CGMEM} / 1024 / 1024`; if [ "$${KMEMMB}" -lt "$${CGMEMMB}" ]; then echo "$${KMEMMB}"; else echo "$${CGMEMMB}"; fi)
 endif
 ifeq ($(OS),Darwin)
 	NPROCS:=$(shell sysctl -n hw.ncpu)
@@ -46,7 +77,7 @@ endif
 # Upstream OpenJDK, roughly, sets concurrency based on the
 # following: min(NPROCS/2, MEM_IN_GB/2).
 MEM := $(shell expr $(MEMORY_SIZE) / 2048)
-CORE := $(shell expr $(NPROCS) / 2)
+CORE := $(shell expr $(NPROCS) / 2 + 1)
 CONC := $(CORE)
 ifeq ($(shell expr $(CORE) \> $(MEM)), 1)
 	CONC := $(MEM)
@@ -78,11 +109,16 @@ JTREG_BASIC_OPTIONS += -retain:fail,error,*.dmp,javacore.*,heapdump.*,*.trc
 # Ignore tests are not run and completely silent about it
 JTREG_IGNORE_OPTION = -ignore:quiet
 JTREG_BASIC_OPTIONS += $(JTREG_IGNORE_OPTION)
+# riscv64 machines aren't very fast (yet!!)
+ifeq ($(ARCH), riscv64)
+	JTREG_TIMEOUT_OPTION = -timeoutFactor:16
+else
 # Multiple by 8 the timeout numbers, except on zOS use 2
 ifneq ($(OS),OS/390)
 	JTREG_TIMEOUT_OPTION =  -timeoutFactor:8
 else
 	JTREG_TIMEOUT_OPTION =  -timeoutFactor:2
+endif
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_TIMEOUT_OPTION)
 # Create junit xml
@@ -94,6 +130,11 @@ VMOPTION_HEADLESS :=
 libcVendor = $(shell ldd --version 2>&1 | sed -n '1s/.*\(musl\).*/\1/p')
 
 ifeq ($(libcVendor),musl)
+	JTREG_KEY_OPTIONS := -k:'!headful'
+	VMOPTION_HEADLESS := -Djava.awt.headless=true
+endif
+# RISC-V is built in headless mode for now. See https://github.com/adoptium/ci-jenkins-pipelines/pull/867
+ifeq ($(ARCH),riscv64)
 	JTREG_KEY_OPTIONS := -k:'!headful'
 	VMOPTION_HEADLESS := -Djava.awt.headless=true
 endif
@@ -137,7 +178,6 @@ FULLPATH_HOTSPOT_CUSTOM_TARGET = $(foreach target,$(HOTSPOT_CUSTOM_TARGET),$(JTR
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
-CUSTOM_NATIVE_OPTIONS :=
 
 ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
@@ -147,11 +187,6 @@ ifneq ($(JDK_VERSION),8)
 		# else if JDK_IMPL is openj9 or ibm
 		else ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
-		endif
-		ifneq (,$(findstring /hotspot/, $(JDK_CUSTOM_TARGET))) 
-			CUSTOM_NATIVE_OPTIONS := $(JVM_NATIVE_OPTIONS)
-		else
-			CUSTOM_NATIVE_OPTIONS := $(JDK_NATIVE_OPTIONS)
 		endif
 	endif
 endif
@@ -178,6 +213,7 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	TEST_VARIATION_JIT_PREVIEW:=-XX:-JITServerTechPreviewMessage
 	TEST_VARIATION_JIT_AGGRESIVE:=-Xjit:enableAggressiveLiveness
 	TIMEOUT_HANDLER:=-timeoutHandler:jtreg.openj9.CoreDumpTimeoutHandler -timeoutHandlerDir:$(Q)$(LIB_DIR)$(D)openj9jtregtimeouthandler.jar$(Q)
+	EXTRA_OPTIONS := -Xverbosegclog $(EXTRA_OPTIONS)
 endif
 
 # if cannot find the problem list file, set to default file
@@ -192,13 +228,18 @@ ifneq ($(filter 11 16, $(JDK_VERSION)),)
 endif
 
 FEATURE_PROBLEM_LIST_FILE:=
-ifneq (,$(findstring FIPS, $(TEST_FLAG))) 
-	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-fips.txt$(Q)
+ifneq (,$(findstring FIPS140_2, $(TEST_FLAG))) 
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_2.txt$(Q)
+else ifneq (,$(findstring FIPS140_3_OpenJCEPlus, $(TEST_FLAG)))
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
 ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft))
-	VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt$(Q)
+	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
+	ifneq (,$(wildcard $(VENDOR_FILE)))
+		VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)$(VENDOR_FILE)$(Q)
+	endif
 endif
 
 # --add-modules jdk.incubator.foreign is removed for JDK19+

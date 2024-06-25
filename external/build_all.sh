@@ -25,27 +25,24 @@ cleanup_images
 # Loop through all possible images
 for test in ${supported_tests}
 do
-    for version in ${supported_versions}
-    do
-        for vm in ${supported_jvms}
-        do
-            for os in ${supported_os}
-            do
-                for package in ${supported_packages}
-                do
-                    for build in ${supported_builds}
-                    do
-                        echo "==============================================================================="
-                        echo "                                                                               "
-                        echo " Building Docker Images for ${test} ${version} ${vm} ${os} ${package} ${build} "
-                        echo "                                                                               "
-                        echo "==============================================================================="
-                        $(dirname "$0")/build_image.sh ${test} ${version} ${vm} ${os} ${package} ${build}
-                        echo
-                        echo
-                    done
-                done
-            done
-        done
-    done
+	for vm in ${supported_jvms}
+	do
+		for os in ${supported_os}
+		do
+			for package in ${supported_packages}
+			do
+				for build in ${supported_builds}
+				do
+					echo "==============================================================================="
+					echo "                                                                               "
+					echo " Building Docker Images for ${test} ${version} ${vm} ${os} ${package} ${build} "
+					echo "                                                                               "
+					echo "==============================================================================="
+					$(dirname "$0")/build_image.sh ${test} ${version} ${vm} ${os} ${package} ${build}
+					echo
+					echo
+				done
+			done
+		done
+	done
 done

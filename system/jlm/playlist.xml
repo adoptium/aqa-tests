@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../system.mk</include>
 	<!--
 	We currently only run special.system in parallel mode and some subfolders do not have any system test in special level
@@ -113,7 +113,7 @@
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
 		<features>
-			<feature>FIPS:nonapplicable</feature>
+			<feature>FIPS140_2:nonapplicable</feature>
 		</features>
 		<levels>
 			<level>sanity</level>

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<project name="ssl-tests Security Functional tests" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		ssl-tests Security Functional tests
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="DEST" value="${BUILD_ROOT}/functional/security/ssl-tests" />
+
+	<!--Properties for this particular build-->
+	<property name="src" location="./ssl-tests" />
+
+	<target name="ssltests.check">
+		<condition property="ssltestsTestdir.exists">
+			<available file="ssl-tests" type="dir"/>
+		</condition>
+	</target>
+
+	<if>
+		<contains string="${SPEC}" substring="zos"/>
+		<then>
+			<property name="GIT_REPO" value="git@github.com:" />
+		</then>
+		<else>
+			<property name="GIT_REPO" value="https://github.com/" />
+		</else>
+	</if>
+	<target name="getSsltestsTest" depends="ssltests.check" unless="ssltestsTestdir.exists">
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="${GIT_REPO}rh-openjdk/ssl-tests.git" />
+		</exec>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${DEST}" />
+	</target>
+
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+   
+	<target name="dist" depends="getJtreg,getSsltestsTest" description="generate the distribution">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml,*.mk" />
+		</copy>
+	</target>
+
+	<target name="clean" depends="dist" description="clean up">
+		<!-- Delete the ${build} directory trees -->
+		<delete dir="${build}" />
+	</target>
+
+	<target name="build" >
+		<antcall target="clean" inheritall="true" />
+	</target>
+</project>
+

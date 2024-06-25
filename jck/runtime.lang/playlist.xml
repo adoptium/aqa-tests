@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
 		<testCaseName>jck-runtime-lang-BINC</testCaseName>
@@ -21,8 +21,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/BINC testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/BINC testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/BINC testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -37,8 +38,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME
+		</command>
 		<platformRequirements>^os.aix</platformRequirements>
 		<levels>
 			<level>sanity</level>
@@ -54,8 +56,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME
+		</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
 			<level>sanity</level>
@@ -75,8 +78,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/CLSS testsuite=RUNTIME
+		</command>
 		<platformRequirements>os.aix</platformRequirements>
 		<levels>
 			<level>sanity</level>
@@ -95,8 +99,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/CONV testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/CONV testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/CONV testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -111,8 +116,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/EXPR testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/EXPR testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/EXPR testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -127,8 +133,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/INTF testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/INTF testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/INTF testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -143,8 +150,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/LMBD testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/LMBD testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/LMBD testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -159,8 +167,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/ARR testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/ARR testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/ARR testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -175,8 +184,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/DASG testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/DASG testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/DASG testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -191,8 +201,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/EXCP testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/EXCP testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/EXCP testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -207,8 +218,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/EXEC testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/EXEC testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/EXEC testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -223,8 +235,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/FP testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/FP testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/FP testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -239,8 +252,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/ICLS testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/ICLS testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/ICLS testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -255,8 +269,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/INFR testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/INFR testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/INFR testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -271,8 +286,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/MOD testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/MOD testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/MOD testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -290,8 +306,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/NAME testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/NAME testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/NAME testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -306,8 +323,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/PKGS testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/PKGS testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/PKGS testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -322,8 +340,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/THRD testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/THRD testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/THRD testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -338,8 +357,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/TYPE testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/TYPE testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/TYPE testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -354,8 +374,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/ANNOT testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/ANNOT testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/ANNOT testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -370,8 +391,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/LEX testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/LEX testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/LEX testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -386,8 +408,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=lang/STMT testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=lang/STMT testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=lang/STMT testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>

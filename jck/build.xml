@@ -38,7 +38,7 @@
 		<isset property="isZOS"/>
 	</condition>
 	
-	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="master">
+	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="main">
 		<isset property="env.JCK_GIT_BRANCH"/>
 	</condition>
 	
@@ -53,11 +53,16 @@
 	<available file="${vs14_vcvarsall_filename}" property="vs14_available"/>
 	<property name="vs10_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\vcvarsall.bat"/>
 	<available file="${vs10_vcvarsall_filename}" property="vs10_available"/>
+	<property name="vs22_vcvarsall_filename" location="c:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Auxiliary\\Build\\vcvarsall.bat"/>
+	<available file="${vs22_vcvarsall_filename}" property="vs22_available"/>
 	<condition property="vcvarsall_filename" value="${vs14_vcvarsall_filename}">
 		<isset property="vs14_available"/>
 	</condition>
 	<condition property="vcvarsall_filename" value="${vs10_vcvarsall_filename}">
 		<isset property="vs10_available"/>
+	</condition>
+	<condition property="vcvarsall_filename" value="${vs22_vcvarsall_filename}">
+		<isset property="vs22_available"/>
 	</condition>
 	<condition property="windows_native_compiler_present" value="true">
 		<isset property="vcvarsall_filename"/>
@@ -92,31 +97,42 @@
 			<available file="${JCK_ROOT_USED}" type="dir" />
 			<then>
 				<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
-				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="localSHA">
+				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code">
 					<arg line="rev-parse"/>
 					<arg line="HEAD"/>
 				</exec>
-				<exec executable="git" dir="${JCK_ROOT_USED}" outputproperty="remoteSHA">
-					<arg line="ls-remote"/>
-					<arg line="${JCK_GIT_REPO_USED}"/>
-					<arg line="${jck_branch}"/>
-				</exec>
-				<loadresource property="localSHATrimmed">
-					<propertyresource name="localSHA"/>
-					<filterchain>
-						<tokenfilter>
-							<trim/>
-						</tokenfilter>
-						<striplinebreaks/>
-					</filterchain>
-				</loadresource>
-					
-				<echo message="LocalSHA = --${localSHATrimmed}--"/>
-				<echo message="RemoteSHA= --${remoteSHA}--"/>
+				<if>
+					<not>
+						<equals arg1="${return.code}" arg2="0"/>
+					</not>
+					<then>
+						<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." />
+						<delete dir="${JCK_ROOT_USED}" failonerror="true" />
+					</then>
+					<else>
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA">
+							<arg line="ls-remote"/>
+							<arg line="${JCK_GIT_REPO_USED}"/>
+							<arg line="${jck_branch}"/>
+						</exec>
+						<loadresource property="localSHATrimmed">
+							<propertyresource name="localSHA"/>
+							<filterchain>
+								<tokenfilter>
+									<trim/>
+								</tokenfilter>
+								<striplinebreaks/>
+							</filterchain>
+						</loadresource>
+							
+						<echo message="LocalSHA = --${localSHATrimmed}--"/>
+						<echo message="RemoteSHA= --${remoteSHA}--"/>
 
-				<condition property="local-material-uptodate">
-					<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
-				</condition>
+						<condition property="local-material-uptodate">
+							<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
+						</condition>
+					</else>
+				</if>
 			</then>
 		</if>	
 		<if>
@@ -176,7 +192,7 @@
 										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 											<arg value="reset" />
 											<arg value="--hard" />
-											<arg value="origin/master" />
+											<arg value="origin/main" />
 										</exec>
 										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
 											<arg value="clean" />
@@ -302,10 +318,18 @@
 				<if>
 					<equals arg1="${JDK_VERSION}" arg2="8" />
 					<then>
-						<property name="JCK_VERSION_USED" value="jck8c" />
+						<property name="JCK_VERSION_USED" value="jck8d" />
 					</then>
 					<else>
-						<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
+						<if>
+							<equals arg1="${JDK_VERSION}" arg2="11" />
+							<then>
+								<property name="JCK_VERSION_USED" value="jck11a" />
+							</then>
+							<else>
+								<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
+							</else>
+						</if>
 					</else>
 				</if>
 			</else>

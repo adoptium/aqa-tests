@@ -49,6 +49,12 @@ parseArgs() {
 			"--listTAP" | "-lt" )
 				listTAP; exit 0;;
 
+			"--checkFailed" | "-cf" )
+				checkFailed; exit 0;;
+
+			"--checkTAP" | "-ct" )
+				checkTAP; exit 0;;
+
 			"--help" | "-h" )
 				usage; exit 0;;
 
@@ -89,6 +95,10 @@ clean() {
 	echo "List and remove the above *.jck_* ..."
 	find . -name "*.jck_*"
 	find . -name "*.jck_*" -exec rm -f {} ';'
+
+	echo "List and remove the above *_special.openjdk_* ..."
+	find . -name "*_special.openjdk_*"
+	find . -name "*_special.openjdk_*" -exec rm -f {} ';'
 
 	echo "List and remove the above *_special.system_* ..."
 	find . -name "*_special.system_*"
@@ -138,11 +148,74 @@ listFailed() {
 	grep -R 'not ok ' . || true
 }
 
+checkFailed() {
+	echo "============================"
+	echo "List failed tests in $(pwd)"
+	echo "============================"
+	if grep -R 'not ok ' . ; then
+		echo "[ERROR]: There are failed tests"
+		exit 1
+	else
+		echo "All Tests Passed!"
+	fi
+}
+
 listRerun() {
 	echo "============================"
 	echo "list rerun in Grinder..."
 	echo "============================"
 	find . -name "*Grinder_*" | xargs grep 'ok '
+	echo "============================"
+	echo "list rerun in rerun build..."
+	echo "============================"
+	find . -name "*_rerun*" | xargs grep 'ok '
+}
+
+findCmd() {
+	fileName=$2
+	echo "----------------------------"
+	echo "$1. List $fileName ..."
+	if [ "$(find . -name "$fileName" ! -name "*_rerun*.tap")" ]; then
+		find . -name "$fileName" ! -name "*_rerun*.tap" | sort
+		numFiles=$(find . -name "$fileName" -type f ! -name "*_rerun*.tap" -print | wc -l)
+		echo "Total num of Files:$numFiles"
+		fileNameWithoutExt=${fileName//".tap"/""}
+		if [ $numFiles == 1 ]; then
+			if [ "$(find . -name "${fileNameWithoutExt}_testList*" ! -name "*_rerun*.tap")"  ]; then
+				find . -name "${fileNameWithoutExt}_testList*" ! -name "*_rerun*.tap"
+				echo "Found 1 testList file. Looks like this is a parallel run, so multiple testList files are expected."
+				echo "[ERROR]: Missing testList TAP files"
+				exit 1
+			fi
+		else
+			for (( i=0; i < $numFiles; ++i ))
+			do
+				if [ "$(find . -name "${fileNameWithoutExt}_testList_${i}*" ! -name "*_rerun*.tap")" == "" ]; then
+					echo "[ERROR]: Missing ${fileNameWithoutExt}_testList_${i}* TAP file"
+					exit 1
+				fi
+			done
+		fi
+	else
+		echo "[ERROR]: File not found"
+		exit 1
+	fi
+}
+
+checkTAP() {
+	echo "============================"
+	echo "check AQAvit TAP files in $(pwd)"
+	echo "============================"
+
+	findCmd 1 "*sanity.openjdk*.tap"
+	findCmd 2 "*extended.openjdk*.tap"
+	findCmd 3 "*sanity.functional*.tap"
+	findCmd 4 "*extended.functional*.tap"
+	findCmd 5 "*special.functional*.tap"
+	findCmd 6 "*sanity.system*.tap"
+	findCmd 7 "*extended.system*.tap"
+	findCmd 8 "*sanity.perf*.tap"
+	findCmd 9 "*extended.perf*.tap"
 }
 
 listTAP() {

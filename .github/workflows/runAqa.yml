@@ -2,6 +2,9 @@ name: "PR Comment Build Action for aqa-tests"
 on:
   issue_comment:
     types: [created]
+permissions:
+      contents: write
+      issues: write
 jobs:
   parseComment:
     runs-on: ubuntu-latest
@@ -19,12 +22,12 @@ jobs:
       id: workflow_run_info
     # Checkout current repo to access the repo-specific config file `.github/workflows/runAqaConfig.json`
     - name: Checkout current repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         path: 'main'
     # Checkout the main TKG repo to access the shared script `scripts/testRepo/runAqaArgParse.py`
     - name: Checkout main TKG repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         repository: 'adoptium/TKG.git'
         ref: 'master'
@@ -47,7 +50,7 @@ jobs:
       id: output_log
     - name: Create error comment
       if: failure()
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -69,7 +72,7 @@ jobs:
       run: echo ::set-output name=failed::true
       id: failure_report
     - name: Create success comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -129,7 +132,7 @@ jobs:
         sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
-    - uses: actions/github-script@v6
+    - uses: actions/github-script@v7
       id: get-pr
       with:
         script: |
@@ -154,7 +157,7 @@ jobs:
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
          tkg_Repo: ${{ matrix.tkg_repo }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       if: failure()
       with:
         name: test_output
@@ -166,7 +169,7 @@ jobs:
     if: failure() && !needs.parseComment.outputs.failed
     steps:
     - name: Create comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -187,7 +190,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -208,7 +211,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |

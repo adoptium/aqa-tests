@@ -15,156 +15,63 @@
 -->
 
 <project name="openjdk regression tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
 	<description>
 		stage openjdk test make files
 	</description>
 
 	<!-- set properties for this build -->
-	<property name="DEST" value="${BUILD_ROOT}/openjdk" />
-	<property name="src" location="." />
-	<property environment="env" />
+	<property name="DEST" value="${BUILD_ROOT}/openjdk"/>
+	<property name="src" location="."/>
+	<property environment="env"/>
 
 	<if>
-		<contains string="${SPEC}" substring="win" />
+		<contains string="${SPEC}" substring="win"/>
 		<then>
 			<path id="home.path">
-				<pathelement path="${env.HOME}" />
+				<pathelement path="${env.HOME}"/>
 			</path>
 			<pathconvert targetos="unix" property="home.unix" refid="home.path"/>
-			<echo message="pathconvert ${env.HOME} to unix on windows. home.unix is set to ${home.unix}" />
+			<echo message="pathconvert ${env.HOME} to unix on windows. home.unix is set to ${home.unix}"/>
 		</then>
 		<else>
-			<property name="home.unix" value="${env.HOME}" />
+			<property name="home.unix" value="${env.HOME}"/>
 		</else>
 	</if>
-	
-	<property name="REFERENCE_REPO" value="--reference-if-able ${home.unix}/openjdk_cache" />
 
-	<if>
-		<or>
-			<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-			<matches pattern="^[1][023456]" string="${JDK_VERSION}"/>
-		</or>
-		<then>
-			<property name="jtregTar" value="jtreg_5_1_b01"/>
-		</then>
-		<else>
-			<if> 
-				<matches pattern="^[1][17]" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_6_1"/>
-				</then>
-				<else>
-					<if>
-						<matches pattern="^[1][89]" string="${JDK_VERSION}"/>
-						<then>
-							<property name="jtregTar" value="jtreg_6_1_1"/>
-						</then>
-						<else>
-							<if>
-								<matches pattern="^[2][0]" string="${JDK_VERSION}"/>
-								<then>
-									<property name="jtregTar" value="jtreg_7_1_1_1"/>
-								</then>
-								<else>
-									<property name="jtregTar" value="jtreg_7_2_1"/>
-								</else>
-							</if>
-						</else>
-					</if>
-				</else>
-			</if>
-		</else>
-	</if>
-	<if>
-	 	<or>
-	    		<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-	    		<equals arg1="${JDK_IMPL}" arg2="openj9" />
-		</or>
-		<then>
-		    	<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
-		</then>
-		<else>
-		 	<property name="openj9jtregtimeouthandler" value=""/>
-	       </else>
-	</if>
-	
-	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
-	
+	<property name="REFERENCE_REPO" value="--reference-if-able ${home.unix}/openjdk_cache"/>
+
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	
-	<target name="getJtreg">
-		<mkdir dir="${DEST}"/>
-		<if>
-			<not>
-				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
-			</not>
-			<then>
-				<if> 
-					<available file="custom_jtreg.tar.gz"/>
-					<then>
-						<echo message="Using custom_jtreg.tar.gz"/>
-						<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
-					</then>
-				</if>
-			</then>
-			<else>
-   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
-			</else>
-		</if>
-		<exec executable="gzip" failonerror="true">
-			<arg line="-df ${jtregTar}.tar.gz" />
-		</exec>
-		<if>
-			<contains string="${SPEC}" substring="zos" />
-			<then>
-				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
-				</exec>
-			</then>
-			<else>
-				<exec executable="sh" failonerror="true">
-					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
-				</exec>
-			</else>
-		</if>
-	</target>
-
 	<target name="getOpenjdk" depends="openjdk-jdk.check" unless="jdkdir.exists">
 		<!-- Windows API limitation of file paths having 260 characters or fewer,
-		     run the config command to allow file paths of 4096 characters 
+			 run the config command to allow file paths of 4096 characters
 		-->
 		<if>
-			<contains string="${SPEC}" substring="win" />
+			<contains string="${SPEC}" substring="win"/>
 			<then>
 				<exec executable="git" failonerror="false">
-					<arg line="config --global core.longpaths true" />
+					<arg line="config --global core.longpaths true"/>
 				</exec>
 			</then>
 		</if>
-		<set-property name="JDK_REPO_ISSET" if-property-isset="env.JDK_REPO" />
-		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH" />
-		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA" />
+		<set-property name="JDK_REPO_ISSET" if-property-isset="env.JDK_REPO"/>
+		<set-property name="JDK_BRANCH_ISSET" if-property-isset="env.JDK_BRANCH"/>
+		<set-property name="OPENJDK_SHA_ISSET" if-property-isset="env.OPENJDK_SHA"/>
 		<if>
 			<and>
 				<isset property="JDK_REPO_ISSET"/>
 				<isset property="JDK_BRANCH_ISSET"/>
 			</and>
 			<then>
-				<echo> Using user specified repo and branch</echo>
+				<echo>Using user specified repo and branch</echo>
 				<if>
 					<contains string="${SPEC}" substring="zos"/>
 					<then>
-						<propertyregex 
-							property="JDK_REPO_SPECIFIC"
-							input="${env.JDK_REPO}"
-							regexp="https://github.ibm.com/"
-							replace="git@github.ibm.com:"
-							defaultValue="${env.JDK_REPO}"/>
+						<propertyregex property="JDK_REPO_SPECIFIC" input="${env.JDK_REPO}" regexp="https://github.ibm.com/" replace="git@github.ibm.com:" defaultValue="${env.JDK_REPO}"/>
 					</then>
 					<else>
-						<property name="JDK_REPO_SPECIFIC" value="${env.JDK_REPO}" />
+						<property name="JDK_REPO_SPECIFIC" value="${env.JDK_REPO}"/>
 					</else>
 				</if>
 				<if>
@@ -172,13 +79,13 @@
 					<then>
 						<getFileWithRetry file="openjdktemp" command="git clone -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<exec executable="git" failonerror="true" dir="openjdktemp">
-							<arg line="checkout ${env.OPENJDK_SHA}" />
+							<arg line="checkout ${env.OPENJDK_SHA}"/>
 						</exec>
 					</then>
 					<else>
 						<getFileWithRetry file="openjdktemp" command="git clone --depth 1 -q ${REFERENCE_REPO} -b ${env.JDK_BRANCH} ${JDK_REPO_SPECIFIC} openjdktemp"/>
 						<if>
-							<equals arg1="${failCode}" arg2="128"/>			
+							<equals arg1="${failCode}" arg2="128"/>
 							<then>
 								<getFileWithRetry file="openjdktemp" command="git clone -q ${JDK_REPO_SPECIFIC} openjdktemp"/>
 								<echo message="git rev-parse ${env.JDK_BRANCH} "/>
@@ -187,7 +94,7 @@
 									<arg value="${env.JDK_BRANCH}"/>
 								</exec>
 								<if>
-									<equals arg1="${code}" arg2="128"/>			
+									<equals arg1="${code}" arg2="128"/>
 									<then>
 										<echo message="git rev-parse origin/${env.JDK_BRANCH}"/>
 										<exec executable="git" failonerror="true" dir="openjdktemp" outputproperty="jdk_sha2" resultproperty="code2">
@@ -195,7 +102,7 @@
 											<arg value="origin/${env.JDK_BRANCH}"/>
 										</exec>
 										<property name="jdk_sha" value="${jdk_sha2}"/>
-									</then>	
+									</then>
 								</if>
 								<if>
 									<not>
@@ -206,26 +113,20 @@
 									</then>
 								</if>
 								<if>
-									<isset property="isZOS" />
+									<isset property="isZOS"/>
 									<then>
-										<propertyregex 
-											property="jdk_sha"
-											input="${jdk_sha}"
-											regexp="\n"
-											replace=""
-											override="true"/>
+										<propertyregex property="jdk_sha" input="${jdk_sha}" regexp="\n" replace="" override="true"/>
 									</then>
 								</if>
 								<echo message="git checkout -q -f ${jdk_sha} "/>
-								<exec executable="git" failonerror="true" dir="openjdktemp" >
+								<exec executable="git" failonerror="true" dir="openjdktemp">
 									<arg value="checkout"/>
 									<arg value="-q"/>
 									<arg value="-f"/>
 									<arg value="${jdk_sha}"/>
 								</exec>
-							</then>	
-						</if>		
-								
+							</then>
+						</if>
 					</else>
 				</if>
 				<if>
@@ -241,20 +142,21 @@
 			</then>
 			<else>
 				<if>
-					<matches string="${JDK_IMPL}" pattern="openj9|ibm" />
+					<matches string="${JDK_IMPL}" pattern="openj9|ibm"/>
 					<then>
 						<if>
-							<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next" />
+							<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="next"/>
 							<then>
-								<property name="jdkName" value="openj9-openjdk-jdk" />
+								<property name="jdkName" value="openj9-openjdk-jdk"/>
 							</then>
 							<else>
-								<if> <contains string="${SPEC}" substring="zos"/>
+								<if>
+									<contains string="${SPEC}" substring="zos"/>
 									<then>
-										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos" />
+										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos"/>
 									</then>
 									<else>
-										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}" />
+										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}"/>
 									</else>
 								</if>
 							</else>
@@ -262,44 +164,44 @@
 						<if>
 							<contains string="${SPEC}" substring="zos"/>
 							<then>
-								<property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git" />
+								<property name="regressionRepo" value="git@github.ibm.com:runtimes/${jdkName}.git"/>
 							</then>
 							<else>
-								<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git" />
+								<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git"/>
 							</else>
 						</if>
 					</then>
 					<else>
 						<if>
 							<and>
-								<contains string="${env.SPEC}" substring="arm" />
-								<equals arg1="${JDK_VERSION}" arg2="8" />
+								<contains string="${env.SPEC}" substring="arm"/>
+								<equals arg1="${JDK_VERSION}" arg2="8"/>
 							</and>
 							<then>
-								<property name="jdkName" value="aarch32-jdk8u" />
+								<property name="jdkName" value="aarch32-jdk8u"/>
 							</then>
 							<else>
-								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet." />
-								<echo message="git ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git" />
+								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet."/>
+								<echo message="git ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
 								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
 									<env key="GIT_TERMINAL_PROMPT" value="0"/>
-									<arg line="ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git" />
+									<arg line="ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
 								</exec>
 								<if>
-									<equals arg1="${repo.exist}" arg2="0" />
+									<equals arg1="${repo.exist}" arg2="0"/>
 									<then>
-										<echo message="Command passed. Setting repo name to the 'u' version." />
-										<property name="jdkName" value="jdk${JDK_VERSION}u" />
+										<echo message="Command passed. Setting repo name to the 'u' version."/>
+										<property name="jdkName" value="jdk${JDK_VERSION}u"/>
 									</then>
 									<else>
-										<echo message="Command failed, or tried to ask for a username due to access restrictions. Or both." />
-										<echo message="Setting repo name to the non-'u' version." />
-										<property name="jdkName" value="jdk${JDK_VERSION}" />
+										<echo message="Command failed, or tried to ask for a username due to access restrictions. Or both."/>
+										<echo message="Setting repo name to the non-'u' version."/>
+										<property name="jdkName" value="jdk${JDK_VERSION}"/>
 									</else>
 								</if>
 							</else>
 						</if>
-						<property name="regressionRepo" value="https://github.com/adoptium/${jdkName}.git" />
+						<property name="regressionRepo" value="https://github.com/adoptium/${jdkName}.git"/>
 					</else>
 				</if>
 				<if>
@@ -317,7 +219,7 @@
 					<then>
 						<getFileWithRetry file="openjdk-jdk" command="git clone -q ${REFERENCE_REPO} ${defaultBranch} ${regressionRepo} openjdk-jdk"/>
 						<exec executable="git" failonerror="true" dir="openjdk-jdk">
-							<arg line="checkout ${env.OPENJDK_SHA}" />
+							<arg line="checkout ${env.OPENJDK_SHA}"/>
 						</exec>
 					</then>
 					<else>
@@ -326,23 +228,23 @@
 				</if>
 			</else>
 		</if>
-		<checkGitRepoSha repoDir="openjdk-jdk" />
+		<checkGitRepoSha repoDir="openjdk-jdk"/>
 		<addTestenvProperties repoDir="openjdk-jdk" repoName="JDK${env.JDK_VERSION}"/>
 	</target>
-	
+
 	<target name="openjdk-jdk.check">
 		<condition property="jdkdir.exists">
 			<available file="openjdk-jdk" type="dir"/>
 		</condition>
 	</target>
-	
-	<target name="dist" depends="getDependentLibs, getJtreg, getOpenjdk" description="generate the distribution">
+
+	<target name="dist" depends="getJtreg, getOpenjdk" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,*.mk"/>
 		</copy>
 	</target>
 
-	<target name="build" >
-		<antcall target="dist" inheritall="true" />
+	<target name="build">
+		<antcall target="dist" inheritall="true"/>
 	</target>
 </project>

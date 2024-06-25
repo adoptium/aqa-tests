@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>aot_test</testCaseName>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --load --tag "${DOCKERIMAGE_TAG}" --dir aot --portable "true" --mount_jdk "false" --platform "${PLATFORM}" --node_name "${NODE_NAME}" --node_labels "${NODE_LABELS}" --test_root "$(TEST_ROOT)" --reportdst $(REPORTDIR) --docker_args "-v /var/run/docker.sock:/var/run/docker.sock $(EXTRA_DOCKER_ARGS)"; \
@@ -21,8 +21,8 @@
 		</command>
 		<disables>
 			<disable>
-				<comment>Disable until next release https://github.com/eclipse-openj9/openj9/pull/15812#issuecomment-1235566485</comment>
-				<platform>aarch64_linux</platform>
+				<comment>semeru docker image has no support for P8 machines https://github.ibm.com/runtimes/backlog/issues/917</comment>
+				<platform>ppc64le_linux</platform>
 			</disable>
 		</disables>
 		<features>

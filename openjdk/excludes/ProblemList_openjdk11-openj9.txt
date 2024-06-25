@@ -203,6 +203,12 @@ com/sun/net/httpserver/bugs/B6361557.java	https://github.com/adoptium/aqa-tests/
 
 ############################################################################
 
+# jdk_imageio
+
+javax/imageio/plugins/jpeg/JPEGsNotAcceleratedTest.java https://github.com/eclipse-openj9/openj9/issues/19527 windows-all
+
+############################################################################
+
 # jdk_io
 
 java/io/FileInputStream/UnreferencedFISClosesFd.java  https://github.com/eclipse-openj9/openj9/issues/3543 generic-all
@@ -222,12 +228,16 @@ java/nio/Buffer/LimitDirectMemoryNegativeTest.java	https://github.com/eclipse-op
 java/nio/channels/AsyncCloseAndInterrupt.java	https://github.com/adoptium/infrastructure/issues/1173	linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
-java/nio/channels/DatagramChannel/BasicMulticastTests.java  https://github.com/eclipse-openj9/openj9/issues/12795   aix-all
+#java/nio/channels/DatagramChannel/BasicMulticastTests.java  on macosx-all under https://github.ibm.com/runtimes/backlog/issues/1053
+java/nio/channels/DatagramChannel/BasicMulticastTests.java https://github.com/eclipse-openj9/openj9/issues/12795 aix-all,macosx-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
+#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 generic-all
 #java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669  https://github.com/adoptium/aqa-tests/issues/1297
-java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,linux-ppc64le,macosx-all,aix-all,z/OS-s390x
+#java/nio/channels/DatagramChannel/Promiscuous.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
+java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 generic-all
+java/nio/channels/Pipe/PipeInterrupt.java https://github.com/eclipse-openj9/openj9/issues/18479 windows-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/file/Files/CopyAndMove.java https://github.com/adoptium/aqa-tests/issues/795 macosx-all
 java/nio/file/Files/InputStreamTest.java	https://github.com/adoptium/aqa-tests/issues/2789	generic-all
@@ -243,15 +253,19 @@ java/nio/file/Files/probeContentType/Basic.java https://github.com/eclipse-openj
 ############################################################################
 
 # jdk_rmi
-
+java/rmi/activation/Activatable/nestedActivate/NestedActivate.java https://github.ibm.com/runtimes/backlog/issues/1004 windows-all
 java/rmi/dgc/dgcAckFailure/DGCAckFailure.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
 java/rmi/dgc/retryDirtyCalls/RetryDirtyCalls.java	https://github.com/eclipse-openj9/openj9/issues/7592	generic-all
+java/rmi/Naming/legalRegistryNames/LegalRegistryNames.java https://github.ibm.com/runtimes/backlog/issues/867 macosx-x64
+java/rmi/Naming/DefaultRegistryPort.java https://github.ibm.com/runtimes/backlog/issues/867 macosx-x64
 java/rmi/server/RMISocketFactory/useSocketFactory/unicast/TCPEndpointReadBug.java	https://github.com/eclipse-openj9/openj9/issues/8515	generic-all
-java/rmi/server/RMISocketFactory/useSocketFactory/unicast/UseCustomSocketFactory.java   https://github.com/eclipse-openj9/openj9/issues/13259   aix-all
+#java/rmi/server/RMISocketFactory/useSocketFactory/unicast/UseCustomSocketFactory.java on windows-x64 issue https://github.ibm.com/runtimes/backlog/issues/1024
+java/rmi/server/RMISocketFactory/useSocketFactory/unicast/UseCustomSocketFactory.java   https://github.com/eclipse-openj9/openj9/issues/13259  aix-all,windows-x64
 java/rmi/server/RemoteServer/AddrInUse.java		https://github.com/eclipse-openj9/openj9/issues/3377	generic-all
 java/rmi/server/UnicastRemoteObject/serialFilter/FilterUROTest.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
 java/rmi/server/UnicastRemoteObject/unexportObject/UnexportLeak.java https://github.com/eclipse-openj9/openj9/issues/4094 generic-all
 java/rmi/server/UnicastServerRef/serialFilter/FilterUSRTest.java	https://github.com/eclipse-openj9/openj9/issues/3347	generic-all
+java/rmi/server/Unreferenced/leaseCheckInterval/LeaseCheckInterval.java https://github.com/eclipse-openj9/openj9/issues/12948 windows-x64
 
 ############################################################################
 
@@ -259,6 +273,8 @@ java/rmi/server/UnicastServerRef/serialFilter/FilterUSRTest.java	https://github.
 
 java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/KeyFactory/KeyFactoryGetKeySpecForInvalidSpec.java	https://github.com/adoptium/aqa-tests/issues/2790	generic-all
+java/security/SecureRandom/ApiTest.java https://github.com/eclipse-openj9/openj9/issues/16734 windows-all
+java/security/SecureRandom/EnoughSeedTest.java https://github.com/eclipse-openj9/openj9/issues/16734 windows-all
 java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 
@@ -301,11 +317,6 @@ sun/security/tools/jarsigner/PreserveRawManifestEntryAndDigest.java	https://gith
 ############################################################################
 
 # jdk_security_infra
-
-security/infra/java/security/cert/CertPathValidator/certification/LuxTrustCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/BuypassCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/LetsEncryptCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
-security/infra/java/security/cert/CertPathValidator/certification/QuoVadisCA.java	https://github.com/adoptium/aqa-tests/issues/2074	generic-all
 
 ############################################################################
 
@@ -352,6 +363,7 @@ java/util/stream/boottest/java.base/java/util/stream/NodeTest.java https://githu
 java/util/stream/test/org/openjdk/tests/java/util/SplittableRandomTest.java 	https://github.com/eclipse-openj9/openj9/issues/4613 	generic-all
 java/util/stream/test/org/openjdk/tests/java/util/stream/ToArrayOpTest.java	https://github.com/eclipse-openj9/openj9/issues/3447	generic-all
 java/util/WeakHashMap/GCDuringIteration.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
+java/util/zip/CloseInflaterDeflaterTest.java	https://github.com/eclipse-openj9/openj9/issues/14948	linux-s390x
 java/util/zip/ZipFile/TestCleaner.java	https://github.com/eclipse-openj9/openj9/issues/8872 	generic-all
 
 ############################################################################
@@ -362,6 +374,8 @@ java/util/zip/ZipFile/TestCleaner.java	https://github.com/eclipse-openj9/openj9/
 
 # jdk_other
 
+com/sun/jndi/dns/ConfigTests/Timeout.java   https://github.ibm.com/runtimes/backlog/issues/1287 windows-x64,macosx-all
+com/sun/jndi/dns/ConfigTests/PortUnreachable.java   https://github.ibm.com/runtimes/backlog/issues/1287 windows-x64,macosx-all
 com/sun/jndi/ldap/LdapPoolTimeoutTest.java	https://github.ibm.com/runtimes/backlog/issues/655	windows-all
 jdk/internal/misc/VM/GetNanoTimeAdjustment.java		https://github.com/eclipse-openj9/openj9/issues/7184		generic-all
 jdk/internal/misc/VM/RuntimeArguments.java		https://github.com/eclipse-openj9/openj9/issues/7186		generic-all
@@ -377,4 +391,8 @@ vm/verifier/VerifyProtectedConstructor.java	https://github.com/eclipse-openj9/op
 ############################################################################
 
 # jdk_container
+jdk/internal/platform/docker/TestDockerBasic.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
 jdk/internal/platform/docker/TestDockerCpuMetrics.java https://github.com/eclipse-openj9/openj9/issues/16462 generic-all
+jdk/internal/platform/docker/TestDockerMemoryMetrics.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
+jdk/internal/platform/docker/TestGetFreeSwapSpaceSize.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all
+jdk/internal/platform/docker/TestPidsLimit.java https://github.com/eclipse-openj9/openj9/issues/19176 linux-all

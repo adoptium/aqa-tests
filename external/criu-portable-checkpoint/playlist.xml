@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../criuSettings.mk</include>
 	<test>
 		<testCaseName>criu-portable-checkpoint_test</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-portable-checkpoint --testtarget _cmdLineTester_criu_keepCheckpoint --portable "true" --platform "${PLATFORM}" --node_name "${NODE_NAME}" --node_labels "${NODE_LABELS}" --docker_registry_required "true" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS) --tmpfs /run"; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir criu-portable-checkpoint --testtarget _cmdLineTester_criu_keepCheckpoint --portable "true" --platform "${PLATFORM}" --node_name "${NODE_NAME}" --node_labels "${NODE_LABELS}" --docker_registry_required "true" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)" --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)"; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir criu-portable-checkpoint --platform "${PLATFORM}" --node_labels "${NODE_LABELS}" --docker_registry_url $(DOCKER_REGISTRY_URL) --docker_registry_dir "$(DOCKER_REGISTRY_DIR)" --criu_default_image_job_name "$(CRIU_DEFAULT_IMAGE_JOB_NAME)"
 		</command>

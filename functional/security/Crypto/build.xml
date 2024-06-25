@@ -42,96 +42,17 @@
 		</else>
 	</if>
 	<target name="getCryptoTest" depends="cryptoTest.check" unless="cryptoTestdir.exists">
-		<exec executable="git" failonerror="true">
-			<arg value="clone" />
-			<arg value="${GIT_REPO}rh-openjdk/CryptoTest.git" />
-		</exec>
+		<getFileWithRetry file="CryptoTest" command="git clone --depth 1 -q ${GIT_REPO}rh-openjdk/CryptoTest.git -b master CryptoTest"/>
+		<checkGitRepoSha repoDir="CryptoTest"/>
 	</target>
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
-	<if>
-		<or>
-			<matches pattern="^[89]{1}$" string="${JDK_VERSION}"/>
-			<matches pattern="^[1][023456]" string="${JDK_VERSION}"/>
-		</or>
-		<then>
-			<property name="jtregTar" value="jtreg_5_1_b01"/>
-		</then>
-		<else>
-			<if> 
-				<matches pattern="^[1][17]" string="${JDK_VERSION}"/>
-				<then>
-					<property name="jtregTar" value="jtreg_6_1"/>
-				</then>
-				<else>
-					<if>
-						<matches pattern="^[1][89]" string="${JDK_VERSION}"/>
-						<then>
-							<property name="jtregTar" value="jtreg_6_1_1"/>
-						</then>
-						<else>
-							<property name="jtregTar" value="jtreg_7_1_1_1"/>
-						</else>
-					</if>
-				</else>
-			</if>
-		</else>
-	</if>
-	<if>
-		<or>
-			<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-			<equals arg1="${JDK_IMPL}" arg2="openj9" />
-		</or>
-		<then>
-			<property name="openj9jtregtimeouthandler" value=",tohandler_simple"/>
-		</then>
-		<else>
-			<property name="openj9jtregtimeouthandler" value=""/>
-		</else>
-	</if>
-	<property name="LIB" value="${jtregTar}${openj9jtregtimeouthandler}"/>
 	
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-	<target name="getJtreg">
-		<mkdir dir="${DEST}"/>
-		<if>
-			<not>
-				<available file="${LIB_DIR}/${jtregTar}.tar.gz" />
-			</not>
-			<then>
-				<if> 
-					<available file="custom_jtreg.tar.gz"/>
-					<then>
-						<echo message="Using custom_jtreg.tar.gz"/>
-						<copy file="custom_jtreg.tar.gz" tofile="${jtregTar}.tar.gz"/>
-					</then>
-				</if>
-			</then>
-			<else>
-   				<copy file="${LIB_DIR}/${jtregTar}.tar.gz" tofile="${jtregTar}.tar.gz"/>
-			</else>
-		</if>
-		<exec executable="gzip" failonerror="true">
-			<arg line="-df ${jtregTar}.tar.gz" />
-		</exec>
-		<if>
-			<contains string="${SPEC}" substring="zos" />
-			<then>
-				<exec executable="tar" failonerror="true">
-					<arg line="xfo ${jtregTar}.tar -C ${DEST}" />
-				</exec>
-			</then>
-			<else>
-				<exec executable="sh" failonerror="true">
-					<arg line="-c 'cat ${jtregTar}.tar | (cd ${DEST} &amp;&amp; tar xof -)'" />
-				</exec>
-			</else>
-		</if>
-	</target>
 	
-	<target name="dist" depends="getDependentLibs,getJtreg,getCryptoTest" description="generate the distribution">
+	<target name="dist" depends="getJtreg,getCryptoTest" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml,*.mk" />
 		</copy>
@@ -146,4 +67,3 @@
 		<antcall target="clean" inheritall="true" />
 	</target>
 </project>
-

@@ -15,7 +15,29 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image" description="generate the distribution">
+	<target name="prepare_base_image" depends="move_scripts,clean_image" description="prepare the base image">
+		<echo message="Executing external.sh --prepare --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} --base_docker_registry_url 'docker.io' --base_docker_registry_dir 'default' --docker_args ${extra_docker_args} " />
+		<exec executable="bash" failonerror="true">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--prepare"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+			<arg value="--base_docker_registry_url"/>
+			<arg value="docker.io"/>
+			<arg value="--base_docker_registry_dir"/>
+			<arg value="default"/>
+			<arg value="--docker_args"/>
+			<arg value="${extra_docker_args}"/>
+		</exec>
+	</target>
+
+	<target name="dist" depends="prepare_base_image" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk, *.sh"/>
 		</copy>

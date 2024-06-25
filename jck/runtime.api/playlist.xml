@@ -12,17 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 -->
-<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/playlist.xsd">
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jck_custom</testCaseName>
+		<testCaseName>jckruntime_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(JCK_CUSTOM_TARGET) task=custom; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
+		</command>
 		<levels>
-			<level>extended</level>
+			<level>dev</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -55,8 +58,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/instrument testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/instrument testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/instrument testsuite=RUNTIME
+</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -71,8 +75,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/invoke testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/invoke testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/invoke testsuite=RUNTIME
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -87,8 +92,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/reflect testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/reflect testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/reflect testsuite=RUNTIME
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -103,8 +109,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/Package testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Package testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Package testsuite=RUNTIME
+	</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -119,8 +126,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/String testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/String testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/String testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -135,8 +143,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/StringBuilder testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StringBuilder testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StringBuilder testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -151,8 +160,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/StringBuffer testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StringBuffer testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StringBuffer testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -167,8 +177,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/ClassLoader testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/ClassLoader testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/ClassLoader testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -183,8 +194,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/ModuleLayer testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/ModuleLayer testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/ModuleLayer testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -202,8 +214,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/module testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/module testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/module testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -221,8 +234,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/StackWalker testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StackWalker testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/StackWalker testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -240,8 +254,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/Module_class testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Module_class testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Module_class testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -259,8 +274,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/SecurityManager testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/SecurityManager testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/SecurityManager testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -275,8 +291,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/System testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/System testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/System testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -291,8 +308,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/constant testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/constant testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/constant testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -310,8 +328,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang/Class testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Class testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang/Class testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -321,13 +340,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/signaturetest testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/signaturetest testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/signaturetest testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -342,8 +369,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/modulegraph testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/modulegraph testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/modulegraph testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -368,9 +396,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util/regex testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_util/regex testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_util/regex testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -385,8 +414,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_naming/spi testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_naming/spi testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_naming/spi testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -400,9 +430,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util/ResourceBundle testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_util/ResourceBundle testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_util/ResourceBundle testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -424,14 +455,20 @@
 				<version>8</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_applet testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_applet testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_applet testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -456,8 +493,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_awt testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_awt testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_awt testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -474,14 +512,20 @@
 				<version>11</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_beans testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_beans testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_beans testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -497,8 +541,9 @@
 		<!-- This testcase opens many files which can exceed max open files, so limit concurrency to 1 --> 
 		<command>$(GEN_JTB_GENERIC) tests=api/java_io testsuite=RUNTIME concurrency=1; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_io testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_io testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -513,8 +558,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_lang testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_lang testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_lang testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -529,8 +575,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_math testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_math testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_math testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -555,9 +602,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_net testsuite=RUNTIME concurrency=1; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES) ; \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_net testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_net testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -572,8 +620,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_nio testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_nio testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_nio testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -595,9 +644,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_rmi testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_rmi testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_RMI_SERVICES); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_rmi testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -614,16 +664,23 @@
 				<version>8+</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>backlog/issues/1118</comment>
+				<version>8+</version>
+				<impl>openj9</impl>
+				<testflag>fips140_2</testflag>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_security testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_security testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_security testsuite=RUNTIME
+		</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -636,8 +693,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_sql testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_sql testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_sql testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -652,8 +710,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_text testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_text testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_text testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -668,8 +727,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_time testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_time testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_time testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -691,9 +751,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/java_util testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/java_util testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/java_util testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -709,14 +770,20 @@
 				<platform>ppc64_aix</platform>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
 		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_accessibility testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_accessibility testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_accessibility testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -731,8 +798,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_activation testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_activation testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_activation testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -750,8 +818,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_activity testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_activity testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_activity testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -769,8 +838,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_annotation testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_annotation testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_annotation testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -793,10 +863,11 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_crypto testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_crypto testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_crypto testsuite=RUNTIME
+		</command>
 		<levels>
-			<level>extended</level>
+			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>jck</group>
@@ -804,13 +875,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-javax_imageio</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_imageio testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_imageio testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_imageio testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -825,8 +904,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_lang testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_lang testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_lang testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -848,9 +928,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_management testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_management testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_management testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -865,8 +946,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_naming testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_naming testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_naming testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -895,8 +977,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_net testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_naming testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_net testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -923,8 +1006,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_print testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_print testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_print testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -947,8 +1031,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_rmi testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_rmi testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_rmi testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -963,8 +1048,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_script testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_script testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_script testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -979,8 +1065,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_security testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_security testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_security testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -993,7 +1080,7 @@
 		<disables>
 			<disable>
 				<comment>Temporarily disabled on x64 + aarch64 Mac for backlog/issues/718</comment>
-				<platform>(?:aarch64_mac.*|x86-64_mac.*)</platform>
+				<platform>(aarch64_mac|x86-64_mac).*</platform>
 				<impl>openj9</impl>
 				<version>11+</version>
 			</disable>
@@ -1003,8 +1090,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_sound testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_sound testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_sound testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1019,8 +1107,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_sql testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_sql testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_sql testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1045,8 +1134,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_swing testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_swing testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_swing testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1069,8 +1159,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_tools testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_tools testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_tools testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>
@@ -1085,8 +1176,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_transaction testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_transaction testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_transaction testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1104,9 +1196,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/javax_xml testsuite=RUNTIME concurrency=1; \
-		$(EXEC_RUNTIME_TEST_WITH_SERVICES); \
-		$(GEN_SUMMARY_GENERIC) tests=api/javax_xml testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/javax_xml testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1131,8 +1224,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/org_ietf testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/org_ietf testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/org_ietf testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>special</level>
 		</levels>
@@ -1144,12 +1238,6 @@
 				<comment>backlog/issues/567</comment>
 				<platform>.*zos.*</platform>
 			</disable>
-			<disable>
-				<comment>Temporarily disabled on x64 + aarch64 Mac for infrastructure/issues/7151</comment>
-				<platform>(?:aarch64_mac.*|x86-64_mac.*)</platform>
-				<impl>openj9</impl>
-				<version>11</version>
-			</disable>
 		</disables>
 	</test>
 	<test>
@@ -1158,9 +1246,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/org_omg testsuite=RUNTIME; \
-		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/org_omg testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/org_omg testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1178,8 +1267,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/org_w3c testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/org_w3c testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/org_w3c testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1194,8 +1284,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/org_xml testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/org_xml testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/org_xml testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1210,8 +1301,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/xinclude testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/xinclude testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/xinclude testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1226,8 +1318,9 @@
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/xsl testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/xsl testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/xsl testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
@@ -1237,13 +1330,21 @@
 	</test>
 	<test>
 		<testCaseName>jck-runtime-api-serializabletypes</testCaseName>
+		<disables>
+			<disable>
+				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<platform>aarch64_mac.*</platform>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=api/serializabletypes testsuite=RUNTIME; \
 		$(EXEC_RUNTIME_TEST); \
-		$(GEN_SUMMARY_GENERIC) tests=api/serializabletypes testsuite=RUNTIME; \
-	$(TEST_STATUS)</command>
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=api/serializabletypes testsuite=RUNTIME
+		</command>
 		<levels>
 			<level>sanity</level>
 		</levels>

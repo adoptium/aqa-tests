@@ -1,22 +1,18 @@
 #!groovy
 
-def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*");
-def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*");
-def TARGETS = params.TARGETS.trim().split("\\s*,\\s*");
+def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
+def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*")
+def TARGETS = params.TARGETS ?: "Grinder"
+TARGETS = TARGETS.trim().split("\\s*,\\s*")
 
-def USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES ? params.USE_TESTENV_PROPERTIES : false
 def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 def NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES : 3
 def SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 def AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN : false
 def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
-def LABEL = (params.LABEL) ?: ""
-def LABEL_ADDITION = (params.LABEL_ADDITION) ?: ""
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
-def APPLICATION_OPTIONS = (params.APPLICATION_OPTIONS) ?: ""
-def SETUP_JCK_RUN = params.SETUP_JCK_RUN ?: false
-
+def LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
@@ -31,6 +27,9 @@ def suffix = ""
 if (TEST_FLAG) {
     suffix = "_" + TEST_FLAG.toLowerCase().trim()
 }
+
+def fail = false
+int jobNum = 0
 JDK_VERSIONS.each { JDK_VERSION ->
     PLATFORMS.each { PLATFORM ->
         String[] tokens = PLATFORM.split('_')
@@ -44,7 +43,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
 
         def filter = "*.tar.gz"
         if (os.contains("windows")) {
-        	filter = "*.zip"
+            filter = "*.zip"
         }
         def short_name = "hs"
         def jdk_impl = "hotspot"
@@ -57,7 +56,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
 
         if (SDK_RESOURCE == "customized" ) {
             if (params.TOP_LEVEL_SDK_URL) {
-                // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip 
+                // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip
                 download_url = params.TOP_LEVEL_SDK_URL + "artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
             }
         } else if (SDK_RESOURCE == "releases") {
@@ -70,11 +69,16 @@ JDK_VERSIONS.each { JDK_VERSION ->
         echo "download_url: ${download_url}"
 
         TARGETS.each { TARGET ->
-            def TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
+            def TEST_JOB_NAME = "Grinder"
+            if (TARGET.contains("Grinder")) {
+                TEST_JOB_NAME = TARGET
+            } else {
+                TEST_JOB_NAME = "Test_openjdk${JDK_VERSION}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
+            }
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
 
             def keep_reportdir = false
-            if (TARGET.contains("jck") || TARGET.contains("openjdk")) {
+            if (TARGET.contains("jck") || TARGET.contains("openjdk") || TARGET.contains("osb")) {
                 keep_reportdir = true
             }
             if (TARGET.contains("functional") || TARGET.contains("perf")) {
@@ -83,7 +87,8 @@ JDK_VERSIONS.each { JDK_VERSION ->
                 }
             }
 
-            if (AUTO_AQA_GEN) {
+            // Grinder job has special settings and should be regenerated specifically, not via aqaTestPipeline
+            if (AUTO_AQA_GEN && !TEST_JOB_NAME.contains("Grinder")) {
                 String[] targetTokens = TARGET.split("\\.")
                 def level = targetTokens[0];
                 def group = targetTokens[1];
@@ -94,36 +99,54 @@ JDK_VERSIONS.each { JDK_VERSION ->
                     string(name: 'JDK_VERSIONS', value: JDK_VERSION),
                     string(name: 'ARCH_OS_LIST', value: PLATFORM),
                     string(name: 'JDK_IMPL', value: jdk_impl),
-                    booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
+                    booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: LIGHT_WEIGHT_CHECKOUT)
                 ]
                 build job: 'Test_Job_Auto_Gen', parameters: parameters, propagate: true
             }
 
             def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
             if (JobHelper.jobIsRunnable(TEST_JOB_NAME as String)) {
-                JOBS["${TEST_JOB_NAME}"] = {
-                    def downstreamJob = build job: TEST_JOB_NAME, propagate: false, parameters: [
-                        string(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO),
-                        string(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH),
-                        booleanParam(name: 'USE_TESTENV_PROPERTIES', value: USE_TESTENV_PROPERTIES),
-                        string(name: 'SDK_RESOURCE', value: sdk_resource_value),
-                        string(name: 'CUSTOMIZED_SDK_URL',  value: download_url),
-                        string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID',  value: params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID),
-                        string(name: 'PARALLEL', value: PARALLEL),
-                        string(name: 'NUM_MACHINES', value: NUM_MACHINES.toString()),
-                        booleanParam(name: 'GENERATE_JOBS', value: AUTO_AQA_GEN),
-                        booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false),
-                        string(name: 'TIME_LIMIT', value: TIME_LIMIT.toString()),
-                        string(name: 'TRSS_URL', value: TRSS_URL),
-                        string(name: 'LABEL', value: LABEL),
-                        string(name: 'LABEL_ADDITION', value: LABEL_ADDITION),
-                        string(name: 'TEST_FLAG', value: TEST_FLAG),
-                        string(name: 'APPLICATION_OPTIONS', value: APPLICATION_OPTIONS),
-                        booleanParam(name: 'KEEP_REPORTDIR', value: keep_reportdir),
-                        booleanParam(name: 'SETUP_JCK_RUN', value: SETUP_JCK_RUN)
-                    ], wait: true
-                    def result = downstreamJob.getResult()
-                    echo " ${TEST_JOB_NAME} result is ${result}"
+                def childParams = []
+                // loop through all the params and change the parameters if needed
+                params.each { param ->
+                    if ( param.key == "PLATFORMS" || param.key == "TARGETS" || param.key == "TOP_LEVEL_SDK_URL" 
+                    || param.key == "AUTO_AQA_GEN" || param.key == "JDK_VERSIONS" || param.key == "VARIANT" || param.key == "PIPELINE_DISPLAY_NAME") {
+                        // do not need to pass the param to child jobs
+                    } else if (param.key == "SDK_RESOURCE") {
+                        childParams << string(name: param.key, value: sdk_resource_value)
+                    } else if (param.key == "CUSTOMIZED_SDK_URL") {
+                        childParams << string(name: param.key, value: download_url)
+                    } else if (param.key == "PARALLEL") {
+                        childParams << string(name: param.key, value: PARALLEL)
+                    } else if (param.key == "NUM_MACHINES") {
+                       childParams << string(name: param.key, value: NUM_MACHINES.toString())
+                    } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
+                        childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
+                    } else if (param.key == "TIME_LIMIT") {
+                        childParams << string(name: param.key, value: TIME_LIMIT.toString())
+                    } else if (param.key == "TRSS_URL") {
+                        childParams << string(name: param.key, value: TRSS_URL)
+                    } else if (param.key == "KEEP_REPORTDIR") {
+                        childParams << booleanParam(name: param.key, value: keep_reportdir.toBoolean())
+                    } else {
+                        def value = param.value.toString()
+                        if (value == "true" || value == "false") {
+                            childParams << booleanParam(name: param.key, value: value.toBoolean())
+                        } else {
+                            childParams << string(name: param.key, value: value)
+                        }
+                    }
+                }
+                childParams << booleanParam(name: "GENERATE_JOBS", value: AUTO_AQA_GEN.toBoolean())
+                childParams << string(name: "JDK_VERSION", value: JDK_VERSION)
+                childParams << string(name: "PLATFORM", value: PLATFORM)
+                childParams << string(name: "JDK_IMPL", value: jdk_impl)
+
+                jobNum++
+                JOBS["${TEST_JOB_NAME}_${jobNum}"] = {
+                    def downstreamJob = build job: TEST_JOB_NAME, parameters: childParams, propagate: false, wait: true
+                    def downstreamJobResult = downstreamJob.getResult()
+                    echo " ${TEST_JOB_NAME} result is ${downstreamJobResult}"
                     if (downstreamJob.getResult() == 'SUCCESS' || downstreamJob.getResult() == 'UNSTABLE') {
                         echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
                         node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
@@ -139,6 +162,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                     )
                                 }
                             } catch (Exception e) {
+                                echo 'Exception: ' + e.toString()
                                 echo "Cannot run copyArtifacts from job ${TEST_JOB_NAME}. Skipping copyArtifacts..."
                             }
                             try {
@@ -146,18 +170,24 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                     archiveArtifacts artifacts: "*.tap", fingerprint: true
                                 }
                             } catch (Exception e) {
+                                echo 'Exception: ' + e.toString()
                                 echo "Cannot archiveArtifacts from job ${TEST_JOB_NAME}. "
                             }
                         }
-                    } else {
-                        echo " ${TEST_JOB_NAME} result is ${result}"
-                        currentBuild.result = "FAILURE"
+                    }
+                    if (downstreamJobResult != "SUCCESS") {
+                        fail = true
                     }
                 }
             } else {
-                println "[WARNING] Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}"
+                println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
+                fail = true
             }
         }
     }
 }
 parallel JOBS
+if (fail) {
+    currentBuild.result = "FAILURE"
+}
+

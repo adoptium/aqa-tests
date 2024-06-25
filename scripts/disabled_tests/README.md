@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 
 # Disabled Tests -- Tools and Scripts
 
-Scripts which parse various formats of lists, containing disabled JDK tests, into a uniform JSON format. In addition, a script which augments, within the generated JSON files, each disabled test with the status of their associated issue.   
+Scripts which parse various formats of lists, containing disabled JDK tests, into a uniform JSON format. In addition, a script which augments, within the generated JSON files, each disabled test with the status of their associated issue.
 
 
 ### Prerequisites

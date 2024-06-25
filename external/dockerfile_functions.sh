@@ -75,27 +75,33 @@ sanitize_test_names() {
 
 print_image_args() {
     local file=$1
-    local os=$2
-    local version=$3
-    local vm=$4
-    local package=$5
-    local build=$6
+    local test=$2
+    local os=$3
+    local version=$4
+    local vm=$5
+    local package=$6
+    local build=$7
+    local base_docker_registry_dir="$8"
 
     image_name="eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
-    else 
+    else
         tag="${version}-jdk"
     fi
     if [[ "${vm}" == "openj9" ]]; then
         if  [[ "${os}" == "ubuntu" ]]; then
             image_name="docker.io/ibm-semeru-runtimes"
             tag=open-${tag}
+        elif [[ "${os}" == *"ubi"* && "${test}" != *"criu"* ]]; then
+            image_name="registry.access.redhat.com/$base_docker_registry_dir"
+            tag="latest"
         else
-            # os is ubi
-            image_name="registry.access.redhat.com/ubi8/ubi"
-            tag="8.6"
+            # os is ubi, and test is criu
+            # temporarily all ubi based testing use internal base image
+            image_name="$DOCKER_REGISTRY_URL/$base_docker_registry_dir"
+            tag="latest"
         fi
     fi
     image="${image_name}:${tag}"
@@ -160,6 +166,18 @@ print_jdk_install() {
             "\n\t  *x86-64*) \\" \
             "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
             "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_x86-64_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_x86-64_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-x86-64_linux.*tar.gz\"); \\" \
+            "\n\t     ;; \\" \
+            "\n\t  *aarch64*) \\" \
+            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_aarch64_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
+            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_aarch64_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_aarch64_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-aarch64_linux.*tar.gz\"); \\" \
+            "\n\t     ;; \\" \
+            "\n\t  *390*) \\" \
+            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_s390x_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
+            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_s390x_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_s390x_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-s390x_linux.*tar.gz\"); \\" \
+            "\n\t     ;; \\" \
+            "\n\t  *ppc*) \\" \
+            "\n\t     BUILD_ID_LAST_SUCCESS=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_ppc64le_linux_Nightly/lastSuccessfulBuild/buildNumber); \\" \
+            "\n\t     BINARY_URL=\$(wget -qO- https://openj9-jenkins.osuosl.org/job/Build_JDK11_ppc64le_linux_Nightly/lastSuccessfulBuild/consoleText | grep -Po \"(?<=Deploying artifact: )https://openj9-artifactory.osuosl.org/artifactory/ci-openj9/Build_JDK11_ppc64le_linux_Nightly/\${BUILD_ID_LAST_SUCCESS}/OpenJ9-JDK11-ppc64le_linux.*tar.gz\"); \\" \
             "\n\t     ;; \\" \
             "\n\t  *) \\" \
             "\n\t     echo \"Unsupported platform \"; \\" \
@@ -338,7 +356,7 @@ print_python_install() {
           "\nENV PYTHON_VERSION=\$PYTHON_VERSION" \
           "\n\n# Install python" \
           "\nRUN wget --progress=dot:mega -O python.tar.xz https://www.python.org/ftp/python/\${PYTHON_VERSION}/Python-\${PYTHON_VERSION}.tar.xz \\" >> ${file}
-    
+
     echo -e "\t&& tar -xJf python.tar.xz \\" \
             "\n\t&& cd Python-\${PYTHON_VERSION}  \\" \
             "\n\t&& ./configure --prefix=/usr/local \\" \
@@ -386,7 +404,7 @@ print_criu_install() {
         # Method 2: build from source code
         echo -e "\n# Install dependent packages for criu" \
                 "\nRUN apt-get update \\" \
-                "\n\t&& apt-get install -y --no-install-recommends iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
+                "\n\t&& apt-get install -y --no-install-recommends gcc iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils pip protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
                 "\n" >> ${file}
 
         echo -e "\n# Build criu and set capabilities" \
@@ -395,10 +413,12 @@ print_criu_install() {
                 "\n\t&& git clone https://github.com/ibmruntimes/criu.git \\" \
                 "\n\t&& cd criu \\" \
                 "\n\t&& git fetch origin \\" \
-                "\n\t&& git reset --hard origin/march_ea_23 \\" \
-                "\n\t&& make PREFIX=/usr install \\" \
-                "\n\t&& criu -V \\" \
-                "\n\t&& setcap cap_checkpoint_restore,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
+                "\n\t&& git reset --hard origin/0.44.0-release \\" \
+                "\n\t&& make PREFIX=/usr CONFIG_AMDGPU=n install \\" \
+                "\n\t&& criu -V " \
+                "\n" >> ${file}
+
+        echo -e "\nRUN setcap cap_checkpoint_restore,cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_admin,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource,cap_sys_time,cap_audit_control=eip /usr/sbin/criu \\" \
                 "\n\t&& export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load" \
                 "\n" >> ${file}
     fi
@@ -414,7 +434,7 @@ print_maven_install() {
           "\nENV MAVEN_HOME /opt/maven" \
           "\n\n# Install Maven" \
           "\nRUN  wget --no-verbose --no-check-certificate --no-cookies https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/\${MAVEN_VERSION}/apache-maven-\${MAVEN_VERSION}-bin.tar.gz \\" >> ${file}
-    
+
     echo -e "\t&& tar -zvxf apache-maven-\${MAVEN_VERSION}-bin.tar.gz -C /opt/ \\" \
             "\n\t&& ln -s /opt/apache-maven-\${MAVEN_VERSION} /opt/maven \\" \
             "\n\t&& rm -f apache-maven-\${MAVEN_VERSION}-bin.tar.gz" \
@@ -437,10 +457,10 @@ print_environment_variable() {
 
 print_home_path() {
     local file=$1
-    local github_url=$2
+    local aqa_tests_repo=$2
 
     # Get Github folder name
-    local folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    local folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
     echo -e "ENV TEST_HOME /${folder}\n" >> ${file}
 }
 
@@ -455,7 +475,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then 
+    if [[ "$check_external_custom_test" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -486,28 +506,29 @@ print_testInfo_env() {
             "\nENV JDK_VERSION=${version}" \
             "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
+    echo -e "\nENV USE_TESTENV_PROPERTIES ${USE_TESTENV_PROPERTIES} \n" >> ${file}
 }
 
 print_clone_project() {
     local file=$1
     local test=$2
-    local github_url=$3
+    local aqa_tests_repo=$3
+    local aqa_tests_branch=$4
 
     # Cause Test name to be capitalized
     test_tag="$(sanitize_test_names ${test} | tr a-z A-Z)_TAG"
-    git_branch_tag="master"
-    if [[ "$test_tag" != *"PORTABLE"* ]]; then
-        git_branch_tag=$test_tag
+    if [[ "$test_tag" != *"CRIU"* && "$test_tag" != *"TCK"* ]]; then
+        aqa_tests_branch=$test_tag
     fi
 
     # Get Github folder name
-    folder="$(echo ${github_url} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+    folder="$(echo ${aqa_tests_repo} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 
     echo -e "# Clone ${test} source" \
             "\nENV ${test_tag}=\$${test_tag}" \
-            "\nRUN git clone ${github_url}" \
+            "\nRUN git clone ${aqa_tests_repo}" \
             "\nWORKDIR /${folder}/" \
-            "\nRUN git checkout \$${git_branch_tag}" \
+            "\nRUN git checkout ${aqa_tests_branch}" \
             "\nWORKDIR /" \
             "\n" >> ${file}
 }
@@ -561,14 +582,15 @@ generate_dockerfile() {
     package=$6
     build=$7
     platform=$8
-    check_external_custom_test=$9
+    base_docker_registry_dir="$9"
+    check_external_custom_test=$10
 
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         set_external_custom_test_info ${test} ${check_external_custom_test}
     else
         set_test_info ${test} ${check_external_custom_test}
@@ -581,7 +603,7 @@ generate_dockerfile() {
     echo -n "Writing ${file} ... "
     print_legal ${file};
     print_adopt_test ${file} ${test};
-    print_image_args ${file} ${os} ${version} ${vm} ${package} ${build};
+    print_image_args ${file} ${test} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
@@ -621,7 +643,7 @@ generate_dockerfile() {
     if [[ ! -z ${jdk_install} ]]; then
         print_jdk_install ${file} ${os} ${platform};
     fi
-    
+
     if [[ ! -z ${maven_version} ]]; then
         print_maven_install ${file} ${maven_version};
     fi
@@ -635,12 +657,12 @@ generate_dockerfile() {
         print_test_results ${file};
     fi
 
-    print_home_path ${file} ${github_url};
+    print_home_path ${file} ${ADOPTOPENJDK_REPO};
     print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
-    print_clone_project ${file} ${test} ${github_url};
+    print_clone_project ${file} ${test} ${ADOPTOPENJDK_REPO} ${ADOPTOPENJDK_BRANCH} ;
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ ${check_external_custom_test} -eq 1 ]]; then
+    if [[ "$check_external_custom_test" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};

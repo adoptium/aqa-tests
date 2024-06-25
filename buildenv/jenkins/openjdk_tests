@@ -166,7 +166,7 @@ timestamps{
         // trigger xxx_imageUpload test job, then xxx_imagePull test job
         def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
         if (params.LABEL_ADDITION) {
-            commonLabel += "&&${params.LABEL_ADDITION}" 
+            commonLabel += "&&${params.LABEL_ADDITION}"
         }
         def imageUploadMap = [
             'x86-64_linux' : [
@@ -176,14 +176,51 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.skylake"]
-                    ]
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
+                    ],
+            'aarch64_linux' : [
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
+                    ],
+            's390x_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
+                    ],
+            'ppc64le_linux' : [
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
+                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
+            ]
         ]
         def imagePullMap = [
             'x86-64_linux' : [
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ],
+            'aarch64_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                    ],
+            's390x_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
+                    ],
+            'ppc64le_linux' : [
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
@@ -193,7 +230,13 @@ timestamps{
             generateJobViaAutoGen(imagePullJobName)
 
             def imageUploadJobs = [:]
-            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+
+            if (params.PLATFORM == "ppc64le_linux") {
+                // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
+                target = target.minus("disabled.criu-portable-checkpoint_test,")
+            }
+
             echo "Trigger ${imageUploadJobName} job ..."
             for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
                 def labelAddition = imageUploadMap[params.PLATFORM][i].LABEL_ADDITION
@@ -217,14 +260,20 @@ timestamps{
             }
             parallel imagePullJobs
         } else {
-             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageGenMap: ${imageGenMap} and/or imagePullMap: ${imagePullMap}."
+             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageUploadMap: ${imageUploadMap} and/or imagePullMap: ${imagePullMap}."
         } 
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
-            dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
+            // Block dockerAgents on adoptium CI for riscv64 until we make it work
+            // This will allow RISC-V test jobs to queue up and not hang
+            if ( env.JENKINS_URL.contains("ci.adoptium.net")) {
+                dockerAgents = null
+            } else {
+                dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
+            }
             dockerAgentLabel = ''
             if (params.LABEL) {
                 LABEL = params.LABEL
@@ -238,14 +287,19 @@ timestamps{
                     }
                 }
 
-            if (params.TEST_FLAG == "FIPS") {
+            // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
+            if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
                 LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
                 env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+            } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
+                String[] tokens = TEST_FLAG.split('_')
+                def opts = tokens[2];
+                env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
             }
 
-            // Temporarily exclude ubuntu 22 machines for criu sanity.external pipeline
-            if (JOB_NAME.contains ("sanity.external") && JOB_NAME.contains("_criu")) {
-                LABEL += "&&!sw.os.ubuntu.22"
+            // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
+            if (JOB_NAME.contains ("sanity.external")) {
+                LABEL += "&&!sw.os.cent.7"
             }
 
             if (params.DOCKER_REQUIRED) {
@@ -271,7 +325,7 @@ timestamps{
                 } else {
                     // IF no nodes are idle we will check if there is supported virtual agent
                     // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
-                    // In this case jobs will be fooled to fall back to wait local busy nodes. 
+                    // In this case jobs will be fooled to fall back to wait local busy nodes.
                     dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
                     println "dynamicAgents: ${dynamicAgents}"
 
@@ -327,7 +381,7 @@ timestamps{
                                 echo "Done with main node"
                                 }
                                 echo "Done with RELATED_NODES: ${params.RELATED_NODES}"
-                            } 
+                            }
                         }
                     } else {
                         assert false : "Cannot find RELATED_NODES: ${params.RELATED_NODES}."
@@ -339,6 +393,8 @@ timestamps{
                 }
             }
             if (currentBuild.result != 'FAILURE') {
+                env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
+                echo "SETUP_LABEL: ${env.SETUP_LABEL}"
                 jenkinsfile.run_parallel_tests()
                 jenkinsfile.triggerRerunJob()
             }
@@ -352,7 +408,7 @@ def runTest() {
     try {
         def retry_count = 0
         def sleep_time = 180
-        
+
         if (params.PLATFORM.contains('zos')) {
             /* Ensure correct CC env */
             env._CC_CCMODE = '1'
@@ -404,7 +460,7 @@ def runTest() {
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
             //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-            docker.image('adoptopenjdk/centos6_build_image').pull() 
+            docker.image('adoptopenjdk/centos6_build_image').pull()
             docker.image('adoptopenjdk/centos6_build_image').inside {
                 jenkinsfile.testBuild()
             }
@@ -441,6 +497,8 @@ def runTest() {
                     List<String> errorList = new ArrayList<String>();
                     errorList.add(".*There is not enough space in the file system.*");
                     errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
+                    errorList.add(".*unzip: command not found.*");
+                    errorList.add(".*ant: command not found.*");
 
                     // nightly/weekly builds should not have git clone issue
                     if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
@@ -482,7 +540,7 @@ def areNodesWithLabelOnline(labelToCheck) {
             String[] onlineNodes = nodesByLabel(labelToCheck)
             if (onlineNodes.size() < 1) {
                 return false
-            } 
+            }
             return true
         }
 
@@ -503,7 +561,7 @@ def checkErrors(errorList) {
             println("${message}")
             currentNode.setTemporarilyOffline(true, new hudson.slaves.OfflineCause.UserCause(User.current(), "${message}"))
         }
-        // if SLACK_CHANNEL is provided, send the message in slack 
+        // if SLACK_CHANNEL is provided, send the message in slack
         if (params.SLACK_CHANNEL) {
             slackSend channel: SLACK_CHANNEL, message: "${message}"
         }
@@ -530,7 +588,7 @@ def changeParam(paramsList, newParams) {
     paramsList.each { param ->
         def value = param.value.toString()
         newParams.each { newParam ->
-            
+
             if (param.key == newParam.key) {
                 value = newParam.value.toString()
             }
@@ -573,7 +631,7 @@ def generateJobViaAutoGen(testJobName) {
                         jobParams << string(name: 'GROUPS', value: group)
                     }
                 }
-            } 
+            }
         }
         jobParams << string(name: 'JDK_IMPL', value: jdk_impl)
         jobParams << string(name: 'JDK_VERSIONS', value: jdk_version)
