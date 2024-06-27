@@ -112,7 +112,6 @@ def setupEnv() {
 
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
-	env.isSVTTestRepo=false
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -511,6 +510,8 @@ def setup() {
 		VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 		VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 		VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
+		env.IS_SVT_TESTREPO = (params.VENDOR_TEST_REPOS  && params.VENDOR_TEST_REPOS.contains('SVTTestRepo')) ? true : false
+		echo "IS_SVT_TESTREPO is set to ${env.IS_SVT_TESTREPO}"
 
 		// handle three cases (true/false/null) in params.TEST_IMAGES_REQUIRED and params.DEBUG_IMAGES_REQUIRED
 		// Only set image required to false if params is set to false. In get.sh, the default value is true

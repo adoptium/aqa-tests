@@ -350,16 +350,9 @@
 				</copy>
 			</then>
 		</if>
-		<condition property="isSVTTestRepo" value="true">
-			<isset property="env.isSVTTestRepo"/>
-		</condition>
-		<condition property="isSVTTestRepo" value="false">
-   		 	<not>
-				<isset property="env.isSVTTestRepo"/>
-			</not>
-		</condition>
+		
 		<if>
-			<equals arg1="${isSVTTestRepo}" arg2="true"/>
+			<equals arg1="${env.IS_SVT_TESTREPO}" arg2="true"/>
 			<then>
 				<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs"/>
 				<mkdir dir="${TEST_ROOT}/systemtest_prereqs"/>
