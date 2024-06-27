@@ -1,8 +1,8 @@
 pipeline {
     agent { label 'ci.role.test&&hw.arch.x86&&sw.os.linux' }
     parameters {
-        string(name: 'RELEASE_TRIAGE_ISSUE_NUMBER', defaultValue: '', description: 'Triage issue number')
         string(name: 'RELEASE_TRIAGE_REPO', defaultValue: 'adoptium/aqa-tests', description: 'Triage repo')
+        string(name: 'RELEASE_TRIAGE_ISSUE_NUMBER', defaultValue: '', description: 'Triage issue number')
         string(name: 'Release_PipelineJob_Name', defaultValue: '', description: 'Jenkins Pipeline job name')
         string(name: 'Release_PipelineJob_Numbers', defaultValue: '', description: 'Jenkins Pipeline job number, Comma separated numbers')
     }
@@ -47,7 +47,6 @@ pipeline {
                     comments.each { comment ->
                         downloadAttachments(comment.body)
                     }
-                    
                     //Download Taps from upsteam 
                     def builds = "${Release_PipelineJob_Numbers}".split(',')
                     def tapTars = "AQAvitTapFiles.tar.gz"
@@ -56,8 +55,8 @@ pipeline {
                         copyArtifacts (
                             filter: "AQAvitTaps/${tapTars}", 
                             fingerprintArtifacts: true, 
-                            projectName: "build-scripts/openjdk21-pipeline",  //"${Release_PipelineJob_Name}"
-                            selector: specific("${build}"), //"${build}.toInteger()"
+                            projectName: "${Release_PipelineJob_Name}",
+                            selector: specific("${build}"),
                             target: "${build}/",
                             flatten: true
                         )
@@ -67,19 +66,18 @@ pipeline {
                     sh """
                         cd ${tapsDir}/
                         tar -czf ${tapTars} *
-                    """   
+                    """
                     archiveArtifacts artifacts: "${tapsDir}/${tapTars}", allowEmptyArchive: true
                 }
             }
         }
 
         stage('Verification') {
-            steps { 
+            steps {
                 echo "Taps verification jobs"
             }
         }
     }
-    
     post {
         always {
             cleanWs()
