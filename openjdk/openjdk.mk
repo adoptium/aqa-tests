@@ -235,7 +235,7 @@ else ifneq (,$(findstring FIPS140_3_OpenJCEPlus, $(TEST_FLAG)))
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
-ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft))
+ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft eclipse))
 	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
 	ifneq (,$(wildcard $(VENDOR_FILE)))
 		VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)$(VENDOR_FILE)$(Q)
