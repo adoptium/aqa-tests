@@ -22,6 +22,11 @@ import java.util.regex.Pattern;
 
 
 public class Generate {
+//TODO
+//Jcstress is printing output every 1000-1500ms . Considering runtime in hours the log can be pretty huge
+//In terminal, that is ok, but in jenkins, it is producing MB and MB of moreover useless logs 
+//There is undocumented jcstress.console.printIntervalMs whcih can set up this interval
+//It should be handled as every other param - input as variable, and use it if set, otherwise default to at aprox 5s
 
     // longest generated classes have 2131 tests
     private static final int LIMIT = parseLimit();
