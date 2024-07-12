@@ -8,7 +8,7 @@ def makeTest(testParam) {
 	// Note: keyword source cannot be used in Jenkins script. Therefore, using "." instead.
 	String makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
-	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
 	try {
@@ -321,7 +321,7 @@ def setupParallelEnv() {
 def genParallelList(PARALLEL_OPTIONS) {
 	String unsetLLP = ""
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
-	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		unsetLLP = "unset LD_LIBRARY_PATH;"
 	}
 	sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
@@ -614,7 +614,7 @@ def get_sources() {
 def makeCompileTest(){
 	String makeTestCmd = "bash ./compile.sh"
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
-	if (JDK_IMPL == 'hotspot' && JDK_VERSION == '8' && PLATFORM.contains('alpine-linux')) {
+	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
 	dir('aqa-tests') {
