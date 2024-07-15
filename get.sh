@@ -637,11 +637,7 @@ getVendorTestMaterial() {
 				continue
 			fi
 		fi
-
-		if [[ "$repoURL" =~ "SVTTestRepo" ]]; then
-			isSVTTestRepo=true
-		fi
-
+		
 		echo "git clone ${branchOption} $repoURL $dest"
 		git clone -q --depth 1 $branchOption $repoURL $dest
 
