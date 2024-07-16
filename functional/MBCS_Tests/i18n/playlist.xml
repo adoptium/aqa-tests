@@ -30,6 +30,8 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_i18n_ko_KR_linux</testCaseName>
+		<command>LANG=ko_KR.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
+	$(TEST_STATUS)</command>
 		<disables>
 			<disable>
 				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
@@ -37,9 +39,6 @@ limitations under the License.
 				<impl>hotspot</impl>
 				<platform>s390x_linux</platform>
 			</disable>
-		<command>LANG=ko_KR.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
-	$(TEST_STATUS)</command>
-		<disables>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/19083</comment>
 				<version>22+</version>
