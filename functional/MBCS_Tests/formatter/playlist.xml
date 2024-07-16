@@ -68,6 +68,12 @@ limitations under the License.
 				<version>22+</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+				<impl>hotspot</impl>
+				<platform>s390x_linux</platform>
+			</disable>
 		</disables>
 		<platformRequirements>os.linux</platformRequirements>
 		<levels>
@@ -202,6 +208,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_formatter_Zh_TW_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>LANG=Zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -217,6 +229,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_formatter_zh_TW_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>LANG=zh_TW ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -232,6 +250,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_formatter_ZH_TW_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>LANG=ZH_TW ksh $(TEST_RESROOT)$(D)test.sh; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -307,6 +331,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_formatter_tw_windows</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>$(TEST_RESROOT)$(D)test2.bat windows zh tw MS950 TEST_STRING; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.win</platformRequirements>
