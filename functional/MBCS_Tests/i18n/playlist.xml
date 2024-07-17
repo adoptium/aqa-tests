@@ -34,6 +34,12 @@ limitations under the License.
 	$(TEST_STATUS)</command>
 		<disables>
 			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+				<impl>hotspot</impl>
+				<platform>s390x_linux</platform>
+			</disable>
+			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/19083</comment>
 				<version>22+</version>
 				<impl>openj9</impl>
@@ -127,6 +133,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_i18n_ko_KR_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>LANG=ko_KR perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -142,6 +154,12 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_i18n_KO_KR_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5148</comment>
+				<version>22+</version>
+			</disable>
+		</disables>
 		<command>LANG=KO_KR perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
