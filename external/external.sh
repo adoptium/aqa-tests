@@ -14,6 +14,7 @@
 #
 
 # script runs in 5 modes - prepare / build / run / load / clean
+echo "sophia 0 test: JDK_VERSION = ${JDK_VERSION}"
 
 set -e
 tag=nightly
@@ -56,6 +57,7 @@ mountV=""
 mount_jdk="true"
 imageArg=""
 
+echo "sophia 00 test: JDK_VERSION = ${JDK_VERSION}"
 
 usage () {
 	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_url baseDockerRegistryUrl] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean]'
@@ -328,6 +330,7 @@ if [ $command_type == "run" ]; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 	fi
+	echo "sophia 000 test: JDK_VERSION = ${JDK_VERSION}"
 
 	if [[ $reportsrc != "false" ]] || [[ $portable != "false" ]]; then
 		echo "$container_run --privileged $mountV --name $test-test adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
@@ -360,12 +363,14 @@ if [ $command_type == "run" ]; then
 			fi
 		fi
 	else
+		echo "sophia 0000 test: JDK_VERSION = ${JDK_VERSION}"
 		echo "$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type $testtarget"
 		if [ -n "$testtarget" ]; then
 			$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type "$testtarget";
 		else
 			$container_run --privileged $mountV --name $test-test --rm adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type;
 		fi
+		echo "sophia 00000 test: JDK_VERSION = ${JDK_VERSION}"
 	fi
 fi
 
@@ -406,11 +411,13 @@ if [ $command_type == "load" ]; then
 			echo "The host machine OS is ${node_label_current_os}, and micro-architecture is ${node_label_micro_architecture}"
 			for restore_docker_image_name in ${restore_docker_image_name_list[@]}
 			do
+				echo "sophia 000000 test: JDK_VERSION = ${JDK_VERSION}"
 				echo "Pulling image $restore_docker_image_name"
 				$container_pull $restore_docker_image_name
 				# restore
 				echo "$container_run --privileged $mount_options --name restore-test --rm $restore_docker_image_name"
 				$container_run --privileged $mount_options --name restore-test --rm $restore_docker_image_name
+				echo "sophia 0000000 test: JDK_VERSION = ${JDK_VERSION}"
 			done
 
 			$container_logout $docker_registry_url
@@ -431,8 +438,10 @@ if [ $command_type == "load" ]; then
 			echo "Mounting JDK and test script"
 			mount_options="$mountV $mount_test_script"
 		fi
+		echo "sophia 00000000 test: JDK_VERSION = ${JDK_VERSION}"
 		echo "$container_run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh"
 		$container_run --privileged $mount_options --name restore-test --rm $docker_image_name bash /test.sh
+		echo "sophia 9 test: JDK_VERSION = ${JDK_VERSION}"
 	fi
 fi
 
@@ -440,6 +449,7 @@ if [ $command_type == "clean" ]; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 	fi
+	echo "sophia 10 test: JDK_VERSION = ${JDK_VERSION}"
 	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	$container_rm -f restore-test
 	$container_rmi -f ${docker_registry_url}/${docker_image_source_job_name}/${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${platform}-${node_label_current_os}-${node_label_micro_architecture}:${build_number}
