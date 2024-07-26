@@ -11,12 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-echo "sophia 1 test: JDK_VERSION = ${JDK_VERSION}"
 
 source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the functional test
 echo_setup
-echo "sophia 2 test: JDK_VERSION = ${JDK_VERSION}"
 
 echo "export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load";
 export GLIBC_TUNABLES=glibc.pthread.rseq=0:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load

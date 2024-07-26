@@ -498,7 +498,7 @@ print_testInfo_env() {
     local test=$1
     local test_tag=$2
     local OS=$3
-    local version=$4
+    local version=$3
     local vm=$5
     echo -e "ENV APPLICATION_NAME=${test}" \
             "\nENV APPLICATION_TAG=${test_tag}" \
