@@ -16,8 +16,10 @@ set -o pipefail
 
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/dockerfile_functions.sh
+source $(dirname "$0")/provider.sh
+
 buildArg=""
-container_build="docker build"
+container_build=`getExternalImageBuildCommand`
 
 if [ $# -ne 9 ] && [ $# -ne 10 ]; then
 	echo "The supported tests are ${supported_tests}"
