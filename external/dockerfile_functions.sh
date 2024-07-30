@@ -495,10 +495,12 @@ print_test_files() {
 }
 
 print_testInfo_env() {
+    echo "Sophia test 9: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
+    echo "Sophia test 99: test = $1, test_tag = $2, os = $3, version = $4 vm = $5"
     local test=$1
     local test_tag=$2
     local OS=$3
-    local version=$3
+    local version=$4
     local vm=$5
     echo -e "ENV APPLICATION_NAME=${test}" \
             "\nENV APPLICATION_TAG=${test_tag}" \
@@ -506,6 +508,7 @@ print_testInfo_env() {
             "\nENV JDK_VERSION=${version}" \
             "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
+    echo "Sophia test 10: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
 }
 
 print_clone_project() {
@@ -581,6 +584,7 @@ remove_trailing_spaces() {
 
 # Generate the dockerfile for a given build
 generate_dockerfile() {
+    echo "Sophia test 6: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
     file=$1
     test=$2
     version=$3
@@ -591,6 +595,7 @@ generate_dockerfile() {
     platform=$8
     base_docker_registry_dir="$9"
     check_external_custom_test=$10
+    echo "Sophia test 6: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
 
 
     if [[ "$check_external_custom_test" == "1" ]]; then
@@ -665,7 +670,10 @@ generate_dockerfile() {
     fi
 
     print_home_path ${file} ${github_url};
+    echo "Sophia test 7: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
+    echo "Sophia test 77: test = ${test}, tag_version = ${tag_version}, os = ${os}, version = ${version}, vm = ${vm}"
     print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
+    echo "Sophia test 8: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 

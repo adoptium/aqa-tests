@@ -19,7 +19,7 @@ echo_setup() {
 }
 
 echo_env_var() {
-	echo APPLICATION_NAME=$APPLICATION_NAME
+	echo “sophia 11: test: JDK_VERSION = ${JDK_VERSION}”
 	echo APPLICATION_TAG=$APPLICATION_TAG
 	echo OS_TAG=$OS_TAG
 }

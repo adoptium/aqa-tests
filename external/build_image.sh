@@ -50,6 +50,7 @@ set_base_docker_registry_dir "$8"
 
 # Build the Docker image with the given repo, build, build type and tags.
 function build_image() {
+	echo "Sophia test 1: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os},"
     local file=$1
     local test=$2
     local version=$3
@@ -60,6 +61,7 @@ function build_image() {
     local platform=$8
     local buildArg=$9
 
+	echo "Sophia test 2: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os},"
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
@@ -78,6 +80,7 @@ function build_image() {
 }
 
 # Handle making the directory for organizing the Dockerfiles
+echo "Sophia test 3: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os},"
 if [[ "${check_external_custom}" == "1" ]]; then
 	dir="$(realpath $(dirname "$0"))/external_custom/dockerfile/${version}/${package}/${os}"
 else
@@ -89,6 +92,7 @@ mkdir -p ${dir}
 file="${dir}/Dockerfile.${vm}.${build}"
 
 # Generate Dockerfile
+echo "Sophia test 4: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
 generate_dockerfile ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${platform} "${base_docker_registry_dir}" ${check_external_custom}
 
 # Check if Dockerfile exists
@@ -98,4 +102,5 @@ if [ ! -f ${file} ]; then
 fi
 
 # Build Dockerfile that was generated
+echo "Sophia test 5: file = ${file}, test = ${test}, version = ${version}, vm = ${vm}, os = ${os}"
 build_image ${file} ${test} ${version} ${vm} ${os} ${package} ${build} ${platform} "${buildArg}"
