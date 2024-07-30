@@ -14,6 +14,7 @@
 #
 
 source $(dirname "$0")/common_functions.sh
+source $(dirname "$0")/provider.sh
 
 # Generate the common license and copyright header
 print_legal() {
@@ -126,7 +127,7 @@ print_test_tag_arg() {
 
 print_result_comment_arg() {
     local file=$1
-    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+    echo -e "ENV RESULT_COMMENT=\"IN CONTAINER($(getProviderTile))\"\n" >> ${file}
 }
 
 # Select the ubuntu OS packages

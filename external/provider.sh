@@ -38,3 +38,20 @@ function getExternalImageBuildCommand() {
   #"sudo docker build"
   echo "${EXTERNAL_AQA_SUDO} ${EXTERNAL_AQA_RUNNER} build"
 }
+
+function getProviderNice() {
+  echo "${EXTERNAL_AQA_RUNNER}"
+}
+
+function getSudoNice() {
+  if [ -z "${EXTERNAL_AQA_SUDO}" ]; then
+    echo "not-as-root"
+  else
+    echo "${EXTERNAL_AQA_SUDO}"
+  fi
+}
+
+function getProviderTile() {
+  echo "$(getSudoNice)/$(getProviderNice)"
+}
+
