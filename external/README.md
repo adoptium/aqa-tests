@@ -15,6 +15,10 @@ and
 EXTERNAL_AQA_SUDO=sudo//runas 
 ```
 which defaults to nothing
+```
+EXTERNAL_AQA_CLEAN=true/false
+```
+If EXTERNAL_AQA_CLEAN is false, then the image is not cleaned after the `make _tests...` targets are finished. If used, you are on your own.
 
 
 ## Running External tests locally
