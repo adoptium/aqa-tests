@@ -506,7 +506,7 @@ print_testInfo_env() {
             "\nENV JDK_VERSION=${version}" \
             "\nENV JDK_IMPL=${vm}" \
             "\n" >> ${file}
-    echo -e "\nENV USE_TESTENV_PROPERTIES ${USE_TESTENV_PROPERTIES} \n" >> ${file}
+    echo -e "\nENV USE_TESTENV_PROPERTIES \"${USE_TESTENV_PROPERTIES}\" \n" >> ${file}
 }
 
 print_clone_project() {
