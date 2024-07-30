@@ -529,7 +529,7 @@ print_clone_project() {
             "\nENV ${test_tag}=\$${test_tag}" \
             "\nRUN git clone ${aqa_tests_repo}" \
             "\nWORKDIR /${folder}/" \
-            "\nRUN git checkout ${aqa_tests_branch}" \
+            "\nRUN git checkout \$${aqa_tests_branch}" \
             "\nWORKDIR /" \
             "\n" >> ${file}
 }
@@ -658,6 +658,15 @@ generate_dockerfile() {
         print_test_results ${file};
     fi
 
+    # I have no idea where ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH comes from
+    # but I have never seen them filled. The github_url and tag_version are
+    # parsed in common_functions.sh set_test_info which is called properly
+    if [[ -z ${ADOPTOPENJDK_REPO} ]]; then
+        ADOPTOPENJDK_REPO="${github_url}"
+    fi
+    if [[ -z ${ADOPTOPENJDK_BRANCH} ]]; then
+        ADOPTOPENJDK_BRANCH="${tag_version}"
+    fi
     print_home_path ${file} ${ADOPTOPENJDK_REPO};
     print_testInfo_env ${test} ${tag_version} ${os} ${version} ${vm}
     print_clone_project ${file} ${test} ${ADOPTOPENJDK_REPO} ${ADOPTOPENJDK_BRANCH} ;
