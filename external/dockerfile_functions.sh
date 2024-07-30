@@ -84,7 +84,7 @@ print_image_args() {
     local build=$7
     local base_docker_registry_dir="$8"
 
-    image_name="eclipse-temurin"
+    image_name="docker.io/library/eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
