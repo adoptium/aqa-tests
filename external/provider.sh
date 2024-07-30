@@ -36,7 +36,12 @@ fi
 
 function getExternalImageBuildCommand() {
   #"sudo docker build"
-  echo "${EXTERNAL_AQA_SUDO} ${EXTERNAL_AQA_RUNNER} build"
+  echo "$(getExternalImageCommand) build"
+}
+
+function getExternalImageCommand() {
+  #"sudo docker"
+  echo "${EXTERNAL_AQA_SUDO} ${EXTERNAL_AQA_RUNNER}"
 }
 
 function getProviderNice() {
