@@ -16,7 +16,7 @@ source $(dirname "$0")/test_base_functions.sh
 # Set up Java to be used by the jenkins test
 echo_setup
 
-export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
 #begin jenkins test
 
 set -e
