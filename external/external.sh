@@ -439,9 +439,13 @@ if [ $command_type == "load" ]; then
 	fi
 fi
 
-if [ $command_type == "clean" ]; then
+if [ "${command_type}" == "clean" ] ; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
+	if [ "${EXTERNAL_AQA_CLEAN}" == "false" ] ; then
+			container_rm="echo to clean, run manually: $container_rm"
+			container_rmi="echo to clean, run manually: $container_rmi"
 	fi
 	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	$container_rm -f restore-test
