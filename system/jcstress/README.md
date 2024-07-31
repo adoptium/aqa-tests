@@ -230,7 +230,7 @@ In order of importance and reasonability
  * SPLIT_BIG_BASES - true/false. **default is false**. Each natural  group group bigger then LIMIT is split once it reaches limit.
  * MAX_NATURAL_ITERATIONS - number, usually 1-10, how many namespaces can be cut for natural grouping.
  * CORES - number, **defaults to 2**. Set to 0 to use all cores (recomeded by upstream, but runing surprsingly long)
- * TIME_BUDGET - string, **defaults to 1h**. set to anything you think your tests will fit. This is just best effort, not a strict cut. It is upstream bug.
+ * TIME_BUDGET - string, **defaults to 1h**. set to anything you think your tests will fit. This is just best effort, not a strict cut. It is upstream bug. 0 i sunlimited.
  * VERBOSE - set to true to see a lot of weird stuff
  * FQN - set to true to use fully qualified names instead of shortened ones. This may casue soem targets to not fit to OS cmdline limit.
  <details>

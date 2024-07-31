@@ -59,6 +59,7 @@ public class Generate {
     private static final String[] NOT_SPLIT_ABLE_GROUPS = parseSplitImsplittable();
 
     private static final int DEFAULT_CORES = 2;
+    private static final String DEFAULT_TIMEBUDGET = "1h";
 
     private static final String TEMPLATE = """
             <test>
@@ -67,7 +68,7 @@ public class Generate {
                 -DISABLED-
                    <command>
                      if [ "x$${JC_CORES}" = "x" ] ; then JC_CORES="-CORES-" ; else if [ "$${JC_CORES}" -eq "0" ] ; then JC_CORES="" ; else JC_CORES="-c $${JC_CORES}" ;fi;fi;\\
-                     if [ "x$${JC_TIME_BUDGET}" = "x" ] ; then JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $${JC_TIME_BUDGET}" ;fi;\\
+                     if [ "x$${JC_TIME_BUDGET}" = "x" ] ; then JC_TIME_BUDGET="-TB-" ; else if [ "$${JC_TIME_BUDGET}" -eq "0" ] ; then JC_TIME_BUDGET="" ; else JC_TIME_BUDGET="-tb $${JC_TIME_BUDGET}" ;fi;fi;\\
                      if [ "x$${PRINT_INTERVAL_MS}" = "x" ] ; then PRINT_INTERVAL_MS="-PRINT_INTERVAL_MS-" ; else PRINT_INTERVAL_MS="-Djcstress.console.printIntervalMs=$${PRINT_INTERVAL_MS}" ;fi;\\
                      $(JAVA_COMMAND) $(JVM_OPTIONS) $${PRINT_INTERVAL_MS}} -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $${JC_TIME_BUDGET}  $${JC_CORES} -t "-REGEX-"; \\
                      $(TEST_STATUS)
@@ -208,10 +209,10 @@ public class Generate {
         } else {
             System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional? 0 is All.");
         }
-        if (isTimeBudgetSet()) {
-            System.err.println("Time budget is " + getTimeBudget() + ". Intentional?");
+        if (getTimeBudget() == DEFAULT_TIMEBUDGET) {
+            System.err.println("Time budget is default " + getTimeBudget() + ". Intentional? 0 is unlimited");
         } else {
-            System.err.println("Time budget is not used. Intentional?");
+            System.err.println("Time budget is " + getTimeBudget() + ". Intentional? 0 is unlimited");
         }
         System.err.println("PRINT_INTERVAL_MS is set as " + getOutputDelay() + " (milliseconds)");
         if (getOutputStyle() == OutputType.GENERATE) {
@@ -281,7 +282,7 @@ public class Generate {
 
     private static void printPlaylist(String jarName, List<GroupWithCases> groups) {
         String timeBudgetString = "";
-        if (isTimeBudgetSet()) {
+        if (!getTimeBudget().equals("0")) {
             timeBudgetString = "-tb " + getTimeBudget();
         }
         int cores = getCoresForPlaylist();
@@ -323,10 +324,6 @@ public class Generate {
                     .replace("-REGEX-", group.toSelector()));
         }
         System.out.println(FOOTER);
-    }
-
-    private static boolean isTimeBudgetSet() {
-        return !(getTimeBudget() == null || getTimeBudget().trim().equals("0") || getTimeBudget().trim().equals(""));
     }
 
     private static void testTimesByRunningJcstress(List<GroupWithCases> groups) throws IOException, InterruptedException {
@@ -414,7 +411,7 @@ public class Generate {
      * @return time with unit. Eg 100s or 30m
      */
     private static String getTimeBudget() {
-        return System.getenv("TIME_BUDGET") == null ? null : System.getenv("TIME_BUDGET");
+        return System.getenv("TIME_BUDGET") == null ? DEFAULT_TIMEBUDGET : System.getenv("TIME_BUDGET");
     }
 
     private static OutputType getOutputStyle() {
@@ -653,7 +650,7 @@ public class Generate {
             args.add("-c");
             args.add(cores + "");
         }
-        if (isTimeBudgetSet()) {
+        if (!getTimeBudget().equals("0")) {
             args.add("-tb");
             args.add(getTimeBudget());
         }
@@ -722,7 +719,7 @@ public class Generate {
             totalTime += (long) (time.tests.getMainOne());
         }
         long avgTimeExpected = totalTime / results.size();
-        if (isTimeBudgetSet()) {
+        if (!getTimeBudget().equals("0")) {
             System.out.println(" - The calculations from real run are provided. They are based on meassured times and real results (not expected results)");
             System.out.println(" - You had -tb " + getTimeBudget() + " set, so yours expected avg tim is " + getTimeBudget() + " and not the measured real values bellow");
             System.out.println(" - Your workload should have run " + resultsExpected.size() + " * " + getTimeBudget() + " but run " + secondsToDays(totalTime) + " and was finished " + results.size() + " from " + resultsExpected.size());
