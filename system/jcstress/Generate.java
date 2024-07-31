@@ -300,7 +300,7 @@ public class Generate {
                 .replace("-COMMENT-", "The running all. Due to time it needs, it is disabled by default.")
                 .replace("-JARFILE-", jarName)
                 .replace("-CORES-", coresString)
-                .replace("-TB-", "-tb 1h")
+                .replace("-TB-", timeBudgetString)
                 .replace("-TARGET-", "jcstress.all")
                 .replace("-REGEX-", ".*"));
         int q = 0;
