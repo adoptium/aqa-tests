@@ -1,10 +1,10 @@
 # AQA jcstress runner
 
-This playlist runs by default all jcstress tests in minimal `time budget`.  Currently  it is just `-tb 1h` which is trying to squeeze all 11543 tests from jcstress-20240222 to 1hour.  That is not going to work, but the suite should try to squeeze itself to absolute minimum. Another switch which can minimize runtime is `-c` - number of cores to use, but that was not recommended by upstream.   
+This playlist runs by default all jcstress tests in minimal `time budget`.  Currently  it is just `-tb 1h` which is trying to squeeze all 11543 tests from jcstress-20240222 to 1hour.  That is not going to work, but the suite should try to squeeze itself to absolute minimum. Another switch which can minimize runtime is `-c` - number of cores to use, although it was not recommended by upstream, ve default to 2.
 
 Other targets are generated subgroups to run targeted groups of tests in case that the affected area could do cause an issue.  Dont forget you have to prefix such target by `disabled...` keyword. All those targets are run with all cores and no forced time budget. 
 
-Both main tests and generated subgroups can take `$JC_TIME_BUDGET` variable to set the time budget and `$JC_CORES` to set number of cores.  In addition standard `$APPLICATION_OPTIONS` is honoured.
+Both main tests and generated subgroups can take `$JC_TIME_BUDGET` variable to set the time budget and `$JC_CORES` to set number of cores. Set it to empty or 0 to override default 2.  In addition standard `$APPLICATION_OPTIONS` is honoured.
 
 # AQA jcstress playlist generator and tester
 The generator is slightly over-engineered but do its job quite well. It takes only one argument - the file to jcstress.jar. The name of file maters - it is used in the command.
@@ -228,6 +228,10 @@ In order of importance and reasonability
  * SMALL_GROUPS - true/false. **default is false**. After natural grouping is done, all remaining groups smaller then LIMIT are merged to artificial groups
  * SPLIT_BIG_BASES - true/false. **default is false**. Each natural  group group bigger then LIMIT is split once it reaches limit.
  * MAX_NATURAL_ITERATIONS - number, usually 1-10, how many namespaces can be cut for natural grouping.
+ * CORES - number, **defaults to 2**. Set to 0 to use all cores (recomeded by upstream, but runing surprsingly long)
+ * TIME_BUDGET - string, **defaults to 1h**. set to anything you think your tests will fit. This is just best effort, not a strict cut. It is upstream bug.
+ * VERBOSE - set to true to see a lot of weird stuff
+ * FQN - set to true to use fully qualified names instead of shortened ones. This may casue soem targets to not fit to OS cmdline limit.
  <details>
 <summary>eg:</summary>
 <pre>

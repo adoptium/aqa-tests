@@ -45,13 +45,16 @@ public class Generate {
     private static final boolean SPLIT_BIG_BASES = parseSplitBigBases();
 
     private static final String[] NOT_SPLIT_ABLE_GROUPS = parseSplitImsplittable();
+
+    private static final int DEFAULT_CORES = 2;
+
     private static final String TEMPLATE = """
             <test>
             	<testCaseName>-TARGET-</testCaseName>
             	<!-- -COMMENT-  -->
                 -DISABLED-
                    <command>
-                     if [ "x$${JC_CORES}" = "x" ] ; then JC_CORES="-CORES-" ; else JC_CORES="-c $${JC_CORES}" ;fi;\\
+                     if [ "x$${JC_CORES}" = "x" ] ; then JC_CORES="-CORES-" ; else if [ "$${JC_CORES}" -eq "0" ] ; then JC_CORES="" ; else JC_CORES="-c $${JC_CORES}" ;fi;fi;\\
                      if [ "x$${JC_TIME_BUDGET}" = "x" ] ; then JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $${JC_TIME_BUDGET}" ;fi;\\
                      $(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $${JC_TIME_BUDGET}  $${JC_CORES} -t "-REGEX-"; \\
                      $(TEST_STATUS)
@@ -182,8 +185,8 @@ public class Generate {
         } else {
             System.err.println("Only N from FQN will be used. This saves space, but risks duplicate matches");
         }
-        if (getCoresForPlaylist() == 0) {
-            System.err.println("Cores limit for final playlist is not used");
+        if (getCoresForPlaylist() == DEFAULT_CORES) {
+            System.err.println("Cores limit stays on default (" + DEFAULT_CORES + "). 0 is all.");
         } else {
             System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional?");
         }
@@ -364,11 +367,11 @@ public class Generate {
 
 
     private static int getCoresForPlaylist() {
-        return getCores(0);
+        return getCores(DEFAULT_CORES);
     }
 
     private static int getCores(int def) {
-        return Integer.parseInt(System.getenv("CORES") == null ? "" + def : System.getenv("CORES"));
+        return Integer.parseInt(System.getenv("CORES") == null || System.getenv("CORES") == "" ? "" + def : System.getenv("CORES"));
     }
 
     /**
