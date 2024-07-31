@@ -16,7 +16,7 @@
 
 ###################################################################
 ## This script is walking through all external tests             ##
-## and is determining what virtualisation to use                 ##
+## and determines which virtualisation to use                    ##
 ## It recognizes two environment variables:                      ##
 ## EXTERNAL_AQA_RUNNER=docker/podman/...                         ##
 ## EXTERNAL_AQA_SUDO=sudo//runas                                 ##
