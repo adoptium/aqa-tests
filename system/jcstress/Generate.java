@@ -36,11 +36,9 @@ import java.util.regex.Pattern;
 
 
 public class Generate {
-//TODO
-//Jcstress is printing output every 1000-1500ms . Considering runtime in hours the log can be pretty huge
+//Jcstress is printing output every 1000-15000ms . Considering runtime in hours the log can be pretty huge
 //In terminal, that is ok, but in jenkins, it is producing MB and MB of moreover useless logs 
 //There is undocumented jcstress.console.printIntervalMs whcih can set up this interval
-//It should be handled as every other param - input as variable, and use it if set, otherwise default to at aprox 5s
 
     // longest generated classes have 2131 tests
     private static final int LIMIT = parseLimit();
@@ -70,7 +68,8 @@ public class Generate {
                    <command>
                      if [ "x$${JC_CORES}" = "x" ] ; then JC_CORES="-CORES-" ; else if [ "$${JC_CORES}" -eq "0" ] ; then JC_CORES="" ; else JC_CORES="-c $${JC_CORES}" ;fi;fi;\\
                      if [ "x$${JC_TIME_BUDGET}" = "x" ] ; then JC_TIME_BUDGET="-TB-" ; else JC_TIME_BUDGET="-tb $${JC_TIME_BUDGET}" ;fi;\\
-                     $(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $${JC_TIME_BUDGET}  $${JC_CORES} -t "-REGEX-"; \\
+                     if [ "x$${PRINT_INTERVAL_MS}" = "x" ] ; then PRINT_INTERVAL_MS="-PRINT_INTERVAL_MS-" ; else PRINT_INTERVAL_MS="-Djcstress.console.printIntervalMs=$${PRINT_INTERVAL_MS}" ;fi;\\
+                     $(JAVA_COMMAND) $(JVM_OPTIONS) $${PRINT_INTERVAL_MS}} -jar $(Q)$(LIB_DIR)$(D)-JARFILE-$(Q) $(APPLICATION_OPTIONS) $${JC_TIME_BUDGET}  $${JC_CORES} -t "-REGEX-"; \\
                      $(TEST_STATUS)
                    </command>
             	<levels>
@@ -214,6 +213,7 @@ public class Generate {
         } else {
             System.err.println("Time budget is not used. Intentional?");
         }
+        System.err.println("PRINT_INTERVAL_MS is set as " + getOutputDelay() + " (milliseconds)");
         if (getOutputStyle() == OutputType.GENERATE) {
             System.err.println("Output will print playlist");
         } else {
@@ -300,6 +300,7 @@ public class Generate {
                 .replace("-COMMENT-", "The running all. Due to time it needs, it is disabled by default.")
                 .replace("-JARFILE-", jarName)
                 .replace("-CORES-", coresString)
+                .replace("-PRINT_INTERVAL_MS-", getOutputDelay())
                 .replace("-TB-", timeBudgetString)
                 .replace("-TARGET-", "jcstress.all")
                 .replace("-REGEX-", ".*"));
@@ -316,6 +317,7 @@ public class Generate {
                     .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
                     .replace("-JARFILE-", jarName)
                     .replace("-CORES-", coresString)
+                    .replace("-PRINT_INTERVAL_MS-", getOutputDelay())
                     .replace("-TB-", timeBudgetString)
                     .replace("-TARGET-", group.toTarget())
                     .replace("-REGEX-", group.toSelector()));
@@ -403,6 +405,9 @@ public class Generate {
 
     private static int getCores(int def) {
         return Integer.parseInt(System.getenv("CORES") == null || System.getenv("CORES") == "" ? "" + def : System.getenv("CORES"));
+    }
+    private static String getOutputDelay() {
+        return System.getenv("PRINT_INTERVAL_MS") == null ? "-Djcstress.console.printIntervalMs=3600000" : "-Djcstress.console.printIntervalMs=" + System.getenv("PRINT_INTERVAL_MS");
     }
 
     /**
