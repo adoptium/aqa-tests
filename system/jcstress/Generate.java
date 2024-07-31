@@ -257,8 +257,13 @@ public class Generate {
         }
         System.out.println(HEADER);
         System.out.println(TEMPLATE
-                .replace("-DISABLED-", "")
-                .replace("-COMMENT-", "The only enabled target running all")
+                .replace("-DISABLED-", "" +
+                        "                   <disables>\n" +
+                        "                     <disable>\n" +
+                        "                       <comment>even main target is now for manual usage only, as it runs very long</comment>\n" +
+                        "                     </disable>\n" +
+                        "                   </disables>")
+                .replace("-COMMENT-", "The running all. Due to time it needs, it is disabled by default.")
                 .replace("-JARFILE-", jarName)
                 .replace("-CORES-", coresString)
                 .replace("-TB-", "-tb 1h")
@@ -271,7 +276,7 @@ public class Generate {
                     .replace("-DISABLED-", "" +
                             "                   <disables>\n" +
                             "                     <disable>\n" +
-                            "                       <comment>all targets except main one are for manual usage only</comment>\n" +
+                            "                       <comment>all secondary targets are for manual usage now</comment>\n" +
                             "                     </disable>\n" +
                             "                   </disables>")
                     .replace("-COMMENT-", q + "/" + groups.size() + " " + group.toStringNoRegex())
