@@ -6,17 +6,17 @@ Third Party container tests help verify that the adoptium binaries are *good* by
 
 The toolchain understands two environment variables:
 ```
-EXTERNAL_AQA_RUNNER=docker/podman/...
+EXTERNAL_AQA_RUNNER=docker|podman|...
 ```
 defaults to podman if podman is installed, otherwise to docker
 
 and
 ```
-EXTERNAL_AQA_SUDO=sudo//runas 
+EXTERNAL_AQA_SUDO=sudo||runas 
 ```
 which defaults to empty string
 ```
-EXTERNAL_AQA_CLEAN=true/false
+EXTERNAL_AQA_CLEAN=true|false
 ```
 If EXTERNAL_AQA_CLEAN is false, then the image is not cleaned after the `make _tests...` targets are finished.
 

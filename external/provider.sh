@@ -18,8 +18,8 @@
 ## This script walks through all external tests                  ##
 ## and determines which virtualisation to use                    ##
 ## It recognizes two environment variables:                      ##
-## EXTERNAL_AQA_RUNNER=docker/podman/...                         ##
-## EXTERNAL_AQA_SUDO=sudo//runas                                 ##
+## EXTERNAL_AQA_RUNNER=docker|podman|...                         ##
+## EXTERNAL_AQA_SUDO=sudo||runas                                 ##
 ##                                                               ##
 ## EXTERNAL_AQA_RUNNER defaults to podman if podman is installed ##
 ##                     otherwise to docker                       ##
