@@ -36,10 +36,11 @@
 		<exec executable="bash">
 			<env key="DEST" value="${DEST}"/>
 			<env key="LIBERTY_DEP_CACHE_LOCATION" value="${env.PERF_ROOT}"/>
-		    <arg value="${DEST}/scripts/bin/configure_liberty.sh"/>
+			<arg value="${DEST}/scripts/bin/configure_liberty.sh"/>
 		</exec>							
 	</target>
-	<target name="build">
-		<antcall target="configure" inheritall="true" />
+	<!-- Temporarily exclude the build setup due to issue https://github.com/eclipse-openj9/openj9/issues/19942 -->
+	<target name="build" >
+		<!-- <antcall target="configure" inheritall="true" /> -->
 	</target>
 </project>
