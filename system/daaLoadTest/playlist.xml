@@ -205,6 +205,13 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19947</comment>
+				<variation>Mode351</variation>
+				<platform>os.aix</platform>
+			</disable>
+		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa1,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -253,6 +260,13 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19947</comment>
+				<variation>Mode351</variation>
+				<platform>os.aix</platform>
+			</disable>
+		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -301,6 +315,13 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19947</comment>
+				<variation>Mode351</variation>
+				<platform>os.aix</platform>
+			</disable>
+		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa3,timeLimit=5m$(Q) -test=DaaLoadTest; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -349,6 +370,13 @@
 			<variation>-Xgcpolicy:gencon -Xgc:dynamicBreadthFirstScanOrdering</variation>
 			<!--Note: -Xint modes Mode108, Mode109, Mode109-CS, Mode159, Mode159-CS, Mode550 should be run manually -->
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/19947</comment>
+				<variation>Mode351</variation>
+				<platform>os.aix</platform>
+			</disable>
+		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DaaLoadTest -test-args=$(Q)workload=daaAll,timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
