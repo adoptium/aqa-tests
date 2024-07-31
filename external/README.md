@@ -14,7 +14,7 @@ and
 ```
 EXTERNAL_AQA_SUDO=sudo//runas 
 ```
-which defaults to nothing
+which defaults to empty string
 ```
 EXTERNAL_AQA_CLEAN=true/false
 ```

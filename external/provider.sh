@@ -23,7 +23,7 @@
 ##                                                               ##
 ## EXTERNAL_AQA_RUNNER defaults to podman if podman is installed ##
 ##                     otherwise to docker                       ##
-## EXTERNAL_AQA_SUDO defaults to nothing                         ##
+## EXTERNAL_AQA_SUDO defaults to empty string                    ##
 ###################################################################
 
 if [ -z "${EXTERNAL_AQA_RUNNER}" ]; then
