@@ -8,7 +8,7 @@ The toolchain understands two environment variables:
 ```
 EXTERNAL_AQA_RUNNER=docker/podman/...
 ```
-defaults to podman if podman is installed otherwise to docker
+defaults to podman if podman is installed, otherwise to docker
 
 and
 ```
