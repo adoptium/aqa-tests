@@ -207,10 +207,10 @@ public class Generate {
         if (getCoresForPlaylist() == DEFAULT_CORES) {
             System.err.println("Cores limit stays on default (" + DEFAULT_CORES + "). 0 is all.");
         } else {
-            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional?");
+            System.err.println("Cores for final playlist are " + getCoresForPlaylist() + ". Intentional? 0 is All.");
         }
         if (isTimeBudgetSet()) {
-            System.err.println("Time budget is " + getCoresForPlaylist() + ". Intentional?");
+            System.err.println("Time budget is " + getTimeBudget() + ". Intentional?");
         } else {
             System.err.println("Time budget is not used. Intentional?");
         }
