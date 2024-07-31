@@ -15,7 +15,7 @@
 
 
 ###################################################################
-## This script is walking through all external tests             ##
+## This script walks through all external tests                  ##
 ## and determines which virtualisation to use                    ##
 ## It recognizes two environment variables:                      ##
 ## EXTERNAL_AQA_RUNNER=docker/podman/...                         ##
