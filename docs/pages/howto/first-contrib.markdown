@@ -29,6 +29,7 @@ An actual java/temurin compatible testsuite that you want to contribute.
 
 4. Once you think you have both the build.xml and playlist.xml you can ***test your integration*** with [Grinder JOB](https://ci.adoptium.net/view/Test_grinder/job/Grinder/).
    ![BuildWithParameters](../../diagrams/BuildWithParameters.png)
+   
 Click the ***"Build with Parameters" button*** in the left panel (if there is no such option, make sure you are logged in, and have appropriate permissions set for your account).
 Here you can configure your run. Main two parameters that are of interest to us are ADOPTOPENJDK_REPO, where you can put URL of your forked aqa-tests repository and ADOPTOPENJDK_BRANCH that specified the branch your integration is on.
 The documentation in the grinder configurator is pretty descriptive, so lets just mention a few other key paremeters you might find useful and their usage.
