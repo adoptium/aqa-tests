@@ -1,3 +1,17 @@
+import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +103,11 @@ public class Generate {
 
 
     public static void main(String... args) throws Exception {
+        if (getOutputStyle().equals(OutputType.VALIDATE)){
+            String xml = readPlaylistArg(args);
+            validate(xml);
+            return;
+        }
         String jar = readArg(args);
         setAndPrintSetup();
         setUsedJvm();
@@ -213,6 +232,18 @@ public class Generate {
         }
         URL[] cp = {jarFile.toURI().toURL()};
         jarFileClasses = new URLClassLoader(cp);
+        return jar;
+    }
+
+    private static String readPlaylistArg(String[] args) throws MalformedURLException {
+        String jar = "playlist.xml";
+        if (args.length > 0) {
+            jar = args[0];
+        }
+        jarFile = new File(jar);
+        if (!jarFile.exists()) {
+            throw new RuntimeException(jar + " does not exists");
+        }
         return jar;
     }
 
@@ -391,6 +422,10 @@ public class Generate {
             return OutputType.STATS;
         } else if ("regexes".equals(output)) {
             return OutputType.REGEXES;
+        } else if ("generate".equals(output)) {
+            return OutputType.GENERATE;
+        } else if ("validate".equals(output)) {
+            return OutputType.VALIDATE;
         } else {
             return OutputType.GENERATE;
         }
@@ -734,8 +769,34 @@ public class Generate {
         System.out.println("Avg differecne from ideal: " + (100 - (forAvgPercentAvg / results.size())) + "%");
     }
 
+    public static void validate(String xml) throws Exception {
+        System.err.println("Checking: " + xml);
+        wellFormed(xml);
+        validByXsd(xml);
+    }
+
+    public static void wellFormed(String xml) throws ParserConfigurationException, SAXException, IOException {
+        System.err.println("Well formed?");
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new InputSource(xml));
+        System.err.println("Well formed!");
+    }
+
+    public static void validByXsd(String xml) throws ParserConfigurationException, SAXException, IOException {
+        String url = "https://raw.githubusercontent.com/adoptium/TKG/master/resources/playlist.xsd";
+        System.err.println("Valid by " + url + " ?");
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema = factory.newSchema(new URL(url));
+        Validator validator = schema.newValidator();
+        validator.validate(new StreamSource(new File(xml)));
+        System.err.println("Valid!");
+    }
+
     private enum OutputType {
-        GENERATE, DO, TEST, STATS, REGEXES
+        GENERATE, DO, TEST, STATS, REGEXES, VALIDATE
     }
 
     private interface TestDetails {

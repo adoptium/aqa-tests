@@ -223,6 +223,7 @@ In order of importance and reasonability
    * test - will fork and kill `java jcstress.jar` and estimate time of all groups. If interrupted, will print at least what was calculated up to that time
    * stats - will print amount of tests in each group
    * regexes - will print just final regexes
+   * validate - will validate given (instead of jar) playlist.xml
    * **generate - default, will print playlist.xml to stdout**
  * LIMIT - number. **default is 100**. Every group smaller then LIMIT will be merged to bigger subset.
  * SMALL_GROUPS - true/false. **default is false**. After natural grouping is done, all remaining groups smaller then LIMIT are merged to artificial groups
