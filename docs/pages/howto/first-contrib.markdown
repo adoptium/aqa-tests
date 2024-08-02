@@ -7,32 +7,32 @@ layout: default
 
 # How-To Contribute your first test suite to the aqa-tests repository
 
-This is a quick guide of adding a testsuite to adoptium aqa-vit. The author of this quick guide has so far only made a contribution into functional tests and some of the other test groups might feature different prerequisites.
+This is a quick guide of adding a testsuite to Adoptium AQAvit. This is guidance for contributions into the functional test group.  Some of the other test groups might feature different prerequisites.
 
 ## Requirements:
 
-An actual java/temurin compatible testsuite that you want to contribute.
+An actual OpenJDK compatible testsuite that you want to contribute.
 
 ## Actual steps:
 
-1. First you need to decide what kind of testsuite you are adding. Create an [issue](https://github.com/adoptium/aqa-tests/issues) about contribution to aqa-tests.. here you can discuss with responsible engineers on where to situate your testsuite. Make sure to explain briefly what is the purpose of your testsuite and what specific part of java implementation it tests. Also describe special requirements that your test needs to work (containers, sudo access, graphical display etc..).
+1. First you need to decide what kind of testsuite you are adding. Create an [issue](https://github.com/adoptium/aqa-tests/issues) about contribution to aqa-tests.  Here you can discuss with AQAvit committers about where to situate your test suite. Make sure to explain briefly what is the purpose of your test suite and what specific part of an OpenJDK implementation it tests. Also describe special requirements that your test needs to work (containers, sudo access, graphical display, etc..).
 
 2. ***Fork the aqa-tests*** repository to your own personal fork. We will be executing the testsuite from this fork later.
 
-3. Once you determine in what testgroup your testsuite is gonna end up in, there are now at least two files you need to prepare.
+3. Once you determine in what test group your testsuite is going to be added to, there are at least two files you need to prepare.
 
-    1. First one is the ***build.xml*** file that sets up the environment for your test. It also clones the repository of your testsuite to the testing folder. A good approach is to look for build.xml files within other testsuite folders and get inspired there. A good simple example of such build.xml is within functional/testHeadlessComponents.
+    1. First one is the ***build.xml*** file that sets up the environment for your test, clones the repository of your test material if from a separate repository, and builds the test material. A good approach is to look for build.xml files within other testsuite folders and get inspired there, a simple example is [functional/testHeadlessComponents/build.xml](https://github.com/adoptium/aqa-tests/blob/master/functional/testHeadlessComponents/build.xml).
    
-    2. The second file we need to discuss is the ***playlist.xml***. This one manages the execution of the testsuite itself as well as what platforms it will be scheduled for. Like with the build.xml files it is advisable to consult other playlists in already existing testsuites.
+    2. The second file is the ***playlist.xml***. This one defines the execution of the testsuite itself as well as what platforms it will be scheduled for. Like with the build.xml files it is advisable to consult other playlists in already existing testsuites.  Another useful resource is the [playlist.xsd](https://github.com/adoptium/TKG/blob/master/resources/playlist.xsd) file which can help guide what elements are required in a playlist.xm file.
 
-       The one thing that is not immediately obvious but is ***mandatory*** after every execution is the ***usage of $(TEST_STATUS)*** statement after test execution in the ***playlist.xml*** . This is where the decision on how the test is colored is made.
+       There is a `<command>` element inside each `<test>` target definition in the playlist.xml file to indicate what commands are to be run to execute the testsuite.  One thing that is not immediately obvious but is ***mandatory*** is that the command needs to be followed by a ***$(TEST_STATUS)*** statement for the correct reporting of the test result and associated test status and result color to be made.
 
 4. Once you think you have both the build.xml and playlist.xml you can ***test your integration*** with [Grinder JOB](https://ci.adoptium.net/view/Test_grinder/job/Grinder/).
    ![BuildWithParameters](../../diagrams/BuildWithParameters.png)
    
 Click the ***"Build with Parameters" button*** in the left panel (if there is no such option, make sure you are logged in, and have appropriate permissions set for your account).
 Here you can configure your run. Main two parameters that are of interest to us are ADOPTOPENJDK_REPO, where you can put URL of your forked aqa-tests repository and ADOPTOPENJDK_BRANCH that specified the branch your integration is on.
-The documentation in the grinder configurator is pretty descriptive, so lets just mention a few other key paremeters you might find useful and their usage.
+The documentation in the Grinder configurator is pretty descriptive, so let's just mention a few other key paremeters you might find useful and their usage.
 
 | Parameter | Purpose |
 | --- | --- |
