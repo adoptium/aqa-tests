@@ -43,6 +43,6 @@ The documentation in the Grinder configurator is pretty descriptive, so let's ju
 
    For a more detailed description of all of the parameters in the Grinder, please refer to the ["How to Run a Grinder Build on Jenkins" wiki](https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins).
 
-5. Final step is creating a ***pull request*** for your hard work into main branch.. don't forget to ***link the original issue*** and a ***passing grinder run*** as well.
+5. Final step is creating a ***pull request*** for your hard work into main branch.  Don't forget to ***link the original issue*** and a ***passing grinder run*** as well.
 
    ***Happy Hacking! :-)***
