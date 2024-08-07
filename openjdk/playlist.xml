@@ -112,7 +112,7 @@
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) -nativepath:"$(TESTIMAGE_PATH)/hotspot/jtreg/native" -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
@@ -125,6 +125,35 @@
 		<groups>
 			<group>openjdk</group>
 		</groups>
+	</test>
+	<test>
+		<testCaseName>hotspot_custom_j9</testCaseName>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) -nativepath:"$(TESTIMAGE_PATH)/hotspot/jtreg/native" -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(FULLPATH_HOTSPOT_CUSTOM_J9_TARGET); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>21+</version>
+		</versions>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_container</testCaseName>
