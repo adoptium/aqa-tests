@@ -126,10 +126,7 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	APPLICATION_OPTIONS+=$(Q)
 endif
 
-JAVA_TO_TEST = $(JAVA_COMMAND)
-ifeq ($(USE_JRE),1)
-  JAVA_TO_TEST = $(JRE_COMMAND)
-endif
+include $(TEST_ROOT)/commonSetup.mk
 
 JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil workdir=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
