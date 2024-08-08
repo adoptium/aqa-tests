@@ -16,6 +16,9 @@
 # script runs in 5 modes - prepare / build / run / load / clean
 
 set -e
+
+source $(dirname "$0")/provider.sh
+
 tag=nightly
 docker_os=ubuntu
 build_type=full
@@ -33,17 +36,17 @@ node_name=""
 node_labels=""
 node_label_micro_architecture=""
 node_label_current_os=""
-container_run="docker run"
-container_login="docker login"
-container_inspect="docker inspect"
-container_cp="docker cp"
-container_commit="docker commit"
-container_tag="docker tag"
-container_logout="docker logout"
-container_push="docker push"
-container_pull="docker pull"
-container_rm="docker rm"
-container_rmi="docker rmi"
+container_run="$(getExternalImageCommand) run"
+container_login="$(getExternalImageCommand) login"
+container_inspect="$(getExternalImageCommand) inspect"
+container_cp="$(getExternalImageCommand) cp"
+container_commit="$(getExternalImageCommand) commit"
+container_tag="$(getExternalImageCommand) tag"
+container_logout="$(getExternalImageCommand) logout"
+container_push="$(getExternalImageCommand) push"
+container_pull="$(getExternalImageCommand) pull"
+container_rm="$(getExternalImageCommand) rm"
+container_rmi="$(getExternalImageCommand) rmi"
 docker_registry_required="false"
 docker_registry_url=""
 docker_registry_dir=""
@@ -436,9 +439,14 @@ if [ $command_type == "load" ]; then
 	fi
 fi
 
-if [ $command_type == "clean" ]; then
+if [ "${command_type}" == "clean" ] ; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
+	fi
+	if [ "${EXTERNAL_AQA_CLEAN}" == "false" ] ; then
+			echo "to debug, put '-i --entrypoint /bin/bash' before container name"
+			container_rm="echo to clean, run manually: $container_rm"
+			container_rmi="echo to clean, run manually: $container_rmi"
 	fi
 	$container_rm -f $test-test; $container_rmi -f adoptopenjdk-$test-test:${JDK_VERSION}-$package-$docker_os-${JDK_IMPL}-$build_type
 	$container_rm -f restore-test

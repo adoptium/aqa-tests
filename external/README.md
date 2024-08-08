@@ -2,6 +2,25 @@
 
 Third Party container tests help verify that the adoptium binaries are *good* by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the adoptium binaries.  For each application, we choose to run a selection of their functional tests.
 
+## Podman, docker and others. Sudo, runas and others
+
+The toolchain understands two environment variables:
+```
+EXTERNAL_AQA_RUNNER=docker|podman|...
+```
+defaults to podman if podman is installed, otherwise to docker
+
+and
+```
+EXTERNAL_AQA_SUDO=sudo||runas 
+```
+which defaults to empty string
+```
+EXTERNAL_AQA_CLEAN=true|false
+```
+If EXTERNAL_AQA_CLEAN is false, then the image is not cleaned after the `make _tests...` targets are finished.
+
+
 ## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
 
