@@ -27,7 +27,7 @@ An actual OpenJDK compatible testsuite that you want to contribute.
 
        There is a `<command>` element inside each `<test>` target definition in the playlist.xml file to indicate what commands are to be run to execute the testsuite.  One thing that is not immediately obvious but is ***mandatory*** is that the command needs to be followed by a ***$(TEST_STATUS)*** statement for the correct reporting of the test result and associated test status and result color to be made.
 
-4. Once you think you have both the build.xml and playlist.xml you can ***test your integration*** locally or with [Grinder Job](https://ci.adoptium.net/view/Test_grinder/job/Grinder/) on Jenkins if you have been given access.  
+4. Once you think you have both the build.xml and playlist.xml you can ***test your integration*** locally or with [Grinder Job](https://ci.adoptium.net/view/Test_grinder/job/Grinder/) on Jenkins if you have been given access. You can also use this [generic guide for running Jenkins jobs in Adoptium infrastructure](jenkins-howto.markdown).
 Click the ***"Build with Parameters" button*** in the left panel (if there is no such option, make sure you are logged in, and have appropriate permissions set for your account).
 Here you can configure your run. Main two parameters that are of interest to us are ADOPTOPENJDK_REPO, where you can put URL of your forked aqa-tests repository and ADOPTOPENJDK_BRANCH that specified the branch your integration is on.
 The documentation in the Grinder configurator is pretty descriptive, so let's just mention a few other key paremeters you might find useful and their usage.
@@ -41,7 +41,7 @@ The documentation in the Grinder configurator is pretty descriptive, so let's ju
 
    It is advised to check KEEP_WORKSPACE and ARCHIVE_TEST_RESULTS checkboxes for debuggin purposes. Adoptium infrastructure by default does not keep workspaces at all and results in case the tests were         successful. In some cases runs can report as successful when it is not even executed, therefore nothing had a chance of failing there. It is a good practice to not only check that the test finishes         "green" but also that the tests that were supposed to run actually did.
 
-   For a more detailed description of all of the parameters in the Grinder, please refer to the ["How to Run a Grinder Build on Jenkins" wiki](https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins).
+   For a more detailed description of all of the parameters in the Grinder, please refer to the ["Reference Documentation for Jenkins Test Jobs" reference](../reference/jenkins-jobs-reference.markdown).
 
 5. Final step is creating a ***pull request*** for your hard work into main branch.  Don't forget to ***link the original issue*** and a ***passing grinder run*** as well.
 
