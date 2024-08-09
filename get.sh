@@ -13,7 +13,7 @@
 # limitations under the License.
 
 set -eo pipefail
-
+test
 SDKDIR=""
 TESTDIR="$(pwd)"
 PLATFORM=""
