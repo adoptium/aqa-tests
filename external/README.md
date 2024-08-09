@@ -1,6 +1,6 @@
 # External (Third Party Container) Tests
 
-Third Party container tests help verify that the adoptium binaries are *good* by running a variety of Java applications inside of Docker containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the adoptium binaries.  For each application, we choose to run a selection of their functional tests.
+Third Party container tests help verify that the adoptium binaries are *good* by running a variety of Java applications inside of containers. adoptium/aqa-tests/[Issue #172](https://github.com/adoptium/aqa-tests/issues/172) lists the applications that we have initially targeted to best exercise the adoptium binaries.  For each application, we choose to run a selection of their functional tests.
 
 ## Podman, docker and others. Sudo, runas and others
 
@@ -24,7 +24,7 @@ If EXTERNAL_AQA_CLEAN is false, then the image is not cleaned after the `make _t
 ## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/doc/Prerequisites.md).  For external tests, you do need Docker installed.
+0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/doc/Prerequisites.md).  For external tests, you do need Docker or Podman installed.
 
 1. Download/unpack the SDK that you want to test to your test machine
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
@@ -46,8 +46,8 @@ See the [roadmap](https://github.com/adoptium/aqa-tests/tree/master/external#roa
 ### Roadmap
 Our next steps to improve and expand this set of external tests is divided into 2 categories:
 #### Technical Goals
-- Verify the docker images that the project produces
-- Copy results from Docker container for easier viewing and triage in Jenkins
+- Verify the container images that the project produces
+- Copy results from container for easier viewing and triage in Jenkins
 - Quick compare view, easy comparison of how different implementations stack up
 - Parallel testing (to improve execution time)
 - Startup-only testing (application startup, but not full runs of app functional testing)
@@ -80,7 +80,7 @@ There are 4 common triage scenarios, with associated appropriate actions to take
 - Replace the example command line at the bottom of this script with the initial command lines that trigger execution of your test.
 
 **build.xml**
-- Update the distribution folder paths, docker image name etc according to the name of your application.
+- Update the distribution folder paths, container image name etc according to the name of your application.
 
 **playlist.xml**
 - Update the name of the example test case to the actual test case of the third party application that you intend to run.
