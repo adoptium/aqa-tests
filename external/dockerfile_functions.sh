@@ -197,11 +197,11 @@ print_jdk_install() {
             "\n\t PATH=\"/opt/java/openjdk/bin:\$PATH\" " \
             "\n" >> ${file}
 
-    echo -e "\nENV JAVA_TOOL_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
+    echo -e "\nENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
             "\n" >> ${file}
 
     echo -e "\nENV RANDFILE=/tmp/.rnd  \\" \
-            "\n\t OPENJ9_JAVA_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
+            "\n\t OPENJ9_JAVA_OPTIONS=\"$OPENJ9_JAVA_OPTIONS  -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
             "\n" >> ${file}
 
 }
@@ -445,7 +445,7 @@ print_maven_install() {
 print_java_tool_options() {
     local file=$1
 
-    echo -e "ENV JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
+    echo -e "ENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
 }
 
 print_environment_variable() {
