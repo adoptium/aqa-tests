@@ -17,7 +17,7 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 TEST_SUITE=$1
-export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 #begin scala test
 set -e
 
