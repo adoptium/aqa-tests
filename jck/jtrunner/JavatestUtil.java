@@ -253,7 +253,7 @@ public class JavatestUtil {
 		}
 		
 		if (!found) {
-			System.out.println("Cannot locate the JCK artifacts under : " + jckRoot);
+			System.out.println("Cannot locate the `.*JCK-runtime.*` artifacts under : " + jckRoot);
 			System.exit(1);
 		}
 		
