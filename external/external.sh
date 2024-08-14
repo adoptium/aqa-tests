@@ -443,7 +443,7 @@ if [ "${command_type}" == "clean" ] ; then
 	if [[ ${test} == 'external_custom' ]]; then
 			test="$(echo ${EXTERNAL_CUSTOM_REPO} | awk -F'/' '{print $NF}' | sed 's/.git//g')"
 	fi
-	if [ "${EXTERNAL_AQA_CONTAIER_CLEAN}" == "false" ] ; then
+	if [ "${EXTERNAL_AQA_CONTAINER_CLEAN}" == "false" ] ; then
 			echo "to debug, put '-i --entrypoint /bin/bash' before container name"
 			container_rm="echo to clean, run manually: $container_rm"
 			container_rmi="echo to clean, run manually: $container_rmi"
