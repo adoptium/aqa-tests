@@ -383,10 +383,10 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Additional test parameters if you want to append or replace options, or repeat the test for more than 1 iteration.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS', 'FIPS140_2', 'FIPS140_3_OpenJCEPlusFIPS'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS140_2, etc)")
+							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS', 'FIPS140_2', 'FIPS140_3_OpenJCEPlusFIPS', 'FIPS140_3_OpenJCEPlusFIPS.FIPS140-3'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS140_2, etc)")
 							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
 							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
-                                                        stringParam('APPLICATION_OPTIONS', "", "Use this to append options to the test application")
+							stringParam('APPLICATION_OPTIONS', "", "Use this to append options to the test application")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							stringParam('ITERATIONS',"1", '''Optional. Number of times to repeat execution of make target. <br/>
 								Use ITERATIONS with PARALLEL=None, run the same test(s) in a loop on one machine <br/>
