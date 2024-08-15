@@ -62,8 +62,9 @@
 	</target>
 
 	<target name="docker_prune" description="Remove all unused images from the machine before running new builds">
-		<exec executable="docker">
-			<arg line="system prune --all --force" />
+		<exec executable="bash">
+            <arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--prune"/>
 		</exec>
 	</target>
 
