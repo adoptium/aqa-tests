@@ -14,6 +14,7 @@
 #
 
 source $(dirname "$0")/common_functions.sh
+source $(dirname "$0")/provider.sh
 
 # Generate the common license and copyright header
 print_legal() {
@@ -83,7 +84,7 @@ print_image_args() {
     local build=$7
     local base_docker_registry_dir="$8"
 
-    image_name="eclipse-temurin"
+    image_name="docker.io/library/eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
@@ -126,7 +127,7 @@ print_test_tag_arg() {
 
 print_result_comment_arg() {
     local file=$1
-    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+    echo -e "ENV RESULT_COMMENT=\"IN CONTAINER($(getProviderTile))\"\n" >> ${file}
 }
 
 # Select the ubuntu OS packages
