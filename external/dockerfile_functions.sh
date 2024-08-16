@@ -201,7 +201,7 @@ print_jdk_install() {
             "\n" >> ${file}
 
     echo -e "\nENV RANDFILE=/tmp/.rnd  \\" \
-            "\n\t OPENJ9_JAVA_OPTIONS=\"$OPENJ9_JAVA_OPTIONS  -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
+            "\n\t OPENJ9_JAVA_OPTIONS=\"$OPENJ9_JAVA_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
             "\n" >> ${file}
 
 }
