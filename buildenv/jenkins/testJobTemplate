@@ -66,6 +66,7 @@ if (!binding.hasVariable('RERUN_ITERATIONS')) RERUN_ITERATIONS = "0"
 if (!binding.hasVariable('JENKINS_KEY')) JENKINS_KEY = ""
 if (!binding.hasVariable('RELATED_NODES')) RELATED_NODES = ""
 if (!binding.hasVariable('ADDITIONAL_ARTIFACTS_REQUIRED')) ADDITIONAL_ARTIFACTS_REQUIRED = ""
+if (!binding.hasVariable('DYNAMIC_COMPILE')) DYNAMIC_COMPILE = false
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 10
@@ -347,7 +348,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							stringParam('BUILD_LIST', "${ACTUAL_BUILD_LIST}", '''Specific test directories to compile. This can be a comma-separated list of directories. <br/>Advisable to specify to a granularity that suits the targets you want to run. BUILD_LIST value can be the following:<br/>top level folder: openjdk|system|perf|jck|external|functional<br/>sub-folder: functional/Java8andUp|perf/dacapo<br/>multiple folders: system,functional<br/>''')
-							booleanParam('DYNAMIC_COMPILE', false, '''WIP. It only works with functional tests atm. <br/>
+							booleanParam('DYNAMIC_COMPILE', DYNAMIC_COMPILE.toBoolean(), '''WIP. It only works with functional tests atm. <br/>
 								Optional. Use DYNAMIC_COMPILE to automatically compile the required test material.<br/>
 								When DYNAMIC_COMPILE is on: <br/>
 								- if there is no BUILD_LIST input, DYNAMIC_COMPILE will automatically figure out which test material to compile based on the test target.<br/>
