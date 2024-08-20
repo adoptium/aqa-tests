@@ -183,6 +183,7 @@ def setupParallelEnv() {
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
 		def UPSTREAM_TEST_JOB_NUMBER = ""
+		parallel_tests = [:]
 
 		if (params.PARALLEL == "NodesByIterations") {
 			childJobNum = NUM_MACHINES
@@ -249,12 +250,15 @@ def setupParallelEnv() {
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 			}
 
-			if (NUM_LIST > 0) {
+			if (NUM_LIST > 1) {
 				childJobNum = NUM_LIST
 				echo "Saving parallelList.mk file on jenkins..."
 				dir('aqa-tests/TKG') {
 					archiveArtifacts artifacts: 'parallelList.mk', fingerprint: true, allowEmptyArchive: false
 				}
+			} else if (NUM_LIST == 1) {
+				echo " Number of test list is 1, no need to run tests in child job."
+				return NUM_LIST
 			} else {
 				assert false : "Build failed because cannot find NUM_LIST in parallelList.mk file."
 			}
@@ -262,8 +266,8 @@ def setupParallelEnv() {
 
 		UPSTREAM_TEST_JOB_NAME = JOB_NAME
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
+
 		echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
-		parallel_tests = [:]
 		create_jobs = [:]
 
 		for (int i = 0; i < childJobNum; i++) {
@@ -315,7 +319,7 @@ def setupParallelEnv() {
 		if (create_jobs) {
 			parallel create_jobs
 		}
-
+		return NUM_LIST
 		// return to top level pipeline file in order to exit node block before running tests in parallel
 	}
 
@@ -969,7 +973,10 @@ def testBuild() {
 			// prepare environment and compile test projects
 			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
 				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
-				setupParallelEnv()
+				if (setupParallelEnv() == 1) {
+					// No need to run tests in parallel
+					testExecution()
+				}
 			} else {
 				testExecution()
 			}
