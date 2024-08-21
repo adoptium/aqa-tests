@@ -179,6 +179,7 @@ def setupEnv() {
 
 def setupParallelEnv() {
 	stage('setupParallelEnv') {
+		int NUM_LIST = -1
 		def maxChildJobNum = 25
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
@@ -229,7 +230,6 @@ def setupParallelEnv() {
 			if (params.TRSS_URL) {
 				PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 			}
-			int NUM_LIST = -1
 			int MAX_NUM_MACHINES = Math.min(20, getMachineLimit());
 			if (params.NUM_MACHINES) {
 				int numOfMachines = getNumMachines()
@@ -298,7 +298,7 @@ def setupParallelEnv() {
 					childParams << string(name: param.key, value: "")
 				} else if (param.key == "TEST_TIME") {
 					childParams << string(name: param.key, value: "")
-				}else {
+				} else {
 					def value = param.value.toString()
 					if (value == "true" || value == "false") {
 						childParams << booleanParam(name: param.key, value: value.toBoolean())
@@ -322,7 +322,6 @@ def setupParallelEnv() {
 		return NUM_LIST
 		// return to top level pipeline file in order to exit node block before running tests in parallel
 	}
-
 }
 
 // Returns NUM_LIST from parallelList.mk.
@@ -514,7 +513,7 @@ def setup() {
 		VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 		VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 		VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
-		env.IS_SVT_TESTREPO = (params.VENDOR_TEST_REPOS  && params.VENDOR_TEST_REPOS.contains('SVTTestRepo')) ? true : false
+		env.IS_SVT_TESTREPO = (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_REPOS.contains('SVTTestRepo')) ? true : false
 		echo "IS_SVT_TESTREPO is set to ${env.IS_SVT_TESTREPO}"
 
 		// handle three cases (true/false/null) in params.TEST_IMAGES_REQUIRED and params.DEBUG_IMAGES_REQUIRED
@@ -565,7 +564,7 @@ def setup_jck_interactives() {
 				jdkDir = "${jdkDir}_64"
 			}
 		} else {
-			jdkDir =  sh(script: "tar -tf `pwd`/jdkbinary/${tarBall} | head -1", returnStdout: true).trim().replaceFirst(".\$","")
+			jdkDir = sh(script: "tar -tf `pwd`/jdkbinary/${tarBall} | head -1", returnStdout: true).trim().replaceFirst(".\$","")
 		}
 		def jckRunDir = "${targetDir}/${jdkDir}"
 		def jckRunJDKExists = sh(script: """
@@ -765,7 +764,7 @@ def runTest( ) {
 				// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
 				wrap([$class: 'Xvfb', autoDisplayName: true, timeout:20]) {
 					def DISPLAY = sh (
-							script: 'ps -f  | grep \'[X]vfb\' | awk \'{print \$9}\'',
+							script: 'ps -f | grep \'[X]vfb\' | awk \'{print \$9}\'',
 							returnStdout: true
 					).trim()
 					env.DISPLAY = "${DISPLAY}"
@@ -964,7 +963,7 @@ def post(output_name) {
 }
 
 def testBuild() {
-	TIME_LIMIT =  params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
+	TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
 		try {
 			addJobDescription()
@@ -1295,7 +1294,7 @@ def addFailedTestsGrinderLink(paths=""){
 			if (jckDevtoolsFailedTestCaseList) {
 				customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
 			}
-			
+
 			if (customizedTestCases.size() == 1) {
 				def testCases=customizedTestCases.values().first()
 				def customTarget=customizedTestCases.keySet().first()
