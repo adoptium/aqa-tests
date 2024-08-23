@@ -31,9 +31,8 @@
 		mkdir apache-maven; \
 		tar xvzf apache-maven-bin.tar.gz -C apache-maven --strip-components 1; \
 		ls -al; \
-		export PATH="${REPORTDIR}/apache-maven/bin:${PATH}"; \
-		mvn -version; \
-		mvn \
+		${REPORTDIR}/apache-maven/bin/mvn -version; \
+		${REPORTDIR}/apache-maven/bin/mvn -f ${REPORTDIR}/pom.xml \
 		-Denforcer.skip \
 		-Dtestenvironment=standalonebundled \
 		clean \
