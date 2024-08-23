@@ -26,7 +26,7 @@
 	<!--Properties for this particular build-->
 	<property name="src" location="./OpenJCEPlus/src/" />
 	<property name="build" location="./bin" />
-	<property name="LIB" value="junit4,hamcrest_core,bcprov_jdk18on,bcpkix-jdk18on,bcprov-ext-jdk18on,junit_vintage_engine,junit_platform_suite,junit_jupiter_api,junit_jupiter_engine,junit_jupiter_params,junit_platform_suite_api"/>
+	<property name="LIB" value="maven"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	<property environment="env" />
 
@@ -105,52 +105,13 @@
 		<mkdir dir="${build}" />
 	</target>
 
-	<property name="addExports" value='--add-exports java.base/sun.security.internal.spec=openjceplus --add-exports java.base/sun.security.util=openjceplus,ALL-UNNAMED --add-exports java.base/sun.security.x509=openjceplus,ALL-UNNAMED --add-exports java.base/sun.security.pkcs=openjceplus,ALL-UNNAMED --add-exports java.base/sun.security.internal.interfaces=openjceplus --add-exports java.base/sun.util.logging=openjceplus --add-exports java.base/jdk.internal.logger=openjceplus --add-exports openjceplus/com.ibm.crypto.plus.provider.ock=ALL-UNNAMED --add-exports openjceplus/com.ibm.misc=ALL-UNNAMED' />
-
-	<target name="compile" depends="init,getDependentLibs,getOpenJcePlusTests" description="Using java ${JDK_VERSION} to compile the source  ">
-		<echo>Ant version is ${ant.version}</echo>
-		<echo>============COMPILER SETTINGS============</echo>
-		<echo>===fork:                         yes</echo>
-		<echo>===executable:                   ${compiler.javac}</echo>
-		<echo>===debug:                        on</echo>
-		<echo>===destdir:                      ${DEST}</echo>
-		<javac srcdir="${src}" destdir="${build}" debug="true" fork="true" executable="${compiler.javac}" includeAntRuntime="false" encoding="ISO-8859-1">
-			<compilerarg line='-Xlint:all ${addExports}' />
-			<src path="${src}" />
-			<classpath>
-				<pathelement location="${LIB_DIR}/junit4.jar" />
-				<pathelement location="${LIB_DIR}/hamcrest-core.jar" />
-				<pathelement location="${LIB_DIR}/bcprov-jdk18on.jar" />
-				<pathelement location="${LIB_DIR}/bcprov-ext-jdk18on.jar" />
-				<pathelement location="${LIB_DIR}/bcpkix-jdk18on.jar" />
-				<pathelement location="${LIB_DIR}/junit-vintage-engine.jar" />
-				<pathelement location="${LIB_DIR}/junit-platform-suite.jar" />
-				<pathelement location="${LIB_DIR}/junit-jupiter-api.jar" />
-				<pathelement location="${LIB_DIR}/junit-jupiter-engine.jar" />
-				<pathelement location="${LIB_DIR}/junit-jupiter-params.jar" />
-				<pathelement location="${LIB_DIR}/junit-platform-suite-api.jar" />
-			</classpath>
-		</javac>
+	<target name="compile" depends="init,getDependentLibs,getOpenJcePlusTests" description="Fetching dependencies and test code.">
 	</target>
 
 	<target name="dist" depends="compile" description="generate the distribution">
-		<jar jarfile="${DEST}/openjceplus-tests.jar" filesonly="true">
-			<fileset dir="${build}" />
-			<fileset dir="${src}/../../" includes="*.properties,*.xml" />
-		</jar>
 		<copy todir="${DEST}">
-			<fileset dir="${src}/../../" includes="*.xml,*.mk,*.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit4.jar" />
-			<fileset dir="${LIB_DIR}/" includes="hamcrest-core.jar" />
-			<fileset dir="${LIB_DIR}/" includes="bcprov-jdk18on.jar" />
-			<fileset dir="${LIB_DIR}/" includes="bcprov-ext-jdk18on.jar" />
-			<fileset dir="${LIB_DIR}/" includes="bcpkix-jdk18on.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-vintage-engine.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-platform-suite.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-api.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-engine.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-jupiter-params.jar" />
-			<fileset dir="${LIB_DIR}/" includes="junit-platform-suite-api.jar" />
+			<fileset dir="${LIB_DIR}/" includes="apache-maven-bin.tar.gz" />
+			<fileset dir="OpenJCEPlus"/>
 		</copy>
 	</target>
 
