@@ -26,8 +26,22 @@
 			</disable>
 		</disables>
 		<command>cp -r ${TEST_RESROOT}/* ${REPORTDIR}/. ; \
-		ant -f test.xml -DTEST_JAVA=$(Q)$(JAVA_COMMAND)$(Q) launch_test; \
-	$(TEST_STATUS)</command>
+		cd ${REPORTDIR}; \
+		chmod 755 *.sh; \
+		mkdir apache-maven; \
+		tar xvzf apache-maven-bin.tar.gz -C apache-maven --strip-components 1; \
+		ls -al; \
+		${REPORTDIR}/apache-maven/bin/mvn -version; \
+		${REPORTDIR}/apache-maven/bin/mvn -f ${REPORTDIR}/pom.xml \
+		-Denforcer.skip \
+		-Dtestenvironment=standalonebundled \
+		clean \
+		test-compile \
+		surefire:test; \
+		$(TEST_STATUS); \
+		mkdir junitreports; \
+		cp -r ${REPORTDIR}/target/surefire-reports/* junitreports
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
