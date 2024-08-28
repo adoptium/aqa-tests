@@ -1,0 +1,43 @@
+[
+    {
+        "TEST_FLAG" : "NONE", 
+        "PLATFORM_TARGETS" : [
+            { "aarch64_linux" : "defaultTestTargets,dev.external" },
+            { "aarch64_mac" : "defaultTestTargets" },
+            { "ppc64_aix" : "defaultTestTargets" },
+            { "ppc64le_linux" : "defaultTestTargets,dev.external" },
+            { "s390x_linux" : "defaultTestTargets,dev.external" },
+            { "x86-64_linux" : "defaultTestTargets,dev.external" },
+            { "x86-64_mac" : "defaultTestTargets" },
+            { "x86-64_windows" : "defaultTestTargets" }
+        ]
+    },
+    {
+        "TEST_FLAG" : "FIPS140_2", 
+        "PLATFORM_TARGETS" : [
+            { "ppc64le_linux" : "defaultFipsTestTargets" },
+            { "s390x_linux" : "defaultFipsTestTargets" },
+            { "x86-64_linux" : "defaultFipsTestTargets" }
+        ]
+    },
+    {
+        "TEST_FLAG" : "FIPS140_3_OpenJCEPlusFIPS",
+        "PLATFORM_TARGETS" : [
+            { "ppc64_aix" : "defaultFipsTestTargets" },
+            { "ppc64le_linux" : "defaultFipsTestTargets" },
+            { "s390x_linux" : "defaultFipsTestTargets" },
+            { "x86-64_linux" : "defaultFipsTestTargets" },
+            { "x86-64_windows" : "defaultFipsTestTargets" }
+        ]
+    },
+    {
+        "TEST_FLAG" : "FIPS140_3_OpenJCEPlusFIPS.FIPS140-3",
+        "PLATFORM_TARGETS" : [
+            { "ppc64_aix" : "defaultFipsTestTargets" },
+            { "ppc64le_linux" : "defaultFipsTestTargets" },
+            { "s390x_linux" : "defaultFipsTestTargets" },
+            { "x86-64_linux" : "defaultFipsTestTargets" },
+            { "x86-64_windows" : "defaultFipsTestTargets" }
+        ]
+    }
+]
