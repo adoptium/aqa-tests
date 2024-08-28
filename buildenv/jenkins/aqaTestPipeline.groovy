@@ -29,7 +29,7 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf"
-def defaultFipsTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+def defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
 
 JOBS = [:]
 fail = false
@@ -150,6 +150,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
             def VENDOR_TEST_BRANCHES = ''
             def VENDOR_TEST_DIRS = ''
             int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
+            def buildList = params.BUILD_LIST ?: ""
             if (params.VARIANT == "openj9") {
                 // default rerunIterations is 3 for openj9
                 rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 3
@@ -157,9 +158,15 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                     PARALLEL = "None"
                     rerunIterations = 0
                 } else if (TARGET.contains('functional')) {
-                    VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
-                    VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
-                    VENDOR_TEST_DIRS = 'functional'
+                    if (jobTestFlag.contains("FIPS")) {
+                        if (!buildList) {
+                            buildList = "functional/OpenJcePlusTests,functional/security"
+                        }
+                    } else {
+                        VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
+                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        VENDOR_TEST_DIRS = 'functional'
+                    }
                 } else if (TARGET.contains('jck')) {
                     VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/jck.git'
                     VENDOR_TEST_BRANCHES = "main"
@@ -173,7 +180,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                     }
                 }
 
-                if (TARGET.contains("FIPS") || (TARGET.contains("dev"))) {
+                if (jobTestFlag.contains("FIPS") || (TARGET.contains("dev"))) {
                     rerunIterations = 0
                 }
             } else if (params.VARIANT == "temurin") {
@@ -241,6 +248,9 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 childParams << string(name: "VENDOR_TEST_BRANCHES", value: VENDOR_TEST_BRANCHES)
                 childParams << string(name: "VENDOR_TEST_DIRS", value: VENDOR_TEST_DIRS)
                 childParams << string(name: "VENDOR_TEST_REPOS", value: VENDOR_TEST_REPOS)
+                if (buildList) {
+                    childParams << string(name: "BUILD_LIST", value: buildList)
+                }
 
                 int jobNum = JOBS.size() + 1
                 JOBS["${TEST_JOB_NAME}_${jobNum}"] = {
