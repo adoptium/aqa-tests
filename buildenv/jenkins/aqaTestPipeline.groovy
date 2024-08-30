@@ -37,15 +37,21 @@ fail = false
 JDK_VERSIONS.each { JDK_VERSION ->
     if (params.PLATFORMS == "release") {
         def configJson = []
-        node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
-            checkout scm
-            dir (env.WORKSPACE) {
-                def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
-                filePath = filePath + "default.json"
-                if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
-                    filePath = filePath + "jdk${JDK_VERSION}.json"
+        if (params.CONFIG_JSON) {
+            echo "Read JSON from CONFIG_JSON parameter..."
+            configJson = readJSON text: "${params.CONFIG_JSON}"
+        } else {
+            node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                checkout scm
+                dir (env.WORKSPACE) {
+                    def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
+                    filePath = filePath + "default.json"
+                    if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
+                        filePath = filePath + "jdk${JDK_VERSION}.json"
+                    }
+                    echo "Read JSON from file ${filePath}..."
+                    configJson = readJSON(file: filePath)
                 }
-                configJson = readJSON(file: filePath)
             }
         }
 
@@ -77,6 +83,7 @@ if (fail) {
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
+    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}"
     if (jobTestFlag == "NONE") {
         jobTestFlag = ""
     }
@@ -190,7 +197,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
             }
             echo "AUTO_AQA_GEN: ${AUTO_AQA_GEN}"
             // Grinder job has special settings and should be regenerated specifically, not via aqaTestPipeline
-            if (AUTO_AQA_GEN && !TEST_JOB_NAME.contains("Grinder")) {
+            if (AUTO_AQA_GEN.toBoolean() && !TEST_JOB_NAME.contains("Grinder")) {
                 String[] targetTokens = TARGET.split("\\.")
                 def level = targetTokens[0];
                 def group = targetTokens[1];
