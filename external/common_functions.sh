@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+source $(dirname "$0")/provider.sh
+
 # Supported JVMs
 supported_jvms="hotspot openj9"
 
@@ -210,8 +213,8 @@ function set_test_info() {
 
 function cleanup_images() {
     # Delete any old containers that have exited.
-    docker rm $(docker ps -a | grep "Exited" | awk '{ print $1 }') 2>/dev/null
+    $(getExternalImageCommand) rm $(docker ps -a | grep "Exited" | awk '{ print $1 }') 2>/dev/null
 
     # Delete any old images for our target_repo on localhost.
-    docker rmi -f $(docker images | grep -e "adoptopenjdk" | awk '{ print $3 }' | sort | uniq) 2>/dev/null
+    $(getExternalImageCommand) rmi -f $(docker images | grep -e "adoptopenjdk" | awk '{ print $3 }' | sort | uniq) 2>/dev/null
 }
