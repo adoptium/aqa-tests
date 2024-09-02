@@ -614,7 +614,14 @@ generate_dockerfile() {
     print_image_args ${file} ${test} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
-    print_${os}_pkg ${file} "${!packages}";
+    if echo ${os} | grep -i -e ubuntu -e debian ; then
+      print_ubuntu_pkg ${file} "${!packages}";
+    elif echo ${os} | grep -i -e ubi -e fedora -e rhel -e centos  ; then
+      print_ubi_pkg ${file} "${!packages}";
+    else
+      echo "unknown os: $os"
+      exit 1
+    fi
 
     if [[ ! -z ${ant_version} ]]; then
         print_ant_install ${file} ${ant_version} ${os};
