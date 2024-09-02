@@ -87,7 +87,7 @@ function getProviderTile() {
 
 
 function getFullTemurinImage() {
-  local JDK_VERSION="${1}"
+  local JDK_VERSION="${1:-0}"
   local jreSdk="${2:-jdk}"
   if [ -z "${EXTERNAL_AQA_IMAGE}" ]; then
     echo "docker.io/library/eclipse-temurin:${JDK_VERSION}-$jreSdk"
@@ -97,7 +97,7 @@ function getFullTemurinImage() {
 }
 
 function getFullTOpenJ9Image() {
-  local JDK_VERSION="${1}"
+  local JDK_VERSION="${1:-0}"
   local jreSdk="${2:-jdk}"
   if [ -z "${EXTERNAL_AQA_IMAGE}" ]; then
     echo "docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-$jreSdk"
@@ -121,11 +121,11 @@ function getImageOsVersion() {
 }
 
 function getTemurinImageTag() {
-  getImageTag `getFullTemurinImage ${1} ${2}`
+  getImageTag `getFullTemurinImage ${1:-0} ${2:-jdk}`
 }
 
 function getOpenJ9ImageTag() {
-  getImageTag `getFullTOpenJ9Image ${1} ${2}`
+  getImageTag `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageTag() {
@@ -140,11 +140,11 @@ function getImageTag() {
 }
 
 function getTemurinImageName() {
-  getImageName `getFullTemurinImage ${1} ${2}`
+  getImageName `getFullTemurinImage ${1:-0} ${2:-jdk}`
 }
 
 function getOpenJ9ImageName() {
-  getImageName `getFullTOpenJ9Image ${1} ${2}`
+  getImageName `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageName() {
@@ -154,11 +154,11 @@ function getImageName() {
 }
 
 function getTemurinImageTag() {
-  getImageTag `getFullTemurinImage ${1} ${2}`
+  getImageTag `getFullTemurinImage ${1:-0} ${2:-jdk}`
 }
 
 function getOpenJ9ImageTag() {
-  getImageTag `getFullTOpenJ9Image ${1} ${2}`
+  getImageTag `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageTag() {
