@@ -16,6 +16,12 @@ set -o pipefail
 
 source $(dirname "$0")/common_functions.sh
 
+if [ -n "${EXTERNAL_AQA_IMAGE}" ] ; then\
+  echo "EXTERNAL_AQA_IMAGE is decalred as $EXTERNAL_AQA_IMAGE; it would break this script. Unset it."
+  exit 1
+fi
+
+
 # Cleanup any old containers and images
 echo "==============================================================================="
 echo "                           Cleaning up images                                  "
