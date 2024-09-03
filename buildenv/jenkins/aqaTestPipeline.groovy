@@ -28,7 +28,7 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 // Set the AQA_TEST_PIPELINE Jenkins job displayName
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
-def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf"
+def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
 def defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
 
 JOBS = [:]
