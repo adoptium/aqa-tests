@@ -85,6 +85,13 @@ function getProviderTile() {
 ## are deducted from this                                        ##
 ###################################################################
 
+function isExternalImageEnabled() {
+  if [ -n "${EXTERNAL_AQA_IMAGE}" ] ; then
+    return 0
+  else
+    return 1
+  fi
+}
 
 function getFullTemurinImage() {
   local JDK_VERSION="${1:-0}"
