@@ -164,9 +164,32 @@ function set_base_docker_registry_dir() {
 
 # Reading properties of test.properties file
 function getProperty() {
-    PROP_KEY=$1
-    PROP_VALUE=`cat $PROPERTY_FILE | grep "$PROP_KEY" | cut -d'=' -f 2-`
+    local PROP_KEY="${1}"
+    local FILE=${2:-""}
+    if [ -z "${FILE}" ] ; then
+      FILE="${PROPERTY_FILE}"
+    fi
+    local PROP_VALUE=`cat "${FILE}" | grep -v "^#" | grep "^${PROP_KEY}=" | cut -d'=' -f 2-`
     echo  `sed -e 's/^"//' -e 's/"$//' <<<"$PROP_VALUE"`
+}
+
+# Getting matchning keys for given OS
+function getMatchingPackagesKeys() {
+    local FILE=${1}
+    local OS=$(getImageOs)
+    local TAG=$(getImageTag)
+    local KEYS=""
+    while read line; do
+      if echo "$line" | grep -q "^#" ; then
+        continue
+      fi
+      local keyCandidate=$(echo $line | cut -d'=' -f 1)
+      local strippedKeyCandidate=$(echo $keyCandidate | sed "s/_packages//")
+      if echo "${OS}:${TAG}" | grep -Eqe ".*${strippedKeyCandidate}.*" ; then
+        KEYS="$KEYS $keyCandidate"
+      fi
+    done < "${FILE}"
+    echo ${KEYS}
 }
 
 # Used for external_custom tests
@@ -178,17 +201,20 @@ function set_external_custom_test_info(){
     test_results="testResults"
     tag_version="${EXTERNAL_REPO_BRANCH}"
     environment_variable="MODE=java"
-    ubuntu_packages="git"
     maven_version="3.8.5"
+    packages="git"
 }
 
 # Set the valid OSes for the current architectures.
 function set_test_info() {
-    test=$1
+    local test=$1
     check_external_custom_test=$2
-    cd ../
-    path_to_file=$(pwd)
+    local  path_to_file=$(cd $(dirname "$0") && pwd)
     echo ${path_to_file}
+    # global settings will be amend to local ones
+    local GLOBAL_PROPERTY_FILE=${path_to_file}/common.properties
+    local global_generic_packages=$(getProperty "generic_packages" "${GLOBAL_PROPERTY_FILE}")
+
     PROPERTY_FILE=${path_to_file}/${test}/test.properties
     github_url=$(getProperty "github_url")
     test_options=$(getProperty "test_options")
@@ -207,8 +233,17 @@ function set_test_info() {
     maven_version=$(getProperty "maven_version")
     environment_variable=$(getProperty "environment_variable")
     localPropertyFile=$(getProperty "localPropertyFile")
-    ubuntu_packages=$(getProperty "ubuntu_packages")
-    ubi_packages=$(getProperty "ubi_packages")
+    local local_generic_packages=$(getProperty "generic_packages")
+
+    packages="$global_generic_packages $local_generic_packages"
+    local gobalMatchingKeys=$(getMatchingPackagesKeys "${GLOBAL_PROPERTY_FILE}")
+    for key in ${gobalMatchingKeys} ; do
+      packages="$packages $(getProperty $key" "${GLOBAL_PROPERTY_FILE}\")"
+    done
+    local localMatchingKeys=$(getMatchingPackagesKeys "${PROPERTY_FILE}")
+    for key in ${localMatchingKeys} ; do
+      packages="$packages $(getProperty "$key" "${PROPERTY_FILE}")"
+    done
 }
 
 function cleanup_images() {

@@ -91,15 +91,23 @@ print_image_args() {
             image_name="$(getOpenJ9ImageName)"
             tag="$(getOpenJ9ImageTag "${version}" "${package}")"
         elif [[ "${os}" == *"ubi"* && "${test}" != *"criu"* ]]; then
-            # TODO, align with generic image effort
+            if isExternalImageEnabled ; then
+              echo "openj9 ubi and custom EXTERNAL_AQA_IMAGE are not compatible"
+              exit 1
+            fi
             image_name="registry.access.redhat.com/$base_docker_registry_dir"
             tag="latest"
+            EXTERNAL_AQA_IMAGE="${image_name}:${tag}"
         else
-            #TODO, what to do with it once aligned with generic image effort
+            if isExternalImageEnabled ; then
+              echo "openj9 ubi and custom EXTERNAL_AQA_IMAGE are not compatible"
+              exit 1
+            fi
             # os is ubi, and test is criu
             # temporarily all ubi based testing use internal base image
             image_name="$DOCKER_REGISTRY_URL/$base_docker_registry_dir"
             tag="latest"
+            EXTERNAL_AQA_IMAGE="${image_name}:${tag}"
         fi
     fi
     image="${image_name}:${tag}"
@@ -141,8 +149,6 @@ print_result_comment_arg() {
 # Select the ubuntu OS packages
 print_ubuntu_pkg() {
     local file=$1
-    local packages=$2
-
     echo -e "RUN apt-get update \\" \
             "\n\t&& apt-get install -qq -y --no-install-recommends software-properties-common \\" \
             "\n\t&& apt-get install -qq -y --no-install-recommends gnupg \\" \
@@ -156,8 +162,6 @@ print_ubuntu_pkg() {
 # Select the ubuntu OS packages
 print_ubi_pkg() {
     local file=$1
-    local packages=$2
-
     echo -e "RUN dnf install -y ${packages} \\" \
             "\n\t&& dnf clean all " >> ${file}
     echo -e "\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'" >> ${file}
@@ -385,7 +389,6 @@ print_criu_install() {
     local os=$3
     local platform=$4
 
-    #TODO align with the genric image concept
     if [[ "${os}" == *"ubi"* ]]; then
         if [[ "${platform}" == *"x86-64"* ]]; then
             echo -e "\nRUN wget -O /usr/sbin/criu https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/criu-build/b6/criu \\" \
@@ -619,7 +622,6 @@ generate_dockerfile() {
         set_test_info ${test} ${check_external_custom_test}
     fi
 
-    packages=$(echo ${os}_packages | sed 's/-/_/')
     jhome="/opt/java/openjdk"
 
     mkdir -p `dirname ${file}` 2>/dev/null
@@ -631,9 +633,9 @@ generate_dockerfile() {
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     if echo ${osDeducted} | grep -i -e ubuntu -e debian ; then
-      print_ubuntu_pkg ${file} "${!packages}";
+      print_ubuntu_pkg ${file}
     elif echo ${osDeducted} | grep -i -e ubi -e fedora -e rhel -e centos  ; then
-      print_ubi_pkg ${file} "${!packages}";
+      print_ubi_pkg ${file}
     else
       echo "unknown os: $os"
       exit 1
