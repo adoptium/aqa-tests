@@ -212,9 +212,14 @@ function set_test_info() {
 }
 
 function cleanup_images() {
+    local container_rm=$(getExternalImageCommand)
+	if [ "${EXTERNAL_AQA_CONTAINER_CLEAN}" == "false" ] ; then
+			echo "to debug, put '-i --entrypoint /bin/bash' before container name"
+			container_rm="echo to clean, run manually: $container_rm"
+	fi
     # Delete any old containers that have exited.
-    $(getExternalImageCommand) rm $(docker ps -a | grep "Exited" | awk '{ print $1 }') 2>/dev/null
+    ${container_rm} rm $(docker ps -a | grep "Exited" | awk '{ print $1 }') 2>/dev/null
 
     # Delete any old images for our target_repo on localhost.
-    $(getExternalImageCommand) rmi -f $(docker images | grep -e "adoptopenjdk" | awk '{ print $3 }' | sort | uniq) 2>/dev/null
+    ${container_rm} rmi -f $(docker images | grep -e "adoptopenjdk" | awk '{ print $3 }' | sort | uniq) 2>/dev/null
 }
