@@ -112,8 +112,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
 
         if (SDK_RESOURCE == "customized" ) {
             if (params.TOP_LEVEL_SDK_URL) {
+                def url = params.TOP_LEVEL_SDK_URL
+                if (!url.endsWith("/")) {
+                    url = "${params.TOP_LEVEL_SDK_URL}/"
+                }
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip
-                download_url = params.TOP_LEVEL_SDK_URL + "artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
+                download_url = "${url}artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
             }
         } else if (SDK_RESOURCE == "releases") {
             if (params.VARIANT == "openj9") {
@@ -233,10 +237,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                         childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                     } else if (param.key == "TIME_LIMIT") {
                         childParams << string(name: param.key, value: TIME_LIMIT.toString())
-                    } else if (param.key == "TEST_FLAG") {
-                        childParams << string(name: param.key, value: jobTestFlag)
-                    } else if (param.key == "KEEP_REPORTDIR") {
-                        childParams << booleanParam(name: param.key, value: keep_reportdir.toBoolean())
                     } else {
                         def value = param.value.toString()
                         if (value == "true" || value == "false") {
@@ -248,10 +248,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 }
                 childParams << booleanParam(name: "DYNAMIC_COMPILE", value: DYNAMIC_COMPILE.toBoolean())
                 childParams << booleanParam(name: "GENERATE_JOBS", value: AUTO_AQA_GEN.toBoolean())
+                childParams << booleanParam(name: "KEEP_REPORTDIR", value: keep_reportdir.toBoolean())
                 childParams << string(name: "JDK_IMPL", value: jdk_impl)
                 childParams << string(name: "JDK_VERSION", value: jobJdkVersion)
                 childParams << string(name: "PLATFORM", value: PLATFORM)
                 childParams << string(name: "RERUN_ITERATIONS", value: rerunIterations.toString())
+                childParams << string(name: "TEST_FLAG", value: jobTestFlag)
                 childParams << string(name: "VENDOR_TEST_BRANCHES", value: VENDOR_TEST_BRANCHES)
                 childParams << string(name: "VENDOR_TEST_DIRS", value: VENDOR_TEST_DIRS)
                 childParams << string(name: "VENDOR_TEST_REPOS", value: VENDOR_TEST_REPOS)
