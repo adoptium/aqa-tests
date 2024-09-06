@@ -21,8 +21,8 @@ export CRIU_COMBO_LIST_linux_390_64_z13=sw.os.ubuntu.22-hw.arch.s390x.z13 sw.os.
 export CRIU_COMBO_LIST_linux_390_64_z14=sw.os.ubuntu.22-hw.arch.s390x.z14 sw.os.rhel.8-hw.arch.s390x.z14 sw.os.rhel.9-hw.arch.s390x.z14 sw.os.ubuntu.22-hw.arch.s390x.z15 sw.os.rhel.8-hw.arch.s390x.z15 sw.os.rhel.9-hw.arch.s390x.z15
 export CRIU_COMBO_LIST_linux_390_64_z15=sw.os.ubuntu.22-hw.arch.s390x.z15 sw.os.rhel.8-hw.arch.s390x.z15 sw.os.rhel.9-hw.arch.s390x.z15
 
-export CRIU_COMBO_LIST_linux_aarch64=sw.os.ubuntu.22-hw.arch.aarch64.armv8 sw.os.rhel.9-hw.arch.aarch64.armv8 sw.os.rhel.8-hw.arch.aarch64.armv8
-# not available: sw.os.ubuntu.20-hw.arch.aarch64.armv8
+export CRIU_COMBO_LIST_linux_aarch64=sw.os.rhel.9-hw.arch.aarch64.armv8 sw.os.rhel.8-hw.arch.aarch64.armv8
+# not available: sw.os.ubuntu.20-hw.arch.aarch64.armv8 sw.os.ubuntu.22-hw.arch.aarch64.armv8 
 
 export CRIU_COMBO_LIST_linux_ppc_64_p9=sw.os.rhel.9-hw.arch.ppc64le.p9
 export CRIU_COMBO_LIST_linux_ppc_64_p10=sw.os.rhel.8-hw.arch.ppc64le.p10
