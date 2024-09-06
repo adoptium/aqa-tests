@@ -112,8 +112,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
 
         if (SDK_RESOURCE == "customized" ) {
             if (params.TOP_LEVEL_SDK_URL) {
+                def url = params.TOP_LEVEL_SDK_URL
+                if (!url.endsWith("/")) {
+                    url = "${params.TOP_LEVEL_SDK_URL}/"
+                }
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip
-                download_url = params.TOP_LEVEL_SDK_URL + "artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
+                download_url = "${url}artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
             }
         } else if (SDK_RESOURCE == "releases") {
             if (params.VARIANT == "openj9") {
