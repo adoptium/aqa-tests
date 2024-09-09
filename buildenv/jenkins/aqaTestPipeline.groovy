@@ -4,22 +4,23 @@ def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
 def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*")
 def TARGETS = params.TARGETS ?: "Grinder"
 TARGETS = TARGETS.trim().split("\\s*,\\s*")
+def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
-def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
+PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 
-def NUM_MACHINES = ""
+NUM_MACHINES = ""
 if (params.NUM_MACHINES) {
     NUM_MACHINES = params.NUM_MACHINES
 } else if (!params.TEST_TIME && PARALLEL == "Dynamic") {
     // set default NUM_MACHINES to 3 if params.NUM_MACHINES and params.TEST_TIME are not set and PARALLEL is Dynamic 
     NUM_MACHINES = 3
 }
-def SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
-def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
-def AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
-def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
-def TEST_FLAG = (params.TEST_FLAG) ?: ""
-def LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
+
+SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
+TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
+AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
+TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
+LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
