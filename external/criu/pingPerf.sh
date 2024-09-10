@@ -50,7 +50,7 @@ getSemeruDockerfile() {
                 findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
                 findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
                 # in 21-ea, /opt/java/openjdk/legal/java.base/LICENSE does not exist. No need to replace
-                if [[ $jdkVersion != "21" ]]; then
+                if [[ $jdkVersion -lt 21 ]]; then
                     findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile
                 fi
             else # docker_os is ubuntu
