@@ -338,18 +338,18 @@ createdir:
 	$(MKDIR) $(FULLOUTDIR)
 	
 installjmx:
+ifeq ($(shell test $(JDK_VERSION) -lt 23; echo $$?),0)
 ifneq ($(OS),win)
 	$(COPYDIR) $(SRCDIR)$(D)tests$(D)api$(D)javax_management$(D)loading$(D)data$(D)* $(FULLOUTDIR)$(D).
-  ifeq ($(shell test $(JDK_VERSION) -lt 23; echo $$?),0)
 	cd $(FULLOUTDIR) && $(JAR) uf $(FULLOUTDIR)/archives/MBeanUseNativeLib.jar $(LIBPREF)systemInfo.$(LIBEXT)
 	cd $(FULLOUTDIR) && $(JAR) cf $(FULLOUTDIR)/archives/OnlyLibs.jar $(LIBPREF)jmxlibid.$(LIBEXT)
-  endif
 else
 	$(COPYDIR) "$(JMX_DATA_PATH)$(D)." "$(FULLOUTDIR)$(D)"
-  ifeq ($(shell test $(JDK_VERSION) -lt 23; echo $$?),0) 
 	cd "$(FULLOUTDIR)" && $(JAR) uf "$(FULLOUTDIR)$(D)archives$(D)MBeanUseNativeLib.jar" $(LIBPREF)systemInfo.$(LIBEXT)
 	cd "$(FULLOUTDIR)" && $(JAR) cf "$(FULLOUTDIR)$(D)archives$(D)OnlyLibs.jar" $(LIBPREF)jmxlibid.$(LIBEXT)
-  endif
+endif
+else
+	echo "JMX not required for jdk-23+"
 endif
 
 .PHONY clean:
