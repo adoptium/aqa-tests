@@ -249,7 +249,7 @@ ifeq ($(OS),win)
 endif
 
 ifeq ($(shell test $(JDK_VERSION) -ge 23; echo $$?),0)
-	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)jckforeign.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
+	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)jckforeign.$(LIBEXT)
 else
   ifeq ($(shell test $(JDK_VERSION) -ge 19; echo $$?),0)
 	OBJS=$(LIBPREF)jckjni.$(LIBEXT) $(LIBPREF)jckjvmti.$(LIBEXT) $(LIBPREF)jckforeign.$(LIBEXT) $(LIBPREF)systemInfo.$(LIBEXT) $(LIBPREF)jmxlibid.$(LIBEXT) $(LIBPREF)genrandom.$(LIBEXT)
@@ -327,11 +327,11 @@ $(LIBPREF)systemInfo.$(LIBEXT):com_sun_management_mbeans_loading_SystemInfoUseNa
 $(LIBPREF)jmxlibid.$(LIBEXT):com_sun_management_mbeans_loading_GetLibIdFromNativeLib.c
 	cd $(FULLOUTDIR) && $(CC) $(CFLAGS) $(LDFLAGS) $< $(OFLAG)$(VAR)
 	$(GETLIBIDFROMNATIVE)
-endif
 
 $(LIBPREF)genrandom.$(LIBEXT):com_sun_management_mbeans_loading_RandomGen.c
 	cd $(FULLOUTDIR) && $(CC) $(CFLAGS) $(LDFLAGS) $< $(OFLAG)$(FULLOUTDIR)$(VAR)
 	$(RANDOMGEN)
+endif
 
 createdir:
 	$(CLEANDIR) $(FULLOUTDIR)
