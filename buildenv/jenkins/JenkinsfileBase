@@ -1070,7 +1070,10 @@ def getCustomUrl() {
 	def jenkinsDomain = getJenkinsDomain()
 	if (jenkinsDomain.contains("hyc-runtimes")) {
 		jenkinsDomain = "openj9-jenkins.osuosl.org"
-	}
+	} else if (jenkinsDomain.contains("temurin-compliance")) {
+                jenkinsDomain = "ci.adoptium.net"
+        }
+
 	def customUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
 	echo "Custom URL: ${customUrl}"
 	return customUrl
