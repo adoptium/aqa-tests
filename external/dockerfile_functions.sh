@@ -610,7 +610,6 @@ generate_dockerfile() {
     platform=$8
     base_docker_registry_dir="$9"
     check_external_custom_test=$10
-    osDeducted=$(getImageOs)
 
     if [[ "$check_external_custom_test" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
@@ -630,6 +629,8 @@ generate_dockerfile() {
     print_legal ${file};
     print_adopt_test ${file} ${test};
     print_image_args ${file} ${test} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
+    # print_image_args is setting up hackisch EXTERNAL_AQA_IMAGE for some corner cases
+    osDeducted=$(getImageOs)
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
     if echo ${osDeducted} | grep -i -e ubuntu -e debian ; then
