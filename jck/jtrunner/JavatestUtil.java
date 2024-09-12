@@ -575,8 +575,8 @@ public class JavatestUtil {
 			if ( tests.startsWith("vm/jvmti") || tests.equals("vm") ) {
 				fileContent += "set jck.env.runtime.testExecute.jvmtiLivePhase Yes;\n";
 			}
-			
-			if ( tests.contains("api/javax_management") || tests.equals("api") ) {
+		
+			if ( jckVersionInt < 23 && (tests.contains("api/javax_management") || tests.equals("api")) ) {
 				fileContent += "set jck.env.runtime.testExecute.jmxResourcePathValue \"" + nativesLoc + "\"" + ";\n";
 			}
 			
