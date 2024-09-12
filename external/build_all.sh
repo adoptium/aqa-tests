@@ -21,6 +21,10 @@ if [ -n "${EXTERNAL_AQA_IMAGE}" ] ; then\
   exit 1
 fi
 
+if [ -z "${version}" ] ; then\
+  echo "'version' (of jdk, eg 17) is mandatory variable for this script to run"
+  exit 1
+fi
 
 # Cleanup any old containers and images
 echo "==============================================================================="
