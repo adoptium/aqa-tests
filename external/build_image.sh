@@ -44,6 +44,7 @@ check_external_custom=$9
 if [[ "${check_external_custom}" == "0" ]]; then
 	set_test $1
 fi
+set_version $2
 set_vm $3
 set_os $4
 set_package $5
