@@ -31,12 +31,15 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
 def defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+if (params.BUILD_TYPE == "nightly") {
+    defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
+}
 
 JOBS = [:]
 fail = false
 
 JDK_VERSIONS.each { JDK_VERSION ->
-    if (params.PLATFORMS == "release") {
+    if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
         def configJson = []
         if (params.CONFIG_JSON) {
             echo "Read JSON from CONFIG_JSON parameter..."
@@ -45,7 +48,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
             node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
                 checkout scm
                 dir (env.WORKSPACE) {
-                    def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
+                    def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
                     filePath = filePath + "default.json"
                     if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
                         filePath = filePath + "jdk${JDK_VERSION}.json"
