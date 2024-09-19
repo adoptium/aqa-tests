@@ -1262,15 +1262,25 @@ def addFailedTestsGrinderLink(paths=""){
 								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
 								if (failedtest.startsWith("jdk_")) {
-									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jdkFailedTestCaseList += "${failedTestCasesInfo} "
+									}									
 								} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
-									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
-									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
-									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else {
-									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
+										hotspotFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								}
 							}
 						}
