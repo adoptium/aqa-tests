@@ -309,14 +309,13 @@ getBinaryOpenjdk()
 	jdk_files=`ls`
 	jdk_file_array=(${jdk_files//\\n/ })
 	last_index=$(( ${#jdk_file_array[@]} - 1 ))
-
 	if [[ $last_index == 0 ]]; then
-		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]]; then
+		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]] || [[ $jdk_files == *.zip ]]; then
 			nested_zip="${jdk_file_array[0]}"
 			echo "${nested_zip} is a nested zip"
 			unzip -q $nested_zip -d .
 			rm $nested_zip
-			jdk_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
+			jdk_files=$(ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip tests-*.tar.gz symbols-*.tar.gz *static-libs*.tar.gz 2> /dev/null || true)
 			echo "Found files under ${nested_zip}:"
 			echo "${jdk_files}"
 			jdk_file_array=(${jdk_files//\\n/ })
@@ -345,7 +344,7 @@ getBinaryOpenjdk()
 	for file_name in "${jdk_file_array[@]}"
 	do
 		if [[ ! "$file_name" =~ "sbom" ]]; then
-			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]]; then
+			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]] || [[ "$file_name" =~ "symbols-" ]]; then
 				# if file_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
 				# Otherwise, files will be extracted under ./tmp
 				extract_dir="./j2sdk-image"
@@ -385,8 +384,10 @@ getBinaryOpenjdk()
 				len=${#jar_dir_array[@]}
 				if [ "$len" == 1 ]; then
 					jar_dir_name=${jar_dir_array[0]}
-					if [[ "$jar_dir_name" =~ "test-image" ]] && [ "$jar_dir_name" != "openjdk-test-image" ]; then
-						mv $jar_dir_name ../openjdk-test-image
+					if [[ "$jar_dir_name" =~ "test-image" ]] || [[ "$jar_dir_name" =~ "tests-" ]]; then
+						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
+							mv $jar_dir_name ../openjdk-test-image
+						fi
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
