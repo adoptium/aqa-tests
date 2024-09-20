@@ -79,7 +79,7 @@ compareGroups()
 
 compareNewTestsInSubGroups() {
 	subGroups=("vm.verifier.instructions" "lang.CLSS" "lang.EXPR" "lang.CONV" "lang.INTF" "lang.LMBD" "lang.DASG" "lang.NAME" "lang.TYPE" "lang.ANNOT" "lang.STMT")
-	cat > "$WORKDIR/logs/NewTestsInSubGroups.txt"
+	touch "$WORKDIR/logs/NewTestsInSubGroups.txt"
 	for group in "${subGroups[@]}"; do
 		grep "${group}" "${WORKDIR}/${VERSION2}/JCK-compiler-${VERSION_VALUE2}/NewTests.txt" | sort | uniq >> "$WORKDIR/logs/NewTestsInSubGroups.txt"
 	done
@@ -87,7 +87,7 @@ compareNewTestsInSubGroups() {
 	if [ ! -s "$WORKDIR/logs/NewTestsInSubGroups.txt" ]; then
 		echo " No Subdir Group changes."
 	else
-		cat > "$WORKDIR/logs/DiffsInSubGroups.txt"
+		touch "$WORKDIR/logs/DiffsInSubGroups.txt"
 		while IFS= read -r line; do
 			subdir=$(echo "$line" | tr '.' '/' | sed 's/[[:blank:]]//g')
 			component="compiler"
