@@ -181,22 +181,13 @@
 								<property name="jdkName" value="aarch32-jdk8u"/>
 							</then>
 							<else>
-								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet."/>
-								<echo message="git ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
-								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
-									<env key="GIT_TERMINAL_PROMPT" value="0"/>
-									<arg line="ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
-								</exec>
 								<if>
-									<equals arg1="${repo.exist}" arg2="0"/>
+									<matches pattern="^([89]|1[0-9]|2[0-2])$" string="${JDK_VERSION}"/>
 									<then>
-										<echo message="Command passed. Setting repo name to the 'u' version."/>
 										<property name="jdkName" value="jdk${JDK_VERSION}u"/>
 									</then>
 									<else>
-										<echo message="Command failed, or tried to ask for a username due to access restrictions. Or both."/>
-										<echo message="Setting repo name to the non-'u' version."/>
-										<property name="jdkName" value="jdk${JDK_VERSION}"/>
+										<property name="jdkName" value="jdk"/>
 									</else>
 								</if>
 							</else>
