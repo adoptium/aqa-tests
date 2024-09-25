@@ -592,10 +592,10 @@ generate_dockerfile() {
     platform=$8
     base_docker_registry_dir="$9"
     check_external_custom_test=$10
-
+    tag_version="master"
 
     if [[ "$check_external_custom_test" == "1" ]]; then
-        tag_version=${EXTERNAL_REPO_BRANCH}
+        tag_version=${OPENJ9_BRANCH}
     fi
 
     if [[ "$check_external_custom_test" == "1" ]]; then
@@ -613,6 +613,12 @@ generate_dockerfile() {
     print_adopt_test ${file} ${test};
     print_image_args ${file} ${test} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
     print_result_comment_arg ${file};
+
+    # check if tag_version is empty, if it is empty, apply default value to it.
+    if [[ -z ${tag_version} ]]; then
+        tag_version="master"
+    fi
+
     print_test_tag_arg ${file} ${test} ${tag_version};
     print_${os}_pkg ${file} "${!packages}";
 
