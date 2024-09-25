@@ -198,8 +198,28 @@
 				<if>
 					<contains string="${JDK_IMPL}" substring="hotspot"/>
 					<then>
-						<!-- Adoptium nightly is using dev branch and default branch is master-->
-						<property name="defaultBranch" value="-b dev"/>
+						<if>
+							<matches pattern="^([89]|1[0-9]|2[0-2])$" string="${JDK_VERSION}"/>
+							<then>
+								<property name="defaultBranch" value="-b dev"/>
+							</then>
+							<else>
+								<exec executable="curl" outputproperty="jsonRelease">
+									<arg value="-s"/>
+									<arg value="https://api.adoptium.net/v3/info/available_releases"/>
+								</exec> 
+								<propertyregex property="tipVersion" input="${jsonRelease}" regexp='"tip_version":\s*([0-9]+)' select="\1" defaultValue="0"/>				
+							 	<if>
+									<equals arg1="${JDK_VERSION}" arg2="${tipVersion}"/>
+									<then>
+										<property name="defaultBranch" value="-b dev"/>
+									</then>
+									<else>
+										<property name="defaultBranch" value="-b dev_jdk${JDK_VERSION}"/>
+									</else>
+								</if>
+							</else>
+						</if>
 					</then>
 					<else>
 						<property name="defaultBranch" value=""/>
