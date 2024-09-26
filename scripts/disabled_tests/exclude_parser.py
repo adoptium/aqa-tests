@@ -26,6 +26,7 @@ ARCH_EXCEPTIONS = {
     "x86": "x86-32",
 }
 
+ERROR_FOUND = False
 
 class ExclusionFileProcessingException(Exception):
     pass
@@ -185,9 +186,18 @@ def transform_platform(os_arch_platform: str) -> str:
 
     return f"{arch_name}_{os_name}"
 
+def validate_platforms(split: TestExclusionSplitLine):
+    # the platform exclusion list must be comma-delimited with no spaces
+    platforms = split.raw_platform
+    if ' ' in platforms.strip():
+        LOG.error(f'{split.origin_file.path}:{split.line_number} : '
+                    f'Space found in platform exclusion text. Please remove')
+        global ERROR_FOUND
+        ERROR_FOUND = True
 
 def resolve_platforms(split: TestExclusionSplitLine) -> List[str]:
     revolved_platforms = []
+    validate_platforms(split)
     list_of_unresolved_platform_names = [s.strip() for s in split.raw_platform.split(",") if s.strip()]
     for plat in list_of_unresolved_platform_names:
         if plat == "generic-all":
@@ -283,6 +293,9 @@ def main():
             fp=fp,
             indent=2,
         )
+    if ERROR_FOUND:
+        LOG.debug(f"Error found. Exiting with code 1")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
