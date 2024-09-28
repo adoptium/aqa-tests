@@ -638,7 +638,7 @@ generate_dockerfile() {
     elif echo ${osDeducted} | grep -i -e ubi -e fedora -e rhel -e centos  ; then
       print_ubi_pkg ${file}
     else
-      echo "unknown os: $os"
+      echo "unknown os: ${osDeducted} (${os})"
       exit 1
     fi
 
