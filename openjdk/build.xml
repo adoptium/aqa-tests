@@ -170,6 +170,7 @@
 								<property name="regressionRepo" value="https://github.com/ibmruntimes/${jdkName}.git"/>
 							</else>
 						</if>
+						<property name="defaultBranch" value=""/>
 					</then>
 					<else>
 						<if>
@@ -181,48 +182,40 @@
 								<property name="jdkName" value="aarch32-jdk8u"/>
 							</then>
 							<else>
+								<echo message="Using a git ls-remote command to determine if the jdk source repo has an available 'u' version yet."/>
+								<echo message="git ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
+								<exec executable="git" resultproperty="repo.exist" failonerror="false" timeout="30000">
+									<env key="GIT_TERMINAL_PROMPT" value="0"/>
+									<arg line="ls-remote -h https://github.com/adoptium/jdk${JDK_VERSION}u.git"/>
+								</exec>
 								<if>
-									<matches pattern="^([89]|1[0-9]|2[0-2])$" string="${JDK_VERSION}"/>
+									<equals arg1="${repo.exist}" arg2="0"/>
 									<then>
+										<echo message="Command passed. Setting repo name to the 'u' version."/>
 										<property name="jdkName" value="jdk${JDK_VERSION}u"/>
+										<property name="defaultBranch" value="-b dev"/>
 									</then>
 									<else>
 										<property name="jdkName" value="jdk"/>
+										<exec executable="curl" outputproperty="jsonRelease">
+											<arg value="-s"/>
+											<arg value="https://api.adoptium.net/v3/info/available_releases"/>
+										</exec> 
+										<propertyregex property="tipVersion" input="${jsonRelease}" regexp='"tip_version":\s*([0-9]+)' select="\1" defaultValue="0"/>				
+										<if>
+											<equals arg1="${JDK_VERSION}" arg2="${tipVersion}"/>
+											<then>
+												<property name="defaultBranch" value="-b dev"/>
+											</then>
+											<else>
+												<property name="defaultBranch" value="-b dev_jdk${JDK_VERSION}"/>
+											</else>
+										</if>										
 									</else>
 								</if>
 							</else>
 						</if>
 						<property name="regressionRepo" value="https://github.com/adoptium/${jdkName}.git"/>
-					</else>
-				</if>
-				<if>
-					<contains string="${JDK_IMPL}" substring="hotspot"/>
-					<then>
-						<if>
-							<matches pattern="^([89]|1[0-9]|2[0-2])$" string="${JDK_VERSION}"/>
-							<then>
-								<property name="defaultBranch" value="-b dev"/>
-							</then>
-							<else>
-								<exec executable="curl" outputproperty="jsonRelease">
-									<arg value="-s"/>
-									<arg value="https://api.adoptium.net/v3/info/available_releases"/>
-								</exec> 
-								<propertyregex property="tipVersion" input="${jsonRelease}" regexp='"tip_version":\s*([0-9]+)' select="\1" defaultValue="0"/>				
-							 	<if>
-									<equals arg1="${JDK_VERSION}" arg2="${tipVersion}"/>
-									<then>
-										<property name="defaultBranch" value="-b dev"/>
-									</then>
-									<else>
-										<property name="defaultBranch" value="-b dev_jdk${JDK_VERSION}"/>
-									</else>
-								</if>
-							</else>
-						</if>
-					</then>
-					<else>
-						<property name="defaultBranch" value=""/>
 					</else>
 				</if>
 				<if>
