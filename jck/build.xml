@@ -53,23 +53,46 @@
 	<available file="${vs14_vcvarsall_filename}" property="vs14_available"/>
 	<property name="vs10_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\VC\\vcvarsall.bat"/>
 	<available file="${vs10_vcvarsall_filename}" property="vs10_available"/>
-	<property name="vs22_vcvarsall_filename" location="c:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Auxiliary\\Build\\vcvarsall.bat"/>
-	<available file="${vs22_vcvarsall_filename}" property="vs22_available"/>
+	<property name="vs22_pro_vcvarsall_filename" location="c:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Auxiliary\\Build\\vcvarsall.bat"/>
+	<available file="${vs22_pro_vcvarsall_filename}" property="vs22_pro_available"/>
+	<property name="vs22_bt_vcvarsall_filename" location="c:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat"/>
+	<available file="${vs22_bt_vcvarsall_filename}" property="vs22_bt_available"/>
 	<condition property="vcvarsall_filename" value="${vs14_vcvarsall_filename}">
-		<isset property="vs14_available"/>
+		<and>
+			<isset property="vs14_available"/>
+			<not>
+				<equals arg1="${os.arch}" arg2="aarch64" trim="true"/>
+			</not>
+		</and>
 	</condition>
 	<condition property="vcvarsall_filename" value="${vs10_vcvarsall_filename}">
-		<isset property="vs10_available"/>
+		<and>
+			<isset property="vs10_available"/>
+			<not>
+				<equals arg1="${os.arch}" arg2="aarch64" trim="true"/>
+			</not>
+		</and>
 	</condition>
-	<condition property="vcvarsall_filename" value="${vs22_vcvarsall_filename}">
-		<isset property="vs22_available"/>
+	<condition property="vcvarsall_filename" value="${vs22_pro_vcvarsall_filename}">
+		<isset property="vs22_pro_available"/>
+	</condition>
+	<condition property="vcvarsall_filename" value="${vs22_bt_vcvarsall_filename}">
+		<isset property="vs22_bt_available"/>
 	</condition>
 	<condition property="windows_native_compiler_present" value="true">
 		<isset property="vcvarsall_filename"/>
 	</condition>
-	
+
+	<condition property="vcvarsall_bits_arg" value="arm64">
+		<equals arg1="${os.arch}" arg2="aarch64" trim="true"/>
+	</condition>
 	<condition property="vcvarsall_bits_arg" value="amd64" else="">
-		<equals arg1="${sun.arch.data.model}" arg2="64" trim="true"/>
+		<and>
+			<equals arg1="${sun.arch.data.model}" arg2="64" trim="true"/>
+			<not>
+				<equals arg1="${os.arch}" arg2="aarch64" trim="true"/>
+			</not>
+		</and>
 	</condition>
 	<condition property="setup_windows_build_env" value='call "${vcvarsall_filename}" ${vcvarsall_bits_arg} &amp;&amp;' else="">
 		<equals arg1="${is_windows}" arg2="true"/>
