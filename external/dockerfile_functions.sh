@@ -14,6 +14,7 @@
 #
 
 source $(dirname "$0")/common_functions.sh
+source $(dirname "$0")/provider.sh
 
 # Generate the common license and copyright header
 print_legal() {
@@ -83,7 +84,7 @@ print_image_args() {
     local build=$7
     local base_docker_registry_dir="$8"
 
-    image_name="eclipse-temurin"
+    image_name="docker.io/library/eclipse-temurin"
     tag=""
     if [[ "${package}" == "jre" ]]; then
         tag="${version}-jre"
@@ -126,7 +127,7 @@ print_test_tag_arg() {
 
 print_result_comment_arg() {
     local file=$1
-    echo -e "ENV RESULT_COMMENT=\"IN DOCKER\"\n" >> ${file}
+    echo -e "ENV RESULT_COMMENT=\"IN CONTAINER($(getProviderTile))\"\n" >> ${file}
 }
 
 # Select the ubuntu OS packages
@@ -197,11 +198,11 @@ print_jdk_install() {
             "\n\t PATH=\"/opt/java/openjdk/bin:\$PATH\" " \
             "\n" >> ${file}
 
-    echo -e "\nENV JAVA_TOOL_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
+    echo -e "\nENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle\" " \
             "\n" >> ${file}
 
     echo -e "\nENV RANDFILE=/tmp/.rnd  \\" \
-            "\n\t OPENJ9_JAVA_OPTIONS=\"-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
+            "\n\t OPENJ9_JAVA_OPTIONS=\"$OPENJ9_JAVA_OPTIONS -XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle -Dosgi.checkConfiguration=false\" " \
             "\n" >> ${file}
 
 }
@@ -445,7 +446,7 @@ print_maven_install() {
 print_java_tool_options() {
     local file=$1
 
-    echo -e "ENV JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
+    echo -e "ENV JAVA_TOOL_OPTIONS=\"$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom\"\n" >> ${file}
 }
 
 print_environment_variable() {

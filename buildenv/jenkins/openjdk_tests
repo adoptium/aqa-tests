@@ -209,7 +209,7 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
                     ],
             'aarch64_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                        // no machine available, ibm_git/infrastructure/issues/9721 ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
                     ],
@@ -499,6 +499,7 @@ def runTest() {
                     errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
                     errorList.add(".*unzip: command not found.*");
                     errorList.add(".*ant: command not found.*");
+                    errorList.add(".*ERROR: Cannot delete workspace.*");
 
                     // nightly/weekly builds should not have git clone issue
                     if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {
