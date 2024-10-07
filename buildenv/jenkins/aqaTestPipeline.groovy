@@ -6,7 +6,7 @@ def TARGETS = params.TARGETS ?: "Grinder"
 TARGETS = TARGETS.trim().split("\\s*,\\s*")
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
-PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
+def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 
 NUM_MACHINES = ""
 if (params.NUM_MACHINES) {
@@ -73,12 +73,12 @@ JDK_VERSIONS.each { JDK_VERSION ->
                     }
                     String[] releasePlatformArray = releasePlatform.split("\\s*,\\s*")
                     String[] releaseTargetsArray = releaseTargets.split("\\s*,\\s*")
-                    generateJobs(JDK_VERSION, releaseTestFlag, releasePlatformArray, releaseTargetsArray)
+                    generateJobs(JDK_VERSION, releaseTestFlag, releasePlatformArray, releaseTargetsArray, PARALLEL)
                 }
             }
         }
     } else {
-        generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS)
+        generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
     }
 }
 parallel JOBS
@@ -86,8 +86,8 @@ if (fail) {
     currentBuild.result = "FAILURE"
 }
 
-def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
-    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}"
+def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
+    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}, jobParallel: ${jobParallel}"
     if (jobTestFlag == "NONE") {
         jobTestFlag = ""
     }
@@ -170,7 +170,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 // default rerunIterations is 3 for openj9
                 rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 3
                 if (TARGET.contains('external')) {
-                    PARALLEL = "None"
+                    jobParallel = "None"
                     rerunIterations = 0
                 } else if (TARGET.contains('functional')) {
                     if (jobTestFlag.contains("FIPS")) {
@@ -200,7 +200,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 }
             } else if (params.VARIANT == "temurin") {
                 if (TARGET.contains("functional") || TARGET.contains("perf")) {
-                    PARALLEL = "None"
+                    jobParallel = "None"
                 }
             }
             echo "AUTO_AQA_GEN: ${AUTO_AQA_GEN}"
@@ -234,7 +234,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                     } else if (param.key == "CUSTOMIZED_SDK_URL") {
                         childParams << string(name: param.key, value: download_url)
                     } else if (param.key == "PARALLEL") {
-                        childParams << string(name: param.key, value: PARALLEL)
+                        childParams << string(name: param.key, value: jobParallel)
                     } else if (param.key == "NUM_MACHINES") {
                        childParams << string(name: param.key, value: NUM_MACHINES.toString())
                     } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
