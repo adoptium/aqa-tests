@@ -337,7 +337,7 @@ def genParallelList(PARALLEL_OPTIONS) {
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		unsetLLP = "unset LD_LIBRARY_PATH;"
 	}
-	sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
+	sh "cd ./aqa-tests/TKG; $RESOLVED_MAKE; ${unsetLLP} \$MAKE genParallelList ${PARALLEL_OPTIONS}"
 	def parallelList = "aqa-tests/TKG/parallelList.mk"
 	int NUM_LIST = -1
 	if (fileExists("${parallelList}")) {
