@@ -45,6 +45,12 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
+                        <disable>
+                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+                                <version>8</version>
+                                <impl>hotspot</impl>
+                                <platform>.*windows.*</platform>
+                        </disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -74,6 +80,12 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
+                        <disable>
+                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+                                <version>8</version>
+                                <impl>hotspot</impl>
+                                <platform>.*windows.*</platform>
+                        </disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -107,6 +119,12 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
+                        <disable>
+                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+                                <version>8</version>
+                                <impl>hotspot</impl>
+                                <platform>.*windows.*</platform>
+                        </disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -debug-generation -java-debug-args=$(Q)-Xmx3g -Xms3g$(Q) -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx3g -Xms3g$(Q); \
 	$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx2g -Xms2g$(Q); \
