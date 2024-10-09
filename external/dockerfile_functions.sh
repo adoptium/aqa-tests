@@ -84,34 +84,50 @@ print_image_args() {
     local build=$7
     local base_docker_registry_dir="$8"
 
-    image_name="docker.io/library/eclipse-temurin"
-    tag=""
-    if [[ "${package}" == "jre" ]]; then
-        tag="${version}-jre"
-    else
-        tag="${version}-jdk"
-    fi
+    image_name="$(getTemurinImageName)"
+    tag="$(getTemurinImageTag "${version}" "${package}")"
     if [[ "${vm}" == "openj9" ]]; then
         if  [[ "${os}" == "ubuntu" ]]; then
-            image_name="docker.io/ibm-semeru-runtimes"
-            tag=open-${tag}
+            image_name="$(getOpenJ9ImageName)"
+            tag="$(getOpenJ9ImageTag "${version}" "${package}")"
         elif [[ "${os}" == *"ubi"* && "${test}" != *"criu"* ]]; then
+            if isExternalImageEnabled ; then
+              echo "openj9 ubi and custom EXTERNAL_AQA_IMAGE are not compatible"
+              exit 1
+            fi
             image_name="registry.access.redhat.com/$base_docker_registry_dir"
             tag="latest"
+            EXTERNAL_AQA_IMAGE="${image_name}:${tag}"
         else
+            if isExternalImageEnabled ; then
+              echo "openj9 ubi and custom EXTERNAL_AQA_IMAGE are not compatible"
+              exit 1
+            fi
             # os is ubi, and test is criu
             # temporarily all ubi based testing use internal base image
             image_name="$DOCKER_REGISTRY_URL/$base_docker_registry_dir"
             tag="latest"
+            EXTERNAL_AQA_IMAGE="${image_name}:${tag}"
         fi
     fi
     image="${image_name}:${tag}"
 
-    echo -e "ARG IMAGE=${image}" \
+    if isExternalImageEnabled ; then
+        os=$(getImageOs)
+        echo -e \
+           "ARG IMAGE=${image}" \
           "\nARG OS=${os}" \
           "\nARG IMAGE_VERSION=nightly" \
           "\nARG TAG=${tag}" \
           "\nFROM \$IMAGE\n" >> ${file}
+    else
+        echo -e \
+           "ARG IMAGE=${image}" \
+          "\nARG OS=${os}" \
+          "\nARG IMAGE_VERSION=nightly" \
+          "\nARG TAG=${tag}" \
+          "\nFROM \$IMAGE\n" >> ${file}
+    fi
 }
 
 print_test_tag_arg() {
@@ -133,8 +149,6 @@ print_result_comment_arg() {
 # Select the ubuntu OS packages
 print_ubuntu_pkg() {
     local file=$1
-    local packages=$2
-
     echo -e "RUN apt-get update \\" \
             "\n\t&& apt-get install -qq -y --no-install-recommends software-properties-common \\" \
             "\n\t&& apt-get install -qq -y --no-install-recommends gnupg \\" \
@@ -148,8 +162,6 @@ print_ubuntu_pkg() {
 # Select the ubuntu OS packages
 print_ubi_pkg() {
     local file=$1
-    local packages=$2
-
     echo -e "RUN dnf install -y ${packages} \\" \
             "\n\t&& dnf clean all " >> ${file}
     echo -e "\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'" >> ${file}
@@ -212,6 +224,9 @@ print_ant_install() {
     local file=$1
     local ant_version=$2
     local os=$3
+    if isExternalImageEnabled ; then
+        os=$(getImageOs)
+    fi
 
     echo -e "ARG ANT_VERSION=${ant_version}" \
           "\nENV ANT_VERSION=\$ANT_VERSION" \
@@ -501,6 +516,9 @@ print_testInfo_env() {
     local OS=$3
     local version=$4
     local vm=$5
+    if isExternalImageEnabled ; then
+        OS=$(getImageOs)
+    fi
     echo -e "ENV APPLICATION_NAME=${test}" \
             "\nENV APPLICATION_TAG=${test_tag}" \
             "\nENV OS_TAG=${OS}" \
@@ -593,7 +611,6 @@ generate_dockerfile() {
     base_docker_registry_dir="$9"
     check_external_custom_test=$10
 
-
     if [[ "$check_external_custom_test" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
@@ -603,7 +620,7 @@ generate_dockerfile() {
     else
         set_test_info ${test} ${check_external_custom_test}
     fi
-    packages=$(echo ${os}_packages | sed 's/-/_/')
+
     jhome="/opt/java/openjdk"
 
     mkdir -p `dirname ${file}` 2>/dev/null
@@ -612,9 +629,18 @@ generate_dockerfile() {
     print_legal ${file};
     print_adopt_test ${file} ${test};
     print_image_args ${file} ${test} ${os} ${version} ${vm} ${package} ${build} "${base_docker_registry_dir}";
+    # print_image_args is setting up hackisch EXTERNAL_AQA_IMAGE for some corner cases
+    osDeducted=$(getImageOs)
     print_result_comment_arg ${file};
     print_test_tag_arg ${file} ${test} ${tag_version};
-    print_${os}_pkg ${file} "${!packages}";
+    if echo ${osDeducted} | grep -i -e ubuntu -e debian ; then
+      print_ubuntu_pkg ${file}
+    elif echo ${osDeducted} | grep -i -e ubi -e fedora -e rhel -e centos  ; then
+      print_ubi_pkg ${file}
+    else
+      echo "unknown os: ${osDeducted} (${os})"
+      exit 1
+    fi
 
     if [[ ! -z ${ant_version} ]]; then
         print_ant_install ${file} ${ant_version} ${os};
