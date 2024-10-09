@@ -310,7 +310,7 @@ getBinaryOpenjdk()
 	jdk_file_array=(${jdk_files//\\n/ })
 	last_index=$(( ${#jdk_file_array[@]} - 1 ))
 	if [[ $last_index == 0 ]]; then
-		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]] || [[ $jdk_files == *.zip ]]; then
+		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]] || [[ $jdk_files == '*.zip' ]]; then
 			nested_zip="${jdk_file_array[0]}"
 			echo "${nested_zip} is a nested zip"
 			unzip -q $nested_zip -d .
