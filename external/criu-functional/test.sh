@@ -23,8 +23,6 @@ export LD_BIND_NOT=on
 
 export TEST_JDK_HOME=$JAVA_HOME
 echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
-export JDK_VERSION=
-echo "TEST_JDK_HOME has been unset, use auto-detect instead."
 export DYNAMIC_COMPILE=true
 export BUILD_LIST=functional
 echo "USE_TESTENV_PROPERTIES is $USE_TESTENV_PROPERTIES"
