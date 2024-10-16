@@ -538,8 +538,12 @@ def runTest() {
             sh "cat ${javaSecurityFile}"
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-        if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
-            //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+        // Check the node for full set of labels
+        def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
+        def labels = JobHelper.getLabels(NODE_NAME)
+
+        if (LABEL.contains('ci.agent.dynamic') && labels.contains('dynamicAzure')) {
+            // Set dockerimage for azure agent. Fyre has stencil to setup the right environment
             docker.image('ghcr.io/adoptium/test-containers:ubuntu2204').pull()
             docker.image('ghcr.io/adoptium/test-containers:ubuntu2204').inside {
                 jenkinsfile.testBuild()
