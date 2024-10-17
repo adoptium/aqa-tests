@@ -123,12 +123,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip
                 download_url = "${url}artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
             }
-        } else if (SDK_RESOURCE == "releases") {
-            if (params.VARIANT == "openj9") {
-                // get IBM Semeru CE
-                sdk_resource_value = "customized"
-                download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${jobJdkVersion}/ga/${os}/${arch}/jdk/openj9/normal/ibm_ce https://ibm.com/semeru-runtimes/api/v3/binary/latest/${jobJdkVersion}/ga/${os}/${arch}/testimage/openj9/normal/ibm_ce"
-            }
         }
         echo "download_url: ${download_url}"
 
