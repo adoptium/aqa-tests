@@ -29,8 +29,8 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 // Set the AQA_TEST_PIPELINE Jenkins job displayName
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
-def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-def defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
+defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
 if (params.BUILD_TYPE == "nightly") {
     defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
 }
@@ -60,20 +60,19 @@ JDK_VERSIONS.each { JDK_VERSION ->
         }
 
         configJson.each { item ->
-            def releaseTestFlag = ""
-            releaseTestFlag = item.TEST_FLAG
+            def releaseTestFlag = item.TEST_FLAG
             item.PLATFORM_TARGETS.each { pt ->
-                pt.each{ p, t ->
-                    def releasePlatform = p
-                    def releaseTargets = ""
-                    if (t.contains("defaultFipsTestTargets")) {
-                        releaseTargets = t.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
+                pt.each { p, t ->
+                    // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
+                    // if params.PLATFORMS is set, only trigger testing for the platform that is specified
+                    if (params.PLATFORMS) {
+                        if (params.PLATFORMS.contains(p)) {
+                            echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                        }
                     } else {
-                        releaseTargets = t.replace("defaultTestTargets","${defaultTestTargets}")
+                        generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
                     }
-                    String[] releasePlatformArray = releasePlatform.split("\\s*,\\s*")
-                    String[] releaseTargetsArray = releaseTargets.split("\\s*,\\s*")
-                    generateJobs(JDK_VERSION, releaseTestFlag, releasePlatformArray, releaseTargetsArray, PARALLEL)
                 }
             }
         }
@@ -87,6 +86,18 @@ if (fail) {
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
+    if (jobTargets instanceof String) {
+        if (jobTargets.contains("defaultFipsTestTargets")) {
+            jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
+        } else {
+            jobTargets = jobTargets.replace("defaultTestTargets","${defaultTestTargets}")
+        }
+       jobTargets = jobTargets.split("\\s*,\\s*")
+    }
+    if (jobPlatforms instanceof String) {
+        jobPlatforms = jobPlatforms.split("\\s*,\\s*")
+    }
+
     echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}, jobParallel: ${jobParallel}"
     if (jobTestFlag == "NONE") {
         jobTestFlag = ""
@@ -197,7 +208,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                     jobParallel = "None"
                 }
             }
-            echo "AUTO_AQA_GEN: ${AUTO_AQA_GEN}"
             // Grinder job has special settings and should be regenerated specifically, not via aqaTestPipeline
             if (AUTO_AQA_GEN.toBoolean() && !TEST_JOB_NAME.contains("Grinder")) {
                 String[] targetTokens = TARGET.split("\\.")
