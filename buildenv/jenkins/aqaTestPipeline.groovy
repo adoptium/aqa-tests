@@ -184,7 +184,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                         }
                     } else {
                         VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
-                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        VENDOR_TEST_BRANCHES = params.ADOPTIUM_BRANCH ?: 'master'
                         VENDOR_TEST_DIRS = 'functional'
                     }
                 } else if (TARGET.contains('jck')) {
