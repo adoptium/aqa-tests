@@ -19,6 +19,33 @@ set -e
 
 source $(dirname "$0")/provider.sh
 
+if [ -z "${EXTRA_DOCKER_ARGS}" ] ; then
+  echo \
+"   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #
+   # EXTRA_DOCKER_ARGS are not set. You will be testing java which is already in container and not TEST_JDK_HOME
+   # TEST_JDK_HOME is set to $TEST_JDK_HOME but will not be used. See test_base_functions.sh for order of search
+   # You should set your's TEST_JDK_HOME to mount to /opt/java/openjdk, eg:                           #
+   # export EXTRA_DOCKER_ARGS=\"-v \$TEST_JDK_HOME:/opt/java/openjdk\"                                #
+   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #"
+else
+  echo \
+"   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #
+   # EXTRA_DOCKER_ARGS set as \"$EXTRA_DOCKER_ARGS\"                                #
+   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #"
+  if echo "${EXTRA_DOCKER_ARGS}" | grep -q "$TEST_JDK_HOME"  ; then
+    echo \
+"   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #
+   # TEST_JDK_HOME of $TEST_JDK_HOME is used in EXTRA_DOCKER_ARGS                                #
+   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #"
+  else
+    echo \
+"   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #
+   # TEST_JDK_HOME of $TEST_JDK_HOME is NOT used in EXTRA_DOCKER_ARGS                                #
+   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #"
+  fi
+fi
+
+
 tag=nightly
 docker_os=ubuntu
 build_type=full

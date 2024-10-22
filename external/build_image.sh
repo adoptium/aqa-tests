@@ -25,6 +25,7 @@ if [ $# -ne 9 ] && [ $# -ne 10 ]; then
 	echo "The supported tests are ${supported_tests}"
 	echo
 	echo "usage: $0 test version vm os package build platform check_external_custom"
+	echo "eg:    $0 jacoco 17 openj9 ubi jdk full linux_x86-64 default 0"
 	echo "test    = ${supported_tests}"
 	echo "vm      = ${supported_jvms}"
 	echo "os      = ${supported_os}"
@@ -43,6 +44,7 @@ check_external_custom=$9
 if [[ "${check_external_custom}" == "0" ]]; then
 	set_test $1
 fi
+set_version $2
 set_vm $3
 set_os $4
 set_package $5
