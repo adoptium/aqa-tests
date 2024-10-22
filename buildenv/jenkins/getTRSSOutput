@@ -14,7 +14,7 @@ def getTRSSOutput() {
 		def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 30
 		timeout(time: TIME_LIMIT, unit: 'MINUTES') {
 			try {
-				def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptopenjdk.net/"
+				def TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
 
 				if (params.JDK_VERSIONS) {
 					JDK_VERSIONS = JDK_VERSIONS.split(',')
