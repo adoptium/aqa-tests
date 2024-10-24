@@ -763,33 +763,45 @@ def runTest( ) {
 				echo "env.DISPLAY is ${env.DISPLAY}"
 			}
 		}
-		for (int i = 1; i <= ITERATIONS; i++) {
-			echo "ITERATION: ${i}/${ITERATIONS}"
-			echo "currentBuild.result: ${currentBuild.result}"
-			if (currentBuild.result == 'ABORTED') {
-				echo "Build is aborted. Stop the loop...."
-				break
-			}
-			if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') && (BUILD_LIST != "external")) {
-				// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
-				wrap([$class: 'Xvfb', autoDisplayName: true, timeout:20]) {
-					def DISPLAY = sh (
-							script: 'ps -f | grep \'[X]vfb\' | awk \'{print \$9}\'',
-							returnStdout: true
-					).trim()
-					env.DISPLAY = "${DISPLAY}"
-					echo "env.DISPLAY is ${env.DISPLAY}"
+		try {
+			for (int i = 1; i <= ITERATIONS; i++) {
+				echo "ITERATION: ${i}/${ITERATIONS}"
+				echo "currentBuild.result: ${currentBuild.result}"
+				if (currentBuild.result == 'ABORTED' || currentBuild.result == 'UNSTABLE') {
+					echo "Build is aborted. Stop the loop...."
+					break
+				}
+				if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') && (BUILD_LIST != "external")) {
+					// Add an additional 10 second timeout due to issue: https://github.com/adoptium/temurin-build/issues/2368#issuecomment-756683888
+					wrap([$class: 'Xvfb', autoDisplayName: true, timeout:20]) {
+						def DISPLAY = sh (
+								script: 'ps -f | grep \'[X]vfb\' | awk \'{print \$9}\'',
+								returnStdout: true
+						).trim()
+						env.DISPLAY = "${DISPLAY}"
+						echo "env.DISPLAY is ${env.DISPLAY}"
+						makeTest("${RUNTEST_CMD}")
+					}
+				} else if (BUILD_LIST.contains('external')) {
+					sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+						makeTest("${RUNTEST_CMD}")
+					}
+				}
+				else {
 					makeTest("${RUNTEST_CMD}")
 				}
-			} else if (BUILD_LIST.contains('external')) {
-				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-					makeTest("${RUNTEST_CMD}")
-				}
 			}
-			else {
-				makeTest("${RUNTEST_CMD}")
-			}
-		}
+		} catch (Exception e) {
+			echo "An error occurred: ${e.message}"
+            currentBuild.result = 'FAILURE'
+		}	finally {
+            // Cleanup: Terminate any running processes if the build was aborted
+            if (currentBuild.result == 'ABORTED') {
+                echo "Cleaning up any running child jobs due to build being aborted..."
+                // Implement your logic to abort child processes if necessary
+                // Example: sh "pkill -f 'your_process_name'" to kill a specific process
+            }
+		}	
 
 		if (params.CODE_COVERAGE) {
 			echo 'Generating Code Coverage Reports...'
