@@ -765,6 +765,7 @@ def runTest( ) {
 		}
 		for (int i = 1; i <= ITERATIONS; i++) {
 			echo "ITERATION: ${i}/${ITERATIONS}"
+			echo "currentBuild.result: ${currentBuild.result}"
 			if (currentBuild.result == 'ABORTED') {
 				echo "Build is aborted. Stop the loop...."
 				break
