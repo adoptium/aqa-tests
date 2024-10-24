@@ -71,11 +71,11 @@ git push origin env_var
 
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
 
-8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+8.	In the ADOPTIUM_REPO section, put in the repository you were working from when you made those changes
 
  ![repo](/doc/diagrams/repo.jpg)
 
-9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+9.	In the ADOPTIUM_BRANCH section, put in the branch you were on
 
  ![branch](/doc/diagrams/branch.jpg)
 
@@ -122,11 +122,11 @@ git push origin env_var
 
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
 
-8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
+8.	In the ADOPTIUM_REPO section, put in the repository you were working from when you made those changes
 
  ![repo](/doc/diagrams/repo.jpg)
 
-9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
+9.	In the ADOPTIUM_BRANCH section, put in the branch you were on
 
  ![branch](/doc/diagrams/branch.jpg)
 
