@@ -31,6 +31,9 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
 defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+// There is no applicable tests for FIPS140-2 extended.functional atm, so temporarily disable FIPS140-2 extended.functional
+defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
+
 if (params.BUILD_TYPE == "nightly") {
     defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
 }
@@ -87,8 +90,9 @@ if (fail) {
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
     if (jobTargets instanceof String) {
-        if (jobTargets.contains("defaultFipsTestTargets")) {
+        if (jobTargets.contains("defaultFips")) {
             jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
+            jobTargets = jobTargets.replace("defaultFips140_2TestTargets","${defaultFips140_2TestTargets}")
         } else {
             jobTargets = jobTargets.replace("defaultTestTargets","${defaultTestTargets}")
         }
