@@ -491,13 +491,18 @@ def runTest() {
         println("Exception: " + e.toString())
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
         // if there is an exception, set currentBuild.result to ABORTED/FAILURE
-        if (e.toString().contains("FlowInterruptedException")) {
+        if (e.toString().contains("FlowInterruptedException") || currentBuild.rawBuild.getExecutor()?.isInterrupted()) {
             currentBuild.result = 'ABORTED'
+            echo "Build aborted by user or another trigger."
         } else {
             currentBuild.result = 'FAILURE'
         }
 
     } finally {
+		if (currentBuild.rawBuild.getExecutor()?.isInterrupted()) {
+            currentBuild.result = 'ABORTED'
+            echo "Build aborted by user or another trigger."
+        }
         if (params.SLACK_CHANNEL) {
             timeout(time: 5, unit: 'MINUTES') {
                 if (currentBuild.result == 'FAILURE') {
