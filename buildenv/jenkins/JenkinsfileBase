@@ -793,14 +793,7 @@ def runTest( ) {
 				}
 			}
 		} catch (Exception e) {
-			echo "An error occurred: ${e.message}"
-			if (e.toString().contains("FlowInterruptedException")) {
-				wasAborted = true
-				currentBuild.result = 'ABORTED'
-				echo "Build aborted by user or another trigger."
-			} else {
-				currentBuild.result = 'FAILURE'
-			}
+			handleException(e)
 		}	finally {
             // Cleanup: Terminate any running processes if the build was aborted
             if (wasAborted || currentBuild.result == 'ABORTED') {
@@ -836,6 +829,17 @@ def runTest( ) {
 			def summary = manager.createSummary("error.svg")
 			summary.appendText("TEST BUILD FAILURE!", false)
 		}
+	}
+}
+
+def handleException(Exception e) {
+	// Handle exceptions and set build status accordingly
+	echo "An error occurred: ${e.message}"
+	if (e.toString().contains("FlowInterruptedException")) {
+		currentBuild.result = 'ABORTED'
+		echo "Build aborted by user or another trigger."
+	} else {
+		currentBuild.result = 'FAILURE'
 	}
 }
 
