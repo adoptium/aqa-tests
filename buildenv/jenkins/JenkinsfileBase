@@ -764,6 +764,7 @@ def runTest( ) {
 			}
 		}
 		try {
+			boolean wasAborted = false
 			for (int i = 1; i <= ITERATIONS; i++) {
 				echo "ITERATION: ${i}/${ITERATIONS}"
 				echo "currentBuild.result: ${currentBuild.result}"
@@ -793,14 +794,20 @@ def runTest( ) {
 			}
 		} catch (Exception e) {
 			echo "An error occurred: ${e.message}"
-            currentBuild.result = 'FAILURE'
+			if (e.toString().contains("FlowInterruptedException")) {
+				wasAborted = true
+				currentBuild.result = 'ABORTED'
+				echo "Build aborted by user or another trigger."
+			} else {
+				currentBuild.result = 'FAILURE'
+			}
 		}	finally {
             // Cleanup: Terminate any running processes if the build was aborted
-            if (currentBuild.result == 'ABORTED') {
-                echo "Cleaning up any running child jobs due to build being aborted..."
-                // Implement your logic to abort child processes if necessary
-                // Example: sh "pkill -f 'your_process_name'" to kill a specific process
-            }
+            if (wasAborted || currentBuild.result == 'ABORTED') {
+        		echo "Cleaning up any running child jobs due to build being aborted..."
+        		// Add logic to abort child processes if necessary
+        		// Example: sh "pkill -f 'your_process_name'"
+   			}
 		}	
 
 		if (params.CODE_COVERAGE) {
