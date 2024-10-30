@@ -165,12 +165,6 @@
 	</test>
 	<test>
 		<testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/8034</comment>
-				<platform>.*aarch64.*</platform>
-			</disable>
-		</disables>
 		<variations>
 			<variation>-Xmx2g -Xdump:none -Xgcpolicy:balanced -Xgc:enableArrayletDoubleMapping -verbose:gc</variation>
 		</variations>
