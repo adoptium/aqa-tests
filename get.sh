@@ -402,6 +402,10 @@ getBinaryOpenjdk()
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
+				echo "List files in jdkbinary folder..."
+				ls -l $SDKDIR/jdkbinary
+				echo "List files in jdkbinary/tmp folder..."
+				ls -l
 				jar_dirs=`ls -d */`
 				jar_dir_array=(${jar_dirs//\\n/ })
 				len=${#jar_dir_array[@]}
@@ -599,6 +603,7 @@ getFunctionalTestMaterial()
 
 	checkOpenJ9RepoSHA
 
+	ls -l
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	if [ -d functional ]; then
