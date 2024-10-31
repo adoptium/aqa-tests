@@ -21,12 +21,12 @@ source $(dirname "$0")/provider.sh
 
 if [ -z "${EXTRA_DOCKER_ARGS}" ] ; then
   echo \
-"   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #
+"   # ================= WARNING ================= WARNING ================= WARNING ================= #
    # EXTRA_DOCKER_ARGS are not set. You will be testing java which is already in container and not TEST_JDK_HOME
    # TEST_JDK_HOME is set to $TEST_JDK_HOME but will not be used. See test_base_functions.sh for order of search
-   # You should set your's TEST_JDK_HOME to mount to /opt/java/openjdk, eg:                           #
-   # export EXTRA_DOCKER_ARGS=\"-v \$TEST_JDK_HOME:/opt/java/openjdk\"                                #
-   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #"
+   # You should set your's TEST_JDK_HOME to mount to /opt/java/openjdk, eg:                          #
+   # export EXTRA_DOCKER_ARGS=\"-v \$TEST_JDK_HOME:/opt/java/openjdk\"                               #
+   # ================= WARNING ================= WARNING ================= WARNING ================= #"
 else
   echo \
 "   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #
