@@ -793,14 +793,23 @@ def runTest( ) {
 				}
 			}
 		} catch (Exception e) {
-			handleException(e)
-		}	finally {
-            // Cleanup: Terminate any running processes if the build was aborted
-            if (wasAborted || currentBuild.result == 'ABORTED') {
-        		echo "Cleaning up any running child jobs due to build being aborted..."
-        		// Add logic to abort child processes if necessary
-        		// Example: sh "pkill -f 'your_process_name'"
-   			}
+			println("Exception: " + e.toString())
+			if (e.toString().contains("FlowInterruptedException")) {
+				currentBuild.result = 'ABORTED'
+			} else {
+				currentBuild.result = 'FAILURE'
+			}
+
+   		 } finally {
+			if (currentBuild.rawBuild.isInterrupted()) {
+				println("Parent job is aborted. Aborting any child jobs...")
+				// Add code to abort child jobs, if any are running
+				for (child in currentBuild.rawBuild.getDownstreamBuilds()) {
+					if (child.isBuilding()) {
+						child.doStop()
+					}
+				}
+			}
 		}	
 
 		if (params.CODE_COVERAGE) {
