@@ -41,51 +41,53 @@ if (params.BUILD_TYPE == "nightly") {
 JOBS = [:]
 fail = false
 
-JDK_VERSIONS.each { JDK_VERSION ->
-    if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
-        def configJson = []
-        if (params.CONFIG_JSON) {
-            echo "Read JSON from CONFIG_JSON parameter..."
-            configJson = readJSON text: "${params.CONFIG_JSON}"
-        } else {
-            node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
-                checkout scm
-                dir (env.WORKSPACE) {
-                    def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
-                    filePath = filePath + "default.json"
-                    if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
-                        filePath = filePath + "jdk${JDK_VERSION}.json"
+timestamps {
+    JDK_VERSIONS.each { JDK_VERSION ->
+        if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
+            def configJson = []
+            if (params.CONFIG_JSON) {
+                echo "Read JSON from CONFIG_JSON parameter..."
+                configJson = readJSON text: "${params.CONFIG_JSON}"
+            } else {
+                node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                    checkout scm
+                    dir (env.WORKSPACE) {
+                        def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
+                        filePath = filePath + "default.json"
+                        if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
+                            filePath = filePath + "jdk${JDK_VERSION}.json"
+                        }
+                        echo "Read JSON from file ${filePath}..."
+                        configJson = readJSON(file: filePath)
                     }
-                    echo "Read JSON from file ${filePath}..."
-                    configJson = readJSON(file: filePath)
                 }
             }
-        }
 
-        configJson.each { item ->
-            def releaseTestFlag = item.TEST_FLAG
-            item.PLATFORM_TARGETS.each { pt ->
-                pt.each { p, t ->
-                    // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
-                    // if params.PLATFORMS is set, only trigger testing for the platform that is specified
-                    if (params.PLATFORMS) {
-                        if (params.PLATFORMS.contains(p)) {
-                            echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+            configJson.each { item ->
+                def releaseTestFlag = item.TEST_FLAG
+                item.PLATFORM_TARGETS.each { pt ->
+                    pt.each { p, t ->
+                        // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
+                        // if params.PLATFORMS is set, only trigger testing for the platform that is specified
+                        if (params.PLATFORMS) {
+                            if (params.PLATFORMS.contains(p)) {
+                                echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                            }
+                        } else {
                             generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
                         }
-                    } else {
-                        generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
                     }
                 }
             }
+        } else {
+            generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
         }
-    } else {
-        generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
     }
-}
-parallel JOBS
-if (fail) {
-    currentBuild.result = "FAILURE"
+    parallel JOBS
+    if (fail) {
+        currentBuild.result = "FAILURE"
+    }
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
