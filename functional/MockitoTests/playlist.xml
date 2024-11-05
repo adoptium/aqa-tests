@@ -15,6 +15,18 @@
 
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../TKG/resources/playlist.xsd">
 	<test>
+		<testCaseName>triggerFailure</testCaseName>
+		<command>
+			$(JAVA_COMMAND) $(JVM_OPTIONS) -cxbxbxc; \
+			$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>functional</group>
+		</groups>
+	</test>
+	<test>
 		<testCaseName>MockitoMockTest</testCaseName>
 		<disables>
 			<disable>
@@ -22,6 +34,10 @@
 				<platform>.*zos.*</platform>
 			</disable>
 		</disables>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+		</variations>
 		<command>
 			$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(RESOURCES_DIR)$(P)$(TEST_RESROOT)$(D)MockitoTests.jar$(P)$(LIB_DIR)$(D)mockito-core.jar$(P)$(LIB_DIR)$(D)byte-buddy.jar$(P)$(LIB_DIR)$(D)byte-buddy-agent.jar$(P)$(LIB_DIR)$(D)objenesis.jar$(Q) test.java.MockitoMockTest ; \
 			$(TEST_STATUS)</command>
