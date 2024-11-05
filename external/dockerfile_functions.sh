@@ -519,9 +519,9 @@ print_clone_project() {
     git_branch_tag="master"
     if [[ "${github_url}" == *"aqa-tests"* ]]; then
         if [[ ! -z ${USE_TESTENV_PROPERTIES} ]]; then
-            if [[ "${USE_TESTENV_PROPERTIES}" == "true" && ! -z ${ADOPTOPENJDK_REPO} && ! -z ${ADOPTOPENJDK_BRANCH} ]]; then
-                github_url=${ADOPTOPENJDK_REPO}
-                git_branch_tag=${ADOPTOPENJDK_BRANCH}
+            if [[ "${USE_TESTENV_PROPERTIES}" == "true" && ! -z ${ADOPTIUM_REPO} && ! -z ${ADOPTIUM_BRANCH} ]]; then
+                github_url=${ADOPTIUM_REPO}
+                git_branch_tag=${ADOPTIUM_BRANCH}
                 echo -e "\nENV USE_TESTENV_PROPERTIES=true\n" >> ${file}
             fi
         fi
