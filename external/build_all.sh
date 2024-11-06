@@ -22,7 +22,7 @@ if [ -n "${EXTERNAL_AQA_IMAGE}" ] ; then\
 fi
 
 if [ -z "${version}" ] ; then\
-  echo "'version' (of jdk, eg 17) is mandatory variable for this script to run"
+  echo "'version' (of JDK, e.g., 17) is mandatory variable for this script to run"
   exit 1
 fi
 
