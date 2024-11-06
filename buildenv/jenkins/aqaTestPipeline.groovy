@@ -190,7 +190,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                         }
                     } else {
                         VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
-                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        // Default VENDOR_TEST_BRANCHES is master. 
+                        // If offical adoptium repo is used, set VENDOR_TEST_BRANCHES to match with params.ADOPTOPENJDK_BRANCH.
+                        VENDOR_TEST_BRANCHES = 'master'
+                        if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+                            VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        }
                         VENDOR_TEST_DIRS = 'functional'
                     }
                 } else if (TARGET.contains('jck')) {
