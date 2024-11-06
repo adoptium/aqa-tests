@@ -178,7 +178,7 @@ function getProperty() {
     echo  `sed -e 's/^"//' -e 's/"$//' <<<"$PROP_VALUE"`
 }
 
-# Getting matchning keys for given OS
+# Getting matching keys for given OS
 function getMatchingPackagesKeys() {
     local FILE=${1}
     local OS=$(getImageOs)
