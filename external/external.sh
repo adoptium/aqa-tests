@@ -29,19 +29,19 @@ if [ -z "${EXTRA_DOCKER_ARGS}" ] ; then
    # ================= WARNING ================= WARNING ================= WARNING ================= #"
 else
   echo \
-"   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #
+"   # =================== Info =================== Info =================== Info =================== #
    # EXTRA_DOCKER_ARGS set as \"$EXTRA_DOCKER_ARGS\"                                #
-   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #"
+   # =================== Info =================== Info =================== Info =================== #"
   if echo "${EXTRA_DOCKER_ARGS}" | grep -q "$TEST_JDK_HOME"  ; then
     echo \
-"   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #
+"   # =================== Info =================== Info =================== Info =================== #
    # TEST_JDK_HOME of $TEST_JDK_HOME is used in EXTRA_DOCKER_ARGS                                #
-   # Info Info  Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info Info #"
+   # =================== Info =================== Info =================== Info =================== #"
   else
     echo \
-"   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #
+"   # ================= WARNING ================= WARNING ================= WARNING ================= #
    # TEST_JDK_HOME of $TEST_JDK_HOME is NOT used in EXTRA_DOCKER_ARGS                                #
-   # Warning Warning  Warning Warning Warning Warning Warning Warning Warning Warning Warning Warning #"
+   # ================= WARNING ================= WARNING ================= WARNING ================= #"
   fi
 fi
 
