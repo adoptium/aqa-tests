@@ -66,24 +66,24 @@ function getProviderTile() {
   echo "$(getSudoNice)/$(getProviderNice)"
 }
 
-###################################################################
-##              part *2*  which image to use                     ##
-## It recognizes one complex environment variable:               ##
-## EXTERNAL_AQA_IMAGE=optional_url/image:optional_version        ##
-##   defaults to:                                                ##
-## docker.io/library/eclipse-temurin:${JDK_VERSION}-jdk"         ##
-##   for most of the calls. Defaults to                          ##
-## docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk ##
-##   for openj9                                                  ##
-##for prepare under "default" circumstances the domain is omitted##
-##for sometimes, the "latest" can slip as tag and for several    ##
-##cases the registry.access.redhat.com are used as domain.       ##
-## the:                                                          ##
-##   ARG OS                                                      ##
-##   ARG IMAGE_VERSION                                           ##
-##   ARG TAG                                                     ##
-## are deducted from this                                        ##
-###################################################################
+#####################################################################
+##              part *2*  which image to use                       ##
+## It recognizes one complex environment variable:                 ##
+## EXTERNAL_AQA_IMAGE=optional_url/image:optional_version          ##
+##   defaults to:                                                  ##
+## docker.io/library/eclipse-temurin:${JDK_VERSION}-jdk"           ##
+##   for most of the calls. Defaults to                            ##
+## docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk   ##
+##   for openj9                                                    ##
+## for prepare under "default" circumstances the domain is omitted ##
+## for sometimes, the "latest" can slip as tag and for several     ##
+## cases the registry.access.redhat.com are used as domain.        ##
+## the:                                                            ##
+##   ARG OS                                                        ##
+##   ARG IMAGE_VERSION                                             ##
+##   ARG TAG                                                       ##
+## are deducted from this                                          ##
+####################################################################
 
 function isExternalImageEnabled() {
   if [ -n "${EXTERNAL_AQA_IMAGE}" ] ; then
