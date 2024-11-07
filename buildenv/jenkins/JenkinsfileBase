@@ -1337,7 +1337,7 @@ def addFailedTestsGrinderLink(paths=""){
 
 def generateJob (newJobs, childTest, testJobName) {
 	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-	if (env.GENERATE_JOBS) {
+	if (env.GENERATE_JOBS == 'true') {
 		newJobs[childTest] = {
 			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
 			createJob(testJobName, PLATFORM)
