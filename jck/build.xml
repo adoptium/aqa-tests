@@ -322,7 +322,7 @@
 				<if>
 					<isset property="env.SKIP_JCK_GIT_UPDATE" />
 					<then>
-						<echo message="env.SKIP_JCK_GIT_UPDATE set, not enforcing existence of env.JCK_GIT_REPO" />
+						<echo message="=== env.SKIP_JCK_GIT_UPDATE set, not enforcing existence of env.JCK_GIT_REPO ===" />
 					</then>
 					<else>
 						<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
