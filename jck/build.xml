@@ -313,14 +313,23 @@
 	</target>
 
 	<target name="build">
-		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
+				<if>
+					<isset property="env.SKIP_JCK_GIT_UPDATE" />
+					<then>
+						<echo message="env.SKIP_JCK_GIT_UPDATE set, not enforcing existence of env.JCK_GIT_REPO" />
+					</then>
+					<else>
+						<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
 						please use BUILD_LIST to include test folders you want to test.">
-			<condition>
-				<not>
-					<isset property="env.JCK_GIT_REPO"/>
-				</not>
-			</condition>
-		</fail>
+							<condition>
+								<not>
+									<isset property="env.JCK_GIT_REPO"/>
+								</not>
+							</condition>
+						</fail>
+
+					</else>
+				</if>
 		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
 		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
 
