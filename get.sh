@@ -411,6 +411,7 @@ getBinaryOpenjdk()
 				len=${#jar_dir_array[@]}
 				if [ "$len" == 1 ]; then
 					jar_dir_name=${jar_dir_array[0]}
+echo "PROCESSING: ${jar_dir_name}"
 					if [[ "$jar_dir_name" =~ "test-image" ]] || [[ "$jar_dir_name" =~ "tests-" ]]; then
 						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
 							mv $jar_dir_name ../openjdk-test-image
@@ -448,6 +449,7 @@ getBinaryOpenjdk()
 							echo "RI JDK version:"
 							$SDKDIR/additionaljdkbinary/bin/java -version
 						else
+echo "MOVING: mv $jar_dir_name ../j2sdk-image"
 							mv $jar_dir_name ../j2sdk-image
 						fi
 					# The following only needed if openj9 has a different image name convention
@@ -458,6 +460,12 @@ getBinaryOpenjdk()
 					mv ../tmp ../j2sdk-image
 				fi
 				cd $SDKDIR/jdkbinary
+echo "$SDKDIR/jdkbinary:"
+ls -l
+echo "----"
+echo "j2sdk-image:"
+ls -l j2sdk-image
+echo "----"
 			fi
 		fi
 	done
