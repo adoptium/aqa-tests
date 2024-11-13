@@ -160,6 +160,32 @@ parseCommandLineArgs()
 	echo "TESTDIR: $TESTDIR"
 }
 
+# If the current directory contains only a single directory then squash that directory into the current directory
+squashSingleFolderContentsToCurrentDir()
+{
+        if [[ `ls -d */ | wc -l` -eq 1 ]] && [[ `find . -maxdepth 1 -mindepth 1 | wc -l` -eq 1 ]]; then
+          folder=`ls -d */`
+          echo "Removing top-level folder ${folder}"
+          mv ${folder}* .
+          rmdir "${folder}"
+        fi
+}
+
+# Moves the given directory safely, ensuring the target does not exist, fail with error if it does exist
+moveDirectorySafely()
+{
+        if [[ -z ${1+x} ]] || [[ -z ${2+x} ]]; then
+                echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
+                exit 1
+        fi
+        if [ -d "$2" ]; then
+                echo "ERROR: moveDirectorySafely $1 $2 : target directory $2 already exists"
+                exit 1
+        else
+                mv "$1" "$2"
+        fi
+}
+
 getBinaryOpenjdk()
 {
 	echo "get jdk binary..."
@@ -375,16 +401,25 @@ getBinaryOpenjdk()
 					extract_dir="./j2sdk-image/jre"
 				fi
 				echo "Uncompressing $file_name over $extract_dir..."
+
+				# Debug image tarballs vary in top-level folders between Vendors, eg.location of bin folder
+				#     temurin: jdk-21.0.5+11-debug-image/jdk-21.0.5+11/bin
+				#     semeru:  jdk-21.0.4+7-debug-image/bin
+
+				# Unpack into a temp directory, remove 1 or maybe 2 top-level single folders, then copy over extract_dir
+				mkdir dir.$$ && cd dir.$$
 				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
-					unzip -q $file_name -d $extract_dir
+					unzip -q $file_name
 				else
-					# some debug-image tar has parent folder ... strip it
-					if tar --version 2>&1 | grep GNU 2>&1; then
-						gzip -cd $file_name | tar xof - -C $extract_dir --strip 1
-					else
-						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$file_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
-					fi
+					gzip -cd ../$file_name | tar xof -
 				fi
+
+				# Remove 1 possibly 2 top-level folders
+				squashSingleFolderContentsToCurrentDir
+				squashSingleFolderContentsToCurrentDir
+
+				# Copy to extract_dir
+				cp -R * "../${extract_dir}" && cd .. && rm -rf dir.$$
 			else
 				if [ -d "$SDKDIR/jdkbinary/tmp" ]; then
 					rm -rf $SDKDIR/jdkbinary/tmp/*
@@ -414,10 +449,10 @@ getBinaryOpenjdk()
 echo "PROCESSING: ${jar_dir_name}"
 					if [[ "$jar_dir_name" =~ "test-image" ]] || [[ "$jar_dir_name" =~ "tests-" ]]; then
 						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
-							mv $jar_dir_name ../openjdk-test-image
+							moveDirectorySafely $jar_dir_name ../openjdk-test-image
 						fi
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
-						mv $jar_dir_name ../j2re-image
+						moveDirectorySafely $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
 						# If test sdk has already been expanded, this one must be the additional sdk
 						isAdditional=0
@@ -450,14 +485,14 @@ echo "PROCESSING: ${jar_dir_name}"
 							$SDKDIR/additionaljdkbinary/bin/java -version
 						else
 echo "MOVING: mv $jar_dir_name ../j2sdk-image"
-							mv $jar_dir_name ../j2sdk-image
+							moveDirectorySafely $jar_dir_name ../j2sdk-image
 						fi
 					# The following only needed if openj9 has a different image name convention
 					elif [ "$jar_dir_name" != "j2sdk-image" ]; then
-						mv $jar_dir_name ../j2sdk-image
+						moveDirectorySafely $jar_dir_name ../j2sdk-image
 					fi
 				elif [ "$len" -gt 1 ]; then
-					mv ../tmp ../j2sdk-image
+					moveDirectorySafely ../tmp ../j2sdk-image
 				fi
 				cd $SDKDIR/jdkbinary
 echo "$SDKDIR/jdkbinary:"
