@@ -452,6 +452,8 @@ echo "PROCESSING: ${jar_dir_name}"
 						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
 							moveDirectorySafely $jar_dir_name ../openjdk-test-image
 						fi
+					elif [[ "$jar_dir_name" =~ "static-libs" ]]; then
+						moveDirectorySafely $jar_dir_name ../static-libs
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						moveDirectorySafely $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
