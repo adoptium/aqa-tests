@@ -174,16 +174,17 @@ squashSingleFolderContentsToCurrentDir()
 # Moves the given directory safely, ensuring the target does not exist, fail with error if it does exist
 moveDirectorySafely()
 {
-        if [[ -z ${1+x} ]] || [[ -z ${2+x} ]]; then
-                echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
-                exit 1
-        fi
-        if [ -d "$2" ]; then
-                echo "ERROR: moveDirectorySafely $1 $2 : target directory $2 already exists"
-                exit 1
-        else
-                mv "$1" "$2"
-        fi
+	if [[ -z ${1+x} ]] || [[ -z ${2+x} ]]; then
+		echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
+		exit 1
+	fi
+	if [ -d "$2" ]; then
+		echo "ERROR: moveDirectorySafely $1 $2 : target directory $2 already exists"
+		exit 1
+	else
+		echo "Moving directory $1 to $2"
+		mv "$1" "$2"
+	fi
 }
 
 getBinaryOpenjdk()
