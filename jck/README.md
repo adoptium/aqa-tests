@@ -27,6 +27,7 @@
 
 3. Export `JCK_ROOT=/jck/<test_material_folder>` as an environment variable or pass it in when run as a make command. For example `export JCK_ROOT=/jck/jck8d`.
 * Optional. The default value is `<openjdk-test>/../../../jck_root/JCK$(JDK_VERSION)-unzipped`.
+* if you export `SKIP_JCK_GIT_UPDATE=true`, then the `JCK_GIT_REPO` is not used at all, and `JCK_ROOT` is used directly, without needing to be a repo.
 
 4. Export `TEST_JDK_HOME=<your_JDK_root>` as an environment variable.
 
