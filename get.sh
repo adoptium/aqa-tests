@@ -410,7 +410,7 @@ getBinaryOpenjdk()
 				# Unpack into a temp directory, remove 1 or maybe 2 top-level single folders, then copy over extract_dir
 				mkdir dir.$$ && cd dir.$$
 				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
-					unzip -q $file_name
+					unzip -q ../$file_name
 				else
 					gzip -cd ../$file_name | tar xof -
 				fi
