@@ -29,5 +29,5 @@ To run AQA tests locally using Zookeeper, you follow the same pattern:
 
 When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory. This is unadvisable! Limit what you compile and run, BUILD_LIST=external/`<someSubDirectory>`, and TARGET=`<testCaseNameFromSubdirPlaylist>`
 
-These tests run regularly and results can be found in [TRSS Third Party Application view](https://trss.adoptopenjdk.net/ThirdPartyAppView).
+These tests run regularly and results can be found in [TRSS Third Party Application view](https://trss.adoptium.net/ThirdPartyAppView).
 

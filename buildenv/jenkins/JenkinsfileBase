@@ -337,7 +337,7 @@ def genParallelList(PARALLEL_OPTIONS) {
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		unsetLLP = "unset LD_LIBRARY_PATH;"
 	}
-	sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
+	sh "cd ./aqa-tests/TKG; $RESOLVED_MAKE; ${unsetLLP} \$MAKE genParallelList ${PARALLEL_OPTIONS}"
 	def parallelList = "aqa-tests/TKG/parallelList.mk"
 	int NUM_LIST = -1
 	if (fileExists("${parallelList}")) {
@@ -426,7 +426,7 @@ def setup() {
 	stage('Setup') {
 		setupEnv()
 		if (params.CUSTOMIZED_SDK_URL) {
-			if (params.SDK_RESOURCE == 'nightly') {
+			if (params.SDK_RESOURCE == 'nightly' || params.SDK_RESOURCE == 'releases') {
 				// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
 				CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
 			} else if (!params.SDK_RESOURCE || params.SDK_RESOURCE == 'customized') {
@@ -904,7 +904,6 @@ def post(output_name) {
 				def pattern = "${env.WORKSPACE}/*_output.*"
 				uploadToArtifactory(pattern)
 			}
-			archiveFile("jvmtest/perf/**/leftoverResults/", false)
 		} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 			def test_output_tar_name = "${output_name}_test_output${suffix}"
 			if (tar_cmd.startsWith('tar')) {
@@ -1338,7 +1337,7 @@ def addFailedTestsGrinderLink(paths=""){
 
 def generateJob (newJobs, childTest, testJobName) {
 	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-	if (env.GENERATE_JOBS) {
+	if (env.GENERATE_JOBS == 'true') {
 		newJobs[childTest] = {
 			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
 			createJob(testJobName, PLATFORM)

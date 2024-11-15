@@ -6,7 +6,7 @@ def TARGETS = params.TARGETS ?: "Grinder"
 TARGETS = TARGETS.trim().split("\\s*,\\s*")
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
-PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
+def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 
 NUM_MACHINES = ""
 if (params.NUM_MACHINES) {
@@ -29,8 +29,11 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 // Set the AQA_TEST_PIPELINE Jenkins job displayName
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
-def defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-def defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
+defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+// There is no applicable tests for FIPS140-2 extended.functional atm, so temporarily disable FIPS140-2 extended.functional
+defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
+
 if (params.BUILD_TYPE == "nightly") {
     defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
 }
@@ -38,56 +41,70 @@ if (params.BUILD_TYPE == "nightly") {
 JOBS = [:]
 fail = false
 
-JDK_VERSIONS.each { JDK_VERSION ->
-    if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
-        def configJson = []
-        if (params.CONFIG_JSON) {
-            echo "Read JSON from CONFIG_JSON parameter..."
-            configJson = readJSON text: "${params.CONFIG_JSON}"
-        } else {
-            node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
-                checkout scm
-                dir (env.WORKSPACE) {
-                    def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
-                    filePath = filePath + "default.json"
-                    if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
-                        filePath = filePath + "jdk${JDK_VERSION}.json"
+timestamps {
+    JDK_VERSIONS.each { JDK_VERSION ->
+        if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
+            def configJson = []
+            if (params.CONFIG_JSON) {
+                echo "Read JSON from CONFIG_JSON parameter..."
+                configJson = readJSON text: "${params.CONFIG_JSON}"
+            } else {
+                node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                    checkout scm
+                    dir (env.WORKSPACE) {
+                        def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
+                        filePath = filePath + "default.json"
+                        if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
+                            filePath = filePath + "jdk${JDK_VERSION}.json"
+                        }
+                        echo "Read JSON from file ${filePath}..."
+                        configJson = readJSON(file: filePath)
                     }
-                    echo "Read JSON from file ${filePath}..."
-                    configJson = readJSON(file: filePath)
                 }
             }
-        }
 
-        configJson.each { item ->
-            def releaseTestFlag = ""
-            releaseTestFlag = item.TEST_FLAG
-            item.PLATFORM_TARGETS.each { pt ->
-                pt.each{ p, t ->
-                    def releasePlatform = p
-                    def releaseTargets = ""
-                    if (t.contains("defaultFipsTestTargets")) {
-                        releaseTargets = t.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
-                    } else {
-                        releaseTargets = t.replace("defaultTestTargets","${defaultTestTargets}")
+            configJson.each { item ->
+                def releaseTestFlag = item.TEST_FLAG
+                item.PLATFORM_TARGETS.each { pt ->
+                    pt.each { p, t ->
+                        // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
+                        // if params.PLATFORMS is set, only trigger testing for the platform that is specified
+                        if (params.PLATFORMS) {
+                            if (params.PLATFORMS.contains(p)) {
+                                echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                            }
+                        } else {
+                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                        }
                     }
-                    String[] releasePlatformArray = releasePlatform.split("\\s*,\\s*")
-                    String[] releaseTargetsArray = releaseTargets.split("\\s*,\\s*")
-                    generateJobs(JDK_VERSION, releaseTestFlag, releasePlatformArray, releaseTargetsArray)
                 }
             }
+        } else {
+            generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
         }
-    } else {
-        generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS)
+    }
+    parallel JOBS
+    if (fail) {
+        currentBuild.result = "FAILURE"
     }
 }
-parallel JOBS
-if (fail) {
-    currentBuild.result = "FAILURE"
-}
 
-def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
-    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}"
+def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
+    if (jobTargets instanceof String) {
+        if (jobTargets.contains("defaultFips")) {
+            jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
+            jobTargets = jobTargets.replace("defaultFips140_2TestTargets","${defaultFips140_2TestTargets}")
+        } else {
+            jobTargets = jobTargets.replace("defaultTestTargets","${defaultTestTargets}")
+        }
+       jobTargets = jobTargets.split("\\s*,\\s*")
+    }
+    if (jobPlatforms instanceof String) {
+        jobPlatforms = jobPlatforms.split("\\s*,\\s*")
+    }
+
+    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}, jobParallel: ${jobParallel}"
     if (jobTestFlag == "NONE") {
         jobTestFlag = ""
     }
@@ -122,12 +139,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 }
                 // example: <jenkins_url>/job/build-scripts/job/openjdk11-pipeline/123/artifact/target/linux/aarch64/openj9/*_aarch64_linux_*.tar.gz/*zip*/openj9.zip
                 download_url = "${url}artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
-            }
-        } else if (SDK_RESOURCE == "releases") {
-            if (params.VARIANT == "openj9") {
-                // get IBM Semeru CE
-                sdk_resource_value = "customized"
-                download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${jobJdkVersion}/ga/${os}/${arch}/jdk/openj9/normal/ibm_ce https://ibm.com/semeru-runtimes/api/v3/binary/latest/${jobJdkVersion}/ga/${os}/${arch}/testimage/openj9/normal/ibm_ce"
             }
         }
         echo "download_url: ${download_url}"
@@ -170,7 +181,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 // default rerunIterations is 3 for openj9
                 rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 3
                 if (TARGET.contains('external')) {
-                    PARALLEL = "None"
+                    jobParallel = "None"
                     rerunIterations = 0
                 } else if (TARGET.contains('functional')) {
                     if (jobTestFlag.contains("FIPS")) {
@@ -179,7 +190,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                         }
                     } else {
                         VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
-                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        // Default VENDOR_TEST_BRANCHES is master. 
+                        // If offical adoptium repo is used, set VENDOR_TEST_BRANCHES to match with params.ADOPTOPENJDK_BRANCH.
+                        VENDOR_TEST_BRANCHES = 'master'
+                        if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+                            VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        }
                         VENDOR_TEST_DIRS = 'functional'
                     }
                 } else if (TARGET.contains('jck')) {
@@ -200,10 +216,9 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                 }
             } else if (params.VARIANT == "temurin") {
                 if (TARGET.contains("functional") || TARGET.contains("perf")) {
-                    PARALLEL = "None"
+                    jobParallel = "None"
                 }
             }
-            echo "AUTO_AQA_GEN: ${AUTO_AQA_GEN}"
             // Grinder job has special settings and should be regenerated specifically, not via aqaTestPipeline
             if (AUTO_AQA_GEN.toBoolean() && !TEST_JOB_NAME.contains("Grinder")) {
                 String[] targetTokens = TARGET.split("\\.")
@@ -234,7 +249,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
                     } else if (param.key == "CUSTOMIZED_SDK_URL") {
                         childParams << string(name: param.key, value: download_url)
                     } else if (param.key == "PARALLEL") {
-                        childParams << string(name: param.key, value: PARALLEL)
+                        childParams << string(name: param.key, value: jobParallel)
                     } else if (param.key == "NUM_MACHINES") {
                        childParams << string(name: param.key, value: NUM_MACHINES.toString())
                     } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {

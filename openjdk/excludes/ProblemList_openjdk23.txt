@@ -77,6 +77,8 @@ java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjd
 # java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
 java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
 java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
+java/lang/Thread/virtual/stress/PingPong.java#ltq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
+java/lang/Thread/virtual/stress/PingPong.java#sq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 
 ############################################################################
 
@@ -195,7 +197,7 @@ com/sun/jdi/JdwpAttachTest.java https://bugs.openjdk.java.net/browse/JDK-8253940
 com/sun/jdi/BreakpointTest.java https://bugs.openjdk.java.net/browse/JDK-8050470 linux-s390x
 com/sun/jdi/JdwpAllowTest.java https://bugs.openjdk.org/browse/JDK-8241624 generic-all
 com/sun/jdi/JdwpListenTest.java https://bugs.openjdk.org/browse/JDK-8241624 generic-all
-
+com/sun/jdi/FinalizerTest.java https://github.com/adoptium/aqa-tests/issues/5705 linux-all
 ############################################################################
 
 # jdk_nio
@@ -281,6 +283,8 @@ sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issue
 
 # jdk_tools
 
+sun/tools/jhsdb/HeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
+sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 sun/tools/jstat/jstatLineCounts1.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
 sun/tools/jstat/jstatLineCounts2.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
 sun/tools/jstat/jstatLineCounts3.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
@@ -319,6 +323,7 @@ tools/jpackage/windows/WinUrlTest.java https://github.com/adoptium/infrastructur
 tools/jlink/JLinkTest.java https://github.com/adoptium/aqa-tests/issues/2857 windows-x86,linux-arm
 tools/jlink/JLinkReproducible3Test.java https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
 tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aixx-ppc64
+tools/jlink/plugins/VendorInfoPluginsTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AddLShortcutTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AppContentTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -391,6 +396,10 @@ compiler/vectorapi/VectorGatherMaskFoldingTest.java https://bugs.openjdk.org/bro
 
 # jdk_jfr
 
+jdk/jfr/event/runtime/TestDumpReason.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
+jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
+jdk/jfr/jvm/TestDumpOnCrash.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
+
 ###########################################################################
 
 # jdk_vector
@@ -455,13 +464,19 @@ gc/shenandoah/jni/CriticalNativeStress.java https://github.com/adoptium/aqa-test
 
 # hotspot_runtime
 
-runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+runtime/memory/ReadFromNoaccessArea.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/ErrorHandling/MachCodeFramesInErrorFile.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/ErrorHandling/UncaughtNativeExceptionTest.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+#runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
+#runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
 runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
+#runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all,windows-aarch64
 runtime/logging/loadLibraryTest/LoadLibraryTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://bugs.openjdk.java.net/browse/JDK-8269135 windows-x86
 runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
@@ -488,3 +503,20 @@ serviceability/sa/ClhsdbFindPC.java#id1 https://github.com/adoptium/aqa-tests/is
 serviceability/sa/ClhsdbJhisto.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbJstackXcompStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbJstack.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/sa/ClhsdbFindPC.java#no-xcomp-core https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbDumpheap.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbFindPC.java#no-xcomp-process https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbFindPC.java#xcomp-core https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbCDSJstackPrintAll.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbJdis.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbJstack.java#id1 https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbPmap.java#core https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbPrintAs.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbPstack.java#core https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbSource.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbThreadContext.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/ClhsdbWhere.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/TestJhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/sa/TestClhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/jvmti/RedefineClasses/RedefineSharedClass.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+
