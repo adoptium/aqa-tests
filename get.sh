@@ -454,6 +454,8 @@ getBinaryOpenjdk()
 						fi
 					elif [[ "$jar_dir_name" =~ "static-libs" ]]; then
 						moveDirectorySafely $jar_dir_name ../static-libs
+                                        elif [[ "$jar_dir_name" =~ jdk.*-src$ ]]; then
+                                                moveDirectorySafely $jar_dir_name ../source-image
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						moveDirectorySafely $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
