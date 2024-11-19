@@ -15,7 +15,7 @@ cd ./TKG
 $MAKE compile
 
 if [ $(uname) = SunOS ]; then
-    pwd
-    ls -ltr
-    chmod -R 744 ../openjdk/openjdk-jdk/jdk/test/sun/management/jmxremote/bootstrap/SSLConfigFilePermissionTest.sh*
+    if [ -f ../openjdk/openjdk-jdk/jdk/test/sun/management/jmxremote/bootstrap/SSLConfigFilePermissionTest.sh ]; then
+      chmod -R 744 ../openjdk/openjdk-jdk/jdk/test/sun/management/jmxremote/bootstrap/SSLConfigFilePermissionTest.sh
+    fi
 fi
