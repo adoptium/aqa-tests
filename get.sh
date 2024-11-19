@@ -379,10 +379,15 @@ getBinaryOpenjdk()
 					unzip -q $file_name -d $extract_dir
 				else
 					# some debug-image tar has parent folder ... strip it
-					if tar --version 2>&1 | grep GNU 2>&1; then
-						gzip -cd $file_name | tar xof - -C $extract_dir --strip 1
+					if [[ $file_name == *xz ]]; then
+						DECOMPRESS_TOOL=xz
 					else
-						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$file_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
+						DECOMPRESS_TOOL=gzip
+					fi
+					if tar --version 2>&1 | grep GNU 2>&1; then
+						$DECOMPRESS_TOOL -cd $file_name | tar xof - -C $extract_dir --strip 1
+					else
+						mkdir dir.$$ && cd dir.$$ && $DECOMPRESS_TOOL -cd ../$file_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
 					fi
 				fi
 			else
@@ -398,7 +403,12 @@ getBinaryOpenjdk()
 					cd ./tmp
 					pax -p xam -rzf ../$file_name
 				else
-					gzip -cd $file_name | (cd tmp && tar xof -)
+					if [[ $file_name == *xz ]]; then
+						DECOMPRESS_TOOL=xz
+					else
+						DECOMPRESS_TOOL=gzip
+					fi
+					$DECOMPRESS_TOOL -cd $file_name | (cd tmp && tar xof -)
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
