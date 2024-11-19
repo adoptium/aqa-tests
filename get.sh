@@ -164,7 +164,7 @@ parseCommandLineArgs()
 squashSingleFolderContentsToCurrentDir()
 {
         # Does current directory contain one and ONLY one directory?
-        if [[ `ls -d */ | wc -l` -eq 1 ]] && [[ `ls -d * | wc -l` -eq 1 ]]; then
+        if [[ `ls -1d */ | wc -l` -eq 1 ]] && [[ `ls | wc -l` -eq 1 ]]; then
           folder=`ls -d */`
           echo "Removing top-level folder ${folder}"
           mv ${folder}* .
@@ -175,7 +175,7 @@ squashSingleFolderContentsToCurrentDir()
 # Moves the given directory safely, ensuring the target does not exist, fail with error if it does exist
 moveDirectorySafely()
 {
-	if [[ -z ${1+x} ]] || [[ -z ${2+x} ]]; then
+	if [ $# -lt 2 ]; then
 		echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
 		exit 1
 	fi
@@ -416,7 +416,7 @@ getBinaryOpenjdk()
 					gzip -cd ../$file_name | tar xof -
 				fi
 
-				# Remove 1 possibly 2 top-level folders
+				# Remove 1 possibly 2 top-level folders (debugimage has 2)
 				squashSingleFolderContentsToCurrentDir
 				squashSingleFolderContentsToCurrentDir
 
