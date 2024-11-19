@@ -119,41 +119,47 @@
 		<if>
 			<available file="${JCK_ROOT_USED}" type="dir" />
 			<then>
-				<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
-				<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code">
-					<arg line="rev-parse"/>
-					<arg line="HEAD"/>
-				</exec>
 				<if>
-					<not>
-						<equals arg1="${return.code}" arg2="0"/>
-					</not>
+					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
 					<then>
-						<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." />
-						<delete dir="${JCK_ROOT_USED}" failonerror="true" />
+						<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git checks at ${JCK_ROOT_USED}. Continue." />
 					</then>
 					<else>
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA">
-							<arg line="ls-remote"/>
-							<arg line="${JCK_GIT_REPO_USED}"/>
-							<arg line="${jck_branch}"/>
+						<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
+						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code">
+							<arg line="rev-parse"/>
+							<arg line="HEAD"/>
 						</exec>
-						<loadresource property="localSHATrimmed">
-							<propertyresource name="localSHA"/>
-							<filterchain>
-								<tokenfilter>
-									<trim/>
-								</tokenfilter>
-								<striplinebreaks/>
-							</filterchain>
-						</loadresource>
-							
-						<echo message="LocalSHA = --${localSHATrimmed}--"/>
-						<echo message="RemoteSHA= --${remoteSHA}--"/>
-
-						<condition property="local-material-uptodate">
-							<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
-						</condition>
+						<if>
+							<not>
+								<equals arg1="${return.code}" arg2="0"/>
+							</not>
+							<then>
+								<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." />
+								<delete dir="${JCK_ROOT_USED}" failonerror="true" />
+							</then>
+							<else>
+								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA">
+									<arg line="ls-remote"/>
+									<arg line="${JCK_GIT_REPO_USED}"/>
+									<arg line="${jck_branch}"/>
+								</exec>
+								<loadresource property="localSHATrimmed">
+									<propertyresource name="localSHA"/>
+										<filterchain>
+										<tokenfilter>
+											<trim/>
+										</tokenfilter>
+										<striplinebreaks/>
+									</filterchain>
+								</loadresource>
+								<echo message="LocalSHA = --${localSHATrimmed}--"/>
+								<echo message="RemoteSHA= --${remoteSHA}--"/>
+								<condition property="local-material-uptodate">
+									<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
+								</condition>
+							</else>
+						</if>
 					</else>
 				</if>
 			</then>
@@ -179,10 +185,10 @@
 			<!-- jck materials exist, update jck materials if needed-->
 			<else>
 				<if>
-					<isset property="env.SKIP_JCK_GIT_UPDATE" />
+					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
 					<!-- don't want to update local JCK materials -->
 					<then>
-						<echo message="env.SKIP_JCK_GIT_UPDATE is set. Skip Running git update at ${JCK_ROOT_USED}. Continue." />
+						<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git update at ${JCK_ROOT_USED}. Continue." />
 					</then>
 					<else>
 						<if>
@@ -313,14 +319,23 @@
 	</target>
 
 	<target name="build">
-		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
+				<if>
+					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
+					<then>
+						<echo message="=== SKIP_JCK_GIT_UPDATE set to true, not enforcing existence of env.JCK_GIT_REPO ===" />
+					</then>
+					<else>
+						<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
 						please use BUILD_LIST to include test folders you want to test.">
-			<condition>
-				<not>
-					<isset property="env.JCK_GIT_REPO"/>
-				</not>
-			</condition>
-		</fail>
+							<condition>
+								<not>
+									<isset property="env.JCK_GIT_REPO"/>
+								</not>
+							</condition>
+						</fail>
+
+					</else>
+				</if>
 		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
 		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
 
