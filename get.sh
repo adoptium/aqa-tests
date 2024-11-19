@@ -416,7 +416,7 @@ getBinaryOpenjdk()
 					gzip -cd ../$file_name | tar xof -
 				fi
 
-				# Remove 1 possibly 2 top-level folders
+				# Remove 1 possibly 2 top-level folders (debugimage has 2)
 				squashSingleFolderContentsToCurrentDir
 				squashSingleFolderContentsToCurrentDir
 
