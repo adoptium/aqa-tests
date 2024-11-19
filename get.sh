@@ -164,7 +164,7 @@ parseCommandLineArgs()
 squashSingleFolderContentsToCurrentDir()
 {
         # Does current directory contain one and ONLY one directory?
-        if [[ `ls -d */ | wc -l` -eq 1 ]] && [[ `ls -d * | wc -l` -eq 1 ]]; then
+        if [[ `ls -1d */ | wc -l` -eq 1 ]] && [[ `ls | wc -l` -eq 1 ]]; then
           folder=`ls -d */`
           echo "Removing top-level folder ${folder}"
           mv ${folder}* .
