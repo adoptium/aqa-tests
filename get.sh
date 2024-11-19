@@ -175,7 +175,7 @@ squashSingleFolderContentsToCurrentDir()
 # Moves the given directory safely, ensuring the target does not exist, fail with error if it does exist
 moveDirectorySafely()
 {
-	if [[ -z ${1+x} ]] || [[ -z ${2+x} ]]; then
+	if [ $# -lt 2 ]; then
 		echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
 		exit 1
 	fi
