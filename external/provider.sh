@@ -103,7 +103,7 @@ function getFullTemurinImage() {
   fi
 }
 
-function getFullTOpenJ9Image() {
+function getFullOpenJ9Image() {
   local JDK_VERSION="${1:-0}"
   local jreSdk="${2:-jdk}"
   if [ -z "${EXTERNAL_AQA_IMAGE}" ]; then
@@ -132,7 +132,7 @@ function getTemurinImageTag() {
 }
 
 function getOpenJ9ImageTag() {
-  getImageTag `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
+  getImageTag `getFullOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageTag() {
@@ -151,7 +151,7 @@ function getTemurinImageName() {
 }
 
 function getOpenJ9ImageName() {
-  getImageName `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
+  getImageName `getFullOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageName() {
@@ -165,7 +165,7 @@ function getTemurinImageTag() {
 }
 
 function getOpenJ9ImageTag() {
-  getImageTag `getFullTOpenJ9Image ${1:-0} ${2:-jdk}`
+  getImageTag `getFullOpenJ9Image ${1:-0} ${2:-jdk}`
 }
 
 function getImageTag() {

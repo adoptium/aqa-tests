@@ -241,8 +241,8 @@ function set_test_info() {
     local local_generic_packages=$(getProperty "generic_packages")
 
     packages="$global_generic_packages $local_generic_packages"
-    local gobalMatchingKeys=$(getMatchingPackagesKeys "${GLOBAL_PROPERTY_FILE}")
-    for key in ${gobalMatchingKeys} ; do
+    local globalMatchingKeys=$(getMatchingPackagesKeys "${GLOBAL_PROPERTY_FILE}")
+    for key in ${globalMatchingKeys} ; do
       packages="$packages $(getProperty $key" "${GLOBAL_PROPERTY_FILE}\")"
     done
     local localMatchingKeys=$(getMatchingPackagesKeys "${PROPERTY_FILE}")
