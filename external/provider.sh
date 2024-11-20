@@ -27,7 +27,7 @@
 ###################################################################
 
 if [ -z "${EXTERNAL_AQA_RUNNER}" ]; then
-  if which podman > /dev/null; then
+  if which podman > /dev/null 2>&1; then
      EXTERNAL_AQA_RUNNER=podman
   else
      EXTERNAL_AQA_RUNNER=docker
