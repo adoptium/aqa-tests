@@ -397,6 +397,12 @@ getBinaryOpenjdk()
 	for file_name in "${jdk_file_array[@]}"
 	do
 		if [[ ! "$file_name" =~ "sbom" ]]; then
+			if [[ $file_name == *xz ]]; then
+				DECOMPRESS_TOOL=xz
+			else
+				# Noting that this will be set, but not used, for zip files
+				DECOMPRESS_TOOL=gzip
+			fi
 			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]] || [[ "$file_name" =~ "symbols-" ]]; then
 				# if file_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
 				# Otherwise, files will be extracted under ./tmp
@@ -415,7 +421,7 @@ getBinaryOpenjdk()
 				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
 					unzip -q ../$file_name
 				else
-					gzip -cd ../$file_name | tar xof -
+					$DECOMPRESS_TOOL -cd ../$file_name | tar xof -
 				fi
 
 				# Remove 1 possibly 2 top-level folders (debugimage has 2)
@@ -437,7 +443,7 @@ getBinaryOpenjdk()
 					cd ./tmp
 					pax -p xam -rzf ../$file_name
 				else
-					gzip -cd $file_name | (cd tmp && tar xof -)
+					$DECOMPRESS_TOOL -cd $file_name | (cd tmp && tar xof -)
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
