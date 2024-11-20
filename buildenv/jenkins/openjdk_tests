@@ -180,7 +180,7 @@ timestamps{
                     ],
             'aarch64_linux' : [
                     	// no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
-                    	// https://github.ibm.com/runtimes/infrastructure/issues/9721 ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
+                    	['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
                         ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
                     ],
@@ -219,8 +219,9 @@ timestamps{
                         ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
                     ],
             'ppc64le_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9"]
+                        // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
+                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
                     ]
         ]
         if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
@@ -300,6 +301,14 @@ timestamps{
             // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
             if (JOB_NAME.contains ("sanity.external")) {
                 LABEL += "&&!sw.os.cent.7"
+            }
+
+            // JDK23+ isn't supported on machines prior to Mac 11 https://github.com/eclipse-openj9/openj9/issues/19694
+            // assume if JDK_VERSION is set to next, JDK_VERSION is 23+
+            if (params.JDK_IMPL == "openj9" && PLATFORM == "x86-64_mac" && params.JDK_VERSION) {
+                if (!params.JDK_VERSION.isInteger() || params.JDK_VERSION.toInteger() >= 23) {
+                    LABEL += "&&!sw.os.mac.10"
+                }
             }
 
             if (params.DOCKER_REQUIRED) {
@@ -460,8 +469,8 @@ def runTest() {
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
             //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-            docker.image('adoptopenjdk/centos6_build_image').pull()
-            docker.image('adoptopenjdk/centos6_build_image').inside {
+            docker.image('adoptopenjdk/centos7_build_image').pull()
+            docker.image('adoptopenjdk/centos7_build_image').inside {
                 jenkinsfile.testBuild()
             }
         } else if (dockerAgentLabel.equals('default') && LABEL.contains('&&sw.tool.docker') && SPEC.equals('linux_riscv64')) {
@@ -496,9 +505,11 @@ def runTest() {
                     // create error list and regex can be used
                     List<String> errorList = new ArrayList<String>();
                     errorList.add(".*There is not enough space in the file system.*");
+                    errorList.add(".*No space left on device.*");
                     errorList.add(".*java.io.IOException: Cannot run program \"nohup\".*");
                     errorList.add(".*unzip: command not found.*");
                     errorList.add(".*ant: command not found.*");
+                    errorList.add(".*ERROR: Cannot delete workspace.*");
 
                     // nightly/weekly builds should not have git clone issue
                     if (!env.JOB_NAME.contains("Grinder") && !env.JOB_NAME.contains("_Personal")) {

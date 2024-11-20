@@ -42,6 +42,10 @@
 		mkdir junitreports; \
 		cp -r ${REPORTDIR}/target/surefire-reports/* junitreports
 		</command>
+		<features>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:required</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:required</feature>
+		</features>
 		<levels>
 			<level>extended</level>
 		</levels>

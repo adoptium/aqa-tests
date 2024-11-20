@@ -201,7 +201,7 @@ getBinaryOpenjdk()
 				download_url+=" ${latestBuildUrl}${n}"
 			fi
 		done
-	elif [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+	elif [ "$SDK_RESOURCE" == "customized" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		download_url=$CUSTOMIZED_SDK_URL
 		images="test-images.tar.gz debug-image.tar.gz"
 		download_urls=($download_url)
@@ -233,7 +233,11 @@ getBinaryOpenjdk()
 			arch="x64"
 		fi
 		if [[ $arch = *"x86-32"* ]]; then
-			arch="x32"
+			if [ "$JDK_IMPL" == "openj9" ]; then
+				arch="x86-32"
+			else
+				arch="x32"
+			fi
 		fi
 		release_type="ea"
 		if [ "$SDK_RESOURCE" = "releases" ]; then
@@ -241,12 +245,31 @@ getBinaryOpenjdk()
 		fi
 
 		if [ "$JDK_IMPL" == "openj9" ]; then
-			if [ "$SDK_RESOURCE" = "nightly" ]; then
-				echo "Semeru API does not provide openj9 SDK nightly at the moment. Please use CUSTOMIZED_SDK_URL to provide the SDK URL directly."
+			if [ "$CUSTOMIZED_SDK_URL" == "" ]; then
+				echo "Please use CUSTOMIZED_SDK_URL to provide the base SDK URL for Artifactory."
 				exit 1
 			else
-				download_url="https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/openj9/${heap_size}/ibm https://ibm.com/semeru-runtimes/api/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/testimage/openj9/${heap_size}/ibm"
-				info_url="https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=jdk&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm https://ibm.com/semeru-runtimes/api/v3/assets/feature_releases/${JDK_VERSION}/${release_type}?architecture=${arch}&heap_size=${heap_size}&image_type=testimage&jvm_impl=openj9&os=${os}&project=jdk&vendor=ibm"
+				download_url_base="${CUSTOMIZED_SDK_URL}/${arch}_${os}/"
+				# Artifactory cannot handle duplicate slashes (//) in URL. Remove // except after http:// or https://
+				download_url_base=$(echo "$download_url_base" | sed -r 's|([^:])/+|\1/|g')
+				echo "artifactory URL: ${download_url_base}"
+				download_api_url_base=(${download_url_base//\/ui\/native\//\/artifactory\/api\/storage\/})
+				echo "use artifactory API to get the jdk and/or test images: ${download_api_url_base}"
+				download_urls=$(curl ${curl_options} ${download_api_url_base} | grep -E '.*\.tar\.gz"|.*\.zip"' | grep -E 'testimage|jdk|jre'| sed 's/.*"uri" : "\([^"]*\)".*/\1/')
+				arr=(${download_urls/ / })
+				download_url=()
+				download_url_base=(${download_url_base//\/ui\/native\//\/artifactory\/})
+				echo "downloading files from $latestBuildUrl"
+				for n in "${arr[@]}" ; do
+					if [[ $n =~ 'testimage' ]]; then
+						if [ "$TEST_IMAGES_REQUIRED" == "true" ]; then
+							download_url+=" ${download_url_base}${n}"
+						fi
+					else
+						download_url+=" ${download_url_base}${n}"
+					fi
+				done
+				download_url=$(echo "$download_url" | sed -r 's|([^:])/+|\1/|g')
 			fi
 		else
 			download_url="https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/jdk/${JDK_IMPL}/${heap_size}/adoptium?project=jdk https://api.adoptium.net/v3/binary/latest/${JDK_VERSION}/${release_type}/${os}/${arch}/sbom/${JDK_IMPL}/${heap_size}/adoptium?project=jdk"
@@ -309,14 +332,13 @@ getBinaryOpenjdk()
 	jdk_files=`ls`
 	jdk_file_array=(${jdk_files//\\n/ })
 	last_index=$(( ${#jdk_file_array[@]} - 1 ))
-
 	if [[ $last_index == 0 ]]; then
-		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]]; then
+		if [[ $download_url =~ '*.tar.gz' ]] || [[ $download_url =~ '*.zip' ]] || [[ $jdk_files == '*.zip' ]]; then
 			nested_zip="${jdk_file_array[0]}"
 			echo "${nested_zip} is a nested zip"
 			unzip -q $nested_zip -d .
 			rm $nested_zip
-			jdk_files=`ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip 2> /dev/null || true`
+			jdk_files=$(ls *jdk*.tar.gz *jre*.tar.gz *testimage*.tar.gz *debugimage*.tar.gz *jdk*.zip *jre*.zip *testimage*.zip *debugimage*.zip tests-*.tar.gz symbols-*.tar.gz *static-libs*.tar.gz 2> /dev/null || true)
 			echo "Found files under ${nested_zip}:"
 			echo "${jdk_files}"
 			jdk_file_array=(${jdk_files//\\n/ })
@@ -345,7 +367,7 @@ getBinaryOpenjdk()
 	for file_name in "${jdk_file_array[@]}"
 	do
 		if [[ ! "$file_name" =~ "sbom" ]]; then
-			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]]; then
+			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]] || [[ "$file_name" =~ "symbols-" ]]; then
 				# if file_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
 				# Otherwise, files will be extracted under ./tmp
 				extract_dir="./j2sdk-image"
@@ -380,13 +402,19 @@ getBinaryOpenjdk()
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
+				echo "List files in jdkbinary folder..."
+				ls -l $SDKDIR/jdkbinary
+				echo "List files in jdkbinary/tmp folder..."
+				ls -l
 				jar_dirs=`ls -d */`
 				jar_dir_array=(${jar_dirs//\\n/ })
 				len=${#jar_dir_array[@]}
 				if [ "$len" == 1 ]; then
 					jar_dir_name=${jar_dir_array[0]}
-					if [[ "$jar_dir_name" =~ "test-image" ]] && [ "$jar_dir_name" != "openjdk-test-image" ]; then
-						mv $jar_dir_name ../openjdk-test-image
+					if [[ "$jar_dir_name" =~ "test-image" ]] || [[ "$jar_dir_name" =~ "tests-" ]]; then
+						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
+							mv $jar_dir_name ../openjdk-test-image
+						fi
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
 						mv $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
@@ -575,6 +603,7 @@ getFunctionalTestMaterial()
 
 	checkOpenJ9RepoSHA
 
+	ls -l
 	mv openj9/test/TestConfig TestConfig
 	mv openj9/test/Utils Utils
 	if [ -d functional ]; then

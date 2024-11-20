@@ -244,6 +244,11 @@ def setupParallelEnv() {
 					echo "Regenerate parallel list with NUM_MACHINES=${MAX_NUM_MACHINES}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+				} else if (NUM_LIST < 6 && env.JDK_IMPL == "openj9" && (TARGET == "extended.jck" || TARGET == "special.system")) {
+					echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
+					echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
+					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
+					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				}
 			} else {
 				PARALLEL_OPTIONS += " TEST_TIME= NUM_MACHINES="
@@ -332,7 +337,7 @@ def genParallelList(PARALLEL_OPTIONS) {
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		unsetLLP = "unset LD_LIBRARY_PATH;"
 	}
-	sh "cd ./aqa-tests/TKG; ${unsetLLP} make genParallelList ${PARALLEL_OPTIONS}"
+	sh "cd ./aqa-tests/TKG; $RESOLVED_MAKE; ${unsetLLP} \$MAKE genParallelList ${PARALLEL_OPTIONS}"
 	def parallelList = "aqa-tests/TKG/parallelList.mk"
 	int NUM_LIST = -1
 	if (fileExists("${parallelList}")) {
@@ -421,7 +426,7 @@ def setup() {
 	stage('Setup') {
 		setupEnv()
 		if (params.CUSTOMIZED_SDK_URL) {
-			if (params.SDK_RESOURCE == 'nightly') {
+			if (params.SDK_RESOURCE == 'nightly' || params.SDK_RESOURCE == 'releases') {
 				// remove single quote to allow variables to be set in CUSTOMIZED_SDK_URL
 				CUSTOMIZED_SDK_URL_OPTION = "-c ${params.CUSTOMIZED_SDK_URL}"
 			} else if (!params.SDK_RESOURCE || params.SDK_RESOURCE == 'customized') {
@@ -1070,7 +1075,10 @@ def getCustomUrl() {
 	def jenkinsDomain = getJenkinsDomain()
 	if (jenkinsDomain.contains("hyc-runtimes")) {
 		jenkinsDomain = "openj9-jenkins.osuosl.org"
-	}
+	} else if (jenkinsDomain.contains("temurin-compliance")) {
+                jenkinsDomain = "ci.adoptium.net"
+        }
+
 	def customUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
 	echo "Custom URL: ${customUrl}"
 	return customUrl
@@ -1253,15 +1261,25 @@ def addFailedTestsGrinderLink(paths=""){
 								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
 								if (failedtest.startsWith("jdk_")) {
-									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jdkFailedTestCaseList += "${failedTestCasesInfo} "
+									}									
 								} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
-									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
-									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
-									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+										jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								} else {
-									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
+									if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
+										hotspotFailedTestCaseList += "${failedTestCasesInfo} "
+									}
 								}
 							}
 						}
@@ -1319,7 +1337,7 @@ def addFailedTestsGrinderLink(paths=""){
 
 def generateJob (newJobs, childTest, testJobName) {
 	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
-	if (env.GENERATE_JOBS) {
+	if (env.GENERATE_JOBS == 'true') {
 		newJobs[childTest] = {
 			echo "GENERATE_JOBS is set to true, set test job ${testJobName} params for generating the job"
 			createJob(testJobName, PLATFORM)
