@@ -160,6 +160,36 @@ parseCommandLineArgs()
 	echo "TESTDIR: $TESTDIR"
 }
 
+# If the current directory contains only a single directory then squash that directory into the current directory
+squashSingleFolderContentsToCurrentDir()
+{
+        # Does current directory contain one and ONLY one directory?
+        if [[ $(ls -1 | wc -l) -eq 1 ]]; then
+          folder=$(ls -d */)
+          if [ -d "$folder" ]; then
+            echo "Removing top-level folder ${folder}"
+            mv ${folder}* .
+            rmdir "${folder}"
+          fi
+        fi
+}
+
+# Moves the given directory safely, ensuring the target does not exist, fail with error if it does exist
+moveDirectorySafely()
+{
+	if [ $# -lt 2 ]; then
+		echo "Syntax: moveDirectorySafely <sourceDirectory> <targetDirectory>"
+		exit 1
+	fi
+	if [ -d "$2" ]; then
+		echo "ERROR: moveDirectorySafely $1 $2 : target directory $2 already exists"
+		exit 1
+	else
+		echo "Moving directory $1 to $2"
+		mv "$1" "$2"
+	fi
+}
+
 getBinaryOpenjdk()
 {
 	echo "get jdk binary..."
@@ -367,6 +397,12 @@ getBinaryOpenjdk()
 	for file_name in "${jdk_file_array[@]}"
 	do
 		if [[ ! "$file_name" =~ "sbom" ]]; then
+			if [[ $file_name == *xz ]]; then
+				DECOMPRESS_TOOL=xz
+			else
+				# Noting that this will be set, but not used, for zip files
+				DECOMPRESS_TOOL=gzip
+			fi
 			if [[ "$file_name" =~ "debug-image" ]] || [[ "$file_name" =~ "debugimage" ]] || [[ "$file_name" =~ "symbols-" ]]; then
 				# if file_name contains debug-image, extract into j2sdk-image/jre or j2sdk-image dir
 				# Otherwise, files will be extracted under ./tmp
@@ -375,16 +411,25 @@ getBinaryOpenjdk()
 					extract_dir="./j2sdk-image/jre"
 				fi
 				echo "Uncompressing $file_name over $extract_dir..."
+
+				# Debug image tarballs vary in top-level folders between Vendors, eg.location of bin folder
+				#     temurin: jdk-21.0.5+11-debug-image/jdk-21.0.5+11/bin
+				#     semeru:  jdk-21.0.4+7-debug-image/bin
+
+				# Unpack into a temp directory, remove 1 or maybe 2 top-level single folders, then copy over extract_dir
+				mkdir dir.$$ && cd dir.$$
 				if [[ $file_name == *zip ]] || [[ $file_name == *jar ]]; then
-					unzip -q $file_name -d $extract_dir
+					unzip -q ../$file_name
 				else
-					# some debug-image tar has parent folder ... strip it
-					if tar --version 2>&1 | grep GNU 2>&1; then
-						gzip -cd $file_name | tar xof - -C $extract_dir --strip 1
-					else
-						mkdir dir.$$ && cd dir.$$ && gzip -cd ../$file_name | tar xof - && cd * && tar cf - . | (cd ../../$extract_dir && tar xpf -) && cd ../.. && rm -rf dir.$$
-					fi
+					$DECOMPRESS_TOOL -cd ../$file_name | tar xof -
 				fi
+
+				# Remove 1 possibly 2 top-level folders (debugimage has 2)
+				squashSingleFolderContentsToCurrentDir
+				squashSingleFolderContentsToCurrentDir
+
+				# Copy to extract_dir
+				cp -R * "../${extract_dir}" && cd .. && rm -rf dir.$$
 			else
 				if [ -d "$SDKDIR/jdkbinary/tmp" ]; then
 					rm -rf $SDKDIR/jdkbinary/tmp/*
@@ -398,7 +443,7 @@ getBinaryOpenjdk()
 					cd ./tmp
 					pax -p xam -rzf ../$file_name
 				else
-					gzip -cd $file_name | (cd tmp && tar xof -)
+					$DECOMPRESS_TOOL -cd $file_name | (cd tmp && tar xof -)
 				fi
 
 				cd $SDKDIR/jdkbinary/tmp
@@ -413,10 +458,14 @@ getBinaryOpenjdk()
 					jar_dir_name=${jar_dir_array[0]}
 					if [[ "$jar_dir_name" =~ "test-image" ]] || [[ "$jar_dir_name" =~ "tests-" ]]; then
 						if [ "$jar_dir_name" != "openjdk-test-image" ]; then
-							mv $jar_dir_name ../openjdk-test-image
+							moveDirectorySafely $jar_dir_name ../openjdk-test-image
 						fi
+					elif [[ "$jar_dir_name" =~ "static-libs" ]]; then
+						moveDirectorySafely $jar_dir_name ../static-libs
+                                        elif [[ "$jar_dir_name" =~ jdk.*-src/ ]]; then
+                                                moveDirectorySafely $jar_dir_name ../source-image
 					elif [[ "$jar_dir_name" =~ jre* ]] && [ "$jar_dir_name" != "j2re-image" ]; then
-						mv $jar_dir_name ../j2re-image
+						moveDirectorySafely $jar_dir_name ../j2re-image
 					elif [[ "$jar_dir_name" =~ jdk* ]] && [ "$jar_dir_name" != "j2sdk-image" ]; then
 						# If test sdk has already been expanded, this one must be the additional sdk
 						isAdditional=0
@@ -448,14 +497,14 @@ getBinaryOpenjdk()
 							echo "RI JDK version:"
 							$SDKDIR/additionaljdkbinary/bin/java -version
 						else
-							mv $jar_dir_name ../j2sdk-image
+							moveDirectorySafely $jar_dir_name ../j2sdk-image
 						fi
 					# The following only needed if openj9 has a different image name convention
 					elif [ "$jar_dir_name" != "j2sdk-image" ]; then
-						mv $jar_dir_name ../j2sdk-image
+						moveDirectorySafely $jar_dir_name ../j2sdk-image
 					fi
 				elif [ "$len" -gt 1 ]; then
-					mv ../tmp ../j2sdk-image
+					moveDirectorySafely ../tmp ../j2sdk-image
 				fi
 				cd $SDKDIR/jdkbinary
 			fi
