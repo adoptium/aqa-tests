@@ -20,6 +20,9 @@ EXTERNAL_AQA_CONTAINER_CLEAN=true|false
 ```
 If EXTERNAL_AQA_CONTAINER_CLEAN is false, then the image is not cleaned after the `make _tests...` targets are finished.
 
+## Configuring base image
+By default, Eclipse Temurin JDK of identical version as your JDK is used. You can see, that `print_image_args` is taking all arguments to properly set registry url, image name and version. `EXTERNAL_AQA_IMAGE` variable describes the usual image ID in form  of `optional_registry/path/name:tag` to allow for alternate images besides the default to be used. E.g.: `export EXTERNAL_AQA_IMAGE=fedora:41` or `export EXTERNAL_AQA_IMAGE=centos:stream9`
+
 
 ## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
