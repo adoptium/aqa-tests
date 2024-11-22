@@ -361,8 +361,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
                                                                        individual test in playlist.xml: floatSanityTests|MiniMix_5m|jdk_math|jdk_beans_0|jdk_custom<br/>
                                                                        a list of tests: testList TESTLIST=jit_jitt,jit_recognizedMethod_1,testSCCMLTests2_1<br/>
                                                                        Note: please do not use level, group or type (i.e., functional, sanity, etc) in the TESTLIST<br/>''')
-							stringParam('CUSTOM_TARGET', "", '''
-								Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute<br>
+							stringParam('CUSTOM_TARGET', "",
+								'''Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute (typically ending in .java or .sh)<br>
 								Example 1:<br>
 								TARGET=system_custom<br>
 								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"<br>
@@ -385,8 +385,8 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
 							choiceParam('TEST_FLAG', ['', 'JITAAS', 'AOT', 'FIPS', 'FIPS140_2', 'FIPS140_3_OpenJCEPlusFIPS', 'FIPS140_3_OpenJCEPlusFIPS.FIPS140-3'], "Optional. Only set for feature testing. (i.e.,  JITAAS, AOT, FIPS140_2, etc)")
-							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command")
-							stringParam('JVM_OPTIONS', "", "Use this to replace the test original command line options")
+							stringParam('EXTRA_OPTIONS', "", "Use this to append options to the test command e.g. to add extra JVM flags")
+							stringParam('JVM_OPTIONS', "", "Use this to replace the original options to the test command e.g. to override JVM flags")
 							stringParam('APPLICATION_OPTIONS', "", "Use this to append options to the test application")
 							stringParam('BUILD_IDENTIFIER', "", "build identifier")
 							stringParam('ITERATIONS',"1", '''Optional. Number of times to repeat execution of make target. <br/>
