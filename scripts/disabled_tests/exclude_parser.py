@@ -268,7 +268,6 @@ def main():
     if args.verbose:
         LOG.setLevel(logging.DEBUG)
 
-    # if the dir containing the exclude ProblemList*.txt is not passed, the attempt to use openjdk/excludes/ dir instead
     if args.exclude_dir:
         LOG.debug("Taking file list from directory")
         exclude_files = [os.path.join(args.exclude_dir, f) for f in os.listdir(args.exclude_dir) if os.path.isfile(os.path.join(args.exclude_dir, f))]
