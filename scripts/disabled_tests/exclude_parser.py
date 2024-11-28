@@ -10,10 +10,21 @@ from typing import List, ClassVar, Optional, Iterable
 from common.models import Scheme, JdkInfo
 from common.utils import to_shallow_dict, DEFAULT_TARGET
 
+class ErrorTrackingHandler(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        self.error_logged = False
+
+    def emit(self, record):
+        if record.levelno >= logging.ERROR:
+            self.error_logged = True
+
 logging.basicConfig(
     format="%(levelname)s - %(message)s"
 )
 LOG = logging.getLogger()
+ERROR_TRACKER = ErrorTrackingHandler()
+LOG.addHandler(ERROR_TRACKER)
 
 OS_EXCEPTIONS = {
     "macosx": "mac",
@@ -25,8 +36,6 @@ ARCH_EXCEPTIONS = {
     "x64": "x86-64",
     "x86": "x86-32",
 }
-
-ERROR_FOUND = False
 
 class ExclusionFileProcessingException(Exception):
     pass
@@ -190,10 +199,9 @@ def validate_platforms(split: TestExclusionSplitLine):
     # the platform exclusion list must be comma-delimited with no spaces
     platforms = split.raw_platform
     if ' ' in platforms.strip():
-        LOG.error(f'{split.origin_file.path}:{split.line_number} : '
-                    f'Space found in platform exclusion text. Please remove')
-        global ERROR_FOUND
-        ERROR_FOUND = True
+        raise TestExclusionProcessingException(
+               f'{split.origin_file.path}:{split.line_number} : '
+                    f'Space found in platform exclusion text. Please remove', platforms)
 
 def resolve_platforms(split: TestExclusionSplitLine) -> List[str]:
     revolved_platforms = []
@@ -263,8 +271,8 @@ def main():
     # if the dir containing the exclude ProblemList*.txt is not passed, the attempt to use openjdk/excludes/ dir instead
     if args.exclude_dir:
         LOG.debug("Taking file list from directory")
-        exclude_files = [os.path.join(args.exclude_dir, file_name)
-                         for file_name in os.listdir(args.exclude_dir)]
+        exclude_files = [os.path.join(args.exclude_dir, f) for f in os.listdir(args.exclude_dir) if os.path.isfile(os.path.join(args.exclude_dir, f))]
+        LOG.debug(exclude_files)
     else:
         LOG.debug("Taking file list from stdin")
         exclude_files = [line.rstrip() for line in sys.stdin.readlines()]  # remove the \n from each lines
@@ -293,10 +301,9 @@ def main():
             fp=fp,
             indent=2,
         )
-    if ERROR_FOUND:
+    if ERROR_TRACKER.error_logged:
         LOG.debug(f"Error found. Exiting with code 1")
         sys.exit(1)
-
 
 if __name__ == '__main__':
     main()
