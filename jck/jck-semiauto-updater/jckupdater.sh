@@ -93,6 +93,9 @@ setup(){
 	elif [[ $JCK_VERSION == "11" ]]; then
 		JCK=11a
 		JCK_FOLDER_SUFFIX="$JCK_VERSION"a
+	elif [[ $JCK_VERSION == "17" ]]; then
+		JCK=17a
+		JCK_FOLDER_SUFFIX="$JCK_VERSION"a
 	fi
 	echo "JCK_FOLDER_SUFFIX=" $JCK_FOLDER_SUFFIX
 	#check if given ARTIFACTORY_DOWNLOAD_URL is complete till JCK/tck to download material
