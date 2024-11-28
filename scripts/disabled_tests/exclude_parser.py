@@ -122,7 +122,7 @@ class TestExclusionSplitLine(TestExclusionRawLine):
 
     @classmethod
     def from_raw_line(cls, test_excl: TestExclusionRawLine):
-        split_line = test_excl.raw_line.split(maxsplit=2)
+        split_line = test_excl.raw_line.split()
         if len(split_line) != 3:
             raise TestExclusionProcessingException(
                 f'Not exactly 3 elements when splitting {test_excl.raw_line}', test_excl)
@@ -195,17 +195,8 @@ def transform_platform(os_arch_platform: str) -> str:
 
     return f"{arch_name}_{os_name}"
 
-def validate_platforms(split: TestExclusionSplitLine):
-    # the platform exclusion list must be comma-delimited with no spaces
-    platforms = split.raw_platform
-    if ' ' in platforms.strip():
-        raise TestExclusionProcessingException(
-               f'{split.origin_file.path}:{split.line_number} : '
-                    f'Space found in platform exclusion text. Please remove', platforms)
-
 def resolve_platforms(split: TestExclusionSplitLine) -> List[str]:
     revolved_platforms = []
-    validate_platforms(split)
     list_of_unresolved_platform_names = [s.strip() for s in split.raw_platform.split(",") if s.strip()]
     for plat in list_of_unresolved_platform_names:
         if plat == "generic-all":
