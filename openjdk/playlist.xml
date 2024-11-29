@@ -1621,7 +1621,14 @@
 		<testCaseName>jdk_jmx</testCaseName>
 		<disables>
 			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/20587</comment>
+				<platform>^(?!(.*_linux)).*$</platform>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/20587</comment>
+				<platform>.*_linux</platform>
+				<version>8</version>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
