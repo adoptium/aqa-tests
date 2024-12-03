@@ -21,7 +21,7 @@
 			</disable>
 		</disables>
 		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir payara-mp-tck \
-		--reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		--reportsrc /testResults/junitreports --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir payara-mp-tck
 		</command>
