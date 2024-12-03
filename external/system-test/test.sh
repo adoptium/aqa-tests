@@ -21,7 +21,7 @@ echo "TEST_JDK_HOME is : $TEST_JDK_HOME"
 export BUILD_LIST=system
 
 cd /aqa-tests
-./get.sh -t /aqa-tests
+./get.sh
 
 cd /aqa-tests/TKG
 
