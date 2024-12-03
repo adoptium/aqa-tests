@@ -24,7 +24,7 @@ if [ -z ${IMAGES:-} ] ; then
 fi
 if [ -z ${TEST_EXCLUDE_LIST:-} ] ; then
   # those tests donot seem to run with external JDK
-  TEST_EXCLUDE_LIST="\(criu\|quarkus\|openliberty\|tck-ubi-testplaylist\|openjdk\)"
+  TEST_EXCLUDE_LIST="\(criu\|tck-ubi-test\|external_custom\)"
 fi
 if [ -z ${TEST_INCLUDE_LIST:-} ] ; then
   TEST_INCLUDE_LIST=".*"
