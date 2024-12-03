@@ -10,7 +10,9 @@ EXTERNALS_DIR="$(cd "${EXTERNALS_DIR}" && pwd)"
 if [ -z ${RESULTS_DIR:-} ] ; then
   RESULTS_DIR="${HOME}/externalsMatrix"
 fi
-RESULTS_DIR="$(cd "${RESULTS_DIR}" && pwd)"
+if [ -e "${RESULTS_DIR}" ] ; then
+  RESULTS_DIR="$(cd "${RESULTS_DIR}" && pwd)"
+fi
 
 if [ -z ${JDKS_DIR:-} ] ; then
   JDKS_DIR="${HOME}/externalJdks"
