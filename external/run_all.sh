@@ -10,9 +10,6 @@ EXTERNALS_DIR="$(cd "${EXTERNALS_DIR}" && pwd)"
 if [ -z ${RESULTS_DIR:-} ] ; then
   RESULTS_DIR="${HOME}/externalsMatrix"
 fi
-if [ -e "${RESULTS_DIR}" ] ; then
-  RESULTS_DIR="$(cd "${RESULTS_DIR}" && pwd)"
-fi
 
 if [ -z ${JDKS_DIR:-} ] ; then
   JDKS_DIR="${HOME}/externalJdks"
@@ -115,8 +112,13 @@ function runExternalTest() {
   popd > /dev/null
 }
 
-rm -rf "${RESULTS_DIR}"
-mkdir "${RESULTS_DIR}"
+function serupResultsDir() {
+  rm -rf "${RESULTS_DIR}"
+  mkdir "${RESULTS_DIR}"
+  RESULTS_DIR="$(cd "${RESULTS_DIR}" && pwd)"
+}
+
+serupResultsDir
 checkIncludesExcludes
 for jdk in $(find  "${JDKS_DIR}"  -maxdepth 1 | sort -V ); do
   if useDirIfPossible ; then continue ; fi
