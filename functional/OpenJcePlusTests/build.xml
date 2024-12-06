@@ -35,9 +35,9 @@
 			<available file="OpenJCEPlus" type="dir"/>
 		</condition>
 	</target>
-
+	<set-property name="OPENJCEPLUS_GIT_REPO_ISSET" if-property-isset="env.OPENJCEPLUS_GIT_REPO"/>
 	<if>
-		<isset property="env.OPENJCEPLUS_GIT_REPO"/>
+		<isset property="OPENJCEPLUS_GIT_REPO_ISSET"/>
 		<then>
 			<property name="openjceplusGitRepo" value="${env.OPENJCEPLUS_GIT_REPO}"/>
 		</then>
@@ -45,8 +45,9 @@
 			<property name="openjceplusGitRepo" value="https://github.com/ibmruntimes/OpenJCEPlus.git"/>
 		</else>
 	</if>
+	<set-property name="OPENJCEPLUS_GIT_BRANCH_ISSET" if-property-isset="env.OPENJCEPLUS_GIT_BRANCH"/>	
 	<if>
-		<isset property="env.OPENJCEPLUS_GIT_BRANCH"/>
+		<isset property="OPENJCEPLUS_GIT_BRANCH_ISSET"/>
 		<then>
 			<property name="openjceplusGitBranch" value="${env.OPENJCEPLUS_GIT_BRANCH}"/>
 		</then>
