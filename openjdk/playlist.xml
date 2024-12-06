@@ -1654,6 +1654,40 @@
 		</features>
 	</test>
 	<test>
+		<testCaseName>jdk_restricted_security</testCaseName>
+		<disables>
+			<disable>
+				<comment>github_ibm/runtimes/automation/issues/151</comment>
+				<platform>.*(mac|windows|aix).*</platform>
+			</disable>
+		</disables>	
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)closed$(D)test$(D)jdk$(D)openj9$(D)internal$(D)security$(Q); \
+	$(TEST_STATUS)</command>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+		</features>
+		<versions>
+			<version>11+</version>
+		</versions>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_rmi</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
