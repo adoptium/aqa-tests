@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>tomee_test_j9</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir tomee
 		</command>
