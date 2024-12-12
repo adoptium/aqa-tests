@@ -808,11 +808,7 @@ testJavaVersion()
 
 checkRepoSHA()
 {
-	sha_file="$TESTDIR/TKG/SHA.txt"
 	testenv_file="$TESTDIR/testenv/testenv.properties"
-
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
-	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
 
 	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
 	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
