@@ -157,6 +157,12 @@
 	</test>
 	<test>
 		<testCaseName>ClassLoadingTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -302,6 +308,12 @@
 	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
 	<test>
 		<testCaseName>NioLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -450,6 +462,12 @@
 	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
 		<testCaseName>ClassLoadingTest_CS_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
