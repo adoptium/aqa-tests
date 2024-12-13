@@ -128,7 +128,7 @@ parseCommandLineArgs() {
 					docker_os=ubi
 				fi
 
-				if [[ "${test}" == *"criu"* || "${test}" == *"tck"* ]]; then
+				if [[ "${test}" == *"criu"* || "${test}" == tck-* ]]; then
 					container_run="sudo podman run"
 					container_login="sudo podman login"
 					container_inspect="sudo podman inspect"
