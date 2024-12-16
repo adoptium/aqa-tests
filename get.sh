@@ -660,8 +660,6 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-
-	rm -rf openj9
 }
 
 getVendorTestMaterial() {
@@ -744,9 +742,6 @@ getVendorTestMaterial() {
 			# already in TESTDIR, thus copy the entire vendor repo content to current directory
 			cp -r $dest/* ./
 		fi
-
-		# clean up
-		rm -rf $dest
 	done
 }
 
