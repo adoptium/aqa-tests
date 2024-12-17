@@ -195,6 +195,12 @@
 	</test>
 	<test>
 		<testCaseName>DaaLoadTest_all_CS_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
