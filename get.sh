@@ -570,7 +570,6 @@ getTestKitGen()
 	echo "git checkout -q -f $tkg_sha"
 	git checkout -q -f $tkg_sha
 
-	checkTestRepoSHAs
 }
 
 getCustomJtreg()
@@ -808,28 +807,13 @@ testJavaVersion()
 
 checkRepoSHA()
 {
-	sha_file="$TESTDIR/TKG/SHA.txt"
+	sha_file="$TESTDIR/TKG/SHAs.txt"
+	echo "$TESTDIR/TKG/scripts/getSHAs.sh --repo_dir $1 --output_file $sha_file"
+	$TESTDIR/TKG/scripts/getSHAs.sh --test_root_dir $1 --shas_file $sha_file
+
 	testenv_file="$TESTDIR/testenv/testenv.properties"
-
-	echo "$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file"
-	$TESTDIR/TKG/scripts/getSHA.sh --repo_dir $1 --output_file $sha_file
-
 	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
 	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
-}
-
-checkTestRepoSHAs()
-{
-	echo "check adoptium repo and TKG repo SHA"
-
-	output_file="$TESTDIR/TKG/SHA.txt"
-	if [ -e ${output_file} ]; then
-		echo "rm $output_file"
-		rm ${output_file}
-	fi
-
-	checkRepoSHA "$TESTDIR" "ADOPTOPENJDK"
-	checkRepoSHA "$TESTDIR/TKG" "TKG"
 }
 
 checkOpenJ9RepoSHA()
