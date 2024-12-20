@@ -659,8 +659,13 @@ getFunctionalTestMaterial()
 	else
 		mv openj9/test/functional functional
 	fi
-
-	rm -rf openj9
+   	
+	cd openj9
+	mkdir -p ../git-backup
+	mv .git ../git-backup
+	rm -rf *
+	mv ../git-backup .git
+	cd $TESTDIR
 }
 
 getVendorTestMaterial() {
@@ -745,7 +750,12 @@ getVendorTestMaterial() {
 		fi
 
 		# clean up
-		rm -rf $dest
+		cd $dest
+		mv .git ../git-backup
+		rm -rf *
+		mv ../git-backup .git
+		cd $TESTDIR
+
 	done
 }
 
@@ -807,11 +817,8 @@ testJavaVersion()
 
 checkRepoSHA()
 {
-	sha_file="$TESTDIR/TKG/SHAs.txt"
-	echo "$TESTDIR/TKG/scripts/getSHAs.sh --repo_dir $1 --output_file $sha_file"
-	$TESTDIR/TKG/scripts/getSHAs.sh --test_root_dir $1 --shas_file $sha_file
-
 	testenv_file="$TESTDIR/testenv/testenv.properties"
+
 	echo "$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2"
 	$TESTDIR/TKG/scripts/getTestenvProperties.sh --repo_dir $1 --output_file $testenv_file --repo_name $2
 }
