@@ -45,22 +45,23 @@ getSemeruDockerfile() {
                 echo "curl -OLJSks ${semeruDockerfileUrlBase}/${docker_os}${docker_os_version}/${semeruDockerfile}"
                 curl -OLJSks ${semeruDockerfileUrlBase}/${docker_os}${docker_os_version}/${semeruDockerfile}
                 if [[ ${PLATFORM} == *"ppc"*  &&  $docker_os_version == "8" ]]; then
-                    findCommandAndReplace 'FROM registry.access.redhat.com/ubi8/ubi:latest' 'FROM registry.access.redhat.com/ubi8/ubi:latest \n COPY ubi.repo /etc/yum.repos.d/ \n ' $semeruDockerfile ";"
+                    findCommandAndReplace 'FROM registry.access.redhat.com/ubi8/ubi:latest' 'FROM registry.access.redhat.com/ubi8/ubi:latest \n COPY ubi.repo /etc/yum.repos.d/ \n ' $semeruDockerfile true ";"
                 fi
-                findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile ";"
-                findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile
+                findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile true ";"
+                findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile true
                 # in 21-ea, /opt/java/openjdk/legal/java.base/LICENSE does not exist. No need to replace
                 if [[ $jdkVersion -lt 21 ]]; then
-                    findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile
+                    findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile true
                 fi
             else # docker_os is ubuntu
                 echo "curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}"
                 curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}
             fi
 
-            findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile
-            findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile
-            findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile
+            findCommandAndReplace "licenses" "semeruLicense" $semeruDockerfile false
+            findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile true
+            findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile true
+            findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile true
 
             mkdir NEWJDK
             cp -r $testJDKPath/. NEWJDK/
@@ -108,12 +109,11 @@ prepare() {
             # Temporarily OpenLiberty ubi dockerfile only supports openjdk 21, using it for 11 and 17 too
             libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk21"
             # replace OpenLiberty dockerfile base image
-            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-21-jre-${docker_os}9-minimal" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
-            findCommandAndReplace "microdnf" "yum" $libertyDockerfilePath
+            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-21-jre-${docker_os}9-minimal" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath true '/'
+            findCommandAndReplace "microdnf" "yum" $libertyDockerfilePath true
         else # docker_os is ubuntu
             libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk${jdkVersion}"
-            findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath '/'
-
+            findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath true '/'
         fi
     )
 }
@@ -122,19 +122,24 @@ findCommandAndReplace() {
     local oldCmd="$1"
     local newCmd="$2"
     local fileName="$3"
+    local mustFind="$4"
     # Default sed delimiter is ":"
     local sedDelimiter=":"
-    if [ ! -z "$4" ]; then
-        sedDelimiter="$4"
+    if [ ! -z "$5" ]; then
+        sedDelimiter="$5"
     fi
 
     echo "start grep: grep -c \"$oldCmd\" $fileName"
     local occurrences=$(grep -c "$oldCmd" $fileName)
-    if [[ $occurrences -eq 0 ]]; then
-        echo "Error: The command '$oldCmd' was not found in $fileName."
-        exit 1
+    if [ $occurrences -eq 0 ]; then
+        if [ "$mustFind" == "true" ]; then
+            echo "Error: The command '$oldCmd' was not found in $fileName."
+            exit 1
+        else
+            echo "No occurrence of $oldCmd, ignore and continue."
+        fi
     else
-	echo "replace command is 's$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter'"
+        echo "replace command is 's$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter'"
         sed -i "s$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter" $fileName
     fi
 }
