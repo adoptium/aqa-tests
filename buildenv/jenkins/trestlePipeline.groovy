@@ -17,11 +17,11 @@
 def UPSTREAM_REPO = params.UPSTREAM_REPO.trim()
 def UPSTREAM_BRANCH = params.UPSTREAM_BRANCH.trim()
 def VERSION = params.VERSION.trim()
-def BUILD_TYPES = params.BUILD_TYPES ?: "release"
-BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
+def BUILD_TYPES = params.BUILD_TYPES ? params.BUILD_TYPES : "release"
+// BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
 
 def TEST_TARGETS = params.TEST_TARGETSTARGETS ?: "sanity.openjdk,extended.openjdk"
-TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
+// TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
 def EXTRA_OPTIONS = params.EXTRA_OPTIONS.trim()
 
