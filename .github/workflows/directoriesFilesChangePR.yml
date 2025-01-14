@@ -51,7 +51,7 @@ jobs:
           jdksource: 'install-jdk'
           version: ${{ matrix.version }}
           openjdk_testRepo: '${{ github.event.pull_request.head.repo.full_name }}:${{ github.head_ref }}'
-      - uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         if: failure()
         with:
           name: output_changed_based_build_list
