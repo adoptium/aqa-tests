@@ -23,7 +23,7 @@ def BUILD_TYPES = params.BUILD_TYPES ? params.BUILD_TYPES : "release"
 def TEST_TARGETS = params.TEST_TARGETS ? params.TEST_TARGETS : "sanity.openjdk,extended.openjdk"
 // TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
-def EXTRA_OPTIONS = params.EXTRA_OPTIONS.trim()
+// def EXTRA_OPTIONS = params.EXTRA_OPTIONS ?: "NoOptions"
 
 def PIPELINE_DISPLAY_NAME = "${env.BUILD_USER_ID} - ${VERSION} - ${UPSTREAM_BRANCH} "
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
