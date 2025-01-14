@@ -45,6 +45,8 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
 
     // add code to update weeklyDefault in defaultsJson with testTargets info
 
+    // code to pass through the BUILD_TYPES - trestle pipelines need to be updated, only handle release type atm
+
 
     def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
           if (JobHelper.jobIsRunnable(JOB_NAME as String)) {
@@ -52,7 +54,9 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
                // most parameters have defaults, we customize only the following ones
                // childParams << string(name: "targetConfigurations", value: configJson)
                // childParams << string(name: "defaultsJson", value: ourDefaults)
-               childParams << string(name: "additionalBuildArgs", value:"-r ${upstreamRepo} -b ${upstreamBranch} --disable-adopt-branch-safety")
+               def addBldArgs = "-r ${upstreamRepo} -b ${upstreamBranch} --disable-adopt-branch-safety"
+               echo "additionalBuildArgs: ${addBldArgs}"
+               childParams << string(name: "additionalBuildArgs", value: ${addBldArgs})
                
                JOBS["${JOB_NAME}"] = {
                     def trestleJob = build job: JOB_NAME, parameters: childParams, propagate: false, wait: true
