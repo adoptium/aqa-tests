@@ -21,7 +21,7 @@ def BUILD_TYPES = params.BUILD_TYPES ?: "release"
 BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
 
 def TEST_TARGETS = params.TARGETS ?: "sanity.openjdk,extended.openjdk"
-TEST_TARGETS = TARGETS.trim().split("\\s*,\\s*")
+TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
 def EXTRA_OPTIONS = (params.EXTRA_OPTIONS) ?: ""
 
