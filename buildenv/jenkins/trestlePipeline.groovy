@@ -14,18 +14,18 @@
  limitations under the License.
 */
 
-def UPSTREAM_REPO = params.UPSTREAM_REPO.trim().split("\\s*,\\s*")
-def UPSTREAM_BRANCH = params.UPSTREAM_BRANCH.trim().split("\\s*,\\s*")
-def VERSION = params.VERSION.trim().split("\\s*,\\s*")
+def UPSTREAM_REPO = params.UPSTREAM_REPO.trim()
+def UPSTREAM_BRANCH = params.UPSTREAM_BRANCH.trim()
+def VERSION = params.VERSION.trim()
 def BUILD_TYPES = params.BUILD_TYPES ?: "release"
 BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
 
-def TEST_TARGETS = params.TARGETS ?: "sanity.openjdk,extended.openjdk"
+def TEST_TARGETS = params.TEST_TARGETSTARGETS ?: "sanity.openjdk,extended.openjdk"
 TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
-def EXTRA_OPTIONS = (params.EXTRA_OPTIONS) ?: ""
+def EXTRA_OPTIONS = params.EXTRA_OPTIONS.trim()
 
-def PIPELINE_DISPLAY_NAME = "${env.BUILD_USER_ID} - ${params.VERSION}"
+def PIPELINE_DISPLAY_NAME = "${env.BUILD_USER_ID} - ${VERSION} - ${UPSTREAM_BRANCH} "
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 JOBS = [:]
@@ -45,8 +45,9 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
 
     // add code to update weeklyDefault in defaultsJson with testTargets info
 
-    // code to pass through the BUILD_TYPES - trestle pipelines need to be updated, only handle release type atm
+    // add code to pass through the BUILD_TYPES - trestle pipelines need to be updated, only handle release type atm
 
+    // add code to pull VERSION from upstreamRepo if VERSION not supplied (if supplied, check if its compatible with repo version)
 
     def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
           if (JobHelper.jobIsRunnable(JOB_NAME as String)) {
