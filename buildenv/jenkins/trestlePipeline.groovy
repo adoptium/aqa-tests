@@ -18,14 +18,14 @@ def UPSTREAM_REPO = params.UPSTREAM_REPO.trim()
 def UPSTREAM_BRANCH = params.UPSTREAM_BRANCH.trim()
 def VERSION = params.VERSION.trim()
 def BUILD_TYPES = params.BUILD_TYPES ? params.BUILD_TYPES : "release"
-// BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
+BUILD_TYPES = BUILD_TYPES.trim().split("\\s*,\\s*")
 
 def TEST_TARGETS = params.TEST_TARGETS ? params.TEST_TARGETS : "sanity.openjdk,extended.openjdk"
-// TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
+TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
-// def EXTRA_OPTIONS = params.EXTRA_OPTIONS ?: "NoOptions"
+def EXTRA_OPTIONS = params.EXTRA_OPTIONS.trim()
 
-def PIPELINE_DISPLAY_NAME = "${env.BUILD_USER_ID} - ${VERSION} - ${UPSTREAM_BRANCH} "
+def PIPELINE_DISPLAY_NAME = "JDK ${VERSION} - ${UPSTREAM_REPO} / ${UPSTREAM_BRANCH} "
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 JOBS = [:]
@@ -38,8 +38,8 @@ if (fail) {
 
 def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, testTargets) {
     echo "jobJdkVersion: ${jobJdkVersion}, upstreamRepo: ${upstreamRepo}, upstreamBranch: ${upstreamBranch}, jobPlatforms: ${jobPlatforms}, testTargets: ${testTargets}"
-    def JOB_NAME = "trestle-openjdk${jobJdkVersion}-pipeline"   
-    echo "JOB_NAME: ${JOB_NAME}"
+    def TRESTLE_JOB_NAME = "build-scripts/trestle-openjdk${jobJdkVersion}-pipeline"   
+    echo "TRESTLE_JOB_NAME: ${TRESTLE_JOB_NAME}"
 
     // add some code to convert the comma-separated list of PLATFORMS into the json style targetConfigurations parameter
 
@@ -50,7 +50,7 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
     // add code to pull VERSION from upstreamRepo if VERSION not supplied (if supplied, check if its compatible with repo version)
 
     def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-          if (JobHelper.jobIsRunnable(JOB_NAME as String)) {
+          if (JobHelper.jobIsRunnable(TRESTLE_JOB_NAME as String)) {
                def childParams = []
                // most parameters have defaults, we customize only the following ones
                // childParams << string(name: "targetConfigurations", value: configJson)
@@ -59,10 +59,10 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
                echo "additionalBuildArgs: ${addBldArgs}"
                childParams << string(name: "additionalBuildArgs", value: ${addBldArgs})
                
-               JOBS["${JOB_NAME}"] = {
-                    def trestleJob = build job: JOB_NAME, parameters: childParams, propagate: false, wait: true
+               JOBS["${TRESTLE_JOB_NAME}"] = {
+                    def trestleJob = build job: TRESTLE_JOB_NAME, parameters: childParams, propagate: false, wait: true
                     def trestleJobResult = trestleJob.getResult()
-                    echo "${JOB_NAME} result is ${trestleJobResult}"
+                    echo "${TRESTLE_JOB_NAME} result is ${trestleJobResult}"
                     if (trestleJobResult == 'SUCCESS' || trestleJobResult == 'UNSTABLE') {
                         echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
                         node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
@@ -70,16 +70,16 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
                             //try {
                             //    timeout(time: 2, unit: 'HOURS') {
                             //        copyArtifacts(
-                            //            projectName: JOB_NAME,
+                            //            projectName: TRESTLE_JOB_NAME,
                             //            selector:specific("${trestleJob.getNumber()}"),
-                            //            filter: "**/${JOB_NAME}*.tap",
+                            //            filter: "**/${TRESTLE_JOB_NAME}*.tap",
                             //            fingerprintArtifacts: true,
                             //            flatten: true
                             //        )
                             //    }
                             //} catch (Exception e) {
                             //    echo 'Exception: ' + e.toString()
-                            //    echo "Cannot run copyArtifacts from job ${JOB_NAME}. Skipping copyArtifacts..."
+                            //    echo "Cannot run copyArtifacts from job ${TRESTLE_JOB_NAME}. Skipping copyArtifacts..."
                             //}
                             //try {
                             //    timeout(time: 1, unit: 'HOURS') {
@@ -87,7 +87,7 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
                             //    }
                             //} catch (Exception e) {
                             //    echo 'Exception: ' + e.toString()
-                            //    echo "Cannot archiveArtifacts from job ${JOB_NAME}. "
+                            //    echo "Cannot archiveArtifacts from job ${TRESTLE_JOB_NAME}. "
                             //}
                         }
                     }
@@ -96,7 +96,7 @@ def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, test
                     }
                 }
             } else {
-                println "Requested test job that does not exist or is disabled: ${JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
+                println "Requested pipeline job does not exist or is disabled: ${TRESTLE_JOB_NAME}. \n "
                 fail = true
             }
 }
