@@ -25,7 +25,7 @@ TEST_TARGETS = TEST_TARGETS.trim().split("\\s*,\\s*")
 def USE_PR_BUILD = params.USE_PR_BUILD ?: false
 def EXTRA_OPTIONS = params.EXTRA_OPTIONS.trim()
 
-def PIPELINE_DISPLAY_NAME = "JDK ${VERSION} - ${UPSTREAM_REPO} / ${UPSTREAM_BRANCH} "
+def PIPELINE_DISPLAY_NAME = "JDK ${VERSION} - ${UPSTREAM_REPO} - ${UPSTREAM_BRANCH} "
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 JOBS = [:]
@@ -38,7 +38,7 @@ if (fail) {
 
 def generateJobs(jobJdkVersion, upstreamRepo, upstreamBranch, jobPlatforms, testTargets) {
     echo "jobJdkVersion: ${jobJdkVersion}, upstreamRepo: ${upstreamRepo}, upstreamBranch: ${upstreamBranch}, jobPlatforms: ${jobPlatforms}, testTargets: ${testTargets}"
-    def TRESTLE_JOB_NAME = "build-scripts/trestle-openjdk${jobJdkVersion}-pipeline"   
+    def TRESTLE_JOB_NAME = "trestle-openjdk${jobJdkVersion}-pipeline"   
     echo "TRESTLE_JOB_NAME: ${TRESTLE_JOB_NAME}"
 
     // add some code to convert the comma-separated list of PLATFORMS into the json style targetConfigurations parameter
