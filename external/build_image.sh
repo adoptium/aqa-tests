@@ -67,7 +67,7 @@ function build_image() {
 	echo "The test in the build_image() function is ${test}"
     # Used for tagging the image
     tags="adoptopenjdk-${test}-test:${version}-${package}-${os}-${vm}-${build}"
-	if [[ "$test" == *"criu"* || "$test" == *"tck"* ]]; then
+	if [[ "$test" == *"criu"* || "$test" == tck-* ]]; then
 		container_build="sudo podman build"
 	fi
 

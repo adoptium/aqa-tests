@@ -27,5 +27,5 @@ echo "Run Microprofile TCK"
 cd tck/microprofile-tck
 mvn --batch-mode test -Denforcer.fail=false
 test_exit_code=$?
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+find / -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 exit $test_exit_code
