@@ -414,6 +414,7 @@ timestamps{
 }
 
 def runTest() {
+	boolean wasAborted = false
     try {
         def retry_count = 0
         def sleep_time = 180
@@ -492,12 +493,18 @@ def runTest() {
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
         // if there is an exception, set currentBuild.result to ABORTED/FAILURE
         if (e.toString().contains("FlowInterruptedException")) {
-            currentBuild.result = 'ABORTED'
+            wasAborted = true
+			currentBuild.result = 'ABORTED'
+            echo "Build aborted by user or another trigger."
         } else {
             currentBuild.result = 'FAILURE'
         }
 
     } finally {
+		if (wasAborted) {
+            currentBuild.result = 'ABORTED'
+            echo "aborted build."
+        }
         if (params.SLACK_CHANNEL) {
             timeout(time: 5, unit: 'MINUTES') {
                 if (currentBuild.result == 'FAILURE') {
