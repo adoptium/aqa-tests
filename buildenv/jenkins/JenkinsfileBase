@@ -1212,6 +1212,10 @@ def addGrinderLink() {
 		if (key == "LIGHT_WEIGHT_CHECKOUT") {
 			value = "false"
 		}
+		// Always set RERUN_FAILURE to false for Grinder Link
+		if (key == "RERUN_FAILURE"){
+			value = "false"
+		}
 		// Always set Parallel to None for Grinder link
 		if (key == "PARALLEL") {
 			value = "None"
