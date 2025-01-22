@@ -661,7 +661,7 @@ getFunctionalTestMaterial()
 	fi
    	
 	cd openj9
-	git rm -rf .
+	git rm -rqf .
 	git clean -fxd
 	cd $TESTDIR
 }
@@ -749,7 +749,7 @@ getVendorTestMaterial() {
 
 		# clean up
 		cd $dest
-		git rm -rf .
+		git rm -rqf .
 		git clean -fxd
 		cd $TESTDIR
 
