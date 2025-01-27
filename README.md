@@ -27,6 +27,8 @@ See the License for the specific language governing permissions and
 [![closed-pr](https://img.shields.io/github/issues-pr-closed/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/pulls?q=is%3Apr+is%3Aclosed)
 [![release-date](https://img.shields.io/github/release-date/adoptium/aqa-tests)](https://github.com/adoptium/aqa-tests/releases)
 <br />
+
+[![OpenChain](https://tinyurl.com/3zdb5ptz)](https://www.eclipse.org/openchain/)
 [![slack](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=white)](https://adoptium.net/slack/)
 [![Twitter](https://img.shields.io/twitter/follow/adoptium?style=social)](https://twitter.com/adoptium)
 

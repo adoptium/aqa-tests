@@ -25,7 +25,17 @@ echo_env_var() {
 }
 
 echo_java_version() {
-	if [ -d /java/jre/bin ];then
+	if [ -d /opt/java/openjdk/jre/bin ];then
+		echo "Using /opt mounted Java8"
+		export JAVA_BIN=/opt/java/openjdk/jre/bin
+		export JAVA_HOME=/opt/java/openjdk
+		export PATH=$JAVA_BIN:$PATH
+	elif [ -d /opt/java/openjdk/bin ]; then
+		echo "Using /opt mounted Java"
+		export JAVA_BIN=/opt/java/openjdk/bin
+		export JAVA_HOME=/opt/java/openjdk
+		export PATH=$JAVA_BIN:$PATH
+	elif [ -d /java/jre/bin ];then
 		echo "Using mounted Java8"
 		export JAVA_BIN=/java/jre/bin
 		export JAVA_HOME=/java

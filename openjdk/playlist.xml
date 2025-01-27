@@ -757,7 +757,7 @@
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/20531</comment>
 				<impl>openj9</impl>
-				<platform>^((?!(x86-64_linux)).)*$</platform>
+				<platform>^(?!.*linux).*$</platform>
 			</disable>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
@@ -858,6 +858,7 @@
 		<testCaseName>jdk_lang_j9</testCaseName>
 		<variations>
 			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode501</variation>
+			<variation>$(TEST_VARIATION_DUMP) $(TEST_VARIATION_JIT_PREVIEW) Mode501 -XXgc:fvtest_forceCopyForwardHybridMarkCompactRatio=10</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx768m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -1622,10 +1623,6 @@
 		<disables>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
-				<impl>openj9</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
 				<impl>ibm</impl>
 			</disable>
 		</disables>
@@ -1656,6 +1653,31 @@
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
 		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_restricted_security</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	$(Q)$(OPENJDK_DIR)$(D)closed$(D)test$(D)jdk$(D)openj9$(D)internal$(D)security$(Q); \
+	$(TEST_STATUS)</command>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+		</features>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>jdk_rmi</testCaseName>
@@ -1695,8 +1717,10 @@
 				<impl>ibm</impl>
 			</disable>
 			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/3232#issuecomment-1032587426</comment>
+				<comment>https://bugs.openjdk.org/browse/JDK-8324306</comment>
 				<platform>x86-64_alpine-linux|aarch64_alpine-linux</platform>
+				<version>17</version>
+				<impl>hotspot</impl>
 			</disable>
 		</disables>
 		<variations>
@@ -1829,7 +1853,7 @@
 			<variation>Mode1000</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx768m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \

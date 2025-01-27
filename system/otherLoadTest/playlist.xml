@@ -45,12 +45,16 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
-                        <disable>
-                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
-                                <version>8</version>
-                                <impl>hotspot</impl>
-                                <platform>.*windows.*</platform>
-                        </disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -80,12 +84,16 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
-                        <disable>
-                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
-                                <version>8</version>
-                                <impl>hotspot</impl>
-                                <platform>.*windows.*</platform>
-                        </disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -119,12 +127,16 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
-                        <disable>
-                                <comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
-                                <version>8</version>
-                                <impl>hotspot</impl>
-                                <platform>.*windows.*</platform>
-                        </disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5673</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -debug-generation -java-debug-args=$(Q)-Xmx3g -Xms3g$(Q) -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx3g -Xms3g$(Q); \
 	$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD) -Xmx2g -Xms2g$(Q); \
@@ -157,6 +169,12 @@
 	</test>
 	<test>
 		<testCaseName>ClassLoadingTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -233,6 +251,10 @@
 				<impl>hotspot</impl>
 				<platform>riscv64_linux</platform>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -251,6 +273,12 @@
 	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/571-->
 	<test>
 		<testCaseName>DBBLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -268,6 +296,12 @@
 	</test>
 	<test>
 		<testCaseName>LangLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -284,6 +318,12 @@
 	</test>
 	<test>
 		<testCaseName>LockingLoadTest</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -302,6 +342,12 @@
 	<!-- Temporarily excluded from z/Os due to : jdk11-zos/issues/342-->
 	<test>
 		<testCaseName>NioLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -319,6 +365,12 @@
 	</test>
 	<test>
 		<testCaseName>UtilLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -411,6 +463,12 @@
 	</test>
 	<test>
 		<testCaseName>HeapHogLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -430,6 +488,12 @@
 	</test>
 	<test>
 		<testCaseName>ObjectTreeLoadTest_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -450,6 +514,12 @@
 	<!-- The tests below are added to test concurrent scavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
 		<testCaseName>ClassLoadingTest_CS_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/STF/issues/142</comment>
+				<version>24+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>

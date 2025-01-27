@@ -28,7 +28,7 @@ mvn --batch-mode --fail-at-end $excludeProject clean verify
 test_exit_code=$?
 echo "Build jacoco completed"
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+find / -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 echo "Test results copied"
 
 exit $test_exit_code

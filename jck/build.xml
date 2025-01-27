@@ -37,9 +37,10 @@
 	<condition property="src-encoding" value="IBM-1047" else="UTF-8">
 		<isset property="isZOS"/>
 	</condition>
-	
+
+	<set-property name="JCK_GIT_BRANCH_ISSET" if-property-isset="env.JCK_GIT_BRANCH"/>
 	<condition property="jck_branch" value="${env.JCK_GIT_BRANCH}" else="main">
-		<isset property="env.JCK_GIT_BRANCH"/>
+		<isset property="JCK_GIT_BRANCH_ISSET"/>
 	</condition>
 	
 	<property name="jtrunner_src_dir" value="${TEST_ROOT}/jck/jtrunner"/>
@@ -346,9 +347,9 @@
 		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
 
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
-
+        <set-property name="JCK_VERSION_ISSET" if-property-isset="env.JCK_VERSION"/>
 		<if>
-			<isset property="env.JCK_VERSION" />
+			<isset property="JCK_VERSION_ISSET" />
 			<then>
 				<property name="JCK_VERSION_USED" value="${env.JCK_VERSION}" />
 			</then>
@@ -365,7 +366,15 @@
 								<property name="JCK_VERSION_USED" value="jck11a" />
 							</then>
 							<else>
-								<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
+								<if>
+									<equals arg1="${JDK_VERSION}" arg2="17" />
+									<then>
+										<property name="JCK_VERSION_USED" value="jck17a" />
+									</then>
+									<else>
+										<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
+									</else>
+								</if>
 							</else>
 						</if>
 					</else>

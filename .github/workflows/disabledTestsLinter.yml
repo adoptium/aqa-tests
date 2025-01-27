@@ -18,7 +18,7 @@ jobs:
           sudo apt-get install python3 python3-lxml
 
       - name: Run exclude_parser.py on ProblemList files
-        run: find ./openjdk/excludes -name "ProblemList*" | python3 ./scripts/disabled_tests/exclude_parser.py -v > /dev/null
+        run: find ./openjdk/excludes -name "ProblemList*" | python3 ./scripts/disabled_tests/exclude_parser.py > /dev/null
 
       - name: Run playlist_parser.py on playlist.xml files
-        run: find . -name "playlist.xml" | python3 ./scripts/disabled_tests/playlist_parser.py -v > /dev/null
+        run: find . -name "playlist.xml" | python3 ./scripts/disabled_tests/playlist_parser.py > /dev/null

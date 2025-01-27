@@ -12,6 +12,12 @@
 # limitations under the License.
 #############################################################################
 
+# hotspot_jdk
+
+serviceability/dcmd/DynLibDcmdTest.java https://github.com/adoptium/aqa-tests/issues/5854 aix-all
+
+############################################################################
+
 # hotspot_all
 
 # compiler/7184394/TestAESMain.java https://github.com/adoptium/infrastructure/issues/2893
@@ -133,7 +139,6 @@ java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-t
 
 # jdk_lang
 
-java/lang/ClassLoader/Assert.java https://github.com/adoptium/aqa-tests/issues/1012 aix-all
 java/lang/Math/HypotTests.java https://github.com/adoptium/aqa-tests/issues/128 linux-all
 # java/lang/ProcessBuilder/Basic.java same issue with alpine linux, exclude by linux-all for now
 java/lang/ProcessBuilder/Basic.java https://bugs.openjdk.org/browse/JDK-8282219 aix-all,solaris-x64,linux-all
@@ -200,7 +205,7 @@ java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/is
 
 # jdk_nio
 
-java/nio/MappedByteBuffer/Truncate.java https://github.com/adoptium/aqa-tests/issues/1052 linux-s390x
+java/nio/MappedByteBuffer/Truncate.java https://bugs.openjdk.org/browse/JDK-8345842 linux-s390x
 java/nio/channels/AsynchronousSocketChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/StressLoopback.java https://bugs.openjdk.java.net/browse/JDK-8211851 aix-all
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
@@ -264,6 +269,8 @@ sun/security/pkcs11/Secmod/TestNssDbSqlite.java https://github.com/adoptium/aqa-
 sun/security/ssl/X509TrustManagerImpl/Symantec/Distrust.java https://github.com/adoptium/aqa-tests/issues/2123 generic-all
 sun/security/tools/jarsigner/diffend.sh https://github.com/adoptium/infrastructure/issues/2623 linux-all
 sun/security/tools/jarsigner/emptymanifest.sh https://github.com/adoptium/infrastructure/issues/2623 linux-all
+tools/jar/ExtractFilesTest.java https://bugs.openjdk.org/browse/JDK-8346140 generic-all
+tools/jar/MultipleManifestTest.java https://bugs.openjdk.org/browse/JDK-8346140 generic-all
 sun/security/rsa/SignatureTest.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
 sun/security/tools/keytool/WeakAlg.java https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
 sun/security/tools/keytool/standard.sh https://github.com/adoptium/infrastructure/issues/2893 solaris-sparcv9
@@ -280,7 +287,6 @@ sun/security/provider/DSA/TestAlgParameterGenerator.java https://github.com/adop
 
 sun/security/krb5/auto/ReplayCacheTestProc.java https://github.com/adoptium/aqa-tests/issues/2349 generic-all
 sun/security/krb5/auto/Unreachable.java https://github.com/adoptium/aqa-tests/issues/2353 aix-all,macosx-all
-sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.org/browse/JDK-8258855 linux-aarch64
 
 ############################################################################
 
@@ -451,3 +457,4 @@ jdk/jfr/event/compiler/TestCompilerInlining.java https://github.com/adoptium/aqa
 # langtools_all
 
 tools/javac/defaultMethods/Assertions.java https://bugs.openjdk.org/browse/JDK-8047675 generic-all
+tools/javah/ReadOldClass.sh https://github.com/adoptium/aqa-tests/issues/5854 aix-all

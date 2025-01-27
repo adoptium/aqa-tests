@@ -25,8 +25,10 @@
 	<property environment="env" />
 	<property name="top" location="../" />
 
+	<set-property name="DOCKERIMAGE_TAG_ISSET" if-property-isset="env.DOCKERIMAGE_TAG"/>
+	<set-property name="EXTRA_DOCKER_ARGS_ISSET" if-property-isset="env.EXTRA_DOCKER_ARGS"/>
 	<if>
-		<isset property="env.DOCKERIMAGE_TAG"/>
+		<isset property="DOCKERIMAGE_TAG_ISSET"/>
 		<then>
 			<property name="dockerImageTag" value="${env.DOCKERIMAGE_TAG}"/>
 		</then>
@@ -35,7 +37,7 @@
 		</else>
 	</if>
 	<if>
-		<isset property="env.EXTRA_DOCKER_ARGS"/>
+		<isset property="EXTRA_DOCKER_ARGS_ISSET"/>
 		<then>
 			<property name="extra_docker_args" value="${env.EXTRA_DOCKER_ARGS}"/>
 		</then>
@@ -89,7 +91,7 @@
 			<fileset dir="${src}/" includes="*.sh, *.properties"/>
 		</copy>
 		<copy todir="${DEST_EXTERNAL}">
-			<fileset dir="${top}" includes="*.sh"/>
+			<fileset dir="${top}" includes="*.sh common.properties"/>
 		</copy>
 	</target>
 
