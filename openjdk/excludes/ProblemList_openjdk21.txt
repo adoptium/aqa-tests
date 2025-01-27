@@ -18,21 +18,21 @@
 
 # jdk_beans
 
-java/beans/PropertyEditor/6380849/TestPropertyEditor.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestColorClassJava.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestColorClassNull.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestFontClass.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
+java/beans/PropertyEditor/6380849/TestPropertyEditor.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestColorClassJava.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestColorClassNull.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestFontClass.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
 # java/beans/PropertyEditor/TestFontClassJava.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
 # java/beans/PropertyEditor/TestFontClassValue.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
-java/beans/PropertyEditor/TestFontClassJava.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all
-java/beans/PropertyEditor/TestFontClassNull.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all
-java/beans/PropertyEditor/TestFontClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all
+java/beans/PropertyEditor/TestFontClassJava.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all,windows-all
+java/beans/PropertyEditor/TestFontClassNull.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
+java/beans/PropertyEditor/TestFontClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,linux-all,windows-all
 java/beans/XMLEncoder/java_awt_CardLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/java_awt_GridBagLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 # java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2848 macosx-all
-java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all,macosx-all
+java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all,macosx-all,windows-all
 java/beans/XMLEncoder/javax_swing_Box.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_BoxLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_Box_Filler.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
@@ -274,7 +274,8 @@ sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issue
 # jdk_tools
 
 sun/tools/jhsdb/HeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
-sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
+#sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/5871 windows-all
+sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-all
 sun/tools/jstat/jstatLineCounts1.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
 sun/tools/jstat/jstatLineCounts2.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
 sun/tools/jstat/jstatLineCounts3.sh https://bugs.openjdk.java.net/browse/JDK-8248691 linux-ppc64le,aix-all,linux-arm,linux-ppc64le
@@ -419,6 +420,7 @@ javax/management/remote/mandatory/util/MapNullValuesTest.java https://github.com
 # jdk_imageio
 
 javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/aqa-tests/issues/2138 linux-all
+javax/imageio/plugins/jpeg/JPEGsNotAcceleratedTest.java https://bugs.openjdk.org/browse/JDK-8336862 windows-all
 
 ############################################################################
 
@@ -470,6 +472,8 @@ runtime/os/TestTracePageSizes.java#G1 https://bugs.openjdk.org/browse/JDK-833755
 runtime/os/TestTracePageSizes.java#Parallel https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#Serial https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#compiler-options https://bugs.openjdk.org/browse/JDK-8337555 linux-all
+runtime/ReservedStack/ReservedStackTest.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
+runtime/ReservedStack/ReservedStackTestCompiler.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
 
 ############################################################################
 

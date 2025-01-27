@@ -22,6 +22,17 @@
 
 # jdk_beans
 
+java/beans/PropertyEditor/6380849/TestPropertyEditor.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestColorClass.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestColorClassJava.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestColorClassNull.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestColorClassValue.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestFontClass.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestFontClassJava.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestFontClassNull.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/PropertyEditor/TestFontClassValue.java https://github.com/eclipse-openj9/openj9/issues/20531 macosx-all
+java/beans/Beans/TypoInBeanDescription.java https://github.ibm.com/runtimes/backlog/issues/1589 aix-all
+
 ############################################################################
 
 # jdk_lang
@@ -96,6 +107,7 @@ java/lang/StackWalker/VerifyStackTrace.java https://github.com/adoptium/aqa-test
 java/lang/String/CaseConvertSameInstance.java https://github.com/eclipse-openj9/openj9/issues/6672 generic-all
 java/lang/String/CaseInsensitiveComparator.java https://github.com/eclipse-openj9/openj9/issues/6665 generic-all
 java/lang/String/CompactString/IndexOf.java  https://github.com/eclipse-openj9/openj9/issues/6673 generic-all
+java/lang/String/concat/HiddenClassUnloading.java https://github.com/eclipse-openj9/openj9/issues/21016 generic-all
 java/lang/String/EqualsIgnoreCase.java https://github.com/eclipse-openj9/openj9/issues/6666 generic-all
 java/lang/String/UnicodeCasingTest.java https://github.com/eclipse-openj9/openj9/issues/4597 linux-s390x
 java/lang/StringBuffer/HugeCapacity.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -118,8 +130,28 @@ java/lang/Thread/SleepSanity.java https://github.com/eclipse-openj9/openj9/issue
 java/lang/Thread/ThreadSleepEvent.java https://github.com/eclipse-openj9/openj9/issues/20166 generic-all
 java/lang/Thread/UncaughtExceptions.sh https://github.com/eclipse-openj9/openj9/issues/6690 generic-all
 java/lang/Thread/virtual/JfrEvents.java https://github.com/eclipse-openj9/openj9/issues/20166 generic-all
+java/lang/Thread/virtual/MiscMonitorTests.java#default https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp-noTieredCompilation https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp-TieredStopAtLevel3 https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/MiscMonitorTests.java#Xint https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#default https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xint-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xint-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20369 generic-all
+java/lang/Thread/virtual/RetryMonitorEnterWhenPinned.java https://github.com/eclipse-openj9/openj9/issues/20955 generic-all
 java/lang/Thread/virtual/StackTraces.java https://github.com/eclipse-openj9/openj9/issues/16045 generic-all
 java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0 https://github.com/eclipse-openj9/openj9/issues/18908 linux-s390x
+java/lang/Thread/virtual/stress/LotsOfContendedMonitorEnter.java#default https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/stress/LotsOfContendedMonitorEnter.java#LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
+java/lang/Thread/virtual/stress/Skynet100kWithMonitors.java#id0 https://github.com/eclipse-openj9/openj9/issues/20705 generic-all
 java/lang/Thread/virtual/stress/TimedGet.java https://github.com/eclipse-openj9/openj9/issues/15184 macosx-x64
 java/lang/Thread/virtual/TracePinnedThreads.java https://github.com/eclipse-openj9/openj9/issues/15996 generic-all
 java/lang/ThreadGroup/SetMaxPriority.java https://github.com/eclipse-openj9/openj9/issues/6691 generic-all
@@ -364,6 +396,7 @@ java/rmi/server/Unreferenced/leaseCheckInterval/LeaseCheckInterval.java https://
 java/security/KeyPairGenerator/FinalizeHalf.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/SecureRandom/ApiTest.java https://github.com/eclipse-openj9/openj9/issues/16734 windows-all
 java/security/SecureRandom/EnoughSeedTest.java https://github.com/eclipse-openj9/openj9/issues/16734 windows-all
+java/security/Security/ConfigFileTest.java https://github.com/eclipse-openj9/openj9/issues/20357 generic-all
 java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 
@@ -503,6 +536,8 @@ vm/verifier/VerifyProtectedConstructor.java https://github.com/eclipse-openj9/op
 
 # jdk_foreign
 
+java/foreign/critical/TestCritical.java https://github.com/eclipse-openj9/openj9/issues/21018 generic-all
+java/foreign/passheapsegment/TestPassHeapSegment.java https://github.com/eclipse-openj9/openj9/issues/21019 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#default_gc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#shenandoah https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
@@ -512,6 +547,7 @@ java/foreign/stackwalk/TestStackWalk.java#shenandoah https://github.com/eclipse-
 java/foreign/stackwalk/TestStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/14002 generic-all
+java/foreign/TestLinker.java https://github.com/eclipse-openj9/openj9/issues/21017 generic-all
 java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
 java/foreign/valist/VaListTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 
