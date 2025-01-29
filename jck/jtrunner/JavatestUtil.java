@@ -53,6 +53,7 @@ public class JavatestUtil {
 	private static String interactive;
 	private static String extraJvmOptions = "";
 	private static String concurrencyString;
+        private static String timeoutFactorString;
 	private static String jckVersion;
 	private static String config;
 	private static String configAltPath;
@@ -114,6 +115,7 @@ public class JavatestUtil {
 	private static final String INTERACTIVE = "interactive";
 	private static final String CONFIG = "config";
 	private static final String CONCURRENCY = "concurrency";
+        private static final String TIMEOUT_FACTOR = "timeoutFactor";
 	private static final String CONFIG_ALT_PATH = "configAltPath";
 	private static final String TASK = "task";
 	private static final String TASK_CMD_FILE_GENERATION = "cmdfilegen";
@@ -138,6 +140,7 @@ public class JavatestUtil {
 		essentialParameters.add(INTERACTIVE);
 		essentialParameters.add(CONFIG);
 		essentialParameters.add(CONCURRENCY);
+                essentialParameters.add(TIMEOUT_FACTOR);
 		essentialParameters.add(CONFIG_ALT_PATH);
 		essentialParameters.add(TASK);
 		essentialParameters.add(AGENT_HOST);
@@ -209,6 +212,7 @@ public class JavatestUtil {
 		withAgent = testArgs.get(WITH_AGENT) == null ? "off" : testArgs.get(WITH_AGENT);
 		interactive = testArgs.get(INTERACTIVE) == null ? "no" : testArgs.get(INTERACTIVE);
 		concurrencyString = testArgs.get("concurrency") == null ? "NULL" : testArgs.get("concurrency");
+                timeoutFactorString = testArgs.get(TIMEOUT_FACTOR) == null ? "NULL" : testArgs.get(TIMEOUT_FACTOR);
 		config = testArgs.get(CONFIG) == null ? "NULL" : testArgs.get(CONFIG);
 		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH);
 		agentHost = testArgs.get(AGENT_HOST) == null ? "localhost" : testArgs.get(AGENT_HOST).trim();
@@ -515,7 +519,12 @@ public class JavatestUtil {
 			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
+                       
+                        if (!timeoutFactorString.equals("NULL")) {
+				fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+                        } else {
+				fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
+			}
 			fileContent += keyword + ";\n";
 
 			if (spec.contains("win")) {
@@ -698,7 +707,11 @@ public class JavatestUtil {
 			} 
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 100" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
+                        if (!timeoutFactorString.equals("NULL")) {
+                                fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+                        } else {
+				fileContent += "timeoutfactor 100" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
+			}
 			fileContent += keyword + ";\n";
 			
 			if (testExecutionType.equals("multijvm")) { 
@@ -819,7 +832,11 @@ public class JavatestUtil {
 			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-			fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
+                        if (!timeoutFactorString.equals("NULL")) {
+                                fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+                        } else {
+				fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
+			}
 
 			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
