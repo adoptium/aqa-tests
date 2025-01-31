@@ -15,13 +15,7 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
-		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
-		</copy>
-		<copy todir="${src}">
-			<fileset dir="${DEST}" includes="**/Dockerfile.*"/>
-		</copy>
+	<target name="dist" depends="move_scripts,clean_image,build_image,distNew" description="generate the distribution">
 	</target>
 
 	<target name="build">
