@@ -19,6 +19,9 @@
 		<copy todir="${DEST}">
 			<fileset dir="${src}" includes="*.xml, *.mk"/>
 		</copy>
+		<copy todir="${src}">
+			<fileset dir="${DEST}" includes="**/Dockerfile.*"/>
+		</copy>
 	</target>
 
 	<target name="build">
