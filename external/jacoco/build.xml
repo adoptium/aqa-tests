@@ -15,10 +15,10 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image,build_image,distNew" description="generate the distribution">
-	</target>
+<!--	<target name="dist" depends="move_scripts,clean_image,build_image,distNew" description="generate the distribution">
+	</target> -->
 
-	<target name="build">
-		<antcall target="dist" inheritall="true" />
+	<target name="build" depends="move_scripts,clean_image,build_image,distNew">
+<!--  <antcall target="dist" inheritall="true" /> -->
 	</target>
 </project>
