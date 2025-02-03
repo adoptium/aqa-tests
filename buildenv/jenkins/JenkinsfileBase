@@ -1201,7 +1201,7 @@ def addGrinderLink() {
 	def customTargetKeyValue = ""
 	def urlParams = params.findAll {
 		// Exclude separator and help text parameters from url
-		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
+		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT') || it.key == "CONFIG_JSON")
 	}
 	urlParams.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
