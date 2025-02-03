@@ -15,12 +15,8 @@
 		<mkdir dir="${DEST}"/>
 	</target>
 
-	<target name="dist" depends="move_scripts,clean_image,build_image" description="generate the distribution">
-		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
-		</copy>
-	</target>
-
+	<target name="dist" depends="move_scripts,clean_image,build_image,copy_dest" description="generate the distribution" />
+	
 	<target name="build">
 		<!-- Temporarily disable for openj9 and ibm due to ibm_git/runtimes/infrastructure/issues/6056 -->
 		<if>

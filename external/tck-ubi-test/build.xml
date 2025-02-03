@@ -14,10 +14,6 @@
 	<property name="env.JCK_ROOT" value="${BUILD_ROOT}/external/${TEST}/jck_root/JCK${JDK_VERSION}-unzipped" />
 	<property name="src" location="." />
 
-	<target name="init">
-		<mkdir dir="${DEST}"/>
-	</target>
-
 	<target name="stage_jck_material" description="stage jck material">
 		<copy todir="${DEST_EXTERNAL}/${TEST}">
 			<fileset dir="${TEST_ROOT}/jck/" includes="*.sh"/>
@@ -58,13 +54,6 @@
 		</exec>
 	</target>
 
-	<target name="dist" depends="stage_jck_material,build_image" description="generate the distribution">
-		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
-		</copy>
-	</target>
+	<target name="build" depends="stage_jck_material,build_image,copy_dest" />
 
-	<target name="build">
-		<antcall target="dist" inheritall="true" />
-	</target>
 </project>

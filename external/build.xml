@@ -114,9 +114,9 @@
 			<arg value="${extra_docker_args}"/>
 		</exec>
 	</target>
-	<target name="distNew" >
+	<target name="copy_dest" >
 		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml, *.mk"/>
+			<fileset dir="${src}" includes="*.xml, *.mk, *.sh"/>
 		</copy>
 		<copy todir="${src}">
 			<fileset dir="${DEST}" includes="**/Dockerfile.*"/>
