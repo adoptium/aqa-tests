@@ -471,7 +471,9 @@ runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/i
 runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
 runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
-runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+#runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5920 macosx-all,windows-aarch64
+runtime/cds/appcds/TransformInterfaceOfLambda.java https://github.com/adoptium/aqa-tests/issues/5920 macosx-all,windows-aarch64
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 #runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
 runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all,windows-aarch64
@@ -483,6 +485,10 @@ runtime/os/TestTracePageSizes.java#G1 https://bugs.openjdk.org/browse/JDK-833755
 runtime/os/TestTracePageSizes.java#Parallel https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#Serial https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#compiler-options https://bugs.openjdk.org/browse/JDK-8337555 linux-all
+runtime/ErrorHandling/CreateCoredumpOnCrash.java https://bugs.openjdk.org/browse/JDK-8348862 windows-aarch64
+runtime/ReservedStack/ReservedStackTest.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
+runtime/ReservedStack/ReservedStackTestCompiler.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
+runtime/memory/ReserveMemory.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 
 ############################################################################
 
@@ -493,13 +499,15 @@ serviceability/dtrace/DTraceOptionsTest.java#enabled https://github.com/adoptium
 serviceability/jvmti/GetOwnedMonitorStackDepthInfo/GetOwnedMonitorStackDepthInfoWithEATest.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
 serviceability/jvmti/Heap/IterateHeapWithEscapeAnalysisEnabled.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
 serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatArrayCorrectnessTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+serviceability/jvmti/RedefineClasses/RedefineLeakThrowable.java https://github.com/adoptium/aqa-tests/issues/5920 macosx-all,windows-aarch64
 serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 serviceability/sa/CDSJMapClstats.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbCDSCore.java https://github.com/adoptium/aqa-tests/issues/5622 generic-all
 serviceability/sa/ClhsdbFindPC.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbFindPC.java#id1 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbJhisto.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
-serviceability/sa/ClhsdbJstackXcompStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+#serviceability/sa/ClhsdbJstackXcompStress.java https://bugs.openjdk.org/browse/JDK-8348864 windows-aarch64
+serviceability/sa/ClhsdbJstackXcompStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86,windows-aarch64
 serviceability/sa/ClhsdbJstack.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbFindPC.java#no-xcomp-core https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/sa/ClhsdbDumpheap.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
