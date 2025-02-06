@@ -933,7 +933,7 @@ def post(output_name) {
 			}
 
 			if (env.BUILD_LIST.startsWith('external')) {
-				archiveFile("**/Dockerfile.*", true)
+				archiveFile("**/jvmtest/**/Dockerfile.*", true)
 			}
 
 			if (params.ARCHIVE_TEST_RESULTS && !env.JDK_VERSION.contains(',') && env.BUILD_LIST.contains('jck')) {
@@ -1201,7 +1201,7 @@ def addGrinderLink() {
 	def customTargetKeyValue = ""
 	def urlParams = params.findAll {
 		// Exclude separator and help text parameters from url
-		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT'))
+		!(it.key.endsWith('_PARAMS') || it.key.endsWith('_HELP_TEXT') || it.key == "CONFIG_JSON")
 	}
 	urlParams.each { key, value ->
 		value = URLEncoder.encode(value.toString(), "UTF-8")
