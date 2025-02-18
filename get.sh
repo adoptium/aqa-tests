@@ -295,7 +295,7 @@ getBinaryOpenjdk()
 						if [ "$TEST_IMAGES_REQUIRED" == "true" ]; then
 							download_url+=" ${download_url_base}${n}"
 						fi
-					else
+					elif [[ $n != *"install"* ]]; then
 						download_url+=" ${download_url_base}${n}"
 					fi
 				done
