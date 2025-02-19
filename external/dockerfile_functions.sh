@@ -600,6 +600,7 @@ remove_trailing_spaces() {
 
 # Generate the dockerfile for a given build
 generate_dockerfile() {
+    set -x 
     file=$1
     test=$2
     version=$3
