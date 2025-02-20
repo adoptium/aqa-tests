@@ -491,7 +491,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ "$check_external_custom_test" == "1" ]]; then 
+    if [[ "$check_external_custom" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -612,11 +612,11 @@ generate_dockerfile() {
     base_docker_registry_dir="$9"
     check_external_custom_test=$10
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
+    if [[ "$check_external_custom" == "1" ]]; then
         tag_version=${EXTERNAL_REPO_BRANCH}
     fi
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
+    if [[ "$check_external_custom" == "1" ]]; then
         set_external_custom_test_info ${test} ${check_external_custom_test}
     else
         set_test_info ${test} ${check_external_custom_test}
@@ -697,7 +697,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
+    if [[ "$check_external_custom" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};
