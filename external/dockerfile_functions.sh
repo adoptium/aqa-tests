@@ -565,7 +565,7 @@ print_external_custom_parameters(){
     echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
             "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
             "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
-            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+            "\nENV EXTERNAL_CUSTOM_BRANCH ${EXTERNAL_CUSTOM_BRANCH}" \
             "\n" >> ${file}
 
 }
@@ -613,7 +613,7 @@ generate_dockerfile() {
     check_external_custom_test=$10
 
     if [[ "$check_external_custom" == "1" ]]; then
-        tag_version=${EXTERNAL_REPO_BRANCH}
+        tag_version=${EXTERNAL_CUSTOM_BRANCH}
     fi
 
     if [[ "$check_external_custom" == "1" ]]; then

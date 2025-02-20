@@ -204,7 +204,7 @@ function set_external_custom_test_info(){
     github_url="${EXTERNAL_CUSTOM_REPO}"
     test_command="${EXTERNAL_TEST_CMD}"
     test_results="testResults"
-    tag_version="${EXTERNAL_REPO_BRANCH}"
+    tag_version="${EXTERNAL_CUSTOM_BRANCH}"
     environment_variable="MODE=java"
     maven_version="3.8.5"
     packages="git"

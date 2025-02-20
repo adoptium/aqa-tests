@@ -10,13 +10,13 @@
 	<property name="TEST" value="external_custom" />
 	<property environment="env" />
 	<set-property name="EXTERNAL_CUSTOM_REPO_ISSET" if-property-isset="env.EXTERNAL_CUSTOM_REPO"/>
-	<set-property name="EXTERNAL_REPO_BRANCH_ISSET" if-property-isset="env.EXTERNAL_REPO_BRANCH"/>
+	<set-property name="EXTERNAL_CUSTOM_BRANCH_ISSET" if-property-isset="env.EXTERNAL_CUSTOM_BRANCH"/>
 	<set-property name="EXTERNAL_TEST_CMD_ISSET" if-property-isset="env.EXTERNAL_TEST_CMD"/>
 	<condition property="EXTERNAL_CUSTOM_REPO" value="${env.EXTERNAL_CUSTOM_REPO}" else="">
 		<isset property="EXTERNAL_CUSTOM_REPO_ISSET" />
 	</condition>
-	<condition property="EXTERNAL_REPO_BRANCH" value="${env.EXTERNAL_REPO_BRANCH}" else="master">
-		<isset property="EXTERNAL_REPO_BRANCH_ISSET" />
+	<condition property="EXTERNAL_CUSTOM_BRANCH" value="${env.EXTERNAL_CUSTOM_BRANCH}" else="master">
+		<isset property="EXTERNAL_CUSTOM_BRANCH_ISSET" />
 	</condition>
 	<condition property="EXTERNAL_TEST_CMD" value="${env.EXTERNAL_TEST_CMD}" else="mvn clean install">
 		<isset property="EXTERNAL_TEST_CMD_ISSET" />
