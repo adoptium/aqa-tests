@@ -39,7 +39,6 @@ if (params.BUILD_TYPE == "nightly") {
 }
 
 JOBS = [:]
-fail = false
 
 timestamps {
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -85,9 +84,6 @@ timestamps {
         }
     }
     parallel JOBS
-    if (fail) {
-        currentBuild.result = "FAILURE"
-    }
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
@@ -313,13 +309,11 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                             }
                         }
                     }
-                    if (downstreamJobResult != "SUCCESS") {
-                        fail = true
-                    }
+                    currentBuild.result = downstreamJobResult
                 }
             } else {
                 println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
-                fail = true
+                currentBuild.result = "FAILURE"
             }
         }
     }
