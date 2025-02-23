@@ -15,6 +15,7 @@
 
 source $(dirname "$0")/common_functions.sh
 source $(dirname "$0")/provider.sh
+set -x
 
 # Generate the common license and copyright header
 print_legal() {
@@ -599,8 +600,7 @@ remove_trailing_spaces() {
 }
 
 # Generate the dockerfile for a given build
-generate_dockerfile() {
-    set -x 
+generate_dockerfile() { 
     file=$1
     test=$2
     version=$3
