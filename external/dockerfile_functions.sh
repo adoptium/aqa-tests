@@ -420,7 +420,7 @@ print_criu_install() {
         # Method 2: build from source code
         echo -e "\n# Install dependent packages for criu" \
                 "\nRUN apt-get update \\" \
-                "\n\t&& apt-get install -y --no-install-recommends gcc iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils pip protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
+                "\n\t&& apt-get install -y --no-install-recommends gcc iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev pip protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
                 "\n" >> ${file}
 
         echo -e "\n# Build criu and set capabilities" \
@@ -429,7 +429,7 @@ print_criu_install() {
                 "\n\t&& git clone https://github.com/ibmruntimes/criu.git \\" \
                 "\n\t&& cd criu \\" \
                 "\n\t&& git fetch origin \\" \
-                "\n\t&& git reset --hard origin/0.44.0-release \\" \
+                "\n\t&& git reset --hard origin/0.45.0-release \\" \
                 "\n\t&& make PREFIX=/usr CONFIG_AMDGPU=n install \\" \
                 "\n\t&& criu -V " \
                 "\n" >> ${file}
