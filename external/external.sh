@@ -15,7 +15,7 @@
 
 # script runs in 5 modes - prepare / build / run / load / clean
 
-set -ex
+set -e
 
 source $(dirname "$0")/provider.sh
 
