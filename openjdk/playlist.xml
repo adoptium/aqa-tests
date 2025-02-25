@@ -795,7 +795,13 @@
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/20531</comment>
 				<impl>openj9</impl>
-				<platform>^(?!.*linux).*$</platform>
+				<platform>^(?!.*linux|aarch64_mac).*$</platform>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/20531</comment>
+				<impl>openj9</impl>
+				<platform>aarch64_mac.*</platform>
+				<version>[8, 11]</version>
 			</disable>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
@@ -1621,6 +1627,7 @@
 		<disables>
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<platform>^((?!(x86-64_linux)).)*$</platform>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
