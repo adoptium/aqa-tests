@@ -609,16 +609,16 @@ generate_dockerfile() {
     build=$7
     platform=$8
     base_docker_registry_dir="$9"
-    check_external_custom_test=$10
+    check_external_custom=${10}
 
     if [[ "$check_external_custom" == "1" ]]; then
         tag_version=${EXTERNAL_CUSTOM_BRANCH}
     fi
 
     if [[ "$check_external_custom" == "1" ]]; then
-        set_external_custom_test_info ${test} ${check_external_custom_test}
+        set_external_custom_test_info ${test} ${check_external_custom}
     else
-        set_test_info ${test} ${check_external_custom_test}
+        set_test_info ${test} ${check_external_custom}
     fi
 
     jhome="/opt/java/openjdk"
