@@ -491,7 +491,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ "$check_external_custom_test" == "1" ]]; then 
+    if [[ "$check_external_custom" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -565,7 +565,7 @@ print_external_custom_parameters(){
     echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
             "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
             "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
-            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+            "\nENV EXTERNAL_CUSTOM_BRANCH ${EXTERNAL_CUSTOM_BRANCH}" \
             "\n" >> ${file}
 
 }
@@ -609,16 +609,16 @@ generate_dockerfile() {
     build=$7
     platform=$8
     base_docker_registry_dir="$9"
-    check_external_custom_test=$10
+    check_external_custom=${10}
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
-        tag_version=${EXTERNAL_REPO_BRANCH}
+    if [[ "$check_external_custom" == "1" ]]; then
+        tag_version=${EXTERNAL_CUSTOM_BRANCH}
     fi
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
-        set_external_custom_test_info ${test} ${check_external_custom_test}
+    if [[ "$check_external_custom" == "1" ]]; then
+        set_external_custom_test_info ${test} ${check_external_custom}
     else
-        set_test_info ${test} ${check_external_custom_test}
+        set_test_info ${test} ${check_external_custom}
     fi
 
     jhome="/opt/java/openjdk"
@@ -696,7 +696,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
+    if [[ "$check_external_custom" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};

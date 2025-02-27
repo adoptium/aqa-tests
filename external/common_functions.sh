@@ -200,11 +200,11 @@ function getMatchingPackagesKeys() {
 # Used for external_custom tests
 function set_external_custom_test_info(){
     test=$1
-    check_external_custom_test=$2
+    check_external_custom=$2
     github_url="${EXTERNAL_CUSTOM_REPO}"
     test_command="${EXTERNAL_TEST_CMD}"
     test_results="testResults"
-    tag_version="${EXTERNAL_REPO_BRANCH}"
+    tag_version="${EXTERNAL_CUSTOM_BRANCH}"
     environment_variable="MODE=java"
     maven_version="3.8.5"
     packages="git"
@@ -213,7 +213,7 @@ function set_external_custom_test_info(){
 # Set the valid OSes for the current architectures.
 function set_test_info() {
     local test=$1
-    check_external_custom_test=$2
+    check_external_custom=$2
     local  path_to_file=$(cd $(dirname "$0") && pwd)
     echo ${path_to_file}
     # global settings will be amend to local ones
