@@ -270,7 +270,7 @@ timestamps{
             SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
             // Block dockerAgents on adoptium CI for riscv64 until we make it work
             // This will allow RISC-V test jobs to queue up and not hang
-            if ( env.JENKINS_URL.contains("ci.adoptium.net")) {
+            if ( env.JENKINS_URL.contains("ci.adoptium.net") || env.JENKINS_URL.contains("ci.eclipse.org/temurin-compliance") ) {
                 dockerAgents = null
             } else {
                 dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
