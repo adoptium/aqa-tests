@@ -130,13 +130,12 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 endif
 
 CUSTOM_JCK_JVM_OPTS :=
-ifneq ($(filter "customJvmOpts=%", $(APPLICATION_OPTIONS)),)
-        CUSTOM_JCK_JVM_OPTS := $(patsubst "customJvmOpts=","",$(filter "customJvmOpts=%", $(APPLICATION_OPTIONS)))
+ifneq ($(filter customJvmOpts=%, $(APPLICATION_OPTIONS)),)
+        CUSTOM_JCK_JVM_OPTS := $(patsubst customJvmOpts=%,%,$(filter customJvmOpts=%, $(APPLICATION_OPTIONS)))
         JVM_OPTIONS += $(CUSTOM_JCK_JVM_OPTS)
-        $(info Set CUSTOM_JCK_JVM_OPTS = $(CUSTOM_JCK_JVM_OPTS))
-        APPLICATION_OPTIONS := $(filter-out "customJvmOpts=%", $(APPLICATION_OPTIONS))
+        $(info CUSTOM_JCK_JVM_OPTS = $(CUSTOM_JCK_JVM_OPTS))
+        APPLICATION_OPTIONS := $(filter-out customJvmOpts=%, $(APPLICATION_OPTIONS))
 endif
-$(info CUSTOM_JCK_JVM_OPTS = $(CUSTOM_JCK_JVM_OPTS))
 
 JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil workdir=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
