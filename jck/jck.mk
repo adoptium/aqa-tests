@@ -129,6 +129,18 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	APPLICATION_OPTIONS+=$(Q)
 endif
 
+# APPLICATION_OPTIONS can optionally specify customJvmOpts=option1&&option2&&option3
+#   CUSTOM_JCK_JVM_OPTS gets set to the value with the &&'s replaced by space
+#   and then passed to JVM for test execution and agent
+CUSTOM_JCK_JVM_OPTS :=
+ifneq ($(filter customJvmOpts=%, $(APPLICATION_OPTIONS)),)
+        CUSTOM_JCK_JVM_OPTS := $(subst customJvmOpts=,,$(filter customJvmOpts=%, $(APPLICATION_OPTIONS)))
+        CUSTOM_JCK_JVM_OPTS :=$(subst &&, ,$(CUSTOM_JCK_JVM_OPTS))
+        JVM_OPTIONS += $(CUSTOM_JCK_JVM_OPTS)
+        $(info CUSTOM_JCK_JVM_OPTS = $(CUSTOM_JCK_JVM_OPTS))
+        APPLICATION_OPTIONS := $(filter-out customJvmOpts=%, $(APPLICATION_OPTIONS))
+endif
+
 JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil workdir=$(REPORTDIR) testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) spec=$(SPEC) configAltPath=$(CONFIG_ALT_PATH) $(APPLICATION_OPTIONS)
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
 
@@ -139,13 +151,13 @@ ifneq ($(filter aix_ppc-64 zos_390 linux_ppc-64_le linux_390-64, $(SPEC)),)
    PREP = mkdir -p $(WORKSPACE); cp -rf $(CONFIG_ALT_PATH)$(D)jck$(JCK_VERSION_NUMBER)$(D)compiler.jti $(WORKSPACE)$(D); cp -rf $(TEST_ROOT)$(D)jck$(D)jtrunner $(WORKSPACE)
    GEN_JTB = $(PREP); ssh -o StrictHostKeyChecking=no jenkins@$(AGENT_NODE) $(USEQ)$(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(WORKSPACE)$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(WORKSPACE) configAltPath=$(CONFIG_ALT_PATH) agentHost=$(NODE_NAME) task=cmdfilegen spec=$(SPEC) testExecutionType=multijvm
    GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(WORKSPACE) spec=$(SPEC) task=summarygen
-   START_AGENT = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes com.sun.javatest.agent.AgentMain -passive -trace &> $(WORKSPACE)$(D)agent.log &
+   START_AGENT = $(JAVA_TO_TEST) $(CUSTOM_JCK_JVM_OPTS) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes com.sun.javatest.agent.AgentMain -passive -trace &> $(WORKSPACE)$(D)agent.log &
    START_HARNESS = ssh -o StrictHostKeyChecking=no jenkins@$(AGENT_NODE) $(REFERENCE_JAVA_CMD) -jar $(JCK_ROOT)$(D)JCK-runtime-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar -config $(WORKSPACE)$(D)compiler.jti @$(WORKSPACE)$(D)generated.jtb
 else
    REFERENCE_JAVA_CMD=$(TEST_ROOT)/../additionaljdkbinary/bin/java
    GEN_JTB = $(REFERENCE_JAVA_CMD) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) testJava=$(JAVA_TO_TEST) riJava=$(REFERENCE_JAVA_CMD) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) task=cmdfilegen spec=$(SPEC) testExecutionType=multijvm 
    GEN_SUMMARY = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)$(D)jck$(D)jtrunner$(D)bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) spec=$(SPEC) task=summarygen
-   START_AGENT = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(Q)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)$(D)agent.log &
+   START_AGENT = $(JAVA_TO_TEST) $(CUSTOM_JCK_JVM_OPTS) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)jck.policy -classpath $(Q)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar$(P)$(JCK_ROOT)$(D)JCK-compiler-$(JCK_VERSION_NUMBER)$(D)classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)$(D)agent.log &
    START_HARNESS = $(REFERENCE_JAVA_CMD) -jar $(JCK_ROOT)$(D)JCK-runtime-$(JCK_VERSION_NUMBER)$(D)lib$(D)javatest.jar -config $(CONFIG_ALT_PATH)$(D)jck$(JCK_VERSION_NUMBER)$(D)compiler.jti @$(REPORTDIR)$(D)generated.jtb
 endif
 
@@ -154,7 +166,7 @@ $(shell chmod +x $(TEST_ROOT)$(D)jck$(D)agent-drive.sh)
 START_MULTI_JVM_COMP_TEST = $(TEST_ROOT)$(D)jck$(D)agent-drive.sh '$(START_AGENT)' '$(START_HARNESS)'
 GEN_JTB_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) testJava=$(JAVA_TO_TEST) riJava=$(JAVA_TO_TEST) task=cmdfilegen spec=$(SPEC) $(APPLICATION_OPTIONS)
 GEN_SUMMARY_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) configAltPath=$(CONFIG_ALT_PATH) workdir=$(REPORTDIR) spec=$(SPEC) task=summarygen
-START_AGENT_GENERIC = $(JAVA_TO_TEST) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy -classpath $(Q)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar$(P)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)/agent.log &
+START_AGENT_GENERIC = $(JAVA_TO_TEST) $(CUSTOM_JCK_JVM_OPTS) -Djavatest.security.allowPropertiesAccess=true -Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy -classpath $(Q)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar$(P)$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/classes$(Q) com.sun.javatest.agent.AgentMain -passive -trace &> $(REPORTDIR)/agent.log &
 START_RMIREG = $(TEST_JDK_HOME)/bin/rmiregistry > $(REPORTDIR)$(D)rmiregistry.log &
 START_RMID = $(TEST_JDK_HOME)/bin/rmid -J-Dsun.rmi.activation.execPolicy=none -J-Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy > $(REPORTDIR)$(D)rmid.log &
 START_TNAMESRV = $(TEST_JDK_HOME)/bin/tnameserv -ORBInitialPort 9876 > $(REPORTDIR)$(D)tnameserv.log &
