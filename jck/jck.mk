@@ -129,9 +129,13 @@ ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	APPLICATION_OPTIONS+=$(Q)
 endif
 
+# APPLICATION_OPTIONS can optionally specify customJvmOpts=option1&&option2&&option3
+#   CUSTOM_JCK_JVM_OPTS gets set to the value with the &&'s replaced by space
+#   and then passed to JVM for test execution and agent
 CUSTOM_JCK_JVM_OPTS :=
 ifneq ($(filter customJvmOpts=%, $(APPLICATION_OPTIONS)),)
-        CUSTOM_JCK_JVM_OPTS := $(patsubst customJvmOpts=%,%,$(filter customJvmOpts=%, $(APPLICATION_OPTIONS)))
+        CUSTOM_JCK_JVM_OPTS := $(subst customJvmOpts=,,$(filter customJvmOpts=%, $(APPLICATION_OPTIONS)))
+        CUSTOM_JCK_JVM_OPTS :=$(subst &&, ,$(CUSTOM_JCK_JVM_OPTS))
         JVM_OPTIONS += $(CUSTOM_JCK_JVM_OPTS)
         $(info CUSTOM_JCK_JVM_OPTS = $(CUSTOM_JCK_JVM_OPTS))
         APPLICATION_OPTIONS := $(filter-out customJvmOpts=%, $(APPLICATION_OPTIONS))
