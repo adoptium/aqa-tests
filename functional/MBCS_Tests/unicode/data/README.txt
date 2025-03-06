@@ -104,3 +104,18 @@ https://www.unicode.org/Public/15.1.0/ucd/Scripts.txt
 
 UnicodeData-15.1.0.txt
 https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt
+
+Blocks-16.0.0.txt
+https://www.unicode.org/Public/16.0.0/ucd/Blocks.txt
+
+NormalizationTest-16.0.0.txt
+https://www.unicode.org/Public/16.0.0/ucd/NormalizationTest.txt
+
+PropertyValueAliases-16.0.0.txt
+https://www.unicode.org/Public/16.0.0/ucd/PropertyValueAliases.txt
+
+Scripts-16.0.0.txt
+https://www.unicode.org/Public/16.0.0/ucd/Scripts.txt
+
+UnicodeData-16.0.0.txt
+https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
