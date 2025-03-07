@@ -543,6 +543,8 @@ public class JavatestUtil {
 			if ( testsRequireDisplay(tests) ) {
 				if (spec.contains("zos") || spec.contains("alpine-linux") || spec.contains("riscv")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
+                                        // Ensure JVM graphical device and system are headless, regardless of environment DISPLAY
+                                        jvmOpts +=  "-Djava.awt.headless=true ";
 				}
 				else {
 					if ( !spec.contains("win") ) {
