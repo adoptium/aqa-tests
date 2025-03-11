@@ -514,6 +514,11 @@
                                 <comment>backlog/issues/608 : To be run manually</comment>
                                 <impl>openj9</impl>
                         </disable>
+                        <disable>
+                                <comment>Disabled on aix and windows as no xvfb capable of robot interaction</comment>
+                                <platform>ppc64_aix|x86-64_windows|x86-32_windows|aarch64_windows</platform>
+                                <impl>hotspot</impl>
+                        </disable>
                 </disables>
                 <variations>
                         <variation>NoOptions</variation>
