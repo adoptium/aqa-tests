@@ -88,11 +88,29 @@ public class GenerateTable {
                         if (!allColums.get(x).equals(test)) {
                             throw new RuntimeException("column " + x + " should be " + allColums.get(x) + " but is " + test + " for " + jdk + "/" + os);
                         }
-                        line = line + status + "|";
+                        line = line + statusToColor(status) + "|";
                     }
                 }
                 System.out.println("|" + jdk + "/" + os + osSuffix + line);
             }
+        }
+    }
+
+    private String statusToColor(String status) {
+        return "<span style='color:" + getColor(status) + ";'>" + status + "</span>";
+    }
+
+    private String getColor(String status) {
+        String color = "yellow";
+        switch (status) {
+            case "PASSED":
+                return color = "green";
+            case "FAILED":
+                return color = "red";
+            case "ERROR":
+                return color = "DarkRed";
+            default:
+                return color = "blue";
         }
     }
 
