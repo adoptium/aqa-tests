@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class GenerateTable {
 
     private static final String TEST_EXCLUDE_LIST = "TEST_EXCLUDE_LIST";
+    public static final String HASH_AND_DIR = "8e6b52ff5059ed40f22ffac52800b887a1b50239/external/results";
     private final String dir;
     private final String excludes;
 
@@ -62,10 +63,11 @@ public class GenerateTable {
         });
         String headerBody = allColums.stream().collect(Collectors.joining(" | "));
         System.out.println("## pass/fail matrix 1.1.2025");
-        System.out.println("pass: " + statusToColor("PASSED"));
-        System.out.println("fail: " + statusToColor("FAILED"));
-        System.out.println("err or: " + statusToColor("ERROR"));
-        System.out.println("unknown: " + statusToColor("blah"));
+        System.out.println("full/raw links: ");
+        System.out.println("pass: " + statusToColor("PASSED") + statusToColor("PASSED"));
+        System.out.println("fail: " + statusToColor("FAILED") + statusToColor("FAILED"));
+        System.out.println("error: " + statusToColor("ERROR") + statusToColor("ERROR"));
+        System.out.println("unknown: " + statusToColor("blah") + statusToColor("bleh"));
         System.out.println("|   | " + headerBody + " |");
         String headerDelimiter = allColums.stream().map(a -> "---").collect(Collectors.joining("|"));
         System.out.println("|---|" + headerDelimiter + " |");
@@ -92,12 +94,20 @@ public class GenerateTable {
                         if (!allColums.get(x).equals(test)) {
                             throw new RuntimeException("column " + x + " should be " + allColums.get(x) + " but is " + test + " for " + jdk + "/" + os);
                         }
-                        line = line + statusToColor(status) + "|";
+                        line = line + statusToNiceLink(file, os, jdk, status) + statusToRawLink(file, os, jdk, status) + "|";
                     }
                 }
                 System.out.println("|" + jdk + "/" + os + osSuffix + line);
             }
         }
+    }
+
+    private String statusToNiceLink(String file, String os, String jdk, String status) {
+        return "<a href='https://github.com/judovana/aqa-tests/blob/" + HASH_AND_DIR + "/" + jdk + "/" + os + "/" + file + "'>" + statusToColor(status) + "<a>";
+    }
+
+    private String statusToRawLink(String file, String os, String jdk, String status) {
+        return "<a href='https://raw.githubusercontent.com/judovana/aqa-tests/" + HASH_AND_DIR + "/" + jdk + "/" + os + "/" + file + "'>" + statusToColor(status) + "<a>";
     }
 
 
