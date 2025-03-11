@@ -51,6 +51,7 @@ public class JavatestUtil {
 	private static String testExecutionType;
 	private static String withAgent;
 	private static String interactive;
+        private static String robot;
 	private static String extraJvmOptions = "";
 	private static String concurrencyString;
         private static String timeoutFactorString;
@@ -113,6 +114,7 @@ public class JavatestUtil {
 	private static final String TEST_EXECUTION_TYPE = "testExecutionType";
 	private static final String WITH_AGENT = "withAgent";
 	private static final String INTERACTIVE = "interactive";
+        private static final String ROBOT = "robot";
 	private static final String CONFIG = "config";
 	private static final String CONCURRENCY = "concurrency";
         private static final String TIMEOUT_FACTOR = "timeoutFactor";
@@ -211,6 +213,7 @@ public class JavatestUtil {
 		testExecutionType = testArgs.get(TEST_EXECUTION_TYPE) == null ? "default" : testArgs.get(TEST_EXECUTION_TYPE);
 		withAgent = testArgs.get(WITH_AGENT) == null ? "off" : testArgs.get(WITH_AGENT);
 		interactive = testArgs.get(INTERACTIVE) == null ? "no" : testArgs.get(INTERACTIVE);
+                robot = testArgs.get(ROBOT) == null ? "no" : testArgs.get(ROBOT);
 		concurrencyString = testArgs.get("concurrency") == null ? "NULL" : testArgs.get("concurrency");
                 timeoutFactorString = testArgs.get(TIMEOUT_FACTOR) == null ? "NULL" : testArgs.get(TIMEOUT_FACTOR);
 		config = testArgs.get(CONFIG) == null ? "NULL" : testArgs.get(CONFIG);
@@ -515,7 +518,11 @@ public class JavatestUtil {
 			}
 			
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				keyword += "&!robot";
+				if ( robot.equals("yes") ) {
+					keyword += "&robot";
+				} else {
+					keyword += "&!robot";
+				}
 			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
@@ -543,6 +550,8 @@ public class JavatestUtil {
 			if ( testsRequireDisplay(tests) ) {
 				if (spec.contains("zos") || spec.contains("alpine-linux") || spec.contains("riscv")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
+                                        // Ensure JVM graphical device and system are headless, regardless of environment DISPLAY
+                                        jvmOpts +=  "-Djava.awt.headless=true ";
 				}
 				else {
 					if ( !spec.contains("win") ) {
