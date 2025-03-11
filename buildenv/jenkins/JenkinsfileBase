@@ -981,10 +981,30 @@ def post(output_name) {
 def testBuild() {
 	TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
+		boolean runMulticastCmd = false
+
+		if (JOB_NAME.contains("special.jck") || JOB_NAME.contains("extended.openjdk") || TARGET == "special.jck" || TARGET == "extended.openjdk" || TARGET.contains("_nio") || TARGET.contains("_net") || TARGET.contains("_custom")) {
+			// only enable on linux based platforms atm
+			if (PLATFORM.contains('linux')) {
+				def statusCode =  sh returnStatus: true, script: """
+					which activate_multicast
+					"""
+					echo "which activate_multicast status code: ${statusCode}"
+				if (statusCode == 0) {
+					runMulticastCmd = true
+				}
+			}
+		}
+		echo "runMulticastCmd: ${runMulticastCmd}"
 		try {
 			addJobDescription()
 			setup()
 			addGrinderLink()
+
+			if (runMulticastCmd) {
+				echo "sudo activate_multicast"
+				sh "sudo activate_multicast"
+			}
 			// prepare environment and compile test projects
 			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
 				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
@@ -998,6 +1018,11 @@ def testBuild() {
 		} finally {
 			// Terminate any left over test job processes
 			terminateTestProcesses()
+
+			if (runMulticastCmd) {
+				echo "sudo deactivate_multicast"
+				sh "sudo deactivate_multicast"
+			}
 
 			if (!params.KEEP_WORKSPACE) {
 				forceCleanWS()
