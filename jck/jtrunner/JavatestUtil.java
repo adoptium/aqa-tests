@@ -140,6 +140,7 @@ public class JavatestUtil {
 		essentialParameters.add(TEST_EXECUTION_TYPE);
 		essentialParameters.add(WITH_AGENT);
 		essentialParameters.add(INTERACTIVE);
+		essentialParameters.add(ROBOT);
 		essentialParameters.add(CONFIG);
 		essentialParameters.add(CONCURRENCY);
                 essentialParameters.add(TIMEOUT_FACTOR);
