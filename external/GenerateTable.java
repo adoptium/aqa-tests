@@ -62,6 +62,10 @@ public class GenerateTable {
         });
         String headerBody = allColums.stream().collect(Collectors.joining(" | "));
         System.out.println("## pass/fail matrix 1.1.2025");
+        System.out.println("pass: " + statusToColor("PASSED"));
+        System.out.println("fail: " + statusToColor("FAILED"));
+        System.out.println("err or: " + statusToColor("ERROR"));
+        System.out.println("unknown: " + statusToColor("blah"));
         System.out.println("|   | " + headerBody + " |");
         String headerDelimiter = allColums.stream().map(a -> "---").collect(Collectors.joining("|"));
         System.out.println("|---|" + headerDelimiter + " |");
@@ -96,21 +100,18 @@ public class GenerateTable {
         }
     }
 
-    private String statusToColor(String status) {
-        return "<span style='color:" + getColor(status) + ";'>" + status + "</span>";
-    }
 
-    private String getColor(String status) {
-        String color = "yellow";
+    private String statusToColor(String status) {
+        String color = ":blue_heart:";
         switch (status) {
             case "PASSED":
-                return color = "green";
+                return color = ":green_heart:";
             case "FAILED":
-                return color = "red";
+                return color = ":broken_heart:";
             case "ERROR":
-                return color = "DarkRed";
+                return color = ":broken_heart::broken_heart:";
             default:
-                return color = "blue";
+                return color = ":purple_heart:";
         }
     }
 
