@@ -1,0 +1,62 @@
+ 
+export TEST_JDK_HOME=/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+export EXTRA_DOCKER_ARGS=-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk ;
+export BUILD_LIST=external/scala ;
+export EXTERNAL_AQA_IMAGE=fedora:40;
+make compile
+make _scala_test
+
+JAVA_HOME is set to /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+
+BUILD FAILED
+/home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml:58: The following error occurred while executing this line:
+/home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml:37: Error running /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/javac compiler
+
+Total time: 0 seconds
+1
+make: *** [makefile:105: compileTools] Error 1
+JAVA_HOME is set to /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=scala_test TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec= --microArch="" --osLabel="" --jdkVersion= --impl= --vendor="" --buildList=external/scala --iterations=1 --aotIterations= --testFlag= --testTarget=scala_test --testList= --numOfMachines= --testTime= --TRSSURL= 
+/bin/sh: line 1: /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/java: No such file or directory
+make[1]: *** [makeGen.mk:45: autogen] Error 127
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:60: _scala_test] Error 2
+compilation: 2
+runtime: 2

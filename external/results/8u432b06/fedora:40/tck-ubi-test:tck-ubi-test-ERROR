@@ -1,0 +1,199 @@
+JAVA_HOME is set to /tmp/tmp.d5qkujfeEy/jdk8u432-b06
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.d5qkujfeEy/jdk8u432-b06 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/autoGenEnv.mk
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/utils.mk
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+
+dist:
+      [jar] Building jar: /home/jvanek/git/aqa-tests/TKG/bin/TestKitGen.jar
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+0
+/tmp/tmp.d5qkujfeEy/jdk8u432-b06/bin/java -cp ./bin/TestKitGen.jar org.openj9.envInfo.EnvDetector
+Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!
+microArchOutput: model name	: 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz
+****************************** MACHINE INFO ******************************
+File path : /home/jvanek/git/aqa-tests/TKG
+Free Physical Memory Size : 7793795072
+Free space (bytes) : 278999498752
+Total Physical Memory Size : 67106488320
+Total space (bytes) : 632976211968
+Usable space (bytes) : 246770888704
+antVersion : Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+cpuCores : 16
+curlVersion : 
+	curl 8.2.1 (x86_64-redhat-linux-gnu) libcurl/8.2.1 OpenSSL/3.1.4 zlib/1.2.13 libidn2/2.3.7 nghttp2/1.55.1
+	Release-Date: 2023-07-26
+	Protocols: file ftp ftps http https
+	Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz SPNEGO SSL threadsafe UnixSockets
+docker : not on docker
+gcc version : 13
+gclibc version : ldd (GNU libc) 2.38
+gdb version : GNU gdb (Fedora Linux) 15.1-1.fc39
+lldb version : Command could not be executed
+makeVersion : 
+	GNU Make 4.4.1
+	Built for x86_64-redhat-linux-gnu
+	Copyright (C) 1988-2023 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+perlVersion : 
+	
+	This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-thread-multi
+	(with 15 registered patches, see perl -V for more detail)
+	
+	Copyright 1987-2023, Larry Wall
+	
+	Perl may be copied only under the terms of either the Artistic License or the
+	GNU General Public License, which may be found in the Perl 5 source kit.
+	
+	Complete documentation for Perl, including FAQ lists, should be found on
+	this system using "man perl" or "perldoc perl".  If you have access to the
+	Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+	
+procArch : unknown
+sysArch : x86_64
+sysOS : Linux
+ulimit : 
+	real-time non-blocking time  (microseconds, -R) unlimited
+	core file size              (blocks, -c) unlimited
+	data seg size               (kbytes, -d) unlimited
+	scheduling priority                 (-e) 0
+	file size                   (blocks, -f) unlimited
+	pending signals                     (-i) 255386
+	max locked memory           (kbytes, -l) 8192
+	max memory size             (kbytes, -m) unlimited
+	open files                          (-n) 524288
+	pipe size                (512 bytes, -p) 8
+	POSIX message queues         (bytes, -q) 819200
+	real-time priority                  (-r) 0
+	stack size                  (kbytes, -s) 8192
+	cpu time                   (seconds, -t) unlimited
+	max user processes                  (-u) 255386
+	virtual memory              (kbytes, -v) unlimited
+	file locks                          (-x) unlimited
+uname : Linux fedora 6.11.6-100.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Nov  1 16:07:59 UTC 2024 x86_64 GNU/Linux
+vmVendor : Oracle Corporation
+vmVersion : 25.432-b06
+xlc version : bash: line 1: xlC: command not found
+**************************************************************************
+
+System.getProperty('java.vm.name')=OpenJDK 64-Bit Server VM
+
+System.getProperty('java.vendor')=Temurin
+
+Warning: cannot determine vendor, use System.getProperty('java.vendor')=Temurin directly.
+
+System.getProperty('os.name')=Linux
+
+System.getProperty('os.arch')=amd64
+
+System.getProperty('java.fullversion')=null
+
+System.getProperty('sun.arch.data.model')=64
+
+make -f clean.mk cleanBuild
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../../jvmtest
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f compile.mk compile
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f scripts/build_test.xml -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DBUILD_ROOT=/home/jvanek/git/aqa-tests/TKG/../../jvmtest -DJDK_VERSION=8 -DJDK_IMPL=hotspot -DJDK_VENDOR=Temurin -DJCL_VERSION=latest -DBUILD_LIST=external/tck-ubi-test -DRESOURCES_DIR=/home/jvanek/git/aqa-tests/TKG/../../jvmtest/TestConfig/resources -DSPEC=linux_x86-64 -DTEST_JDK_HOME=/tmp/tmp.d5qkujfeEy/jdk8u432-b06 -DJVM_VERSION=openjdk8 -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib  2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_test.xml
+     [echo]  build.list is TestConfig/build.xml,external/tck-ubi-test/build.xml 
+
+-create_test_directory:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest
+
+stage_test_material:
+     [copy] Copying 188 files to /home/jvanek/git/jvmtest
+     [copy] Copied 133 empty directories to 43 empty directories under /home/jvanek/git/jvmtest
+
+build:
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest/TestConfig
+
+build:
+     [copy] Copying 22 files to /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copied 9 empty directories to 4 empty directories under /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/TestConfig
+    [mkdir] Created dir: /home/jvanek/git/jvmtest/external/tck-ubi-test/jck_root
+
+build:
+
+stage_jck_material:
+     [copy] Copying 1 file to /home/jvanek/git/jvmtest/external/tck-ubi-test
+     [echo] /home/jvanek/git/aqa-tests/TKG/../../jvmtest/external/tck-ubi-test/update_git_material.sh /home/jvanek/git/aqa-tests/TKG/../../jvmtest/external/tck-ubi-test/jck_root/JCK8-unzipped ${env.JCK_GIT_REPO} ${env.JCK_GIT_BRANCH} ${isZOS}
+     [exec] bash: /home/jvanek/git/aqa-tests/TKG/../../jvmtest/external/tck-ubi-test/update_git_material.sh: No such file or directory
+
+BUILD FAILED
+/home/jvanek/git/aqa-tests/TKG/scripts/build_test.xml:95: The following error occurred while executing this line:
+/home/jvanek/git/aqa-tests/external/tck-ubi-test/build.xml:68: The following error occurred while executing this line:
+/home/jvanek/git/aqa-tests/external/tck-ubi-test/build.xml:26: exec returned: 127
+
+Total time: 0 seconds
+1
+make[1]: *** [compile.mk:45: compile] Error 1
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:78: compile] Error 2
+JAVA_HOME is set to /tmp/tmp.d5qkujfeEy/jdk8u432-b06
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=tck-ubi-test TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.d5qkujfeEy/jdk8u432-b06/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec=linux_x86-64 --microArch="" --osLabel="" --jdkVersion=8 --impl=hotspot --vendor="Temurin" --buildList=external/tck-ubi-test --iterations=1 --aotIterations= --testFlag= --testTarget=tck-ubi-test --testList= --numOfMachines= --testTime= --TRSSURL= 
+Modes data parsed from resources/modes.xml and resources/ottawa.csv.
+
+Starting to generate test make files.
+
+Parsing /home/jvanek/git/aqa-tests/TKG/../external/tck-ubi-test/playlist.xml
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/utils.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/rerun.mk
+
+Make files are generated successfully.
+
+Error: cannot find the following tests: tck-ubi-test (note: group target such as sanity is not accepted inside testList)
+
+make[1]: *** [makeGen.mk:45: autogen] Error 1
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:60: _tck-ubi-test] Error 2
+compilation: 2
+runtime: 2
