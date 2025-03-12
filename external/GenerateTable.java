@@ -146,8 +146,11 @@ public class GenerateTable {
                 return color = ":green_heart:";
             case "FAILED":
                 return color = ":broken_heart:";
+//                return color = ":heart:";  do not the swap fromm broken_heart->heart and 2xbroken_heart to 1x broken_heart ; looks weird
             case "ERROR":
-                return color = ":broken_heart::broken_heart:";
+//                return color = ":broken_heart::broken_heart:";
+                return color = ":boom:";
+//                return color = ":broken_heart:"; do not the swap fromm broken_heart->heart and 2xbroken_heart to 1x broken_heart ; looks weird
             case "skipped": // this is artificial, normlaly it is returned only from file content
                 return color = ":yellow_heart:";
             default:
