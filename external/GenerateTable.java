@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -64,10 +65,12 @@ public class GenerateTable {
         String headerBody = allColums.stream().collect(Collectors.joining(" | "));
         System.out.println("## pass/fail matrix 1.1.2025");
         System.out.println("full/raw links: ");
-        System.out.println("pass: " + statusToColor("PASSED") + statusToColor("PASSED"));
-        System.out.println("fail: " + statusToColor("FAILED") + statusToColor("FAILED"));
-        System.out.println("error: " + statusToColor("ERROR") + statusToColor("ERROR"));
-        System.out.println("unknown: " + statusToColor("blah") + statusToColor("bleh"));
+        System.out.println("pass: " + statusToColor("PASSED", null) + statusToColor("PASSED", null));
+        System.out.println("fail: " + statusToColor("FAILED", null) + statusToColor("FAILED", null));
+        System.out.println("error: " + statusToColor("ERROR", null) + statusToColor("ERROR", null));
+        System.out.println("unknown: " + statusToColor("blah", null) + statusToColor("bleh", null));
+        System.out.print("skipped: " + statusToColor("skipped", null) + statusToColor("skipped", null));
+        System.out.println(" - most likely ilegal combination of conditions, most likely bad jdk version. This is iterating through targets, wich may be excluded in playlist");
         System.out.println("|   | " + headerBody + " |");
         String headerDelimiter = allColums.stream().map(a -> "---").collect(Collectors.joining("|"));
         System.out.println("|---|" + headerDelimiter + " |");
@@ -94,6 +97,7 @@ public class GenerateTable {
                         if (!allColums.get(x).equals(test)) {
                             throw new RuntimeException("column " + x + " should be " + allColums.get(x) + " but is " + test + " for " + jdk + "/" + os);
                         }
+                        //TODO add link to playlist.xml
                         line = line + statusToNiceLink(file, os, jdk, status) + statusToRawLink(file, os, jdk, status) + "|";
                     }
                 }
@@ -102,16 +106,29 @@ public class GenerateTable {
         }
     }
 
-    private String statusToNiceLink(String file, String os, String jdk, String status) {
-        return "<a href='https://github.com/judovana/aqa-tests/blob/" + HASH_AND_DIR + "/" + jdk + "/" + os + "/" + file + "'>" + statusToColor(status) + "<a>";
+    private String statusToNiceLink(String file, String os, String jdk, String status) throws IOException {
+        String id=jdk + "/" + os + "/" + file;
+        return "<a href='https://github.com/judovana/aqa-tests/blob/" + HASH_AND_DIR + "/" + id + "'>" + statusToColor(status, id) + "<a>";
     }
 
-    private String statusToRawLink(String file, String os, String jdk, String status) {
-        return "<a href='https://raw.githubusercontent.com/judovana/aqa-tests/" + HASH_AND_DIR + "/" + jdk + "/" + os + "/" + file + "'>" + statusToColor(status) + "<a>";
+    private String statusToRawLink(String file, String os, String jdk, String status) throws IOException {
+        String id=jdk + "/" + os + "/" + file;
+        return "<a href='https://raw.githubusercontent.com/judovana/aqa-tests/" + HASH_AND_DIR + "/" + jdk + "/" + os + "/" + file + "'>" + statusToColor(status, id) + "<a>";
     }
 
 
-    private String statusToColor(String status) {
+    private boolean isSkipped(String status, String id) throws IOException {
+        if (id == null) { return false; }
+        File f = new File(dir+"/"+id);
+        if (! f.exists()  ) { return false; }
+        String content = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+        return content.contains("Error: cannot find the following tests: " + id.replaceAll(".*:", "").replace("-"+status, ""));
+    }
+
+    private String statusToColor(String status, String id) throws IOException {
+        if (isSkipped(status, id)) {
+          return ":yellow_heart:";
+        }
         String color = ":blue_heart:";
         switch (status) {
             case "PASSED":
@@ -120,6 +137,8 @@ public class GenerateTable {
                 return color = ":broken_heart:";
             case "ERROR":
                 return color = ":broken_heart::broken_heart:";
+            case "skipped": // this is artificial, normlaly it is returned only from file content
+                return color = ":yellow_heart:";
             default:
                 return color = ":purple_heart:";
         }
