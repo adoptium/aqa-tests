@@ -71,6 +71,7 @@ public class GenerateTable {
         System.out.println("unknown: " + statusToColor("blah", null) + statusToColor("bleh", null));
         System.out.print("skipped: " + statusToColor("skipped", null) + statusToColor("skipped", null));
         System.out.println(" - most likely ilegal combination of conditions, most likely bad jdk version. This is iterating through targets, wich may be excluded in playlist");
+        System.out.println(" From other links `Dir` `Test.sh` `Build.xml` `test.Properties` `Readme.md` and `playlist.Xml` - only dir is mandatory, although playlist and build are usually there too.");
         System.out.println("|   | " + headerBody + " |");
         String headerDelimiter = allColums.stream().map(a -> "---").collect(Collectors.joining("|"));
         System.out.println("|---|" + headerDelimiter + " |");
@@ -97,14 +98,24 @@ public class GenerateTable {
                         if (!allColums.get(x).equals(test)) {
                             throw new RuntimeException("column " + x + " should be " + allColums.get(x) + " but is " + test + " for " + jdk + "/" + os);
                         }
-                        //TODO add link to playlist.xml
-                        line = line + statusToNiceLink(file, os, jdk, status) + statusToRawLink(file, os, jdk, status) + "|";
+                        line = line + statusToNiceLink(file, os, jdk, status) + statusToRawLink(file, os, jdk, status) + linksToPlayList(file, status)  + "|";
                     }
                 }
                 System.out.println("|" + jdk + "/" + os + osSuffix + line);
             }
         }
     }
+    private String linksToPlayList(String file, String status) throws IOException {
+        String dir=file.replaceAll(":.*", "");
+        String l1= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir + "'>d<a>";
+        String l2= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir +"/test.sh'>t<a>";
+        String l3= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir +"/build.xml'>b<a>";
+        String l4= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir +"/test.properties'>p<a>";
+        String l5= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir +"/README.md'>r<a>";
+        String l6= "<a href='https://github.com/adoptium/aqa-tests/tree/master/external/" + dir +"/playlist.xml'>x<a>";
+        return l1 + l2 + l3 + l4 + l5 + l6;
+    }
+
 
     private String statusToNiceLink(String file, String os, String jdk, String status) throws IOException {
         String id=jdk + "/" + os + "/" + file;
