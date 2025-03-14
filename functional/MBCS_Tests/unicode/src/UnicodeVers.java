@@ -41,6 +41,7 @@ public class UnicodeVers {
     public static String[] getFiles(String prefix) {
         for (String s : versions) {
             if (s.compareTo(javaVersion) <= 0) {
+                System.out.println("Version is ::::::::"+s);
                 String[] sa = prop.getProperty(s,"").split("\\s*,\\s*");
                 ArrayList<String> list = new ArrayList<>();
                 for (int i = 0; i < sa.length; ++i) {
