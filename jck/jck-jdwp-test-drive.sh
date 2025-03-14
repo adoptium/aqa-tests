@@ -39,6 +39,7 @@ do
     startJCKAgent
     # cp generated.jtb temp_jdwp.jtb 
     # Replace tests=vm/jdwp line with tests=<TEST_CASE>
+    sed -i -e 's/tests vm/jdwp/tests $test/g' 
     # Not sure what to do here ^^
     startTNameServ "$2"
 	startJCKHarness "$3"
