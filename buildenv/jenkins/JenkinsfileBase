@@ -981,10 +981,34 @@ def post(output_name) {
 def testBuild() {
 	TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
+
+		def nodeLabels = ""
+		boolean runMulticastCmd = false
+		if (jenkinsDomain.contains("hyc-runtimes")) {
+			def jenkinsNode = Jenkins.instance.getNode(NODE_NAME)
+			if (jenkinsNode) {
+				nodeLabels = jenkinsNode.getAssignedLabels().collect { it.toString() }.join(" ")
+			}
+			echo "Labels for node ${NODE_NAME}: ${nodeLabels}"
+
+			if (TARGET == "special.jck" || TARGET == "extended.openjdk" || TARGET.contains("_nio") || TARGET.contains("_net") || TARGET.contains("_custom")) {
+				// the activate_multicast cmd can only run on rhel10 and zMetis atm.
+				if (nodeLabels.contains("sw.os.rhel.10") || nodeLabels.contains("hw.arch.s390x.next")) {
+					runMulticastCmd = true
+				}
+			}
+		}
+		echo "runMulticastCmd: ${runMulticastCmd}"
 		try {
 			addJobDescription()
 			setup()
 			addGrinderLink()
+
+			// activate_multicast on hyc-runtimes Jenkins server
+			if (runMulticastCmd) {
+				echo "sudo activate_multicast"
+				sh "sudo activate_multicast"
+			}
 			// prepare environment and compile test projects
 			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
 				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
@@ -996,6 +1020,11 @@ def testBuild() {
 				testExecution()
 			}
 		} finally {
+			// deactivate_multicast on hyc-runtimes Jenkins server
+			if (runMulticastCmd) {
+				echo "sudo deactivate_multicast"
+				sh "sudo deactivate_multicast"
+			}
 			// Terminate any left over test job processes
 			terminateTestProcesses()
 
