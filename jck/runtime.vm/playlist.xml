@@ -40,6 +40,34 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jck-runtime-vm-jdwp-jdk-8-11</testCaseName>
+		<disables>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>backlog/issues/477</comment>
+				<impl>openj9</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(GEN_JTB_GENERIC) tests=vm/jdwp testsuite=RUNTIME concurrency=1; \ 
+		$(EXEC_RUNTIME_TEST_JDWP); \
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=vm/jdwp testsuite=RUNTIME
+		</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+	<test>
 		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
 		<disables>
 			<disable>
@@ -54,8 +82,8 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) tests=vm/jdwp testsuite=RUNTIME concurrency=1; \
-		$(EXEC_RUNTIME_TEST_JDWP); \
+		<command>$(GEN_JTB_GENERIC) tests=vm/jdwp testsuite=RUNTIME concurrency=1; \ 
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
 		$(TEST_STATUS) ; \
 		$(GEN_SUMMARY_GENERIC) tests=vm/jdwp testsuite=RUNTIME
 		</command>
