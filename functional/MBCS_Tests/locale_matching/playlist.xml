@@ -158,6 +158,11 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_locale_matching_zh_CN_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6023</comment>
+			</disable>
+		</disables>
 		<command>LANG=zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
@@ -173,6 +178,11 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_locale_matching_Zh_CN_aix</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6023</comment>
+			</disable>
+		</disables>
 		<command>LANG=Zh_CN perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.aix</platformRequirements>
