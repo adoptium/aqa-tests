@@ -54,10 +54,15 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
+		<!-- GEN_JTB_GENERIC generates the @jtb file
+		take generated jtb and swap out tests vm/jdwp to single tests -->
 		<command>$(GEN_JTB_GENERIC) tests=vm/jdwp testsuite=RUNTIME concurrency=1; \ 
 		$(EXEC_RUNTIME_TEST_JDWP); \
+		<!-- The macro below is in TKG repo in settings.mk -->
 		$(TEST_STATUS) ; \
+		<!-- This (below) will report on the whole test vm/jdwp OR the last single test run if we replace  -->
 		$(GEN_SUMMARY_GENERIC) tests=vm/jdwp testsuite=RUNTIME
+		<!-- Take TEST_STATUS and GEN_SUMMARY_GENERIC and put them in EXEC_RUNTIME_TEST_JDWP in jck.mk as parameters to be run in the startJCKHarness as parameters -->
 		</command>
 		<levels>
 			<level>sanity</level>
@@ -67,6 +72,8 @@
 		</groups>
 	</test>
 	<test>
+	<!-- Create a new test block, ck-runtime-vm-jdwp-8-11, just for 8 11, use <versions> to enable only on 8 and 11
+	Put all changes in there, disable this one below for 8 and 11 -->
 	<test>
 		<testCaseName>jck-runtime-vm-jdwp</testCaseName>
 		<disables>
