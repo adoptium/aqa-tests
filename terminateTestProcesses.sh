@@ -11,6 +11,7 @@ if [ "$OS" = "Windows_NT" ]; then
              CommandLine like '%jdkbinary%java%' or \
              CommandLine like '%java%javatest%' or \
              CommandLine like '%java%-Xfuture%' or \
+             CommandLine like '%java%-Xverify:all%' or \
              CommandLine like '%rmid%' or \
              CommandLine like '%rmiregistry%' or \
              CommandLine like '%tnameserv%' or \
