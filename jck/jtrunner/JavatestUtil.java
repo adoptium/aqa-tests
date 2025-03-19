@@ -786,7 +786,11 @@ public class JavatestUtil {
 			
 
 			if (jckVersionInt > 11) {
-				extraJvmOptions += " --enable-preview -Xfuture ";
+				if (jckVersionInt > 23) {
+					extraJvmOptions += " --enable-preview -Xverify:all ";
+				} else {
+					extraJvmOptions += " --enable-preview -Xfuture ";
+				}
 			}
 			
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
