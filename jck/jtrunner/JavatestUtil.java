@@ -527,6 +527,11 @@ public class JavatestUtil {
 					keyword += (keyword.equals("")) ? "keywords !robot" : "&!robot";
 				}
 			}
+
+			if ( keyword.equals("") ) {
+				// No specific keyword, so default to runtime
+				keyword = "keywords runtime";
+			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
                        
