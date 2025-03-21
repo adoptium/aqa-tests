@@ -487,7 +487,8 @@ public class JavatestUtil {
 			if ( interactive.equals("yes")) {
 				keyword = "keywords interactive";
 			}
-			else { 
+			else if ( !tests.contains("api/java_awt/interactive") ) {
+				// Filter interactives as long as not running a specific interactive custom list that may include interactives/robots
 				keyword = "keywords !interactive";
 			}
 
@@ -520,10 +521,16 @@ public class JavatestUtil {
 			
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
 				if ( robot.equals("yes") ) {
-					keyword += "&robot";
-				} else {
-					keyword += "&!robot";
+					keyword += (keyword.equals("")) ? "keywords robot" : "&robot";
+				} else if ( !tests.contains("api/java_awt/interactive") ) {
+					// Filter robot as long as not running a specific interactive custom list that may include robots
+					keyword += (keyword.equals("")) ? "keywords !robot" : "&!robot";
 				}
+			}
+
+			if ( keyword.equals("") ) {
+				// No specific keyword, so default to runtime
+				keyword = "keywords runtime";
 			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
