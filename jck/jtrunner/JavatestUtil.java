@@ -484,10 +484,11 @@ public class JavatestUtil {
 		// Otherwise 'other' is required because the JCK harness has no inherent knowledge of AIX and zOS.
 		// Runtime settings
 		if (testSuite.equals("RUNTIME")) {
-			if ( interactive.equals("yes") || tests.contains("api/java_awt/interactive") ) {
+			if ( interactive.equals("yes")) {
 				keyword = "keywords interactive";
 			}
-			else {
+			else if ( !tests.contains("api/java_awt/interactive") ) {
+				// Filter interactives as long as not running a specific interactive custom list that may include interactives/robots
 				keyword = "keywords !interactive";
 			}
 
@@ -519,9 +520,10 @@ public class JavatestUtil {
 			}
 			
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
-				if ( robot.equals("yes") || tests.contains("api/java_awt/interactive") ) {
+				if ( robot.equals("yes") ) {
 					keyword += "&robot";
-				} else {
+				} else if ( !tests.contains("api/java_awt/interactive") ) {
+					// Filter robot as long as not running a specific interactive custom list that may include robots
 					keyword += "&!robot";
 				}
 			}
