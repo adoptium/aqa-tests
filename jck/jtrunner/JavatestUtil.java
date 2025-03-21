@@ -521,10 +521,10 @@ public class JavatestUtil {
 			
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
 				if ( robot.equals("yes") ) {
-					keyword += "&robot";
+					keyword += (keyword.equals("")) ? "keywords robot" : "&robot";
 				} else if ( !tests.contains("api/java_awt/interactive") ) {
 					// Filter robot as long as not running a specific interactive custom list that may include robots
-					keyword += "&!robot";
+					keyword += (keyword.equals("")) ? "keywords !robot" : "&!robot";
 				}
 			}
 			
