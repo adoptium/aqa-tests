@@ -137,7 +137,7 @@ Download any artifacts you need from your run as soon as it finishes to attach t
 - When reporting failures in issues, understand that Grinder jobs are transient (not kept for long on Jenkins).
 Sharing a link to the Grinder is only useful for a short time.
 Share the "Rerun in Grinder" link which has details of the impl/version/test target, output statistics & test artifacts in the issue; those are more concrete items when reproducing failures.
-For openjdk test failures, here are some useful triage [instructions](https://github.com/adoptium/aqa-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects).
+For openjdk test failures, here are some useful triage [instructions](https://github.com/adoptium/aqa-tests/wiki/Guidance-for-Creating-OpenJDK-Test-Defects). Rerun failed openjdk subtest function is also available, and the rerun target name depends on the failed test name. The test target name starts with `jdk_` would be set into auto-rerun target `jdk_custom`, while other openjdk tests would be set into auto-rerun target `hotspot_custom`. For example, `jdk_math` rerun subtest uses test target `jdk_custom` and failed subtest name(s), while `hotspot_compiler` uses `hotspot_custom` instead.
 - Proactively delete Grinder runs that you do not need (setup fails or mistake in target, etc.).
 We keep the last 50 runs, and if you delete your unneeded runs immediately, other jobs will stay a little bit longer, giving others more time to grab artifacts.
 
