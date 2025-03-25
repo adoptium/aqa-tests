@@ -23,7 +23,7 @@ startJCKHarness() {
 }
 
 queryVmJdwpTest() {
-    jck_root_path="$1/JCK-runtime-$2/"
+    local jck_root_path="$1/JCK-runtime-$2/"
     java -cp $jck_root_path/lib/javatest.jar com.sun.javatest.finder.ShowTests -finder com.sun.javatest.finder.HTMLTestFinder -end $jck_root_path/tests/testsuite.html -initial vm/jdwp | tr -d "[:blank:]"
 }
 
