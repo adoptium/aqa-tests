@@ -1154,13 +1154,22 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 			artifactoryRepo = repos[0].trim()
 		}
 
-		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
-		if (artifactoryRoorDir.endsWith("/")) {
-			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
+		def artifactoryRootDir = ""
+		if (params.ARTIFACTORY_ROOT_DIR) {
+			artifactoryRootDir = params.ARTIFACTORY_ROOT_DIR
+		} else {
+			// only artifactoryRootDir to Jenkins domain if no ARTIFACTORY_ROOT_DIR and artifactoryRepo does not contain Jenkins domain root dir
+			if (!"${artifactoryRepo}/".contains(getJenkinsDomain())) {
+				artifactoryRootDir = getJenkinsDomain()
+			}
 		}
-		def fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
+		if (artifactoryRootDir.endsWith("/")) {
+			artifactoryRootDir = artifactoryRootDir.substring(0, artifactoryRootDir.length() - 1);
+		}
+		def artifactoryRepoAndDir = artifactoryRootDir ? "${artifactoryRepo}/${artifactoryRootDir}" : artifactoryRepo
+		def fullUploadPath = "${artifactoryRepoAndDir}/${JOB_NAME}/${BUILD_ID}/"
 		if (artifactoryUploadDir) {
-			fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${artifactoryUploadDir}/"
+			fullUploadPath = "${artifactoryRepoAndDir}/${artifactoryUploadDir}/"
 		}
 
 		def uploadSpec = """{
