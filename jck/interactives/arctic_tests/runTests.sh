@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "run arctic command for TARGET=$TESTTARGET"
+# echo "run arctic command for TARGET=$TESTTARGET"
 # Run each testcase defined for a particular target
 # and save the result in a multiple formats
 # where testcases will be in jck_run/arctic/tests
