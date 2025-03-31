@@ -23,7 +23,7 @@
 
 testgrpdir=$1
 
-if [[ -n "$testgrpdir" ]]; then
+if [ -n "$testgrpdir" ]; then
     echo "Running tests from $testgrpdir" 
 else
     echo "Please provide a directory of tests to run"
