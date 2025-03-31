@@ -33,7 +33,7 @@ fi
 echo "Starting player in background with RMI..."
 java -Darctic.logLevel=TRACE -jar build/jars/Arctic.jar -p &
 rc=$?
-if [[ $rc -ne 0 ]]; then
+if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
    exit $rc
 fi
