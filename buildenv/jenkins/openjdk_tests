@@ -300,11 +300,6 @@ timestamps{
                 }
             }
 
-            // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
-            if (JOB_NAME.contains ("sanity.external")) {
-                LABEL += "&&!sw.os.cent.7"
-            }
-
             // JDK23+ isn't supported on machines prior to Mac 11 https://github.com/eclipse-openj9/openj9/issues/19694
             // assume if JDK_VERSION is set to next, JDK_VERSION is 23+
             if (params.JDK_IMPL == "openj9" && PLATFORM == "x86-64_mac" && params.JDK_VERSION) {
