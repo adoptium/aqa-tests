@@ -250,6 +250,11 @@ def setupParallelEnv() {
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				}
+				if (NUM_LIST == 1 && env.JDK_IMPL == "hotspot") {
+					echo "NUM_LIST=1, Fall back to regenerate parallel lists with NUM_MACHINES=${MAX_NUM_MACHINES}."
+					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
+					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+				}
 			} else {
 				PARALLEL_OPTIONS += " TEST_TIME= NUM_MACHINES="
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
