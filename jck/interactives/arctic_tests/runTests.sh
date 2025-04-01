@@ -19,7 +19,7 @@
 
 
 testgrpdir=$1
-echo "First if/then"
+
 if [ -n "$testgrpdir" ]; then
     echo "Running tests from $testgrpdir"
 else
