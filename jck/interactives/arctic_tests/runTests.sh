@@ -12,12 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# echo "run arctic command for TARGET=$TESTTARGET"
-# Run each testcase defined for a particular target
-# and save the result in a multiple formats
-# where testcases will be in jck_run/arctic/tests
-
-
 testgrpdir=$1
 
 if [ -n "$testgrpdir" ]; then
@@ -30,9 +24,8 @@ fi
 echo "Starting player in background with RMI..."
 
 if [ ! -f ${LIB_DIR}/Arctic.jar ]; then
-    echo "unpack Arctic.tar.gz"
+    echo "Arctic.jar not present"
     ls -al ${LIB_DIR}
-    tar -xvzf "${LIB_DIR}/Arctic.tar.gz"
 fi
 
 java -Darctic.logLevel=TRACE -jar ${LIB_DIR}/Arctic.jar -p &
