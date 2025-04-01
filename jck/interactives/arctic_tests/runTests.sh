@@ -22,7 +22,6 @@ testgrpdir=$1
 
 if [ -n "$testgrpdir" ]; then
     echo "Running tests from $testgrpdir"
-    #cp $testgrpdir .
 else
     echo "Please provide a directory of tests to run"
     echo "runTests ./testDir"
@@ -32,6 +31,7 @@ echo "Starting player in background with RMI..."
 
 if [ ! -f ${LIB_DIR}/Arctic.jar ]; then
     echo "unpack Arctic.tar.gz"
+    ls -al ${LIB_DIR}
     tar -xvzf "${LIB_DIR}/Arctic.tar.gz"
 fi
 
