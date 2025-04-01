@@ -24,12 +24,12 @@ startJCKHarness() {
 
 queryVmJdwpTest() {
     local jck_root_path="$1/JCK-runtime-$2/"
-    java -cp $jck_root_path/lib/javatest.jar com.sun.javatest.finder.ShowTests -finder com.sun.javatest.finder.HTMLTestFinder -end $jck_root_path/tests/testsuite.html -initial vm/jdwp | tr -d "[:blank:]"
+    eval $3/bin/java -cp $jck_root_path/lib/javatest.jar com.sun.javatest.finder.ShowTests -finder com.sun.javatest.finder.HTMLTestFinder -end $jck_root_path/tests/testsuite.html -initial vm/jdwp | tr -d "[:blank:]"
 }
 
 
 # Query all of the tests in $(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/tests/vm/jdwp/
-queryVmJdwpTest "$6" "$7" | while read -r test; 
+queryVmJdwpTest "$6" "$7" "$8" | while read -r test; 
 do
     cp "$3" temp_jdwp.jtb
     # Replace tests=vm/jdwp line with tests=<Individual test case>
