@@ -22,16 +22,20 @@ testgrpdir=$1
 
 if [ -n "$testgrpdir" ]; then
     echo "Running tests from $testgrpdir"
+    #cp $testgrpdir .
 else
     echo "Please provide a directory of tests to run"
     echo "runTests ./testDir"
 fi
 
 echo "Starting player in background with RMI..."
-echo "unpack Arctic.tar.gz"
-tar -xvzf testDependency/lib/Arctic.tar.gz
 
-java -Darctic.logLevel=TRACE -jar testDependency/lib/Arctic.jar -p &
+if [ ! -f ${LIB_DIR}/Arctic.jar ]; then
+    echo "unpack Arctic.tar.gz"
+    tar -xvzf "${LIB_DIR}/Arctic.tar.gz"
+fi
+
+java -Darctic.logLevel=TRACE -jar ${LIB_DIR}/Arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
@@ -42,10 +46,12 @@ fi
 sleep 3
 
 testdir=$1
-testgroup="mytests"
-testcase="test1"
+testgroup="java_awt"
+testcase="ListTests"
+#$testgrpdir ${WORKSPACE}/../../jck_run/arctic/linux/arctic_tests/java_awt
+# loop through all testcases in testgrpdir
 
-java -jar build/jars/Arctic.jar -c test start "${testgroup}" "${testcase}"
+java -jar ${LIB_DIR}/Arctic.jar -c test start "${testgroup}" "${testcase}"
 rc=$?
 if [[ $rc -ne 0 ]]; then
    echo "Unable to start playback for testcase ${testgroup}/${testcase}, rc=$rc"
@@ -53,20 +59,20 @@ if [[ $rc -ne 0 ]]; then
 fi
 
 sleep 3
-result=$(java -jar build/jars/Arctic.jar -c test list ${testgroup}/${testcase})
+result=$(java -jar ${LIB_DIR}/Arctic.jar -c test list ${testgroup}/${testcase})
 rc=$?
 status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
 echo "==>" $status
 while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
 do
   sleep 3
-  result=$(java -jar build/jars/Arctic.jar -c test list ${testgroup}/${testcase})
+  result=$(java -jar ${LIB_DIR}/Arctic.jar -c test list ${testgroup}/${testcase})
   rc=$?
   status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
   echo "==>" $status
 done
 
 echo "Terminating Arctic CLI..."
-java -jar build/jars/Arctic.jar -c terminate
+java -jar ${LIB_DIR}/Arctic.jar -c terminate
 
 echo "Completed playback of ${testgroup}/${testcase} status: ${status}"
