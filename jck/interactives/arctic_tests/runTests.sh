@@ -17,21 +17,21 @@
 # and save the result in a multiple formats
 # where testcases will be in jck_run/arctic/tests
 
-# java -jar Arctic.jar -c test run <testName> <testCase>
-# java -jar Arctic.jar test finish <testName> <testCase> <result>
-# java -jar Arctic.jar <xml|tap|jtr> save <filename>
 
 testgrpdir=$1
-
+echo "First if/then"
 if [ -n "$testgrpdir" ]; then
-    echo "Running tests from $testgrpdir" 
+    echo "Running tests from $testgrpdir"
 else
     echo "Please provide a directory of tests to run"
     echo "runTests ./testDir"
 fi
 
 echo "Starting player in background with RMI..."
-java -Darctic.logLevel=TRACE -jar build/jars/Arctic.jar -p &
+echo "unpack Arctic.tar.gz"
+tar -xvzf testDependency/lib/Arctic.tar.gz
+
+java -Darctic.logLevel=TRACE -jar testDependency/lib/Arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
