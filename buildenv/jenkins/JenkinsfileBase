@@ -249,7 +249,7 @@ def setupParallelEnv() {
 					echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
-				} else if (NUM_LIST == 1 && env.JDK_IMPL == "hotspot") {
+				} else if (NUM_LIST == 1 && env.JDK_IMPL == "hotspot" && (TARGET.contains("openjdk") || TARGET.contains("system"))) {
 					echo "NUM_LIST=1, Fall back to regenerate parallel lists with NUM_MACHINES=${MAX_NUM_MACHINES}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
