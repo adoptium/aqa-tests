@@ -59,11 +59,7 @@ sleep 3
 testdir=$1
 testgroup="java_awt" # eventually strip off name from testdir variable 
 
-# Check if the target is not a directory
-if [ ! -d "$testdir" ]; then
-    echo "$testdir is not a directory"
-    exit 1
-fi
+ls -al "$testdir"
 
 # Loop through files in the target directory
 for testcase in "$testdir"/*; do
