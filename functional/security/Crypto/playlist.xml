@@ -41,9 +41,9 @@
 			</disable>
 		</disables>
 		<command>
-			export JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" ; \
+			export JTREG_HOME=$(Q)$(JTREG_HOME)$(Q) ; \
 			if [ "x${SKIP_AGENT_TESTS}" = "x" ] ; then export SKIP_AGENT_TESTS=1 ; fi ; \
-			$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
+			$(TEST_ROOT)$(D)functional$(D)security$(D)Crypto$(D)CryptoTest$(D)run.sh $(Q)$(TEST_JDK_HOME)$(Q) ; $(TEST_STATUS)
 		</command>
 		<features>
 			<feature>FIPS140_2:nonapplicable</feature>
@@ -78,7 +78,7 @@
 				<platform>.*solaris</platform>
 			</disable>
 		</disables>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(JTREG_JAR)(Q) \
 		-a -xml -v:fail,error,time,nopass,summary -Dcryptotests.skipAgentTests=1 -timeoutFactor:2 \
 		-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 		-r $(Q)$(REPORTDIR)$(D)report$(Q) \
