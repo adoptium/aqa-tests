@@ -57,15 +57,18 @@ fi
 sleep 3
 
 testdir=$1
-testgroup="java_awt" # eventually strip off name from testdir variable 
+platform=$2
+testgroup="api" # eventually strip off name from testdir variable 
+echo "Running testcases in $testdir on $platform"
+echo "Java under test: $(JAVA_TO_TEST)"
 
 ls -al "$testdir"
 
 # Loop through files in the target directory
 for testcase in "$testdir"/*; do
-    tcase="api/$testgroup/interactive/$testcase.html"
+    tcase="$testgroup/java_awt/interactive/$testcase.html"
     # Start testcase...
-    echo "Starting testcase... $tcase"
+    echo "Starting testcase... $testcase"
     twm &
 
     # replace with variable representing JDK under test
