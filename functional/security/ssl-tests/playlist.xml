@@ -23,8 +23,8 @@
 			</disable>
 		</disables>
 		<command>
-			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \
-			$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)run.sh "$(TEST_JDK_HOME)" ; $(TEST_STATUS)
+			JTREG_HOME=$(Q)$(JTREG_HOME)$(Q) \
+			$(TEST_ROOT)$(D)functional$(D)security$(D)ssl-tests$(D)ssl-tests$(D)run.sh $(Q)$(TEST_JDK_HOME)$(Q) ; $(TEST_STATUS)
 		</command>
 		<levels>
 			<level>dev</level>
