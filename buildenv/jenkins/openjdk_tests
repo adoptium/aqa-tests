@@ -464,12 +464,20 @@ def runTest() {
             }
         }
         if (params.TEST_FLAG == "OpenJCEPlus") {
-            def javaSecurityFile = "${env.WORKSPACE}/aqa-tests/config/openjceplus/jdk${params.JDK_VERSION}/java.security"
+            def workdir = "${env.WORKSPACE}"
+            if (PLATFORM.contains("windows")) {
+                workdir = env.WORKSPACE.replaceAll("\\\\", "/")
+            }
+            def javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk${params.JDK_VERSION}/${params.PLATFORM}/java.security"
             if (!fileExists(javaSecurityFile)) {
-                javaSecurityFile = "${env.WORKSPACE}/aqa-tests/config/openjceplus/jdk/java.security"
+                javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk/${params.PLATFORM}/java.security"
+            }
+            if (!fileExists(javaSecurityFile)) {
+                javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk/java.security"
             }
             echo "Set -Djava.security.properties=${javaSecurityFile} in EXTRA_OPTIONS"
             env.EXTRA_OPTIONS += " -Djava.security.properties=${javaSecurityFile}"
+            sh "cat ${javaSecurityFile}"
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
