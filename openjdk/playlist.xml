@@ -129,11 +129,6 @@
 	</test>
 	<test>
 		<testCaseName>hotspot_custom_j9</testCaseName>
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
-		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) -nativepath:"$(TESTIMAGE_PATH)/hotspot/jtreg/native" -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
