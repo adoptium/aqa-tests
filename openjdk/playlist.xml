@@ -1802,7 +1802,103 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>jdk_tools</testCaseName>
+		<testCaseName>jdk_core_tools</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://bugs.openjdk.org/browse/JDK-8324306</comment>
+				<platform>x86-64_alpine-linux|aarch64_alpine-linux</platform>
+				<version>17</version>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):core_tools$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+			<feature>OpenJCEPlus:nonapplicable</feature>
+		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_svc_tools</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<impl>openj9</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/10757</comment>
+				<impl>ibm</impl>
+			</disable>
+			<disable>
+				<comment>https://bugs.openjdk.org/browse/JDK-8324306</comment>
+				<platform>x86-64_alpine-linux|aarch64_alpine-linux</platform>
+				<version>17</version>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode150</variation>
+			<variation>Mode650</variation>
+			<variation>Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):svc_tools$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+			<feature>OpenJCEPlus:nonapplicable</feature>
+		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_jpackage</testCaseName>
 		<disables>
 			<disable>
 				<comment>https://bugs.openjdk.org/browse/JDK-8345185</comment>
@@ -1839,7 +1935,7 @@
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	${FEATURE_PROBLEM_LIST_FILE} \
 	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_JDK_TEST_DIR):jdk_tools$(Q); \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jpackage$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>extended</level>
