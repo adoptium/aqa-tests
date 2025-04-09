@@ -1,4 +1,5 @@
 #!groovy
+import groovy.transform.Field
 
 def PLATFORM_MAP = [
     'arm_linux' : [
@@ -275,7 +276,8 @@ timestamps{
             } else {
                 dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
             }
-            dockerAgentLabel = ''
+            @Field String dockerAgentLabel = ''
+            @Field String LABEL = '' 
             if (params.LABEL) {
                 LABEL = params.LABEL
             } else {
