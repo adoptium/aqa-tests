@@ -39,6 +39,9 @@ getSemeruDockerfile() {
     if [[ ! -f "Dockerfile.open.releases.full" ]]; then
         if [[ $jdkVersion ]]; then
             jdkVersionDir=$jdkVersion
+            if [[ $jdkVersion -gt 21 ]]; then
+                jdkVersionDir=21
+            fi
             semeruDockerfile="Dockerfile.open.releases.full"
             semeruDockerfileUrlBase="https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersionDir/jdk/${docker_os}"
             if [[ $docker_os == "ubi" ]]; then
