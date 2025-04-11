@@ -1468,7 +1468,8 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
 */
-def triggerRerunJob (rerunTestJobParams) {
+//rerunTestJobParams should be part of return of the 
+def triggerRerunJob (rerunTestJobParams, originalStatus) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
 		if ((rerunIterations > 0 && env.FAILED_TESTS?.trim()) || (params.RERUN_FAILURE && rerunTestJobParams)) {
@@ -1546,16 +1547,22 @@ def triggerRerunJob (rerunTestJobParams) {
 				if (rerunTestJobs) {
 					echo "Triggering rerun jobs in parallel ..."
 					def childJobs = parallel rerunTestJobs
-					archiveChildJobTap(childJobs)
+					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
+					currentBuild.result = rerunResults.jobStatus
+				} else {
+					echo " Either all rerun succeed or there are aborted?"
+					//Here need to set currentBuild.result to be worst of non rerun parallel or rerun parallel 
 				}
 			}
 		}
 	}
 }
 
-def archiveChildJobTap(childJobs) {
+// update to return worst child job status, and failure test job parameters.
+def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
 		def childTestJobParams = [:]
+		def currentStatus = originalStatus;
 		forceCleanWS()
 		try {
 			def buildPaths = ""
@@ -1566,11 +1573,13 @@ def archiveChildJobTap(childJobs) {
 					def name = cjob.value.getProjectName()
 					def childResult = cjob.value.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
-					// track childTestJobParams if it is FAILURE job
-					if (childResult == "FAILURE") {
+					// track FAILURE job childTestJobParams if it's rerun stage
+					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
-
+					if (isWorseThan( childResult, currentStatus)) {
+						currentStatus = childResult
+					}
 					try {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
@@ -1585,13 +1594,12 @@ def archiveChildJobTap(childJobs) {
 						echo 'Exception: ' + e.toString()
 						echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 					}
-					if (!currentBuild.resultIsWorseOrEqualTo(childResult)) {
-						currentBuild.result = childResult;
-					}
 			}
-			def resultSum = parseResultSumFromTaps()
-			checkTestResults(resultSum)
-
+			
+			// In case rerun job status be worse than original job status
+			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
+				currentStatus = originalStatus
+			}
 			archiveAQAvitFiles()
 			if (buildPaths.length() > 0) {
 				addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
@@ -1599,46 +1607,26 @@ def archiveChildJobTap(childJobs) {
 		} finally {
 			forceCleanWS()
 		}
-		return childTestJobParams
+		return [jobStatus: currentStatus, jobParams: childTestJobParams]
 	}
+}
+
+def isWorseThan(String resultA, String resultB) {
+	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED']
+	def indexA = severityOrder.indexOf(resultA)
+	def indexB = severityOrder.indexOf(resultB)
+	return indexA > indexB
 }
 
 def runParallelTests() {
-	def rerunTestJobParams = [:]
+	def parallelResults = [:]
 	if (params.PARALLEL && params.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			rerunTestJobParams = archiveChildJobTap(childJobs)
+			parallelResults = archiveChildJobTap(childJobs)
 		}
 	}
-	return rerunTestJobParams
-}
-
-def parseResultSumFromTaps() {
-	def results = [:]
-	def tapFiles = findFiles(glob: "**/*.tap")
-	for (String tapFile : tapFiles) {
-		def tap = readFile(file: "${tapFile}")
-		def lines = tap.readLines()
-		def found = false
-		for (String line : lines) {
-			if ((match = line =~ /# RESULTS_SUMMARY: (TOTAL: \d+)\s*(EXECUTED: \d+)\s*(PASSED: \d+)\s*(FAILED: \d+)\s*(DISABLED: \d+)\s*(SKIPPED: \d+)/)) {
-				for (int i = 1; i < match.groupCount(); i++) {
-					def matchVals = match.group(i).split(": ")
-					if (!results[matchVals[0]]) {
-						results[matchVals[0]] = 0;
-					}
-					results[matchVals[0]] += matchVals[1] as int
-				}
-				found = true
-				break
-			}
-		}
-		if (!found) {
-			return [:]
-		}
-	}
-	return results
+	return parallelResults
 }
 
 def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
