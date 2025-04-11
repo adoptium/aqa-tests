@@ -446,8 +446,10 @@ timestamps{
             if (currentBuild.result != 'FAILURE') {
                 env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
                 echo "SETUP_LABEL: ${env.SETUP_LABEL}"
-                def rerunTestJobParams = jenkinsfile.runParallelTests()
-                jenkinsfile.triggerRerunJob(rerunTestJobParams)
+                def parallelResults = jenkinsfile.runParallelTests()
+                if ( parallelResults.jobStatus != 'SUCCESS' ) {
+					jenkinsfile.triggerRerunJob(parallelResults.jobParams, parallelResults.jobStatus)
+                }
             }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
