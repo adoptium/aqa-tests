@@ -44,6 +44,7 @@ import org.xml.sax.SAXParseException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 
 public class JavatestUtil {
 	private static String testJdk;
@@ -51,10 +52,10 @@ public class JavatestUtil {
 	private static String testExecutionType;
 	private static String withAgent;
 	private static String interactive;
-        private static String robot;
+    private static String robot;
 	private static String extraJvmOptions = "";
 	private static String concurrencyString;
-        private static String timeoutFactorString;
+    private static String timeoutFactorString;
 	private static String jckVersion;
 	private static String config;
 	private static String configAltPath;
@@ -86,7 +87,8 @@ public class JavatestUtil {
 	private static String krb5ServerUsername;
 	private static String workDir;
 	private static String reportDir;
-	private static String newJtbFileRef; 
+	private static String newJtbFileRef;
+	private static String newJtiFileRef;
 	private static int    jckVersionInt;
 	private static String jckVersionLetters;
 	private static String testSuiteFolder;
@@ -114,10 +116,10 @@ public class JavatestUtil {
 	private static final String TEST_EXECUTION_TYPE = "testExecutionType";
 	private static final String WITH_AGENT = "withAgent";
 	private static final String INTERACTIVE = "interactive";
-        private static final String ROBOT = "robot";
+    private static final String ROBOT = "robot";
 	private static final String CONFIG = "config";
 	private static final String CONCURRENCY = "concurrency";
-        private static final String TIMEOUT_FACTOR = "timeoutFactor";
+    private static final String TIMEOUT_FACTOR = "timeoutFactor";
 	private static final String CONFIG_ALT_PATH = "configAltPath";
 	private static final String TASK = "task";
 	private static final String TASK_CMD_FILE_GENERATION = "cmdfilegen";
@@ -143,7 +145,7 @@ public class JavatestUtil {
 		essentialParameters.add(ROBOT);
 		essentialParameters.add(CONFIG);
 		essentialParameters.add(CONCURRENCY);
-                essentialParameters.add(TIMEOUT_FACTOR);
+        essentialParameters.add(TIMEOUT_FACTOR);
 		essentialParameters.add(CONFIG_ALT_PATH);
 		essentialParameters.add(TASK);
 		essentialParameters.add(AGENT_HOST);
@@ -214,9 +216,9 @@ public class JavatestUtil {
 		testExecutionType = testArgs.get(TEST_EXECUTION_TYPE) == null ? "default" : testArgs.get(TEST_EXECUTION_TYPE);
 		withAgent = testArgs.get(WITH_AGENT) == null ? "off" : testArgs.get(WITH_AGENT);
 		interactive = testArgs.get(INTERACTIVE) == null ? "no" : testArgs.get(INTERACTIVE);
-                robot = testArgs.get(ROBOT) == null ? "no" : testArgs.get(ROBOT);
+        robot = testArgs.get(ROBOT) == null ? "no" : testArgs.get(ROBOT);
 		concurrencyString = testArgs.get("concurrency") == null ? "NULL" : testArgs.get("concurrency");
-                timeoutFactorString = testArgs.get(TIMEOUT_FACTOR) == null ? "NULL" : testArgs.get(TIMEOUT_FACTOR);
+        timeoutFactorString = testArgs.get(TIMEOUT_FACTOR) == null ? "NULL" : testArgs.get(TIMEOUT_FACTOR);
 		config = testArgs.get(CONFIG) == null ? "NULL" : testArgs.get(CONFIG);
 		configAltPath = testArgs.get(CONFIG_ALT_PATH) == null ? "NULL" : testArgs.get(CONFIG_ALT_PATH);
 		agentHost = testArgs.get(AGENT_HOST) == null ? "localhost" : testArgs.get(AGENT_HOST).trim();
@@ -235,6 +237,7 @@ public class JavatestUtil {
 		nativesLoc = jckRoot + File.separator + "natives" + File.separator + osShortName;
 		reportDir = workDir + File.separator + "report";
 		newJtbFileRef = workDir + File.separator + "generated.jtb";
+		newJtiFileRef = workDir + File.separator + "generated.jti";
 		secPropsFile = workDir + File.separator + "security.properties";
 		
 		// Solaris natives are in /natives/sunos
@@ -273,7 +276,7 @@ public class JavatestUtil {
 				System.exit(0);
 			}	
 			else if (task.equals(TASK_CMD_FILE_GENERATION)) { 
-				if (!generateJTB()) {
+				if (!generateJTBAndJTI()) {
 					System.exit(1);
 				}
 				System.exit(0);
@@ -284,10 +287,13 @@ public class JavatestUtil {
 		} 
 	}
 	
-	private static boolean generateJTB() throws Exception {
+	private static boolean generateJTBAndJTI() throws Exception {
 		jtiFile = configAltPath + File.separator + jckVersion + File.separator + testSuite.toLowerCase() + ".jti";
 		System.out.println("Using jti file "+ jtiFile);
-		
+
+		Properties generatedJti = new Properties();
+		generatedJti.load(FileInputStream(jtiFile));
+
 		if (spec.contains("win")) {
 			// Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
 			fileUrl = "file:///" + jckBase.replace("\\","/") + "/testsuite.jtt";
@@ -426,6 +432,10 @@ public class JavatestUtil {
 		fileContent = "testsuite \"" + jckBase + "\";\n";
 		fileContent += "workDirectory -create " + workDir + File.separator +  "work" + ";\n";
 		fileContent += "tests " + tests + ";\n";
+		//generatedJti.setProperty("testsuite", jckBase);
+		//generatedJti.setProperty("workDirectory -create", workDir + File.separator + work);
+		//generatedJti.setProperty("tests", tests);
+
 
 		String pathToRmic = testJdk + File.separator + "bin" + File.separator + "rmic";
 		String pathToLib = testJdk + File.separator + "jre" + File.separator + "lib";
@@ -476,6 +486,7 @@ public class JavatestUtil {
 		// testExecutionType of multiJVM_group on Windows and AIX causes memory exhaustion, so limit to non-group multiJVM
 		if (jckVersionInt >= 17 && (spec.contains("win") || spec.contains("aix"))) {
 			fileContent += "set jck.env.testPlatform.multiJVM \"Yes\";\n";
+			generatedJti.setProperty("jck.env.testPlatform.multiJVM", "Yes"); 
 		}
 
 		// Set the operating system as 'Windows' for Windows and 'other' for all other operating systems.
@@ -534,37 +545,47 @@ public class JavatestUtil {
 			}
 			
 			fileContent += "concurrency " + concurrencyString + ";\n";
-                       
-                        if (!timeoutFactorString.equals("NULL")) {
-				fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
-                        } else {
-				fileContent += "timeoutfactor 4" + ";\n";	// 4 base time limit equal 40 minutes
+			generatedJti.setProperty("concurrency", concurrencyString);
+            if (timeoutFactorString.equals("NULL")) {
+				timeoutFactorString = "4";  // 4 base time limit equal 40 minutes
 			}
+			fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+			generatedJti.setProperty("timeoutfactor", timoutFactorString);
+            
 			fileContent += keyword + ";\n";
+			generatedJti.setProperty(keyword, "");
 
 			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
 				fileContent += "set jck.env.testPlatform.systemRoot " + System.getenv("WINDIR") + ";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "Windows");
+				generatedJti.setProperty("jck.env.testPlatform.systemRoot", System.getenv("WINDIR"));
 			}
 			else {
 				// On other platforms set the testplatform.os to other and set the file and path separators.
 				fileContent += "set jck.env.testPlatform.os \"other\";\n";
 				fileContent += "set jck.env.testPlatform.fileSep \"/\";\n";
 				fileContent += "set jck.env.testPlatform.pathSep \":\";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "other");
+				generatedJti.setProperty("jck.env.testPlatform.fileSep", "/");
+				generatedJti.setProperty('jck.env.testPlatform.pathSep', ":");
 			}
 
 			if ( testsRequireDisplay(tests) ) {
 				if (spec.contains("zos") || spec.contains("alpine-linux") || spec.contains("riscv")) {
 					fileContent += "set jck.env.testPlatform.headless Yes" + ";\n";
-                                        // Ensure JVM graphical device and system are headless, regardless of environment DISPLAY
-                                        jvmOpts +=  "-Djava.awt.headless=true ";
+					generatedJti.setProperty("jck.env.testPlatform.headless", "Yes");
+                    // Ensure JVM graphical device and system are headless, regardless of environment DISPLAY
+                    jvmOpts +=  "-Djava.awt.headless=true ";
 				}
 				else {
 					if ( !spec.contains("win") ) {
 						fileContent += "set jck.env.testPlatform.headless No" + ";\n";
 						fileContent += "set jck.env.testPlatform.xWindows Yes" + ";\n";
+						generatedJti.setProperty("jck.env.testPlatform.headless", "No");
+						generatedJti.setProperty("jck.env.testPlatform.xWindows", "Yes");
 						if ( !spec.contains("osx") ) { 
 							String display = System.getenv("DISPLAY");
 							if ( display == null ) {
@@ -573,6 +594,7 @@ public class JavatestUtil {
 							}
 							else {
 								fileContent += "set jck.env.testPlatform.display " + display + ";\n";
+								generatedJti.setProperty("jck.env.testPlatform.display", display);
 							}
 						}
 					}
@@ -581,35 +603,45 @@ public class JavatestUtil {
 
 			if ( !spec.contains("win") && (tests.contains("api/signaturetest") || tests.contains("api/java_io")) ) {
 				fileContent += "set jck.env.testPlatform.xWindows \"No\"" + ";\n";
+				generatedJti.setProperty("jck.env.testPlatform.xWindows", "No");
 			}
 
 			fileContent += "set jck.env.runtime.testExecute.cmdAsString \"" + pathToJava + "\"" + ";\n";
+			generatedJti.setProperty("jck.env.runtime.testExecute.cmdAsString", pathToJava);
 
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") ||
 					tests.contains("api/javax_management") || tests.equals("api") || tests.startsWith("vm") ) {
 				fileContent += "set jck.env.runtime.testExecute.libPathEnv " + libPath + ";\n";
 				fileContent += "set jck.env.runtime.testExecute.nativeLibPathValue \"" + nativesLoc + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.runtime.testExecute.libPathEnv", libPath);
+				generatedJti.setProperty("jck.env.runtime.testExecute.nativeLibPathValue", nativesLoc);
 			}
 			
 			// tools.jar was incorporated into modules from Java 9
 			if ( jckVersion.contains("jck8") ) {
 				if ( tests.startsWith("vm/jvmti") || tests.equals("vm") || tests.equals("api") || tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") ) {
 					fileContent += "set jck.env.runtime.testExecute.additionalClasspathRemote \"" + pathToToolsJar + "\"" + ";\n";
+					generatedJti.setProperty("jck.env.runtime.testExecute.additionalClasspathRemote", pathToToolsJar);
 				}
 			}
 			
 			if ( tests.startsWith("vm/jvmti") || tests.equals("vm") ) {
 				fileContent += "set jck.env.runtime.testExecute.jvmtiLivePhase Yes;\n";
+				generatedJti.setProperty("jck.env.runtime.testExecute.jvmtiLivePhase", "Yes");
 			}
 		
 			if ( jckVersionInt < 23 && (tests.contains("api/javax_management") || tests.equals("api")) ) {
 				fileContent += "set jck.env.runtime.testExecute.jmxResourcePathValue \"" + nativesLoc + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.runtime.testExecute.jmxResourcePathValue", nativesLoc);
 			}
 			
 			if ( tests.contains("api/javax_sound") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.audio.canPlaySound No" + ";\n";
 				fileContent += "set jck.env.runtime.audio.canPlayMidi No" + ";\n";
 				fileContent += "set jck.env.runtime.audio.canRecordSound No" + ";\n";
+				generatedJti.setProperty("jck.env.runtime.audio.canPlaySound", "No");
+				generatedJti.setProperty("jck.env.runtime.audio.canPlayMidi", "No");
+				generatedJti.setProperty("jck.env.runtime.audio.canRecordSound", "No");
 			}
 			if ( tests.contains("api/org_ietf") || tests.contains("api/javax_security") || tests.equals("api") ) {
 				readKrbConfFile();
@@ -624,6 +656,12 @@ public class JavatestUtil {
 				fileContent += "set jck.env.runtime.jgss.krb5ServerUsername " +  krb5ServerUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName + ";\n";
 				fileContent += "set jck.env.runtime.jgss.kdcHostName " + KerberosConfig.kdcHostName + ";\n";
 				fileContent += "set jck.env.runtime.jgss.kdcRealmName " + KerberosConfig.kdcRealmName + ";\n";
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientPassword", krb5ClientPassword);
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientUsername", krb5ClientUsername);
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerPassword", krb5ServerPassword );
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerUsername", krb5ServerUsername);
+				generatedJti.setProperty("jck.env.runtime.jgss.kdcHostName", KerberosConfig.kdcHostName);
+				generatedJti.setProperty("jck.env.runtime.jgss.kdcRealmName", KerberosConfig.kdcRealmName);
 
 				extraJvmOptions += " -Djava.security.krb5.conf=" + krbConfFile + " -DKRB5CCNAME=" + workDir + File.separator + "krb5.cache" + " -DKRB5_KTNAME=" + workDir + File.separator + "krb5.keytab";
 			}	
@@ -634,11 +672,19 @@ public class JavatestUtil {
 				fileContent += "set jck.env.runtime.net.testHost1IPAddr " + testHost1Ip + ";\n";
 				fileContent += "set jck.env.runtime.net.testHost2Name " + testHost2Name + ";\n";
 				fileContent += "set jck.env.runtime.net.testHost2IPAddr " + testHost2Ip + ";\n";
+				generatedJti.setProperty("jck.env.runtime.net.localHostName", hostname);
+				generatedJti.setProperty("jck.env.runtime.net.localHostIPAddr", ipAddress);
+				generatedJti.setProperty("jck.env.runtime.net.testHost1Name", testHost1Name);
+				generatedJti.setProperty("jck.env.runtime.net.testHost1IPAddr", testHost1Ip);
+				generatedJti.setProperty("jck.env.runtime.net.testHost2Name", testHost2Name);
+				generatedJti.setProperty("jck.env.runtime.net.testHost2IPAddr", testHost2Ip);
 			}
 			
 			if ( tests.contains("api/java_net") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.url.httpURL " + httpUrl + ";\n";
 				fileContent += "set jck.env.runtime.url.fileURL " + fileUrl + ";\n";
+				generatedJti.setProperty("jck.env.runtime.url.httpURL", httpUrl);
+				generatedJti.setProperty("jck.env.runtime.url.fileURL", fileUrl);
 			}
 			
 			if ( tests.contains("api/java_net") || tests.contains("api/org_omg") || tests.contains("api/javax_management") || tests.contains("api/javax_xml") || tests.contains("vm/jdwp") || tests.equals("api")) {
@@ -648,6 +694,8 @@ public class JavatestUtil {
 						!tests.contains("api/org_omg/PortableServer") ) {
 					fileContent += "set jck.env.runtime.remoteAgent.passiveHost localhost" + ";\n";
 					fileContent += "set jck.env.runtime.remoteAgent.passivePortDefault Yes" + ";\n";
+					generatedJti.setProperty("jck.env.runtime.remoteAgent.passiveHost", "localhost");
+					generatedJti.setProperty("jck.env.runtime.remoteAgent.passivePortDefault", "Yes");
 				}
 			}
 			
@@ -668,6 +716,7 @@ public class JavatestUtil {
 			if (jckVersion.contains("jck8")) {
 				if ( tests.contains("api/org_omg") || tests.contains("api/javax_management") || tests.equals("api") ) {
 					fileContent += "set jck.env.runtime.idl.orbHost " + hostname + ";\n";
+					generatedJti.setProperty("jck.env.runtime.idl.orbHost", hostname);
 				}
 			}
 			// ext/lib was removed at Java 9
@@ -680,26 +729,29 @@ public class JavatestUtil {
 			if (jckVersion.contains("jck8")) {
 				if (tests.contains("api/signaturetest") || tests.equals("api")) {
 					fileContent += "set jck.env.runtime.staticsigtest.staticSigTestClasspathRemote \"" + getSignatureTestJars(pathToLib) + "\"" + ";\n";
+					generatedJti.setProperty("jck.env.runtime.staticsigtest.staticSigTestClasspathRemote", getSignatureTestJars(pathToLib));
 				}
 			}
 			if (extraJvmOptions.contains("nofallback") && tests.startsWith("vm") ) {
-				fileContent += "set jck.env.testPlatform.typecheckerSpecific No" + ";\n";		
+				fileContent += "set jck.env.testPlatform.typecheckerSpecific No" + ";\n";
+				generatedJti.setProperty("jck.env.testPlatform.typecheckerSpecific", "No");	
 			}
 
 			// The jplisLivePhase and Robot available settings are rejected if placed higher up in the .jtb file
 			if ( tests.contains("api/java_awt") || tests.contains("api/javax_swing") || tests.equals("api") ) {
 				if ( robotAvailable == "Yes" ) {
 					fileContent += "set jck.env.runtime.awt.robotAvailable " + robotAvailable + ";\n";
+					generatedJti.setProperty("jck.env.runtime.awt.robotAvailable", robotAvailable);
 				}
 			}
 			if ( tests.equals("api/java_lang") || tests.contains("api/java_lang/instrument") || tests.equals("api") ) {
 				fileContent += "set jck.env.runtime.jplis.jplisLivePhase Yes;\n";
+				generatedJti.setProperty("jck.env.runtime.jplis.jplisLivePhase", "Yes");
 			}
 
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
-			
 
 			if (jckVersionInt > 11) {
 				if (jckVersionInt > 23) {
@@ -711,10 +763,12 @@ public class JavatestUtil {
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			fileContent += "set jck.env.runtime.testExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
+			generatedJti.setProperty("jck.env.runtime.testExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
 
 			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
 			if (spec.contains("osx")) {
 				fileContent += "set jck.env.runtime.testExecute.otherEnvVars \" AWT_FORCE_HEADFUL=true \"" + ";\n";
+				generatedJti.setProperty("jck.env.runtime.testExecute.otherEnvVars", " AWT_FORCE_HEADFUL=true");
 			}
 		}
 
@@ -728,18 +782,25 @@ public class JavatestUtil {
 			} 
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-                        if (!timeoutFactorString.equals("NULL")) {
-                                fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
-                        } else {
-				fileContent += "timeoutfactor 100" + ";\n";							// lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
+			generatedJti.setProperty("concurrency", concurrencyString);
+			if (timeoutFactorString.equals("NULL")) {
+				timeoutFactorString = "100";  // lang.CLSS,CONV,STMT,INFR requires more than 1h to complete. lang.Annot,EXPR,LMBD require more than 2h to complete tests
 			}
+            fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+			generatedJti.setProperty("timeoutfactor", timeoutFactorString);
+ 
 			fileContent += keyword + ";\n";
+			generatedJti.setProperty("keyword", "");
 			
 			if (testExecutionType.equals("multijvm")) { 
 				fileContent += "set jck.env.testPlatform.useAgent \"Yes\";\n";
 				fileContent += "set jck.env.compiler.agent.agentType \"passive\";\n";
 				fileContent += "set jck.env.compiler.agent.passiveHost \"" + agentHost + "\"" + ";\n";
 				fileContent += "set jck.env.compiler.agent.passivePortDefault \"Yes\";\n";
+				generatedJti.setProperty("jck.env.testPlatform.useAgent", "Yes");
+				generatedJti.setProperty("jck.env.compiler.agent.agentType", "passive");
+				generatedJti.setProperty("jck.env.compiler.agent.passiveHost", agentHost);
+				generatedJti.setProperty("jck.env.compiler.agent.passivePortDefault", "Yes");
 			}
 			
 			String cmdAsStringOrFile = "cmdAsString"; // Whether to reference cmd via cmdAsString or cmdAsFile
@@ -748,45 +809,61 @@ public class JavatestUtil {
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
 				fileContent += "set jck.env.testPlatform.systemRoot " + System.getenv("WINDIR") + ";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "Windows");
+				generatedJti.setProperty("jck.env.testPlatform.systemRoot", System.getenv("WINDIR"));
 			} else if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 				// On jck11+ z/OS and AIX set the testplatform.os Current system
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.testPlatform.os \"Current system\";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "Current system");
 				cmdAsStringOrFile = "cmdAsFile";
 			} else {
 				// On other platforms set the testplatform.os to other and set the file and path separators.
 				fileContent += "set jck.env.testPlatform.os \"other\";\n";
 				fileContent += "set jck.env.testPlatform.fileSep \"/\";\n";
 				fileContent += "set jck.env.testPlatform.pathSep \":\";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "other");
+				generatedJti.setProperty("jck.env.testPlatform.fileSep", "/");
+				generatedJti.setProperty("jck.env.testPlatform.pathSep", ":");
 			}
 			
 			// If the Select Compiler question in the JCK interview was answered as "Java Compiler API (JSR199)",
 			// set jck.env.compiler.testCompile.testCompileAPImultiJVM.cmdAsString.
 			fileContent += "set jck.env.compiler.testCompile.testCompileAPImultiJVM." + cmdAsStringOrFile + " \"" + testJavaForMultiJVMCompTest + "\"" + ";\n";
+			generatedJti.setProperty("jck.env.compiler.testCompile.testCompileAPImultiJVM." + cmdAsStringOrFile, testJavaForMultiJVMCompTest);
 
 			if (jckVersion.contains("jck8")) {
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source 1.8 \"" + ";\n";
+				generatedJti.setProperty("jck.env.compiler.testCompile.otherOpts", "-source 1.8 ");
 				if (tests.contains("api/signaturetest") || tests.equals("api")) {
 					fileContent += "set jck.env.compiler.testCompile.compilerstaticsigtest.compilerStaticSigTestClasspathRemote \"" + getSignatureTestJars(pathToLib) + "\"" + ";\n";
+					generatedJti.setProperty("jck.env.compiler.testCompile.compilerstaticsigtest.compilerStaticSigTestClasspathRemote", getSignatureTestJars(pathToLib));
 				}
 			} else if (jckVersion.contains("jck11")) {
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source 11 \"" + ";\n";
+				generatedJti.setProperty("jck.env.compiler.testCompile.otherOpts", "-source 11 ");
 			} else { // This is the case where JCK Version > 11
 				fileContent += "set jck.env.compiler.testCompile.otherOpts \"-source " + jckVersionInt + " --enable-preview\"" + ";\n";
+				// TODO: check if we need to drop the --enable-preview for JDK24+
+				generatedJti.setProperty("jck.env.compiler.testCompile.otherOpts", "-source " + jckVersionInt + " --enable-preview");
 			}
 
 			if (tests.contains("api/java_rmi") || tests.equals("api")) {
 				fileContent += "set jck.env.compiler.testRmic." + cmdAsStringOrFile + " \"" + pathToRmic + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.compiler.testRmic." + cmdAsStringOrFile, pathToRmic);
 			}
 			
 			System.out.println("RI JDK Used: " + riJavaForMultiJVMCompTest);
 			fileContent += "set jck.env.compiler.compRefExecute." + cmdAsStringOrFile + " \"" + riJavaForMultiJVMCompTest + "\"" + ";\n";
+			generatedJti.setProperty("jck.env.compiler.compRefExecute." + cmdAsStringOrFile, riJavaForMultiJVMCompTest);
 
 			if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 				// On jck11+ z/OS and AIX set the compRefExecute file and path separators
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				fileContent += "set jck.env.compiler.compRefExecute.fileSep \"/\";\n";
 				fileContent += "set jck.env.compiler.compRefExecute.pathSep \":\";\n";
+				generatedJti.setProperty("jck.env.compiler.compRefExecute.fileSep", "/");
+				generatedJti.setProperty("jck.env.compiler.compRefExecute.pathSep", ":");
 			}
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
@@ -803,6 +880,7 @@ public class JavatestUtil {
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			if (!testExecutionType.equals("multijvm")) { 
 				fileContent += "set jck.env.compiler.compRefExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
+				generatedJti.setProperty("jck.env.compiler.compRefExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
 			}
 		}
 		// Devtools settings
@@ -857,78 +935,100 @@ public class JavatestUtil {
 			}
 
 			fileContent += "concurrency " + concurrencyString + ";\n";
-                        if (!timeoutFactorString.equals("NULL")) {
-                                fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
-                        } else {
-				fileContent += "timeoutfactor 40" + ";\n";							// All Devtools tests take less than 1h to finish.
+			generatedJti.setProperty("concurrency", concurrencyString);
+            if (timeoutFactorString.equals("NULL")) {
+				timeoutFactorString="40"; // All Devtools tests take less than 1h to finish.
 			}
+            fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
+			generatedJti.setProperty("timeoutfactor", timeoutFactorString);
 
 			if (spec.contains("win")) {
 				// On Windows set the testplatform.os to Windows and set systemRoot, but do not
 				// set the file and path separators (an error is thrown if they are set).
 				fileContent += "set jck.env.testPlatform.os \"Windows\";\n";
-			}
-			else {
+				generatedJti.setProperty("jck.env.testPlatform.os", "Windows");
+			} else {
 				// On other platforms set the testplatform.os to other and set the file and path separators.
 				fileContent += "set jck.env.testPlatform.os \"other\";\n";
 				fileContent += "set jck.env.testPlatform.fileSep \"/\";\n";
 				fileContent += "set jck.env.testPlatform.pathSep \":\";\n";
+				generatedJti.setProperty("jck.env.testPlatform.os", "other");
+				generatedJti.setProperty("jck.env.testPlatform.fileSep", "/");
+				generatedJti.setProperty("jck.env.testPlatform.pathSep", ":");
 			}
 
 			fileContent += "set jck.env.devtools.testExecute.cmdAsString \"" + pathToJava + "\"" + ";\n";
 			fileContent += "set jck.env.devtools.refExecute.cmdAsFile \"" + pathToJava + "\"" + ";\n";
 			fileContent += "set jck.env.devtools.scriptEnvVars \"" + "JAVA_HOME=\"" + testJdk + "\" TOOLS_HOME=\"" + testJdk + "\"" + "\"" + ";\n";
+			generatedJti.setProperty("jck.env.devtools.testExecute.cmdAsString", pathToJava);
+			generatedJti.setProperty("jck.env.devtools.refExecute.cmdAsFile", pathToJava);
+			generatedJti.setProperty("jck.env.devtools.scriptEnvVars", "JAVA_HOME=" + testJdk + " TOOLS_HOME=" + testJdk);
 
 			if (tests.contains("java2schema")) {
 				fileContent += "set jck.env.devtools.jaxb.jxcCmd \"" + jxcCmd + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.devtools.jaxb.jxcCmd", jxcCmd);
 			} else if (tests.contains("jaxws")) {
 				fileContent += "set jck.env.devtools.jaxws.cmdJavac \"" + pathToJavac + "\"" + ";\n";
 				fileContent += "set jck.env.devtools.jaxws.genCmd \"" + genCmd + "\"" + ";\n";
 				fileContent += "set jck.env.devtools.jaxws.impCmd \"" + impCmd + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.devtools.jaxws.cmdJavac", pathToJavac);
+				generatedJti.setProperty("jck.env.devtools.jaxws.genCmd", genCmd);
+				generatedJti.setProperty("jck.env.devtools.jaxws.impCmd", impCmd);
 			} else {
 				fileContent += "set jck.env.devtools.jaxb.xjcCmd \"" + xjcCmd + "\"" + ";\n";
+				generatedJti.setProperty("jck.env.devtools.jaxb.xjcCmd", xjcCmd);
 			}
 
 			// Get any additional jvm options for specific tests.
 			extraJvmOptions += getTestSpecificJvmOptions(jckVersion, tests);
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
-			
 
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
-			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";	
+			fileContent += "set jck.env.devtools.refExecute.otherOpts \" " + extraJvmOptions + " " + jvmOpts + " \"" + ";\n";
+			generatedJti.setProperty("jck.env.devtools.refExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
 		}
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
 		// when running a test via jck***_custom.
-		
 		if (testArgs.get(IS_CUSTOM_TARGET) == null) {
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + " " + customJtx + "\";\n";
+			generatedJti.setProperty("jck.excludeList.customFiles", initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + " " + customJtx);
 		} else {
 			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath + "\";\n";
+			generatedJti.setProperty("jck.excludeList.customFiles", initialJtxFullPath + " " + defaultJtxFullPath + " " + kflFullPath);
 		}
 				
 		fileContent += "runTests" + ";\n";
 		fileContent += "writeReport -type xml " + reportDir + ";\n";
+		//generatedJti.setProperty("runTests", "");
+		//generatedJti.setProperty("writeReport -type xml ", reportDir);
 
 		// Make sure any backslashes are escaped, required by the test harness.
 		fileContent = fileContent.replace("\\\\", "\\"); 		// Replaces \\ with \, leave \ alone.
 		fileContent = fileContent.replace("\\", "\\\\");		// Replaces \ with \\
-
+		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbFileRef))); 
 		bw.write(fileContent); 
 		bw.flush();
 		bw.close();
 
+		FileOutputStream jtiFileOut = new FileOutputStream(newJtiFileRef);
+		generatedJti.store(jtiFileOut, newJtiFileRef + " file was generated on " + LocalDateTime.now());
+		// OutputStreamWriter jtiOutSWriter = new OutputStreamWriter(jtiFileOut);
+		
+		return (printFileContents(newJtiFileRef) && printFileContents(newJtbFileRef));
+	}
+
+	private static boolean printFileContents(String file) {
 		if (spec.contains("zos")) {
 			if(!doIconvFile()) {
-				System.out.println("Failed to convert jtb file encoding for z/OS");
+				System.out.println("Failed to convert " + file + " file encoding for z/OS");
 				return false; 
 			}
 		}
-
-		System.out.println("Echoing contents of generated jtb file : " + newJtbFileRef); 
+		System.out.println("Echoing contents of generated file : " + file); 
 		System.out.println(">>>>>>>>>>");
-		BufferedReader br = new BufferedReader (new FileReader(newJtbFileRef)); 
+		BufferedReader br = new BufferedReader (new FileReader(file)); 
 		while(true) {
 			String s = br.readLine(); 
 			if ( s == null) {
