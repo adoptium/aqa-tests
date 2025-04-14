@@ -1551,7 +1551,7 @@ def triggerRerunJob (rerunTestJobParams, originalStatus) {
 def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
 		def childTestJobParams = [:]
-		def currentStatus = originalStatus;
+		def currentStatus = 'SUCCESS';
 		forceCleanWS()
 		try {
 			def buildPaths = ""
