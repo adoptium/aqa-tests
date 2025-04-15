@@ -570,7 +570,7 @@ public class JavatestUtil {
 				fileContent += "set jck.env.testPlatform.pathSep \":\";\n";
 				generatedJti.setProperty("jck.env.testPlatform.os", "other");
 				generatedJti.setProperty("jck.env.testPlatform.fileSep", "/");
-				generatedJti.setProperty('jck.env.testPlatform.pathSep', ":");
+				generatedJti.setProperty("jck.env.testPlatform.pathSep", ":");
 			}
 
 			if ( testsRequireDisplay(tests) ) {
@@ -1015,7 +1015,7 @@ public class JavatestUtil {
 		FileOutputStream jtiFileOut = new FileOutputStream(newJtiFileRef);
 		generatedJti.store(jtiFileOut, newJtiFileRef + " file was generated on " + LocalDateTime.now());
 		// OutputStreamWriter jtiOutSWriter = new OutputStreamWriter(jtiFileOut);
-		
+
 		return (printFileContents(newJtiFileRef) && printFileContents(newJtbFileRef));
 	}
 
