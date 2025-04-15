@@ -45,6 +45,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.io.FileOutputStream;
 
 public class JavatestUtil {
 	private static String testJdk;
@@ -292,7 +293,7 @@ public class JavatestUtil {
 		System.out.println("Using jti file "+ jtiFile);
 
 		Properties generatedJti = new Properties();
-		generatedJti.load(FileInputStream(jtiFile));
+		generatedJti.load(new FileInputStream(jtiFile));
 
 		if (spec.contains("win")) {
 			// Jck fileURL validator validates using java.net.URI, so must use forward slashes "/" 
@@ -550,7 +551,7 @@ public class JavatestUtil {
 				timeoutFactorString = "4";  // 4 base time limit equal 40 minutes
 			}
 			fileContent += "timeoutfactor " + timeoutFactorString + ";\n";
-			generatedJti.setProperty("timeoutfactor", timoutFactorString);
+			generatedJti.setProperty("timeoutfactor", timeoutFactorString);
             
 			fileContent += keyword + ";\n";
 			generatedJti.setProperty(keyword, "");
