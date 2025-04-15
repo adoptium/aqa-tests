@@ -15,6 +15,7 @@ if [ "$OS" = "Windows_NT" ]; then
              CommandLine like '%rmid%' or \
              CommandLine like '%rmiregistry%' or \
              CommandLine like '%tnameserv%' or \
+             CommandLine like '%notepad.exe%' or \
              CommandLine like '%make.exe%')"
 
   # Ignore Jenkins agent and grep cmd
