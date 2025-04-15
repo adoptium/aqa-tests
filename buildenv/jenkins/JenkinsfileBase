@@ -1468,7 +1468,6 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
 */
-//rerunTestJobParams should be part of return of the 
 def triggerRerunJob (rerunTestJobParams, originalStatus) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
@@ -1549,9 +1548,6 @@ def triggerRerunJob (rerunTestJobParams, originalStatus) {
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					currentBuild.result = rerunResults.jobStatus
-				} else {
-					echo " Either all rerun succeed or there are aborted?"
-					//Here need to set currentBuild.result to be worst of non rerun parallel or rerun parallel 
 				}
 			}
 		}
