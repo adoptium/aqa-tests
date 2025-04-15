@@ -447,8 +447,11 @@ timestamps{
                 env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
                 echo "SETUP_LABEL: ${env.SETUP_LABEL}"
                 def parallelResults = jenkinsfile.runParallelTests()
-                if ( parallelResults.jobStatus != 'SUCCESS' ) {
+                if ( !parallelResults.isEmpty()) {
+                    if ( parallelResults.jobStatus != 'SUCCESS' ) {
 					jenkinsfile.triggerRerunJob(parallelResults.jobParams, parallelResults.jobStatus)
+                } else {
+                    jenkinsfile.triggerRerunJob(parallelResults.jobParams, 'UNSTABLE')
                 }
             }
         } else {
