@@ -1020,7 +1020,7 @@ public class JavatestUtil {
 		return (printFileContents(newJtiFileRef) && printFileContents(newJtbFileRef));
 	}
 
-	private static boolean printFileContents(String file) {
+	private static boolean printFileContents(String file) throws Exception {
 		if (spec.contains("zos")) {
 			if(!doIconvFile()) {
 				System.out.println("Failed to convert " + file + " file encoding for z/OS");
