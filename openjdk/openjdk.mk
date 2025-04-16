@@ -236,6 +236,8 @@ else ifneq (,$(findstring FIPS140_3_OpenJCEPlusFIPS.FIPS140-3, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJCEPlusFIPS.FIPS140-3.txt$(Q)
 else ifneq (,$(findstring FIPS140_3_OpenJCEPlus, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
+else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-OpenJCEPlus.txt$(Q)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=

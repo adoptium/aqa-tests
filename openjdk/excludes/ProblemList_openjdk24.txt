@@ -250,6 +250,8 @@ sun/security/ssl/SSLSocketImpl/SSLSocketLeak.java https://github.com/adoptium/aq
 javax/net/ssl/SSLEngine/LargePacket.java https://bugs.openjdk.org/browse/JDK-8227651 generic-all
 sun/security/lib/cacerts/VerifyCACerts.java https://github.com/adoptium/aqa-tests/issues/4808 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Symantec.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
+sun/security/tools/jarsigner/TimestampCheck.java https://bugs.openjdk.org/browse/JDK-8352302 generic-all
+sun/security/ssl/X509TrustManagerImpl/distrust/Camerfirma.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Entrust.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 ###########################################################################
 
@@ -416,7 +418,7 @@ compiler/codegen/aes/TestAESMain.java https://github.com/adoptium/aqa-tests/issu
 jdk/jfr/event/runtime/TestDumpReason.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 jdk/jfr/jvm/TestDumpOnCrash.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
-
+jdk/jfr/jvm/TestModularImage.java https://bugs.openjdk.org/browse/JDK-8347496 generic-all
 ###########################################################################
 
 # jdk_vector
@@ -507,7 +509,8 @@ runtime/os/TestTracePageSizes.java#compiler-options https://bugs.openjdk.org/bro
 runtime/ErrorHandling/CreateCoredumpOnCrash.java https://bugs.openjdk.org/browse/JDK-8348862 windows-aarch64
 runtime/ReservedStack/ReservedStackTest.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
 runtime/ReservedStack/ReservedStackTestCompiler.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
-
+runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
+runtime/cds/appcds/TransformInterfaceOfLambda.java https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
 ############################################################################
 
 # hotspot_serviceability
@@ -541,4 +544,5 @@ serviceability/sa/ClhsdbThreadContext.java https://github.com/adoptium/aqa-tests
 serviceability/sa/ClhsdbWhere.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/sa/TestJhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/sa/TestClhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
-serviceability/jvmti/RedefineClasses/RedefineSharedClass.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/jvmti/RedefineClasses/RedefineSharedClass.java https://github.com/adoptium/aqa-tests/issues/5672 macosx-all,windows-aarch64
+serviceability/jvmti/RedefineClasses/RedefineLeakThrowable.java#id1 https://github.com/adoptium/aqa-tests/issues/5920 macosx-all,windows-aarch64
