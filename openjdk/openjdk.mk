@@ -62,10 +62,7 @@ ifeq ($(OS),FreeBSD)
 endif
 ifeq ($(CYGWIN),1)
  	NPROCS:=$(NUMBER_OF_PROCESSORS)
-	MEMORY_SIZE:=$(shell \
-		expr `wmic computersystem get totalphysicalmemory -value | grep = \
-		| cut -d "=" -f 2-` / 1024 / 1024 \
-		)
+	MEMORY_SIZE:=$(shell powershell -command "(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1024 / 1024")
 endif
 ifeq ($(OS),SunOS)	
 	NPROCS:=$(shell psrinfo | wc -l)
@@ -239,6 +236,8 @@ else ifneq (,$(findstring FIPS140_3_OpenJCEPlusFIPS.FIPS140-3, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJCEPlusFIPS.FIPS140-3.txt$(Q)
 else ifneq (,$(findstring FIPS140_3_OpenJCEPlus, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-FIPS140_3_OpenJcePlus.txt$(Q)
+else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
+	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-OpenJCEPlus.txt$(Q)
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=

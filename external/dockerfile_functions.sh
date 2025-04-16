@@ -420,7 +420,7 @@ print_criu_install() {
         # Method 2: build from source code
         echo -e "\n# Install dependent packages for criu" \
                 "\nRUN apt-get update \\" \
-                "\n\t&& apt-get install -y --no-install-recommends gcc iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev python3-distutils pip protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
+                "\n\t&& apt-get install -y --no-install-recommends gcc iptables libbsd-dev libcap-dev libdrm-dev libnet1-dev libgnutls28-dev libgnutls30 libnftables-dev libnl-3-dev libprotobuf-dev pip protobuf-c-compiler protobuf-compiler xmlto libssl-dev python3-future libxt-dev libfontconfig1-dev python3-protobuf nftables libcups2-dev libasound2-dev libxtst-dev libexpat1-dev libfontconfig libaio-dev libffi-dev libx11-dev libprotobuf-c-dev libnuma-dev libfreetype6-dev libxrandr-dev libxrender-dev libelf-dev libxext-dev libdwarf-dev" \
                 "\n" >> ${file}
 
         echo -e "\n# Build criu and set capabilities" \
@@ -429,7 +429,7 @@ print_criu_install() {
                 "\n\t&& git clone https://github.com/ibmruntimes/criu.git \\" \
                 "\n\t&& cd criu \\" \
                 "\n\t&& git fetch origin \\" \
-                "\n\t&& git reset --hard origin/0.44.0-release \\" \
+                "\n\t&& git reset --hard origin/0.45.0-release \\" \
                 "\n\t&& make PREFIX=/usr CONFIG_AMDGPU=n install \\" \
                 "\n\t&& criu -V " \
                 "\n" >> ${file}
@@ -491,7 +491,7 @@ print_test_files() {
     local test=$2
     local localPropertyFile=$3
 
-    if [[ "$check_external_custom_test" == "1" ]]; then 
+    if [[ "$check_external_custom" == "1" ]]; then 
         echo -e "# This is the main script to run ${test} tests" \
                 "\nCOPY external_custom/test.sh /test.sh" \
                 "\nCOPY test_base_functions.sh test_base_functions.sh\n" >> ${file}
@@ -565,7 +565,7 @@ print_external_custom_parameters(){
     echo -e "ARG EXTERNAL_CUSTOM_PARAMETERS" \
             "\nENV EXTERNAL_CUSTOM_REPO ${EXTERNAL_CUSTOM_REPO}" \
             "\nENV EXTERNAL_TEST_CMD ${EXTERNAL_TEST_CMD}" \
-            "\nENV EXTERNAL_REPO_BRANCH ${EXTERNAL_REPO_BRANCH}" \
+            "\nENV EXTERNAL_CUSTOM_BRANCH ${EXTERNAL_CUSTOM_BRANCH}" \
             "\n" >> ${file}
 
 }
@@ -609,16 +609,16 @@ generate_dockerfile() {
     build=$7
     platform=$8
     base_docker_registry_dir="$9"
-    check_external_custom_test=$10
+    check_external_custom=${10}
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
-        tag_version=${EXTERNAL_REPO_BRANCH}
+    if [[ "$check_external_custom" == "1" ]]; then
+        tag_version=${EXTERNAL_CUSTOM_BRANCH}
     fi
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
-        set_external_custom_test_info ${test} ${check_external_custom_test}
+    if [[ "$check_external_custom" == "1" ]]; then
+        set_external_custom_test_info ${test} ${check_external_custom}
     else
-        set_test_info ${test} ${check_external_custom_test}
+        set_test_info ${test} ${check_external_custom}
     fi
 
     jhome="/opt/java/openjdk"
@@ -696,7 +696,7 @@ generate_dockerfile() {
     print_clone_project ${file} ${test} ${github_url};
     print_test_files ${file} ${test} ${localPropertyFile};
 
-    if [[ "$check_external_custom_test" == "1" ]]; then
+    if [[ "$check_external_custom" == "1" ]]; then
         print_external_custom_parameters ${file}
     fi
     print_workdir ${file};

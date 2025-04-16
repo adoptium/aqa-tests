@@ -1,4 +1,5 @@
 #!groovy
+import groovy.transform.Field
 
 def PLATFORM_MAP = [
     'arm_linux' : [
@@ -124,7 +125,6 @@ if ( !params.TARGET ) {
 def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
-
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 timestamps{
     if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
@@ -267,15 +267,17 @@ timestamps{
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
-            SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+            env.SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
+            def dockerAgents = []
             // Block dockerAgents on adoptium CI for riscv64 until we make it work
             // This will allow RISC-V test jobs to queue up and not hang
-            if ( env.JENKINS_URL.contains("ci.adoptium.net")) {
+            if ( env.JENKINS_URL.contains("ci.adoptium.net") || env.JENKINS_URL.contains("ci.eclipse.org/temurin-compliance") ) {
                 dockerAgents = null
             } else {
                 dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
             }
-            dockerAgentLabel = ''
+            @Field String dockerAgentLabel = ''
+            @Field String LABEL = '' 
             if (params.LABEL) {
                 LABEL = params.LABEL
             } else {
@@ -289,18 +291,15 @@ timestamps{
                 }
 
             // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
-            if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
-                LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
-                env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
-            } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
-                String[] tokens = TEST_FLAG.split('_')
-                def opts = tokens[2];
-                env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
-            }
-
-            // Temporarily exclude CentOS 7 machines for sanity.external pipeline due to docker issue
-            if (JOB_NAME.contains ("sanity.external")) {
-                LABEL += "&&!sw.os.cent.7"
+            if (params.TEST_FLAG) {
+                if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
+                    LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
+                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+                } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
+                    String[] tokens = TEST_FLAG.split('_')
+                    def opts = tokens[2];
+                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=${opts}"
+                }
             }
 
             // JDK23+ isn't supported on machines prior to Mac 11 https://github.com/eclipse-openj9/openj9/issues/19694
@@ -465,6 +464,22 @@ def runTest() {
                     userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
                 ]
             }
+        }
+        if (params.TEST_FLAG == "OpenJCEPlus") {
+            def workdir = "${env.WORKSPACE}"
+            if (PLATFORM.contains("windows")) {
+                workdir = env.WORKSPACE.replaceAll("\\\\", "/")
+            }
+            def javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk${params.JDK_VERSION}/${params.PLATFORM}/java.security"
+            if (!fileExists(javaSecurityFile)) {
+                javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk/${params.PLATFORM}/java.security"
+            }
+            if (!fileExists(javaSecurityFile)) {
+                javaSecurityFile = "${workdir}/aqa-tests/config/openjceplus/jdk/java.security"
+            }
+            echo "Set -Djava.security.properties=${javaSecurityFile} in EXTRA_OPTIONS"
+            env.EXTRA_OPTIONS += " -Djava.security.properties=${javaSecurityFile}"
+            sh "cat ${javaSecurityFile}"
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {

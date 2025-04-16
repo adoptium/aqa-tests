@@ -15,7 +15,7 @@ jobs:
       AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Set up Python 3.8
-        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
           python-version: 3.8
       - name: checkout current repo
@@ -44,7 +44,7 @@ jobs:
           cat all.json | python scripts/disabled_tests/issue_status.py -v > output.json
           echo "::endgroup::"
       - name: store artifact
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: disabled_tests
           path: output.json

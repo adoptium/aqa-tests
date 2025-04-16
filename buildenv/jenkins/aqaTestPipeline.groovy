@@ -1,5 +1,7 @@
 #!groovy
 
+import groovy.transform.Field
+
 def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
 def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*")
 def TARGETS = params.TARGETS ?: "Grinder"
@@ -8,7 +10,7 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 
-NUM_MACHINES = ""
+@Field String NUM_MACHINES = ""
 if (params.NUM_MACHINES) {
     NUM_MACHINES = params.NUM_MACHINES
 } else if (!params.TEST_TIME && PARALLEL == "Dynamic") {
@@ -16,10 +18,14 @@ if (params.NUM_MACHINES) {
     NUM_MACHINES = 3
 }
 
+@Field String SDK_RESOURCE
+@Field String TIME_LIMIT
+@Field Boolean AUTO_AQA_GEN
+@Field Boolean LIGHT_WEIGHT_CHECKOUT
+
 SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
-TRSS_URL = params.TRSS_URL ? params.TRSS_URL : "https://trss.adoptium.net/"
 LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
@@ -29,17 +35,16 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 // Set the AQA_TEST_PIPELINE Jenkins job displayName
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
-defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+@Field String defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
+@Field String defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
 // There is no applicable tests for FIPS140-2 extended.functional atm, so temporarily disable FIPS140-2 extended.functional
-defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
+@Field String defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
 
 if (params.BUILD_TYPE == "nightly") {
     defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
 }
 
-JOBS = [:]
-fail = false
+@Field Map JOBS = [:]
 
 timestamps {
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -85,9 +90,6 @@ timestamps {
         }
     }
     parallel JOBS
-    if (fail) {
-        currentBuild.result = "FAILURE"
-    }
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
@@ -313,13 +315,11 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                             }
                         }
                     }
-                    if (downstreamJobResult != "SUCCESS") {
-                        fail = true
-                    }
+                    currentBuild.result = downstreamJobResult
                 }
             } else {
                 println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
-                fail = true
+                currentBuild.result = "FAILURE"
             }
         }
     }

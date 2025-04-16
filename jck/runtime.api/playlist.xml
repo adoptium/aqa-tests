@@ -20,7 +20,7 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"; \
-		$(EXEC_RUNTIME_TEST); \
+		$(EXEC_RUNTIME_TEST_WITH_AGENT); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) testsuite=RUNTIME tests="$(JCKRUNTIME_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
 		</command>
@@ -494,6 +494,38 @@
 			<group>jck</group>
 		</groups>
 	</test>
+        <test>  
+                <testCaseName>jck-runtime-api-java_awt-robot</testCaseName>
+                <disables>
+                        <disable>
+                                <comment>backlog/issues/608 : To be run manually</comment>
+                                <impl>ibm</impl>
+                        </disable>
+                        <disable>
+                                <comment>backlog/issues/608 : To be run manually</comment>
+                                <impl>openj9</impl>
+                        </disable>
+                        <disable>
+                                <comment>Disabled on aix and windows as no xvfb capable of robot interaction</comment>
+                                <platform>ppc64_aix|x86-64_windows|x86-32_windows|aarch64_windows</platform>
+                                <impl>hotspot</impl>
+                        </disable>
+                </disables>
+                <variations>
+                        <variation>NoOptions</variation>
+                </variations>
+                <command>$(GEN_JTB_GENERIC) tests=api/java_awt testsuite=RUNTIME interactive=yes robot=yes; \
+                $(EXEC_RUNTIME_TEST); \
+                $(TEST_STATUS); \
+                $(GEN_SUMMARY_GENERIC) tests=api/java_awt testsuite=RUNTIME interactive=yes robot=yes
+                </command>
+                <levels>        
+                        <level>extended</level>
+                </levels>
+                <groups>
+                        <group>jck</group>
+                </groups>
+        </test> 
 	<test>
 		<testCaseName>jck-runtime-api-java_beans</testCaseName>
 		<disables>

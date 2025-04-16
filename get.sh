@@ -212,6 +212,9 @@ getBinaryOpenjdk()
 	fi
 
 	if [ "$SDK_RESOURCE" == "nightly" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
+		if [[ ! "${CUSTOMIZED_SDK_URL}" =~ /$ ]]; then
+    			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}/"
+		fi
 		result=$(curl -k ${curl_options} ${CUSTOMIZED_SDK_URL} | grep ">[0-9]*\/<" | sed -e 's/[^0-9/ ]//g' | sed 's/\/.*$//')
 		IFS=' ' read -r -a array <<< "$result"
 		arr=(${result/ / })
@@ -295,7 +298,7 @@ getBinaryOpenjdk()
 						if [ "$TEST_IMAGES_REQUIRED" == "true" ]; then
 							download_url+=" ${download_url_base}${n}"
 						fi
-					else
+					elif [[ $n != *"install"* && $n != *"unsigned"* ]]; then
 						download_url+=" ${download_url_base}${n}"
 					fi
 				done

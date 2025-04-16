@@ -88,7 +88,7 @@ def setupEnv() {
 	SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "upstream"
 	env.AUTO_DETECT = params.AUTO_DETECT
 	env.EXTERNAL_CUSTOM_REPO=params.EXTERNAL_CUSTOM_REPO? params.EXTERNAL_CUSTOM_REPO : ""
-	env.EXTERNAL_REPO_BRANCH=params.EXTERNAL_REPO_BRANCH ? params.EXTERNAL_REPO_BRANCH : "master"
+	env.EXTERNAL_CUSTOM_BRANCH=params.EXTERNAL_CUSTOM_BRANCH ? params.EXTERNAL_CUSTOM_BRANCH : "master"
 	env.EXTERNAL_TEST_CMD=params.EXTERNAL_TEST_CMD ? params.EXTERNAL_TEST_CMD : "mvn clean install"
 	env.DYNAMIC_COMPILE=params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE : false
 	env.USE_JRE=params.USE_JRE ? params.USE_JRE : false
@@ -248,6 +248,11 @@ def setupParallelEnv() {
 					echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
 					echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
+					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+				} else if (NUM_LIST == 1 && env.JDK_IMPL == "hotspot" && (TARGET.contains("openjdk") || TARGET.contains("system"))) {
+					int FORCE_NUM_MACHINES = Math.min(3, MAX_NUM_MACHINES);
+					echo "NUM_LIST=1, Fall back to regenerate parallel lists with NUM_MACHINES=${FORCE_NUM_MACHINES}."
+					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${FORCE_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				}
 			} else {
@@ -981,10 +986,30 @@ def post(output_name) {
 def testBuild() {
 	TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
+		boolean runMulticastCmd = false
+
+		if (JOB_NAME.contains("special.jck") || JOB_NAME.contains("extended.openjdk") || TARGET == "special.jck" || TARGET == "extended.openjdk" || TARGET.contains("_nio") || TARGET.contains("_net") || TARGET.contains("_custom")) {
+			// only enable on linux based platforms atm
+			if (PLATFORM.contains('linux')) {
+				def statusCode =  sh returnStatus: true, script: """
+					which activate_multicast
+					"""
+					echo "which activate_multicast status code: ${statusCode}"
+				if (statusCode == 0) {
+					runMulticastCmd = true
+				}
+			}
+		}
+		echo "runMulticastCmd: ${runMulticastCmd}"
 		try {
 			addJobDescription()
 			setup()
 			addGrinderLink()
+
+			if (runMulticastCmd) {
+				echo "sudo activate_multicast"
+				sh "sudo activate_multicast"
+			}
 			// prepare environment and compile test projects
 			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
 				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
@@ -998,6 +1023,11 @@ def testBuild() {
 		} finally {
 			// Terminate any left over test job processes
 			terminateTestProcesses()
+
+			if (runMulticastCmd) {
+				echo "sudo deactivate_multicast"
+				sh "sudo deactivate_multicast"
+			}
 
 			if (!params.KEEP_WORKSPACE) {
 				forceCleanWS()
@@ -1129,13 +1159,22 @@ def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 			artifactoryRepo = repos[0].trim()
 		}
 
-		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
-		if (artifactoryRoorDir.endsWith("/")) {
-			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
+		def artifactoryRootDir = ""
+		if (params.ARTIFACTORY_ROOT_DIR) {
+			artifactoryRootDir = params.ARTIFACTORY_ROOT_DIR
+		} else {
+			// only artifactoryRootDir to Jenkins domain if no ARTIFACTORY_ROOT_DIR and artifactoryRepo does not contain Jenkins domain root dir
+			if (!"${artifactoryRepo}/".contains(getJenkinsDomain())) {
+				artifactoryRootDir = getJenkinsDomain()
+			}
 		}
-		def fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${JOB_NAME}/${BUILD_ID}/"
+		if (artifactoryRootDir.endsWith("/")) {
+			artifactoryRootDir = artifactoryRootDir.substring(0, artifactoryRootDir.length() - 1);
+		}
+		def artifactoryRepoAndDir = artifactoryRootDir ? "${artifactoryRepo}/${artifactoryRootDir}" : artifactoryRepo
+		def fullUploadPath = "${artifactoryRepoAndDir}/${JOB_NAME}/${BUILD_ID}/"
 		if (artifactoryUploadDir) {
-			fullUploadPath = "${artifactoryRepo}/${artifactoryRoorDir}/${artifactoryUploadDir}/"
+			fullUploadPath = "${artifactoryRepoAndDir}/${artifactoryUploadDir}/"
 		}
 
 		def uploadSpec = """{
