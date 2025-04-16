@@ -1619,7 +1619,10 @@ def runParallelTests() {
 	if (params.PARALLEL && params.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			parallelResults = archiveChildJobTap(childJobs)
+			// There are cases params.PARALLEL != "None", but job is non parallel if number list is 1
+			if ( !childJobs.isEmpty() ) { 
+				parallelResults = archiveChildJobTap(childJobs) 
+			}
 		}
 	}
 	return parallelResults
