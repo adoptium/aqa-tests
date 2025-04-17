@@ -30,7 +30,7 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
-		currentBuild.result = 'UNSTABLE'
+		env.jobStatus = 'UNSTABLE'
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -112,6 +112,7 @@ def setupEnv() {
 	env.PARALLEL = env.PARALLEL ? params.PARALLEL : "None"
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
+	env.jobStatus = 'SUCCESS'
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -836,7 +837,7 @@ def runTest( ) {
 			}
 			checkTestResults(resultSum)
 		} else {
-			currentBuild.result = 'FAILURE'
+			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = manager.createSummary("error.svg")
 			summary.appendText("TEST BUILD FAILURE!", false)
@@ -852,7 +853,7 @@ def checkTestResults(results) {
 	def summary = null
 
 	if (results["TOTAL"] == 0) {
-		currentBuild.result = 'FAILURE'
+		env.jobStatus = 'FAILURE'
 		echo 'No test ran, set build result to FAILURE.'
 		summary = manager.createSummary("folder-delete.svg")
 		summary.appendText("NO TEST FOUND!", false)
@@ -860,7 +861,7 @@ def checkTestResults(results) {
 	}
 
 	if (results["FAILED"] != 0) {
-		currentBuild.result = 'UNSTABLE'
+		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, set build result to UNSTABLE.'
 		summary = manager.createSummary("warning.svg")
 	} else {
@@ -903,9 +904,6 @@ def post(output_name) {
 			pax_opt = "-x pax"
 			tar_cmd_suffix = ""
 		}
-
-		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
 		archiveFile("aqa-tests/TKG/**/*.tap", true)
@@ -937,7 +935,7 @@ def post(output_name) {
 				def pattern = "${env.WORKSPACE}/*_output.*"
 				uploadToArtifactory(pattern)
 			}
-		} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+		} else if ((env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 			def test_output_tar_name = "${output_name}_test_output${suffix}"
 			if (tar_cmd.startsWith('tar')) {
 				sh "${tar_cmd} - ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
@@ -1031,7 +1029,7 @@ def testBuild() {
 			if ((env.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
 				|| (env.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
 				if (setupParallelEnv() == 1) {
-					// No need to run tests in parallel. set parallel paramter to be non.
+					// Fall back to non-parallel.
 					env.PARALLEL = 'None'
 					testExecution()
 				}
@@ -1332,7 +1330,7 @@ def addGrinderLink() {
 }
 
 def addFailedTestsGrinderLink(paths=""){
-	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
+	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
 		def failedTestList = ""
 		def jdkFailedTestCaseList = ""
 		def hotspotFailedTestCaseList = ""
@@ -1581,7 +1579,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+						// step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 						archiveFile("${name}/${buildId}/**/*.tap", true)
 						// add failed tests to Grinder link if it is not from the rerun build
 						if (!name.contains("_rerun")) {
@@ -1597,6 +1595,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
 			}
+
 			archiveAQAvitFiles()
 			if (buildPaths.length() > 0) {
 				addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
