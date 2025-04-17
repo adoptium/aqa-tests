@@ -449,8 +449,8 @@ timestamps{
                     }
                 }
             }
+            env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
             if (env.jobStatus != 'FAILURE') {
-                env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
                 echo "SETUP_LABEL: ${env.SETUP_LABEL}"
                 def parallelResults = jenkinsfile.runParallelTests()
                 if ( !parallelResults.isEmpty() ) {
@@ -461,9 +461,11 @@ timestamps{
                     jenkinsfile.triggerRerunJob(parallelResults.jobParams, 'UNSTABLE')
                 }
             }                     			
-			catchError(buildResult: "${env.jobStatus}") {
-				step([$class: "TapPublisher", testResults: "**/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-			}
+			node (env.SETUP_LABEL) {
+                catchError(buildResult: "${env.jobStatus}") {
+				    step([$class: "TapPublisher", testResults: "**/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+			    }
+            }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
         }
