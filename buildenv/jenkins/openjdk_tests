@@ -449,17 +449,21 @@ timestamps{
                 def parallelResults = jenkinsfile.runParallelTests()
                 if ( !parallelResults.isEmpty() ) {
                     if ( parallelResults.jobStatus != 'SUCCESS' ) {
-					    jenkinsfile.triggerRerunJob(parallelResults.jobParams, parallelResults.jobStatus)
+					    def rerunResults = jenkinsfile.triggerRerunJob(parallelResults.jobParams, parallelResults.jobStatus)
+                        env.jobStatus = rerunResults.jobStatus
                     }
                 } else {
-                    jenkinsfile.triggerRerunJob(parallelResults.jobParams, 'UNSTABLE')
+                    def rerunResults =jenkinsfile.triggerRerunJob(parallelResults.jobParams, 'UNSTABLE')
+                    env.jobStatus = rerunResults.jobStatus
                 }
             }                     			
-			node (env.SETUP_LABEL) {
-                catchError(buildResult: "${env.jobStatus}") {
-				    step([$class: "TapPublisher", testResults: "**/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-			    }
-            }
+
+            echo "SETUP_LABEL: ${env.jobStatus}"
+            currentBuild.result = env.jobStatus
+            //catchError(buildResult: "${env.jobStatus}") {
+                //   step([$class: "TapPublisher", testResults: "**/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
+            //}
+
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
         }
