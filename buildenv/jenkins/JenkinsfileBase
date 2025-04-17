@@ -847,7 +847,7 @@ def checkTestResults(results) {
 
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
-		echo 'No test ran, set build result to FAILURE.'
+		echo 'No test ran, current build status is FAILURE.'
 		summary = manager.createSummary("folder-delete.svg")
 		summary.appendText("NO TEST FOUND!", false)
 		return
@@ -855,7 +855,7 @@ def checkTestResults(results) {
 
 	if (results["FAILED"] != 0) {
 		env.jobStatus = 'UNSTABLE'
-		echo 'There were test failures, set build result to UNSTABLE.'
+		echo 'There were test failures, current build status is UNSTABLE.'
 		summary = manager.createSummary("warning.svg")
 	} else {
 		summary = manager.createSummary("accept.svg")
