@@ -1456,7 +1456,7 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
 */
-def triggerRerunJob (rerunTestJobParams, originalStatus) {
+def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
 		if ((rerunIterations > 0 && env.FAILED_TESTS?.trim()) || (params.RERUN_FAILURE && rerunTestJobParams)) {
@@ -1514,7 +1514,7 @@ def triggerRerunJob (rerunTestJobParams, originalStatus) {
 						}
 					}
 					// generate job to rerun FAILURE test build(s)
-					if (params.RERUN_FAILURE && rerunTestJobParams) {
+					if (params.RERUN_FAILURE && rerunTestJobParams != null ) {
 						def newRerunJobs = [:]
 						rerunTestJobParams.each {
 							name, jobParams ->
