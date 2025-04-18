@@ -46,12 +46,6 @@ limitations under the License.
 	</test>
 	<test>
 		<testCaseName>MBCS_Tests_locale_matching_zh_CN_linux</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.ibm.com/runtimes/backlog/issues/1610</comment>
-				<version>24</version>
-			</disable>
-		</disables>
 		<command>LANG=zh_CN.UTF-8 perl $(TEST_RESROOT)$(D)test.pl; \
 	$(TEST_STATUS)</command>
 		<platformRequirements>os.linux</platformRequirements>
