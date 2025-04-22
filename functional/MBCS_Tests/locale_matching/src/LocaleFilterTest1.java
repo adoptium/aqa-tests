@@ -69,7 +69,10 @@ public class LocaleFilterTest1 {
         Properties prop = new Properties();
         String suffix = "";
         long ver = JavaVersion.getVersion();
-        if (ver >= 16000000L) suffix = "_16";
+        if (ver >= 24000000L)
+            suffix = "_24";
+        else if (ver >= 16000000L)
+            suffix = "_16";
         prop.load(LocaleFilterTest1.class.
             getResourceAsStream("LocaleFilterTest1"+suffix+".properties"));
         String expected = String.format(prop.getProperty(loc.toString()));
