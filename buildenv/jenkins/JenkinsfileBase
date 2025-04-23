@@ -976,8 +976,12 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-
-		addFailedTestsGrinderLink()
+		
+		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
+		if ( (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) || (env.PARALLEL == 'None'  && rerunIterations == 0) ) {
+		{
+			addFailedTestsGrinderLink()
+		}
 
 		try {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
@@ -1319,6 +1323,30 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
+def getFailedTests(String paths="") {
+	def failedTestList = ""
+	List<String> buildPaths = paths.split(',')
+	for (def buildPath: buildPaths) {
+		def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
+		for (def tapFile: tapFiles) {
+			echo "Tap file found: ${tapFile}..."
+			def file = readFile(file: "${tapFile}")
+			TapConsumer tapConsumer = TapConsumerFactory.makeTap13YamlConsumer()
+			TestSet testSet = tapConsumer.load(file)
+			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+					def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
+					failedTestList += "${failedtest},"
+				}
+			}
+		}
+	}
+	if (failedTestList) {
+		failedTestList = failedTestList[0..-2]
+	}
+	return failedTestList
+}
+
 def addFailedTestsGrinderLink(paths=""){
 	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
 		def failedTestList = ""
@@ -1569,12 +1597,8 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						// step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 						archiveFile("${name}/${buildId}/**/*.tap", true)
-						// add failed tests to Grinder link if it is not from the rerun build
-						if (!name.contains("_rerun")) {
-							buildPaths += "${name}/${buildId}/,"
-						}
+						buildPaths += "${name}/${buildId}/,"
 					} catch (Exception e) {
 						echo 'Exception: ' + e.toString()
 						echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
@@ -1587,10 +1611,12 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			}
 
 			archiveAQAvitFiles()
-			if (buildPaths.length() > 0) {
+			env.jobStatus = currentStatus
+			if (currentStatus != "SUCCESS") {
 				if ( originalStatus == "SUCCESS" ) {
-					env.jobStatus = currentStatus
-					addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+					env.FAILED_TESTS = getFailedTests(buildPaths[0..-2])
+				} else {
+					addFailedTestsGrinderLink(buildPaths[0..-2])
 				}
 			}
 		} finally {
