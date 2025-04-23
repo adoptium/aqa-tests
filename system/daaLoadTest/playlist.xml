@@ -65,6 +65,33 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>daa2.15mins</testCaseName>
+		<variations>
+			<variation>Mode110</variation>
+			<variation>Mode117</variation>
+			<variation>Mode610</variation>
+			<variation>Mode705</variation>
+			<variation>Mode706</variation>
+			<variation>Mode707</variation>
+			<variation>Mode708</variation>
+			<variation>Mode709</variation>
+			<variation>Mode710</variation>
+			
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=daa2,timeLimit=15m$(Q) -test=DaaLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>DaaLoadTest_daa2_5m</testCaseName>
 		<variations>
 			<variation>Mode110</variation>
