@@ -979,7 +979,6 @@ def post(output_name) {
 		
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
 		if ( (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) || (env.PARALLEL == 'None'  && rerunIterations == 0) ) {
-		{
 			addFailedTestsGrinderLink()
 		}
 
@@ -1564,7 +1563,10 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					echo "Triggering rerun jobs in parallel ..."
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
+					echo " rerun trigger job rerun jobsstatus is ${rerunResults.jobStatus}"
+					echo "current jbo status is ${currentBuild.result}"
 					currentBuild.result = rerunResults.jobStatus
+					echo "after setting currentBuild.result is ${currentBuild.result}"
 				}
 			}
 		}
