@@ -1599,7 +1599,10 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 
 			archiveAQAvitFiles()
 			if (buildPaths.length() > 0) {
-				addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+				if ( originalStatus == "SUCCESS" ) {
+					env.jobStatus = currentStatus
+					addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+				}
 			}
 		} finally {
 			forceCleanWS()
