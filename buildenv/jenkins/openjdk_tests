@@ -457,6 +457,8 @@ timestamps{
                 def parallelResults = jenkinsfile.runParallelTests()
                 if ( parallelResults.jobStatus != 'SUCCESS' ) {
 					jenkinsfile.triggerRerunJob(parallelResults.jobStatus, parallelResults.jobParams)
+                } else {
+                    currentBuild.result = 'SUCCESS'
                 }
                 echo " Paralle and after rerun job status is ${currentBuild.result}"
             } else {
