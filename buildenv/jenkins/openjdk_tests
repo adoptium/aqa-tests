@@ -163,106 +163,149 @@ timestamps{
             parallel testJobs
         }
     } else if (!JOB_NAME.contains("_imagePull") && !JOB_NAME.contains("_imageUpload") && params.TARGET == "dev.external" ) {
-        // trigger xxx_imageUpload test job, then xxx_imagePull test job
-        def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
-        if (params.LABEL_ADDITION) {
-            commonLabel += "&&${params.LABEL_ADDITION}"
-        }
-        def imageUploadMap = [
-            'x86-64_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
-                    ],
-            'aarch64_linux' : [
-                    	// no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
-                    	['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
-                    ],
-            's390x_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
-                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
-                    ],
-            'ppc64le_linux' : [
-                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
-                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
-                        // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
-            ]
-        ]
-        def imagePullMap = [
-            'x86-64_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
-                    ],
-            'aarch64_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
-                    ],
-            's390x_linux' : [
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
-                    ],
-            'ppc64le_linux' : [
-                        // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
-                        ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
+        def types = ["criu", "scc"]
+        def imageUploadJobs = [:]
+        def imagePullJobs = [:]
+        for (String type : types) {
+            def imageUploadMap = []
+            def imagePullMap = []
+            def target = "dev.external"
+            def buildList = ""
+            if (type == "criu") {
+                def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
+                if (params.LABEL_ADDITION) {
+                    commonLabel += "&&${params.LABEL_ADDITION}"
+                }
+                buildList="external/criu,external/criu-portable-checkpoint,external/criu-portable-checkpoint,external/criu-portable-checkpoint,criu-ubi-portable-restore,external/criu-ubi-portable-checkpoint"
+                imageUploadMap = [
+                    'x86-64_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
+                            ],
+                    'aarch64_linux' : [
+                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
+                            ],
+                    's390x_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
+                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
+                            ],
+                    'ppc64le_linux' : [
+                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
+                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
                     ]
-        ]
-        if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
-            def imageUploadJobName = "${JOB_NAME}_imageUpload"
-            def imagePullJobName = "${JOB_NAME}_imagePull"
-            generateJobViaAutoGen(imageUploadJobName)
-            generateJobViaAutoGen(imagePullJobName)
+                ]
+                imagePullMap = [
+                    'x86-64_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                            ],
+                    'aarch64_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                            ],
+                    's390x_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
+                            ],
+                    'ppc64le_linux' : [
+                                // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
+                            ]
+                ]
+                target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
-            def imageUploadJobs = [:]
-            def target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
-
-            if (params.PLATFORM == "ppc64le_linux") {
-                // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
-                target = target.minus("disabled.criu-portable-checkpoint_test,")
-            }
-
-            echo "Trigger ${imageUploadJobName} job ..."
-            for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
-                def labelAddition = imageUploadMap[params.PLATFORM][i].LABEL_ADDITION
-                def newParams = ["LABEL_ADDITION" : labelAddition, "TARGET" : "${target}", "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
-                def childParams = changeParam(params, newParams)
-                imageUploadJobs["${imageUploadJobName}_${i}]"] = {
-                    build job: imageUploadJobName, parameters: childParams
+                if (params.PLATFORM == "ppc64le_linux") {
+                    // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
+                    target = target.minus("disabled.criu-portable-checkpoint_test,")
                 }
+            } else if (type == "scc") {
+                def commonLabel = "sw.tool.podman"
+                if (params.LABEL_ADDITION) {
+                    commonLabel += "&&${params.LABEL_ADDITION}"
+                }
+                buildList="external/scc"
+                imageUploadMap = [
+                    's390x_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.next"],
+                            ],
+                    'ppc64le_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p11"],
+                    ]
+                ]
+                imagePullMap = [
+                    's390x_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.next"],
+                            ],
+                    'ppc64le_linux' : [
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9"],
+                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p11"]
+                            ]
+                ]
             }
+            // trigger xxx_imageUpload test job, then xxx_imagePull test job
+            if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
+                def imageUploadJobName = "${JOB_NAME}_${type}_imageUpload"
+                def imagePullJobName = "${JOB_NAME}_${type}_imagePull"
+                generateJobViaAutoGen(imageUploadJobName)
+                generateJobViaAutoGen(imagePullJobName)
+
+                echo "Create ${imageUploadJobName} job ..."
+                for (int i = 0; i < imageUploadMap[params.PLATFORM].size(); i++) {
+                    def labelAddition = imageUploadMap[params.PLATFORM][i].LABEL_ADDITION
+                    def newParams = ["LABEL_ADDITION" : labelAddition, "BUILD_LIST" : "${buildList}", "TARGET" : "${target}", "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
+                    def childParams = changeParam(params, newParams)
+                    imageUploadJobs["${imageUploadJobName}_${i}]"] = {
+                        // set propagate to false, so imageUploadJobs (i.e., criu) failures do not block imagePullJobs (i.e., scc).
+                        buildResult = build job: imageUploadJobName, parameters: childParams, propagate: false
+                    }
+                }
+
+                echo "Create ${imagePullJobName} job ..."
+                for (int i = 0; i < imagePullMap[params.PLATFORM].size(); i++) {
+                    def labelAddition = imagePullMap[params.PLATFORM][i].LABEL_ADDITION
+                    def newParams = ["LABEL_ADDITION" : labelAddition, "BUILD_LIST" : "${buildList}", "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
+                    def childParams = changeParam(params, newParams)
+                    imagePullJobs["${imagePullJobName}_${i}]"] = {
+                        build job: imagePullJobName, parameters: childParams
+                    }
+                }
+            } else {
+                echo "Cannot find key PLATFORM: ${params.PLATFORM} in imageUploadMap: ${imageUploadMap} and/or imagePullMap: ${imagePullMap}. Skipping..."
+            }
+        }
+        if (imageUploadJobs && imagePullJobs) {
+            echo "Trigger imageUploadJobs in parallel ..."
             parallel imageUploadJobs
-
-            def imagePullJobs = [:]
-            echo "Trigger ${imagePullJobName} job ..."
-            for (int i = 0; i < imagePullMap[params.PLATFORM].size(); i++) {
-                def labelAddition = imagePullMap[params.PLATFORM][i].LABEL_ADDITION
-                def newParams = ["LABEL_ADDITION" : labelAddition, "DOCKER_REGISTRY_DIR" : "${JOB_NAME}:${BUILD_NUMBER}"]
-                def childParams = changeParam(params, newParams)
-                imagePullJobs["${imagePullJobName}_${i}]"] = {
-                    build job: imagePullJobName, parameters: childParams
-                }
-            }
+            echo "Trigger imagePullJobs in parallel ..."
             parallel imagePullJobs
         } else {
-             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in imageUploadMap: ${imageUploadMap} and/or imagePullMap: ${imagePullMap}."
-        } 
+            assert false : "imageUploadJobs and/or imagePullJobs is empty. \n imageUploadJobs: ${imageUploadJobs} \n imagePullJobs: ${imagePullJobs}."
+        }
+
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""

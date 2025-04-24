@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="portableSCC" default="build" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<description>
+		Build portableSCC Test
+	</description>
+	<import file="${TEST_ROOT}/external/build.xml"/>
+
+	<!-- set properties for this build -->
+	<property name="TEST" value="scc" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="src" location="." />
+
+	<target name="prepare_base_image" depends="move_scripts,clean_image" description="prepare the base image">
+		<echo message="placeholder for portable SCC" />
+	</target>
+
+	<target name="build" depends="prepare_base_image, copy_dest" />
+</project>
