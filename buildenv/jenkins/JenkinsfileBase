@@ -982,7 +982,7 @@ def post(output_name) {
 			addFailedTestsGrinderLink()
 		} else if ( env.PARALLEL == 'None' ) {
 			if ( rerunIterations > 0 ) {
-				env.FAILED_TESTS = getFailedTests()
+				getFailedAndCustomizedTest()
 			} else {
 				addFailedTestsGrinderLink()
 			}
@@ -1328,8 +1328,14 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def getFailedTests(String paths="") {
+def getFailedAndCustomizedTest(String paths="") {
 	def failedTestList = ""
+	def jdkFailedTestCaseList = ""
+	def hotspotFailedTestCaseList = ""
+	def langtoolsFailedTestCaseList = ""
+	def jckRuntimeFailedTestCaseList = ""
+	def jckCompilerFailedTestCaseList = ""
+	def jckDevtoolsFailedTestCaseList = ""
 	List<String> buildPaths = paths.split(',')
 	for (def buildPath: buildPaths) {
 		def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
@@ -1342,67 +1348,35 @@ def getFailedTests(String paths="") {
 				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
 					def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
 					failedTestList += "${failedtest},"
-				}
-			}
-		}
-	}
-	if (failedTestList) {
-		failedTestList = failedTestList[0..-2]
-	}
-	return failedTestList
-}
-
-def addFailedTestsGrinderLink(paths=""){
-	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
-		def failedTestList = ""
-		def jdkFailedTestCaseList = ""
-		def hotspotFailedTestCaseList = ""
-		def langtoolsFailedTestCaseList = ""
-		def jckRuntimeFailedTestCaseList = ""
-		def jckCompilerFailedTestCaseList = ""
-		def jckDevtoolsFailedTestCaseList = ""
-		List<String> buildPaths = paths.split(',')
-		for (def buildPath: buildPaths) {
-			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
-			for (def tapFile: tapFiles) {
-				echo "Tap file found: ${tapFile}..."
-				def file = readFile(file: "${tapFile}")
-				TapConsumer tapConsumer = TapConsumerFactory.makeTap13YamlConsumer()
-				TestSet testSet = tapConsumer.load(file)
-				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
-						failedTestList += "${failedtest},"
-						if (env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('jck')) {
-							def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
-							if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
-								failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
-								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
-								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
-								if (failedtest.startsWith("jdk_")) {
-									if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jdkFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
-									if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
-									if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
-									if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("langtools_")){
-									if (!langtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-										langtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else {
-									if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
-										hotspotFailedTestCaseList += "${failedTestCasesInfo} "
-									}
+					if (env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('jck')) {
+						def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
+						if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
+							failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
+							failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
+							failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
+							if (failedtest.startsWith("jdk_")) {
+								if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
+								if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
+								if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
+								if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("langtools_")){
+								if (!langtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+									langtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else {
+								if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
+									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
 								}
 							}
 						}
@@ -1410,45 +1384,56 @@ def addFailedTestsGrinderLink(paths=""){
 				}
 			}
 		}
-		if (failedTestList) {
-			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
-			env.FAILED_TESTS= failedTests ?: ""
-			env.RERUN_TESTCASES=""
-			failedTestList = "testList+TESTLIST=" + failedTests
+	}
+	if (failedTestList) {
+		String failedTests = failedTestList[0..2]
+		env.FAILED_TESTS= failedTests
+		env.RERUN_TESTCASES=""
+		def customizedTestCases = [:]
+		if (jdkFailedTestCaseList) {
+			customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
+		}
+		if (hotspotFailedTestCaseList) {
+			customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
+		}
+		if (langtoolsFailedTestCaseList) {
+			customizedTestCases['langtools'] = "${langtoolsFailedTestCaseList}"
+		}
+		if (jckRuntimeFailedTestCaseList) {
+			customizedTestCases['jckruntime'] = "${jckRuntimeFailedTestCaseList}"
+		}
+		if (jckCompilerFailedTestCaseList) {
+			customizedTestCases['jckcompiler'] = "${jckCompilerFailedTestCaseList}"
+		}
+		if (jckDevtoolsFailedTestCaseList) {
+			customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
+		}
+		if (customizedTestCases.size() == 1) {
+			def testCases=customizedTestCases.values().first()
+			def customTarget=customizedTestCases.keySet().first()
+			def testCaseSize=testCases.count(' ')
+			// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
+			if (testCaseSize < 80) {
+				env.RERUN_CUSTOMTARGET="${customTarget}_custom"
+				env.RERUN_TESTCASES="${testCases}"
+			}
+			return customizedTestCases
+		}
+	}
+	return null
+}
+
+def addFailedTestsGrinderLink(paths="") {
+	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
+		def customizedTestCases = getFailedAndCustomizedTest(paths)
+		if (env.FAILED_TESTS?.trim()) {
+			String failedTestList = "testList+TESTLIST=" + env.FAILED_TESTS
 			String url = env.RERUN_LINK
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
-			def customizedTestCases = [:]
-			if (jdkFailedTestCaseList) {
-				customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
-			}
-			if (hotspotFailedTestCaseList) {
-				customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
-			}
-			if (langtoolsFailedTestCaseList) {
-				customizedTestCases['langtools'] = "${langtoolsFailedTestCaseList}"
-			}
-			if (jckRuntimeFailedTestCaseList) {
-				customizedTestCases['jckruntime'] = "${jckRuntimeFailedTestCaseList}"
-			}
-			if (jckCompilerFailedTestCaseList) {
-				customizedTestCases['jckcompiler'] = "${jckCompilerFailedTestCaseList}"
-			}
-			if (jckDevtoolsFailedTestCaseList) {
-				customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
-			}
-
-			if (customizedTestCases.size() == 1) {
-				def testCases=customizedTestCases.values().first()
-				def customTarget=customizedTestCases.keySet().first()
-				def testCaseSize=testCases.count(' ')
-				// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
-				if (testCaseSize < 80) {
-					env.RERUN_CUSTOMTARGET="${customTarget}_custom"
-					env.RERUN_TESTCASES="${testCases}"
-				}
-			}
+		}
+		if ( customizedTestCases != null ) {			
 			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
 				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
@@ -1622,7 +1607,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			env.jobStatus = currentStatus
 			if (currentStatus != "SUCCESS") {
 				if ( originalStatus == "SUCCESS" ) {
-					env.FAILED_TESTS = getFailedTests(buildPaths[0..-2])
+					getFailedAndCustomizedTest(buildPaths[0..-2])
 				} else {
 					addFailedTestsGrinderLink(buildPaths[0..-2])
 				}
