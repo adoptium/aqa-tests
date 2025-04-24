@@ -978,9 +978,15 @@ def post(output_name) {
 		}
 		
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
-		if ( (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) || (env.PARALLEL == 'None'  && rerunIterations == 0) ) {
+		if (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) {
 			addFailedTestsGrinderLink()
-		}
+		} else if ( env.PARALLEL == 'None' ) {
+			if ( rerunIterations > 0 ) {
+				env.FAILED_TESTS = getFailedTests()
+			} else {
+				addFailedTestsGrinderLink()
+			}
+		} 
 
 		try {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
