@@ -6,7 +6,7 @@ jckHarnessPID=0
 
 startJCKAgent() {
 	echo "Starting JCK agent.."
-	eval $1
+	eval "$1"
 	jckAgentPID=$!
 	echo "Agent started with PID $jckAgentPID"
 }
@@ -18,13 +18,13 @@ stopJCKAgent() {
 
 startJCKHarness() {
 	echo "Starting JCK harness.."
-	eval $1
+	eval "$1"
     jckHarnessPID=$!
 }
 
 queryVmJdwpTest() {
     local jck_root_path="$1/JCK-runtime-$2/"
-    eval $3/bin/java -cp $jck_root_path/lib/javatest.jar com.sun.javatest.finder.ShowTests -finder com.sun.javatest.finder.HTMLTestFinder -end $jck_root_path/tests/testsuite.html -initial vm/jdwp | tr -d "[:blank:]"
+    eval "$3/bin/java -cp $jck_root_path/lib/javatest.jar com.sun.javatest.finder.ShowTests -finder com.sun.javatest.finder.HTMLTestFinder -end $jck_root_path/tests/testsuite.html -initial vm/jdwp | tr -d "[:blank:]""
 }
 
 
