@@ -42,9 +42,6 @@ def setupEnv() {
 	// Terminate any previous test related processes that are running
 	terminateTestProcesses()
 
-        // Hide other app windows to aid AWT and Arctic automated test execution
-        hideAppWindows()
-
 	if ( params.JDK_VERSION ) {
 		env.ORIGIN_JDK_VERSION = params.JDK_VERSION
 		env.JDK_VERSION = params.JDK_VERSION.equalsIgnoreCase("next") ? "" : params.JDK_VERSION
@@ -736,6 +733,10 @@ def buildTest() {
 def runTest( ) {
 	stage('Test') {
 		echo 'Running tests...'
+
+        	// Hide other app windows to aid AWT and Arctic automated test execution
+        	hideAppWindows()
+
 		def CUSTOM_OPTION = ''
 
 		TARGET = "${params.TARGET}";
@@ -1082,13 +1083,13 @@ def terminateTestProcesses() {
 
 // For hide app windows to aid AWT and Arctic automated test execution
 def hideAppWindows() {
-        if (params.PLATFORM && params.PLATFORM.contains("mac") && "${JAVA_HOME}" != "") {
+        if (params.PLATFORM && params.PLATFORM.contains("mac")) {
         	echo "HIDE_APP_WINDOWS: Hiding other app windows on Mac to aid automated AWT test execution"
-                def statusCode=sh(script:"cd aqa-tests && ${JAVA_HOME}/bin/javac MinimizeMacWindows.java", returnStatus:true)
+                def statusCode=sh(script:"cd aqa-tests && ${TEST_JDK_HOME}/bin/javac MinimizeMacWindows.java", returnStatus:true)
                 if (statusCode != 0) {
                         echo "rc = ${statusCode}, Unable to compile aqa-tests/MinimizeMacWindows.java."
         	} else {
-			statusCode=sh(script:"cd aqa-tests && ${JAVA_HOME}/bin/java MinimizeMacWindows", returnStatus:true)
+			statusCode=sh(script:"cd aqa-tests && ${TEST_JDK_HOME}/bin/java MinimizeMacWindows", returnStatus:true)
                         if (statusCode != 0) {
                         	echo "rc = ${statusCode}, Unable to hide app windows using aqa-tests/MinimizeMacWindows.java."
                 	}
