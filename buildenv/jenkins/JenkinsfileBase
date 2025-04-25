@@ -1561,6 +1561,8 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 				}
 			}
 		}
+	} else {
+		currentBuild.result = originalStatus
 	}
 }
 
