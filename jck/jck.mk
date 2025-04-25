@@ -162,6 +162,7 @@ else
 endif
 
 $(shell chmod +x $(TEST_ROOT)$(D)jck$(D)agent-drive.sh)
+$(shell chmod +x $(TEST_ROOT)$(D)jck$(D)jck-jdwp-test-drive.sh)
 
 START_MULTI_JVM_COMP_TEST = $(TEST_ROOT)$(D)jck$(D)agent-drive.sh '$(START_AGENT)' '$(START_HARNESS)'
 GEN_JTB_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) testJava=$(JAVA_TO_TEST) riJava=$(JAVA_TO_TEST) task=cmdfilegen spec=$(SPEC) $(APPLICATION_OPTIONS)
