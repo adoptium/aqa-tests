@@ -13,11 +13,34 @@
 # limitations under the License.
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
+	<include>../sccSettings.mk</include>
 	<test>
-		<testCaseName>portable_scc_test</testCaseName>
-		<!-- ToDo: real test to be added -->
-		<command>$(TEST_JDK_HOME)/bin/java -version; \
-			$(TEST_STATUS)
+		<testCaseName>portable_scc_CreateImageAndPushToRegistry_ubi9</testCaseName>
+		<disables>
+			<disable>
+				<comment>runtimes_automation_294</comment>
+			</disable>
+		</disables>
+		<command>$(TEST_ROOT)/external/scc/scc.sh testCreateImageAndPushToRegistry $(TEST_JDK_HOME) ${JDK_VERSION} "ubi" "9" "$(DOCKER_REGISTRY_DIR)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)/external/scc/scc.sh clean
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>portable_scc_pullImageTest_ubi9</testCaseName>
+		<command>$(TEST_ROOT)/external/scc/scc.sh pullImageTest "ubi" "9" "$(DOCKER_REGISTRY_DIR)"; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)/external/scc/scc.sh clean
 		</command>
 		<levels>
 			<level>dev</level>
