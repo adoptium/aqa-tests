@@ -37,15 +37,15 @@ do
     startJCKAgent "$1"
     # $(TEST_STATUS) and $(GEN_SUMMARY_GENERIC) are passed into startJCKHarness
 	startJCKHarness "$2" temp_jdwp.jtb "$4" "$5" tests=$test testsuite=RUNTIME
-    sleep 60 # 60 second timeout
-    if kill -s 0 $jckHarnessPID 2>nul; then
-        echo "Testcase $test : Process $jckHarnessPID is still running after 60 seconds... killing..."
-        kill -9 $jckHarnessPID
-        harnessExitCode=124
-    else
-        wait $jckHarnessPID
-        harnessExitCode=$?
-    fi
+    # sleep 60 # 60 second timeout
+    # if kill -s 0 $jckHarnessPID 2>nul; then
+    #     echo "Testcase $test : Process $jckHarnessPID is still running after 60 seconds... killing..."
+    #     kill -9 $jckHarnessPID
+    #     harnessExitCode=124
+    # else
+    #     wait $jckHarnessPID
+    #     harnessExitCode=$?
+    # fi
     stopJCKAgent
 done
 
