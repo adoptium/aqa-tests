@@ -1397,7 +1397,7 @@ def getFailedAndCustomizedTest(String paths="") {
 		}
 	}
 	if (failedTestList) {
-		String failedTests = failedTestList[0..2]
+		String failedTests = failedTestList[0..-2]
 		env.FAILED_TESTS= failedTests
 		env.RERUN_TESTCASES=""
 		def customizedTestCases = [:]
@@ -1438,7 +1438,8 @@ def addFailedTestsGrinderLink(paths="") {
 	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
 		def customizedTestCases = getFailedAndCustomizedTest(paths)
 		String url = env.RERUN_LINK
-		if (env.FAILED_TESTS?.trim()) {
+		// Add rerun FailedTests link only if there are targets other than _custom as it's duplicate with rerun customized link
+		if (env.FAILED_TESTS?.trim() && (env.FAILED_TESTS.contains(',') || !env.FAILED_TESTS.contains('_custom'))) {
 			String failedTestList = "testList+TESTLIST=" + env.FAILED_TESTS
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
