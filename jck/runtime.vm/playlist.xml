@@ -55,7 +55,10 @@
 			<variation>NoOptions</variation>
 		</variations>
 		<command>$(GEN_JTB_GENERIC) tests=vm/jdwp testsuite=RUNTIME concurrency=1; \ 
-		<!-- $(EXEC_RUNTIME_TEST_JDWP) -->
+		$(EXEC_RUNTIME_TEST_JDWP) ; \
+		<!-- Putting these back for now to test where the failure is -->
+		$(TEST_STATUS) ; \
+		$(GEN_SUMMARY_GENERIC) tests=vm/jdwp testsuite=RUNTIME
 		</command>
 		<levels>
 			<level>sanity</level>
