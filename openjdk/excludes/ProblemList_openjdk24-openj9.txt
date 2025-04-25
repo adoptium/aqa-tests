@@ -168,10 +168,6 @@ java/lang/Thread/virtual/MonitorEnterExit.java#Xint-LM_LEGACY https://github.com
 java/lang/Thread/virtual/MonitorEnterExit.java#Xint-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/21422 generic-all
 java/lang/Thread/virtual/MonitorEnterExit.java#default https://github.com/eclipse-openj9/openj9/issues/21422 generic-all
 java/lang/Thread/virtual/Starvation.java https://github.com/eclipse-openj9/openj9/issues/21423 generic-all
-java/lang/Thread/virtual/SynchronizedNative.java#Xcomp-TieredStopAtLevel1 https://github.com/eclipse-openj9/openj9/issues/21424 generic-all
-java/lang/Thread/virtual/SynchronizedNative.java#Xcomp-noTieredCompilation https://github.com/eclipse-openj9/openj9/issues/21424 generic-all
-java/lang/Thread/virtual/SynchronizedNative.java#Xint https://github.com/eclipse-openj9/openj9/issues/21424 generic-all
-java/lang/Thread/virtual/SynchronizedNative.java#default https://github.com/eclipse-openj9/openj9/issues/21424 generic-all
 java/lang/Thread/virtual/stress/Skynet.java#default https://github.com/eclipse-openj9/openj9/issues/21425 generic-all
 java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-notify https://github.com/eclipse-openj9/openj9/issues/21426 generic-all
 java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-notify-interrupt https://github.com/eclipse-openj9/openj9/issues/21426 generic-all
@@ -181,14 +177,10 @@ java/lang/ScopedValue/ScopedValueAPI.java https://github.com/eclipse-openj9/open
 java/lang/Thread/virtual/CustomScheduler.java https://github.com/eclipse-openj9/openj9/issues/21445 linux-ppc64le
 java/lang/Thread/virtual/Reflection.java https://github.com/eclipse-openj9/openj9/issues/21445 generic-all
 java/lang/Thread/virtual/Reflection.java.Reflection https://github.com/eclipse-openj9/openj9/issues/21445 generic-all
-java/lang/Thread/virtual/TraceVirtualThreadLocals.java https://github.com/eclipse-openj9/openj9/issues/21441 generic-all
 java/lang/Thread/virtual/stress/GetStackTraceALotWithTimedWait.java#id0 https://github.com/eclipse-openj9/openj9/issues/21445 linux-ppc64le,aix-all
 java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout https://github.com/eclipse-openj9/openj9/issues/21445 generic-all
 java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-interrupt https://github.com/eclipse-openj9/openj9/issues/21445 generic-all
-java/lang/Thread/virtual/Parking.java#Xint https://github.com/eclipse-openj9/openj9/issues/21446 generic-all
-java/lang/Thread/virtual/Parking.java#default https://github.com/eclipse-openj9/openj9/issues/21446 generic-all
-java/lang/Thread/virtual/Parking.java#Xcomp https://github.com/eclipse-openj9/openj9/issues/21446 generic-all
-java/lang/Thread/virtual/Parking.java#Xcomp-noTieredCompilation https://github.com/eclipse-openj9/openj9/issues/21446 generic-all
+java/lang/Thread/virtual/RetryMonitorEnterWhenPinned.java https://github.com/eclipse-openj9/openj9/issues/21717 generic-all
 
 ############################################################################
 
@@ -518,6 +510,7 @@ java/util/concurrent/forkjoin/FJExceptionTableLeak.java https://github.com/eclip
 java/util/concurrent/locks/Lock/TimedAcquireLeak.java https://github.com/eclipse-openj9/openj9/issues/7125 macosx-all,linux-all,aix-all
 java/util/concurrent/locks/Lock/OOMEInAQS.java https://github.com/eclipse-openj9/openj9/issues/16659 generic-all
 java/util/concurrent/SynchronousQueue/Fairness.java https://github.com/eclipse-openj9/openj9/issues/18771 generic-all
+java/util/concurrent/tck/JSR166TestCase.java#default https://github.com/eclipse-openj9/openj9/issues/21639 generic-all
 java/util/concurrent/TimeUnit/Basic.java https://github.com/adoptium/aqa-tests/issues/1665 windows-all
 java/util/logging/CheckZombieLockTest.java https://bugs.openjdk.java.net/browse/JDK-8148972 macosx-all,linux-all
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse-openj9/openj9/issues/4561 generic-all
@@ -599,6 +592,7 @@ java/foreign/TestMappedHandshake.java https://github.com/eclipse-openj9/openj9/i
 # serviceability
 
 serviceability/jvmti/GetLocalVariable/GetLocalVars.java https://github.com/eclipse-openj9/openj9/issues/15920 generic-all
+serviceability/jvmti/GetMethodDeclaringClass/TestUnloadedClass.java https://github.com/eclipse-openj9/openj9/issues/20676 generic-all
 serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorEventOnOffTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
 serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorGCParallelTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
 serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorArrayAllSampledTest.java https://github.com/eclipse-openj9/openj9/issues/16184 generic-all
