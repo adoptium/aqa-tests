@@ -1084,6 +1084,10 @@ def terminateTestProcesses() {
 // For hide app windows to aid AWT and Arctic automated test execution
 def hideAppWindows() {
         if (params.PLATFORM && params.PLATFORM.contains("mac")) {
+		def stdOut=sh(script:"who", returnStdout:true)
+echo "WHO: ${stdOut}"
+                stdOut=sh(script:"whoami", returnStdout:true)
+echo "WHOAMI: ${stdOut}"
 		withEnv(['AWT_FORCE_HEADFUL=true']) {
    		     	echo "HIDE_APP_WINDOWS: Hiding other app windows on Mac to aid automated AWT test execution"
                 	def statusCode=sh(script:"cd aqa-tests && ${TEST_JDK_HOME}/bin/javac MinimizeMacWindows.java", returnStatus:true)
