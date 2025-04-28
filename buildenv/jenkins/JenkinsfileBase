@@ -734,8 +734,10 @@ def runTest( ) {
 	stage('Test') {
 		echo 'Running tests...'
 
-        	// Hide other app windows to aid AWT and Arctic automated test execution
-        	hideAppWindows()
+		if (env.BUILD_LIST.contains('jck') || env.BUILD_LIST.contains('openjdk')) {
+			// Hide other app windows to aid AWT and Arctic automated test execution for jck and openjdk AWT automation tests
+			hideAppWindows()
+		}
 
 		def CUSTOM_OPTION = ''
 
