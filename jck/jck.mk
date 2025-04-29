@@ -162,6 +162,7 @@ else
 endif
 
 $(shell chmod +x $(TEST_ROOT)$(D)jck$(D)agent-drive.sh)
+$(shell chmod +x $(TEST_ROOT)$(D)jck$(D)jck-jdwp-test-drive.sh)
 
 START_MULTI_JVM_COMP_TEST = $(TEST_ROOT)$(D)jck$(D)agent-drive.sh '$(START_AGENT)' '$(START_HARNESS)'
 GEN_JTB_GENERIC = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.opts=$(Q)$(OTHER_OPTS)$(Q) -cp $(TEST_ROOT)/jck/jtrunner/bin JavatestUtil testRoot=$(TEST_ROOT) jckRoot=$(JCK_ROOT) jckversion=$(JCK_VERSION) workdir=$(REPORTDIR) configAltPath=$(CONFIG_ALT_PATH) testJava=$(JAVA_TO_TEST) riJava=$(JAVA_TO_TEST) task=cmdfilegen spec=$(SPEC) $(APPLICATION_OPTIONS)
@@ -171,9 +172,11 @@ START_RMIREG = $(TEST_JDK_HOME)/bin/rmiregistry > $(REPORTDIR)$(D)rmiregistry.lo
 START_RMID = $(TEST_JDK_HOME)/bin/rmid -J-Dsun.rmi.activation.execPolicy=none -J-Djava.security.policy=$(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/jck.policy > $(REPORTDIR)$(D)rmid.log &
 START_TNAMESRV = $(TEST_JDK_HOME)/bin/tnameserv -ORBInitialPort 9876 > $(REPORTDIR)$(D)tnameserv.log &
 EXEC_RUNTIME_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/runtime.jti @$(REPORTDIR)/generated.jtb
+EXEC_RUNTIME_TEST_NO_JTB = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-runtime-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/runtime.jti
 EXEC_COMPILER_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-compiler-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/compiler.jti @$(REPORTDIR)/generated.jtb
 EXEC_DEVTOOLS_TEST = $(JAVA_TO_TEST) -jar $(JCK_ROOT)/JCK-devtools-$(JCK_VERSION_NUMBER)/lib/javatest.jar -config $(CONFIG_ALT_PATH)/$(JCK_VERSION)/devtools.jti @$(REPORTDIR)/generated.jtb
 EXEC_RUNTIME_TEST_WITH_AGENT = $(TEST_ROOT)/jck/agent-drive.sh '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST)'
+EXEC_RUNTIME_TEST_JDWP = $(TEST_ROOT)/jck/jck-jdwp-test-drive.sh '$(START_AGENT_GENERIC)' '$(EXEC_RUNTIME_TEST_NO_JTB)' @$(REPORTDIR)/generated.jtb $(JCK_ROOT) $(JCK_VERSION_NUMBER) $(TEST_JDK_HOME)
 EXEC_RUNTIME_TEST_WITH_RMI_SERVICES = $(EXEC_RUNTIME_TEST_WITH_AGENT)
 
 ifeq ($(JDK_VERSION), 8)
