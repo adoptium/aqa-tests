@@ -626,11 +626,11 @@ public class JavatestUtil {
 					System.out.println(tests + "expects kdcHostname and kdcRealmname. Recheck if the values are proper in the supplied kdc conf file.");
 					return false; 
 				}
-
+				
 				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientPassword", krb5ClientPassword);
-				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientUsername", krb5ClientUsername);
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientUsername", krb5ClientUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName);
 				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerPassword", krb5ServerPassword );
-				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerUsername", krb5ServerUsername);
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerUsername", krb5ServerUsername + krb5ServerUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName);
 				generatedJti.setProperty("jck.env.runtime.jgss.kdcHostName", KerberosConfig.kdcHostName);
 				generatedJti.setProperty("jck.env.runtime.jgss.kdcRealmName", KerberosConfig.kdcRealmName);
 
@@ -717,7 +717,7 @@ public class JavatestUtil {
 				}
 			}
 
-			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
+			// Add the JVM options supplied by the user plus those added in this method to the jti file option.
 			generatedJti.setProperty("jck.env.runtime.testExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
 
 			// Tests that need Display on OSX also require AWT_FORCE_HEADFUL=true 
