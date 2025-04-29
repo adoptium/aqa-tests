@@ -733,6 +733,12 @@ def buildTest() {
 def runTest( ) {
 	stage('Test') {
 		echo 'Running tests...'
+
+		if (env.BUILD_LIST.contains('jck') || env.BUILD_LIST.contains('openjdk')) {
+			// Hide other app windows to aid AWT and Arctic automated test execution for jck and openjdk AWT automation tests
+			hideAppWindows()
+		}
+
 		def CUSTOM_OPTION = ''
 
 		TARGET = "${params.TARGET}";
@@ -1075,6 +1081,28 @@ def terminateTestProcesses() {
 	if (statusCode != 0) {
 			echo "rc = ${statusCode}, Unable to terminate all processes."
 	}
+}
+
+// For hide app windows to aid AWT and Arctic automated test execution
+def hideAppWindows() {
+        if (params.PLATFORM && params.PLATFORM.contains("mac")) {
+                // Do we have a logged in user console?
+		def consoleRc=sh(script:"who | grep console", returnStatus:true)
+                if (consoleRc == 0) {
+			withEnv(['AWT_FORCE_HEADFUL=true']) {
+   		     		echo "HIDE_APP_WINDOWS: Hiding other app windows on Mac to aid automated AWT test execution"
+	                	def statusCode=sh(script:"cd aqa-tests/buildenv/jenkins/src && ${TEST_JDK_HOME}/bin/javac MinimizeMacWindows.java", returnStatus:true)
+        	        	if (statusCode != 0) {
+                	        	echo "rc = ${statusCode}, Unable to compile aqa-tests/MinimizeMacWindows.java."
+        			} else {
+					statusCode=sh(script:"cd aqa-tests/buildenv/jenkins/src && ${TEST_JDK_HOME}/bin/java -Djava.awt.headless=false MinimizeMacWindows", returnStatus:true)
+	                        	if (statusCode != 0) {
+        	                		echo "rc = ${statusCode}, Unable to hide app windows using aqa-tests/MinimizeMacWindows.java."
+                			}
+				}
+	                }
+		}
+        }
 }
 
 def getJDKImpl(jvm_version) {
