@@ -630,7 +630,7 @@ public class JavatestUtil {
 				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientPassword", krb5ClientPassword);
 				generatedJti.setProperty("jck.env.runtime.jgss.krb5ClientUsername", krb5ClientUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName);
 				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerPassword", krb5ServerPassword );
-				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerUsername", krb5ServerUsername + krb5ServerUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName);
+				generatedJti.setProperty("jck.env.runtime.jgss.krb5ServerUsername", krb5ServerUsername + "/" + KerberosConfig.kdcHostName+'@'+KerberosConfig.kdcRealmName);
 				generatedJti.setProperty("jck.env.runtime.jgss.kdcHostName", KerberosConfig.kdcHostName);
 				generatedJti.setProperty("jck.env.runtime.jgss.kdcRealmName", KerberosConfig.kdcRealmName);
 
