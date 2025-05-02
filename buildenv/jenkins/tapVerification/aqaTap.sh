@@ -5,6 +5,7 @@ set -eo pipefail
 TAPDIR="AQAvitTapFiles"
 DOWNLOAD_URL=""
 PLATFORM="unknown"
+VERSION=""
 
 usage ()
 {
@@ -31,6 +32,9 @@ parseArgs() {
 			"--password" )
 				PASSWORD="$1"; shift;;
 
+			"--version" | "-v" )
+				VERSION="$1"; shift;;
+
 			"--clean" | "-c" )
 				clean; exit 0;;
 
@@ -54,6 +58,9 @@ parseArgs() {
 
 			"--checkTAP" | "-ct" )
 				checkTAP; exit 0;;
+
+			"--moveIntoSemeruFolder" | "-mf" )
+				moveIntoSemeruFolder; exit 0;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -240,6 +247,24 @@ listTAP() {
 	printf '%s\n' *"sanity.perf"*.tap
 	echo "9. List extended.perf ..."
 	printf '%s\n' *"extended.perf"*.tap
+}
+
+# move *.tap files into platform specific folder
+moveIntoSemeruFolder() {
+	allowedPlatforms=("x86-64_linux" "aarch64_linux" "ppc64le_linux" "ppc64_aix" "s390x_linux")
+	for file in ./*.tap; do
+		modifiedStr="${file//_rerun/}"
+		platformDir=$(echo "$modifiedStr" | sed -E 's/.*_[a-zA-Z0-9.-]+_([a-z0-9-]+_[a-z0-9]+)(_.*)?\.tap/\1/')
+		folder="ibm-semeru-certified-jdk_${platformDir}_${VERSION}.tap"
+		if [[  -n "$platformDir" ]] && [[ " ${allowedPlatforms[@]} " =~ " ${platformDir} " ]]; then
+			mkdir -p "$folder"
+
+			mv "$file" "$folder/"
+			echo "Moved $file to $folder/"
+		else
+			echo "Could not extract platform $platformDir from $file or platform is not in the allowed platform list."
+		fi
+	done
 }
 
 parseArgs "$@"
