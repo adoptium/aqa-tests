@@ -733,6 +733,12 @@ def buildTest() {
 def runTest( ) {
 	stage('Test') {
 		echo 'Running tests...'
+
+		if (env.BUILD_LIST.contains('jck') || env.BUILD_LIST.contains('openjdk')) {
+			// Hide other app windows to aid AWT and Arctic automated test execution for jck and openjdk AWT automation tests
+			hideAppWindows()
+		}
+
 		def CUSTOM_OPTION = ''
 
 		TARGET = "${params.TARGET}";
@@ -1077,6 +1083,28 @@ def terminateTestProcesses() {
 	}
 }
 
+// For hide app windows to aid AWT and Arctic automated test execution
+def hideAppWindows() {
+        if (params.PLATFORM && params.PLATFORM.contains("mac")) {
+                // Do we have a logged in user console?
+		def consoleRc=sh(script:"who | grep console", returnStatus:true)
+                if (consoleRc == 0) {
+			withEnv(['AWT_FORCE_HEADFUL=true']) {
+   		     		echo "HIDE_APP_WINDOWS: Hiding other app windows on Mac to aid automated AWT test execution"
+	                	def statusCode=sh(script:"cd aqa-tests/buildenv/jenkins/src && ${TEST_JDK_HOME}/bin/javac MinimizeMacWindows.java", returnStatus:true)
+        	        	if (statusCode != 0) {
+                	        	echo "rc = ${statusCode}, Unable to compile aqa-tests/MinimizeMacWindows.java."
+        			} else {
+					statusCode=sh(script:"cd aqa-tests/buildenv/jenkins/src && ${TEST_JDK_HOME}/bin/java -Djava.awt.headless=false MinimizeMacWindows", returnStatus:true)
+	                        	if (statusCode != 0) {
+        	                		echo "rc = ${statusCode}, Unable to hide app windows using aqa-tests/MinimizeMacWindows.java."
+                			}
+				}
+	                }
+		}
+        }
+}
+
 def getJDKImpl(jvm_version) {
 	def jdk_impl = 'hotspot'
 	if (jvm_version.contains('openj9')) {
@@ -1095,10 +1123,12 @@ def addJobDescription() {
 		}
 	}
 	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
+	def numMachines = (NUM_MACHINES) ?: 1
 	currentBuild.description = description \
 		+ "TARGET: ${params.TARGET}<br/>" \
 		+ "LABEL: <a href=${JENKINS_URL}label/${LABEL}>${LABEL}</a><br/>" \
-		+ "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
+		+ "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a><br/>" \
+		+ "PARALLEL: ${numMachines}"
 }
 
 def getJenkinsDomain() {
