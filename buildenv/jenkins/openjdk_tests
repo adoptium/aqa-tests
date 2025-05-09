@@ -107,7 +107,7 @@ def PLATFORM_MAP = [
     'x86-64_linux' : [
         'SPEC' : 'linux_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.linux',
-        'DynamicAgents' : ['azure', 'fyre']
+        'DynamicAgents' : ['azure', 'fyre', 'EBC']
     ],
     'x86-64_mac' : [
         'SPEC' : 'osx_x86-64',
@@ -374,48 +374,54 @@ timestamps{
                         }
                     }
                 } else {
-                    // IF no nodes are idle we will check if there is supported virtual agent
-                    // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
-                    // In this case jobs will be fooled to fall back to wait local busy nodes.
+                    // If CLOUD_PROVIDER is set, use the supported virtual agent.
                     dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
                     println "dynamicAgents: ${dynamicAgents}"
-
                     if ((params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
-                        boolean isNodeIdle = false
-                        node {
-                            String[] onlineNodes = nodesByLabel(LABEL)
-                            for (String onlineNode : onlineNodes) {
-                                def currentNode = Jenkins.instance.getNode(onlineNode).getComputer()
-                                if (!currentNode.isOffline()) {
-                                    if (currentNode.countBusy() < currentNode.getNumExecutors()) {
-                                        println "Found an idle node: ${onlineNode}. The program will not start dynamic vm."
-                                        isNodeIdle = true
-                                        break
+                        // DynamicAgents and DockerAgents shouldn't contain the same label
+                        if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                            if (params.CLOUD_PROVIDER == "EBC") {
+                                boolean ebcNode = false
+                                def demandId = UUID.randomUUID().toString()
+                                def dynamicMachineLabel = 'ci.agent.dynamic.' + demandId
+                                try {
+                                    timeout(time: 120, unit: 'MINUTES') {
+                                        // ToDo: pass in platform once we support more platforms. For now, we only support xlinux.
+                                        getEBCNode(demandId, dynamicMachineLabel)
+                                        node(dynamicMachineLabel) {
+                                            echo "EBC node ${dynamicMachineLabel} is ready"
+                                        }
+                                        ebcNode = true
                                     }
+                                } catch (Exception e) {
+                                    echo 'Exception: ' + e.toString()
+                                    echo "Cannot launch EBC node ${dynamicMachineLabel}..."
                                 }
-                            }
-                        }
-                        if (!isNodeIdle) {
-                            // DynamicAgents and DockerAgents shouldn't contain the same label
-                            if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
+                                if (ebcNode) {
+                                    LABEL = dynamicMachineLabel
+                                    echo "Use EBC node ${LABEL}..."
+                                } else {
+                                    echo "Use static node ${LABEL}..."
+                                }
+                            } else {
                                 LABEL = LABEL.minus("ci.role.test&&")
                                 LABEL += '&&ci.agent.dynamic'
-                                println "Cannot find any idle nodes. Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${params.CLOUD_PROVIDER}'"
-                            } else if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dockerAgents) {
-                                dockerAgentLabel = params.CLOUD_PROVIDER
-                            } else if (dockerAgents.size() >= 1) {
-                                dockerAgentLabel = dockerAgents[0]
+                                println "Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${params.CLOUD_PROVIDER}'"
                             }
-                            if (!dockerAgentLabel.equals('')) {
-                                if (dockerAgentLabel.equals('default') && SPEC.equals('linux_riscv64')) {
-                                    LABEL = LABEL.minus("&&hw.arch.riscv")
-                                    LABEL += '&&hw.arch.x86'
-                                    if (!LABEL.contains('&&sw.tool.docker')) {
-                                        LABEL += '&&sw.tool.docker'
-                                    }
+                        } else if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dockerAgents) {
+                            dockerAgentLabel = params.CLOUD_PROVIDER
+                        } else if (dockerAgents.size() >= 1) {
+                            dockerAgentLabel = dockerAgents[0]
+                        }
+                        if (!dockerAgentLabel.equals('')) {
+                            if (dockerAgentLabel.equals('default') && SPEC.equals('linux_riscv64')) {
+                                LABEL = LABEL.minus("&&hw.arch.riscv")
+                                LABEL += '&&hw.arch.x86'
+                                if (!LABEL.contains('&&sw.tool.docker')) {
+                                    LABEL += '&&sw.tool.docker'
                                 }
-                                println "Cannot find any idle nodes. Starting run test on docker node, nodeLabel: '${LABEL}', dockerAgentLabel: '${dockerAgentLabel}'"
                             }
+                            println "Starting run test on docker node, nodeLabel: '${LABEL}', dockerAgentLabel: '${dockerAgentLabel}'"
                         }
                     }
                 }
@@ -606,12 +612,12 @@ private String resolvePlatform(PLATFORM, JDK_VERSION) {
 }
 
 def areNodesWithLabelOnline(labelToCheck) {
-            String[] onlineNodes = nodesByLabel(labelToCheck)
-            if (onlineNodes.size() < 1) {
-                return false
-            }
-            return true
-        }
+    String[] onlineNodes = nodesByLabel(labelToCheck)
+    if (onlineNodes.size() < 1) {
+        return false
+    }
+    return true
+}
 
 
 def checkErrors(errorList) {
@@ -707,4 +713,31 @@ def generateJobViaAutoGen(testJobName) {
 
         build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
     }
+}
+
+def getEBCNode(demandId, dynamicMachineLabel) {
+    library 'jenkins-ci-websphere'
+    def ebcPlan = 'hur-runtimesJenkins-aqa-ubuntu22_x86.yml'
+    def ebcShortlist = ''
+    int expectedNodeLifespan = params.TIME_LIMIT ? Integer.parseInt(params.TIME_LIMIT) : 1
+    echo "Calling ebcJenkinsNodeDemand() with demandId: ${demandId} and label: ${dynamicMachineLabel}"
+    def ebcArgs = [
+                    demandId: demandId, 
+                    ebcPlan: ebcPlan,
+                    ebcShortlist: ebcShortlist,
+                    autoCompleteAfterXHours: expectedNodeLifespan + 1,
+                    ebcBranch: 'prod', 
+                    credentialsId: "${params.EBC_CREDENTIALS_ID}",
+                    extraProps: ['ebc_remotePlaybook_gitRepoUrl=git@github.ibm.com:runtimes/infra-can.git',
+                        'ebc_jenkins_server_instance_name=hyc-runtimes-jenkins.swg-devops.com',
+                        'ebc_jenkins_service_name=runtimes-jenkins',
+                        "ebc_jenkins_agent_label=${dynamicMachineLabel}",
+                        'ebc_remotePlaybook_gitBranch=openj9',
+                        'ebc_remotePlaybook_file=ansible/playbooks/ibm_unix_playbook/ibm_jenkins_unix_test.yml',
+                        "ebc_ansible_extra_vars='is_ebc=true'",
+                        'ebc_remotePlaybook_jenkinsUserSshPubKey=unused']
+                    ]
+    echo "EBC Args: ${ebcArgs}"
+    def ebcResult = ebcJenkinsNodeDemand(ebcArgs);
+    echo "EBC Result: ${ebcResult}"
 }
