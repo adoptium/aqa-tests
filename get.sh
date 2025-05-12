@@ -287,6 +287,10 @@ getBinaryOpenjdk()
 				download_url_base=$(echo "$download_url_base" | sed -r 's|([^:])/+|\1/|g')
 				echo "artifactory URL: ${download_url_base}"
 				download_api_url_base=(${download_url_base//\/ui\/native\//\/artifactory\/api\/storage\/})
+				echo "!!! $download_api_url_base"
+				if [[ $download_api_url_base != *"artifactory/api/storage"* ]]; then
+					download_api_url_base=(${download_url_base//\/artifactory\//\/artifactory\/api\/storage\/})
+				fi
 				echo "use artifactory API to get the jdk and/or test images: ${download_api_url_base}"
 				download_urls=$(curl ${curl_options} ${download_api_url_base} | grep -E '.*\.tar\.gz"|.*\.zip"' | grep -E 'testimage|jdk|jre'| sed 's/.*"uri" : "\([^"]*\)".*/\1/')
 				arr=(${download_urls/ / })
