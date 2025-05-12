@@ -213,8 +213,39 @@ getBinaryOpenjdk()
 
 	if [ "$SDK_RESOURCE" == "nightly" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		if [[ ! "${CUSTOMIZED_SDK_URL}" =~ /$ ]]; then
-    			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}/"
+			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}/"
 		fi
+
+		if [[ $CUSTOMIZED_SDK_URL = *"vmfarm"* ]]; then
+			subdir=""
+			if [ $PLATFORM == "ppc32_aix" ]; then
+				subdir="ap3280"
+			elif [ $PLATFORM == "ppc64_aix" ]; then
+				subdir="ap6480"
+			elif [ $PLATFORM == "ppc64le_linux" ]; then
+				subdir="xl6480"
+			elif [ $PLATFORM == "s390x_linux" ]; then
+				subdir="xz6480"
+			elif [ $PLATFORM == "s390_zos" ]; then
+				subdir="mz3180"
+			elif [ $PLATFORM == "s390x_zos" ]; then
+				subdir="mz6480"
+			elif [ $PLATFORM == "x86-32_linux" ]; then
+				subdir="xi3280"
+			elif [ $PLATFORM == "x86-64_linux" ]; then
+				subdir="xa6480"
+			elif [ $PLATFORM == "x86-32_windows" ]; then
+				subdir="wi3280"
+			elif [ $PLATFORM == "x86-64_windows" ]; then
+				subdir="wa6480"
+			else
+				echo "There is no $PLATFORM to Artifactory vmfarm SDK mapping. Please check PLATFORM value or update the map."
+				exit 1
+			fi
+			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}${subdir}/"
+		fi
+		CUSTOMIZED_SDK_URL=(${CUSTOMIZED_SDK_URL//\/ui\/native\//\/artifactory\/})
+		echo "downloading files from base URL $CUSTOMIZED_SDK_URL"
 		result=$(curl -k ${curl_options} ${CUSTOMIZED_SDK_URL} | grep ">[0-9]*\/<" | sed -e 's/[^0-9/ ]//g' | sed 's/\/.*$//')
 		IFS=' ' read -r -a array <<< "$result"
 		arr=(${result/ / })
