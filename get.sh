@@ -399,7 +399,8 @@ getBinaryOpenjdk()
 
 	for file_name in "${jdk_file_array[@]}"
 	do
-		if [[ ! "$file_name" =~ "sbom" ]]; then
+		# Skip sbom and jmods archives when extracting
+		if [[ ! "$file_name" =~ "sbom" ]] && [[ ! "$file_name" =~ "jmods" ]]; then
 			if [[ $file_name == *xz ]]; then
 				DECOMPRESS_TOOL=xz
 			else
