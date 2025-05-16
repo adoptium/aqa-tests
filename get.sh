@@ -213,8 +213,39 @@ getBinaryOpenjdk()
 
 	if [ "$SDK_RESOURCE" == "nightly" ] && [ "$CUSTOMIZED_SDK_URL" != "" ]; then
 		if [[ ! "${CUSTOMIZED_SDK_URL}" =~ /$ ]]; then
-    			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}/"
+			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}/"
 		fi
+
+		if [[ $CUSTOMIZED_SDK_URL = *"vmfarm"* ]]; then
+			subdir=""
+			if [ $PLATFORM == "ppc32_aix" ]; then
+				subdir="ap3280"
+			elif [ $PLATFORM == "ppc64_aix" ]; then
+				subdir="ap6480"
+			elif [ $PLATFORM == "ppc64le_linux" ]; then
+				subdir="xl6480"
+			elif [ $PLATFORM == "s390x_linux" ]; then
+				subdir="xz6480"
+			elif [ $PLATFORM == "s390_zos" ]; then
+				subdir="mz3180"
+			elif [ $PLATFORM == "s390x_zos" ]; then
+				subdir="mz6480"
+			elif [ $PLATFORM == "x86-32_linux" ]; then
+				subdir="xi3280"
+			elif [ $PLATFORM == "x86-64_linux" ]; then
+				subdir="xa6480"
+			elif [ $PLATFORM == "x86-32_windows" ]; then
+				subdir="wi3280"
+			elif [ $PLATFORM == "x86-64_windows" ]; then
+				subdir="wa6480"
+			else
+				echo "There is no $PLATFORM to Artifactory vmfarm SDK mapping. Please check PLATFORM value or update the map."
+				exit 1
+			fi
+			CUSTOMIZED_SDK_URL="${CUSTOMIZED_SDK_URL}${subdir}/"
+		fi
+		CUSTOMIZED_SDK_URL=(${CUSTOMIZED_SDK_URL//\/ui\/native\//\/artifactory\/})
+		echo "downloading files from base URL $CUSTOMIZED_SDK_URL"
 		result=$(curl -k ${curl_options} ${CUSTOMIZED_SDK_URL} | grep ">[0-9]*\/<" | sed -e 's/[^0-9/ ]//g' | sed 's/\/.*$//')
 		IFS=' ' read -r -a array <<< "$result"
 		arr=(${result/ / })
@@ -287,6 +318,9 @@ getBinaryOpenjdk()
 				download_url_base=$(echo "$download_url_base" | sed -r 's|([^:])/+|\1/|g')
 				echo "artifactory URL: ${download_url_base}"
 				download_api_url_base=(${download_url_base//\/ui\/native\//\/artifactory\/api\/storage\/})
+				if [[ $download_api_url_base != *"artifactory/api/storage"* ]]; then
+					download_api_url_base=(${download_api_url_base//\/artifactory\//\/artifactory\/api\/storage\/})
+				fi
 				echo "use artifactory API to get the jdk and/or test images: ${download_api_url_base}"
 				download_urls=$(curl ${curl_options} ${download_api_url_base} | grep -E '.*\.tar\.gz"|.*\.zip"' | grep -E 'testimage|jdk|jre'| sed 's/.*"uri" : "\([^"]*\)".*/\1/')
 				arr=(${download_urls/ / })
@@ -399,7 +433,8 @@ getBinaryOpenjdk()
 
 	for file_name in "${jdk_file_array[@]}"
 	do
-		if [[ ! "$file_name" =~ "sbom" ]]; then
+		# Skip sbom and jmods archives when extracting
+		if [[ ! "$file_name" =~ "sbom" ]] && [[ ! "$file_name" =~ "jmods" ]]; then
 			if [[ $file_name == *xz ]]; then
 				DECOMPRESS_TOOL=xz
 			else
