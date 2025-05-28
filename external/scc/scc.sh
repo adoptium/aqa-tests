@@ -1,0 +1,374 @@
+#!/usr/bin/env bash
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+
+testJDKPath=""
+jdkVersion=""
+restoreImage="daytrader-test-restore"
+docker_image_source_job_name=""
+build_number=$BUILD_NUMBER
+docker_registry_dir=""
+docker_os="ubi"
+docker_os_version="8"
+node_label_current_os=""
+node_label_micro_architecture=""
+restore_docker_image_name_list=()
+restore_jmeter_image_name=${DOCKER_REGISTRY_URL}/jmeter/jmeter_dt8-${PLATFORM}:3.3
+
+
+getSemeruDockerfile() {
+    if [[ ! -f "Dockerfile.open.releases.full" ]]; then
+        if [[ $jdkVersion ]]; then
+            jdkVersionDir=$jdkVersion
+            semeruDockerfile="Dockerfile.open.releases.full"
+            semeruDockerfileUrlBase="https://raw.githubusercontent.com/ibmruntimes/semeru-containers/ibm/$jdkVersionDir/jdk/${docker_os}"
+            if [[ $docker_os == "ubi" ]]; then
+                echo "curl -OLJSks ${semeruDockerfileUrlBase}/${docker_os}${docker_os_version}/${semeruDockerfile}"
+                curl -OLJSks ${semeruDockerfileUrlBase}/${docker_os}${docker_os_version}/${semeruDockerfile}
+                if [[ ${PLATFORM} == *"ppc"*  &&  $docker_os_version == "8" ]]; then
+                    findCommandAndReplace 'FROM registry.access.redhat.com/ubi8/ubi:latest' 'FROM registry.access.redhat.com/ubi8/ubi:latest \n COPY ubi.repo /etc/yum.repos.d/ \n ' $semeruDockerfile true ";"
+                fi
+                findCommandAndReplace '\-H \"\${CRIU_AUTH_HEADER}\"' '--user \"\${DOCKER_REGISTRY_CREDENTIALS_USR}:\${DOCKER_REGISTRY_CREDENTIALS_PSW}\"' $semeruDockerfile true ";"
+                findCommandAndReplace 'RUN --mount.*' 'ARG DOCKER_REGISTRY_CREDENTIALS_USR \n ARG DOCKER_REGISTRY_CREDENTIALS_PSW \n RUN set -eux; \\' $semeruDockerfile true
+                # in 21-ea, /opt/java/openjdk/legal/java.base/LICENSE does not exist. No need to replace
+                if [[ $jdkVersion -lt 21 ]]; then
+                    findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile true
+                fi
+            else # docker_os is ubuntu
+                echo "curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}"
+                curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}
+            fi
+
+            findCommandAndReplace "licenses" "semeruLicense" $semeruDockerfile false
+            findCommandAndReplace 'mkdir -p \/opt\/java\/openjdk; \\' "mkdir -p \/opt\/java\/openjdk;" $semeruDockerfile true
+            findCommandAndReplace 'cd \/opt\/java\/openjdk; \\' "COPY NEWJDK\/ \/opt\/java\/openjdk" $semeruDockerfile true
+            findCommandAndReplace 'tar -xf \/tmp\/openjdk.tar.gz --strip-components=1;' "RUN \/opt\/java\/openjdk\/bin\/java --version" $semeruDockerfile true
+
+            mkdir NEWJDK
+            cp -r $testJDKPath/. NEWJDK/
+        else
+            echo "jdkVersion value is not set. Cannot download docker file."
+            exit 1
+        fi
+    fi
+}
+
+prepare() {
+    echo "prepare at $(pwd)..."
+
+    getSemeruDockerfile
+
+    git clone https://github.com/OpenLiberty/ci.docker.git
+    (
+        cd ci.docker || exit
+        if [ "$OPENLIBERTY_SHA" != "" ]
+        then
+            git checkout $OPENLIBERTY_SHA
+        fi
+        curCommitID=$(git rev-parse HEAD)
+        echo "Using dockerfile from OpenLiberty/ci.docker repo branch $openLibertyBranch with commit hash $curCommitID"
+        if [[ $docker_os == "ubi" ]]; then
+            # Temporarily OpenLiberty ubi dockerfile only supports openjdk 21, using it for 11 and 17 too
+            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk21"
+            # replace OpenLiberty dockerfile base image
+            findCommandAndReplace "FROM icr.io\/appcafe\/ibm-semeru-runtimes:open-21-jre-${docker_os}9-minimal" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath true '/'
+            findCommandAndReplace "microdnf" "yum" $libertyDockerfilePath true
+        else # docker_os is ubuntu
+            libertyDockerfilePath="releases/latest/beta/Dockerfile.${docker_os}.openjdk${jdkVersion}"
+            findCommandAndReplace "FROM ibm-semeru-runtimes:open-${jdkVersion}-jre-jammy" "FROM local-ibm-semeru-runtimes:latest" $libertyDockerfilePath true '/'
+        fi
+    )
+
+    git clone https://github.com/OpenLiberty/sample.daytrader8.git
+    (
+        cd sample.daytrader8 || exit
+        daytrader8Folder=`pwd`
+        findCommandAndReplace "#RUN configure.sh" "RUN configure.sh" Dockerfile true
+
+        mkdir target
+        cd target
+        echo "curl -OLJSks https://github.com/OpenLiberty/sample.daytrader8/releases/download/v1.2/io.openliberty.sample.daytrader8.war"
+        curl -OLJSks https://github.com/OpenLiberty/sample.daytrader8/releases/download/v1.2/io.openliberty.sample.daytrader8.war
+
+        mkdir -p liberty/wlp/usr/shared/resources
+        cd liberty/wlp/usr/shared/resources
+        mkdir DerbyLibs data
+        # setup derby
+        echo "curl -OLJSks https://archive.apache.org/dist/db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-lib.tar.gz"
+        curl -OLJSks https://archive.apache.org/dist/db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-lib.tar.gz
+        tar -xzvf db-derby-10.14.2.0-lib.tar.gz
+        mv db-derby-10.14.2.0-lib/lib/derby.jar DerbyLibs/derby-10.14.2.0.jar
+        # setup data for Openliberty
+        cp -r ${daytrader8Folder}/resources/data/tradedb/* ./data/
+    )
+}
+
+findCommandAndReplace() {
+    local oldCmd="$1"
+    local newCmd="$2"
+    local fileName="$3"
+    local mustFind="$4"
+    # Default sed delimiter is ":"
+    local sedDelimiter=":"
+    if [ ! -z "$5" ]; then
+        sedDelimiter="$5"
+    fi
+
+    echo "start grep: grep -c \"$oldCmd\" $fileName"
+    local occurrences=$(grep -c "$oldCmd" $fileName)
+    if [ $occurrences -eq 0 ]; then
+        if [ "$mustFind" == "true" ]; then
+            echo "Error: The command '$oldCmd' was not found in $fileName."
+            exit 1
+        else
+            echo "No occurrence of $oldCmd, ignore and continue."
+        fi
+    else
+        echo "replace command is 's$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter'"
+        sed -i "s$sedDelimiter$oldCmd$sedDelimiter$newCmd$sedDelimiter" $fileName
+    fi
+}
+
+buildImage() {
+    echo "build image at $(pwd)..."
+    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
+    sudo podman build -t open-liberty:full -f ci.docker/releases/latest/beta/Dockerfile.${docker_os}.openjdk21 ci.docker/releases/latest/beta
+    sudo podman build -t ${restoreImage}:latest  -f sample.daytrader8/Dockerfile sample.daytrader8
+}
+
+
+privilegedRestore() {
+    echo "privileged restore $restoreImage ..."
+   
+    echo "Start running daytrader on the background ..."
+    sudo podman run \
+        --rm \
+        --detach \
+        --privileged \
+        -p 9080:9080 \
+        $restoreImage
+
+    echo "Start jMeter ..."
+    echo "sudo podman run --net=host --privileged $restore_jmeter_image_name jmeter -n -t daytrader8.jmx -j /output/daytrader.stats 
+    -JHOST=localhost -JPORT=9080 -JSTOCKS=9999 -JBOTUID=0 -JTOPUID=14999 -JTHREADS=15 -JDURATION=60 -JRAMP=0 -JMAXTHINKTIME=0 > jMeterOutput.txt"
+
+    sudo podman run \
+    --net=host \
+    --privileged \
+    $restore_jmeter_image_name \
+    jmeter -n -t daytrader8.jmx -j /output/daytrader.stats -JHOST=localhost -JPORT=9080 -JSTOCKS=9999 -JBOTUID=0 \
+    -JTOPUID=14999 -JTHREADS=15 -JDURATION=60 -JRAMP=0 -JMAXTHINKTIME=0 > jMeterOutput.txt
+    echo "Completed JMeter testing ..."
+
+    sudo podman stop --all
+    sudo podman rm --all -f
+    echo "Removed all containers ..."
+}
+
+checkLog() {
+    echo "check log ..."
+    if [ -f ./jMeterOutput.txt ]; then
+        echo "displaying jMeterOutput.txt"
+        cat ./jMeterOutput.txt
+        # ToDo: need more success information here
+        cat ./jMeterOutput.txt | grep "Success"
+    else
+        echo "./jMeterOutput.txt does not exist."
+        exit 1
+    fi
+}
+
+clean() {
+    echo "clean ..."
+    sudo podman stop --all
+    sudo podman container rm --all -f
+}
+
+testCreateRestoreImageOnly() {
+    clean
+    prepare
+    buildImage
+}
+
+dockerRegistryLogin() {
+    if [[ $DOCKER_REGISTRY_URL ]]; then
+        echo "Private Docker Registry $DOCKER_REGISTRY_URL login..."
+        echo $DOCKER_REGISTRY_CREDENTIALS_PSW | sudo podman login --username=$DOCKER_REGISTRY_CREDENTIALS_USR --password-stdin $DOCKER_REGISTRY_URL
+    else
+        echo "DOCKER_REGISTRY_URL is not set. Cannot lgoin."
+        exit 1
+    fi
+}
+
+dockerRegistryLogout() {
+    if [[ $DOCKER_REGISTRY_URL ]]; then
+        sudo podman logout $DOCKER_REGISTRY_URL
+    else
+        echo "DOCKER_REGISTRY_URL is not set. Cannot logout."
+        exit 1
+    fi
+}
+
+pushImage() {
+    dockerRegistryLogin
+    echo "Pushing docker image..."
+
+    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/daytrader_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
+
+    # Push a docker image with build_num for records
+    echo "tag $restoreImage $tagged_restore_ready_checkpoint_image_num"
+    sudo podman tag $restoreImage $tagged_restore_ready_checkpoint_image_num
+    echo "Pushing docker image ${tagged_restore_ready_checkpoint_image_num}"
+    sudo podman push $tagged_restore_ready_checkpoint_image_num
+
+    dockerRegistryLogout
+}
+
+getImageNameList() {
+
+    if [[ $JOB_NAME == "Grinder" ]]; then
+			    echo "Testing specified image from docker_registry_dir"
+				restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/$docker_image_source_job_name:${build_number}")
+    else
+        echo "Testing all images from: ${docker_image_source_job_name}:${build_number}"
+        # - is shell metacharacter. In PLATFORM value, replace - with _
+        echo "PLATFORM: ${PLATFORM}"
+        platValue=$(echo $PLATFORM | sed "s/-/_/")
+        comboList=PORTABLE_SCC_COMBO_LIST_$platValue
+        if [[ "$PLATFORM" =~ "linux_390-64" ]]; then
+            micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.s390x.//")
+            comboList="${comboList}_${micro_architecture}"
+        elif [[ "$PLATFORM" =~ "linux_ppc-64" ]]; then
+            micro_architecture=$(echo $node_label_micro_architecture | sed "s/hw.arch.ppc64le.//")
+            comboList="${comboList}_${micro_architecture}"
+        fi
+
+        image_os_combo_list="${!comboList}"
+        echo "comboList: ${comboList}"
+        echo "image_os_combo_list: ${image_os_combo_list}"
+        for image_os_combo in ${image_os_combo_list[@]}
+        do
+            restore_docker_image_name_list+=("${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/daytrader_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${image_os_combo}:${build_number}")
+        done
+        if [[ -z "$restore_docker_image_name_list" ]]; then
+            echo "Error: restore_docker_image_name_list is empty."
+            exit 1
+        else
+            echo "restore_docker_image_name_list: $restore_docker_image_name_list"
+        fi
+    fi
+}
+
+pullImageTest() {
+    dockerRegistryLogin
+    getImageNameList
+    echo "The host machine micro-architecture is ${node_label_micro_architecture}"
+
+    echo "Pulling JMeter docker image"
+    sudo podman pull $restore_jmeter_image_name
+
+    for restore_docker_image_name in ${restore_docker_image_name_list[@]}
+    do
+        echo "Pulling image $restore_docker_image_name"
+        sudo podman pull $restore_docker_image_name
+        # restore
+        restoreImage=$restore_docker_image_name
+        testPrivilegedRestoreOnly
+        clean
+    done
+
+    dockerRegistryLogout
+}
+
+testPrivilegedRestoreOnly() {
+    privilegedRestore
+    checkLog
+}
+
+setup() {
+    echo "NODE_LABELS: $NODE_LABELS"
+    echo "PLATFORM: $PLATFORM"
+    echo "uname -a: $(uname -a)"
+
+    if [ -n "$(cat /etc/redhat-release | grep 'Red Hat')" ]; then
+        cat /etc/redhat-release
+    fi
+
+    if [ ! -z "${docker_registry_dir}" ]; then
+        docker_registry_dir=$(echo "$docker_registry_dir" | tr '[:upper:]' '[:lower:]')  # docker registry link must be lowercase
+        IFS=':' read -r -a dir_array <<< "$docker_registry_dir"
+        docker_image_source_job_name=${dir_array[0]}
+        build_number=${dir_array[1]}
+        echo "build_number: $build_number"
+    fi
+    echo "docker_image_source_job_name: $docker_image_source_job_name"
+
+    node_label_micro_architecture=""
+    node_label_current_os=""
+    for label in $NODE_LABELS
+    do
+        if [[ -z "$node_label_micro_architecture" && "$label" == "hw.arch."*"."* ]]; then #hw.arch.x86.skylake
+            node_label_micro_architecture=$label
+            echo "node_label_micro_architecture is $node_label_micro_architecture"
+        elif [[ -z "$node_label_current_os" && "$label" == "sw.os."*"."* ]]; then # sw.os.ubuntu.22 sw.os.rhel.8
+            node_label_current_os=$label
+            echo "node_label_current_os is $node_label_current_os"
+        elif [[ -n "$node_label_current_os" && -n "$node_label_micro_architecture" ]]; then
+            break
+        fi
+    done
+}
+
+if [ "$1" == "prepare" ]; then
+    testJDKPath=$2
+    jdkVersion=$3
+    prepare
+elif [ "$1" == "buildImage" ]; then
+    buildImage
+elif [ "$1" == "createRestoreImage" ]; then
+    createRestoreImage
+elif [ "$1" == "privilegedRestore" ]; then
+    privilegedRestore
+elif [ "$1" == "checkLog" ]; then
+    checkLog
+elif [ "$1" == "clean" ]; then
+    clean
+elif [ "$1" == "testCreateRestoreImageOnly" ]; then
+    testJDKPath=$2
+    jdkVersion=$3
+    docker_os=$4
+    docker_os_version=$5
+    testCreateRestoreImageOnly
+elif [ "$1" == "testPrivilegedRestoreOnly" ]; then
+    testPrivilegedRestoreOnly
+elif [ "$1" == "pullImageTest" ]; then
+    docker_os=$2
+    docker_os_version=$3
+    docker_registry_dir=$4 #docker_registry_dir can be empty
+    setup
+    pullImageTest
+elif [ "$1" == "testCreateImageAndPushToRegistry" ]; then
+    testJDKPath=$2
+    jdkVersion=$3
+    docker_os=$4
+    docker_os_version=$5
+    docker_registry_dir=$6
+    setup
+    testCreateRestoreImageOnly
+    pushImage
+else
+    echo "unknown command"
+fi
