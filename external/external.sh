@@ -91,7 +91,7 @@ usage () {
 	echo 'Usage : external.sh  --dir TESTDIR --tag DOCKERIMAGE_TAG --version JDK_VERSION --impl JDK_IMPL [--docker_os docker_os][--platform PLATFORM] [--portable portable] [--node_name node_name] [--node_labels node_labels] [--docker_registry_required docker_registry_required] [--docker_registry_url DOCKER_REGISTRY_URL] [--docker_registry_dir DOCKER_REGISTRY_DIR] [--base_docker_registry_url baseDockerRegistryUrl] [--base_docker_registry_dir baseDockerRegistryDir] [--mount_jdk mount_jdk] [--test_root TEST_ROOT] [--reportsrc appReportDir] [--reportdst REPORTDIR] [--testtarget target] [--docker_args EXTRA_DOCKER_ARGS] [--build|--run|--load|--clean|--prune]'
 }
 
-supported_tests="external_custom aot camel criu-functional criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tck-ubi-test tomcat tomee wildfly wycheproof netty spring"
+supported_tests="external_custom aot camel criu-functional criu-portable-checkpoint  criu-portable-restore criu-ubi-portable-checkpoint criu-ubi-portable-restore portable_scc_CreateImageAndPushToRegistry_ubi9 portable_scc_pullImageTest_ubi9 derby elasticsearch jacoco jenkins functional-test kafka lucene-solr openliberty-mp-tck payara-mp-tck quarkus quarkus_quickstarts scala system-test tck-ubi-test tomcat tomee wildfly wycheproof netty spring"
 
 function check_test() {
     test=$1
@@ -319,7 +319,7 @@ parseCommandLineArgs "$@"
 # DOCKER_HOST=$(docker-ip $test-test)
 
 if [ $command_type == "prepare" ]; then
-	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry no login.
+	# Specify docker.io or internal registry to prepare base image with login to increase pull limit or authenticate; Redhat Registry and IBM Cloud Registry no login.
 	if [[ $base_docker_registry_url != "default" ]]; then
 		# Container credential check. 
 		# Temporarily host criu-ubi image with criu binary on internal/private hub.  In that case, provide USR/PSW for access 
@@ -327,7 +327,7 @@ if [ $command_type == "prepare" ]; then
 			BASE_DOCKER_REGISTRY_CREDENTIAL_USR=$DOCKER_REGISTRY_CREDENTIALS_USR
 			BASE_DOCKER_REGISTRY_CREDENTIAL_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW
 		fi
-		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR ]]; then
+		if [[ "${base_docker_registry_url}" != *"icr"* && ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR ]]; then
 			echo "Base Docker Registry login starts to obtain Base Docker Image:"
 			echo $BASE_DOCKER_REGISTRY_CREDENTIAL_PSW | $container_login --username=$BASE_DOCKER_REGISTRY_CREDENTIAL_USR --password-stdin $base_docker_registry_url
 		else
@@ -337,7 +337,7 @@ if [ $command_type == "prepare" ]; then
 		if [[ $base_docker_registry_dir == "default" ]]; then
 			base_docker_image_name="eclipse-temurin:${JDK_VERSION}-jdk"
 			if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
-				base_docker_image_name="ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
+				base_docker_image_name="appcafe/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk-jammy"
 			fi
 		else
 			base_docker_image_name="$base_docker_registry_dir:latest"
@@ -346,7 +346,7 @@ if [ $command_type == "prepare" ]; then
 		echo "$container_pull $base_docker_registry_url/$base_docker_image_name"
 		$container_pull $base_docker_registry_url/$base_docker_image_name
 
-		if [[ ! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR || ! -z $DOCKER_REGISTRY_CREDENTIALS_USR ]]; then
+		if [[ "${base_docker_registry_url}" != *"icr"* && (! -z $BASE_DOCKER_REGISTRY_CREDENTIAL_USR || ! -z $DOCKER_REGISTRY_CREDENTIALS_USR) ]]; then
 			$container_logout $base_docker_registry_url
 		fi
 	fi
@@ -454,7 +454,7 @@ if [ $command_type == "load" ]; then
 	else # no need private docker registry
 		docker_image_name="docker.io/library/eclipse-temurin:${JDK_VERSION}-jdk"
 		if [[ "${JDK_IMPL}" == *"openj9"* ]]; then
-			docker_image_name="docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk"
+			docker_image_name="icr.io/appcafe/ibm-semeru-runtimes:open-${JDK_VERSION}-jdk-jammy"
 		fi
 		test_script_path="$test_root/external/$test/test.sh"
 		chmod a+x $test_script_path
