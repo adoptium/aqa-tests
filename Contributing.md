@@ -19,6 +19,7 @@ The AQAvit project maintains the following source code repositories:
 * https://github.com/adoptium/STF - system Test Framework
 * https://github.com/adoptium/bumblebench - microbenchmarking test framework
 * https://github.com/adoptium/run-aqa - run-aqa GitHub action
+* https://github.com/adoptium/openj9-systemtest - system verification tests for OpenJ9 
 
 ## Eclipse Contributor Agreement
 
