@@ -26,6 +26,7 @@ if [ $USE_TESTENV_PROPERTIES = true ]; then
     if [ $JDK_IMPL = "openj9" ] || [ $JDK_IMPL = "ibm" ]; then
         repo=JDK${JDK_VERSION}_OPENJ9_REPO
         branch=JDK${JDK_VERSION}_OPENJ9_BRANCH
+        sha=JDK${JDK_VERSION}_OPENJ9_SHA
 
         openjceplus_repo=JDK${JDK_VERSION}_OPENJCEPLUS_GIT_REPO
         openjceplus_branch=JDK${JDK_VERSION}_OPENJCEPLUS_GIT_BRANCH
@@ -37,13 +38,16 @@ if [ $USE_TESTENV_PROPERTIES = true ]; then
     else
         repo=JDK${JDK_VERSION}_REPO
         branch=JDK${JDK_VERSION}_BRANCH
+        sha=JDK${JDK_VERSION}_SHA
     fi
 
     eval repo2='$'$repo
     eval branch2='$'$branch
+    eval sha2='$'$sha
 
     export JDK_REPO=$repo2
     export JDK_BRANCH=$branch2
+    export OPENJDK_SHA=$sha2
     echo "Set values based on ${testenv_file}:"
     echo "========="
     cat $testenv_file
@@ -52,6 +56,7 @@ if [ $USE_TESTENV_PROPERTIES = true ]; then
     echo ""
     echo "JDK_REPO=${JDK_REPO}"
     echo "JDK_BRANCH=${JDK_BRANCH}"
+    echo "OPENJDK_SHA=${OPENJDK_SHA}"
     echo "OPENJCEPLUS_GIT_REPO=${OPENJCEPLUS_GIT_REPO}"
     echo "OPENJCEPLUS_GIT_BRANCH=${OPENJCEPLUS_GIT_BRANCH}"
 
