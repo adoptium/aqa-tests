@@ -37,7 +37,7 @@ def perfConfigJson = []
 node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
     checkout scm
     dir (env.WORKSPACE) {
-        def filePath = "./jenkins/config/"
+        def filePath = "./aqa-tests/perf/config/${params.JDK_IMPL}/"
         filePath = filePath + "perfConfig.json"
         echo "Read JSON from file ${filePath}..."
         perfConfigJson = readJSON(file: "${filePath}")
@@ -93,7 +93,7 @@ timestamps {
 }
 
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
-    def buildJobName = "Perf_openjdk21_j9_sanity.perf_${platformName}_${benchmarkName}_${jobSuffix}"
+    def buildJobName = "${JOB_NAME}_${jobSuffix}"
     def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
     def jobIsRunnable = JobHelper.jobIsRunnable("${buildJobName}")
     if (!jobIsRunnable) {

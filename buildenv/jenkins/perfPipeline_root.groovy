@@ -22,8 +22,13 @@ PLATFORMS.each { PLATFORM ->
         }
         childParams << string(name: "PLATFORM", value: PLATFORM)
         childParams << string(name: "BENCHMARK", value: BENCHMARK)
-
-        def jobName = "Perf_openjdk21_j9_sanity.perf_${PLATFORM}_${BENCHMARK}"
+        def shortName = "j9"
+        if (params.JDK_IMPL) {
+            if (params.JDK_IMPL == "hotspot") {
+                shortName = "hs"
+            }
+        }
+        def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${PLATFORM}_${BENCHMARK}"
         JOBS[jobName] = {
             build job: jobName, parameters: childParams, propagate: true
         }
