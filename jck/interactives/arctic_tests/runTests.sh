@@ -48,7 +48,7 @@ if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     ls -al ${LIB_DIR}
 fi
 
-$(ARCTIC_JDK) -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
+$ARCTIC_JDK -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
@@ -73,7 +73,7 @@ for testcase in "$TEST_DIR"/*; do
       # Allow 3 seconds for RMI server to start...
       sleep 3
       echo "Running testcase $testcase"
-      $(ARCTIC_JDK) -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
+      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
         rc=$?
     
         if [[ $rc -ne 0 ]]; then
@@ -83,21 +83,21 @@ for testcase in "$TEST_DIR"/*; do
 
         # Allow 3 seconds for RMI server to start...
         sleep 3
-        result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
         done
 
         echo "Terminating Arctic CLI..."
-        $(ARCTIC_JDK) -jar ${LIB_DIR}/arctic.jar -c terminate
+        $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
         echo "Completed playback of $(TEST_GROUP)/$(testcase) status: ${status}"
     fi
 done
