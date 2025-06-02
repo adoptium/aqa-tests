@@ -26,11 +26,11 @@ ls -al "$TEST_DIR"
 export LC_ALL=POSIX
 export ARCTIC_JDK=/usr/bin/java
 
-disp=":36"
-Xvfb $disp -screen 0 1024x768x24 -nolisten tcp &
-xvfb_pid=$!
-echo "Started Xvfb process $xvfb_pid on DISPLAY $disp"
-export DISPLAY=$disp
+#disp=":36"
+#Xvfb $disp -screen 0 1024x768x24 -nolisten tcp &
+#xvfb_pid=$!
+#echo "Started Xvfb process $xvfb_pid on DISPLAY $disp"
+#export DISPLAY=$disp
 
 cp /etc/X11/twm/system.twmrc $HOME/.twmrc
 echo 'RightTitleButton "xlogo11" = f.delete' >> $HOME/.twmrc
@@ -101,7 +101,7 @@ for testcase in "$TEST_DIR"/*; do
     fi
 done
 
-kill $xvfb_pid
+#kill $xvfb_pid
 
 echo "Finished running $testdir testcases!"
 
