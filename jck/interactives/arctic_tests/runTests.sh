@@ -64,7 +64,8 @@ echo "Java under test: $TEST_JDK_HOME"
 twm &
 
 # Loop through files in the target directory
-for testcase in "$TEST_DIR"/*; do
+for testcase in $TEST_DIR/* 
+do
    if [ -f $testcase ]; then
       echo "Starting testcase... $testcase"
       tcase=${testcase%.html}
@@ -103,7 +104,7 @@ for testcase in "$TEST_DIR"/*; do
     fi
 done
 
-echo "Finished running $testdir testcases!"
+echo "Finished running $TEST_DIR testcases!"
 
 if [[ $status != "UNCONFIRMED" ]]; then
     echo "Arctic playback failed"
