@@ -69,7 +69,7 @@ do
 echo "testcase is $testcase"
    if [ -d $testcase ]; then
       echo "Starting testcase... $testcase"
-      tcase=${testcase%.html}
+      tcase=$(basename $testcase .html)
 
       $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$tcase -TestCaseID ALL &
       
