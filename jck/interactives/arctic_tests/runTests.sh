@@ -66,6 +66,7 @@ twm &
 # Loop through files in the target directory
 for testcase in $TEST_DIR/* 
 do
+echo "testcase is $testcase"
    if [ -f $testcase ]; then
       echo "Starting testcase... $testcase"
       tcase=${testcase%.html}
