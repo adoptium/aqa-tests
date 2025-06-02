@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Fetch the prebuilt arctic jar (will be pulled from prereq build eventually)
+wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
+mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
+
+# Test job run with SETUP_JCK_RUN=true copies jck_run dir to /jenkins/jck_run
+# Verify that the contents are there, including player.properties & dir with recordings
+TEST_GROUP=$1
+TEST_DIR="Users/jenkins/jck_run/arctic/$(PLATFORM)/arctic_tests/default/api/$(TEST_GROUP)/interactive"
+ls -al "$TEST_DIR"
+
+# Set environment variables
 export LC_ALL=POSIX
-
-wget -q https://ci.adoptium.net/view/Test_grinder/job/Build_Arctic/lastSuccessfulBuild/artifact/upload/Arctic.jar
-mv Arctic.jar ${LIB_DIR}
-
-wget -q https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_x64_linux_hotspot_17.0.9_9.tar.gz
-tar -xf OpenJDK17U-jdk_x64_linux_hotspot_17.0.9_9.tar.gz
-
-export PATH=$PWD/jdk-17.0.9+9/bin:$PATH
-export JAVA_HOME=$PWD/jdk-17.0.9+9
+export ARCTIC_JDK=/usr/bin/java
 
 disp=":36"
 Xvfb $disp -screen 0 1024x768x24 -nolisten tcp &
@@ -41,12 +44,12 @@ sed -i 's/ResizeFont .*$/ResizeFont "-misc-fixed-bold-r-normal--15-140-75-75-c-9
 
 echo "Starting player in background with RMI..."
 
-if [ ! -f ${LIB_DIR}/Arctic.jar ]; then
-    echo "Arctic.jar not present"
+if [ ! -f ${LIB_DIR}/arctic.jar ]; then
+    echo "arctic.jar not present"
     ls -al ${LIB_DIR}
 fi
 
-java -Darctic.logLevel=TRACE -jar ${LIB_DIR}/Arctic.jar -p &
+java -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
@@ -56,55 +59,45 @@ fi
 # Allow 3 seconds for RMI server to start...
 sleep 3
 
-testdir=$1
-platform=$2
-testgroup="api" # eventually strip off name from testdir variable 
-echo "Running testcases in $testdir on $platform"
-echo "Java under test: $(JAVA_TO_TEST)"
-
-ls -al "$testdir"
-
+echo "Running testcases in $(TEST_GROUP) on $(PLATFORM)"
+echo "Java under test: $(TEST_JDK_HOME)"
+twm &
 # Loop through files in the target directory
-for testcase in "$testdir"/*; do
-    tcase="$testgroup/java_awt/interactive/$testcase.html"
-    # Start testcase...
-    echo "Starting testcase... $testcase"
-    twm &
-
-    # replace with variable representing JDK under test
-    /home/jenkins/jck_run/jdk21/jdk/jdk-21.0.7+5/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK21-unzipped/JCK-runtime-21/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK21-unzipped/JCK-runtime-21/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.ListTests -TestCaseID ALL &
-    echo "Testcase started"
-
-    if [ -f "$testcase" ]; then
-        # Allow 3 seconds for RMI server to start...
-        sleep 3
-        echo "Running testcase $testcase"
-        java -jar ${LIB_DIR}/Arctic.jar -c test start "${testgroup}" "${testcase}"
+for testcase in "$TEST_DIR"/*; do
+   if [ -f $testcase ]; then
+      echo "Starting testcase... $testcase"
+      tcase=${testcase%.html}
+      # replace with variable representing JDK under test
+      $(TEST_JDK_HOME)/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$(tcase) -TestCaseID ALL &
+      # Allow 3 seconds for RMI server to start...
+      sleep 3
+      echo "Running testcase $testcase"
+      java -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
         rc=$?
     
         if [[ $rc -ne 0 ]]; then
-            echo "Unable to start playback for testcase ${testgroup}/${testcase}, rc=$rc"
+            echo "Unable to start playback for testcase ${TEST_GROUP}/${testcase}, rc=$rc"
             exit $rc
         fi
 
         # Allow 3 seconds for RMI server to start...
         sleep 3
-        result=$(java -jar ${LIB_DIR}/Arctic.jar -c test list ${testgroup}/${testcase})
+        result=$(java -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$(java -jar ${LIB_DIR}/Arctic.jar -c test list ${testgroup}/${testcase})
+            result=$(java -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
         done
 
         echo "Terminating Arctic CLI..."
-        java -jar ${LIB_DIR}/Arctic.jar -c terminate
-        echo "Completed playback of ${testgroup}/${testcase} status: ${status}"
+        java -jar ${LIB_DIR}/arctic.jar -c terminate
+        echo "Completed playback of $(TEST_GROUP)/$(testcase) status: ${status}"
     fi
 done
 

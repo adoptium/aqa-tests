@@ -19,7 +19,8 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>echo "run arctic command with custom parameter"
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh ${WORKSPACE}/../../jck_run/arctic/$(PLATFORM)/arctic_tests/default/$(JCKINTERACTIVES_CUSTOM_TARGET) ; \
+		$(TEST_STATUS)
 		</command>
 		<disables>
 			<disable>
@@ -38,7 +39,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh ${WORKSPACE}/../../jck_run/arctic/linux/arctic_tests/default/api/java_awt $(PLATFORM); \
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh ${WORKSPACE}/../../jck_run/arctic/$(PLATFORM)/arctic_tests/default/api/java_awt/interactive ; \
 		$(TEST_STATUS)
 		</command>
 		<levels>
@@ -53,7 +54,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh ${WORKSPACE}/../../jck_run/arctic/linux/arctic_tests/default/api/javax_swing  $(PLATFORM); \
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh ${WORKSPACE}/../../jck_run/arctic/$(PLATFORM)/arctic_tests/default/api/javax_swing ; \
 		$(TEST_STATUS)
 		</command>
 		<disables>
