@@ -58,8 +58,8 @@ fi
 # Allow 3 seconds for RMI server to start...
 sleep 3
 
-echo "Running testcases in $(TEST_GROUP) on $(PLATFORM)"
-echo "Java under test: $(TEST_JDK_HOME)"
+echo "Running testcases in $TEST_GROUP on $PLATFORM"
+echo "Java under test: $TEST_JDK_HOME"
 twm &
 
 # Loop through files in the target directory
@@ -68,7 +68,7 @@ for testcase in "$TEST_DIR"/*; do
       echo "Starting testcase... $testcase"
       tcase=${testcase%.html}
 
-      $(TEST_JDK_HOME)/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$(tcase) -TestCaseID ALL &
+      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$tcase -TestCaseID ALL &
       
       # Allow 3 seconds for RMI server to start...
       sleep 3
@@ -98,7 +98,7 @@ for testcase in "$TEST_DIR"/*; do
 
         echo "Terminating Arctic CLI..."
         $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
-        echo "Completed playback of $(TEST_GROUP)/$(testcase) status: ${status}"
+        echo "Completed playback of $TEST_GROUP/$testcase status: ${status}"
     fi
 done
 
