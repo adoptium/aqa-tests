@@ -18,19 +18,18 @@ mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 # Test job run with SETUP_JCK_RUN=true copies jck_run dir to /jenkins/jck_run
 # Verify that the contents are there, including player.properties & dir with recordings
-TEST_GROUP=$1
-TEST_DIR="Users/jenkins/jck_run/arctic/$(PLATFORM)/arctic_tests/default/api/$(TEST_GROUP)/interactive"
+
+TEST_DIR=$1
+TEST_GROUP=$2
+PLATFORM=$3
+VERSION=$4
+echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
+echo "TEST_GROUP is $TEST_GROUP, PLATFORM is $PLATFORM, VERSION is $VERSION"
 
 # Set environment variables
 export LC_ALL=POSIX
 export ARCTIC_JDK=/usr/bin/java
-
-#disp=":36"
-#Xvfb $disp -screen 0 1024x768x24 -nolisten tcp &
-#xvfb_pid=$!
-#echo "Started Xvfb process $xvfb_pid on DISPLAY $disp"
-#export DISPLAY=$disp
 
 cp /etc/X11/twm/system.twmrc $HOME/.twmrc
 echo 'RightTitleButton "xlogo11" = f.delete' >> $HOME/.twmrc
@@ -49,7 +48,7 @@ if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     ls -al ${LIB_DIR}
 fi
 
-java -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
+$(ARCTIC_JDK) -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
@@ -62,17 +61,19 @@ sleep 3
 echo "Running testcases in $(TEST_GROUP) on $(PLATFORM)"
 echo "Java under test: $(TEST_JDK_HOME)"
 twm &
+
 # Loop through files in the target directory
 for testcase in "$TEST_DIR"/*; do
    if [ -f $testcase ]; then
       echo "Starting testcase... $testcase"
       tcase=${testcase%.html}
-      # replace with variable representing JDK under test
+
       $(TEST_JDK_HOME)/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$(VERSION)-unzipped/JCK-runtime-$(VERSION)/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$(tcase) -TestCaseID ALL &
+      
       # Allow 3 seconds for RMI server to start...
       sleep 3
       echo "Running testcase $testcase"
-      java -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
+      $(ARCTIC_JDK) -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
         rc=$?
     
         if [[ $rc -ne 0 ]]; then
@@ -82,26 +83,24 @@ for testcase in "$TEST_DIR"/*; do
 
         # Allow 3 seconds for RMI server to start...
         sleep 3
-        result=$(java -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+        result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$(java -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+            result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
         done
 
         echo "Terminating Arctic CLI..."
-        java -jar ${LIB_DIR}/arctic.jar -c terminate
+        $(ARCTIC_JDK) -jar ${LIB_DIR}/arctic.jar -c terminate
         echo "Completed playback of $(TEST_GROUP)/$(testcase) status: ${status}"
     fi
 done
-
-#kill $xvfb_pid
 
 echo "Finished running $testdir testcases!"
 
