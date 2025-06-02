@@ -18,14 +18,14 @@ mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 # Test job run with SETUP_JCK_RUN=true copies jck_run dir to /jenkins/jck_run
 # Verify that the contents are there, including player.properties & dir with recordings
-
-TEST_DIR=$1
-TEST_GROUP=$2
-OS_NAME=$3
-VERSION=$4
+TEST_GROUP=$1
+PLATFORM=$2
+VERSION=$3
+OSNAME=${PLATFORM%_*}
+TEST_DIR=/Users/jenkins/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
-echo "TEST_GROUP is $TEST_GROUP, OS_NAME is $OS_NAME, VERSION is $VERSION"
+echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION"
 
 # Set environment variables
 export LC_ALL=POSIX
@@ -58,7 +58,7 @@ fi
 # Allow 3 seconds for RMI server to start...
 sleep 3
 
-echo "Running testcases in $TEST_GROUP on $OS_NAME"
+echo "Running testcases in $TEST_GROUP on $OSNAME"
 echo "Java under test: $TEST_JDK_HOME"
 twm &
 
