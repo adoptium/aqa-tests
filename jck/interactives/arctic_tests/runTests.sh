@@ -67,7 +67,7 @@ twm &
 for testcase in $TEST_DIR/* 
 do
 echo "testcase is $testcase"
-   if [ -f $testcase ]; then
+   if [ -d $testcase ]; then
       echo "Starting testcase... $testcase"
       tcase=${testcase%.html}
 
@@ -76,24 +76,24 @@ echo "testcase is $testcase"
       # Allow 3 seconds for RMI server to start...
       sleep 3
       echo "Running testcase $testcase"
-      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${testcase}"
+      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${tcase}"
         rc=$?
     
         if [[ $rc -ne 0 ]]; then
-            echo "Unable to start playback for testcase ${TEST_GROUP}/${testcase}, rc=$rc"
+            echo "Unable to start playback for testcase ${TEST_GROUP}/${tcase}, rc=$rc"
             exit $rc
         fi
 
         # Allow 3 seconds for RMI server to start...
         sleep 3
-        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${tcase})
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${testcase})
+            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${tcase})
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
@@ -101,7 +101,7 @@ echo "testcase is $testcase"
 
         echo "Terminating Arctic CLI..."
         $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
-        echo "Completed playback of $TEST_GROUP/$testcase status: ${status}"
+        echo "Completed playback of $TEST_GROUP/$tcase status: ${status}"
     fi
 done
 
