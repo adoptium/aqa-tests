@@ -22,7 +22,8 @@ TEST_GROUP=$1
 PLATFORM=$2
 VERSION=$3
 OSNAME=${PLATFORM%_*}
-TEST_DIR=/Users/jenkins/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
+JENKINS_HOME=/home/jenkins
+TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION"
