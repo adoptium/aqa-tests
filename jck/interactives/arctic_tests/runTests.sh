@@ -21,11 +21,11 @@ mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 TEST_DIR=$1
 TEST_GROUP=$2
-PLATFORM=$3
+OS_NAME=$3
 VERSION=$4
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
-echo "TEST_GROUP is $TEST_GROUP, PLATFORM is $PLATFORM, VERSION is $VERSION"
+echo "TEST_GROUP is $TEST_GROUP, OS_NAME is $OS_NAME, VERSION is $VERSION"
 
 # Set environment variables
 export LC_ALL=POSIX
@@ -58,7 +58,7 @@ fi
 # Allow 3 seconds for RMI server to start...
 sleep 3
 
-echo "Running testcases in $TEST_GROUP on $PLATFORM"
+echo "Running testcases in $TEST_GROUP on $OS_NAME"
 echo "Java under test: $TEST_JDK_HOME"
 twm &
 
