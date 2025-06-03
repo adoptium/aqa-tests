@@ -216,7 +216,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                     }
                 }
 
-                if (jobTestFlag.contains("FIPS") || (TARGET.contains("dev"))) {
+                if (jobTestFlag.contains("FIPS") || jobTestFlag.contains("OpenJCEPlus") || (TARGET.contains("dev"))) {
                     rerunIterations = 0
                 }
             } else if (params.VARIANT == "temurin") {
