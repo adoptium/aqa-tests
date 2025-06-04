@@ -16,19 +16,27 @@
 wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
 mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
-# Test job run with SETUP_JCK_RUN=true copies jck_run dir to /jenkins/jck_run
-# Verify that the contents are there, including player.properties & dir with recordings
+JENKINS_HOME=/home/jenkins
+if [ $(uname) = SunOS ]; then
+    JENKINS_HOME = "/export/home/jenkins"
+elif [ $(uname) = Darwin ]; then
+    JENKINS_HOME = "/Users/jenkins"
+elif [ $(uname) = Windows_NT ]; then
+    JENKINS_HOME = "c:/Users/jenkins"
+fi
+
+# Verify that the contents are present in jck_run
 TEST_GROUP=$1
 PLATFORM=$2
 VERSION=$3
 OSNAME=${PLATFORM%_*}
-JENKINS_HOME=/home/jenkins
+
 TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION"
 
-# Set environment variables
+# Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
 export LC_ALL=POSIX
 export ARCTIC_JDK=/usr/bin/java
 
@@ -42,13 +50,12 @@ sed -i 's/TitleFont .*$/TitleFont   "-misc-fixed-bold-r-normal--15-140-75-75-c-9
 sed -i 's/IconFont .*$/IconFont     "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
 sed -i 's/ResizeFont .*$/ResizeFont "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
 
-echo "Starting player in background with RMI..."
-
 if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     echo "arctic.jar not present"
     ls -al ${LIB_DIR}
 fi
 
+echo "Starting player in background with RMI..."
 $ARCTIC_JDK -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
@@ -71,30 +78,33 @@ echo "testcase is $testcase"
       echo "Starting testcase... $testcase"
       tcase=${testcase##*/}
       tcase=${tcase%.html}
+      echo "tcase is $tcase"
+      tgroup=${TEST_GROUP//_/\.} 
+      echo $tgroup
 
-      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/classes: -Djava.security.policy=/home/jenkins/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/lib/jck.policy javasoft.sqe.tests.api.java.awt.interactive.$tcase -TestCaseID ALL &
+      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
       # Allow 3 seconds for RMI server to start...
-      sleep 3
+      sleep 10
       echo "Running testcase $testcase"
-      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "${TEST_GROUP}" "${tcase}"
-        rc=$?
-    
-        if [[ $rc -ne 0 ]]; then
-            echo "Unable to start playback for testcase ${TEST_GROUP}/${tcase}, rc=$rc"
-            exit $rc
-        fi
+      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$TEST_GROUP" "$tcase"
+      rc=$?
+      
+      if [[ $rc -ne 0 ]]; then
+        echo "Unable to start playback for testcase $TEST_GROUP/$tcase, rc=$rc"
+        exit $rc
+      fi
 
         # Allow 3 seconds for RMI server to start...
         sleep 3
-        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${tcase})
+        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${tcase})
+            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
