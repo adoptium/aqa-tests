@@ -107,7 +107,8 @@ function getFullOpenJ9Image() {
   local JDK_VERSION="${1:-0}"
   local jreSdk="${2:-jdk}"
   if [ -z "${EXTERNAL_AQA_IMAGE}" ]; then
-    echo "docker.io/library/ibm-semeru-runtimes:open-${JDK_VERSION}-$jreSdk"
+    local fullOpenJ9ImageName="icr.io/appcafe/ibm-semeru-runtimes:open-${JDK_VERSION}-$jreSdk-jammy"
+    echo "$fullOpenJ9ImageName"
   else
     echo "${EXTERNAL_AQA_IMAGE}"
   fi
