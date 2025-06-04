@@ -13,8 +13,8 @@
 ##############################################################################
 
 # - is shell metacharacter. In PLATFORM value, replace - with _
-export PORTABLE_SCC_COMBO_LIST_linux_390_64_z14=sw.os.rhel.9-hw.arch.s390x.z14 sw.os.rhel.9-hw.arch.s390x.next
-export PORTABLE_SCC_COMBO_LIST_linux_390_64_next=sw.os.rhel.9-hw.arch.s390x.z14 sw.os.rhel.9-hw.arch.s390x.next
+export PORTABLE_SCC_COMBO_LIST_linux_390_64_z14=sw.os.rhel.9-hw.arch.s390x.z14 sw.os.rhel.9-hw.arch.s390x.z17
+export PORTABLE_SCC_COMBO_LIST_linux_390_64_next=sw.os.rhel.9-hw.arch.s390x.z14 sw.os.rhel.9-hw.arch.s390x.z17
 
 export PORTABLE_SCC_COMBO_LIST_linux_ppc_64_p9=sw.os.rhel.9-hw.arch.ppc64le.p9 sw.os.rhel.9-hw.arch.ppc64le.p11
 export PORTABLE_SCC_COMBO_LIST_linux_ppc_64_p11=sw.os.rhel.9-hw.arch.ppc64le.p9 sw.os.rhel.9-hw.arch.ppc64le.p11
