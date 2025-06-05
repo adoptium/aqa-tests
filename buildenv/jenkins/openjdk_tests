@@ -125,6 +125,8 @@ if ( !params.TARGET ) {
 def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
+
+@Field String ebcDemandId = ""
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 timestamps{
     if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
@@ -385,12 +387,12 @@ timestamps{
                         if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
                             if (params.CLOUD_PROVIDER == "EBC") {
                                 boolean ebcNode = false
-                                def demandId = UUID.randomUUID().toString()
-                                def dynamicMachineLabel = 'ci.agent.dynamic.' + demandId
+                                ebcDemandId = UUID.randomUUID().toString()
+                                def dynamicMachineLabel = 'ci.agent.dynamic.' + ebcDemandId
                                 try {
                                     timeout(time: 120, unit: 'MINUTES') {
                                         // ToDo: pass in platform once we support more platforms. For now, we only support xlinux.
-                                        getEBCNode(demandId, dynamicMachineLabel)
+                                        getEBCNode(ebcDemandId, dynamicMachineLabel)
                                         node(dynamicMachineLabel) {
                                             echo "EBC node ${dynamicMachineLabel} is ready"
                                         }
@@ -584,6 +586,18 @@ def runTest() {
                     }
                     checkErrors(errorList)
                 }
+            }
+        }
+        if (params.CLOUD_PROVIDER == "EBC" && ebcDemandId) {
+            try {
+                println("Triggering EBC_Delete_Node job with demandId: ${ebcDemandId}")
+                def parameters = [
+                    string(name: 'demandId', value: ebcDemandId)
+                ]
+                build job: 'EBC_Delete_Node', parameters: parameters, propagate: false
+            } catch (Exception e) {
+                println("Warning: Exception when triggering EBC_Delete_Node. This does not affect test build result.")
+                println(e.toString())
             }
         }
     }
