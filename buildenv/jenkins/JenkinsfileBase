@@ -982,9 +982,22 @@ def post(output_name) {
 		addFailedTestsGrinderLink()
 
 		try {
-			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			def testResults = junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			echo "JUnit Test Results: ${testResults}"
+			echo "Total Tests: ${testResults.getTotalCount()}"
+			echo "Passed: ${testResults.getPassCount()}"
+			echo "Failed: ${testResults.getFailCount()}"
+			echo "Skipped: ${testResults.getSkipCount()}"
+
+			if (testResults.getFailCount() > 0) {
+				echo "Found ${testResults.getFailCount()} failed tests. Marking build as UNSTABLE."
+				currentBuild.result = 'UNSTABLE'
+			} else {
+				echo "No failed tests found."
+			}
 		} catch (Exception e) {
 			echo "Caught exception: ${e.message}"
+			currentBuild.result = 'FAILURE'  // Set the build result to FAILURE in case of an error
 		}
 	}
 }
