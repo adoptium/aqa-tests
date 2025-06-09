@@ -244,7 +244,7 @@ def setupParallelEnv() {
 					echo "Regenerate parallel list with NUM_MACHINES=${MAX_NUM_MACHINES}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
-				} else if (NUM_LIST < 6 && env.JDK_IMPL == "openj9" && (TARGET == "extended.jck" || TARGET == "special.system")) {
+				} else if (NUM_LIST < 6 && (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") && (TARGET == "extended.jck" || TARGET == "special.system")) {
 					echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
 					echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
