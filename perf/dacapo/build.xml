@@ -27,22 +27,39 @@
 	</target>
 
 	<target name="getDacapoSuite" depends="init">
-		<var name="FILE_NAME" value="dacapo.jar"/>
+		<var name="ZIP_FILE_NAME" value="dacapo.zip"/>
+		<var name="JAR_FILE_NAME" value="dacapo.jar"/>
 		<if>
-			<available file="${FILE_NAME}" type="file" />
+			<available file="${JAR_FILE_NAME}" type="file" />
 			<then>
-				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
+				<echo message="${JAR_FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-			<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin.zip -o dacapo.jar"/>
-			<retry retrycount="3">
-				<sequential>
-					<echo message="curl ${curl_options}" />
-					<exec executable="curl" failonerror="true">
-						<arg line="${curl_options}" />
-					</exec>
-				</sequential>
-			</retry>
+				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin.zip -o ${ZIP_FILE_NAME}"/>
+				<retry retrycount="3">
+					<sequential>
+						<echo message="curl ${curl_options}" />
+						<exec executable="curl" failonerror="true">
+							<arg line="${curl_options}" />
+						</exec>
+					</sequential>
+				</retry>
+
+				<!-- extract zip file -->
+        <property name = "tmp" value = "${SRC}/tmp"/>
+        <mkdir dir="${tmp}"/>
+        <unzip src="${ZIP_FILE_NAME}" dest="${tmp}">
+            <patternset>
+                <include name="**/*.jar"/>  
+            </patternset>
+        </unzip>
+
+        <fileset id="jar.files" dir="${tmp}" includes="**/*.jar"/>
+        <pathconvert property="extracted.jar" refid="jar.files"/>
+        <move file="${extracted.jar}" tofile="${JAR_FILE_NAME}" failonerror="true"/>
+
+        <delete dir="${tmp}"/>
+        <delete file="${ZIP_FILE_NAME}"/>
 			</else>
 		</if>
 	</target>
