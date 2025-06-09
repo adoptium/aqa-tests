@@ -45,20 +45,33 @@
 					</sequential>
 				</retry>
 
-				<!-- extract zip file -->
-        <property name = "tmp" value = "${SRC}/tmp"/>
-        <mkdir dir="${tmp}"/>
-        <unzip src="${ZIP_FILE_NAME}" dest="${tmp}">
-            <patternset>
-                <include name="**/*.jar"/>  
-            </patternset>
-        </unzip>
+        <property name="decapo_extract" value="${SRC}/dacapo_extract"/>
+        <mkdir dir="${decapo_extract}"/>
+        <unzip src="${ZIP_FILE_NAME}" dest="${decapo_extract}"/>
 
-        <fileset id="jar.files" dir="${tmp}" includes="**/*.jar"/>
-        <pathconvert property="extracted.jar" refid="jar.files"/>
-        <move file="${extracted.jar}" tofile="${JAR_FILE_NAME}" failonerror="true"/>
+        <fileset id="main.jar" dir="${decapo_extract}" includes="**/dacapo-*.jar"/>
+      
+        <resourcecount property="jar.count" refid="main.jar"/>
+        <fail message="No main DaCapo JAR found" unless="jar.count"/>
+        
+        <first id="main.jar.ref" refid="main.jar"/>
+        <property name="main.jar.path" refid="main.jar.ref"/>
+        
+        <move file="${main.jar.path}" tofile="${DEST}/${JAR_FILE_NAME}" failonerror="true"/>
 
-        <delete dir="${tmp}"/>
+        <dirset id="versioned.dir" dir="${decapo_extract}" includes="**/dacapo-*"/>
+
+				<resourcecount property="dir.count" refid="versioned.dir"/>
+				<fail message="No DaCapo directory found" unless="dir.count"/>
+				
+				<first id="dacapo.dir.ref" refid="versioned.dir"/>
+				<property name="dacapo.dir.path" refid="dacapo.dir.ref"/>
+				
+				<move todir="${DEST}">
+					<fileset dir="${dacapo.dir.path}"/>
+				</move>
+
+        <delete dir="${decapo_extract}"/>
         <delete file="${ZIP_FILE_NAME}"/>
 			</else>
 		</if>
