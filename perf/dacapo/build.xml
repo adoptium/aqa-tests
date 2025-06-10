@@ -28,8 +28,10 @@
 
 	<target name="getDacapoSuite" depends="init">
 		<var name="FILE_NAME" value="dacapo.jar"/>
+    <var name="DIR_NAME" value="dacapo"/>
 		<var name="ZIP_FILE_NAME" value="dacapo-23.11-MR2-chopin.zip"/>
 		<var name="JAR_FILE_NAME" value="dacapo-23.11-MR2-chopin.jar"/>
+    <var name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>
@@ -45,10 +47,41 @@
 						</exec>
 					</sequential>
 				</retry>
-				<!-- Extract the entire ZIP file to a temporary directory -->
-				<property name="data" value="${SRC}/dacapo"/>
-				<echo message="Extracting contents from ${ZIP_FILE_NAME}" />
-				<unzip src="${ZIP_FILE_NAME}" dest="${data}"/>
+				<!-- Extract the entire ZIP file -->
+				<echo message="Extracting all contents from ${ZIP_FILE_NAME}" />
+				<unzip src="${ZIP_FILE_NAME}" dest="${SRC}"/>
+
+				<!-- Acquire decapo.jar and decapo directory -->
+				<move file="${JAR_FILE_NAME}" tofile="${FILE_NAME}" overwrite="true" failonerror="true"/>
+        <move dir="${DECAPO_DIR_NAME}" todir="${DIR_NAME}" overwrite = "true" failonerror="true"/>
+
+        <target name="list-dirs">
+          <echo message="Directories inside SRC:" />
+            <foreach item="Folder" in="${SRC}" property="dir">
+              <in>
+                <items>
+                  <include name="*" />
+                </items>
+              </in>
+              <do>
+                <echo message="${path::get-file-name(dir)}" />
+              </do>
+            </foreach>
+        </target>
+
+        <target name="list-dirs">
+          <echo message="Directories inside SRC/dacapo:" />
+            <foreach item="Folder" in="${SRC}/${DIR_NAME}" property="dir">
+              <in>
+                <items>
+                  <include name="*" />
+                </items>
+              </in>
+              <do>
+                <echo message="${path::get-file-name(dir)}" />
+              </do>
+            </foreach>
+        </target>
 
 				<delete file="${ZIP_FILE_NAME}"/>
 			</else>
