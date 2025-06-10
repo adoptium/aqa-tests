@@ -36,7 +36,6 @@
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<!-- Download the ZIP file -->
 				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin.zip -o ${ZIP_FILE_NAME}"/>
 				<retry retrycount="3">
 					<sequential>
@@ -46,18 +45,25 @@
 						</exec>
 					</sequential>
 				</retry>
+				<!-- Extract the entire ZIP file to a temporary directory -->
+				<property name="dacapo_extract" value="${SRC}/dacapo_extract"/>
+				<mkdir dir="${dacapo_extract}"/>
+				<echo message="Extracting all contents from ${ZIP_FILE_NAME}" />
+				<unzip src="${ZIP_FILE_NAME}" dest="${dacapo_extract}"/>
 
-				<echo message="Extracting ${JAR_FILE_NAME} from ${ZIP_FILE_NAME}" />
-				<unzip src="${ZIP_FILE_NAME}" dest=".">
-					<patternset>
-						<include name="${JAR_FILE_NAME}"/>
-					</patternset>
-				</unzip>
+				<!-- Move the main JAR to the current directory with the expected name -->
+				<move file="${dacapo_extract}/${JAR_FILE_NAME}" tofile="${FILE_NAME}" failonerror="true"/>
 
-				<!-- Move the JAR to the current directory with the expected name -->
-				<move file="${JAR_FILE_NAME}" tofile="${FILE_NAME}" failonerror="true"/>
+				<!-- Copy any additional files/directories (like dependencies) to the source directory -->
+				<echo message="Copying additional DaCapo files and dependencies" />
+				<copy todir="${SRC}">
+					<fileset dir="${dacapo_extract}">
+						<exclude name="${JAR_FILE_NAME}"/>
+					</fileset>
+				</copy>
 
 				<!-- Clean up temporary files and directories -->
+				<delete dir="${dacapo_extract}"/>
 				<delete file="${ZIP_FILE_NAME}"/>
 			</else>
 		</if>
