@@ -53,7 +53,11 @@
 
 				<!-- Acquire decapo.jar and decapo directory -->
 				<move file="${JAR_FILE_NAME}" tofile="${FILE_NAME}" overwrite="true" failonerror="true"/>
-        <move dir="${DECAPO_DIR_NAME}" todir="${DIR_NAME}" overwrite = "true" failonerror="true"/>
+        <move todir="${DIR_NAME}" overwrite="true">
+          <fileset basedir="DACAPO_DIR_NAME">
+            <include name="**/*" />
+          </fileset>
+        </move>
 
         <target name="list-dirs">
           <echo message="Directories inside SRC:" />
