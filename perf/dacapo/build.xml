@@ -67,49 +67,14 @@
 				<exec executable="ls" dir="${SRC}">
 					<arg value="-la"/>
 				</exec>
+        <!-- List contents of SRC/decapo directory for inspection -->
+        <echo message="=== Contents of ${SRC}/${DIR_NAME} ===" />
+				<exec executable="ls" dir="${SRC}/$DIR_NAME}">
+					<arg value="-la"/>
+				</exec>
 
 				<!-- Clean up the ZIP file -->
 				<delete file="${ZIP_FILE_NAME}"/>
-			</else>
-		</if>
-	</target>
-
-	<target name="inspectStructure" depends="getDacapoSuite" description="inspect the extracted structure">
-		<echo message="=== INSPECTING SRC DIRECTORY STRUCTURE ===" />
-		<echo message="Contents of ${SRC}:" />
-		<exec executable="find" dir="${SRC}">
-			<arg value="."/>
-			<arg value="-maxdepth"/>
-			<arg value="2"/>
-			<arg value="-type"/>
-			<arg value="d"/>
-		</exec>
-
-		<echo message="=== FILES IN SRC DIRECTORY ===" />
-		<exec executable="find" dir="${SRC}">
-			<arg value="."/>
-			<arg value="-maxdepth"/>
-			<arg value="1"/>
-			<arg value="-type"/>
-			<arg value="f"/>
-		</exec>
-
-		<echo message="=== INSPECTING SRC/dacapo DIRECTORY STRUCTURE ===" />
-		<condition property="dacapo.dir.exists">
-			<available file="${SRC}/${DIR_NAME}" type="dir"/>
-		</condition>
-		<if>
-			<isset property="dacapo.dir.exists"/>
-			<then>
-				<echo message="Contents of ${SRC}/${DIR_NAME}:" />
-				<exec executable="find" dir="${SRC}/${DIR_NAME}">
-					<arg value="."/>
-					<arg value="-maxdepth"/>
-					<arg value="2"/>
-				</exec>
-			</then>
-			<else>
-				<echo message="Directory ${SRC}/${DIR_NAME} does not exist" />
 			</else>
 		</if>
 	</target>
