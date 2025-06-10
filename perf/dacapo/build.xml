@@ -60,20 +60,8 @@
 				<move todir="${SRC}/${DIR_NAME}" failonerror="false">
 					<fileset dir="${SRC}/${DACAPO_DIR_NAME}"/>
 				</move>
-				<delete dir="${SRC}/${DACAPO_DIR_NAME}" failonerror="false"/>
-
-				<!-- List contents of source directory for inspection -->
-				<echo message="=== Contents of ${SRC} ===" />
-				<exec executable="ls" dir="${SRC}">
-					<arg value="-la"/>
-				</exec>
-        <!-- List contents of SRC/decapo directory for inspection -->
-        <echo message="=== Contents of ${SRC}/${DIR_NAME} ===" />
-				<exec executable="ls" dir="${SRC}/${DIR_NAME}">
-					<arg value="-la"/>
-				</exec>
-
-				<!-- Clean up the ZIP file -->
+        
+				<delete dir="${SRC}/${DACAPO_DIR_NAME}"/>
 				<delete file="${ZIP_FILE_NAME}"/>
 			</else>
 		</if>
