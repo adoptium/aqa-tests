@@ -47,51 +47,73 @@
 						</exec>
 					</sequential>
 				</retry>
-				<!-- Extract the entire ZIP file -->
-				<echo message="Extracting all contents from ${ZIP_FILE_NAME}" />
+				<!-- Extract the entire ZIP file directly to source directory -->
+				<echo message="Extracting all contents from ${ZIP_FILE_NAME} to ${SRC}" />
 				<unzip src="${ZIP_FILE_NAME}" dest="${SRC}"/>
 
-				<!-- Acquire decapo.jar and decapo directory -->
-				<move file="${JAR_FILE_NAME}" tofile="${FILE_NAME}" overwrite="true" failonerror="true"/>
-        <move todir="${DIR_NAME}" overwrite="true">
-          <fileset basedir="DACAPO_DIR_NAME">
-            <include name="**/*" />
-          </fileset>
-        </move>
+				<!-- Rename the main JAR to the expected name -->
+				<echo message="Renaming ${JAR_FILE_NAME} to ${FILE_NAME}" />
+				<move file="${SRC}/${JAR_FILE_NAME}" tofile="${SRC}/${FILE_NAME}" failonerror="true"/>
 
-        <target name="list-dirs">
-          <echo message="Directories inside SRC:" />
-            <foreach item="Folder" in="${SRC}" property="dir">
-              <in>
-                <items>
-                  <include name="*" />
-                </items>
-              </in>
-              <do>
-                <echo message="${path::get-file-name(dir)}" />
-              </do>
-            </foreach>
-        </target>
+				<!-- Rename the directory from DACAPO_DIR_NAME to DIR_NAME -->
+				<echo message="Renaming directory ${DACAPO_DIR_NAME} to ${DIR_NAME}" />
+				<move todir="${SRC}/${DIR_NAME}" failonerror="false">
+					<fileset dir="${SRC}/${DACAPO_DIR_NAME}"/>
+				</move>
+				<delete dir="${SRC}/${DACAPO_DIR_NAME}" failonerror="false"/>
 
-        <target name="list-dirs">
-          <echo message="Directories inside SRC/dacapo:" />
-            <foreach item="Folder" in="${SRC}/${DIR_NAME}" property="dir">
-              <in>
-                <items>
-                  <include name="*" />
-                </items>
-              </in>
-              <do>
-                <echo message="${path::get-file-name(dir)}" />
-              </do>
-            </foreach>
-        </target>
+				<!-- List contents of source directory for inspection -->
+				<echo message="=== Contents of ${SRC} ===" />
+				<exec executable="ls" dir="${SRC}">
+					<arg value="-la"/>
+				</exec>
 
+				<!-- Clean up the ZIP file -->
 				<delete file="${ZIP_FILE_NAME}"/>
 			</else>
 		</if>
 	</target>
-	
+
+	<target name="inspectStructure" depends="getDacapoSuite" description="inspect the extracted structure">
+		<echo message="=== INSPECTING SRC DIRECTORY STRUCTURE ===" />
+		<echo message="Contents of ${SRC}:" />
+		<exec executable="find" dir="${SRC}">
+			<arg value="."/>
+			<arg value="-maxdepth"/>
+			<arg value="2"/>
+			<arg value="-type"/>
+			<arg value="d"/>
+		</exec>
+
+		<echo message="=== FILES IN SRC DIRECTORY ===" />
+		<exec executable="find" dir="${SRC}">
+			<arg value="."/>
+			<arg value="-maxdepth"/>
+			<arg value="1"/>
+			<arg value="-type"/>
+			<arg value="f"/>
+		</exec>
+
+		<echo message="=== INSPECTING SRC/dacapo DIRECTORY STRUCTURE ===" />
+		<condition property="dacapo.dir.exists">
+			<available file="${SRC}/${DIR_NAME}" type="dir"/>
+		</condition>
+		<if>
+			<isset property="dacapo.dir.exists"/>
+			<then>
+				<echo message="Contents of ${SRC}/${DIR_NAME}:" />
+				<exec executable="find" dir="${SRC}/${DIR_NAME}">
+					<arg value="."/>
+					<arg value="-maxdepth"/>
+					<arg value="2"/>
+				</exec>
+			</then>
+			<else>
+				<echo message="Directory ${SRC}/${DIR_NAME} does not exist" />
+			</else>
+		</if>
+	</target>
+
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${SRC}"/>
