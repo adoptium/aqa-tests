@@ -27,8 +27,9 @@
 	</target>
 
 	<target name="getDacapoSuite" depends="init">
-		<var name="ZIP_FILE_NAME" value="dacapo.zip"/>
-		<var name="JAR_FILE_NAME" value="dacapo.jar"/>
+    <var name = "FILE_NAME" value = "dacapo.jar"/>
+		<var name="ZIP_FILE_NAME" value="dacapo-23.11-MR2-chopin.zip"/>
+		<var name="JAR_FILE_NAME" value="dacapo-23.11-MR2-chopin.jar"/>
 		<if>
 			<available file="${JAR_FILE_NAME}" type="file" />
 			<then>
@@ -49,27 +50,7 @@
         <mkdir dir="${decapo_extract}"/>
         <unzip src="${ZIP_FILE_NAME}" dest="${decapo_extract}"/>
 
-        <fileset id="main.jar" dir="${decapo_extract}" includes="**/dacapo-*.jar"/>
-      
-        <resourcecount property="jar.count" refid="main.jar"/>
-        <fail message="No main DaCapo JAR found" unless="jar.count"/>
-        
-        <first id="main.jar.ref" refid="main.jar"/>
-        <property name="main.jar.path" refid="main.jar.ref"/>
-        
-        <move file="${main.jar.path}" tofile="${DEST}/${JAR_FILE_NAME}" failonerror="true"/>
-
-        <dirset id="versioned.dir" dir="${decapo_extract}" includes="**/dacapo-*"/>
-
-				<resourcecount property="dir.count" refid="versioned.dir"/>
-				<fail message="No DaCapo directory found" unless="dir.count"/>
-				
-				<first id="dacapo.dir.ref" refid="versioned.dir"/>
-				<property name="dacapo.dir.path" refid="dacapo.dir.ref"/>
-				
-				<move todir="${DEST}">
-					<fileset dir="${dacapo.dir.path}"/>
-				</move>
+        <move file="${decapo_extract}/${JAR_FILE_NAME}" tofile="${DEST}/${FILE_NAME}" failonerror="true"/>
 
         <delete dir="${decapo_extract}"/>
         <delete file="${ZIP_FILE_NAME}"/>
