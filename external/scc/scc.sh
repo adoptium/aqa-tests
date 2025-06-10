@@ -153,12 +153,13 @@ privilegedRestore() {
     echo "privileged restore $restoreImage ..."
    
     echo "Start running daytrader on the background ..."
+    echo -ne "DaytraderCONTAINER_ID=" > daytraderContainerId.log
     sudo podman run \
         --rm \
         --detach \
         --privileged \
         -p 9080:9080 \
-        $restoreImage
+        $restoreImage >> daytraderContainerId.log
 
     echo "Start jMeter ..."
     echo "sudo podman run --net=host --privileged $restore_jmeter_image_name jmeter -n -t daytrader8.jmx -j /output/daytrader.stats 
@@ -171,15 +172,21 @@ privilegedRestore() {
     jmeter -n -t daytrader8.jmx -j /output/daytrader.stats -JHOST=localhost -JPORT=9080 -JSTOCKS=9999 -JBOTUID=0 \
     -JTOPUID=14999 -JTHREADS=15 -JDURATION=60 -JRAMP=0 -JMAXTHINKTIME=0 > jMeterOutput.txt
     echo "Completed JMeter testing ..."
-
-    sudo podman stop --all
-    sudo podman rm --all -f
-    echo "Removed all containers ..."
 }
 
 checkLog() {
     echo "check log ..."
     if [ -f ./jMeterOutput.txt ]; then
+        if [ -f ./daytraderContainerId.log ]; then
+            cat ./daytraderContainerId.log
+            sleep 1
+            source ./daytraderContainerId.log
+            echo "podman logs --tail 20 ${DaytraderCONTAINER_ID} > daytraderLogs.log" 
+            sudo podman logs --tail 20 "${DaytraderCONTAINER_ID}" > daytraderLogs.log
+        else
+            echo "./daytraderContainerId.log does not exist."
+            exit 1
+        fi
         echo "displaying jMeterOutput.txt"
         cat ./jMeterOutput.txt
         # ToDo: need more success information here
@@ -342,6 +349,7 @@ elif [ "$1" == "createRestoreImage" ]; then
     createRestoreImage
 elif [ "$1" == "privilegedRestore" ]; then
     privilegedRestore
+    clean
 elif [ "$1" == "checkLog" ]; then
     checkLog
 elif [ "$1" == "clean" ]; then
@@ -352,8 +360,10 @@ elif [ "$1" == "testCreateRestoreImageOnly" ]; then
     docker_os=$4
     docker_os_version=$5
     testCreateRestoreImageOnly
+    clean
 elif [ "$1" == "testPrivilegedRestoreOnly" ]; then
     testPrivilegedRestoreOnly
+    clean
 elif [ "$1" == "pullImageTest" ]; then
     docker_os=$2
     docker_os_version=$3
