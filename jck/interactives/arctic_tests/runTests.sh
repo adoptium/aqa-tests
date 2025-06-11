@@ -17,18 +17,23 @@ wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.
 mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 JENKINS_HOME=/home/jenkins
+PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/mac/arctic_tests#g'
 if [ $(uname) = SunOS ]; then
     JENKINS_HOME = "/export/home/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /export/home/jenkins/jck_run/arctic/mac/arctic_tests#g'
 elif [ $(uname) = Darwin ]; then
     JENKINS_HOME = "/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
 elif [ $(uname) = Windows_NT ]; then
     JENKINS_HOME = "c:/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
 fi
 
 # Verify that the contents are present in jck_run
 TEST_GROUP=$1
 PLATFORM=$2
 VERSION=$3
+JCK_VERSION_NUMBER=$4
 OSNAME=${PLATFORM%_*}
 
 TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
@@ -49,6 +54,9 @@ sed -i 's/MenuFont.*$/MenuFont      "-misc-fixed-bold-r-normal--15-140-75-75-c-9
 sed -i 's/TitleFont .*$/TitleFont   "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
 sed -i 's/IconFont .*$/IconFont     "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
 sed -i 's/ResizeFont .*$/ResizeFont "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
+
+cp $JENKINS_HOME/jck_run/arctic/mac/player.properties .
+sed -i '' $PPROP_LINE player.properties
 
 if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     echo "arctic.jar not present"
@@ -82,12 +90,12 @@ echo "testcase is $testcase"
       tgroup=${TEST_GROUP//_/\.} 
       echo $tgroup
 
-      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$VERSION/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
+      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
       # Allow 3 seconds for RMI server to start...
       sleep 10
       echo "Running testcase $testcase"
-      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$TEST_GROUP" "$tcase"
+      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
       rc=$?
       
       if [[ $rc -ne 0 ]]; then
@@ -96,7 +104,7 @@ echo "testcase is $testcase"
       fi
 
         # Allow 3 seconds for RMI server to start...
-        sleep 3
+        sleep 10
         result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
         rc=$?
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
