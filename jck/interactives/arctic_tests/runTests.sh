@@ -56,7 +56,7 @@ sed -i 's/IconFont .*$/IconFont     "-misc-fixed-bold-r-normal--15-140-75-75-c-9
 sed -i 's/ResizeFont .*$/ResizeFont "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1"/g' $HOME/.twmrc
 
 cp $JENKINS_HOME/jck_run/arctic/mac/player.properties .
-sed -i '' $PPROP_LINE player.properties
+sed -i $PPROP_LINE player.properties
 
 if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     echo "arctic.jar not present"
