@@ -38,7 +38,7 @@
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip -o ${ZIP_FILE_NAME}"/>
+				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/${DACAPO_DIR_NAME}.zip -o ${ZIP_FILE_NAME}"/>
 				<retry retrycount="3">
 					<sequential>
 						<echo message="curl ${curl_options}" />
