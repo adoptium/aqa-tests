@@ -17,16 +17,16 @@ wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.
 mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 JENKINS_HOME=/home/jenkins
-PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/mac/arctic_tests#g'
+PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/mac/arctic_tests#g'
 if [ $(uname) = SunOS ]; then
     JENKINS_HOME = "/export/home/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /export/home/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /export/home/jenkins/jck_run/arctic/mac/arctic_tests#g'
 elif [ $(uname) = Darwin ]; then
     JENKINS_HOME = "/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
 elif [ $(uname) = Windows_NT ]; then
     JENKINS_HOME = "c:/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
 fi
 
 # Verify that the contents are present in jck_run
