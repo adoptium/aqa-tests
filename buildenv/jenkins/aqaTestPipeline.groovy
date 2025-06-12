@@ -3,7 +3,7 @@
 import groovy.transform.Field
 
 def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
-def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*")
+def PLATFORMS = params.PLATFORMS ? params.PLATFORMS.trim().split("\\s*,\\s*") : ""
 def TARGETS = params.TARGETS ?: "Grinder"
 TARGETS = TARGETS.trim().split("\\s*,\\s*")
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
