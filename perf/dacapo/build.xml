@@ -29,16 +29,16 @@
 	<target name="getDacapoSuite" depends="init">
 		<var name="FILE_NAME" value="dacapo.jar"/>
     <var name="DIR_NAME" value="dacapo"/>
-		<var name="ZIP_FILE_NAME" value="dacapo-23.11-MR2-chopin.zip"/>
-		<var name="JAR_FILE_NAME" value="dacapo-23.11-MR2-chopin.jar"/>
-    <var name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin"/>
+    <var name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
+		<var name="ZIP_FILE_NAME" value="${DACAPO_DIR_NAME}.zip"/>
+		<var name="JAR_FILE_NAME" value="${DACAPO_DIR_NAME}.jar"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin.zip -o ${ZIP_FILE_NAME}"/>
+				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/dacapo-23.11-MR2-chopin-minimal.zip -o ${ZIP_FILE_NAME}"/>
 				<retry retrycount="3">
 					<sequential>
 						<echo message="curl ${curl_options}" />
