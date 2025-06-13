@@ -22,15 +22,17 @@
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
   <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
+
+  <!-- value of fname in dacapo hash from getDependencies.pl -->
+  <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
   
-  <!-- Leverage getDependencies for dacapo zip file-->
-  <!-- <property name="LIB" value="dacapo"/> -->
-  <property name="LIB" value="maven"/>
+  <!-- <property name="LIB" value="maven"/> -->
+  <property name="LIB" value="dacapo"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
   
   <!-- Debug information about dependencies -->
   <echo message="LIB_DIR is set to: ${LIB_DIR}"/>
-  <echo message="Checking for Maven in LIB_DIR..."/>
+  <echo message="Checking for Dacapo in LIB_DIR..."/>
   <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents">
     <arg value="-la"/>
   </exec>
@@ -47,8 +49,7 @@
   <target name="get_zip" depends="compile" description="Fetching zip file from dependencies">
     <echo message="Copying from ${LIB_DIR} to ${SRC}"/>
 		<copy todir="${SRC}">
-			<!-- <fileset dir="${LIB_DIR}/" includes="${DACAPO_DIR_NAME}.zip"/> -->
-      <fileset dir="${LIB_DIR}/" includes="apache-maven-bin.tar.gz" />
+      <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}" />
 		</copy>
     <echo message="After copy, checking SRC directory..."/>
     <exec executable="ls" dir="${SRC}">
@@ -80,8 +81,8 @@
 				</retry> -->
 
 				<!-- Extract the entire ZIP file directly to source directory -->
-				<echo message="Extracting all contents from ${DACAPO_DIR_NAME}.zip to ${SRC}" />
-				<unzip src="${DACAPO_DIR_NAME}.zip" dest="${SRC}"/>
+				<echo message="Extracting all contents from dacapo.zip to ${SRC}" />
+				<unzip src="${DEPENDENCY_FNAME}" dest="${SRC}"/>
 
 				<!-- Rename the main JAR to the expected name -->
 				<echo message="Renaming ${DACAPO_DIR_NAME}.jar to ${FILE_NAME}" />
@@ -94,7 +95,7 @@
 				</move>
         
 				<delete dir="${DACAPO_DIR_NAME}"/>
-				<delete file="${DACAPO_DIR_NAME}.zip"/>
+				<delete file="${DEPENDENCY_FNAME}"/>
 			</else>
 		</if>
 	</target>
