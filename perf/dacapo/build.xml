@@ -21,6 +21,7 @@
 	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
+  <echo message = "TEST ROOT IS: ${TEST_ROOT}"/>
 		
 	<target name="init">
 		<mkdir dir="${DEST}" />
@@ -44,7 +45,7 @@
 						<echo message="curl ${curl_options}" />
 						<exec executable="curl" failonerror="true">
 							<arg line="${curl_options}" />
-						</exec>
+						</exec>  
 					</sequential>
 				</retry>
 				<!-- Extract the entire ZIP file directly to source directory -->
