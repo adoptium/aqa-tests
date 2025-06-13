@@ -666,7 +666,7 @@ def checkDacapoH2Metric() {
   def regex = "/DaCapo.*h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec/" 
   def matcher = manager.getLogMatcher(regex)
 
-  if (matcher.matches()) {
+  if (matcher != null) {
     def runtime = matcher.group(1) 
     archiveDacapoH2Metric(runtime)
     println("DaCapo-h2 metric found and archived")
