@@ -27,7 +27,6 @@
 	<property name="src" location="./OpenJCEPlus/src/" />
 	<property name="build" location="./bin" />
 	<property name="LIB" value="maven"/>
-  <echo message = "TEST ROOT IS: ${TEST_ROOT}"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 	<property environment="env" />
 
@@ -90,6 +89,7 @@
 			</then>
 		</if>
 		<echo message="git checkout -q -f ${repo_sha} "/>
+    <echo message = "TEST ROOT IS: ${TEST_ROOT}"/>
 		<exec executable="git" failonerror="true" dir="OpenJCEPlus">
 			<arg value="checkout"/>
 			<arg value="-q"/>
