@@ -21,30 +21,39 @@
 	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
-  <echo message = "TEST ROOT IS: ${TEST_ROOT}"/>
+  <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
+  
+  <!-- Leverage getDependencies for dacapo zip file-->
+  <property name="LIB" value="dacapo"/>
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+  <target name="compile" depends="getDependentLibs" description="Fetching dependencies and test code." />
+  <target name="get_zip" depends="compile" description="generate the distribution">
+		<copy todir="${SRC}">
+			<fileset dir="${LIB_DIR}/" includes="${DACAPO_DIR_NAME}.zip"/>
+		</copy>
+	</target>
 
-  <echo message="=== Contents of ${TEST_ROOT} ===" />
-  <exec executable="ls" dir="${TEST_ROOT}">
+  <!-- sanity check -->
+  <echo message "dacapo should have been fetched via getDependencies"/>
+  <echo message="=== Contents of ${SRC} ===" />
+  <exec executable="ls" dir="${SRC}">
     <arg value="-la"/>
   </exec>
 		
 	<target name="init">
 		<mkdir dir="${DEST}" />
-	</target>
+	</target>  
 
-	<target name="getDacapoSuite" depends="init">
+	<target name="getDacapoSuite" depends="init, compile">
 		<var name="FILE_NAME" value="dacapo.jar"/>
     <var name="DIR_NAME" value="dacapo"/>
-    <var name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
-		<var name="ZIP_FILE_NAME" value="${DACAPO_DIR_NAME}.zip"/>
-		<var name="JAR_FILE_NAME" value="${DACAPO_DIR_NAME}.jar"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/${DACAPO_DIR_NAME}.zip -o ${ZIP_FILE_NAME}"/>
+				<!-- <var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/${DACAPO_DIR_NAME}.zip -o ${ZIP_FILE_NAME}"/>
 				<retry retrycount="3">
 					<sequential>
 						<echo message="curl ${curl_options}" />
@@ -52,23 +61,24 @@
 							<arg line="${curl_options}" />
 						</exec>  
 					</sequential>
-				</retry>
+				</retry> -->
+
 				<!-- Extract the entire ZIP file directly to source directory -->
-				<echo message="Extracting all contents from ${ZIP_FILE_NAME} to ${SRC}" />
-				<unzip src="${ZIP_FILE_NAME}" dest="${SRC}"/>
+				<echo message="Extracting all contents from ${DACAPO_DIR_NAME}.zip to ${SRC}" />
+				<unzip src="${DACAPO_DIR_NAME}.zip" dest="${SRC}"/>
 
 				<!-- Rename the main JAR to the expected name -->
-				<echo message="Renaming ${JAR_FILE_NAME} to ${FILE_NAME}" />
-				<move file="${SRC}/${JAR_FILE_NAME}" tofile="${SRC}/${FILE_NAME}" failonerror="true"/>
+				<echo message="Renaming ${DACAPO_DIR_NAME}.jar to ${FILE_NAME}" />
+				<move file="${DACAPO_DIR_NAME}.jar" tofile="${FILE_NAME}" failonerror="true"/>
 
 				<!-- Rename the directory from DACAPO_DIR_NAME to DIR_NAME -->
 				<echo message="Renaming directory ${DACAPO_DIR_NAME} to ${DIR_NAME}" />
-				<move todir="${SRC}/${DIR_NAME}" failonerror="false">
-					<fileset dir="${SRC}/${DACAPO_DIR_NAME}"/>
+				<move todir="${DIR_NAME}" failonerror="true">
+					<fileset dir="${DACAPO_DIR_NAME}"/>
 				</move>
         
-				<delete dir="${SRC}/${DACAPO_DIR_NAME}"/>
-				<delete file="${ZIP_FILE_NAME}"/>
+				<delete dir="${DACAPO_DIR_NAME}"/>
+				<delete file="${DACAPO_DIR_NAME}.zip"/>
 			</else>
 		</if>
 	</target>
