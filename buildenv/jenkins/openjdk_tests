@@ -567,7 +567,8 @@ def runTest() {
         }
 
     } finally {
-        checkDacapo()
+        //if a DacapoH2 run passed, archive it for parent processing 
+        checkDacapoH2Metric()
         // Send slack notification
         if (params.SLACK_CHANNEL) {
             timeout(time: 5, unit: 'MINUTES') {
@@ -661,13 +662,39 @@ def checkErrors(errorList) {
     }
 }
 
-def checkDacapo() {
+def checkDacapoH2Metric() {
   def regex = "/DaCapo.*h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec/" 
-  if (manager.logContains(regex)) {
-    println("FOUND DACAPO"); 
+  def matcher = manager.getLogMatcher(regex)
+
+  if (matcher.matches()) {
+    def runtime = matcher.group(1) 
+    archiveDacapoH2Metric(runtime)
+    println("DaCapo-h2 metric found and archived")
   } else {
-    println("NO DACAPO");
+    println("no DaCapo-h2 metric found")
   }
+}
+
+def archiveDacapoH2Metric(runtime) {
+  def fileName = "${<env.JOB_NAME>}_${<env.BUILD_NUMBER>}.log"
+  def jsonData = [
+    [
+      "Benchmark": "dacapo-h2", 
+      "metrics": [
+        "dacapo-h2": [
+          ["value": runtime],
+          ["higherbetter": true], 
+          ["units": msec]
+        ]
+      ]
+    ]
+  ]
+
+  def jsonBuilder = new JsonBuilder(jsonData) 
+  def jsonString = jsonBuilder.toPrettyString() 
+
+  writeFile file: fileName, text: jsonString
+  archiveArtifacts artifacts: fileName, fingerprint: true 
 }
 
 def forceCleanWS() {
