@@ -22,6 +22,11 @@
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
   <echo message = "TEST ROOT IS: ${TEST_ROOT}"/>
+
+  <echo message="=== Contents of ${TEST_ROOT} ===" />
+  <exec executable="ls" dir="${TEST_ROOT}">
+    <arg value="-la"/>
+  </exec>
 		
 	<target name="init">
 		<mkdir dir="${DEST}" />
