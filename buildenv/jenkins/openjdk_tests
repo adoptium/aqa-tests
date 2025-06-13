@@ -567,6 +567,8 @@ def runTest() {
         }
 
     } finally {
+        checkDacapo()
+        // Send slack notification
         if (params.SLACK_CHANNEL) {
             timeout(time: 5, unit: 'MINUTES') {
                 if (currentBuild.result == 'FAILURE') {
@@ -636,7 +638,6 @@ def areNodesWithLabelOnline(labelToCheck) {
     return true
 }
 
-
 def checkErrors(errorList) {
     def foundError = ""
     for (String error : errorList) {
@@ -660,6 +661,14 @@ def checkErrors(errorList) {
     }
 }
 
+def checkDacapo() {
+  def regex = "/DaCapo.*h2\sPASSED\sin\s(\d*\.?\d*)\smsec/" 
+  if (regex) {
+    println("FOUND DACAPO"); 
+  } else {
+    println("NO DACAPO");
+  }
+}
 
 def forceCleanWS() {
     try {
