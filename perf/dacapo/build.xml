@@ -27,12 +27,33 @@
   <!-- <property name="LIB" value="dacapo"/> -->
   <property name="LIB" value="maven"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
-  <target name="compile" depends="getDependentLibs" description="Fetching dependencies and test code." />
+  
+  <!-- Debug information about dependencies -->
+  <echo message="LIB_DIR is set to: ${LIB_DIR}"/>
+  <echo message="Checking for Maven in LIB_DIR..."/>
+  <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents">
+    <arg value="-la"/>
+  </exec>
+  <echo message="Contents of LIB_DIR: ${lib_dir_contents}"/>
+  
+  <target name="compile" depends="getDependentLibs" description="Fetching dependencies and test code.">
+    <echo message="After getDependentLibs, checking LIB_DIR again..."/>
+    <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents_after">
+      <arg value="-la"/>
+    </exec>
+    <echo message="Contents of LIB_DIR after getDependentLibs: ${lib_dir_contents_after}"/>
+  </target>
+  
   <target name="get_zip" depends="compile" description="Fetching zip file from dependencies">
+    <echo message="Copying from ${LIB_DIR} to ${SRC}"/>
 		<copy todir="${SRC}">
 			<!-- <fileset dir="${LIB_DIR}/" includes="${DACAPO_DIR_NAME}.zip"/> -->
       <fileset dir="${LIB_DIR}/" includes="apache-maven-bin.tar.gz" />
 		</copy>
+    <echo message="After copy, checking SRC directory..."/>
+    <exec executable="ls" dir="${SRC}">
+      <arg value="-la"/>
+    </exec>
 	</target>
 
   <!-- sanity check -->
