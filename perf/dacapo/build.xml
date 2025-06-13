@@ -24,17 +24,20 @@
   <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
   
   <!-- Leverage getDependencies for dacapo zip file-->
-  <property name="LIB" value="dacapo"/>
+  <!-- <property name="LIB" value="dacapo"/> -->
+  <property name="LIB" value="maven"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
   <target name="compile" depends="getDependentLibs" description="Fetching dependencies and test code." />
-  <target name="get_zip" depends="compile" description="generate the distribution">
+  <target name="get_zip" depends="compile" description="Fetching zip file from dependencies">
 		<copy todir="${SRC}">
-			<fileset dir="${LIB_DIR}/" includes="${DACAPO_DIR_NAME}.zip"/>
+			<!-- <fileset dir="${LIB_DIR}/" includes="${DACAPO_DIR_NAME}.zip"/> -->
+      <fileset dir="${LIB_DIR}/" includes="apache-maven-bin.tar.gz" />
 		</copy>
 	</target>
 
   <!-- sanity check -->
-  <echo message="dacapo should have been fetched via getDependencies"/>
+  <!-- <echo message="dacapo should have been fetched via getDependencies"/> -->
+  <echo message="maven should have been fetched via getDependencies"/>
   <echo message="=== Contents of ${SRC} ===" />
   <exec executable="ls" dir="${SRC}">
     <arg value="-la"/>
@@ -44,7 +47,7 @@
 		<mkdir dir="${DEST}" />
 	</target>  
 
-	<target name="getDacapoSuite" depends="init, compile">
+	<target name="getDacapoSuite" depends="init, compile, get_zip">
 		<var name="FILE_NAME" value="dacapo.jar"/>
     <var name="DIR_NAME" value="dacapo"/>
 		<if>
