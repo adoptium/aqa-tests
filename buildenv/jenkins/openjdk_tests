@@ -690,11 +690,8 @@ def archiveDacapoH2Metric(runtime) {
     ]
   ]
 
-  def jsonBuilder = new JsonBuilder(jsonData) 
-  def jsonString = jsonBuilder.toPrettyString() 
-
-  writeFile file: fileName, text: jsonString
-  archiveArtifacts artifacts: fileName, fingerprint: true 
+  writeJSON file: fileName, json: jsonString, pretty: true
+  archiveArtifacts artifacts: fileName, fingerprint: true, allowEmptyArchive: false
 }
 
 def forceCleanWS() {
