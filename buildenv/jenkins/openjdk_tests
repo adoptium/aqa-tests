@@ -663,7 +663,7 @@ def checkErrors(errorList) {
 
 def checkDacapo() {
   def regex = "/DaCapo.*h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec/" 
-  if (regex) {
+  if (manager.logContains(regex)) {
     println("FOUND DACAPO"); 
   } else {
     println("NO DACAPO");
