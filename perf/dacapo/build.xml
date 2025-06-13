@@ -29,16 +29,20 @@
   <!-- <property name="LIB" value="maven"/> -->
   <property name="LIB" value="dacapo"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+
+  <target name="init">
+		<mkdir dir="${DEST}" />
+	</target>  
   
-  <!-- Debug information about dependencies -->
-  <echo message="LIB_DIR is set to: ${LIB_DIR}"/>
-  <echo message="Checking for Dacapo in LIB_DIR..."/>
-  <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents">
-    <arg value="-la"/>
-  </exec>
-  <echo message="Contents of LIB_DIR: ${lib_dir_contents}"/>
-  
-  <target name="compile" depends="getDependentLibs" description="Fetching dependencies and test code.">
+  <target name="compile" depends="init, getDependentLibs" description="Fetching dependencies and test code.">
+    <!-- Debug information about dependencies -->
+    <echo message="LIB_DIR is set to: ${LIB_DIR}"/>
+    <echo message="Checking for Dacapo in LIB_DIR..."/>
+    <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents">
+      <arg value="-la"/>
+    </exec>
+    <echo message="Contents of LIB_DIR: ${lib_dir_contents}"/>
+
     <echo message="After getDependentLibs, checking LIB_DIR again..."/>
     <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents_after">
       <arg value="-la"/>
@@ -56,12 +60,8 @@
       <arg value="-la"/>
     </exec>
 	</target>
-		
-	<target name="init">
-		<mkdir dir="${DEST}" />
-	</target>  
 
-	<target name="getDacapoSuite" depends="init, compile, get_zip">
+	<target name="getDacapoSuite" depends="get_zip">
 		<var name="FILE_NAME" value="dacapo.jar"/>
     <var name="DIR_NAME" value="dacapo"/>
 		<if>
