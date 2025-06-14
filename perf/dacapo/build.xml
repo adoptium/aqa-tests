@@ -25,11 +25,9 @@
 
   <!-- value of fname in dacapo hash from getDependencies.pl -->
   <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
-  
-  <!-- <property name="LIB" value="maven"/> -->
-  <property name="LIB" value="dacapo"/>
-	<!-- <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/> -->
 
+  <property name="LIB" value="dacapo"/>
+	
   <target name="getDependentLibs">
     <exec executable="perl" failonerror="true">
         <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB} -curlOpts -L"/>
@@ -37,34 +35,15 @@
   </target> 
 
   <target name="init">
-		<mkdir dir="${DEST}" />
+		<mkdir dir="${DEST}"/>
 	</target>  
   
-  <target name="compile" depends="init, getDependentLibs" description="Fetching dependencies and test code.">
-    <!-- Debug information about dependencies -->
-    <echo message="LIB_DIR is set to: ${LIB_DIR}"/>
-    <echo message="Checking for Dacapo in LIB_DIR..."/>
-    <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents">
-      <arg value="-la"/>
-    </exec>
-    <echo message="Contents of LIB_DIR: ${lib_dir_contents}"/>
-
-    <echo message="After getDependentLibs, checking LIB_DIR again..."/>
-    <exec executable="ls" dir="${LIB_DIR}" outputproperty="lib_dir_contents_after">
-      <arg value="-la"/>
-    </exec>
-    <echo message="Contents of LIB_DIR after getDependentLibs: ${lib_dir_contents_after}"/>
-  </target>
+  <target name="compile" depends="init, getDependentLibs"/>
   
-  <target name="get_zip" depends="compile" description="Fetching zip file from dependencies">
-    <echo message="Copying from ${LIB_DIR} to ${SRC}"/>
+  <target name="get_zip" depends="compile">
 		<copy todir="${SRC}">
-      <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}" />
+      <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
-    <echo message="After copy, checking SRC directory..."/>
-    <exec executable="ls" dir="${SRC}">
-      <arg value="-la"/>
-    </exec>
 	</target>
 
 	<target name="getDacapoSuite" depends="get_zip">
@@ -76,31 +55,11 @@
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<!-- <var name="curl_options" value="-Lks -C - https://download.dacapobench.org/chopin/${DACAPO_DIR_NAME}.zip -o ${ZIP_FILE_NAME}"/>
-				<retry retrycount="3">
-					<sequential>
-						<echo message="curl ${curl_options}" />
-						<exec executable="curl" failonerror="true">
-							<arg line="${curl_options}" />
-						</exec>  
-					</sequential>
-				</retry> -->
-
-				<!-- Extract the entire ZIP file directly to source directory -->
-				<echo message="Extracting all contents from dacapo.zip to ${SRC}" />
 				<unzip src="${DEPENDENCY_FNAME}" dest="${SRC}"/>
-
-				<!-- Rename the main JAR to the expected name -->
-				<echo message="Renaming ${DACAPO_DIR_NAME}.jar to ${FILE_NAME}" />
 				<move file="${DACAPO_DIR_NAME}.jar" tofile="${FILE_NAME}" failonerror="true"/>
-
-				<!-- Rename the directory from DACAPO_DIR_NAME to DIR_NAME -->
-				<echo message="Renaming directory ${DACAPO_DIR_NAME} to ${DIR_NAME}" />
 				<move todir="${DIR_NAME}" failonerror="true">
 					<fileset dir="${DACAPO_DIR_NAME}"/>
 				</move>
-        
-				<delete dir="${DACAPO_DIR_NAME}"/>
 				<delete file="${DEPENDENCY_FNAME}"/>
 			</else>
 		</if>
