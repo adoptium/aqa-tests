@@ -15,6 +15,11 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>dacapo-eclipse</testCaseName>
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) eclipse; \
 		$(TEST_STATUS)</command>
 		<versions>
@@ -46,6 +51,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-fop</testCaseName>
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) fop; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -57,6 +67,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-h2</testCaseName>
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -79,6 +94,9 @@
 				<version>11</version>
 				<platform>aarch64_windows</platform>
 			</disable>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) jython; \
 		$(TEST_STATUS)</command>
@@ -91,6 +109,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-luindex</testCaseName>
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -118,6 +141,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-pmd</testCaseName>
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) pmd; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -166,3 +194,5 @@
 		</groups>
 	</test>
 </playlist>
+
+
