@@ -67,11 +67,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-h2</testCaseName>
-    <disables>
+    <!-- <disables> temporarily undisabling h2 for testing purposes
 	    <disable>
 		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
 	    </disable>
-    </disables>
+    </disables> -->
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -157,6 +157,12 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-sunflow</testCaseName>
+    <!-- temporarily disabling sunflow since it takes too long -->
+    <disables>
+	    <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) sunflow; \
 		$(TEST_STATUS)</command>
 		<levels>
