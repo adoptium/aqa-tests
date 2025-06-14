@@ -28,7 +28,13 @@
   
   <!-- <property name="LIB" value="maven"/> -->
   <property name="LIB" value="dacapo"/>
-	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+	<!-- <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/> -->
+
+  <target name="getDependentLibs">
+    <exec executable="perl" failonerror="true">
+        <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB} -curlOpts -L"/>
+    </exec>
+  </target> 
 
   <target name="init">
 		<mkdir dir="${DEST}" />
