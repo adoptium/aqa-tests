@@ -21,34 +21,34 @@
 	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
-  <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
+        <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
 
-  <!-- value of fname in dacapo hash from getDependencies.pl -->
-  <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
+        <!-- value of fname in dacapo hash from getDependencies.pl -->
+        <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
 
-  <property name="LIB" value="dacapo"/>
+        <property name="LIB" value="dacapo"/>
 	
-  <target name="getDependentLibs">
-    <exec executable="perl" failonerror="true">
-        <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB} -curlOpts -L"/>
-    </exec>
-  </target> 
+        <target name="getDependentLibs">
+        <exec executable="perl" failonerror="true">
+                <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB} -curlOpts -L"/>
+        </exec>
+        </target> 
 
-  <target name="init">
+        <target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>  
   
-  <target name="compile" depends="init, getDependentLibs"/>
+        <target name="compile" depends="init, getDependentLibs"/>
   
-  <target name="get_zip" depends="compile">
+        <target name="get_zip" depends="compile">
 		<copy todir="${SRC}">
-      <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
+                        <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
 	</target>
 
 	<target name="getDacapoSuite" depends="get_zip">
 		<var name="FILE_NAME" value="dacapo.jar"/>
-    <var name="DIR_NAME" value="dacapo"/>
+                <var name="DIR_NAME" value="dacapo"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>

@@ -638,7 +638,6 @@ def makeCompileTest(){
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
-  echo "${env.BUILD_LIST}check";
 	dir('aqa-tests') {
 		if (!env.SPEC.startsWith('zos')) {
 			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
