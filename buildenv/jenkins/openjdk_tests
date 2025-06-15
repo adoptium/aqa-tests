@@ -567,6 +567,7 @@ def runTest() {
         }
 
     } finally {
+        // Send slack notification
         if (params.SLACK_CHANNEL) {
             timeout(time: 5, unit: 'MINUTES') {
                 if (currentBuild.result == 'FAILURE') {
@@ -636,7 +637,6 @@ def areNodesWithLabelOnline(labelToCheck) {
     return true
 }
 
-
 def checkErrors(errorList) {
     def foundError = ""
     for (String error : errorList) {
@@ -659,7 +659,6 @@ def checkErrors(errorList) {
         }
     }
 }
-
 
 def forceCleanWS() {
     try {
