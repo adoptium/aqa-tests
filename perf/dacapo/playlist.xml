@@ -34,11 +34,7 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-avrora</testCaseName>
-    <!-- temporarily disabling avrora for testing purposes -->
     <disables>
-	    <disable>
-		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
-	    </disable>
 			<disable>
 				<comment>https://github.com/adoptium/aqa-tests/issues/4745#issuecomment-1710101571</comment>
 				<version>21+</version>
@@ -71,11 +67,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-h2</testCaseName>
-    <!-- <disables> temporarily undisabling h2 for testing purposes
+    <disables>
 	    <disable>
 		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
 	    </disable>
-    </disables> -->
+    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) h2; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -117,9 +113,6 @@
 	    <disable>
 		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
 	    </disable>
-	    <disable>
-		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
-	    </disable>
     </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
 		$(TEST_STATUS)</command>
@@ -133,6 +126,9 @@
 	<test>
 		<testCaseName>dacapo-lusearch-fix</testCaseName>
 		<disables>
+      <disable>
+		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
+	    </disable>
 			<disable>
 				<comment>https://github.com/adoptium/aqa-tests/issues/1888#issuecomment-755015959</comment>
 			</disable>
@@ -164,12 +160,6 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-sunflow</testCaseName>
-    <!-- temporarily disabling sunflow for testing purposes -->
-    <disables>
-	    <disable>
-		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
-	    </disable>
-    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) sunflow; \
 		$(TEST_STATUS)</command>
 		<levels>
@@ -197,12 +187,6 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-xalan</testCaseName>
-    <!-- temporarily disabling xalan for testing purposes -->
-    <disables>
-	    <disable>
-		    <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
-	    </disable>
-    </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) xalan; \
 		$(TEST_STATUS)</command>
 		<levels>
