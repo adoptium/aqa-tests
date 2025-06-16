@@ -23,6 +23,13 @@
 	</test>
 	<test>
 		<testCaseName>LambdaLoadTest_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -42,6 +49,13 @@
 	</test>
 	<test>
 		<testCaseName>LambdaLoadTest_CS_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
@@ -61,6 +75,13 @@
 	</test>
 	<test>
 		<testCaseName>LambdaLoadTest_special_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -128,6 +149,13 @@
 	</test>
 	<test>
 		<testCaseName>ParallelStreamsLoadTest_J9</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -147,6 +175,13 @@
 	</test>
 	<test>
 		<testCaseName>ParallelStreamsLoadTest_CS</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
 		</variations>
@@ -186,6 +221,11 @@
 				<comment>https://github.com/eclipse-openj9/openj9/issues/11904</comment>
 				<variation>Mode612-OSRG</variation>
 				<platform>.*windows.*</platform>
+			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
 			</disable>
 		</disables>
 		<variations>
