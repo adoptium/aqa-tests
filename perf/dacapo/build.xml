@@ -21,32 +21,50 @@
 	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
-		
-	<target name="init">
-		<mkdir dir="${DEST}" />
+        <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
+
+        <!-- value of fname in dacapo hash from getDependencies.pl -->
+        <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
+
+        <property name="LIB" value="dacapo"/>
+	
+        <target name="getDependentLibs">
+        <exec executable="perl" failonerror="true">
+                <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB}"/>
+        </exec>
+        </target> 
+
+        <target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>  
+  
+        <target name="compile" depends="init, getDependentLibs"/>
+  
+        <target name="get_zip" depends="compile">
+		<copy todir="${SRC}">
+                        <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
+		</copy>
 	</target>
 
-	<target name="getDacapoSuite" depends="init">
+	<target name="getDacapoSuite" depends="get_zip">
 		<var name="FILE_NAME" value="dacapo.jar"/>
+                <var name="DIR_NAME" value="dacapo"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-			<var name="curl_options" value="-Lks -C - https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
-			<retry retrycount="3">
-				<sequential>
-					<echo message="curl ${curl_options}" />
-					<exec executable="curl" failonerror="true">
-						<arg line="${curl_options}" />
-					</exec>
-				</sequential>
-			</retry>
+				<unzip src="${DEPENDENCY_FNAME}" dest="${SRC}"/>
+				<move file="${DACAPO_DIR_NAME}.jar" tofile="${FILE_NAME}" failonerror="true"/>
+				<move todir="${DIR_NAME}" failonerror="true">
+					<fileset dir="${DACAPO_DIR_NAME}"/>
+				</move>
+				<delete file="${DEPENDENCY_FNAME}"/>
 			</else>
 		</if>
 	</target>
-	
+
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${SRC}"/>
