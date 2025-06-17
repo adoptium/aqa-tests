@@ -818,6 +818,8 @@ def runTest( ) {
 			}
 		}
 
+                checkDacapoH2Metric()
+
 		def resultSum = [:]
 		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
 		if (matcher?.matches()) {
@@ -1662,6 +1664,35 @@ def forceCleanWS() {
 		// call cleanWs() again
 		cleanWs disableDeferredWipeout: true, deleteDirs: true
 	}
+}
+
+def checkDacapoH2Metric() {
+  def regex = ".*=====\\sDaCapo.*?h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec\\s=====\\s*\$"
+  def matcher = manager.getLogMatcher(regex)
+
+  if (matcher?.find()) {
+    def runtime = matcher.group(1) 
+    archiveDacapoH2Metric(runtime)
+    println("DaCapo-h2 metric found and archived")
+  } else {
+    println("no DaCapo-h2 metric found")
+  }
+}
+
+def archiveDacapoH2Metric(runtime) {
+  def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.log"
+  def jsonData = [
+    "Benchmark": "dacapo-h2", 
+    "metrics": [
+      "dacapo-h2": [
+        ["value": runtime],
+        ["higherbetter": true], 
+        ["units": "msec"]
+      ]
+    ]
+  ]
+  writeJSON file: fileName, json: jsonData
+  archiveArtifacts artifacts: fileName, fingerprint: true, allowEmptyArchive: false
 }
 
 return this
