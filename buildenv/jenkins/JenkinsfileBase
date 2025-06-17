@@ -1672,23 +1672,7 @@ def checkDacapoH2Metric() {
   def regex = ".*=====\\sDaCapo.*?h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec\\s=====\\s*\$"
   def matcher = manager.getLogMatcher(regex)  
 
-  matcher.reset()
-
-  // 1. Check pattern existence
-  if (!manager.logContains(regex)) {
-    println("Pattern not found in log")
-    return
-  }
-
-  matcher.reset()
-
-// 3. Null check
-  if (matcher == null) {
-    println("Matcher creation failed")
-    return
-  }
-
-  if (matcher?.find()) {
+  if (matcher) {
     def runtime = matcher.group(1) 
     archiveDacapoH2Metric(runtime)
     println("DaCapo-h2 metric found and archived")
