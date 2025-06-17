@@ -33,13 +33,18 @@ fi
 TEST_GROUP=$1
 PLATFORM=$2
 VERSION=$3
-JCK_VERSION_NUMBER=$4
+TEST_SUB_DIR=$4
+JCK_VERSION_NUMBER=$5
 OSNAME=${PLATFORM%_*}
+STARTING_SCOPE=$VERSION
+if [ $VERSION -eq 8 ]; then
+    STARTING_SCOPE="default"
+fi
 
-TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/default/api/$TEST_GROUP/interactive
+TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/$STARTING_SCOPE/$TEST_SUB_DIR
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
-echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION"
+echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
 
 # Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
 export LC_ALL=POSIX
@@ -72,8 +77,8 @@ if [ $rc -ne 0 ]; then
    exit $rc
 fi
 
-# Allow 3 seconds for RMI server to start...
-sleep 3
+# Allow time for RMI server to start...
+sleep 5
 
 echo "Running testcases in $TEST_GROUP on $OSNAME"
 echo "Java under test: $TEST_JDK_HOME"
@@ -93,7 +98,6 @@ echo "testcase is $testcase"
 
       $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
-      # Allow 3 seconds for RMI server to start...
       sleep 10
       echo "Running testcase $testcase"
       $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
@@ -104,13 +108,12 @@ echo "testcase is $testcase"
         exit $rc
       fi
 
-        # Allow 3 seconds for RMI server to start...
-        sleep 10
-        result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
-        rc=$?
-        status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-        echo "==>" $status
-        while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
+      sleep 10
+      result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
+      rc=$?
+      status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+      echo "==>" $status
+      while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
             result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
