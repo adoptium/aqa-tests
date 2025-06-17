@@ -1684,7 +1684,7 @@ def checkDacapoH2Metric() {
 def archiveDacapoH2Metric(runtime) {
   def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.log"
   def jsonData = [
-    "Benchmark": "dacapo-h2", 
+    "benchmark": "dacapo-h2", 
     "metrics": [
       "dacapo-h2": [
         ["value": runtime],
