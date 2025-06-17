@@ -1669,32 +1669,32 @@ def forceCleanWS() {
 }
 
 def checkDacapoH2Metric() {
-  def regex = ".*=====\\sDaCapo.*?h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec\\s=====\\s*\$"
-  def matcher = manager.getLogMatcher(regex)  
+        def regex = ".*=====\\sDaCapo.*?h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec\\s=====\\s*\$"
+        def matcher = manager.getLogMatcher(regex)  
 
-  if (matcher?.matches()) {
-    def runtime = matcher.group(1) 
-    archiveDacapoH2Metric(runtime)
-    println("DaCapo-h2 metric found and archived")
-  } else {
-    println("no DaCapo-h2 metric found")
-  }
+        if (matcher?.matches()) {
+                def runtime = matcher.group(1) 
+                archiveDacapoH2Metric(runtime)
+                println("DaCapo-h2 metric found and archived")
+        } else {
+                println("no DaCapo-h2 metric found")
+        }
 }
 
 def archiveDacapoH2Metric(runtime) {
-  def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.log"
-  def jsonData = [
-    "benchmark": "dacapo-h2", 
-    "metrics": [
-      "dacapo-h2": [
-        ["value": runtime],
-        ["higherbetter": true], 
-        ["units": "msec"]
-      ]
-    ]
-  ]
-  writeJSON file: fileName, json: jsonData
-  archiveArtifacts artifacts: fileName, fingerprint: true, allowEmptyArchive: false
+        def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.log"
+        def jsonData = [
+                "benchmark": "dacapo-h2", 
+                        "metrics": [
+                                "dacapo-h2": [
+                                        ["value": runtime],
+                                        ["higherbetter": true], 
+                                        ["units": "msec"]
+                                ]
+                        ]
+        ]
+        writeJSON file: fileName, json: jsonData
+        archiveArtifacts artifacts: fileName, fingerprint: true, allowEmptyArchive: false
 }
 
 return this
