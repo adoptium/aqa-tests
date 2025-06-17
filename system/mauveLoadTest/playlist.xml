@@ -5,6 +5,13 @@
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse-openj9/openj9/issues/4091 -->
 	<test>
 		<testCaseName>MauveSingleThrdLoad_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -64,6 +71,13 @@
 	<!-- Disabled from OpenJ9 on osx due to : https://github.com/eclipse-openj9/openj9/issues/4091 -->
 	<test>
 		<testCaseName>MauveSingleInvocLoad_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
@@ -140,6 +154,11 @@
 				<impl>hotspot</impl>
 				<platform>.*windows.*</platform>
 			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>Mode150</variation>
@@ -163,6 +182,11 @@
 		<disables>
 			<disable>
 				<comment>adoptium/aqa-systemtest/issues/75</comment>
+			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
 			</disable>
 		</disables>
 		<variations>
@@ -188,6 +212,11 @@
 			<disable>
 				<comment>adoptium/aqa-systemtest/issues/78</comment>
 			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
@@ -212,6 +241,11 @@
 			<disable>
 				<comment>adoptium/aqa-systemtest/issues/64</comment>
 			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>-Xgcpolicy:gencon -Xgc:concurrentScavenge</variation>
@@ -233,6 +267,13 @@
 	<!-- The above tests are to be run using concurrentScavenge on z/OS, z/Linux, x/Linux and x/Windows using 64-bit OpenJ9 SDK -->
 	<test>
 		<testCaseName>MauveMultiThrdLoad_special_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>
@@ -287,6 +328,11 @@
 			<disable>
 				<comment>https://github.com/eclipse-openj9/openj9/issues/3771</comment>
 			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
 		</disables>
 		<variations>
 			<variation>Mode101</variation>
@@ -338,6 +384,13 @@
 	</test>
 	<test>
 		<testCaseName>MauveSingleInvocLoad_special_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>Mode101</variation>
 			<variation>Mode103</variation>

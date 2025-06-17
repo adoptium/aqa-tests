@@ -29,6 +29,11 @@
 				<comment>https://github.com/adoptium/aqa-systemtest/issues/474</comment>
 				<platform>sparcv9_solaris</platform>
 			</disable>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
 		</disables>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=OAuthTest; $(TEST_STATUS)</command>
 		<levels>
