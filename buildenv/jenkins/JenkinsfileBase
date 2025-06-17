@@ -818,7 +818,9 @@ def runTest( ) {
 			}
 		}
 
-                checkDacapoH2Metric()
+                if (env.BUILD_LIST.startsWith('perf')) {
+                    checkDacapoH2Metric()
+                }
 
 		def resultSum = [:]
 		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
