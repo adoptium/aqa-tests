@@ -47,10 +47,10 @@
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-				<unzip src="${DEPENDENCY_FNAME}" dest="${SRC}"/>
-				<move file="${DACAPO_DIR_NAME}.jar" tofile="${FILE_NAME}" failonerror="true"/>
-				<move todir="${DIR_NAME}" failonerror="true">
-					<fileset dir="${DACAPO_DIR_NAME}"/>
+				<unzip src="${DEPENDENCY_FNAME}" dest="${DEST}"/>
+				<move file="${DEST}/${DACAPO_DIR_NAME}.jar" tofile="${DEST}/${FILE_NAME}" failonerror="true"/>
+				<move todir="${DEST}/${DIR_NAME}" failonerror="true">
+					<fileset dir="${DEST}/${DACAPO_DIR_NAME}"/>
 				</move>
 				<delete file="${DEPENDENCY_FNAME}"/>
 			</else>
