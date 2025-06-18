@@ -43,6 +43,11 @@
                 <copy todir="${SRC}">
                         <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
+
+                <echo message = "Contents of SRC directory:"/>
+                <apply executable="echo" parallel="false">
+                        <fileset dir="${SRC}" includes="**/*"/>
+                </apply>
 	</target>
 
         <target name="init">
@@ -64,6 +69,11 @@
 					<fileset dir="${DACAPO_DIR_NAME}"/>
 				</move>
 				<delete file="${DEPENDENCY_FNAME}"/>
+
+                                <echo message = "Contents of SRC directory:"/>
+                                <apply executable="echo" parallel="false">
+                                        <fileset dir="${SRC}" includes="**/*"/>
+                                </apply>
 			</else>
 		</if>
 	</target>
