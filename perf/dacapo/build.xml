@@ -25,28 +25,31 @@
 
         <!-- value of fname in dacapo hash from getDependencies.pl -->
         <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
-
         <property name="LIB" value="dacapo"/>
-	
-        <target name="getDependentLibs">
-        <exec executable="perl" failonerror="true">
-                <arg line="${TEST_ROOT}/TKG/scripts/getDependencies.pl -path ${LIB_DIR} -task default -dependencyList ${LIB}"/>
-        </exec>
-        </target> 
+        <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/> 
 
-        <target name="init">
-		<mkdir dir="${DEST}"/>
-	</target>  
-  
-        <target name="compile" depends="init, getDependentLibs"/>
-  
-        <target name="get_zip" depends="compile">
-		<copy todir="${SRC}">
+        <echo message = "SRC is ${SRC}"/>
+        <echo message = "LIB_DIR is ${LIB_DIR}"/> 
+	
+        <target name="get_zip" depends="getDependentLibs">
+        
+                <!-- display the contents of SRC, if dacapo.zip is present, 
+                then we don't need to move it -->
+                <echo message = "Contents of SRC directory:"/>
+                <apply executable="echo" parallel="false">
+                        <fileset dir="${SRC}" includes="**/*"/>
+                </apply>
+
+                <copy todir="${SRC}">
                         <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
 	</target>
 
-	<target name="getDacapoSuite" depends="get_zip">
+        <target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>  
+
+	<target name="getDacapoSuite" depends="get_zip, init">
 		<var name="FILE_NAME" value="dacapo.jar"/>
                 <var name="DIR_NAME" value="dacapo"/>
 		<if>
