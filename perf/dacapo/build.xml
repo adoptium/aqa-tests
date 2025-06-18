@@ -27,27 +27,11 @@
         <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
         <property name="LIB" value="dacapo"/>
         <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/> 
-
-        <echo message = "SRC is ${SRC}"/>
-        <echo message = "LIB_DIR is ${LIB_DIR}"/> 
 	
         <target name="get_zip" depends="getDependentLibs">
-        
-                <!-- display the contents of SRC, if dacapo.zip is present, 
-                then we don't need to move it -->
-                <exec executable="ls">
-                        <arg value="-la"/>
-                        <arg value="${SRC}"/>
-                </exec>
-
                 <copy todir="${SRC}">
                         <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
-
-                <exec executable="ls">
-                        <arg value="-la"/>
-                        <arg value="${SRC}"/>
-                </exec>
 	</target>
 
         <target name="init">
@@ -69,11 +53,6 @@
 					<fileset dir="${DACAPO_DIR_NAME}"/>
 				</move>
 				<delete file="${DEPENDENCY_FNAME}"/>
-
-                                <exec executable="ls">
-                                        <arg value="-la"/>
-                                        <arg value="${SRC}"/>
-                                </exec>
 			</else>
 		</if>
 	</target>
