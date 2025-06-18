@@ -35,19 +35,19 @@
         
                 <!-- display the contents of SRC, if dacapo.zip is present, 
                 then we don't need to move it -->
-                <echo message = "Contents of SRC directory:"/>
-                <apply executable="echo" parallel="false">
-                        <fileset dir="${SRC}" includes="**/*"/>
-                </apply>
+                <exec executable="ls">
+                        <arg value="-la"/>
+                        <arg value="${SRC}"/>
+                </exec>
 
                 <copy todir="${SRC}">
                         <fileset dir="${LIB_DIR}/" includes="${DEPENDENCY_FNAME}"/>
 		</copy>
 
-                <echo message = "Contents of SRC directory:"/>
-                <apply executable="echo" parallel="false">
-                        <fileset dir="${SRC}" includes="**/*"/>
-                </apply>
+                <exec executable="ls">
+                        <arg value="-la"/>
+                        <arg value="${SRC}"/>
+                </exec>
 	</target>
 
         <target name="init">
@@ -70,10 +70,10 @@
 				</move>
 				<delete file="${DEPENDENCY_FNAME}"/>
 
-                                <echo message = "Contents of SRC directory:"/>
-                                <apply executable="echo" parallel="false">
-                                        <fileset dir="${SRC}" includes="**/*"/>
-                                </apply>
+                                <exec executable="ls">
+                                        <arg value="-la"/>
+                                        <arg value="${SRC}"/>
+                                </exec>
 			</else>
 		</if>
 	</target>
