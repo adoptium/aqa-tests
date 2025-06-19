@@ -27,6 +27,7 @@ SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
 LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
+REMOTE_TRIGGER = params.REMOTE_TRIGGER? prams.REMOTE_TRIGGER.toBoolean() : false
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
@@ -86,7 +87,11 @@ timestamps {
                 }
             }
         } else {
-            generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
+            if ( REMOTE_TRIGGER ) {
+                remoteTriggerTemurinJCK()
+            } else {
+                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
+            }
         }
     }
     parallel JOBS
@@ -327,3 +332,32 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
         }
     }
 }
+
+def remoteTriggerTemurinJCK () {
+    triggerRemoteJob abortTriggeredJob: true,
+        blockBuildUntilComplete: false,
+        job: 'AQA_Test_Pipeline',
+        parameters: MapParameters(parameters: [MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
+                                                MapParameter(name: 'TARGETS', value: TARGETS),
+                                                MapParameter(name: 'JCK_GIT_REPO', value: env.JCK_GIT_REPO),
+                                                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
+                                                MapParameter(name: 'JDK_VERSIONS', value: params.JDK_VERSIONS),
+                                                MapParameter(name: 'PARALLEL', value: params.parallel),
+                                                MapParameter(name: 'NUM_MACHINES', value: env.NUM_MACHINES),
+                                                MapParameter(name: 'PLATFORMS', value: params.PLATFORMS),
+                                                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: params.PIPELINE_DISPLAY_NAME),
+                                                MapParameter(name: 'APPLICATION_OPTIONS', value: env.APPLICATION_OPTIONS),
+                                                MapParameter(name: 'LABEL_ADDITION', value: env.LABEL_ADDITION),
+                                                MapParameter(name: 'cause', value: env.cause), // Label is lowercase on purpose to map to the Jenkins target reporting system
+                                                MapParameter(name: 'AUTO_AQA_GEN', value: params.AUTO_AQA_GEN),
+                                                MapParameter(name: 'RERUN_ITERATIONS', value: "1"),
+                                                MapParameter(name: 'RERUN_FAILURE', value: "true"),
+                                                MapParameter(name: 'EXTRA_OPTIONS', value: env.EXTRA_OPTIONS),
+                                                MapParameter(name: 'SETUP_JCK_RUN', value: env.SETUP_JCK_RUN)]),
+        remoteJenkinsName: 'temurin-compliance',
+        shouldNotFailBuild: true,
+        token: 'RemoteTrigger',
+        useCrumbCache: true,
+        useJobInfoCache: true
+}
+

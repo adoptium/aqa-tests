@@ -21,32 +21,35 @@
 	<!-- Set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/dacapo" />
 	<property name="SRC" location="." />
-		
-	<target name="init">
-		<mkdir dir="${DEST}" />
-	</target>
+        <property name="DACAPO_DIR_NAME" value="dacapo-23.11-MR2-chopin-minimal"/>
 
-	<target name="getDacapoSuite" depends="init">
+        <!-- value of fname in dacapo hash from getDependencies.pl -->
+        <property name="DEPENDENCY_FNAME" value="dacapo.zip"/>
+        <property name="LIB" value="dacapo"/>
+        <import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/> 
+	
+        <target name="init">
+		<mkdir dir="${DEST}"/>
+	</target>  
+
+	<target name="getDacapoSuite" depends="getDependentLibs, init">
 		<var name="FILE_NAME" value="dacapo.jar"/>
+                <var name="DIR_NAME" value="dacapo"/>
 		<if>
 			<available file="${FILE_NAME}" type="file" />
 			<then>
 				<echo message="${FILE_NAME} exists. Hence, not downloading it." />
 			</then>
 			<else>
-			<var name="curl_options" value="-Lks -C - https://sourceforge.net/projects/dacapobench/files/latest/download -o dacapo.jar"/>
-			<retry retrycount="3">
-				<sequential>
-					<echo message="curl ${curl_options}" />
-					<exec executable="curl" failonerror="true">
-						<arg line="${curl_options}" />
-					</exec>
-				</sequential>
-			</retry>
+				<unzip src="${LIB_DIR}/${DEPENDENCY_FNAME}" dest="${DEST}"/>
+				<move file="${DEST}/${DACAPO_DIR_NAME}.jar" tofile="${DEST}/${FILE_NAME}" failonerror="true"/>
+				<move todir="${DEST}/${DIR_NAME}" failonerror="true">
+					<fileset dir="${DEST}/${DACAPO_DIR_NAME}"/>
+				</move>
 			</else>
 		</if>
 	</target>
-	
+
 	<target name="dist" depends="getDacapoSuite" description="generate the distribution">
 		<copy todir="${DEST}">
 			<fileset dir="${SRC}"/>
