@@ -802,6 +802,8 @@ def runTest( ) {
 						}
 					}
 				}
+			} else if (env.SPEC.startsWith('zos')) { 
+				makeTest("${RUNTEST_CMD}")
 			} else {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
 					makeTest("${RUNTEST_CMD}")
