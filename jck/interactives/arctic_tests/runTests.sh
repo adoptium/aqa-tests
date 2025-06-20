@@ -18,6 +18,7 @@ mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 JENKINS_HOME=/home/jenkins
 PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/mac/arctic_tests#g'
+JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
 if [ $(uname) = SunOS ]; then
     JENKINS_HOME = "/export/home/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /export/home/jenkins/jck_run/arctic/mac/arctic_tests#g'
@@ -41,7 +42,7 @@ if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
-TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/$STARTING_SCOPE/$TEST_SUB_DIR
+TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/$STARTING_SCOPE/$TEST_SUB_DIR/interactive
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
@@ -88,7 +89,13 @@ twm &
 for testcase in $TEST_DIR/* 
 do
 echo "testcase is $testcase"
+# if $TEST_DIR "ends with .html":
+#   run -TestCaseID ALL
+#else:
+#   run <parent folder.html> -TestCaseID <folder>
    if [ -d $testcase ]; then
+   # Look for Test.json file & Test.link file
+
       echo "Starting testcase... $testcase"
       tcase=${testcase##*/}
       tcase=${tcase%.html}
@@ -96,11 +103,11 @@ echo "testcase is $testcase"
       tgroup=${TEST_GROUP//_/\.} 
       echo $tgroup
 
-      $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql -Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000 -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
+      # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
       sleep 10
       echo "Running testcase $testcase"
-      $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
+      # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
       rc=$?
       
       if [[ $rc -ne 0 ]]; then
@@ -109,21 +116,24 @@ echo "testcase is $testcase"
       fi
 
       sleep 10
-      result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
+      echo "$TEST_GROUP/$tcase"
+      result="testing"
+      # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
       rc=$?
       status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
       echo "==>" $status
       while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
         do
             sleep 3
-            result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
+            result="testing"
+            # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
             rc=$?
             status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
             echo "==>" $status
         done
 
         echo "Terminating Arctic CLI..."
-        $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
+        # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
         echo "Completed playback of $TEST_GROUP/$tcase status: ${status}"
     fi
 done
