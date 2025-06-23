@@ -77,16 +77,6 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2500#issuecomment-818965455</comment>
-				<version>16+</version>
-			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/2159#issuecomment-759570887</comment>
-				<platform>^((?!(x86-64_linux|x86-64_mac|x86-64_windows)).)*$</platform>
-			</disable>
-		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
