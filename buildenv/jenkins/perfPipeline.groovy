@@ -155,8 +155,8 @@ def aggregateLogs(run) {
                                         target: "."
                                 )
                         }
-
-                archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
+                        archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
+                        sh "rm -f '${name}_${buildId}.log'"
                 } catch (Exception e) {
                         echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
                 }
