@@ -94,12 +94,14 @@ timestamps {
                             for (int i = 0; i < PERF_ITERATIONS; i++) {
                                 // test
                                 testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
+                                def testRun = triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
+                                aggregateLogs(testRun)
 
                                 // baseline
                                 if (RUN_BASELINE) {
                                     baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                    triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
+                                    def baseRun = triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
+                                    aggregateLogs(baseRun)
                                 } else {
                                     echo "Skipping baseline run since RUN_BASELINE is set to false"
                                 }
@@ -134,4 +136,21 @@ def generateChildJobViaAutoGen(newJobName) {
     jobParams << string(name: 'JDK_IMPL', value: params.JDK_IMPL)
 
     build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
+}
+
+def aggregateLogs(childJob) {
+        def jobInvocation = childJob.value.getRawBuild()
+        def buildId = jobInvocation.getNumber()
+        def name = childJob.value.getProjectName()
+        def childResult = childJob.value.getCurrentResult()
+        echo "${name} #${buildId} completed with status ${childResult}, copying logs..."
+        try {
+                timeout(time： 1， unit: 'HOURS') {
+                        copyArtifacts （projectName: "${name}" selector: specific("${buildId}"), filter: "**/${name}_${build_Id}.log"， target: "."）                       // drop it in parent CWD               
+                }
+                archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
+        } catch (Exception e) {
+                echo 'Exception: ' + e.toString()
+                echo "Cannot copy ${name}_${build_Id}.log from ${name}."
+        }                                           
 }
