@@ -256,11 +256,6 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-naive-bayes</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/1932#issuecomment-708781359</comment>
-			</disable>
-		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
 		<levels>
