@@ -94,12 +94,14 @@ timestamps {
                             for (int i = 0; i < PERF_ITERATIONS; i++) {
                                 // test
                                 testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
+                                def testRun = triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
+                                aggregateLogs(testRun)
 
                                 // baseline
                                 if (RUN_BASELINE) {
                                     baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                    triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
+                                    def baseRun = triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
+                                    aggregateLogs(baseRun)
                                 } else {
                                     echo "Skipping baseline run since RUN_BASELINE is set to false"
                                 }
@@ -134,4 +136,29 @@ def generateChildJobViaAutoGen(newJobName) {
     jobParams << string(name: 'JDK_IMPL', value: params.JDK_IMPL)
 
     build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
+}
+
+def aggregateLogs(run) {
+        node(env.SETUP_LABEL) {
+                def buildId  = run.getRawBuild().getNumber()
+                def name     = run.getProjectName()
+                def result   = run.getCurrentResult()
+
+                echo "${name} #${buildId} completed with status ${result}, copying logs..."
+
+                try {
+                        timeout(time: 1, unit: 'HOURS') {
+                                copyArtifacts(
+                                        projectName: name,
+                                        selector: specific("${buildId}"),
+                                        filter: "**/${name}_${buildId}.log",
+                                        target: "."
+                                )
+                        }
+                        archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
+                        sh "rm -f '${name}_${buildId}.log'"
+                } catch (Exception e) {
+                        echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
+                }
+        }
 }
