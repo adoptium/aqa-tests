@@ -139,24 +139,26 @@ def generateChildJobViaAutoGen(newJobName) {
 }
 
 def aggregateLogs(run) {
-        def buildId  = run.getRawBuild().getNumber()
-        def name     = run.getProjectName()
-        def result   = run.getCurrentResult()
+        node(env.SETUP_LABEL) {
+                def buildId  = run.getRawBuild().getNumber()
+                def name     = run.getProjectName()
+                def result   = run.getCurrentResult()
 
-        echo "${name} #${buildId} completed with status ${result}, copying logs..."
+                echo "${name} #${buildId} completed with status ${result}, copying logs..."
 
-        try {
-                timeout(time: 1, unit: 'HOURS') {
-                        copyArtifacts(
-                                projectName: name,
-                                selector: specific("${buildId}"),
-                                filter: "**/${name}_${buildId}.log",
-                                target: "."
-                        )
+                try {
+                        timeout(time: 1, unit: 'HOURS') {
+                                copyArtifacts(
+                                        projectName: name,
+                                        selector: specific("${buildId}"),
+                                        filter: "**/${name}_${buildId}.log",
+                                        target: "."
+                                )
+                        }
+
+                archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
+                } catch (Exception e) {
+                        echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
                 }
-
-        archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
-        } catch (Exception e) {
-                echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
         }
 }
