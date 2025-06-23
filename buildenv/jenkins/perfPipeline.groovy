@@ -138,11 +138,10 @@ def generateChildJobViaAutoGen(newJobName) {
     build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
 }
 
-def aggregateLogs(childJob) {
-    def run       = childJob.value            // RunWrapper
-    def buildId   = run.getNumber()
-    def name      = run.getProjectName()
-    def childResult = run.getCurrentResult()
+def aggregateLogs(run) {
+    def buildId  = run.getRawBuild().getNumber()
+    def name     = run.getProjectName()
+    def result   = run.getCurrentResult()
 
     echo "${name} #${buildId} completed with status ${childResult}, copying logs..."
 
