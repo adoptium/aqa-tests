@@ -1,4 +1,5 @@
 #!groovy
+def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
 
 def PLATFORMS = params.PLATFORMS.trim().split("\\s*,\\s*")
 def BENCHMARKS = params.BENCHMARKS.trim().split("\\s*,\\s*")
@@ -35,6 +36,11 @@ PLATFORMS.each { PLATFORM ->
             }
         }
         def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${PLATFORM}_${BENCHMARK}"
+        def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
+        if (!jobIsRunnable) {
+                echo "Generating downstream job '${jobName}' from template …"
+                createJob(jobName, PLATFORM)
+        }
         JOBS[jobName] = {
             build job: jobName, parameters: childParams, propagate: true
         }
@@ -42,3 +48,31 @@ PLATFORMS.each { PLATFORM ->
 }
 
 parallel JOBS
+
+def createJob( TEST_JOB_NAME, ARCH_OS ) {
+
+	def jobParams = [:]
+	jobParams.put('TEST_JOB_NAME', TEST_JOB_NAME)
+	jobParams.put('ARCH_OS_LIST', ARCH_OS)
+
+	if (params.DAYS_TO_KEEP) {
+		jobParams.put('DAYS_TO_KEEP', DAYS_TO_KEEP)
+	}
+
+	if (params.BUILDS_TO_KEEP) {
+		jobParams.put('BUILDS_TO_KEEP', BUILDS_TO_KEEP)
+	}
+
+	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
+	if (!fileExists(templatePath)) {
+		sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
+		templatePath = 'testJobTemplate'
+	}
+
+	if (env.LIGHT_WEIGHT_CHECKOUT) {
+		jobParams.put('LIGHT_WEIGHT_CHECKOUT', env.LIGHT_WEIGHT_CHECKOUT)
+	}
+
+	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
+	return create
+}
