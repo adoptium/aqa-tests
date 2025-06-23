@@ -139,18 +139,27 @@ def generateChildJobViaAutoGen(newJobName) {
 }
 
 def aggregateLogs(childJob) {
-        def jobInvocation = childJob.value.getRawBuild()
-        def buildId = jobInvocation.getNumber()
-        def name = childJob.value.getProjectName()
-        def childResult = childJob.value.getCurrentResult()
-        echo "${name} #${buildId} completed with status ${childResult}, copying logs..."
-        try {
-                timeout(time： 1， unit: 'HOURS') {
-                        copyArtifacts （projectName: "${name}" selector: specific("${buildId}"), filter: "**/${name}_${build_Id}.log"， target: "."）                       // drop it in parent CWD               
-                }
-                archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
-        } catch (Exception e) {
-                echo 'Exception: ' + e.toString()
-                echo "Cannot copy ${name}_${build_Id}.log from ${name}."
-        }                                           
+    def run       = childJob.value            // RunWrapper
+    def buildId   = run.getNumber()
+    def name      = run.getProjectName()
+    def childResult = run.getCurrentResult()
+
+    echo "${name} #${buildId} completed with status ${childResult}, copying logs..."
+
+    try {
+        timeout(time: 1, unit: 'HOURS') {
+            copyArtifacts(
+                projectName: name,
+                selector: specific("${buildId}"),
+                filter: "**/${name}_${buildId}.log",
+                target: "."
+            )
+        }
+
+        archiveArtifacts artifacts: "${name}_${buildId}.log",
+                         fingerprint: true,
+                         allowEmptyArchive: false
+    } catch (Exception e) {
+        echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
+    }
 }
