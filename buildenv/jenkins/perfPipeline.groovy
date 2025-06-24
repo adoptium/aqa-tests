@@ -36,9 +36,9 @@ params.each { param ->
 echo "All parameters and their current values:"
 params.each { k, v -> echo " - ${k} = '${v}'" }
 def perfConfigJson = []
-if (params.CONFIG_JSON) { 
-        echo "Read JSON from CONFIG_JSON parameter..." 
-        perfConfigJson = readJSON text: "${params.CONFIG_JSON}"
+if (params.PERFCONFIG_JSON) { 
+        echo "Read JSON from PERFCONFIG_JSON parameter..." 
+        perfConfigJson = readJSON text: "${params.PERFCONFIG_JSON}"
 } else { 
         node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                 checkout scm
