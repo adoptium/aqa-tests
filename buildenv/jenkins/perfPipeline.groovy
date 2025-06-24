@@ -33,8 +33,6 @@ params.each { param ->
 }
 
 // read JSON from perfConfig file
-echo "All parameters and their current values:"
-params.each { k, v -> echo " - ${k} = '${v}'" }
 def perfConfigJson = []
 if (params.PERFCONFIG_JSON) { 
         echo "Read JSON from PERFCONFIG_JSON parameter..." 
