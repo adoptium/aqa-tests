@@ -20,6 +20,12 @@ PLATFORMS.each { PLATFORM ->
                 childParams << string(name: param.key, value: value)
             }
         }
+        if (!childParams.contains("TEST_IMAGES_REQUIRED")) {
+            childParams << booleanParam(name: "TEST_IMAGES_REQUIRED", value: false)
+        }
+        if (!childParams.contains("DEBUG_IMAGES_REQUIRED")) {
+            childParams << booleanParam(name: "DEBUG_IMAGES_REQUIRED", value: false)
+        }
         childParams << string(name: "PLATFORM", value: PLATFORM)
         childParams << string(name: "BENCHMARK", value: BENCHMARK)
         def shortName = "j9"
