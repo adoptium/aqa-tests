@@ -25,7 +25,6 @@ def getBaseJDKImpl(JDK_IMPL) {
 	return JDK_IMPL
 }
 
-if (!binding.hasVariable('PERFCONFIG_JSON')) PERFCONFIG_JSON = ""
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
 if (!binding.hasVariable('ARCHIVE_TEST_RESULTS')) ARCHIVE_TEST_RESULTS = false
 if (!binding.hasVariable('ARTIFACTORY_SERVER')) ARTIFACTORY_SERVER = ""
@@ -243,7 +242,6 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							    sectionHeader('Repositories where we pull test material from. Unless you are testing test code, these do not need to be changed.')
 							    sectionHeaderStyle(sectionHeaderHelpTextStyleCss)
 							}
-                                                        stringParam('PERFCONFIG_JSON', PERFCONFIG_JSON, "set perfConfigJson")
 							stringParam('ADOPTOPENJDK_REPO', ADOPTOPENJDK_REPO, "AdoptOpenJDK git repo. Please use ssh for zos.")
 							stringParam('ADOPTOPENJDK_BRANCH', ADOPTOPENJDK_BRANCH, "AdoptOpenJDK branch")
 							stringParam('OPENJ9_REPO', OPENJ9_REPO, "OpenJ9 git repo. Please use ssh for zos.")
