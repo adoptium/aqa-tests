@@ -33,35 +33,41 @@ params.each { param ->
 }
 
 // read JSON from perfConfig file
+echo "All parameters and their current values:"
+params.each { k, v -> echo " - ${k} = '${v}'" }
 def perfConfigJson = []
-node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
-    checkout scm
-
-    dir (env.WORKSPACE) {
-        def subdir = params.JDK_IMPL ?: "hotspot"
-        if (params.JDK_IMPL == "ibm") {
-            subdir = "openj9"
+if (params.CONFIG_JSON) { 
+        echo "Read JSON from CONFIG_JSON parameter..." 
+        perfConfigJson = readJSON text: "${params.CONFIG_JSON}"
+} else { 
+        node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+                checkout scm
+                dir (env.WORKSPACE) {
+                        def subdir = params.JDK_IMPL ?: "hotspot"
+                        if (params.JDK_IMPL == "ibm") {
+                                subdir = "openj9"
+                        }
+                        def filePath = "./aqa-tests/perf/config/${subdir}/"
+                        // If vendor repo and branch is set, use vendor repo perfConfigJson file.
+                        if (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_BRANCHES) {
+                                def vendorRepoDir = "vendorRepo"
+                                def statusCode = -1
+                                sshagent (credentials: ["$params.USER_CREDENTIALS_ID"], ignoreMissing: true) {
+                                        statusCode =  sh returnStatus: true, script: """
+                                        git clone -q --depth 1 -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS} ${vendorRepoDir}
+                                        """
+                                }
+                                if (statusCode == 0) {
+                                        filePath = "./${vendorRepoDir}/perf/config/${subdir}/"
+                                } else {
+                                        assert false: "Cannot git clone -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS}. Status code: ${statusCode}"
+                                }
+                        }
+                        filePath = filePath + "perfConfig.json"
+                        echo "Read JSON from file ${filePath}..."
+                        perfConfigJson = readJSON(file: "${filePath}")
+                }
         }
-        def filePath = "./aqa-tests/perf/config/${subdir}/"
-        // If vendor repo and branch is set, use vendor repo perfConfigJson file.
-        if (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_BRANCHES) {
-            def vendorRepoDir = "vendorRepo"
-            def statusCode = -1
-            sshagent (credentials: ["$params.USER_CREDENTIALS_ID"], ignoreMissing: true) {
-                statusCode =  sh returnStatus: true, script: """
-                    git clone -q --depth 1 -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS} ${vendorRepoDir}
-                """
-            }
-            if (statusCode == 0) {
-                filePath = "./${vendorRepoDir}/perf/config/${subdir}/"
-            } else {
-                assert false: "Cannot git clone -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS}. Status code: ${statusCode}"
-            }
-        }
-        filePath = filePath + "perfConfig.json"
-        echo "Read JSON from file ${filePath}..."
-        perfConfigJson = readJSON(file: "${filePath}")
-    }
 }
 
 // loop throught the json config and update the parameters
