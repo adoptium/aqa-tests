@@ -12,14 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Fetch the prebuilt arctic jar (will be pulled from prereq build eventually)
-wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
-mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
+set +e
+
+active_versions=("24" "21" "17" "11" "default")
+export LC_ALL=POSIX
 
 setupLinuxEnv() {
     echo "Setup Linux Environment"
+    # Fetch the prebuilt arctic jar (will be pulled from prereq build eventually)
+    wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
+    mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
+
     # Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
-    export LC_ALL=POSIX
     export ARCTIC_JDK=/usr/bin/java
 
     echo "Fonts:"
@@ -63,11 +67,77 @@ setupLinuxEnv() {
 }
 
 setupMacEnv() {
-  echo "Setup Mac Environment"
+    export AWT_FORCE_HEADFUL=true
+    echo "Setup Mac Environment"
+    cat <<EOF > JMinWindows.java
+		import java.awt.Robot;
+		import java.awt.event.KeyEvent;
+		import java.awt.Desktop;
+		import java.io.File;
+		public class JMinWindows {
+		public static void main(String... args) throws Exception {
+                    System.out.println("JMinWindows: Opening Finder on home folder so Finder becomes active front window and will get closed by Alt-Cmd-M");
+		    Desktop.getDesktop().open(new File(System.getProperty("user.home")));
+		    System.out.println("JMinWindows: Issuing Alt-Cmd-H to minimize all 'other' Windows");
+		    Robot r = new Robot();
+		    r.keyPress(KeyEvent.VK_META);
+		    r.delay(250);
+		    r.keyPress(KeyEvent.VK_ALT);
+		    r.delay(250);
+		    r.keyPress(KeyEvent.VK_H);
+		    r.delay(250);
+		    r.keyRelease(KeyEvent.VK_H);
+		    r.delay(250);
+		    r.keyRelease(KeyEvent.VK_ALT);
+		    r.delay(250);
+		    r.keyRelease(KeyEvent.VK_META);
+		    r.delay(250);
+		    System.out.println("JMinWindows: Issuing Alt-Cmd-M to minimize all Finder Windows");
+                    r.keyPress(KeyEvent.VK_META);
+                    r.delay(250);
+                    r.keyPress(KeyEvent.VK_ALT);
+                    r.delay(250);
+                    r.keyPress(KeyEvent.VK_M);
+                    r.delay(250);
+                    r.keyRelease(KeyEvent.VK_M);
+                    r.delay(250);
+                    r.keyRelease(KeyEvent.VK_ALT);
+                    r.delay(250);
+                    r.keyRelease(KeyEvent.VK_META);
+                    r.delay(250);
+		  }
+		}
+EOF
+
+		javac JMinWindows.java
+		java -Djava.awt.headless=false JMinWindows
+
+        echo "Running java ListJavaFonts..."
+
+cat <<EOF > ListJavaFonts.java
+                import java.awt.GraphicsEnvironment;
+                public class ListJavaFonts {
+                    public static void main( String[] args ) {
+                        String java_fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+                        for(String font : java_fonts) System.out.println( font );
+                    }
+                }
+EOF
+
+        javac ListJavaFonts.java
+        echo "================================================"
+        java ListJavaFonts
+        echo "================================================"
+
 }
 
 setupWindowsEnv() {
-  echo "Setup Windows Environment"
+    echo "Setup Windows Environment"
+    ARCTIC_JDK=$(cygpath -u "C:/Users/jenkins/jck_run/${TEST_JDK_PATH}/bin/java")
+    echo "Copying Arctic.jar Into Place"
+    cp -rf /cygdrive/c/temp/arctic_jars/arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
+    cp -rf /cygdrive/c/temp/arctic_jars/JNativeHook-0.8.1.x86_64.dll ${LIB_DIR}/JNativeHook-0.8.1.x86_64.dll
+    echo "Working directory: $(pwd)"
 }
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
@@ -133,44 +203,52 @@ echo "Java under test: $TEST_JDK_HOME"
 twm &
 
 # Loop through files in the target directory
-for testcase in $TEST_DIR/* 
-do
-echo "testcase is $testcase"
-# if $TEST_DIR "ends with .html":
-#   run -TestCaseID ALL
-#else:
-#   run <parent folder.html> -TestCaseID <folder>
-   if [ -d $testcase ]; then
-   # Look for Test.json file & Test.link file
+for testcase in $TEST_DIR/*; do
 
-      echo "Starting testcase... $testcase"
-      tcase=${testcase##*/}
-      tcase=${tcase%.html}
-      echo "tcase is $tcase"
-      tgroup=${TEST_GROUP//_/\.} 
-      echo $tgroup
 
-      # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
+#for (( i = start_index; i < ${#active_versions[@]}; i++ )); do
+for i in "${active_versions[@]}"; do
+    echo "testcase is $testcase"
+    echo "Look for testcases in version: $i"
+    if [ ! -e $testcase ] || [ "$VERSION" -ge "$i" ]; then
+        continue
+    fi
+
+    if [ -d $testcase ]; then
+        # Look for Test.json file & Test.link file
+
+        # if $TEST_DIR "ends with .html":
+        #   run -TestCaseID ALL
+        #else:
+        #   run <parent folder.html> -TestCaseID <folder>
+   
+        echo "Starting testcase... $testcase"
+        tcase=${testcase##*/}
+        tcase=${tcase%.html}
+        echo "tcase is $tcase"
+        tgroup=${TEST_GROUP//_/\.} 
+        echo $tgroup
+
+        # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
-      sleep 10
-      echo "Running testcase $testcase"
-      # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
-      rc=$?
+        sleep 10
+        echo "Running testcase $testcase"
+        # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
+        rc=$?
       
-      if [[ $rc -ne 0 ]]; then
-        echo "Unable to start playback for testcase $TEST_GROUP/$tcase, rc=$rc"
-        exit $rc
-      fi
+        if [[ $rc -ne 0 ]]; then
+            echo "Unable to start playback for testcase $TEST_GROUP/$tcase, rc=$rc"
+            exit $rc
+        fi
 
-      sleep 10
-      echo "$TEST_GROUP/$tcase"
-      result="testing"
-      # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
-      rc=$?
-      status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-      echo "==>" $status
-      while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
-        do
+        sleep 10
+        echo "$TEST_GROUP/$tcase"
+        result="testing"
+        # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
+        rc=$?
+        status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+        echo "==>" $status
+        while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
             sleep 3
             result="testing"
             # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
@@ -183,6 +261,9 @@ echo "testcase is $testcase"
         # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
         echo "Completed playback of $TEST_GROUP/$tcase status: ${status}"
     fi
+
+    done
+
 done
 
 echo "Finished running $TEST_DIR testcases!"
