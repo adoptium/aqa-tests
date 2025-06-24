@@ -227,7 +227,7 @@ for i in "${active_versions[@]}"; do
         tcase=${tcase%.html}
         echo "tcase is $tcase"
         tgroup=${TEST_GROUP//_/\.} 
-        echo $tgroup
+        echo "tgroup is $tgroup"
 
         # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
       
