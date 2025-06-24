@@ -17,6 +17,7 @@ wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.
 mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 setupLinuxEnv() {
+    echo "Setup Linux Environment"
     # Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
     export LC_ALL=POSIX
     export ARCTIC_JDK=/usr/bin/java
@@ -62,11 +63,11 @@ setupLinuxEnv() {
 }
 
 setupMacEnv() {
-
+  echo "Setup Mac Environment"
 }
 
 setupWindowsEnv() {
-
+  echo "Setup Windows Environment"
 }
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
@@ -100,15 +101,16 @@ if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
+if [ $OSNAME = osx ]; then
+    $OSNAME = "mac"
+fi
+
 TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/$STARTING_SCOPE/$TEST_SUB_DIR/interactive
 echo "TEST_DIR is $TEST_DIR"
 ls -al "$TEST_DIR"
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
 
 echo "Running testcases in $TEST_GROUP on $OSNAME"
-if [ $OSNAME = osx ]; then
-    $OSNAME = "mac"
-fi
 
 cp $JENKINS_HOME/jck_run/arctic/$OSNAME/player.properties .
 echo "Player properties line is $PPROP_LINE"
