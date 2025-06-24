@@ -144,21 +144,21 @@ def aggregateLogs(run) {
                 def name     = run.getProjectName()
                 def result   = run.getCurrentResult()
 
-                echo "${name} #${buildId} completed with status ${result}, copying logs..."
+                echo "${name} #${buildId} completed with status ${result}, copying JSON logs..."
 
                 try {
                         timeout(time: 1, unit: 'HOURS') {
                                 copyArtifacts(
                                         projectName: name,
                                         selector: specific("${buildId}"),
-                                        filter: "**/${name}_${buildId}.log",
+                                        filter: "**/${name}_${buildId}.json",
                                         target: "."
                                 )
                         }
-                        archiveArtifacts artifacts: "${name}_${buildId}.log", fingerprint: true, allowEmptyArchive: false
-                        sh "rm -f '${name}_${buildId}.log'"
+                        archiveArtifacts artifacts: "${name}_${buildId}.json", fingerprint: true, allowEmptyArchive: false
+                        sh "rm -f '${name}_${buildId}.json'"
                 } catch (Exception e) {
-                        echo "Cannot copy ${name}_${buildId}.log from ${name}: ${e}"
+                        echo "Cannot copy ${name}_${buildId}.json from ${name}: ${e}"
                 }
         }
 }
