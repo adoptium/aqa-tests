@@ -175,13 +175,6 @@ if [ $OSNAME = osx ]; then
     $OSNAME = "mac"
 fi
 
-TEST_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests/$STARTING_SCOPE/$TEST_SUB_DIR/interactive
-echo "TEST_DIR is $TEST_DIR"
-ls -al "$TEST_DIR"
-echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
-
-echo "Running testcases in $TEST_GROUP on $OSNAME"
-
 cp $JENKINS_HOME/jck_run/arctic/$OSNAME/player.properties .
 echo "Player properties line is $PPROP_LINE"
 sed -i "$PPROP_LINE" player.properties
@@ -200,14 +193,18 @@ if [ $rc -ne 0 ]; then
 fi
 
 echo "Java under test: $TEST_JDK_HOME"
-twm &
+# twm &
+TOP_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests
+TEST_DIR=$TOP_DIR/$STARTING_SCOPE/$TEST_SUB_DIR/interactive
+echo "TEST_DIR is $TEST_DIR"
+ls -al "$TEST_DIR"
+echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
 
 # Loop through files in the target directory
 for testcase in $TEST_DIR/*; do
 
-
-#for (( i = start_index; i < ${#active_versions[@]}; i++ )); do
 for i in "${active_versions[@]}"; do
+    testcase=${testcase/"$STARTING_SCOPE"/"$i"}
     echo "testcase is $testcase"
     echo "Look for testcases in version: $i"
     if [ ! -e $testcase ] || [ "$VERSION" -ge "$i" ]; then
@@ -215,9 +212,10 @@ for i in "${active_versions[@]}"; do
     fi
 
     if [ -d $testcase ]; then
-        # Look for Test.json file & Test.link file
+        # Look for Test.link, if found, read contents to know which testcase to run
 
         # if $TEST_DIR "ends with .html":
+        # Look for Test.json, if found, run 
         #   run -TestCaseID ALL
         #else:
         #   run <parent folder.html> -TestCaseID <folder>
