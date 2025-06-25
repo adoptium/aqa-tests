@@ -1,5 +1,4 @@
 #!groovy
-
 def testParams = []
 def baselineParams = []
 int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
@@ -66,52 +65,48 @@ node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
 
 // loop throught the json config and update the parameters
 timestamps {
-    perfConfigJson.each { item ->
-        if (params.BENCHMARK == item.BENCHMARK){
-            def target = item.TARGET
-            def buildList = item.BUILD_LIST
+        perfConfigJson.each { item ->
+                if (params.BENCHMARK == item.BENCHMARK){
+                        def target = item.TARGET
+                        def buildList = item.BUILD_LIST
 
-            testParams << string(name: "TARGET", value:"${target}")
-            baselineParams << string(name: "TARGET", value:"${target}")
+                        testParams << string(name: "TARGET", value:"${target}")
+                        baselineParams << string(name: "TARGET", value:"${target}")
 
-            testParams << string(name: "BUILD_LIST", value:"${buildList}")
-            baselineParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        testParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        baselineParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        
+                        def platform = params.PLATFORM
+                        def machine = item.PLAT_MACHINE_MAP[platform]
 
-            item.PLAT_MACHINE_MAP.each { kv ->
-                kv.each{ p, m ->
-                    def platform = p
-                    def machine = m
+                        if (!machine) {
+                                echo "perfPipeline: platform ${platform} not in PLAT_MACHINE_MAP, skipping..."
+                                return
+                        }
+        
+                        testParams << string(name: "LABEL", value:"${machine}")
+                        baselineParams << string(name: "LABEL", value:"${machine}")
 
-                    testParams << string(name: "PLATFORM", value:"${platform}")
-                    baselineParams << string(name: "PLATFORM", value:"${platform}")
-
-                    testParams << string(name: "LABEL", value:"${machine}")
-                    baselineParams << string(name: "LABEL", value:"${machine}")
-
-                    if (params.PLATFORM == platform) {
                         echo "starting to trigger build..."
                         lock(resource: "${machine}") {
-                            for (int i = 0; i < PERF_ITERATIONS; i++) {
-                                // test
-                                testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                def testRun = triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
-                                aggregateLogs(testRun)
+                                for (int i = 0; i < PERF_ITERATIONS; i++) {
+                                        // test
+                                        testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
+                                        def testRun = triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
+                                        aggregateLogs(testRun)
 
-                                // baseline
-                                if (RUN_BASELINE) {
-                                    baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                    def baseRun = triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
-                                    aggregateLogs(baseRun)
-                                } else {
-                                    echo "Skipping baseline run since RUN_BASELINE is set to false"
-                                }
-                            }
+                                        // baseline
+                                        if (RUN_BASELINE) {
+                                                baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
+                                                def baseRun = triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
+                                                aggregateLogs(baseRun)
+                                        } else {
+                                                echo "Skipping baseline run since RUN_BASELINE is set to false"
+                                        }
+                                }       
                         }
-                    }
                 }
-            }
         }
-    }
 }
 
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
@@ -128,7 +123,7 @@ def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
 def generateChildJobViaAutoGen(newJobName) {
     def jobParams = []
     jobParams << string(name: 'TEST_JOB_NAME', value: newJobName)
-    jobParams << string(name: 'ARCH_OS_LIST', value: params.PLATFORM)
+    jobParams << string(name: 'PLATFORM', value: params.PLATFORM)
     jobParams << booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
     jobParams << string(name: 'LEVELS', value: "sanity") // ToDo: hard coded for now from line 79
     jobParams << string(name: 'GROUPS', value: "perf") // ToDo: hard coded for now from line 79
@@ -162,3 +157,4 @@ def aggregateLogs(run) {
                 }
         }
 }
+
