@@ -379,6 +379,7 @@ for i in "${active_versions[@]}"; do
               else
                   echo "Arctic playback failed"
               fi
+            fi
           fi
         fi
       fi
