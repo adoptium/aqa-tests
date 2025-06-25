@@ -287,10 +287,10 @@ for i in "${active_versions[@]}"; do
             TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
 
             # Certain tests require extra options
-            if [[ "${ARCTIC_TESTCASE}" =~ *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" =~ *Print* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
               TEST_CMDLINE="${TEST_CMDLINE} -platform.hasPrinter true"
             fi
-            if [[ "${ARCTIC_TESTCASE}" =~ *Robot* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ .*Robot.* ]]; then
               TEST_CMDLINE="${TEST_CMDLINE} -platform.robotAvailable true"
             fi
             echo "EXECUTING: ${TEST_CMDLINE}"
@@ -299,7 +299,7 @@ for i in "${active_versions[@]}"; do
 
             # Only run ListTests for the moment!!
             skipped=false
-            if [[ "$ARCTIC_TESTCASE" =~ *ListTests* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ .*ListTests.* ]]; then
               ${TEST_CMDLINE} &
               test_pid=$!
               echo "Testcase started process $test_pid"
