@@ -237,6 +237,8 @@ echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTIN
 
 overallSuccess=true
 FOUND_TESTS=()
+PASSED_TESTS=()
+FAILED_TESTS=()
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
     START_DIR="${TOP_DIR}/${i}/${ARCTIC_GROUP}"
@@ -411,7 +413,10 @@ for i in "${active_versions[@]}"; do
                 kill $test_pid 2>/dev/null
 
                 if [[ $success != true ]]; then
+                    FAILED_TESTS+=("${ARCTIC_TESTCASE}")
                     overallSuccess=false
+                else
+                    PASSED_TESTS+=("${ARCTIC_TESTCASE}")
                 fi
               fi
             fi
@@ -427,6 +432,21 @@ ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c terminate
 
 if [[ -n $twm_pid ]]; then
   kill $twm_pid 2>/dev/null
+fi
+
+echo "======================================================================================="
+echo "PASSED Testcases:"
+for test in "${PASSED_TESTS[@]}"
+  echo "$test : PASSED"
+done
+echo "======================================================================================="
+
+if [[ $overallSuccess != true ]]; then
+  echo "FAILED Testcases:"
+  for test in "${FAILED_TESTS[@]}"
+    echo "$test : FAILED"
+  done
+  echo "======================================================================================="
 fi
 
 echo "Finished running testcases, overallSuccess = $overallSuccess"
