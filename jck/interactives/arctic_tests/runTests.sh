@@ -324,6 +324,7 @@ for i in "${active_versions[@]}"; do
             else
               # Testcase started, start Arctic playback...
               sleep $SLEEP_TIME
+
               echo "Starting Arctic: testcase $GROUP $ARCTIC_TESTCASE"
               $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$GROUP" "$ARCTIC_TESTCASE"
               rc=$?
