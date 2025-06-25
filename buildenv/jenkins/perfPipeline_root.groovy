@@ -49,30 +49,21 @@ PLATFORMS.each { PLATFORM ->
 
 parallel JOBS
 
-def createJob( TEST_JOB_NAME, ARCH_OS ) {
+def createJob(String jobName, String platform) {
+        def jobParams = [:] 
+        jobParams.put('TEST_JOB_NAME', jobName)
+        jobParams.put('ARCH_OS_LIST', platform) 
 
-	def jobParams = [:]
-	jobParams.put('TEST_JOB_NAME', TEST_JOB_NAME)
-	jobParams.put('ARCH_OS_LIST', ARCH_OS)
+        if (env.LIGHT_WEIGHT_CHECKOUT) {
+	        jobParams.put('LIGHT_WEIGHT_CHECKOUT', env.LIGHT_WEIGHT_CHECKOUT)
+        }
 
-	if (params.DAYS_TO_KEEP) {
-		jobParams.put('DAYS_TO_KEEP', DAYS_TO_KEEP)
-	}
+        def templatePath = 'aqa-tests/buildenv/jenkins/perf/parentJobTemplate'
+        if (!fileExists(templatePath)) {
+                sh 'curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/perf/parentJobTemplate'
+                templatePath = 'parentJobTemplate'
+        }
 
-	if (params.BUILDS_TO_KEEP) {
-		jobParams.put('BUILDS_TO_KEEP', BUILDS_TO_KEEP)
-	}
-
-	def templatePath = 'aqa-tests/buildenv/jenkins/testJobTemplate'
-	if (!fileExists(templatePath)) {
-		sh "curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/testJobTemplate"
-		templatePath = 'testJobTemplate'
-	}
-
-	if (env.LIGHT_WEIGHT_CHECKOUT) {
-		jobParams.put('LIGHT_WEIGHT_CHECKOUT', env.LIGHT_WEIGHT_CHECKOUT)
-	}
-
-	def create = jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
-	return create
+        jobDsl targets: templatePath, ignoreExisting: false, additionalParameters: jobParams
 }
+
