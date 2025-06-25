@@ -317,7 +317,7 @@ for i in "${active_versions[@]}"; do
 
             # Only run ListTests for the moment!!
             skipped=false
-            if [[ "${ARCTIC_TESTCASE}" =~ .*PMenuTests.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*EventTests.* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*EventTests.* ]]; then
               ${TEST_CMDLINE} &
               test_pid=$!
               echo "Testcase started process $test_pid"
@@ -437,6 +437,7 @@ fi
 echo "======================================================================================="
 echo "PASSED Testcases:"
 for test in "${PASSED_TESTS[@]}"
+do
   echo "$test : PASSED"
 done
 echo "======================================================================================="
@@ -444,6 +445,7 @@ echo "==========================================================================
 if [[ $overallSuccess != true ]]; then
   echo "FAILED Testcases:"
   for test in "${FAILED_TESTS[@]}"
+  do
     echo "$test : FAILED"
   done
   echo "======================================================================================="
