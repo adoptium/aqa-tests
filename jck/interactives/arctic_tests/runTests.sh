@@ -143,17 +143,17 @@ setupWindowsEnv() {
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
 
 if [ $(uname) = Linux ]; then
-    JENKINS_HOME=/home/jenkins
+    JENKINS_HOME_DIR=/home/jenkins
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
     setupLinuxEnv
 
 elif [ $(uname) = Darwin ]; then
-    JENKINS_HOME = "/Users/jenkins"
+    JENKINS_HOME_DIR = "/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
     setupMacEnv
 
 elif [ $(uname) = Windows_NT ]; then
-    JENKINS_HOME = "c:/Users/jenkins"
+    JENKINS_HOME_DIR = "c:/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
     setupWindowsEnv
 
@@ -171,13 +171,17 @@ if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
+if [ $OSNAME = "osx" ]; then
+    OSNAME = "mac"
+fi
+
 JCK_VER=$VERSION
 if [[ $VERSION == "8" ]]; then
     JCK_VER="${VERSION}d"
 elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
     JCK_VER="${VERSION}a"
 fi
-JCK_MATERIAL="$JENKINS_HOME/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
+JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
 
 if [ $PLATFORM = "ppc64le_linux" ]; then
     wget -q https://ci.adoptium.net/job/Build_Arctic_ppc64le_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
@@ -189,7 +193,7 @@ fi
 
 mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
-cp $JENKINS_HOME/jck_run/arctic/$OSNAME/player.properties .
+cp $JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/player.properties .
 echo "Player properties line is $PPROP_LINE"
 sed -i "$PPROP_LINE" player.properties
 
@@ -208,7 +212,7 @@ fi
 
 echo "Java under test: $TEST_JDK_HOME"
 # twm &
-TOP_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests
+TOP_DIR=$JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/arctic_tests
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
 FOUND_TESTS=()
