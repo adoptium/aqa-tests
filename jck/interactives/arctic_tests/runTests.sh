@@ -69,6 +69,9 @@ setupLinuxEnv() {
 setupMacEnv() {
     export AWT_FORCE_HEADFUL=true
     echo "Setup Mac Environment"
+
+    export ARCTIC_JDK=/usr/bin/java
+
     cat <<EOF > JMinWindows.java
 		import java.awt.Robot;
 		import java.awt.event.KeyEvent;
@@ -207,7 +210,7 @@ if [ ! -f ${LIB_DIR}/arctic.jar ]; then
 fi
 
 echo "Starting player in background with RMI..."
-# $ARCTIC_JDK -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
+$ARCTIC_JDK -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
@@ -322,7 +325,7 @@ for i in "${active_versions[@]}"; do
               # Testcase started, start Arctic playback...
               sleep $SLEEP_TIME
               echo "Starting Arctic: testcase $GROUP $ARCTIC_TESTCASE"
-              # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$GROUP" "$ARCTIC_TESTCASE"
+              $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$GROUP" "$ARCTIC_TESTCASE"
               rc=$?
 
               if [[ $rc -ne 0 ]]; then
@@ -330,15 +333,13 @@ for i in "${active_versions[@]}"; do
               else
                 sleep $SLEEP_TIME
                 echo "$GROUP/$ARCTIC_TESTCASE"
-                result="testing"
-                # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
                 rc=$?
                 status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                 echo "==>" $status
                 while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
                     sleep $SLEEP_TIME
-                    result="testing"
-                    # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                    result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
                     rc=$?
                     status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                     echo "==>" $status
@@ -378,9 +379,6 @@ for i in "${active_versions[@]}"; do
                 echo "Printing Arctic session info..."
                 ${ARCTIC_JDK} -jar ./arctic.jar -c session print
 
-                echo "Terminating Arctic CLI..."
-                ${ARCTIC_JDK} -jar ./arctic.jar -c terminate
-
                 echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
 
                 # Clean processes before exit...
@@ -397,6 +395,9 @@ for i in "${active_versions[@]}"; do
     done
   fi
 done
+
+echo "Terminating Arctic CLI..."
+${ARCTIC_JDK} -jar ./arctic.jar -c terminate
 
 if [[ -n $twm_pid ]]; then
   kill $twm_pid 2>/dev/null
