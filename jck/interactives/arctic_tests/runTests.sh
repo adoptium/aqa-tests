@@ -209,6 +209,10 @@ if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     ls -al ${LIB_DIR}
 fi
 
+echo "==========================================================================="
+cat player.properties
+echo "==========================================================================="
+
 echo "Starting player in background with RMI..."
 $ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
 rc=$?
@@ -219,6 +223,10 @@ if [ $rc -ne 0 ]; then
    fi
    exit $rc
 fi
+
+# Sleep longer for Arctic RMI to start up...
+sleep $SLEEP_TIME
+sleep $SLEEP_TIME
 
 echo "Java under test: $TEST_JDK_HOME"
 # twm &
