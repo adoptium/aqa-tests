@@ -175,8 +175,8 @@ JCK_VER=$VERSION
 if [[ $VERSION == "8" ]]; then
     JCK_VER="${VERSION}d"
 elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
-    JCK_VER+"${VERSION}a"
-}
+    JCK_VER="${VERSION}a"
+fi
 JCK_MATERIAL="$JENKINS_HOME/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
 
 if [ $OSNAME = osx ]; then
