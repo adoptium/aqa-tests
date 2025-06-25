@@ -179,10 +179,6 @@ elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
 fi
 JCK_MATERIAL="$JENKINS_HOME/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
 
-if [ $OSNAME = "osx" ]; then
-    $OSNAME = "mac"
-fi
-
 if [ $PLATFORM = "ppc64le_linux" ]; then
     wget -q https://ci.adoptium.net/job/Build_Arctic_ppc64le_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
 elif [ $PLATFORM = "s390x_linux" ]; then
