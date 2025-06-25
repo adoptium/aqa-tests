@@ -172,7 +172,7 @@ if [ $VERSION -eq 8 ]; then
 fi
 
 if [ $OSNAME = "osx" ]; then
-    OSNAME = "mac"
+    OSNAME="mac"
 fi
 
 JCK_VER=$VERSION
