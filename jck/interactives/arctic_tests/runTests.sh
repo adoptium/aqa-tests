@@ -231,15 +231,14 @@ for i in "${active_versions[@]}"; do
 
         TESTCASE_ID="ALL"
 	    ARCTIC_TESTCASE=$tcase
-	    if ($tcase.endsWith(".html")) {
-		    TEST_HTML=params.TESTCASE
-	    } else if ($tcase.contains(".html/")) {
-		    TEST_HTML=params.TESTCASE.substring(0, params.TESTCASE.indexOf(".html")+5)
-		    TESTCASE_ID=params.TESTCASE.substring(params.TESTCASE.indexOf(".html")+6)
-		    ARCTIC_TESTCASE=TEST_HTML+"/"+TESTCASE_ID
-	    } else {
-		    TEST_HTML=params.TESTCASE
-	    }
+	    if [[ "$tcase" == "*.html" ]]; then
+		    #TEST_HTML=S
+	    elif [[ "$tcase" == "*.html/" ]]; then 
+		    #TEST_HTML=params.TESTCASE.substring(0, params.TESTCASE.indexOf(".html")+5)
+		    #TESTCASE_ID=params.TESTCASE.substring(params.TESTCASE.indexOf(".html")+6)
+		    #ARCTIC_TESTCASE=TEST_HTML+"/"+TESTCASE_ID
+	    else
+		    TEST_HTML=$tcase
 
         # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ${TESTCASE_ID} &
       
