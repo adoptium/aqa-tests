@@ -15,7 +15,6 @@
 /**
  * A template that defines a parent perf job.
  */
-
 def getBaseJDKImpl(JDK_IMPL) {
 	if (JDK_IMPL != "openj9" && JDK_IMPL != "ibm" ) {
 		return "hotspot"
@@ -33,7 +32,6 @@ if (!binding.hasVariable('VENDOR_TEST_REPOS')) VENDOR_TEST_REPOS = ""
 if (!binding.hasVariable('VENDOR_TEST_BRANCHES')) VENDOR_TEST_BRANCHES = ""
 if (!binding.hasVariable('VENDOR_TEST_DIRS')) VENDOR_TEST_DIRS = "perf"
 if (!binding.hasVariable('VENDOR_TEST_SHAS')) VENDOR_TEST_SHAS = ""
-
 
 if (binding.hasVariable('ARCH_OS_LIST')) {
 	ARCH_OS_LIST = ARCH_OS_LIST.split(',')*.trim()
