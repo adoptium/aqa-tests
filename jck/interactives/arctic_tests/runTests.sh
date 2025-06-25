@@ -171,6 +171,14 @@ if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
+JCK_VER=$VERSION
+if [[ $VERSION == "8" ]]; then
+    JCK_VER="${VERSION}d"
+elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
+    JCK_VER+"${VERSION}a"
+}
+JCK_MATERIAL="$JENKINS_HOME/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
+
 if [ $OSNAME = osx ]; then
     $OSNAME = "mac"
 fi
@@ -205,84 +213,174 @@ fi
 echo "Java under test: $TEST_JDK_HOME"
 # twm &
 TOP_DIR=$JENKINS_HOME/jck_run/arctic/$OSNAME/arctic_tests
-TEST_DIR=$TOP_DIR/$STARTING_SCOPE/$TEST_SUB_DIR/interactive
-echo "TEST_DIR is $TEST_DIR"
-ls -al "$TEST_DIR"
-echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION", STARTING_SCOPE is $STARTING_SCOPE, TEST_SUB_DIR is $TEST_SUB_DIR
+echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
-# Loop through files in the target directory
-for testcase in $TEST_DIR/*; do
-
+FOUND_TESTS=()
 for i in "${active_versions[@]}"; do
-    testcase=${testcase/"$STARTING_SCOPE"/"$i"}
-    echo "testcase is $testcase"
-    echo "Look for testcases in version: $i"
-    if [ ! -e $testcase ] || [ "$VERSION" -ge "$i" ]; then
-        continue
-    fi
+  if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
+    START_DIR="${TOP_DIR}/${i}/${GROUP}"
 
-    if [ -d $testcase ]; then
-        echo "Starting testcase... $testcase"
-        tcase=${testcase##*/}
-        tcase=${tcase%.html}
-        echo "tcase is $tcase"
-        tgroup=${TEST_GROUP//_/\.} 
-        echo "tgroup is $tgroup"
+    TEST_JSON_FILES=$(find ${START_DIR} -type f -name 'Test.json' -o -name 'Test.link')
+    for f in $TEST_JSON_FILES
+    do
+      echo "Test file: ${f}"
 
-        TESTCASE_ID="ALL"
-	    ARCTIC_TESTCASE=$tcase
-	    if [[ "$tcase" == "*.html" ]]; then
-		    #TEST_HTML=S
-	    elif [[ "$tcase" == "*.html/" ]]; then 
-		    #TEST_HTML=params.TESTCASE.substring(0, params.TESTCASE.indexOf(".html")+5)
-		    #TESTCASE_ID=params.TESTCASE.substring(params.TESTCASE.indexOf(".html")+6)
-		    #ARCTIC_TESTCASE=TEST_HTML+"/"+TESTCASE_ID
-	    else
-		    TEST_HTML=$tcase
+      # Determine Arctic testcase name from folder
+      test_name="$(dirname "$f")"
+      test_basename="$(basename "$f")"
+      ARCTIC_TESTCASE=${test_name/$START_DIR//}
+      ARCTIC_TESTCASE=${ARCTIC_TESTCASE/\/\//}
 
-        # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ${TESTCASE_ID} &
-      
-        sleep $SLEEP_TIME
-        echo "Running testcase $testcase"
-        # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
-        rc=$?
-      
-        if [[ $rc -ne 0 ]]; then
-            echo "Unable to start playback for testcase $TEST_GROUP/$tcase, rc=$rc"
-            exit $rc
+      # Is testcase recording ending in .html (ALL), or not(TESTCASE_ID)
+      if [[ "$ARCTIC_TESTCASE" == *.html ]]; then
+        JCK_TESTCASE="${ARCTIC_TESTCASE}"
+        JCK_TEST="ALL"
+      elif [[ "$ARCTIC_TESTCASE" == *.html/* ]]; then
+        JCK_TESTCASE="$(dirname "$ARCTIC_TESTCASE")"
+        JCK_TEST="$(basename "$ARCTIC_TESTCASE")"
+      else
+        JCK_TESTCASE=""
+      fi
+
+      # Is this a recording link? in which case point at target recording within Test.link file
+      if [[ "$test_basename" == "Test.link" ]]; then
+        ARCTIC_TESTCASE=$(cat $f)
+        # Update JCK_TEST for link
+        if [[ "$ARCTIC_TESTCASE" == *.html ]]; then
+          JCK_TEST="ALL"
+        elif [[ "$ARCTIC_TESTCASE" == *.html/* ]]; then
+          JCK_TEST="$(basename "$ARCTIC_TESTCASE")"
         fi
+      fi
 
-        sleep $SLEEP_TIME
-        echo "$TEST_GROUP/$tcase"
-        result="testing"
-        # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
-        rc=$?
-        status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-        echo "==>" $status
-        while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
+      if [[ -n "${JCK_TESTCASE}" ]]; then
+        HTML_FILE="${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE}"
+        # Does JCK testcase exist for this VERSION ?
+        if [[ -e "${HTML_FILE}" ]]; then
+          FOUND=false
+          for test in "${FOUND_TESTS[@]}"
+          do
+            if [[ "$test" == "$ARCTIC_TESTCASE" ]]; then
+              FOUND=true
+            fi
+          done
+
+          if [[ $FOUND == false ]]; then
+            FOUND_TESTS+=("${ARCTIC_TESTCASE}")
+
+            # Get class name from JCK .html
+            TEST_CLASS=$(grep "javasoft.sqe.tests" ${HTML_FILE} | head -1 | sed -e 's/ //g' -e 's/<[^>]*>//g')
+
+            echo "==> JCK Test exists: $HTML_FILE"
+            echo "    Running:"
+            echo "       Testcase ${JCK_TEST} of scope ${i} ${GROUP} ${ARCTIC_TESTCASE}"
+            echo "         JCK class: ${TEST_CLASS}"
+
+            TEST_CMDLINE="java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${TESTCASE_ID}"
+
+            # Certain tests require extra options
+            if [[ "${ARCTIC_TESTCASE}" ~= *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" ~= *Print* ]]; then
+              TEST_CMDLINE="${TEST_CMDLINE} -platform.hasPrinter true"
+            fi
+            if [[ "${ARCTIC_TESTCASE}" ~= *Robot* ]]; then
+              TEST_CMDLINE="${TEST_CMDLINE} -platform.robotAvailable true"
+            fi
+            echo "EXECUTING: ${TEST_CMDLINE}"
+
+            # Start TESTCASE...
+            echo "${TEST_JDK_HOME}/bin/${TEST_CMDLINE} &"
+            # Force failure FFFF for the moment...
+            ${TEST_JDK_HOME}/binFFFFFF/${TEST_CMDLINE} &
+            test_pid=$!
+            echo "Testcase started process $test_pid"
+
             sleep $SLEEP_TIME
-            result="testing"
-            # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
-            rc=$?
-            status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-            echo "==>" $status
-        done
 
-        echo "Terminating Arctic CLI..."
-        # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c terminate
-        echo "Completed playback of $TEST_GROUP/$tcase status: ${status}"
-    fi
+            # Check testcase started successfully.
+            ps -p $test_pid -o pid 2>/dev/null 1>&2
+            if [[ $? != 0 ]]; then
+              echo "ERROR: Test class failed prior to playback."
+            else
+              # Testcase started, start Arctic playback...
+              sleep $SLEEP_TIME
+              echo "Starting Arctic: testcase $GROUP $ARCTIC_TESTCASE"
+              # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$GROUP" "$ARCTIC_TESTCASE"
+              rc=$?
 
+              if [[ $rc -ne 0 ]]; then
+                  echo "Unable to start playback for testcase $GROUP/$ARCTIC_TESTCASE, rc=$rc"
+                  exit $rc
+              fi
+
+              sleep $SLEEP_TIME
+              echo "$GROUP/$ARCTIC_TESTCASE"
+              result="testing"
+              # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+              rc=$?
+              status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+              echo "==>" $status
+              while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
+                  sleep $SLEEP_TIME
+                  result="testing"
+                  # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                  rc=$?
+                  status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+                  echo "==>" $status
+              done
+
+              sleep $SLEEP_TIME
+
+              echo "Testcase process $test_pid should have finished if successfully automated, getting test process completion status..."
+              if ps -p $test_pid -o pid; then
+                echo "ERROR: Testcase process $test_pid is still running... terminating!"
+                kill -9 $test_pid
+              fi
+              wait $test_pid
+              test_exit_status=$?
+              echo "Testcase exited with completion status = ${test_exit_status}"
+              echo "Testcase Arctic status = ${status}"
+
+              # Finish Arctic TESTCASE session
+              # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
+              success=false
+              if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
+                ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
+                success=true
+              else
+                ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
+              fi
+
+              # Get final Arctic status
+              result=$(${ARCTIC_JDK} -jar ./arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
+              status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+              echo "Arctic final completion status ==>" $status
+
+              echo "Saving Arctic session..."
+              session_file=$(echo ${GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
+              ${ARCTIC_JDK} -jar ./arctic.jar -c session save ${session_file}
+
+              echo "Printing Arctic session info..."
+              ${ARCTIC_JDK} -jar ./arctic.jar -c session print
+
+              echo "Terminating Arctic CLI..."
+              ${ARCTIC_JDK} -jar ./arctic.jar -c terminate
+
+              echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status}"
+
+              # Clean processes before exit...
+              kill $test_pid 2>/dev/null
+
+              if [[ $success == true ]]; then
+                  echo "Arctic playback successful"
+              else
+                  echo "Arctic playback failed"
+              fi
+          fi
+        fi
+      fi
     done
-
+  fi
 done
 
-echo "Finished running $TEST_DIR testcases!"
+echo "Finished running testcases!"
 
-if [[ $status != "UNCONFIRMED" ]]; then
-    echo "Arctic playback failed"
-    exit 1
-else
-    echo "Arctic playback successful"
-    exit 0
-fi
