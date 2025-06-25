@@ -237,7 +237,7 @@ overallSuccess=true
 FOUND_TESTS=()
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
-    START_DIR="${TOP_DIR}/${i}/${GROUP}"
+    START_DIR="${TOP_DIR}/${i}/${TEST_GROUP}"
     # Remove any double slashes
     START_DIR=$(echo "$START_DIR" | sed 's#//#/#g')
 
@@ -276,7 +276,7 @@ for i in "${active_versions[@]}"; do
       fi
 
       if [[ -n "${JCK_TESTCASE}" ]]; then
-        HTML_FILE="${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE}"
+        HTML_FILE="${JCK_MATERIAL}/tests/${TEST_GROUP}/${JCK_TESTCASE}"
         # Does JCK testcase exist for this VERSION ?
         if [[ -e "${HTML_FILE}" ]]; then
           FOUND=false
@@ -295,10 +295,10 @@ for i in "${active_versions[@]}"; do
 
             echo "==> JCK Test exists: $HTML_FILE"
             echo "    Running:"
-            echo "       Testcase ${JCK_TEST} of scope ${i} ${GROUP} ${ARCTIC_TESTCASE}"
+            echo "       Testcase ${JCK_TEST} of scope ${i} ${TEST_GROUP} ${ARCTIC_TESTCASE}"
             echo "         JCK class: ${TEST_CLASS}"
 
-            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${TEST_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
 
             # Certain tests require extra options
             if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
@@ -318,7 +318,7 @@ for i in "${active_versions[@]}"; do
               test_pid=$!
               echo "Testcase started process $test_pid"
             else
-              echo "Skipping: $GROUP $ARCTIC_TESTCASE"
+              echo "Skipping: $TEST_GROUP $ARCTIC_TESTCASE"
               test_pid=-1
               skipped=true
             fi
@@ -336,22 +336,22 @@ for i in "${active_versions[@]}"; do
               # Testcase started, start Arctic playback...
               sleep $SLEEP_TIME
 
-              echo "Starting Arctic: testcase $GROUP $ARCTIC_TESTCASE"
-              $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$GROUP" "$ARCTIC_TESTCASE"
+              echo "Starting Arctic: testcase $TEST_GROUP $ARCTIC_TESTCASE"
+              $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$TEST_GROUP" "$ARCTIC_TESTCASE"
               rc=$?
 
               if [[ $rc -ne 0 ]]; then
-                  echo "Unable to start playback for testcase $GROUP/$ARCTIC_TESTCASE, rc=$rc"
+                  echo "Unable to start playback for testcase $TEST_GROUP/$ARCTIC_TESTCASE, rc=$rc"
               else
                 sleep $SLEEP_TIME
-                echo "$GROUP/$ARCTIC_TESTCASE"
-                result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                echo "$TEST_GROUP/$ARCTIC_TESTCASE"
+                result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$ARCTIC_TESTCASE)
                 rc=$?
                 status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                 echo "==>" $status
                 while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
                     sleep $SLEEP_TIME
-                    result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                    result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$ARCTIC_TESTCASE)
                     rc=$?
                     status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                     echo "==>" $status
@@ -373,25 +373,25 @@ for i in "${active_versions[@]}"; do
                 # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
                 success=false
                 if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
-                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
+                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${TEST_GROUP}" "${ARCTIC_TESTCASE}" true
                   success=true
                 else
-                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
+                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${TEST_GROUP}" "${ARCTIC_TESTCASE}" false
                 fi
 
                 # Get final Arctic status
-                result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
+                result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${TEST_GROUP}/${ARCTIC_TESTCASE})
                 status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                 echo "Arctic final completion status ==>" $status
 
                 echo "Saving Arctic session..."
-                session_file=$(echo ${GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
+                session_file=$(echo ${TEST_GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
                 ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c session save ${session_file}
 
                 echo "Printing Arctic session info..."
                 ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c session print
 
-                echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
+                echo "Completed playback of ${TEST_GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
 
                 # Clean processes before exit...
                 kill $test_pid 2>/dev/null
