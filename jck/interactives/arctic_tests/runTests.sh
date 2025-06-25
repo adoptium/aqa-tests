@@ -284,7 +284,7 @@ for i in "${active_versions[@]}"; do
             echo "       Testcase ${JCK_TEST} of scope ${i} ${GROUP} ${ARCTIC_TESTCASE}"
             echo "         JCK class: ${TEST_CLASS}"
 
-            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${TESTCASE_ID}"
+            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
 
             # Certain tests require extra options
             if [[ "${ARCTIC_TESTCASE}" =~ *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" =~ *Print* ]]; then
@@ -299,7 +299,7 @@ for i in "${active_versions[@]}"; do
 
             # Only run ListTests for the moment!!
             skipped=false
-            if [[ $ARCTIC_TESTCASE =~ *ListTests* ]]; then
+            if [[ "$ARCTIC_TESTCASE" =~ *ListTests* ]]; then
               ${TEST_CMDLINE} &
               test_pid=$!
               echo "Testcase started process $test_pid"
