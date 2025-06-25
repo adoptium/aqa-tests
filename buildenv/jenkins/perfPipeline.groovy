@@ -76,29 +76,28 @@ if (params.PERFCONFIG_JSON) {
 
 // loop throught the json config and update the parameters
 timestamps {
-    perfConfigJson.each { item ->
-        if (params.BENCHMARK == item.BENCHMARK){
-            def target = item.TARGET
-            def buildList = item.BUILD_LIST
+        perfConfigJson.each { item ->
+                if (params.BENCHMARK == item.BENCHMARK){
+                        def target = item.TARGET
+                        def buildList = item.BUILD_LIST
 
-            testParams << string(name: "TARGET", value:"${target}")
-            baselineParams << string(name: "TARGET", value:"${target}")
+                        testParams << string(name: "TARGET", value:"${target}")
+                        baselineParams << string(name: "TARGET", value:"${target}")
 
-            testParams << string(name: "BUILD_LIST", value:"${buildList}")
-            baselineParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        testParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        baselineParams << string(name: "BUILD_LIST", value:"${buildList}")
+                        
+                        def platform = params.PLATFORM
+                        def machine = item.PLAT_MACHINE_MAP[platform]
 
-            item.PLAT_MACHINE_MAP.each { kv ->
-                kv.each{ p, m ->
-                    def platform = p
-                    def machine = m
+                        if (!machine) {
+                                echo "perfPipeline: platform ${platform} not in PLAT_MACHINE_MAP, skipping..."
+                                return
+                        }
+        
+                        testParams << string(name: "LABEL", value:"${machine}")
+                        baselineParams << string(name: "LABEL", value:"${machine}")
 
-                    testParams << string(name: "PLATFORM", value:"${platform}")
-                    baselineParams << string(name: "PLATFORM", value:"${platform}")
-
-                    testParams << string(name: "LABEL", value:"${machine}")
-                    baselineParams << string(name: "LABEL", value:"${machine}")
-
-                    if (params.PLATFORM == platform) {
                         echo "starting to trigger build..."
                         lock(resource: "${machine}") {
                             for (int i = 0; i < PERF_ITERATIONS; i++) {
@@ -135,11 +134,8 @@ timestamps {
                                 }
                             }
                         }
-                    }
                 }
-            }
         }
-    }
 }
 
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
@@ -156,7 +152,7 @@ def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
 def generateChildJobViaAutoGen(newJobName) {
     def jobParams = []
     jobParams << string(name: 'TEST_JOB_NAME', value: newJobName)
-    jobParams << string(name: 'ARCH_OS_LIST', value: params.PLATFORM)
+    jobParams << string(name: 'PLATFORM', value: params.PLATFORM)
     jobParams << booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
     jobParams << string(name: 'LEVELS', value: "sanity") // ToDo: hard coded for now from line 79
     jobParams << string(name: 'GROUPS', value: "perf") // ToDo: hard coded for now from line 79
@@ -212,3 +208,4 @@ def stats (List nums) {
         def stdev = Math.sqrt(variance as double)
         [mean: mean, max: sorted[-1], min: sorted[0], median: median, std: stdev]
 }
+
