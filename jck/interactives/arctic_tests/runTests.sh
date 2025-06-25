@@ -315,7 +315,7 @@ for i in "${active_versions[@]}"; do
 
             # Only run ListTests for the moment!!
             skipped=false
-            if [[ "${ARCTIC_TESTCASE}" =~ .*ListTests.* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ .*ListTests.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]] ||; then
               ${TEST_CMDLINE} &
               test_pid=$!
               echo "Testcase started process $test_pid"
