@@ -42,6 +42,12 @@
 		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh java_awt ${PLATFORM} ${JDK_VERSION} api/java/awt ${JCK_VERSION_NUMBER}; \
 		$(TEST_STATUS)
 		</command>
+		<disables>
+    		<disable>
+      			<comment>N/A for AIX and Solaris platforms</comment>
+      			<platform>ppc64_aix|sparcv9_solaris|x86-64_solaris</platform>
+    		</disable>
+  		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>
@@ -57,6 +63,12 @@
 		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh javax_swing ${PLATFORM} ${JDK_VERSION} api/javax/swing ${JCK_VERSION_NUMBER}; \
 		$(TEST_STATUS)
 		</command>
+		<disables>
+    		<disable>
+      			<comment>N/A for AIX and Solaris platforms</comment>
+      			<platform>ppc64_aix|sparcv9_solaris|x86-64_solaris</platform>
+    		</disable>
+  		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>

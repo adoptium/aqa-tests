@@ -15,13 +15,13 @@
 set +e
 
 active_versions=("24" "21" "17" "11" "default")
+SLEEP_TIME=5
 export LC_ALL=POSIX
 
 setupLinuxEnv() {
     echo "Setup Linux Environment"
     # Fetch the prebuilt arctic jar (will be pulled from prereq build eventually)
-    wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
-    mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
+    # wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
 
     # Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
     export ARCTIC_JDK=/usr/bin/java
@@ -144,7 +144,7 @@ JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsu
 
 if [ $(uname) = Linux ]; then
     JENKINS_HOME=/home/jenkins
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
     setupLinuxEnv
 
 elif [ $(uname) = Darwin ]; then
@@ -154,7 +154,7 @@ elif [ $(uname) = Darwin ]; then
 
 elif [ $(uname) = Windows_NT ]; then
     JENKINS_HOME = "c:/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
     setupWindowsEnv
 
 fi
@@ -174,6 +174,16 @@ fi
 if [ $OSNAME = osx ]; then
     $OSNAME = "mac"
 fi
+
+if [ $PLATFORM = "ppc64le_linux" ]; then
+    wget -q https://ci.adoptium.net/job/Build_Arctic_ppc64le_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
+elif [ $PLATFORM = "s390x_linux" ]; then
+    wget -q https://ci.adoptium.net/job/Build_Arctic_s390x_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
+else
+    wget -q https://ci.adoptium.net/job/Build_Arctic/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
+fi
+
+mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 cp $JENKINS_HOME/jck_run/arctic/$OSNAME/player.properties .
 echo "Player properties line is $PPROP_LINE"
@@ -212,14 +222,6 @@ for i in "${active_versions[@]}"; do
     fi
 
     if [ -d $testcase ]; then
-        # Look for Test.link, if found, read contents to know which testcase to run
-
-        # if $TEST_DIR "ends with .html":
-        # Look for Test.json, if found, run 
-        #   run -TestCaseID ALL
-        #else:
-        #   run <parent folder.html> -TestCaseID <folder>
-   
         echo "Starting testcase... $testcase"
         tcase=${testcase##*/}
         tcase=${tcase%.html}
@@ -227,9 +229,21 @@ for i in "${active_versions[@]}"; do
         tgroup=${TEST_GROUP//_/\.} 
         echo "tgroup is $tgroup"
 
-        # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ALL &
+        TESTCASE_ID="ALL"
+	    ARCTIC_TESTCASE=$tcase
+	    if ($tcase.endsWith(".html")) {
+		    TEST_HTML=params.TESTCASE
+	    } else if ($tcase.contains(".html/")) {
+		    TEST_HTML=params.TESTCASE.substring(0, params.TESTCASE.indexOf(".html")+5)
+		    TESTCASE_ID=params.TESTCASE.substring(params.TESTCASE.indexOf(".html")+6)
+		    ARCTIC_TESTCASE=TEST_HTML+"/"+TESTCASE_ID
+	    } else {
+		    TEST_HTML=params.TESTCASE
+	    }
+
+        # $TEST_JDK_HOME/bin/java --enable-preview --add-modules java.xml.crypto,java.sql $JOPTIONS -classpath :$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/classes: -Djava.security.policy=$JENKINS_HOME/jck_root/JCK$VERSION-unzipped/JCK-runtime-$JCK_VERSION_NUMBER/lib/jck.policy javasoft.sqe.tests.api.$tgroup.interactive.$tcase -TestCaseID ${TESTCASE_ID} &
       
-        sleep 10
+        sleep $SLEEP_TIME
         echo "Running testcase $testcase"
         # $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "api/$TEST_GROUP" "$tcase"
         rc=$?
@@ -239,7 +253,7 @@ for i in "${active_versions[@]}"; do
             exit $rc
         fi
 
-        sleep 10
+        sleep $SLEEP_TIME
         echo "$TEST_GROUP/$tcase"
         result="testing"
         # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
@@ -247,7 +261,7 @@ for i in "${active_versions[@]}"; do
         status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
         echo "==>" $status
         while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
-            sleep 3
+            sleep $SLEEP_TIME
             result="testing"
             # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $TEST_GROUP/$tcase)
             rc=$?
