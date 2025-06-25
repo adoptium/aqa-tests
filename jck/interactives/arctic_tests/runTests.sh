@@ -314,18 +314,21 @@ for i in "${active_versions[@]}"; do
             echo "EXECUTING: ${TEST_CMDLINE}"
 
             # Start TESTCASE...
-
-            # Only run ListTests for the moment!!
             skipped=false
-            if [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*EventTests.* ]]; then
-              ${TEST_CMDLINE} &
-              test_pid=$!
-              echo "Testcase started process $test_pid"
-            else
-              echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
-              test_pid=-1
-              skipped=true
-            fi
+            ${TEST_CMDLINE} &
+            test_pid=$!
+            echo "Testcase started process $test_pid"
+
+            # Only run selected tests, for debug...
+            #if [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]]; then
+            #  ${TEST_CMDLINE} &
+            #  test_pid=$!
+            #  echo "Testcase started process $test_pid"
+            #else
+            #  echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
+            #  test_pid=-1
+            #  skipped=true
+            #fi
 
             sleep $SLEEP_TIME
 
