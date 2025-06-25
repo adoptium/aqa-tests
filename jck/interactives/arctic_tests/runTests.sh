@@ -179,7 +179,7 @@ elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
 fi
 JCK_MATERIAL="$JENKINS_HOME/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
 
-if [ $OSNAME = osx ]; then
+if [ $OSNAME = "osx" ]; then
     $OSNAME = "mac"
 fi
 
