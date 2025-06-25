@@ -144,7 +144,7 @@ JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsu
 
 if [ $(uname) = Linux ]; then
     JENKINS_HOME_DIR=/home/jenkins
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
     setupLinuxEnv
 
 elif [ $(uname) = Darwin ]; then
@@ -154,7 +154,7 @@ elif [ $(uname) = Darwin ]; then
 
 elif [ $(uname) = Windows_NT ]; then
     JENKINS_HOME_DIR="c:/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
+    PPROP_LINE='s#arctic.common.repository.json.path.*\$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
     setupWindowsEnv
 
 fi
@@ -195,7 +195,11 @@ mv arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
 
 cp $JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/player.properties .
 echo "Player properties line is $PPROP_LINE"
-sed -i "$PPROP_LINE" player.properties
+if [ $OSNAME = "mac" ]; then
+  sed -i '' "$PPROP_LINE" player.properties
+else
+  sed -i "$PPROP_LINE" player.properties
+fi
 
 if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     echo "arctic.jar not present"
