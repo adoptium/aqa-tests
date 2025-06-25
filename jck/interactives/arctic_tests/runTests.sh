@@ -283,10 +283,10 @@ for i in "${active_versions[@]}"; do
             TEST_CMDLINE="java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${TESTCASE_ID}"
 
             # Certain tests require extra options
-            if [[ "${ARCTIC_TESTCASE}" ~= *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" ~= *Print* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" =~ *Print* ]]; then
               TEST_CMDLINE="${TEST_CMDLINE} -platform.hasPrinter true"
             fi
-            if [[ "${ARCTIC_TESTCASE}" ~= *Robot* ]]; then
+            if [[ "${ARCTIC_TESTCASE}" =~ *Robot* ]]; then
               TEST_CMDLINE="${TEST_CMDLINE} -platform.robotAvailable true"
             fi
             echo "EXECUTING: ${TEST_CMDLINE}"
