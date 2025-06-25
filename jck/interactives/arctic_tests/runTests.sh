@@ -219,6 +219,7 @@ echo "Java under test: $TEST_JDK_HOME"
 TOP_DIR=$JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/arctic_tests
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
+overallSuccess=true
 FOUND_TESTS=()
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
@@ -280,7 +281,7 @@ for i in "${active_versions[@]}"; do
             echo "       Testcase ${JCK_TEST} of scope ${i} ${GROUP} ${ARCTIC_TESTCASE}"
             echo "         JCK class: ${TEST_CLASS}"
 
-            TEST_CMDLINE="java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${TESTCASE_ID}"
+            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${GROUP}/${JCK_TESTCASE} -TestCaseID ${TESTCASE_ID}"
 
             # Certain tests require extra options
             if [[ "${ARCTIC_TESTCASE}" =~ *PageDialog* ]] || [[ "${ARCTIC_TESTCASE}" =~ *Print* ]]; then
@@ -292,7 +293,6 @@ for i in "${active_versions[@]}"; do
             echo "EXECUTING: ${TEST_CMDLINE}"
 
             # Start TESTCASE...
-            echo "${TEST_JDK_HOME}/bin/${TEST_CMDLINE} &"
             # Force failure FFFF for the moment...
             ${TEST_JDK_HOME}/binFFFFFF/${TEST_CMDLINE} &
             test_pid=$!
@@ -369,15 +369,13 @@ for i in "${active_versions[@]}"; do
               echo "Terminating Arctic CLI..."
               ${ARCTIC_JDK} -jar ./arctic.jar -c terminate
 
-              echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status}"
+              echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
 
               # Clean processes before exit...
               kill $test_pid 2>/dev/null
 
-              if [[ $success == true ]]; then
-                  echo "Arctic playback successful"
-              else
-                  echo "Arctic playback failed"
+              if [[ $success != true ]]; then
+                  overallSuccess=false
               fi
             fi
           fi
@@ -387,5 +385,13 @@ for i in "${active_versions[@]}"; do
   fi
 done
 
-echo "Finished running testcases!"
+echo "Finished running testcases, overallSuccess = $overallSuccess"
+
+if [[ $overallSuccess != true ]]; then
+    echo "Arctic playback failed"
+    exit 1
+else
+    echo "Arctic playback successful"
+    exit 0
+fi
 
