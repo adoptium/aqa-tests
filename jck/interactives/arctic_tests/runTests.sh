@@ -296,17 +296,28 @@ for i in "${active_versions[@]}"; do
             echo "EXECUTING: ${TEST_CMDLINE}"
 
             # Start TESTCASE...
-            # Force failure FFFF for the moment...
-            ${TEST_JDK_HOME}/binFFFFFF/${TEST_CMDLINE} &
-            test_pid=$!
-            echo "Testcase started process $test_pid"
+
+            # Only run ListTests for the moment!!
+            skipped=false
+            if [[ $ARCTIC_TESTCASE =~ *ListTests* ]]; then
+              ${TEST_CMDLINE} &
+              test_pid=$!
+              echo "Testcase started process $test_pid"
+            else
+              echo "Skipping: $GROUP $ARCTIC_TESTCASE"
+              test_pid=-1
+              skipped=true
+            fi
 
             sleep $SLEEP_TIME
 
             # Check testcase started successfully.
             ps -p $test_pid -o pid 2>/dev/null 1>&2
             if [[ $? != 0 ]]; then
-              echo "ERROR: Test class failed prior to playback."
+              if [[ $skipped == false ]]; then
+                echo "ERROR: Test class failed prior to playback."
+                overallSuccess=false
+              fi
             else
               # Testcase started, start Arctic playback...
               sleep $SLEEP_TIME
