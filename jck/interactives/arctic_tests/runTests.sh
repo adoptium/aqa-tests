@@ -238,10 +238,13 @@ FOUND_TESTS=()
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
     START_DIR="${TOP_DIR}/${i}/${GROUP}"
+    # Remove any double slashes
+    START_DIR=$(echo "$START_DIR" | sed 's#//#/#g')
 
     TEST_JSON_FILES=$(find ${START_DIR} -type f -name 'Test.json' -o -name 'Test.link')
     for f in $TEST_JSON_FILES
     do
+      f=$(echo "$f" | sed 's#//#/#g')
       echo "Test file: ${f}"
 
       # Determine Arctic testcase name from folder
@@ -370,23 +373,23 @@ for i in "${active_versions[@]}"; do
                 # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
                 success=false
                 if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
-                  ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
+                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
                   success=true
                 else
-                  ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
+                  ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
                 fi
 
                 # Get final Arctic status
-                result=$(${ARCTIC_JDK} -jar ./arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
+                result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
                 status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
                 echo "Arctic final completion status ==>" $status
 
                 echo "Saving Arctic session..."
                 session_file=$(echo ${GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
-                ${ARCTIC_JDK} -jar ./arctic.jar -c session save ${session_file}
+                ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c session save ${session_file}
 
                 echo "Printing Arctic session info..."
-                ${ARCTIC_JDK} -jar ./arctic.jar -c session print
+                ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c session print
 
                 echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
 
@@ -406,7 +409,7 @@ for i in "${active_versions[@]}"; do
 done
 
 echo "Terminating Arctic CLI..."
-${ARCTIC_JDK} -jar ./arctic.jar -c terminate
+${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c terminate
 
 if [[ -n $twm_pid ]]; then
   kill $twm_pid 2>/dev/null
