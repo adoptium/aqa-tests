@@ -211,6 +211,9 @@ echo "Starting player in background with RMI..."
 rc=$?
 if [ $rc -ne 0 ]; then
    echo "Unable to start Arctic player, rc=$rc"
+   if [[ -n $twm_pid ]]; then
+     kill $twm_pid 2>/dev/null
+   fi
    exit $rc
 fi
 
@@ -313,69 +316,68 @@ for i in "${active_versions[@]}"; do
 
               if [[ $rc -ne 0 ]]; then
                   echo "Unable to start playback for testcase $GROUP/$ARCTIC_TESTCASE, rc=$rc"
-                  exit $rc
-              fi
-
-              sleep $SLEEP_TIME
-              echo "$GROUP/$ARCTIC_TESTCASE"
-              result="testing"
-              # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
-              rc=$?
-              status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-              echo "==>" $status
-              while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
-                  sleep $SLEEP_TIME
-                  result="testing"
-                  # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
-                  rc=$?
-                  status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-                  echo "==>" $status
-              done
-
-              sleep $SLEEP_TIME
-
-              echo "Testcase process $test_pid should have finished if successfully automated, getting test process completion status..."
-              if ps -p $test_pid -o pid; then
-                echo "ERROR: Testcase process $test_pid is still running... terminating!"
-                kill -9 $test_pid
-              fi
-              wait $test_pid
-              test_exit_status=$?
-              echo "Testcase exited with completion status = ${test_exit_status}"
-              echo "Testcase Arctic status = ${status}"
-
-              # Finish Arctic TESTCASE session
-              # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
-              success=false
-              if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
-                ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
-                success=true
               else
-                ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
-              fi
+                sleep $SLEEP_TIME
+                echo "$GROUP/$ARCTIC_TESTCASE"
+                result="testing"
+                # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                rc=$?
+                status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+                echo "==>" $status
+                while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; }; do
+                    sleep $SLEEP_TIME
+                    result="testing"
+                    # result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $GROUP/$ARCTIC_TESTCASE)
+                    rc=$?
+                    status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+                    echo "==>" $status
+                done
 
-              # Get final Arctic status
-              result=$(${ARCTIC_JDK} -jar ./arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
-              status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
-              echo "Arctic final completion status ==>" $status
+                sleep $SLEEP_TIME
 
-              echo "Saving Arctic session..."
-              session_file=$(echo ${GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
-              ${ARCTIC_JDK} -jar ./arctic.jar -c session save ${session_file}
+                echo "Testcase process $test_pid should have finished if successfully automated, getting test process completion status..."
+                if ps -p $test_pid -o pid; then
+                  echo "ERROR: Testcase process $test_pid is still running... terminating!"
+                  kill -9 $test_pid
+                fi
+                wait $test_pid
+                test_exit_status=$?
+                echo "Testcase exited with completion status = ${test_exit_status}"
+                echo "Testcase Arctic status = ${status}"
 
-              echo "Printing Arctic session info..."
-              ${ARCTIC_JDK} -jar ./arctic.jar -c session print
+                # Finish Arctic TESTCASE session
+                # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
+                success=false
+                if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
+                  ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" true
+                  success=true
+                else
+                  ${ARCTIC_JDK} -jar ./arctic.jar -c test finish "${GROUP}" "${ARCTIC_TESTCASE}" false
+                fi
 
-              echo "Terminating Arctic CLI..."
-              ${ARCTIC_JDK} -jar ./arctic.jar -c terminate
+                # Get final Arctic status
+                result=$(${ARCTIC_JDK} -jar ./arctic.jar -c test list ${GROUP}/${ARCTIC_TESTCASE})
+                status=$(echo $result | tr -s ' ' | cut -d' ' -f2)
+                echo "Arctic final completion status ==>" $status
 
-              echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
+                echo "Saving Arctic session..."
+                session_file=$(echo ${GROUP}/${ARCTIC_TESTCASE}.session | tr "/" "_")
+                ${ARCTIC_JDK} -jar ./arctic.jar -c session save ${session_file}
 
-              # Clean processes before exit...
-              kill $test_pid 2>/dev/null
+                echo "Printing Arctic session info..."
+                ${ARCTIC_JDK} -jar ./arctic.jar -c session print
 
-              if [[ $success != true ]]; then
-                  overallSuccess=false
+                echo "Terminating Arctic CLI..."
+                ${ARCTIC_JDK} -jar ./arctic.jar -c terminate
+
+                echo "Completed playback of ${GROUP}/${ARCTIC_TESTCASE} status: ${status} success: ${success}"
+
+                # Clean processes before exit...
+                kill $test_pid 2>/dev/null
+
+                if [[ $success != true ]]; then
+                    overallSuccess=false
+                fi
               fi
             fi
           fi
@@ -384,6 +386,10 @@ for i in "${active_versions[@]}"; do
     done
   fi
 done
+
+if [[ -n $twm_pid ]]; then
+  kill $twm_pid 2>/dev/null
+fi
 
 echo "Finished running testcases, overallSuccess = $overallSuccess"
 
