@@ -179,6 +179,20 @@ if [ $OSNAME = "osx" ]; then
 fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
+if [ $TEST_GROUP = "custom" ]; then
+    if [[ $TEST_SUB_DIR == "api/java_awt/*" ]]; then
+        ARCTIC_GROUP="api/java_awt"
+    elif if [[ $TEST_SUB_DIR == "api/javax_swing/*" ]]; then    
+        ARCTIC_GROUP="api/javax_swing"
+    else
+        echo "ERROR: custom Arctic target $TEST_SUB_DIR, is not a known group (api/java_awt, api/javax_swing)"
+        exit 1
+    fi
+    # Strip ARCTIC_GROUP/ from front
+    CUSTOM_ARCTIC_TESTCASE=${TEST_SUB_DIR/$ARCTIC_GROUP/}
+    CUSTOM_ARCTIC_TESTCASE=${CUSTOM_ARCTIC_TESTCASE:1}
+    echo "Running custom target: $ARCTIC_GROUP $CUSTOM_ARCTIC_TESTCASE"
+fi
 
 JCK_VER=$VERSION
 if [[ $VERSION == "8" ]]; then
@@ -313,22 +327,18 @@ for i in "${active_versions[@]}"; do
             fi
             echo "EXECUTING: ${TEST_CMDLINE}"
 
-            # Start TESTCASE...
-            skipped=false
-            ${TEST_CMDLINE} &
-            test_pid=$!
-            echo "Testcase started process $test_pid"
-
-            # Only run selected tests, for debug...
-            #if [[ "${ARCTIC_TESTCASE}" =~ .*ButtonTests.* ]]; then
-            #  ${TEST_CMDLINE} &
-            #  test_pid=$!
-            #  echo "Testcase started process $test_pid"
-            #else
-            #  echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
-            #  test_pid=-1
-            #  skipped=true
-            #fi
+            # Custom check
+            if [[ "${TEST_GROUP}" == "custom" ]] && [[ "${ARCTIC_TESTCASE}" != "${CUSTOM_ARCTIC_TESTCASE}" ]]; then
+              test_pid=-1
+              skipped=true
+              echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
+            else
+              skipped=false
+              # Start TESTCASE...
+              ${TEST_CMDLINE} &
+              test_pid=$!
+              echo "Testcase started process $test_pid"
+            fi
 
             sleep $SLEEP_TIME
 
@@ -416,10 +426,10 @@ for i in "${active_versions[@]}"; do
                 kill $test_pid 2>/dev/null
 
                 if [[ $success != true ]]; then
-                    FAILED_TESTS+=("${ARCTIC_TESTCASE}")
+                    FAILED_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
                     overallSuccess=false
                 else
-                    PASSED_TESTS+=("${ARCTIC_TESTCASE}")
+                    PASSED_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
                 fi
               fi
             fi
