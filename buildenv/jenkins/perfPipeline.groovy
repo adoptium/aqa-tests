@@ -75,7 +75,7 @@ timestamps {
 
                         testParams << string(name: "BUILD_LIST", value:"${buildList}")
                         baselineParams << string(name: "BUILD_LIST", value:"${buildList}")
-                        
+
                         def platform = params.PLATFORM
                         def machine = item.PLAT_MACHINE_MAP[platform]
 
@@ -83,7 +83,7 @@ timestamps {
                                 echo "perfPipeline: platform ${platform} not in PLAT_MACHINE_MAP, skipping..."
                                 return
                         }
-        
+
                         testParams << string(name: "LABEL", value:"${machine}")
                         baselineParams << string(name: "LABEL", value:"${machine}")
 
