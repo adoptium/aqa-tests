@@ -180,6 +180,11 @@ fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
 if [ $TEST_GROUP = "custom" ]; then
+    if [[ -z $TEST_SUB_DIR ]]; then
+        echo "Custom: No custom Arctic groups specified, skipping."
+        exit 0
+    fi
+
     if [[ $TEST_SUB_DIR == "api/java_awt/*" ]]; then
         ARCTIC_GROUP="api/java_awt"
     elif if [[ $TEST_SUB_DIR == "api/javax_swing/*" ]]; then    
