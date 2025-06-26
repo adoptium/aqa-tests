@@ -339,7 +339,9 @@ for i in "${active_versions[@]}"; do
               echo "Testcase started process $test_pid"
             fi
 
-            sleep $SLEEP_TIME
+            if [[ $skipped == false ]]; then
+              sleep $SLEEP_TIME
+            fi
 
             # Check testcase started successfully.
             ps -p $test_pid -o pid 2>/dev/null 1>&2
