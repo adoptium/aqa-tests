@@ -7,6 +7,9 @@ def testParams = []
 def baselineParams = []
 int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
+
+def EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
+
 // loop through all the params and change the parameters if needed
 params.each { param ->
     if (param.key == "BASELINE_SDK_RESOURCE") {
