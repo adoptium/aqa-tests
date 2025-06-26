@@ -122,8 +122,8 @@ timestamps {
                                 echo "score: ${score} %"
 
                                 if (score <= 98) {
-                                        currentBuild.result = UNSTABLE
-                                        echo "Possible regression, score = ${score} %"
+                                        currentBuild.result = 'UNSTABLE'
+                                        echo "Possible regression, set build result to UNSTABLE."
                                 }
                             }
                         }
