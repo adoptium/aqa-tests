@@ -166,8 +166,8 @@ fi
 TEST_GROUP=$1
 PLATFORM=$2
 VERSION=$3
-TEST_SUB_DIR=$4
-JCK_VERSION_NUMBER=$5
+JCK_VERSION_NUMBER=$4
+TEST_SUB_DIR=$5
 OSNAME=${PLATFORM%_*}
 STARTING_SCOPE=$VERSION
 if [ $VERSION -eq 8 ]; then
@@ -199,13 +199,7 @@ if [ $TEST_GROUP = "custom" ]; then
     echo "Running custom target: $ARCTIC_GROUP $CUSTOM_ARCTIC_TESTCASE"
 fi
 
-JCK_VER=$VERSION
-if [[ $VERSION == "8" ]]; then
-    JCK_VER="${VERSION}d"
-elif [[ $VERSION == "11" ]] || [[ $VERSION == "17" ]]; then
-    JCK_VER="${VERSION}a"
-fi
-JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VER}"
+JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VERSION_NUMBER}"
 
 if [ $PLATFORM = "ppc64le_linux" ]; then
     wget -q https://ci.adoptium.net/job/Build_Arctic_ppc64le_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
