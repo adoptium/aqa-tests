@@ -188,7 +188,6 @@ def aggregateLogs(run, runtimes) {
         def runtimeMap = metricList.find{ it.containsKey('value') }
         if (runtimeMap) {
                 runtimes << (runtimeMap.value as double)
-                echo "runtime is ${runtimeMap.value}"
         } else { 
                 echo "No runtime in ${name}_${buildId}.json" 
         }
