@@ -1,9 +1,15 @@
 #!groovy
-
+def testStats = [:]
+def baselineStats = [:]
+def testRuntimes = []
+def baselineRuntimes = []
 def testParams = []
 def baselineParams = []
 int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
+
+def EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
+
 // loop through all the params and change the parameters if needed
 params.each { param ->
     if (param.key == "BASELINE_SDK_RESOURCE") {
@@ -99,15 +105,33 @@ timestamps {
                                 // test
                                 testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
                                 def testRun = triggerJob("${item.BENCHMARK}", "${platform}", testParams, "test")
-                                aggregateLogs(testRun)
+                                aggregateLogs(testRun, testRuntimes)
 
                                 // baseline
                                 if (RUN_BASELINE) {
                                     baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
                                     def baseRun = triggerJob("${item.BENCHMARK}", "${platform}", baselineParams, "baseline")
-                                    aggregateLogs(baseRun)
+                                    aggregateLogs(baseRun, baselineRuntimes)
                                 } else {
                                     echo "Skipping baseline run since RUN_BASELINE is set to false"
+                                }
+
+                                testStats = stats(testRuntimes)
+                                baselineStats = stats(baselineRuntimes)
+                                def score = (testStats.mean/baselineStats.mean) * 100
+
+                                echo "testRuntimes: ${testRuntimes}" 
+                                echo "baselineRuntimes: ${baselineRuntimes}"
+                                echo "score: ${score} %"
+                                
+                                if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                        if (score <= 98) {
+                                                currentBuild.result = 'UNSTABLE'
+                                                echo "Possible regression, set build result to UNSTABLE."
+                                        } else {
+                                                echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
+                                                break
+                                        }
                                 }
                             }
                         }
@@ -142,11 +166,12 @@ def generateChildJobViaAutoGen(newJobName) {
     build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
 }
 
-def aggregateLogs(run) {
-        node(env.SETUP_LABEL) {
+def aggregateLogs(run, runtimes) {
+        def json 
+        node(ci.role.test&&hw.arch.x86&&sw.os.linux) {
                 def buildId  = run.getRawBuild().getNumber()
-                def name     = run.getProjectName()
-                def result   = run.getCurrentResult()
+                def name = run.getProjectName()
+                def result = run.getCurrentResult()
 
                 echo "${name} #${buildId} completed with status ${result}, copying JSON logs..."
 
@@ -158,11 +183,32 @@ def aggregateLogs(run) {
                                         filter: "**/${name}_${buildId}.json",
                                         target: "."
                                 )
-                        }
+                                
+                        }   
+                        json = readJSON file: "${name}_${buildId}.json"
                         archiveArtifacts artifacts: "${name}_${buildId}.json", fingerprint: true, allowEmptyArchive: false
                         sh "rm -f '${name}_${buildId}.json'"
                 } catch (Exception e) {
                         echo "Cannot copy ${name}_${buildId}.json from ${name}: ${e}"
                 }
         }
+        def metricList = json.metrics['dacapo-h2']
+        def runtimeMap = metricList.find{ it.containsKey('value') }
+        if (runtimeMap) {
+                runtimes << (runtimeMap.value as double)
+        } else { 
+                echo "No runtime in ${name}_${buildId}.json" 
+        }
+}
+
+def stats (List nums) { 
+        def n = nums.size()
+        def mid = n.intdiv(2)
+
+        def sorted = nums.sort()
+        def mean = nums.sum()/n
+        def median = (n % 2 == 1) ? sorted[mid] : (sorted[mid-1]+sorted[mid])/2
+        def variance = nums.collect{(it-mean)**2}.sum()/n
+        def stdev = Math.sqrt(variance as double)
+        [mean: mean, max: sorted[-1], min: sorted[0], median: median, std: stdev]
 }
