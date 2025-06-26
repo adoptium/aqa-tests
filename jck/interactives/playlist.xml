@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+<playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
+	<include>../jck.mk</include>
+	<test>
+		<testCaseName>jckinteractives_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh custom ${PLATFORM} ${JDK_VERSION} ${JCK_VERSION_NUMBER} ${JCKINTERACTIVES_CUSTOM_TARGET}; \
+		$(TEST_STATUS)
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jckinteractives_java_awt</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh java_awt ${PLATFORM} ${JDK_VERSION} ${JCK_VERSION_NUMBER} api/java_awt; \
+		$(TEST_STATUS)
+		</command>
+		<disables>
+    		<disable>
+      			<comment>N/A for AIX and Solaris platforms</comment>
+      			<platform>ppc64_aix|sparcv9_solaris|x86-64_solaris</platform>
+    		</disable>
+  		</disables>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>jckinteractives_javax_swing</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh javax_swing ${PLATFORM} ${JDK_VERSION} ${JCK_VERSION_NUMBER} api/javax_swing; \
+		$(TEST_STATUS)
+		</command>
+		<disables>
+    		<disable>
+      			<comment>N/A for AIX and Solaris platforms</comment>
+      			<platform>ppc64_aix|sparcv9_solaris|x86-64_solaris</platform>
+    		</disable>
+  		</disables>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+    </playlist>

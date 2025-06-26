@@ -912,6 +912,10 @@ def post(output_name) {
 		archiveAQAvitFiles()
 
 		if (env.BUILD_LIST.startsWith('jck')) {
+			// Archive any jck interactive sessions & failures
+			archiveArtifacts artifacts: "**/TKG/output_*/**/failures/**", allowEmptyArchive: true
+			archiveArtifacts artifacts: "**/TKG/output_*/**/*.session", allowEmptyArchive: true
+
 			xunit (
 					tools: [Custom(customXSL: "$WORKSPACE/aqa-tests/jck/xUnit.xsl",
 							deleteOutputFiles: true,
