@@ -185,9 +185,9 @@ if [ $TEST_GROUP = "custom" ]; then
         exit 0
     fi
 
-    if [[ $TEST_SUB_DIR == "api/java_awt/*" ]]; then
+    if [[ $TEST_SUB_DIR == api/java_awt/* ]]; then
         ARCTIC_GROUP="api/java_awt"
-    elif [[ $TEST_SUB_DIR == "api/javax_swing/*" ]]; then    
+    elif [[ $TEST_SUB_DIR == api/javax_swing/* ]]; then    
         ARCTIC_GROUP="api/javax_swing"
     else
         echo "ERROR: custom Arctic target $TEST_SUB_DIR, is not a known group (api/java_awt, api/javax_swing)"
