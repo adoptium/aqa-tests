@@ -1,4 +1,6 @@
 #!groovy
+def testStats = [:]
+def baselineStats = [:]
 def testRuntimes = []
 def baselineRuntimes = []
 def testParams = []
@@ -110,6 +112,19 @@ timestamps {
                                 } else {
                                     echo "Skipping baseline run since RUN_BASELINE is set to false"
                                 }
+
+                                testStats = stats(testRuntimes)
+                                baselineStats = stats(baselineRuntimes)
+                                def score = (testStats.mean/baselineStats.mean) * 100
+
+                                echo "testRuntimes: ${testRuntimes}" 
+                                echo "baselineRuntimes: ${baselineRuntimes}"
+                                echo "score: ${score} %"
+
+                                if (score <= 98) {
+                                        currentBuild.result = UNSTABLE
+                                        echo "Possible regression, score = ${score} %"
+                                }
                             }
                         }
                     }
@@ -117,26 +132,6 @@ timestamps {
             }
         }
     }
-}
-
-echo "Full test runtime list : ${testRuntimes}"
-echo "Full baseline runtime list : ${baselineRuntimes}"
-
-def testStats = [:]
-def baselineStats = [:]
-testStats = stats(testRuntimes)
-baselineStats = stats(baselineRuntimes)
-
-echo "Full test stats map : ${testStats}"
-echo "Full baseline stats map : ${baselineStats}"
-
-def score = (testStats.mean/baselineStats.mean) * 100
-
-echo "Score = ${score} %"
-
-if (score <= 98) {
-        currentBuild.result = UNSTABLE
-        echo "Possible regression, score = ${score} %"
 }
 
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
