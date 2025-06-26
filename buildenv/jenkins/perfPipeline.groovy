@@ -120,10 +120,15 @@ timestamps {
                                 echo "testRuntimes: ${testRuntimes}" 
                                 echo "baselineRuntimes: ${baselineRuntimes}"
                                 echo "score: ${score} %"
-
-                                if (score <= 98) {
-                                        currentBuild.result = 'UNSTABLE'
-                                        echo "Possible regression, set build result to UNSTABLE."
+                                
+                                if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                        if (score <= 98) {
+                                                currentBuild.result = 'UNSTABLE'
+                                                echo "Possible regression, set build result to UNSTABLE."
+                                        } else {
+                                                echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
+                                                break
+                                        }
                                 }
                             }
                         }
