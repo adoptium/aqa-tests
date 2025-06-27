@@ -25,7 +25,7 @@ def getBaseJDKImpl(JDK_IMPL) {
 	return JDK_IMPL
 }
 
-if (!binding.hasVariable('BENCHMARKS')) BENCHMARKS = "dacapo"
+if (!binding.hasVariable('BENCHMARK')) BENCHMARK = "dacapo"
 if (!binding.hasVariable('TEST_SDK_RESOURCE')) TEST_SDK_RESOURCE = "nightly"
 if (!binding.hasVariable('TEST_SDK_URL')) TEST_SDK_URL = ""
 if (!binding.hasVariable('BASELINE_SDK_RESOURCE')) BASELINE_SDK_RESOURCE = "nightly"
@@ -95,7 +95,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                 <br/>riscv64_linux
                                 <br/>multiple platforms (comma separated values): x86-64_linux,x86-64_mac
                                 <br/>Please refer to PLATFORM_MAP in https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests<br/>''')
-                                stringParam('BENCHMARKS', BENCHMARKS, "dacapo")
+                                stringParam('BENCHMARK', BENCHMARK, "dacapo")
                                 stringParam('JDK_VERSION', "${JDK_VERSION}", "JDK version. i.e., 8, 11")
                                 stringParam('TEST_SDK_RESOURCE', TEST_SDK_RESOURCE, '''Where to get sdk? nightly|releases|customized|upstream<br/>
                                 nightly & releases pull the lastest from AdoptOpenJDK <br/>

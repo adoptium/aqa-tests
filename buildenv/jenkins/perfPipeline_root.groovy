@@ -1,56 +1,89 @@
 #!groovy
 def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-
-def PLATFORM = params.PLATFORMS.trim() //one platform
-def BENCHMARKS = params.BENCHMARKS.trim().split("\\s*,\\s*")
-
 def JOBS =[:]
-BENCHMARKS.each { BENCHMARK ->
-        def childParams = []
-        // loop through all the params and change the parameters if needed
-        params.each { param ->
-                // Exclude unnecessary parameters for downstream jobs
-                if (param == "PLATFORMS" || param == "BENCHMARKS") {
-                // do nothing
+
+// read JSON from perfConfig file
+def perfConfigJson = []
+if (params.PERFCONFIG_JSON) { 
+        echo "Read JSON from PERFCONFIG_JSON parameter..." 
+        perfConfigJson = readJSON text: "${params.PERFCONFIG_JSON}"
+} else { 
+        node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+                checkout scm
+                dir (env.WORKSPACE) {
+                        def subdir = params.JDK_IMPL ?: "hotspot"
+                        if (params.JDK_IMPL == "ibm") {
+                                subdir = "openj9"
+                        }
+                        def filePath = "./aqa-tests/perf/config/${subdir}/"
+                        // If vendor repo and branch is set, use vendor repo perfConfigJson file.
+                        if (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_BRANCHES) {
+                                def vendorRepoDir = "vendorRepo"
+                                def statusCode = -1
+                                sshagent (credentials: ["$params.USER_CREDENTIALS_ID"], ignoreMissing: true) {
+                                        statusCode =  sh returnStatus: true, script: """
+                                        git clone -q --depth 1 -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS} ${vendorRepoDir}
+                                        """
+                                }
+                                if (statusCode == 0) {
+                                        filePath = "./${vendorRepoDir}/perf/config/${subdir}/"
+                                } else {
+                                        assert false: "Cannot git clone -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS}. Status code: ${statusCode}"
+                                }
+                        }
+                        filePath = filePath + "perfConfig.json"
+                        echo "Read JSON from file ${filePath}..."
+                        perfConfigJson = readJSON(file: "${filePath}")
                 }
-                def value = param.value.toString()
-                if (value == "true" || value == "false") {
-                        childParams << booleanParam(name: param.key, value: value.toBoolean())
-                } else {
-                        childParams << string(name: param.key, value: value)
+        }
+}
+
+def childParams = []
+// update all parameters to strings except for booleans
+params.each { param ->
+        def value = param.value.toString()
+        if (value == "true" || value == "false") {
+                childParams << booleanParam(name: param.key, value: value.toBoolean())
+        } else {
+                childParams << string(name: param.key, value: value)
+        }
+}
+
+perfConfigJson.each { item ->
+        def BENCHMARK = item.BENCHMARK 
+        def TARGET = item.TARGET
+        def BUILD_LIST = item.BUILD_LIST
+        def PLATMACHINE_MAP = item.PLAT_MACHINE_MAP 
+
+        childParams << string(name: "BENCHMARK", value: item.BENCHMARK)
+        childParams << string(name: "TARGET", value: item.TARGET)
+        childParams << string(name: "BUILD_LIST", value: item.BUILD_LIST)
+        
+        item.PLAT_MACHINE_MAP.each { kv -> 
+                kv.each {p, m -> 
+                        childParams << string(name: "PLATFORM", value: p) 
+                        childParams << string(name: "LABEL", value: m)
+                        def shortName = (params.JDK_IMPL && params.JDK_IMPL == "hotspot") ? "hs" : "j9"
+                        def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
+                        def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
+                        if (!jobIsRunnable) {
+                                echo "Generating downstream job '${jobName}' from template …"
+                                createPerfL2Job(jobName, p, item.BENCHMARK)
+                        }
+                        JOBS[jobName] = {
+                                build job: jobName, parameters: childParams, propagate: true
+                        }
                 }
-        }
-        if (!childParams.contains("TEST_IMAGES_REQUIRED")) {
-            childParams << booleanParam(name: "TEST_IMAGES_REQUIRED", value: false)
-        }
-        if (!childParams.contains("DEBUG_IMAGES_REQUIRED")) {
-            childParams << booleanParam(name: "DEBUG_IMAGES_REQUIRED", value: false)
-        }
-        childParams << string(name: "PLATFORM", value: PLATFORM)
-        childParams << string(name: "BENCHMARK", value: BENCHMARK)
-        def shortName = "j9"
-        if (params.JDK_IMPL) {
-                if (params.JDK_IMPL == "hotspot") {
-                shortName = "hs"
-                }
-        }
-        def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${PLATFORM}_${BENCHMARK}"
-        def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
-        if (!jobIsRunnable) {
-                echo "Generating downstream job '${jobName}' from template …"
-                createPerfL2Job(jobName, PLATFORM)
-        }
-        JOBS[jobName] = {
-                build job: jobName, parameters: childParams, propagate: true
         }
 }
 
 parallel JOBS
 
-def createPerfL2Job(String jobName, String platform) {
+def createPerfL2Job(String jobName, String platform, String benchmark) {
         def jobParams = [:] 
         jobParams.put('TEST_JOB_NAME', jobName)
         jobParams.put('PLATFORM', platform) 
+        jobParams.put('BENCHMARK', benchmark)
         def templatePath = 'aqa-tests/buildenv/jenkins/perf/perfL2JobTemplate'
         if (!fileExists(templatePath)) {
                 sh 'curl -Os https://raw.githubusercontent.com/adoptium/aqa-tests/master/buildenv/jenkins/perfL2JobTemplate'
