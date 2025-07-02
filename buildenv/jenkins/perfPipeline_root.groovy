@@ -2,6 +2,8 @@
 def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
 def JOBS =[:]
 
+params.each{p -> echo "${p}"}
+
 // read JSON from perfConfig file
 def perfConfigJson = []
 if (params.PERFCONFIG_JSON) { 
@@ -64,7 +66,7 @@ perfConfigJson.each { item ->
                         childParams << string(name: "PLATFORM", value: p) 
                         childParams << string(name: "LABEL", value: m)
                         def shortName = (params.JDK_IMPL && params.JDK_IMPL == "hotspot") ? "hs" : "j9"
-                        def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
+                        def jobName = "Perf_openjdk${params.JDK_VERSION}_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
                         def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
                         if (!jobIsRunnable) {
                                 echo "Generating downstream job '${jobName}' from perfL2JobTemplate …"
