@@ -2,8 +2,6 @@
 def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
 def JOBS =[:]
 
-params.each{p -> echo "${p}"}
-
 // read JSON from perfConfig file
 def perfConfigJson = []
 if (params.PERFCONFIG_JSON) { 
