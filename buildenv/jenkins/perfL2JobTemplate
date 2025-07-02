@@ -17,21 +17,13 @@
 /**
  * A template that defines a L2 perf job.
  */
-
-def getBaseJDKImpl(JDK_IMPL) {
-	if (JDK_IMPL != "openj9" && JDK_IMPL != "ibm" ) {
-		return "hotspot"
-	}
-	return JDK_IMPL
-}
-
 if (!binding.hasVariable('BENCHMARK')) BENCHMARK = "dacapo"
 if (!binding.hasVariable('TEST_SDK_RESOURCE')) TEST_SDK_RESOURCE = "nightly"
 if (!binding.hasVariable('TEST_SDK_URL')) TEST_SDK_URL = ""
-if (!binding.hasVariable('BASELINE_SDK_RESOURCE')) BASELINE_SDK_RESOURCE = "nightly"
+if (!binding.hasVariable('BASELINE_SDK_RESOURCE')) BASELINE_SDK_RESOURCE = "releases"
 if (!binding.hasVariable('BASELINE_SDK_URL')) BASELINE_SDK_URL = ""
 if (!binding.hasVariable('PLATFORM')) PLATFORM = ['x86-64_linux']
-if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "openj9"
+if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "hotspot"
 
 if (binding.hasVariable('JDK_VERSIONS')) {
 	JDK_VERSIONS = JDK_VERSIONS.split(',')
@@ -50,8 +42,6 @@ if (!binding.hasVariable('DAYS_TO_KEEP')) {
 } else {
 	DAYS_TO_KEEP = DAYS_TO_KEEP.toInteger()
 }
-
-JDK_IMPL_BASE = getBaseJDKImpl(JDK_IMPL)
 
 println "JDK_VERSIONS: ${JDK_VERSIONS}"
 println "PLATFORM: ${PLATFORM}"
@@ -109,7 +99,7 @@ JDK_VERSIONS.each { JDK_VERSION ->
                                 If customized is selected, please provide CUSTOMIZED_SDK_URL <br/>
                                 If upstream is selected, please provide UPSTREAM_JOB_NAME and UPSTREAM_JOB_NUMBER <br/>''')
                                 stringParam('BASELINE_SDK_URL', BASELINE_SDK_URL, "")
-                                stringParam('JDK_IMPL', JDK_IMPL_BASE, "hotspot")
+                                stringParam('JDK_IMPL', JDK_IMPL, "hotspot")
                         }
                         cpsScm {
                                 scm {

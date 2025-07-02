@@ -67,7 +67,7 @@ perfConfigJson.each { item ->
                         def jobName = "Perf_openjdk21_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
                         def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
                         if (!jobIsRunnable) {
-                                echo "Generating downstream job '${jobName}' from template …"
+                                echo "Generating downstream job '${jobName}' from perfL2JobTemplate …"
                                 createPerfL2Job(jobName, p, item.BENCHMARK)
                         }
                         JOBS[jobName] = {

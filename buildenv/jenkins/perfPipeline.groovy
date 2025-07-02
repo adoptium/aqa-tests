@@ -38,8 +38,8 @@ params.each { param ->
     }
 }
 
-try {
-        timestamps {
+timestamps {
+        try {
                 ["TARGET", "BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
                         [testParams, baselineParams].each { list ->
                                 list << string(name: key, value: params."${key}")
@@ -82,9 +82,9 @@ try {
                                 }
                         }
                 }        
+        } finally {
+                cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
-} finally {
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
 }
 
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
@@ -101,7 +101,7 @@ def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
 def generateChildJobViaAutoGen(newJobName) {
     def jobParams = []
     jobParams << string(name: 'TEST_JOB_NAME', value: newJobName)
-    jobParams << string(name: 'PLATFORM', value: params.PLATFORM)
+    jobParams << string(name: 'ARCH_OS_LIST', value: params.PLATFORM)
     jobParams << booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
     jobParams << string(name: 'LEVELS', value: "sanity") // ToDo: hard coded for now from line 79
     jobParams << string(name: 'GROUPS', value: "perf") // ToDo: hard coded for now from line 79
