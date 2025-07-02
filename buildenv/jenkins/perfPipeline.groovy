@@ -38,52 +38,54 @@ params.each { param ->
     }
 }
 
-timestamps {
-        try {
-                ["TARGET", "BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
-                        [testParams, baselineParams].each { list ->
-                                list << string(name: key, value: params."${key}")
-                        }
-                }
-                
-                echo "starting to trigger build..."
-                lock(resource: params.LABEL) {
-                        for (int i = 0; i < PERF_ITERATIONS; i++) {
-                                // test
-                                testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, testParams, "test")
-                                aggregateLogs(testRun, testRuntimes)
-
-                                // baseline
-                                if (RUN_BASELINE) {
-                                        baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                        def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, baselineParams, "baseline")
-                                        aggregateLogs(baseRun, baselineRuntimes)
-                                } else {
-                                        echo "Skipping baseline run since RUN_BASELINE is set to false"
+node ("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+        timestamps {
+                try {
+                        ["TARGET", "BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
+                                [testParams, baselineParams].each { list ->
+                                        list << string(name: key, value: params."${key}")
                                 }
+                        }
+                        
+                        echo "starting to trigger build..."
+                        lock(resource: params.LABEL) {
+                                for (int i = 0; i < PERF_ITERATIONS; i++) {
+                                        // test
+                                        testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
+                                        def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, testParams, "test")
+                                        aggregateLogs(testRun, testRuntimes)
 
-                                testStats = stats(testRuntimes)
-                                baselineStats = stats(baselineRuntimes)
-                                def score = (testStats.mean/baselineStats.mean) * 100
-
-                                echo "testRuntimes: ${testRuntimes}" 
-                                echo "baselineRuntimes: ${baselineRuntimes}"
-                                echo "score: ${score} %"
-
-                                if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
-                                        if (score <= 98) {
-                                                currentBuild.result = 'UNSTABLE'
-                                                echo "Possible regression, set build result to UNSTABLE."
+                                        // baseline
+                                        if (RUN_BASELINE) {
+                                                baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
+                                                def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, baselineParams, "baseline")
+                                                aggregateLogs(baseRun, baselineRuntimes)
                                         } else {
-                                                echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
-                                                break
+                                                echo "Skipping baseline run since RUN_BASELINE is set to false"
+                                        }
+
+                                        testStats = stats(testRuntimes)
+                                        baselineStats = stats(baselineRuntimes)
+                                        def score = (testStats.mean/baselineStats.mean) * 100
+
+                                        echo "testRuntimes: ${testRuntimes}" 
+                                        echo "baselineRuntimes: ${baselineRuntimes}"
+                                        echo "score: ${score} %"
+
+                                        if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                if (score <= 98) {
+                                                        currentBuild.result = 'UNSTABLE'
+                                                        echo "Possible regression, set build result to UNSTABLE."
+                                                } else {
+                                                        echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
+                                                        break
+                                                }
                                         }
                                 }
-                        }
-                }        
-        } finally {
-                cleanWs disableDeferredWipeout: true, deleteDirs: true
+                        }        
+                } finally {
+                        cleanWs disableDeferredWipeout: true, deleteDirs: true
+                }
         }
 }
 
