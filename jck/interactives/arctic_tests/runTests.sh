@@ -164,18 +164,22 @@ fi
 
 # Verify that the contents are present in jck_run
 TEST_GROUP=$1
-PLATFORM=$2
+SPEC=$2
 VERSION=$3
 JCK_VERSION_NUMBER=$4
 TEST_SUB_DIR=$5
-OSNAME=${PLATFORM%_*}
 STARTING_SCOPE=$VERSION
 if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
-if [ $OSNAME = "osx" ]; then
+OSNAME="Unknown"
+if [[ $SPEC =~ osx.* ]]; then
     OSNAME="mac"
+elif [[ $SPEC =~ linux.* ]]; then
+    OSNAME="linux"
+elif [[ $SPEC =~ win.* ]]; then
+    OSNAME="windows"
 fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
@@ -201,9 +205,9 @@ fi
 
 JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VERSION_NUMBER}"
 
-if [ $PLATFORM = "ppc64le_linux" ]; then
+if [ $SPEC = "linux_ppc-64_le" ]; then
     wget -q https://ci.adoptium.net/job/Build_Arctic_ppc64le_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
-elif [ $PLATFORM = "s390x_linux" ]; then
+elif [ $SPEC = "linux_390-64" ]; then
     wget -q https://ci.adoptium.net/job/Build_Arctic_s390x_linux/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
 else
     wget -q https://ci.adoptium.net/job/Build_Arctic/lastSuccessfulBuild/artifact/upload/arctic-0.8.1.jar
