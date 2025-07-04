@@ -41,37 +41,47 @@ if (params.PERFCONFIG_JSON) {
 def childParams = []
 // update all parameters to strings except for booleans
 params.each { param ->
-        def value = param.value.toString()
-        if (value == "true" || value == "false") {
-                childParams << booleanParam(name: param.key, value: value.toBoolean())
+        if ( param.key == "PERFCONFIG_JSON" ) {
+                // do not need to pass the param to child jobs
         } else {
-                childParams << string(name: param.key, value: value)
+                def value = param.value.toString()
+                if (value == "true" || value == "false") {
+                        childParams << booleanParam(name: param.key, value: value.toBoolean())
+                } else {
+                        childParams << string(name: param.key, value: value)
+                }
         }
+
 }
+node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+        perfConfigJson.each { item ->
+                def BENCHMARK = item.BENCHMARK 
+                def TARGET = item.TARGET
+                def BUILD_LIST = item.BUILD_LIST
+                def PLATMACHINE_MAP = item.PLAT_MACHINE_MAP
+                def baseParams = childParams.collect()
+                baseParams << string(name: "BENCHMARK", value: item.BENCHMARK)
+                baseParams << string(name: "TARGET", value: item.TARGET)
+                baseParams << string(name: "BUILD_LIST", value: item.BUILD_LIST)
+                
+                item.PLAT_MACHINE_MAP.each { kv -> 
+                        kv.each {p, m -> 
+                                // Clone baseParams to avoid mutation
+                                def thisChildParams = baseParams.collect()
+                                thisChildParams << string(name: "PLATFORM", value: p)
+                                thisChildParams << string(name: "LABEL", value: m)
 
-perfConfigJson.each { item ->
-        def BENCHMARK = item.BENCHMARK 
-        def TARGET = item.TARGET
-        def BUILD_LIST = item.BUILD_LIST
-        def PLATMACHINE_MAP = item.PLAT_MACHINE_MAP 
-
-        childParams << string(name: "BENCHMARK", value: item.BENCHMARK)
-        childParams << string(name: "TARGET", value: item.TARGET)
-        childParams << string(name: "BUILD_LIST", value: item.BUILD_LIST)
-        
-        item.PLAT_MACHINE_MAP.each { kv -> 
-                kv.each {p, m -> 
-                        childParams << string(name: "PLATFORM", value: p) 
-                        childParams << string(name: "LABEL", value: m)
-                        def shortName = (params.JDK_IMPL && params.JDK_IMPL == "hotspot") ? "hs" : "j9"
-                        def jobName = "Perf_openjdk${params.JDK_VERSION}_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
-                        def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
-                        if (!jobIsRunnable) {
-                                echo "Generating downstream job '${jobName}' from perfL2JobTemplate …"
-                                createPerfL2Job(jobName, p, item.BENCHMARK)
-                        }
-                        JOBS[jobName] = {
-                                build job: jobName, parameters: childParams, propagate: true
+                                def shortName = (params.JDK_IMPL && params.JDK_IMPL == "hotspot") ? "hs" : "j9"
+                                def jobName = "Perf_openjdk${params.JDK_VERSION}_${shortName}_sanity.perf_${p}_${item.BENCHMARK}"
+                                def jobIsRunnable = JobHelper.jobIsRunnable(jobName)
+                                echo "jobName ${jobName} params: ${thisChildParams}"
+                                if (!jobIsRunnable) {
+                                        echo "Generating downstream job '${jobName}' from perfL2JobTemplate …"
+                                        createPerfL2Job(jobName, p, item.BENCHMARK)
+                                }
+                                JOBS[jobName] = {
+                                        build job: jobName, parameters: thisChildParams, propagate: true
+                                }
                         }
                 }
         }

@@ -63,26 +63,27 @@ node ("ci.role.test&&hw.arch.x86&&sw.os.linux") {
                                         } else {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
+                                        if (params.TARGET && params.TARGET.contains('dacapo')) {
+                                                testStats = stats(testRuntimes)
+                                                baselineStats = stats(baselineRuntimes)
+                                                def score = (testStats.mean/baselineStats.mean) * 100
 
-                                        testStats = stats(testRuntimes)
-                                        baselineStats = stats(baselineRuntimes)
-                                        def score = (testStats.mean/baselineStats.mean) * 100
+                                                echo "testRuntimes: ${testRuntimes}" 
+                                                echo "baselineRuntimes: ${baselineRuntimes}"
+                                                echo "score: ${score} %"
 
-                                        echo "testRuntimes: ${testRuntimes}" 
-                                        echo "baselineRuntimes: ${baselineRuntimes}"
-                                        echo "score: ${score} %"
-
-                                        if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
-                                                if (score <= 98) {
-                                                        currentBuild.result = 'UNSTABLE'
-                                                        echo "Possible regression, set build result to UNSTABLE."
-                                                } else {
-                                                        echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
-                                                        break
+                                                if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                        if (score <= 98) {
+                                                                currentBuild.result = 'UNSTABLE'
+                                                                echo "Possible regression, set build result to UNSTABLE."
+                                                        } else {
+                                                                echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
+                                                                break
+                                                        }
                                                 }
                                         }
                                 }
-                        }        
+                        }
                 } finally {
                         cleanWs disableDeferredWipeout: true, deleteDirs: true
                 }
@@ -134,16 +135,16 @@ def aggregateLogs(run, runtimes) {
                         }   
                         json = readJSON file: "${name}_${buildId}.json"
                         archiveArtifacts artifacts: "${name}_${buildId}.json", fingerprint: true, allowEmptyArchive: false
+                        def metricList = json.metrics['dacapo-h2']
+                        def runtimeMap = metricList.find{ it.containsKey('value') }
+                        if (runtimeMap) {
+                                runtimes << (runtimeMap.value as double)
+                        } else { 
+                                echo "No runtime in ${name}_${buildId}.json" 
+                        }
                 } catch (Exception e) {
-                        echo "Cannot copy ${name}_${buildId}.json from ${name}: ${e}"
+                        echo "Cannot copy/process ${name}_${buildId}.json from ${name}: ${e}"
                 }
-        }
-        def metricList = json.metrics['dacapo-h2']
-        def runtimeMap = metricList.find{ it.containsKey('value') }
-        if (runtimeMap) {
-                runtimes << (runtimeMap.value as double)
-        } else { 
-                echo "No runtime in ${name}_${buildId}.json" 
         }
 }
 
