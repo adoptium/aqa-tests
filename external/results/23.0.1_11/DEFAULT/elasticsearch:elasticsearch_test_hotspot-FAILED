@@ -1,0 +1,1206 @@
+ 
+export TEST_JDK_HOME=/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+export EXTRA_DOCKER_ARGS=-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk ;
+export BUILD_LIST=external/elasticsearch ;
+export EXTERNAL_AQA_IMAGE=;
+make compile
+make _elasticsearch_test_hotspot
+
+JAVA_HOME is set to /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/autoGenEnv.mk
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/utils.mk
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+    [javac] Note: Some input files use or override a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+dist:
+      [jar] Building jar: /home/jvanek/git/aqa-tests/TKG/bin/TestKitGen.jar
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+0
+/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/java -cp ./bin/TestKitGen.jar org.openj9.envInfo.EnvDetector
+Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!
+microArchOutput: model name	: 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz
+****************************** MACHINE INFO ******************************
+File path : /home/jvanek/git/aqa-tests/TKG
+Free Physical Memory Size : 10146373632
+Free space (bytes) : 288450981888
+Total Physical Memory Size : 67106488320
+Total space (bytes) : 632976211968
+Usable space (bytes) : 256222371840
+antVersion : Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+cpuCores : 16
+curlVersion : 
+	curl 8.2.1 (x86_64-redhat-linux-gnu) libcurl/8.2.1 OpenSSL/3.1.4 zlib/1.2.13 libidn2/2.3.7 nghttp2/1.55.1
+	Release-Date: 2023-07-26
+	Protocols: file ftp ftps http https
+	Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz SPNEGO SSL threadsafe UnixSockets
+docker : not on docker
+gcc version : 13
+gclibc version : ldd (GNU libc) 2.38
+gdb version : GNU gdb (Fedora Linux) 15.1-1.fc39
+lldb version : Command could not be executed
+makeVersion : 
+	GNU Make 4.4.1
+	Built for x86_64-redhat-linux-gnu
+	Copyright (C) 1988-2023 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+perlVersion : 
+	
+	This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-thread-multi
+	(with 15 registered patches, see perl -V for more detail)
+	
+	Copyright 1987-2023, Larry Wall
+	
+	Perl may be copied only under the terms of either the Artistic License or the
+	GNU General Public License, which may be found in the Perl 5 source kit.
+	
+	Complete documentation for Perl, including FAQ lists, should be found on
+	this system using "man perl" or "perldoc perl".  If you have access to the
+	Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+	
+procArch : unknown
+sysArch : x86_64
+sysOS : Linux
+ulimit : 
+	real-time non-blocking time  (microseconds, -R) unlimited
+	core file size              (blocks, -c) unlimited
+	data seg size               (kbytes, -d) unlimited
+	scheduling priority                 (-e) 0
+	file size                   (blocks, -f) unlimited
+	pending signals                     (-i) 255386
+	max locked memory           (kbytes, -l) 8192
+	max memory size             (kbytes, -m) unlimited
+	open files                          (-n) 524288
+	pipe size                (512 bytes, -p) 8
+	POSIX message queues         (bytes, -q) 819200
+	real-time priority                  (-r) 0
+	stack size                  (kbytes, -s) 8192
+	cpu time                   (seconds, -t) unlimited
+	max user processes                  (-u) 255386
+	virtual memory              (kbytes, -v) unlimited
+	file locks                          (-x) unlimited
+uname : Linux fedora 6.11.6-100.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Nov  1 16:07:59 UTC 2024 x86_64 GNU/Linux
+vmVendor : Oracle Corporation
+vmVersion : 23.0.1+11
+xlc version : bash: line 1: xlC: command not found
+**************************************************************************
+
+System.getProperty('java.vm.name')=OpenJDK 64-Bit Server VM
+
+System.getProperty('java.vendor')=Eclipse Adoptium
+
+System.getProperty('os.name')=Linux
+
+System.getProperty('os.arch')=amd64
+
+System.getProperty('java.fullversion')=null
+
+System.getProperty('sun.arch.data.model')=64
+
+make -f clean.mk cleanBuild
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../../jvmtest
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f compile.mk compile
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f scripts/build_test.xml -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DBUILD_ROOT=/home/jvanek/git/aqa-tests/TKG/../../jvmtest -DJDK_VERSION=23 -DJDK_IMPL=hotspot -DJDK_VENDOR=eclipse -DJCL_VERSION=latest -DBUILD_LIST=external/elasticsearch -DRESOURCES_DIR=/home/jvanek/git/aqa-tests/TKG/../../jvmtest/TestConfig/resources -DSPEC=linux_x86-64 -DTEST_JDK_HOME=/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 -DJVM_VERSION=openjdk23 -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib  2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_test.xml
+     [echo]  build.list is TestConfig/build.xml,external/elasticsearch/build.xml 
+
+-create_test_directory:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest
+
+stage_test_material:
+     [copy] Copying 1319 files to /home/jvanek/git/jvmtest
+     [copy] Copied 564 empty directories to 240 empty directories under /home/jvanek/git/jvmtest
+
+build:
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest/TestConfig
+
+build:
+     [copy] Copying 22 files to /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copied 9 empty directories to 4 empty directories under /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/TestConfig
+
+build:
+
+move_scripts:
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/external/elasticsearch
+     [copy] Copying 9 files to /home/jvanek/git/jvmtest/external
+
+clean_image:
+     [echo] Executing external.sh --clean --dir elasticsearch --tag nightly --version 23 --impl hotspot 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is elasticsearch
+     [exec] The directory in the external.sh is elasticsearch
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] Untagged: localhost/adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full
+     [exec] Deleted: 09b081c7ec978fb75e9020fd17c6556678c2b00b61d057342f8b982f016a1baa
+     [exec] Deleted: 5aa346c19b0befc38f74fff50f0e1c13e678db8fda333901920d64bf8bb178d0
+     [exec] Deleted: bfea6c7c95fe28f7da2ecde0c20b31cad59df35c55c6ad038e9d557955ce16ce
+     [exec] Deleted: d100eb5dc8845968214339f6e14b67f93c9e30c042966dd0a440e37771af3bf9
+     [exec] Deleted: a5b0063a7e197562c4594d17328356fc103016ebb4d56f5957b42637b7dcbf2a
+     [exec] Deleted: 93cca0853aa323d288f1d885445e5104539d5f50e9e3f5b9c7b9efb3b5cb3b0d
+     [exec] Deleted: 9355e55c578a68692594ef8052e92cc62dd336fda5f74a863ae37df66f2e8877
+     [exec] Deleted: 00627741f5322cfc0cb16265bc91dd1c3f393d787679d70345a767c0316ef1b2
+     [exec] Deleted: f245f023ea304135728880343084d363111c1237b1d7fe38fe9b4eea886fd789
+     [exec] Deleted: 8e92644ed35828fe9d70f0d3407a65b9e1df8def6af7af3fab0dff66e25ce5ff
+     [exec] Deleted: f0a107265d10a050d09211ae729d5e658723d5557dbc1e2b0265e8b616784a00
+     [exec] Deleted: d5099530af4d77a140650b3be9bc0b55ea6f4ba941abecfd75c7a0eedecc4f89
+     [exec] Deleted: 48d4c23c674cbdcad72340f7a487483f899914dcc9e9b6bdb5b229b402cd54cf
+     [exec] Deleted: c541f1b6a1c602c1290bf5f21febbc9a579f6e4c8082297df9d6b82b33554f53
+     [exec] Deleted: e682a08a1632a27d0dfed4ee6f3b2aab9a344716e5e507075e00667a2bb9d629
+     [exec] Deleted: 06d6129ff470a5352bf0313cb56069513eff897df01e41f6d66577f229d61158
+     [exec] Deleted: 211408c48f5e2e1e4b34fd1345b179afe1ff678d73696828f3a984a2db2d9c6e
+     [exec] Deleted: afa85151ae69aa252f37fc420b92ffcbc46ea50d81786ee5772173f1ade9a796
+     [exec] Deleted: 89aeae373fb994127f3682206ba5fa19733d2c6a734cf731d32c5a99efa2973a
+     [exec] Deleted: d4c27b30ea61ba57d6feab867069d4e6a4cf5685c254cf687262bd6d287c9004
+     [exec] Error: invalid reference format
+     [exec] Result: 125
+
+build_image:
+     [echo] Executing external.sh --build --dir elasticsearch --tag nightly --version 23 --impl hotspot --platform linux_x86-64 --docker_args -v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is elasticsearch
+     [exec] The directory in the external.sh is elasticsearch
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] build_image.sh elasticsearch 23 hotspot ubuntu jdk full linux_x86-64 default 0 
+     [exec] /home/jvanek/git/jvmtest/external
+     [exec] 
+     [exec] Writing /home/jvanek/git/jvmtest/external/elasticsearch/dockerfile/23/jdk/ubuntu/Dockerfile.hotspot.full ... ubuntu
+     [exec] done
+     [exec] 
+     [exec] The test in the build_image() function is elasticsearch
+     [exec] #####################################################
+     [exec] INFO:  podman build  --no-cache -t adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full -f /home/jvanek/git/jvmtest/external/elasticsearch/dockerfile/23/jdk/ubuntu/Dockerfile.hotspot.full /home/jvanek/git/jvmtest/external/
+     [exec] #####################################################
+     [exec] STEP 1/21: FROM docker.io/library/eclipse-temurin:23-jdk
+     [exec] STEP 2/21: ENV RESULT_COMMENT="IN CONTAINER(not-as-root/podman)"
+     [exec] --> b04993e99b90
+     [exec] STEP 3/21: ARG ELASTICSEARCH_TAG=v8.1.2
+     [exec] --> 4cb5beb6ee70
+     [exec] STEP 4/21: RUN apt-get update 	&& apt-get install -qq -y --no-install-recommends software-properties-common 	&& apt-get install -qq -y --no-install-recommends gnupg 	&& add-apt-repository ppa:ubuntu-toolchain-r/test 	&& apt-get update 	&& apt-get install -y --no-install-recommends  git wget unzip  	&& rm -rf /var/lib/apt/lists/*
+     [exec] Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+     [exec] Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+     [exec] Get:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+     [exec] Get:4 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [728 kB]
+     [exec] Get:5 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+     [exec] Get:6 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+     [exec] Get:7 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [630 kB]
+     [exec] Get:8 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [15.3 kB]
+     [exec] Get:9 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [609 kB]
+     [exec] Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+     [exec] Get:11 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+     [exec] Get:12 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+     [exec] Get:13 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [19.7 kB]
+     [exec] Get:14 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [679 kB]
+     [exec] Get:15 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [945 kB]
+     [exec] Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [893 kB]
+     [exec] Get:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [11.9 kB]
+     [exec] Fetched 26.7 MB in 1s (22.3 MB/s)
+     [exec] Reading package lists...
+     [exec] debconf: delaying package configuration, since apt-utils is not installed
+     [exec] Selecting previously unselected package libpython3.12-minimal:amd64.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6792 files and directories currently installed.)Preparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3.12-minimal.
+     [exec] Preparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking python3.12-minimal (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up python3.12-minimal (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3-minimal.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7103 files and directories currently installed.)Preparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking python3-minimal (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package media-types.
+     [exec] Preparing to unpack .../1-media-types_10.1.0_all.deb ...
+     [exec] Unpacking media-types (10.1.0) ...
+     [exec] Selecting previously unselected package netbase.
+     [exec] Preparing to unpack .../2-netbase_6.4_all.deb ...
+     [exec] Unpacking netbase (6.4) ...
+     [exec] Selecting previously unselected package libpython3.12-stdlib:amd64.
+     [exec] Preparing to unpack .../3-libpython3.12-stdlib_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3.12.
+     [exec] Preparing to unpack .../4-python3.12_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking python3.12 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package libpython3-stdlib:amd64.
+     [exec] Preparing to unpack .../5-libpython3-stdlib_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking libpython3-stdlib:amd64 (3.12.3-0ubuntu2) ...
+     [exec] Setting up python3-minimal (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package python3.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7544 files and directories currently installed.)Preparing to unpack .../00-python3_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking python3 (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package libapparmor1:amd64.
+     [exec] Preparing to unpack .../01-libapparmor1_4.0.1really4.0.1-0ubuntu0.24.04.3_amd64.deb ...
+     [exec] Unpacking libapparmor1:amd64 (4.0.1really4.0.1-0ubuntu0.24.04.3) ...
+     [exec] Selecting previously unselected package libargon2-1:amd64.
+     [exec] Preparing to unpack .../02-libargon2-1_0~20190702+dfsg-4build1_amd64.deb ...
+     [exec] Unpacking libargon2-1:amd64 (0~20190702+dfsg-4build1) ...
+     [exec] Selecting previously unselected package libdevmapper1.02.1:amd64.
+     [exec] Preparing to unpack .../03-libdevmapper1.02.1_2%3a1.02.185-3ubuntu3.1_amd64.deb ...
+     [exec] Unpacking libdevmapper1.02.1:amd64 (2:1.02.185-3ubuntu3.1) ...
+     [exec] Selecting previously unselected package libjson-c5:amd64.
+     [exec] Preparing to unpack .../04-libjson-c5_0.17-1build1_amd64.deb ...
+     [exec] Unpacking libjson-c5:amd64 (0.17-1build1) ...
+     [exec] Selecting previously unselected package libcryptsetup12:amd64.
+     [exec] Preparing to unpack .../05-libcryptsetup12_2%3a2.7.0-1ubuntu4.1_amd64.deb ...
+     [exec] Unpacking libcryptsetup12:amd64 (2:2.7.0-1ubuntu4.1) ...
+     [exec] Selecting previously unselected package libfdisk1:amd64.
+     [exec] Preparing to unpack .../06-libfdisk1_2.39.3-9ubuntu6.1_amd64.deb ...
+     [exec] Unpacking libfdisk1:amd64 (2.39.3-9ubuntu6.1) ...
+     [exec] Selecting previously unselected package libkmod2:amd64.
+     [exec] Preparing to unpack .../07-libkmod2_31+20240202-2ubuntu7_amd64.deb ...
+     [exec] Unpacking libkmod2:amd64 (31+20240202-2ubuntu7) ...
+     [exec] Selecting previously unselected package libsystemd-shared:amd64.
+     [exec] Preparing to unpack .../08-libsystemd-shared_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking libsystemd-shared:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package systemd-dev.
+     [exec] Preparing to unpack .../09-systemd-dev_255.4-1ubuntu8.4_all.deb ...
+     [exec] Unpacking systemd-dev (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package systemd.
+     [exec] Preparing to unpack .../10-systemd_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking systemd (255.4-1ubuntu8.4) ...
+     [exec] Setting up libapparmor1:amd64 (4.0.1really4.0.1-0ubuntu0.24.04.3) ...
+     [exec] Setting up libargon2-1:amd64 (0~20190702+dfsg-4build1) ...
+     [exec] Setting up libdevmapper1.02.1:amd64 (2:1.02.185-3ubuntu3.1) ...
+     [exec] Setting up libjson-c5:amd64 (0.17-1build1) ...
+     [exec] Setting up libcryptsetup12:amd64 (2:2.7.0-1ubuntu4.1) ...
+     [exec] Setting up libfdisk1:amd64 (2.39.3-9ubuntu6.1) ...
+     [exec] Setting up libkmod2:amd64 (31+20240202-2ubuntu7) ...
+     [exec] Setting up libsystemd-shared:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Setting up systemd-dev (255.4-1ubuntu8.4) ...
+     [exec] Setting up systemd (255.4-1ubuntu8.4) ...
+     [exec] Created symlink /etc/systemd/system/getty.target.wants/getty@tty1.service → /usr/lib/systemd/system/getty@.service.
+     [exec] Created symlink /etc/systemd/system/multi-user.target.wants/remote-fs.target → /usr/lib/systemd/system/remote-fs.target.
+     [exec] Created symlink /etc/systemd/system/sysinit.target.wants/systemd-pstore.service → /usr/lib/systemd/system/systemd-pstore.service.
+     [exec] Initializing machine ID from random generator.
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:10: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:11: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:12: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:13: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:22: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:23: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:28: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:29: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:30: Failed to resolve group 'systemd-journal': No such process
+     [exec] Creating group 'systemd-journal' with GID 999.
+     [exec] Creating group 'systemd-network' with GID 998.
+     [exec] Creating user 'systemd-network' (systemd Network Management) with UID 998 and GID 998.
+     [exec] Selecting previously unselected package systemd-sysv.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 8593 files and directories currently installed.)Preparing to unpack .../00-systemd-sysv_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking systemd-sysv (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package sgml-base.
+     [exec] Preparing to unpack .../01-sgml-base_1.31_all.deb ...
+     [exec] Unpacking sgml-base (1.31) ...
+     [exec] Selecting previously unselected package libdbus-1-3:amd64.
+     [exec] Preparing to unpack .../02-libdbus-1-3_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking libdbus-1-3:amd64 (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-bin.
+     [exec] Preparing to unpack .../03-dbus-bin_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus-bin (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-session-bus-common.
+     [exec] Preparing to unpack .../04-dbus-session-bus-common_1.14.10-4ubuntu4.1_all.deb ...
+     [exec] Unpacking dbus-session-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-daemon.
+     [exec] Preparing to unpack .../05-dbus-daemon_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus-daemon (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-system-bus-common.
+     [exec] Preparing to unpack .../06-dbus-system-bus-common_1.14.10-4ubuntu4.1_all.deb ...
+     [exec] Unpacking dbus-system-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus.
+     [exec] Preparing to unpack .../07-dbus_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package distro-info-data.
+     [exec] Preparing to unpack .../08-distro-info-data_0.60ubuntu0.2_all.deb ...
+     [exec] Unpacking distro-info-data (0.60ubuntu0.2) ...
+     [exec] Selecting previously unselected package libglib2.0-0t64:amd64.
+     [exec] Preparing to unpack .../09-libglib2.0-0t64_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package gir1.2-glib-2.0:amd64.
+     [exec] Preparing to unpack .../10-gir1.2-glib-2.0_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libgirepository-1.0-1:amd64.
+     [exec] Preparing to unpack .../11-libgirepository-1.0-1_1.80.1-1_amd64.deb ...
+     [exec] Unpacking libgirepository-1.0-1:amd64 (1.80.1-1) ...
+     [exec] Selecting previously unselected package gir1.2-girepository-2.0:amd64.
+     [exec] Preparing to unpack .../12-gir1.2-girepository-2.0_1.80.1-1_amd64.deb ...
+     [exec] Unpacking gir1.2-girepository-2.0:amd64 (1.80.1-1) ...
+     [exec] Selecting previously unselected package iso-codes.
+     [exec] Preparing to unpack .../13-iso-codes_4.16.0-1_all.deb ...
+     [exec] Unpacking iso-codes (4.16.0-1) ...
+     [exec] Selecting previously unselected package libcap2-bin.
+     [exec] Preparing to unpack .../14-libcap2-bin_1%3a2.66-5ubuntu2_amd64.deb ...
+     [exec] Unpacking libcap2-bin (1:2.66-5ubuntu2) ...
+     [exec] Selecting previously unselected package libelf1t64:amd64.
+     [exec] Preparing to unpack .../15-libelf1t64_0.190-1.1build4_amd64.deb ...
+     [exec] Unpacking libelf1t64:amd64 (0.190-1.1build4) ...
+     [exec] Selecting previously unselected package libglib2.0-data.
+     [exec] Preparing to unpack .../16-libglib2.0-data_2.80.0-6ubuntu3.2_all.deb ...
+     [exec] Unpacking libglib2.0-data (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libkrb5support0:amd64.
+     [exec] Preparing to unpack .../17-libkrb5support0_1.20.1-6ubuntu2.2_amd64.deb ...
+     [exec] Unpacking libkrb5support0:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Selecting previously unselected package libk5crypto3:amd64.
+     [exec] Preparing to unpack .../18-libk5crypto3_1.20.1-6ubuntu2.2_amd64.deb ...
+     [exec] Unpacking libk5crypto3:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Selecting previously unselected package libkeyutils1:amd64.
+     [exec] Preparing to unpack .../19-libkeyutils1_1.6.3-3build1_amd64.deb ...
+     [exec] Unpacking libkeyutils1:amd64 (1.6.3-3build1) ...
+     [exec] Selecting previously unselected package libkrb5-3:amd64.
+     [exec] Preparing to unpack .../20-libkrb5-3_1.20.1-6ubuntu2.2_amd64.deb ...
+     [exec] Unpacking libkrb5-3:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Selecting previously unselected package libgssapi-krb5-2:amd64.
+     [exec] Preparing to unpack .../21-libgssapi-krb5-2_1.20.1-6ubuntu2.2_amd64.deb ...
+     [exec] Unpacking libgssapi-krb5-2:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Selecting previously unselected package libicu74:amd64.
+     [exec] Preparing to unpack .../22-libicu74_74.2-1ubuntu3.1_amd64.deb ...
+     [exec] Unpacking libicu74:amd64 (74.2-1ubuntu3.1) ...
+     [exec] Selecting previously unselected package libpam-systemd:amd64.
+     [exec] Preparing to unpack .../23-libpam-systemd_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking libpam-systemd:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package libxml2:amd64.
+     [exec] Preparing to unpack .../24-libxml2_2.9.14+dfsg-1.3ubuntu3_amd64.deb ...
+     [exec] Unpacking libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3) ...
+     [exec] Selecting previously unselected package libyaml-0-2:amd64.
+     [exec] Preparing to unpack .../25-libyaml-0-2_0.2.5-1build1_amd64.deb ...
+     [exec] Unpacking libyaml-0-2:amd64 (0.2.5-1build1) ...
+     [exec] Selecting previously unselected package lsb-release.
+     [exec] Preparing to unpack .../26-lsb-release_12.0-2_all.deb ...
+     [exec] Unpacking lsb-release (12.0-2) ...
+     [exec] Selecting previously unselected package python-apt-common.
+     [exec] Preparing to unpack .../27-python-apt-common_2.7.7ubuntu3_all.deb ...
+     [exec] Unpacking python-apt-common (2.7.7ubuntu3) ...
+     [exec] Selecting previously unselected package python3-apt.
+     [exec] Preparing to unpack .../28-python3-apt_2.7.7ubuntu3_amd64.deb ...
+     [exec] Unpacking python3-apt (2.7.7ubuntu3) ...
+     [exec] Selecting previously unselected package python3-cffi-backend:amd64.
+     [exec] Preparing to unpack .../29-python3-cffi-backend_1.16.0-2build1_amd64.deb ...
+     [exec] Unpacking python3-cffi-backend:amd64 (1.16.0-2build1) ...
+     [exec] Selecting previously unselected package python3-dbus.
+     [exec] Preparing to unpack .../30-python3-dbus_1.3.2-5build3_amd64.deb ...
+     [exec] Unpacking python3-dbus (1.3.2-5build3) ...
+     [exec] Selecting previously unselected package python3-gi.
+     [exec] Preparing to unpack .../31-python3-gi_3.48.2-1_amd64.deb ...
+     [exec] Unpacking python3-gi (3.48.2-1) ...
+     [exec] Selecting previously unselected package python3-pkg-resources.
+     [exec] Preparing to unpack .../32-python3-pkg-resources_68.1.2-2ubuntu1.1_all.deb ...
+     [exec] Unpacking python3-pkg-resources (68.1.2-2ubuntu1.1) ...
+     [exec] Selecting previously unselected package libnghttp2-14:amd64.
+     [exec] Preparing to unpack .../33-libnghttp2-14_1.59.0-1ubuntu0.1_amd64.deb ...
+     [exec] Unpacking libnghttp2-14:amd64 (1.59.0-1ubuntu0.1) ...
+     [exec] Selecting previously unselected package libpackagekit-glib2-18:amd64.
+     [exec] Preparing to unpack .../34-libpackagekit-glib2-18_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking libpackagekit-glib2-18:amd64 (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package gir1.2-packagekitglib-1.0.
+     [exec] Preparing to unpack .../35-gir1.2-packagekitglib-1.0_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking gir1.2-packagekitglib-1.0 (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package librtmp1:amd64.
+     [exec] Preparing to unpack .../36-librtmp1_2.4+20151223.gitfa8646d.1-2build7_amd64.deb ...
+     [exec] Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build7) ...
+     [exec] Selecting previously unselected package libssh-4:amd64.
+     [exec] Preparing to unpack .../37-libssh-4_0.10.6-2build2_amd64.deb ...
+     [exec] Unpacking libssh-4:amd64 (0.10.6-2build2) ...
+     [exec] Selecting previously unselected package libcurl3t64-gnutls:amd64.
+     [exec] Preparing to unpack .../38-libcurl3t64-gnutls_8.5.0-2ubuntu10.5_amd64.deb ...
+     [exec] Unpacking libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.5) ...
+     [exec] Selecting previously unselected package libstemmer0d:amd64.
+     [exec] Preparing to unpack .../39-libstemmer0d_2.2.0-4build1_amd64.deb ...
+     [exec] Unpacking libstemmer0d:amd64 (2.2.0-4build1) ...
+     [exec] Selecting previously unselected package libxmlb2:amd64.
+     [exec] Preparing to unpack .../40-libxmlb2_0.3.18-1_amd64.deb ...
+     [exec] Unpacking libxmlb2:amd64 (0.3.18-1) ...
+     [exec] Selecting previously unselected package libappstream5:amd64.
+     [exec] Preparing to unpack .../41-libappstream5_1.0.2-1build6_amd64.deb ...
+     [exec] Unpacking libappstream5:amd64 (1.0.2-1build6) ...
+     [exec] Selecting previously unselected package libduktape207:amd64.
+     [exec] Preparing to unpack .../42-libduktape207_2.7.0+tests-0ubuntu3_amd64.deb ...
+     [exec] Unpacking libduktape207:amd64 (2.7.0+tests-0ubuntu3) ...
+     [exec] Selecting previously unselected package libdw1t64:amd64.
+     [exec] Preparing to unpack .../43-libdw1t64_0.190-1.1build4_amd64.deb ...
+     [exec] Unpacking libdw1t64:amd64 (0.190-1.1build4) ...
+     [exec] Selecting previously unselected package libglib2.0-bin.
+     [exec] Preparing to unpack .../44-libglib2.0-bin_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking libglib2.0-bin (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libunwind8:amd64.
+     [exec] Preparing to unpack .../45-libunwind8_1.6.2-3build1_amd64.deb ...
+     [exec] Unpacking libunwind8:amd64 (1.6.2-3build1) ...
+     [exec] Selecting previously unselected package libgstreamer1.0-0:amd64.
+     [exec] Preparing to unpack .../46-libgstreamer1.0-0_1.24.2-1_amd64.deb ...
+     [exec] Unpacking libgstreamer1.0-0:amd64 (1.24.2-1) ...
+     [exec] Selecting previously unselected package libpolkit-gobject-1-0:amd64.
+     [exec] Preparing to unpack .../47-libpolkit-gobject-1-0_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking libpolkit-gobject-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package libpolkit-agent-1-0:amd64.
+     [exec] Preparing to unpack .../48-libpolkit-agent-1-0_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking libpolkit-agent-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package xml-core.
+     [exec] Preparing to unpack .../49-xml-core_0.19_all.deb ...
+     [exec] Unpacking xml-core (0.19) ...
+     [exec] Selecting previously unselected package polkitd.
+     [exec] Preparing to unpack .../50-polkitd_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking polkitd (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package python3-blinker.
+     [exec] Preparing to unpack .../51-python3-blinker_1.7.0-1_all.deb ...
+     [exec] Unpacking python3-blinker (1.7.0-1) ...
+     [exec] Selecting previously unselected package python3-cryptography.
+     [exec] Preparing to unpack .../52-python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb ...
+     [exec] Unpacking python3-cryptography (41.0.7-4ubuntu0.1) ...
+     [exec] Selecting previously unselected package python3-pyparsing.
+     [exec] Preparing to unpack .../53-python3-pyparsing_3.1.1-1_all.deb ...
+     [exec] Unpacking python3-pyparsing (3.1.1-1) ...
+     [exec] Selecting previously unselected package python3-httplib2.
+     [exec] Preparing to unpack .../54-python3-httplib2_0.20.4-3_all.deb ...
+     [exec] Unpacking python3-httplib2 (0.20.4-3) ...
+     [exec] Selecting previously unselected package python3-jwt.
+     [exec] Preparing to unpack .../55-python3-jwt_2.7.0-1_all.deb ...
+     [exec] Unpacking python3-jwt (2.7.0-1) ...
+     [exec] Selecting previously unselected package python3-lazr.uri.
+     [exec] Preparing to unpack .../56-python3-lazr.uri_1.0.6-3_all.deb ...
+     [exec] Unpacking python3-lazr.uri (1.0.6-3) ...
+     [exec] Selecting previously unselected package python3-wadllib.
+     [exec] Preparing to unpack .../57-python3-wadllib_1.3.6-5_all.deb ...
+     [exec] Unpacking python3-wadllib (1.3.6-5) ...
+     [exec] Selecting previously unselected package python3-distro.
+     [exec] Preparing to unpack .../58-python3-distro_1.9.0-1_all.deb ...
+     [exec] Unpacking python3-distro (1.9.0-1) ...
+     [exec] Selecting previously unselected package python3-oauthlib.
+     [exec] Preparing to unpack .../59-python3-oauthlib_3.2.2-1_all.deb ...
+     [exec] Unpacking python3-oauthlib (3.2.2-1) ...
+     [exec] Selecting previously unselected package python3-lazr.restfulclient.
+     [exec] Preparing to unpack .../60-python3-lazr.restfulclient_0.14.6-1_all.deb ...
+     [exec] Unpacking python3-lazr.restfulclient (0.14.6-1) ...
+     [exec] Selecting previously unselected package python3-six.
+     [exec] Preparing to unpack .../61-python3-six_1.16.0-4_all.deb ...
+     [exec] Unpacking python3-six (1.16.0-4) ...
+     [exec] Selecting previously unselected package python3-launchpadlib.
+     [exec] Preparing to unpack .../62-python3-launchpadlib_1.11.0-6_all.deb ...
+     [exec] Unpacking python3-launchpadlib (1.11.0-6) ...
+     [exec] Selecting previously unselected package python3-software-properties.
+     [exec] Preparing to unpack .../63-python3-software-properties_0.99.49.1_all.deb ...
+     [exec] Unpacking python3-software-properties (0.99.49.1) ...
+     [exec] Selecting previously unselected package packagekit.
+     [exec] Preparing to unpack .../64-packagekit_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking packagekit (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package software-properties-common.
+     [exec] Preparing to unpack .../65-software-properties-common_0.99.49.1_all.deb ...
+     [exec] Unpacking software-properties-common (0.99.49.1) ...
+     [exec] Setting up media-types (10.1.0) ...
+     [exec] Setting up systemd-sysv (255.4-1ubuntu8.4) ...
+     [exec] Setting up libkeyutils1:amd64 (1.6.3-3build1) ...
+     [exec] Setting up libyaml-0-2:amd64 (0.2.5-1build1) ...
+     [exec] Setting up distro-info-data (0.60ubuntu0.2) ...
+     [exec] Setting up libnghttp2-14:amd64 (1.59.0-1ubuntu0.1) ...
+     [exec] Setting up libunwind8:amd64 (1.6.2-3build1) ...
+     [exec] Setting up libelf1t64:amd64 (0.190-1.1build4) ...
+     [exec] Setting up libkrb5support0:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Setting up libdw1t64:amd64 (0.190-1.1build4) ...
+     [exec] Setting up libcap2-bin (1:2.66-5ubuntu2) ...
+     [exec] Setting up libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] No schema files found: doing nothing.
+     [exec] Setting up libglib2.0-data (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build7) ...
+     [exec] Setting up libdbus-1-3:amd64 (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up libk5crypto3:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Setting up libicu74:amd64 (74.2-1ubuntu3.1) ...
+     [exec] Setting up python-apt-common (2.7.7ubuntu3) ...
+     [exec] Setting up libduktape207:amd64 (2.7.0+tests-0ubuntu3) ...
+     [exec] Setting up dbus-session-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libgirepository-1.0-1:amd64 (1.80.1-1) ...
+     [exec] Setting up netbase (6.4) ...
+     [exec] Setting up sgml-base (1.31) ...
+     [exec] Setting up libkrb5-3:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Setting up libstemmer0d:amd64 (2.2.0-4build1) ...
+     [exec] Setting up lsb-release (12.0-2) ...
+     [exec] Setting up dbus-system-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3) ...
+     [exec] Setting up iso-codes (4.16.0-1) ...
+     [exec] Setting up dbus-bin (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libpolkit-gobject-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Setting up libgstreamer1.0-0:amd64 (1.24.2-1) ...
+     [exec] Setcap worked! gst-ptp-helper is not suid!
+     [exec] Setting up libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libxmlb2:amd64 (0.3.18-1) ...
+     [exec] Setting up python3.12 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libglib2.0-bin (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up libpackagekit-glib2-18:amd64 (1.2.8-2build3) ...
+     [exec] Setting up dbus-daemon (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up gir1.2-packagekitglib-1.0 (1.2.8-2build3) ...
+     [exec] Setting up gir1.2-girepository-2.0:amd64 (1.80.1-1) ...
+     [exec] Setting up dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libgssapi-krb5-2:amd64 (1.20.1-6ubuntu2.2) ...
+     [exec] Setting up libssh-4:amd64 (0.10.6-2build2) ...
+     [exec] Setting up xml-core (0.19) ...
+     [exec] Setting up libpam-systemd:amd64 (255.4-1ubuntu8.4) ...
+     [exec] debconf: unable to initialize frontend: Dialog
+     [exec] debconf: (TERM is not set, so the dialog frontend is not usable.)
+     [exec] debconf: falling back to frontend: Readline
+     [exec] debconf: unable to initialize frontend: Readline
+     [exec] debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.38.2 /usr/local/share/perl/5.38.2 /usr/lib/x86_64-linux-gnu/perl5/5.38 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.38 /usr/share/perl/5.38 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8.)
+     [exec] debconf: falling back to frontend: Teletype
+     [exec] Setting up libpolkit-agent-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Setting up libpython3-stdlib:amd64 (3.12.3-0ubuntu2) ...
+     [exec] Setting up libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.5) ...
+     [exec] Setting up libappstream5:amd64 (1.0.2-1build6) ...
+     [exec] Setting up python3 (3.12.3-0ubuntu2) ...
+     [exec] running python rtupdate hooks for python3.12...
+     [exec] running python post-rtupdate hooks for python3.12...
+     [exec] Setting up python3-six (1.16.0-4) ...
+     [exec] Setting up python3-pyparsing (3.1.1-1) ...
+     [exec] Setting up python3-gi (3.48.2-1) ...
+     [exec] Setting up python3-httplib2 (0.20.4-3) ...
+     [exec] Setting up python3-cffi-backend:amd64 (1.16.0-2build1) ...
+     [exec] Setting up python3-blinker (1.7.0-1) ...
+     [exec] Setting up python3-pkg-resources (68.1.2-2ubuntu1.1) ...
+     [exec] Setting up python3-dbus (1.3.2-5build3) ...
+     [exec] Setting up python3-distro (1.9.0-1) ...
+     [exec] Setting up python3-jwt (2.7.0-1) ...
+     [exec] Setting up python3-apt (2.7.7ubuntu3) ...
+     [exec] Setting up python3-lazr.uri (1.0.6-3) ...
+     [exec] Setting up python3-cryptography (41.0.7-4ubuntu0.1) ...
+     [exec] Setting up python3-wadllib (1.3.6-5) ...
+     [exec] Setting up python3-oauthlib (3.2.2-1) ...
+     [exec] Setting up python3-lazr.restfulclient (0.14.6-1) ...
+     [exec] Setting up python3-launchpadlib (1.11.0-6) ...
+     [exec] Created symlink /etc/systemd/user/timers.target.wants/launchpadlib-cache-clean.timer → /usr/lib/systemd/user/launchpadlib-cache-clean.timer.
+     [exec] Setting up python3-software-properties (0.99.49.1) ...
+     [exec] Processing triggers for libc-bin (2.39-0ubuntu8.3) ...
+     [exec] Processing triggers for sgml-base (1.31) ...
+     [exec] Setting up polkitd (124-2ubuntu1) ...
+     [exec] Creating group 'polkitd' with GID 997.
+     [exec] Creating user 'polkitd' (User for polkitd) with UID 997 and GID 997.
+     [exec] invoke-rc.d: could not determine current runlevel
+     [exec] invoke-rc.d: policy-rc.d denied execution of reload.
+     [exec] start-stop-daemon: unable to stat /usr/libexec/polkitd (No such file or directory)
+     [exec] Setting up packagekit (1.2.8-2build3) ...
+     [exec] invoke-rc.d: could not determine current runlevel
+     [exec] invoke-rc.d: policy-rc.d denied execution of force-reload.
+     [exec] Failed to open connection to "system" message bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+     [exec] Created symlink /etc/systemd/user/sockets.target.wants/pk-debconf-helper.socket → /usr/lib/systemd/user/pk-debconf-helper.socket.
+     [exec] Setting up software-properties-common (0.99.49.1) ...
+     [exec] Processing triggers for dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Hit:1 http://security.ubuntu.com/ubuntu noble-security InRelease
+     [exec] Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+     [exec] Hit:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+     [exec] Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+     [exec] Get:5 https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu noble InRelease [24.4 kB]
+     [exec] Fetched 24.4 kB in 0s (79.2 kB/s)
+     [exec] Reading package lists...
+     [exec] PPA publishes dbgsym, you may need to include 'main/debug' component
+     [exec] Repository: 'Types: deb
+     [exec] URIs: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
+     [exec] Suites: noble
+     [exec] Components: main
+     [exec] '
+     [exec] Description:
+     [exec] Toolchain test builds; see https://wiki.ubuntu.com/ToolChain
+     [exec] 
+     [exec] More info: https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+     [exec] Adding repository.
+     [exec] Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease
+     [exec] Hit:2 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+     [exec] Hit:3 https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu noble InRelease
+     [exec] Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+     [exec] Hit:5 http://security.ubuntu.com/ubuntu noble-security InRelease
+     [exec] Reading package lists...
+     [exec] Reading package lists...
+     [exec] Building dependency tree...
+     [exec] Reading state information...
+     [exec] wget is already the newest version (1.21.4-1ubuntu4.1).
+     [exec] The following additional packages will be installed:
+     [exec]   git-man liberror-perl libgdbm-compat4t64 libgdbm6t64 libperl5.38t64 perl
+     [exec]   perl-modules-5.38
+     [exec] Suggested packages:
+     [exec]   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+     [exec]   gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n perl-doc
+     [exec]   libterm-readline-gnu-perl | libterm-readline-perl-perl make
+     [exec]   libtap-harness-archive-perl zip
+     [exec] Recommended packages:
+     [exec]   patch less ssh-client
+     [exec] The following NEW packages will be installed:
+     [exec]   git git-man liberror-perl libgdbm-compat4t64 libgdbm6t64 libperl5.38t64 perl
+     [exec]   perl-modules-5.38 unzip
+     [exec] 0 upgraded, 9 newly installed, 0 to remove and 1 not upgraded.
+     [exec] Need to get 13.2 MB of archives.
+     [exec] After this operation, 75.3 MB of additional disk space will be used.
+     [exec] Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 perl-modules-5.38 all 5.38.2-3.2build2 [3,110 kB]
+     [exec] Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 libgdbm6t64 amd64 1.23-5.1build1 [34.4 kB]
+     [exec] Get:3 http://archive.ubuntu.com/ubuntu noble/main amd64 libgdbm-compat4t64 amd64 1.23-5.1build1 [6,710 B]
+     [exec] Get:4 http://archive.ubuntu.com/ubuntu noble/main amd64 libperl5.38t64 amd64 5.38.2-3.2build2 [4,873 kB]
+     [exec] Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 perl amd64 5.38.2-3.2build2 [231 kB]
+     [exec] Get:6 http://archive.ubuntu.com/ubuntu noble/main amd64 liberror-perl all 0.17029-2 [25.6 kB]
+     [exec] Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git-man all 1:2.43.0-1ubuntu7.1 [1,100 kB]
+     [exec] Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git amd64 1:2.43.0-1ubuntu7.1 [3,679 kB]
+     [exec] debconf: delaying package configuration, since apt-utils is not installed
+     [exec] Get:9 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 unzip amd64 6.0-28ubuntu4.1 [174 kB]
+     [exec] Fetched 13.2 MB in 0s (34.1 MB/s)
+     [exec] Selecting previously unselected package perl-modules-5.38.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 11239 files and directories currently installed.)Preparing to unpack .../0-perl-modules-5.38_5.38.2-3.2build2_all.deb ...
+     [exec] Unpacking perl-modules-5.38 (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package libgdbm6t64:amd64.
+     [exec] Preparing to unpack .../1-libgdbm6t64_1.23-5.1build1_amd64.deb ...
+     [exec] Unpacking libgdbm6t64:amd64 (1.23-5.1build1) ...
+     [exec] Selecting previously unselected package libgdbm-compat4t64:amd64.
+     [exec] Preparing to unpack .../2-libgdbm-compat4t64_1.23-5.1build1_amd64.deb ...
+     [exec] Unpacking libgdbm-compat4t64:amd64 (1.23-5.1build1) ...
+     [exec] Selecting previously unselected package libperl5.38t64:amd64.
+     [exec] Preparing to unpack .../3-libperl5.38t64_5.38.2-3.2build2_amd64.deb ...
+     [exec] Unpacking libperl5.38t64:amd64 (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package perl.
+     [exec] Preparing to unpack .../4-perl_5.38.2-3.2build2_amd64.deb ...
+     [exec] Unpacking perl (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package liberror-perl.
+     [exec] Preparing to unpack .../5-liberror-perl_0.17029-2_all.deb ...
+     [exec] Unpacking liberror-perl (0.17029-2) ...
+     [exec] Selecting previously unselected package git-man.
+     [exec] Preparing to unpack .../6-git-man_1%3a2.43.0-1ubuntu7.1_all.deb ...
+     [exec] Unpacking git-man (1:2.43.0-1ubuntu7.1) ...
+     [exec] Selecting previously unselected package git.
+     [exec] Preparing to unpack .../7-git_1%3a2.43.0-1ubuntu7.1_amd64.deb ...
+     [exec] Unpacking git (1:2.43.0-1ubuntu7.1) ...
+     [exec] Selecting previously unselected package unzip.
+     [exec] Preparing to unpack .../8-unzip_6.0-28ubuntu4.1_amd64.deb ...
+     [exec] Unpacking unzip (6.0-28ubuntu4.1) ...
+     [exec] Setting up libgdbm6t64:amd64 (1.23-5.1build1) ...
+     [exec] Setting up libgdbm-compat4t64:amd64 (1.23-5.1build1) ...
+     [exec] Setting up unzip (6.0-28ubuntu4.1) ...
+     [exec] Setting up perl-modules-5.38 (5.38.2-3.2build2) ...
+     [exec] Setting up git-man (1:2.43.0-1ubuntu7.1) ...
+     [exec] Setting up libperl5.38t64:amd64 (5.38.2-3.2build2) ...
+     [exec] Setting up perl (5.38.2-3.2build2) ...
+     [exec] Setting up liberror-perl (0.17029-2) ...
+     [exec] Setting up git (1:2.43.0-1ubuntu7.1) ...
+     [exec] Processing triggers for libc-bin (2.39-0ubuntu8.3) ...
+     [exec] --> d9e9177955c8
+     [exec] STEP 5/21: ENV JAVA_TOOL_OPTIONS=" -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom"
+     [exec] --> 602ae38e1b10
+     [exec] STEP 6/21: RUN mkdir testResults
+     [exec] --> 01deb63433e1
+     [exec] STEP 7/21: ENV TEST_HOME /elasticsearch
+     [exec] --> 84989d505bc4
+     [exec] STEP 8/21: ENV APPLICATION_NAME=elasticsearch
+     [exec] --> 79545aa4a57b
+     [exec] STEP 9/21: ENV APPLICATION_TAG=v8.1.2
+     [exec] --> 59913daf946e
+     [exec] STEP 10/21: ENV OS_TAG=ubuntu
+     [exec] --> dd7ac60ff6e1
+     [exec] STEP 11/21: ENV JDK_VERSION=23
+     [exec] --> a3169568849e
+     [exec] STEP 12/21: ENV JDK_IMPL=hotspot
+     [exec] --> a23b43f6c515
+     [exec] STEP 13/21: ENV ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG
+     [exec] --> b0e2f22bacc7
+     [exec] STEP 14/21: RUN git clone https://github.com/elastic/elasticsearch.git
+     [exec] Cloning into 'elasticsearch'...
+     [exec] Updating files:  25% (8112/32119)
+     [exec] --> 5b87ca8ad099
+     [exec] STEP 15/21: WORKDIR /elasticsearch/
+     [exec] --> d080f2e0ae20
+     [exec] STEP 16/21: RUN git checkout $ELASTICSEARCH_TAG
+     [exec] Updating files:  26% (8351/32119)Updating files:  27% (8673/32119)Updating files:  28% (8994/32119)Updating files:  29% (9315/32119)Updating files:  30% (9636/32119)Updating files:  31% (9957/32119)Updating files:  32% (10279/32119)Updating files:  33% (10600/32119)Updating files:  34% (10921/32119)Updating files:  35% (11242/32119)Updating files:  36% (11563/32119)Updating files:  37% (11885/32119)Updating files:  38% (12206/32119)Updating files:  39% (12527/32119)Updating files:  40% (12848/32119)Updating files:  41% (13169/32119)Updating files:  42% (13490/32119)Updating files:  43% (13812/32119)Updating files:  44% (14133/32119)Updating files:  45% (14454/32119)Updating files:  46% (14775/32119)Updating files:  47% (15096/32119)Updating files:  48% (15418/32119)Updating files:  49% (15739/32119)Updating files:  50% (16060/32119)Updating files:  51% (16381/32119)Updating files:  52% (16702/32119)Updating files:  53% (17024/32119)Updating files:  54% (17345/32119)Updating files:  55% (17666/32119)Updating files:  56% (17987/32119)Updating files:  56% (18033/32119)Updating files:  57% (18308/32119)Updating files:  58% (18630/32119)Updating files:  59% (18951/32119)Updating files:  60% (19272/32119)Updating files:  61% (19593/32119)Updating files:  62% (19914/32119)Updating files:  63% (20235/32119)Updating files:  64% (20557/32119)Updating files:  65% (20878/32119)Updating files:  66% (21199/32119)Updating files:  67% (21520/32119)Updating files:  68% (21841/32119)Updating files:  69% (22163/32119)Updating files:  70% (22484/32119)Updating files:  71% (22805/32119)Updating files:  72% (23126/32119)Updating files:  73% (23447/32119)Updating files:  74% (23769/32119)Updating files:  75% (24090/32119)Updating files:  76% (24411/32119)Updating files:  77% (24732/32119)Updating files:  78% (25053/32119)Updating files:  79% (25375/32119)Updating files:  80% (25696/32119)Updating files:  81% (26017/32119)Updating files:  82% (26338/32119)Updating files:  83% (26659/32119)Updating files:  84% (26980/32119)Updating files:  85% (27302/32119)Updating files:  86% (27623/32119)Updating files:  87% (27944/32119)Updating files:  88% (28265/32119)Updating files:  89% (28586/32119)Updating files:  89% (28876/32119)Updating files:  90% (28908/32119)Updating files:  91% (29229/32119)Updating files:  92% (29550/32119)Updating files:  93% (29871/32119)Updating files:  94% (30192/32119)Updating files:  95% (30514/32119)Updating files:  96% (30835/32119)Updating files:  97% (31156/32119)Updating files:  98% (31477/32119)Updating files:  99% (31798/32119)Updating files: 100% (32119/32119)Updating files: 100% (32119/32119), done.Note: switching to 'v8.1.2'.
+     [exec] 
+     [exec] You are in 'detached HEAD' state. You can look around, make experimental
+     [exec] changes and commit them, and you can discard any commits you make in this
+     [exec] state without impacting any branches by switching back to a branch.
+     [exec] 
+     [exec] If you want to create a new branch to retain commits you create, you may
+     [exec] do so (now or later) by using -c with the switch command. Example:
+     [exec] 
+     [exec]   git switch -c <new-branch-name>
+     [exec] 
+     [exec] Or undo this operation with:
+     [exec] 
+     [exec]   git switch -
+     [exec] 
+     [exec] Turn off this advice by setting config variable advice.detachedHead to false
+     [exec] 
+     [exec] HEAD is now at 31df9689e80 [DOCS] Reuse data tier content in node role docs (#84346) (#85426) (#85429)
+     [exec] --> 531296b4ab8e
+     [exec] STEP 17/21: WORKDIR /
+     [exec] --> 4c5750e27ab3
+     [exec] STEP 18/21: COPY elasticsearch/test.sh /test.sh
+     [exec] --> cfbad87579d0
+     [exec] STEP 19/21: COPY test_base_functions.sh test_base_functions.sh
+     [exec] --> 8059c17e0232
+     [exec] STEP 20/21: WORKDIR ${TEST_HOME}
+     [exec] --> d576f1346d23
+     [exec] STEP 21/21: ENTRYPOINT ["/bin/bash", "/test.sh"]
+     [exec] COMMIT adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full
+     [exec] --> 313dba6e7378
+     [exec] Successfully tagged localhost/adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full
+     [exec] 313dba6e7378003db19f70fa138aa3909b61bca53e4be30aaee4a21857b70000
+
+dist:
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/external/elasticsearch
+
+BUILD SUCCESSFUL
+Total time: 1 minute 53 seconds
+0
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+JAVA_HOME is set to /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=elasticsearch_test_hotspot TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec=linux_x86-64 --microArch="" --osLabel="" --jdkVersion=23 --impl=hotspot --vendor="eclipse" --buildList=external/elasticsearch --iterations=1 --aotIterations= --testFlag= --testTarget=elasticsearch_test_hotspot --testList= --numOfMachines= --testTime= --TRSSURL= 
+Modes data parsed from resources/modes.xml and resources/ottawa.csv.
+
+Starting to generate test make files.
+
+Parsing /home/jvanek/git/aqa-tests/TKG/../external/elasticsearch/playlist.xml
+Generated /home/jvanek/git/aqa-tests/TKG/../external/elasticsearch/autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../external/autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/utils.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/rerun.mk
+
+Make files are generated successfully.
+
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f runtest.mk _elasticsearch_test_hotspot
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+
+Running make 4.4.1
+set TEST_ROOT to /home/jvanek/git/aqa-tests/TKG/..
+set JDK_VERSION to 23
+set JDK_IMPL to hotspot
+set JVM_VERSION to openjdk23
+set JCL_VERSION to latest
+set JAVA_HOME to /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11
+set SPEC to linux_x86-64
+set TEST_FLAG to
+Running elasticsearch_test_hotspot ...
+There are 1 test targets in elasticsearch_test_hotspot
+"/tmp/tmp.R8GQYntyCK/jdk-23.0.1+11/bin/java" -version
+openjdk version "23.0.1" 2024-10-15
+OpenJDK Runtime Environment Temurin-23.0.1+11 (build 23.0.1+11)
+OpenJDK 64-Bit Server VM Temurin-23.0.1+11 (build 23.0.1+11, mixed mode, sharing)
+make[2]: Entering directory '/home/jvanek/git/aqa-tests'
+make[3]: Entering directory '/home/jvanek/git/aqa-tests/external'
+make[4]: Entering directory '/home/jvanek/git/aqa-tests/external/elasticsearch'
+
+===============================================
+Running test elasticsearch_test_hotspot_0 ...
+===============================================
+elasticsearch_test_hotspot_0 Start Time: Wed Dec 11 22:35:10 2024 Epoch Time (ms): 1733952910423
+variation: NoOptions
+JVM_OPTIONS:  
+{ \
+echo "";	echo "TEST SETUP:"; \
+echo "Nothing to be done for setup."; \
+mkdir -p "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/elasticsearch_test_hotspot_0"; \
+cd "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/elasticsearch_test_hotspot_0"; \
+echo "";	echo "TESTING:"; \
+/home/jvanek/git/aqa-tests/TKG/../external/external.sh --run --tag "" --dir elasticsearch --reportsrc /testResults/testJunit --reportdst "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/elasticsearch_test_hotspot_0" --docker_args "-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk" ; \
+	if [ $? -eq 0 ]; then echo "-----------------------------------"; echo "elasticsearch_test_hotspot_0""_PASSED"; echo "-----------------------------------"; cd /home/jvanek/git/aqa-tests/TKG/..;  else echo "-----------------------------------"; echo "elasticsearch_test_hotspot_0""_FAILED"; echo "-----------------------------------"; fi; \
+	/home/jvanek/git/aqa-tests/TKG/../external/external.sh --clean --tag "" --dir elasticsearch; \
+echo "";	echo "TEST TEARDOWN:"; \
+echo "Nothing to be done for teardown."; \
+ } 2>&1 | tee -a "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/TestTargetResult";
+
+TEST SETUP:
+Nothing to be done for setup.
+
+TESTING:
+   # =================== Info =================== Info =================== Info =================== #
+   # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk"                                #
+   # =================== Info =================== Info =================== Info =================== #
+   # =================== Info =================== Info =================== Info =================== #
+   # TEST_JDK_HOME of /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 is used in EXTRA_DOCKER_ARGS                                #
+   # =================== Info =================== Info =================== Info =================== #
+No DOCKERIMAGE_TAG set, tag as default 'nightly'
+DOCKERIMAGE_TAG nightly has been recognized.
+The test here is elasticsearch
+The directory in the external.sh is elasticsearch
+ podman run --privileged  -v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk  --name elasticsearch-test adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full 
+time="2024-12-11T22:35:10+01:00" level=warning msg="Error validating CNI config file /home/jvanek/.config/cni/net.d/87-podman.conflist: [failed to find plugin \"bridge\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"portmap\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"firewall\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"tuning\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin]]"
+APPLICATION_NAME=elasticsearch
+APPLICATION_TAG=v8.1.2
+OS_TAG=ubuntu
+Using /opt mounted Java
+JAVA_BIN is: /opt/java/openjdk/bin
+=JAVA VERSION OUTPUT BEGIN=
+Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+openjdk version "23.0.1" 2024-10-15
+OpenJDK Runtime Environment Temurin-23.0.1+11 (build 23.0.1+11)
+OpenJDK 64-Bit Server VM Temurin-23.0.1+11 (build 23.0.1+11, mixed mode, sharing)
+=JAVA VERSION OUTPUT END=
+Building elasticsearch  using gradlew "gradlew assemble"
+Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Settings file '/elasticsearch/settings.gradle'
+
+* What went wrong:
+Could not compile settings file '/elasticsearch/settings.gradle'.
+> startup failed:
+  General error during conversion: Unsupported class file major version 67
+  
+  java.lang.IllegalArgumentException: Unsupported class file major version 67
+  	at groovyjarjarasm.asm.ClassReader.<init>(ClassReader.java:199)
+  	at groovyjarjarasm.asm.ClassReader.<init>(ClassReader.java:180)
+  	at groovyjarjarasm.asm.ClassReader.<init>(ClassReader.java:166)
+  	at groovyjarjarasm.asm.ClassReader.<init>(ClassReader.java:287)
+  	at org.codehaus.groovy.ast.decompiled.AsmDecompiler.parseClass(AsmDecompiler.java:81)
+  	at org.codehaus.groovy.control.ClassNodeResolver.findDecompiled(ClassNodeResolver.java:251)
+  	at org.codehaus.groovy.control.ClassNodeResolver.tryAsLoaderClassOrScript(ClassNodeResolver.java:189)
+  	at org.codehaus.groovy.control.ClassNodeResolver.findClassNode(ClassNodeResolver.java:169)
+  	at org.codehaus.groovy.control.ClassNodeResolver.resolveName(ClassNodeResolver.java:125)
+  	at org.codehaus.groovy.ast.decompiled.AsmReferenceResolver.resolveClassNullable(AsmReferenceResolver.java:57)
+  	at org.codehaus.groovy.ast.decompiled.AsmReferenceResolver.resolveClass(AsmReferenceResolver.java:44)
+  	at org.codehaus.groovy.ast.decompiled.TypeSignatureParser.visitEnd(TypeSignatureParser.java:110)
+  	at groovyjarjarasm.asm.signature.SignatureReader.parseType(SignatureReader.java:206)
+  	at groovyjarjarasm.asm.signature.SignatureReader.accept(SignatureReader.java:124)
+  	at org.codehaus.groovy.ast.decompiled.ClassSignatureParser.parseClassSignature(ClassSignatureParser.java:74)
+  	at org.codehaus.groovy.ast.decompiled.ClassSignatureParser.configureClass(ClassSignatureParser.java:32)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.lazyInitSupers(DecompiledClassNode.java:185)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.isUsingGenerics(DecompiledClassNode.java:86)
+  	at org.codehaus.groovy.ast.tools.GenericsUtils.nonGeneric(GenericsUtils.java:275)
+  	at org.codehaus.groovy.ast.decompiled.MemberSignatureParser.createMethodNode(MemberSignatureParser.java:101)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.lambda$createMethodNode$1(DecompiledClassNode.java:230)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.createMethodNode(DecompiledClassNode.java:236)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.lazyInitMembers(DecompiledClassNode.java:203)
+  	at org.codehaus.groovy.ast.decompiled.DecompiledClassNode.getDeclaredMethods(DecompiledClassNode.java:122)
+  	at org.codehaus.groovy.ast.ClassNode.tryFindPossibleMethod(ClassNode.java:1283)
+  	at org.codehaus.groovy.control.StaticImportVisitor.transformMethodCallExpression(StaticImportVisitor.java:251)
+  	at org.codehaus.groovy.control.StaticImportVisitor.transform(StaticImportVisitor.java:133)
+  	at org.codehaus.groovy.ast.ClassCodeExpressionTransformer.visitExpressionStatement(ClassCodeExpressionTransformer.java:108)
+  	at org.codehaus.groovy.ast.stmt.ExpressionStatement.visit(ExpressionStatement.java:40)
+  	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClassCodeContainer(ClassCodeVisitorSupport.java:138)
+  	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitConstructorOrMethod(ClassCodeVisitorSupport.java:111)
+  	at org.codehaus.groovy.ast.ClassCodeExpressionTransformer.visitConstructorOrMethod(ClassCodeExpressionTransformer.java:66)
+  	at org.codehaus.groovy.control.StaticImportVisitor.visitConstructorOrMethod(StaticImportVisitor.java:108)
+  	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitConstructor(ClassCodeVisitorSupport.java:101)
+  	at org.codehaus.groovy.ast.ClassNode.visitContents(ClassNode.java:1089)
+  	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClass(ClassCodeVisitorSupport.java:52)
+  	at org.codehaus.groovy.control.CompilationUnit.lambda$addPhaseOperations$3(CompilationUnit.java:209)
+  	at org.codehaus.groovy.control.CompilationUnit$IPrimaryClassNodeOperation.doPhaseOperation(CompilationUnit.java:942)
+  	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:671)
+  	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:635)
+  	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:389)
+  	at groovy.lang.GroovyClassLoader.lambda$parseClass$3(GroovyClassLoader.java:332)
+  	at org.codehaus.groovy.runtime.memoize.StampedCommonCache.compute(StampedCommonCache.java:163)
+  	at org.codehaus.groovy.runtime.memoize.StampedCommonCache.getAndPut(StampedCommonCache.java:154)
+  	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:330)
+  	at org.gradle.groovy.scripts.internal.DefaultScriptCompilationHandler.compileScript(DefaultScriptCompilationHandler.java:139)
+  	at org.gradle.groovy.scripts.internal.DefaultScriptCompilationHandler.compileToDir(DefaultScriptCompilationHandler.java:95)
+  	at org.gradle.groovy.scripts.internal.BuildOperationBackedScriptCompilationHandler$2.run(BuildOperationBackedScriptCompilationHandler.java:54)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+  	at org.gradle.internal.operations.DefaultBuildOperationExecutor.run(DefaultBuildOperationExecutor.java:68)
+  	at org.gradle.groovy.scripts.internal.BuildOperationBackedScriptCompilationHandler.compileToDir(BuildOperationBackedScriptCompilationHandler.java:51)
+  	at org.gradle.groovy.scripts.internal.FileCacheBackedScriptClassCompiler$CompileToCrossBuildCacheAction.execute(FileCacheBackedScriptClassCompiler.java:190)
+  	at org.gradle.groovy.scripts.internal.FileCacheBackedScriptClassCompiler$CompileToCrossBuildCacheAction.execute(FileCacheBackedScriptClassCompiler.java:170)
+  	at org.gradle.groovy.scripts.internal.FileCacheBackedScriptClassCompiler$ProgressReportingInitializer.execute(FileCacheBackedScriptClassCompiler.java:211)
+  	at org.gradle.groovy.scripts.internal.FileCacheBackedScriptClassCompiler$ProgressReportingInitializer.execute(FileCacheBackedScriptClassCompiler.java:194)
+  	at org.gradle.cache.internal.DefaultPersistentDirectoryCache$Initializer.initialize(DefaultPersistentDirectoryCache.java:100)
+  	at org.gradle.cache.internal.FixedSharedModeCrossProcessCacheAccess$1.run(FixedSharedModeCrossProcessCacheAccess.java:86)
+  	at org.gradle.cache.internal.DefaultFileLockManager$DefaultFileLock.doWriteAction(DefaultFileLockManager.java:216)
+  	at org.gradle.cache.internal.DefaultFileLockManager$DefaultFileLock.writeFile(DefaultFileLockManager.java:206)
+  	at org.gradle.cache.internal.FixedSharedModeCrossProcessCacheAccess.open(FixedSharedModeCrossProcessCacheAccess.java:83)
+  	at org.gradle.cache.internal.DefaultCacheAccess.open(DefaultCacheAccess.java:139)
+  	at org.gradle.cache.internal.DefaultPersistentDirectoryStore.open(DefaultPersistentDirectoryStore.java:89)
+  	at org.gradle.cache.internal.DefaultPersistentDirectoryStore.open(DefaultPersistentDirectoryStore.java:43)
+  	at org.gradle.cache.internal.DefaultCacheFactory.doOpen(DefaultCacheFactory.java:103)
+  	at org.gradle.cache.internal.DefaultCacheFactory.open(DefaultCacheFactory.java:68)
+  	at org.gradle.cache.internal.DefaultCacheRepository$PersistentCacheBuilder.open(DefaultCacheRepository.java:117)
+  	at org.gradle.groovy.scripts.internal.FileCacheBackedScriptClassCompiler.compile(FileCacheBackedScriptClassCompiler.java:116)
+  	at org.gradle.groovy.scripts.internal.CrossBuildInMemoryCachingScriptClassCache.getOrCompile(CrossBuildInMemoryCachingScriptClassCache.java:50)
+  	at org.gradle.groovy.scripts.internal.BuildScopeInMemoryCachingScriptClassCompiler.compile(BuildScopeInMemoryCachingScriptClassCompiler.java:50)
+  	at org.gradle.groovy.scripts.DefaultScriptCompilerFactory$ScriptCompilerImpl.compile(DefaultScriptCompilerFactory.java:49)
+  	at org.gradle.configuration.DefaultScriptPluginFactory$ScriptPluginImpl.apply(DefaultScriptPluginFactory.java:110)
+  	at org.gradle.configuration.BuildOperationScriptPlugin$1.run(BuildOperationScriptPlugin.java:65)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+  	at org.gradle.internal.operations.DefaultBuildOperationExecutor.run(DefaultBuildOperationExecutor.java:68)
+  	at org.gradle.configuration.BuildOperationScriptPlugin.lambda$apply$0(BuildOperationScriptPlugin.java:62)
+  	at org.gradle.configuration.internal.DefaultUserCodeApplicationContext.apply(DefaultUserCodeApplicationContext.java:44)
+  	at org.gradle.configuration.BuildOperationScriptPlugin.apply(BuildOperationScriptPlugin.java:62)
+  	at org.gradle.initialization.ScriptEvaluatingSettingsProcessor.applySettingsScript(ScriptEvaluatingSettingsProcessor.java:73)
+  	at org.gradle.initialization.ScriptEvaluatingSettingsProcessor.process(ScriptEvaluatingSettingsProcessor.java:66)
+  	at org.gradle.initialization.SettingsEvaluatedCallbackFiringSettingsProcessor.process(SettingsEvaluatedCallbackFiringSettingsProcessor.java:34)
+  	at org.gradle.initialization.RootBuildCacheControllerSettingsProcessor.process(RootBuildCacheControllerSettingsProcessor.java:47)
+  	at org.gradle.initialization.BuildOperationSettingsProcessor$2.call(BuildOperationSettingsProcessor.java:50)
+  	at org.gradle.initialization.BuildOperationSettingsProcessor$2.call(BuildOperationSettingsProcessor.java:47)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:199)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+  	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+  	at org.gradle.initialization.BuildOperationSettingsProcessor.process(BuildOperationSettingsProcessor.java:47)
+  	at org.gradle.initialization.DefaultSettingsLoader.findSettingsAndLoadIfAppropriate(DefaultSettingsLoader.java:136)
+  	at org.gradle.initialization.DefaultSettingsLoader.findAndLoadSettings(DefaultSettingsLoader.java:62)
+  	at org.gradle.initialization.SettingsAttachingSettingsLoader.findAndLoadSettings(SettingsAttachingSettingsLoader.java:34)
+  	at org.gradle.internal.composite.CommandLineIncludedBuildSettingsLoader.findAndLoadSettings(CommandLineIncludedBuildSettingsLoader.java:34)
+  	at org.gradle.internal.composite.ChildBuildRegisteringSettingsLoader.findAndLoadSettings(ChildBuildRegisteringSettingsLoader.java:48)
+  	at org.gradle.internal.composite.CompositeBuildSettingsLoader.findAndLoadSettings(CompositeBuildSettingsLoader.java:35)
+  	at org.gradle.initialization.InitScriptHandlingSettingsLoader.findAndLoadSettings(InitScriptHandlingSettingsLoader.java:34)
+  	at org.gradle.initialization.GradlePropertiesHandlingSettingsLoader.findAndLoadSettings(GradlePropertiesHandlingSettingsLoader.java:39)
+  	at org.gradle.initialization.DefaultSettingsPreparer.prepareSettings(DefaultSettingsPreparer.java:31)
+  	at org.gradle.initialization.BuildOperationFiringSettingsPreparer$LoadBuild.doLoadBuild(BuildOperationFiringSettingsPreparer.java:62)
+  	at org.gradle.initialization.BuildOperationFiringSettingsPreparer$LoadBuild.run(BuildOperationFiringSettingsPreparer.java:57)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+  	at org.gradle.internal.operations.DefaultBuildOperationExecutor.run(DefaultBuildOperationExecutor.java:68)
+  	at org.gradle.initialization.BuildOperationFiringSettingsPreparer.prepareSettings(BuildOperationFiringSettingsPreparer.java:45)
+  	at org.gradle.initialization.VintageBuildModelController.lambda$prepareSettings$2(VintageBuildModelController.java:85)
+  	at org.gradle.internal.model.StateTransitionController.lambda$doTransition$12(StateTransitionController.java:227)
+  	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:238)
+  	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:226)
+  	at org.gradle.internal.model.StateTransitionController.lambda$transitionIfNotPreviously$10(StateTransitionController.java:201)
+  	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:34)
+  	at org.gradle.internal.model.StateTransitionController.transitionIfNotPreviously(StateTransitionController.java:197)
+  	at org.gradle.initialization.VintageBuildModelController.prepareSettings(VintageBuildModelController.java:85)
+  	at org.gradle.initialization.VintageBuildModelController.prepareToScheduleTasks(VintageBuildModelController.java:70)
+  	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$prepareToScheduleTasks$2(DefaultBuildLifecycleController.java:134)
+  	at org.gradle.internal.model.StateTransitionController.lambda$doTransition$12(StateTransitionController.java:227)
+  	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:238)
+  	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:226)
+  	at org.gradle.internal.model.StateTransitionController.lambda$maybeTransition$9(StateTransitionController.java:187)
+  	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:34)
+  	at org.gradle.internal.model.StateTransitionController.maybeTransition(StateTransitionController.java:183)
+  	at org.gradle.internal.build.DefaultBuildLifecycleController.prepareToScheduleTasks(DefaultBuildLifecycleController.java:132)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeWorkPreparer.scheduleRequestedTasks(DefaultBuildTreeWorkPreparer.java:33)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.lambda$doScheduleAndRunTasks$2(DefaultBuildTreeLifecycleController.java:89)
+  	at org.gradle.composite.internal.DefaultIncludedBuildTaskGraph.withNewWorkGraph(DefaultIncludedBuildTaskGraph.java:75)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.doScheduleAndRunTasks(DefaultBuildTreeLifecycleController.java:88)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.lambda$runBuild$4(DefaultBuildTreeLifecycleController.java:106)
+  	at org.gradle.internal.model.StateTransitionController.lambda$transition$6(StateTransitionController.java:166)
+  	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:238)
+  	at org.gradle.internal.model.StateTransitionController.lambda$transition$7(StateTransitionController.java:166)
+  	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:44)
+  	at org.gradle.internal.model.StateTransitionController.transition(StateTransitionController.java:166)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.runBuild(DefaultBuildTreeLifecycleController.java:103)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.scheduleAndRunTasks(DefaultBuildTreeLifecycleController.java:69)
+  	at org.gradle.tooling.internal.provider.ExecuteBuildActionRunner.run(ExecuteBuildActionRunner.java:31)
+  	at org.gradle.launcher.exec.ChainingBuildActionRunner.run(ChainingBuildActionRunner.java:35)
+  	at org.gradle.internal.buildtree.ProblemReportingBuildActionRunner.run(ProblemReportingBuildActionRunner.java:49)
+  	at org.gradle.launcher.exec.BuildOutcomeReportingBuildActionRunner.run(BuildOutcomeReportingBuildActionRunner.java:69)
+  	at org.gradle.tooling.internal.provider.FileSystemWatchingBuildActionRunner.run(FileSystemWatchingBuildActionRunner.java:119)
+  	at org.gradle.launcher.exec.BuildCompletionNotifyingBuildActionRunner.run(BuildCompletionNotifyingBuildActionRunner.java:41)
+  	at org.gradle.launcher.exec.RootBuildLifecycleBuildActionExecutor.lambda$execute$0(RootBuildLifecycleBuildActionExecutor.java:40)
+  	at org.gradle.composite.internal.DefaultRootBuildState.run(DefaultRootBuildState.java:128)
+  	at org.gradle.launcher.exec.RootBuildLifecycleBuildActionExecutor.execute(RootBuildLifecycleBuildActionExecutor.java:40)
+  	at org.gradle.internal.buildtree.DefaultBuildTreeContext.execute(DefaultBuildTreeContext.java:40)
+  	at org.gradle.launcher.exec.BuildTreeLifecycleBuildActionExecutor.lambda$execute$0(BuildTreeLifecycleBuildActionExecutor.java:65)
+  	at org.gradle.internal.buildtree.BuildTreeState.run(BuildTreeState.java:53)
+  	at org.gradle.launcher.exec.BuildTreeLifecycleBuildActionExecutor.execute(BuildTreeLifecycleBuildActionExecutor.java:65)
+  	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor$3.call(RunAsBuildOperationBuildActionExecutor.java:61)
+  	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor$3.call(RunAsBuildOperationBuildActionExecutor.java:57)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:199)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+  	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+  	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+  	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor.execute(RunAsBuildOperationBuildActionExecutor.java:57)
+  	at org.gradle.launcher.exec.RunAsWorkerThreadBuildActionExecutor.lambda$execute$0(RunAsWorkerThreadBuildActionExecutor.java:36)
+  	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:270)
+  	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:119)
+  	at org.gradle.launcher.exec.RunAsWorkerThreadBuildActionExecutor.execute(RunAsWorkerThreadBuildActionExecutor.java:36)
+  	at org.gradle.tooling.internal.provider.ContinuousBuildActionExecutor.execute(ContinuousBuildActionExecutor.java:103)
+  	at org.gradle.tooling.internal.provider.SubscribableBuildActionExecutor.execute(SubscribableBuildActionExecutor.java:64)
+  	at org.gradle.internal.session.DefaultBuildSessionContext.execute(DefaultBuildSessionContext.java:46)
+  	at org.gradle.tooling.internal.provider.BuildSessionLifecycleBuildActionExecuter$ActionImpl.apply(BuildSessionLifecycleBuildActionExecuter.java:100)
+  	at org.gradle.tooling.internal.provider.BuildSessionLifecycleBuildActionExecuter$ActionImpl.apply(BuildSessionLifecycleBuildActionExecuter.java:88)
+  	at org.gradle.internal.session.BuildSessionState.run(BuildSessionState.java:69)
+  	at org.gradle.tooling.internal.provider.BuildSessionLifecycleBuildActionExecuter.execute(BuildSessionLifecycleBuildActionExecuter.java:62)
+  	at org.gradle.tooling.internal.provider.BuildSessionLifecycleBuildActionExecuter.execute(BuildSessionLifecycleBuildActionExecuter.java:41)
+  	at org.gradle.tooling.internal.provider.StartParamsValidatingActionExecuter.execute(StartParamsValidatingActionExecuter.java:63)
+  	at org.gradle.tooling.internal.provider.StartParamsValidatingActionExecuter.execute(StartParamsValidatingActionExecuter.java:31)
+  	at org.gradle.tooling.internal.provider.SessionFailureReportingActionExecuter.execute(SessionFailureReportingActionExecuter.java:58)
+  	at org.gradle.tooling.internal.provider.SessionFailureReportingActionExecuter.execute(SessionFailureReportingActionExecuter.java:42)
+  	at org.gradle.tooling.internal.provider.SetupLoggingActionExecuter.execute(SetupLoggingActionExecuter.java:47)
+  	at org.gradle.tooling.internal.provider.SetupLoggingActionExecuter.execute(SetupLoggingActionExecuter.java:31)
+  	at org.gradle.launcher.daemon.server.exec.ExecuteBuild.doBuild(ExecuteBuild.java:65)
+  	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.WatchForDisconnection.execute(WatchForDisconnection.java:39)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.ResetDeprecationLogger.execute(ResetDeprecationLogger.java:29)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.RequestStopIfSingleUsedDaemon.execute(RequestStopIfSingleUsedDaemon.java:35)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.ForwardClientInput$2.create(ForwardClientInput.java:78)
+  	at org.gradle.launcher.daemon.server.exec.ForwardClientInput$2.create(ForwardClientInput.java:75)
+  	at org.gradle.util.internal.Swapper.swap(Swapper.java:38)
+  	at org.gradle.launcher.daemon.server.exec.ForwardClientInput.execute(ForwardClientInput.java:75)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.LogAndCheckHealth.execute(LogAndCheckHealth.java:55)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.LogToClient.doBuild(LogToClient.java:63)
+  	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.EstablishBuildEnvironment.doBuild(EstablishBuildEnvironment.java:84)
+  	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
+  	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
+  	at org.gradle.launcher.daemon.server.exec.StartBuildOrRespondWithBusy$1.run(StartBuildOrRespondWithBusy.java:52)
+  	at org.gradle.launcher.daemon.server.DaemonStateCoordinator$1.run(DaemonStateCoordinator.java:297)
+  	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+  	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)
+  	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+  	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+  	at java.base/java.lang.Thread.run(Thread.java:1575)
+  
+  1 error
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 6s
+-----------------------------------
+elasticsearch_test_hotspot_0_FAILED
+-----------------------------------
+   # =================== Info =================== Info =================== Info =================== #
+   # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11:/opt/java/openjdk"                                #
+   # =================== Info =================== Info =================== Info =================== #
+   # =================== Info =================== Info =================== Info =================== #
+   # TEST_JDK_HOME of /tmp/tmp.R8GQYntyCK/jdk-23.0.1+11 is used in EXTRA_DOCKER_ARGS                                #
+   # =================== Info =================== Info =================== Info =================== #
+No DOCKERIMAGE_TAG set, tag as default 'nightly'
+DOCKERIMAGE_TAG nightly has been recognized.
+The test here is elasticsearch
+The directory in the external.sh is elasticsearch
+elasticsearch-test
+Untagged: localhost/adoptopenjdk-elasticsearch-test:23-jdk-ubuntu-hotspot-full
+Deleted: 313dba6e7378003db19f70fa138aa3909b61bca53e4be30aaee4a21857b70000
+Deleted: d576f1346d23d384754e8b15167e8e3651bf478f198811498d8390c27506a71f
+Deleted: 8059c17e0232fb590e49aff562f18565e774740763312a93007800c752b90a32
+Deleted: cfbad87579d034e9db40b23db1329abb3eac2336f123eb3d9b5c1a7602aed501
+Deleted: 4c5750e27ab3828beed05f82456ceaccb9b0cd19fb1b613cf6b98ed274f4ae71
+Deleted: 531296b4ab8e8c9333675c8cf5cd5cde8f957c553a61580736650e936d22f92b
+Deleted: d080f2e0ae20e1e4f41a18a9ef79bb40776cbb097096ba0036559c11afcc07ac
+Deleted: 5b87ca8ad099e06cec00858f161fa76c737a897db42bb865af09e4bc8786534c
+Deleted: b0e2f22bacc757458807c4c0886e29a0768964f13b5e3db54d43ea938133c858
+Deleted: a23b43f6c515fff3a7de95097871117447a086423a911148a820d9f98cadad83
+Deleted: a3169568849efa495b97290dacd0ec34b0aa3c87739ce93350a6e08f2a70ad72
+Deleted: dd7ac60ff6e161de8ee836a845baa92c14d2b72275aa4208a5a38795948a19c7
+Deleted: 59913daf946e7a3547c65a2c6ca8c65a18dfd199a1745ce499957f4c37e9671c
+Deleted: 79545aa4a57be04659c2ca8d401434b1404e65a42803411dd5a300ca6eddcf50
+Deleted: 84989d505bc46adef64e42d437bc90d7802c64028c2e69f64638271a5df9e15d
+Deleted: 01deb63433e11c3c9c7e2f69ca05ed09c17dd30ddd24d730bfdd473cdd391364
+Deleted: 602ae38e1b10a2ab19dffeafccb7e7073ce8350f39b6bc5b160c007c0ac3dbba
+Deleted: d9e9177955c8282c97ae7b1cb6e3ce2a5c7aa27cdb61417e35a1ae13f70da692
+Deleted: 4cb5beb6ee70fbc8a8c36b942769a9d56e40eb0a7e81849c80eb148664d1c3e8
+Deleted: b04993e99b902d0bb2a0438e1cf8cbce29326914ea63f288f8d7a902a40bfeaa
+Error: invalid reference format
+
+TEST TEARDOWN:
+Nothing to be done for teardown.
+elasticsearch_test_hotspot_0 Finish Time: Wed Dec 11 22:35:19 2024 Epoch Time (ms): 1733952919370
+make[4]: Leaving directory '/home/jvanek/git/aqa-tests/external/elasticsearch'
+make[3]: Leaving directory '/home/jvanek/git/aqa-tests/external'
+make[2]: Leaving directory '/home/jvanek/git/aqa-tests'
+
+
+All tests finished, run result summary:
+cd "/home/jvanek/git/aqa-tests/TKG/../TKG/scripts"; \
+perl "resultsSum.pl" --failuremk="/home/jvanek/git/aqa-tests/TKG/../TKG/failedtargets.mk" --resultFile="/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/TestTargetResult" --platFile="/home/jvanek/git/aqa-tests/TKG/../TKG/resources/buildPlatformMap.properties" --diagnostic=failure --jdkVersion=23 --jdkImpl=hotspot --jdkVendor="eclipse" --spec=linux_x86-64 --buildList=external/elasticsearch --customTarget="" --testTarget=elasticsearch_test_hotspot --tapPath=/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339529108094/ --tapName= --comment=""
+
+
+TEST TARGETS SUMMARY
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+FAILED test targets:
+	elasticsearch_test_hotspot_0
+
+TOTAL: 1   EXECUTED: 1   PASSED: 0   FAILED: 1   DISABLED: 0   SKIPPED: 0
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:
+<Jenkins URL>/parambuild/?JDK_VERSION=23&JDK_IMPL=hotspot&JDK_VENDOR=eclipse&BUILD_LIST=external/elasticsearch&PLATFORM=x86-64_linux&TARGET=<FAILED test target>
+
+For example, to rebuild the failed tests in <Jenkins URL>=https://ci.adoptium.net/job/Grinder, use the following links:
+https://ci.adoptium.net/job/Grinder/parambuild/?JDK_VERSION=23&JDK_IMPL=hotspot&JDK_VENDOR=eclipse&BUILD_LIST=external/elasticsearch&PLATFORM=x86-64_linux&TARGET=elasticsearch_test_hotspot_0
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+make[1]: *** [settings.mk:446: resultsSummary] Error 2
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:61: _elasticsearch_test_hotspot] Error 2
+compilation: 0
+runtime: 2
