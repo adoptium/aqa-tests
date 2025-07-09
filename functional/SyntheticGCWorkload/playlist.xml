@@ -166,7 +166,7 @@
 	<test>
 		<testCaseName>SyntheticGCWorkload_DoubleMap_J9</testCaseName>
 		<variations>
-			<variation>-Xmx2g -Xdump:none -Xgcpolicy:balanced -Xgc:enableArrayletDoubleMapping -verbose:gc</variation>
+			<variation>-Xmx2g -Xdump:none -Xgcpolicy:balanced -Xgc:enableArrayletDoubleMapping -XXgc:disableVirtualLargeObjectHeap</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -cp $(Q)$(TEST_RESROOT)$(D)SyntheticGCWorkload.jar$(Q) net.adoptopenjdk.casa.workload_sessions.Main $(TEST_RESROOT)/config/config_doubleMapStress.xml -n; \
 	${TEST_STATUS}</command>
