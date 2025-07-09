@@ -126,7 +126,8 @@ def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
-@Field String ebcDemandId = ""
+def CLOUD_PROVIDER = params.CLOUD_PROVIDER ?: ""
+
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 timestamps{
     if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
@@ -382,39 +383,33 @@ timestamps{
                     // If CLOUD_PROVIDER is set, use the supported virtual agent.
                     dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
                     println "dynamicAgents: ${dynamicAgents}"
-                    if ((params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
+                    if ((CLOUD_PROVIDER != null && CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
                         // DynamicAgents and DockerAgents shouldn't contain the same label
-                        if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dynamicAgents) {
-                            if (params.CLOUD_PROVIDER == "EBC") {
-                                boolean ebcNode = false
-                                ebcDemandId = UUID.randomUUID().toString()
-                                def dynamicMachineLabel = 'ci.agent.dynamic.' + ebcDemandId
+                        if (CLOUD_PROVIDER != null && CLOUD_PROVIDER in dynamicAgents) {
+                            if (CLOUD_PROVIDER == "EBC") {
                                 try {
                                     timeout(time: 120, unit: 'MINUTES') {
-                                        // ToDo: pass in platform once we support more platforms. For now, we only support xlinux.
-                                        getEBCNode(ebcDemandId, dynamicMachineLabel)
+                                        def dynamicMachineLabel = getEBCNode()
                                         node(dynamicMachineLabel) {
                                             echo "EBC node ${dynamicMachineLabel} is ready"
                                         }
-                                        ebcNode = true
+                                        LABEL = dynamicMachineLabel
+                                        echo "Using EBC node ${LABEL}..."
                                     }
                                 } catch (Exception e) {
                                     echo 'Exception: ' + e.toString()
-                                    echo "Cannot launch EBC node ${dynamicMachineLabel}..."
-                                }
-                                if (ebcNode) {
-                                    LABEL = dynamicMachineLabel
-                                    echo "Use EBC node ${LABEL}..."
-                                } else {
+                                    echo "Cannot launch EBC node ..."
                                     echo "Use static node ${LABEL}..."
+                                    CLOUD_PROVIDER = ''
                                 }
+
                             } else {
                                 LABEL = LABEL.minus("ci.role.test&&")
                                 LABEL += '&&ci.agent.dynamic'
-                                println "Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${params.CLOUD_PROVIDER}'"
+                                println "Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${CLOUD_PROVIDER}'"
                             }
-                        } else if (params.CLOUD_PROVIDER != null && params.CLOUD_PROVIDER in dockerAgents) {
-                            dockerAgentLabel = params.CLOUD_PROVIDER
+                        } else if (CLOUD_PROVIDER != null && CLOUD_PROVIDER in dockerAgents) {
+                            dockerAgentLabel = CLOUD_PROVIDER
                         } else if (dockerAgents.size() >= 1) {
                             dockerAgentLabel = dockerAgents[0]
                         }
@@ -588,17 +583,8 @@ def runTest() {
                 }
             }
         }
-        if (params.CLOUD_PROVIDER == "EBC" && ebcDemandId) {
-            try {
-                println("Triggering EBC_Delete_Node job with demandId: ${ebcDemandId}")
-                def parameters = [
-                    string(name: 'demandId', value: ebcDemandId)
-                ]
-                build job: 'EBC_Delete_Node', parameters: parameters, propagate: false
-            } catch (Exception e) {
-                println("Warning: Exception when triggering EBC_Delete_Node. This does not affect test build result.")
-                println(e.toString())
-            }
+        if (CLOUD_PROVIDER == "EBC") {
+                freeEBCNode()
         }
     }
 }
@@ -735,29 +721,32 @@ def generateJobViaAutoGen(testJobName) {
     }
 }
 
-def getEBCNode(demandId, dynamicMachineLabel) {
-    library 'jenkins-ci-websphere'
-    def ebcPlan = 'hur-runtimesJenkins-aqa-ubuntu22_x86.yml'
-    def ebcShortlist = ''
-    int expectedNodeLifespan = params.TIME_LIMIT ? Integer.parseInt(params.TIME_LIMIT) : 1
-    echo "Calling ebcJenkinsNodeDemand() with demandId: ${demandId} and label: ${dynamicMachineLabel}"
-    def ebcArgs = [
-                    demandId: demandId, 
-                    ebcPlan: ebcPlan,
-                    ebcShortlist: ebcShortlist,
-                    autoCompleteAfterXHours: expectedNodeLifespan + 1,
-                    ebcBranch: 'prod', 
-                    credentialsId: "${params.EBC_CREDENTIALS_ID}",
-                    extraProps: ['ebc_remotePlaybook_gitRepoUrl=git@github.ibm.com:runtimes/infra-can.git',
-                        'ebc_jenkins_server_instance_name=hyc-runtimes-jenkins.swg-devops.com',
-                        'ebc_jenkins_service_name=runtimes-jenkins',
-                        "ebc_jenkins_agent_label=${dynamicMachineLabel}",
-                        'ebc_remotePlaybook_gitBranch=openj9',
-                        'ebc_remotePlaybook_file=ansible/playbooks/ibm_unix_playbook/ibm_jenkins_unix_test.yml',
-                        "ebc_ansible_extra_vars='is_ebc=true'",
-                        'ebc_remotePlaybook_jenkinsUserSshPubKey=unused']
-                    ]
-    echo "EBC Args: ${ebcArgs}"
-    def ebcResult = ebcJenkinsNodeDemand(ebcArgs);
-    echo "EBC Result: ${ebcResult}"
+def getEBCNode() {
+    def expectedNodeLifespan = params.TIME_LIMIT ?: 1
+    def wait = true
+    def result = build job: 'EBC/EBC_Create_Node',
+    propagate: false,
+    wait: true,
+    parameters: [
+        string(name: 'platform', value: params.PLATFORM),
+        string(name: 'nodeType', value: 'testmachine'),
+        string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()), 
+        booleanParam(name: 'WAIT', value: wait),
+    ]
+    return result.buildVariables.group_label
+}
+
+def freeEBCNode() {
+        try {
+            println("Triggering EBC_Delete_Node for label: ${LABEL}")
+            build job: 'EBC/EBC_Complete',
+                propagate: false,
+                wait: true,
+                parameters: [
+                string(name: 'LABEL', value: LABEL),
+                ]
+        } catch (Exception e) {
+                println("Warning: Exception when triggering EBC_Delete_Node. This does not affect test build result.")
+                println(e.toString())
+        }
 }
