@@ -820,9 +820,9 @@ def runTest( ) {
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
 		}
-
-                checkMetric()
-
+                node (params.SETUP_LABEL) {
+                        checkMetric()
+                }
 		def resultSum = [:]
 		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
 		if (matcher?.matches()) {
@@ -1678,7 +1678,7 @@ def forceCleanWS() {
 
 def checkMetric() {
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
-        sh "git clone --depth 1 https://github.com/adoptium/aqa-test-tools.git aqa-test-tools"
+        sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
         sh "python aqa-tests/buildenv/jenkins/metricConfig2JSON.py --metricConfig_js aqa-test-tools/TestResultSummaryService/parsers/BenchmarkMetric.js"
         sh "python aqa-tests/buildenv/jenkins/benchmarkMetric.py --metricConfig_json metricConfig.json --console console.txt --JOB_NAME ${env.JOB_NAME} --BUILD_NUMBER ${env.BUILD_NUMBER}"
         def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.json"
