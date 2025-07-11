@@ -93,10 +93,16 @@ node ("ci.role.test&&hw.arch.x86&&sw.os.linux") {
 def triggerJob(benchmarkName, platformName, buildParams, jobSuffix) {
     def buildJobName = "${JOB_NAME}_${jobSuffix}"
     def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
-    def jobIsRunnable = JobHelper.jobIsRunnable("${buildJobName}")
-    if (!jobIsRunnable) {
+    if (params.GENERATE_JOBS) {
         echo "Child job ${buildJobName} doesn't exist, set child job ${buildJobName} params for generating the job"
         generateChildJobViaAutoGen(buildJobName)
+    }
+    else {
+        def jobIsRunnable = JobHelper.jobIsRunnable("${buildJobName}")
+        if (!jobIsRunnable) {
+                echo "Child job ${buildJobName} doesn't exist, set child job ${buildJobName} params for generating the job"
+                generateChildJobViaAutoGen(buildJobName)
+        }
     }
     build job: buildJobName, parameters: buildParams, propagate: true
 }

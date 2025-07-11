@@ -25,6 +25,7 @@ if (!binding.hasVariable('BASELINE_SDK_URL')) BASELINE_SDK_URL = ""
 if (!binding.hasVariable('PLATFORM')) PLATFORM = ['x86-64_linux']
 if (!binding.hasVariable('JDK_IMPL')) JDK_IMPL = "hotspot"
 if (!binding.hasVariable('JDK_VERSION')) JDK_VERSION = 21
+if (!binding.hasVariable('GENERATE_JOBS')) GENERATE_JOBS = false
 
 if (!binding.hasVariable('BUILDS_TO_KEEP')) {
 	BUILDS_TO_KEEP = 100
@@ -93,6 +94,8 @@ pipelineJob("$ACTUAL_TEST_JOB_NAME") {
                         If upstream is selected, please provide UPSTREAM_JOB_NAME and UPSTREAM_JOB_NUMBER <br/>''')
                         stringParam('BASELINE_SDK_URL', BASELINE_SDK_URL, "")
                         stringParam('JDK_IMPL', JDK_IMPL, "hotspot")
+                        stringParam('GENERATE_JOBS', GENERATE_JOBS, '''If GENERATE_JOBS is set to false (default), 
+                        only generate the job if the job is not runnable. If GENERATE_JOBS is set to true, generate the job regardless.''')
                 }
                 cpsScm {
                         scm {
