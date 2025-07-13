@@ -1574,6 +1574,8 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					echo "after setting currentBuild.result is ${currentBuild.result}"
 				}
 			}
+		} else {
+			currentBuild.result = originalStatus
 		}
 	} else {
 		currentBuild.result = originalStatus
