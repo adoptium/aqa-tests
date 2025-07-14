@@ -30,7 +30,7 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
-		currentBuild.result = 'UNSTABLE'
+		env.jobStatus = 'UNSTABLE'
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -109,9 +109,10 @@ def setupEnv() {
 	env.SYSTEM_LIB_DIR = JOB_NAME.contains("SmokeTests") ? "${WORKSPACE}/../../../../../testDependency/system_lib" : "${WORKSPACE}/../../testDependency/system_lib"
 	env.OPENJCEPLUS_GIT_REPO = params.OPENJCEPLUS_GIT_REPO ?: "https://github.com/ibmruntimes/OpenJCEPlus.git"
 	env.OPENJCEPLUS_GIT_BRANCH = params.OPENJCEPLUS_GIT_BRANCH ?: "semeru-java${params.JDK_VERSION}"
-
+	env.PARALLEL = env.PARALLEL ? params.PARALLEL : "None"
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
+	env.jobStatus = 'SUCCESS'
 
 	if (JOB_NAME.contains("Grinder")) {
 		def currentDate = new Date()
@@ -186,7 +187,7 @@ def setupParallelEnv() {
 		def UPSTREAM_TEST_JOB_NUMBER = ""
 		parallel_tests = [:]
 
-		if (params.PARALLEL == "NodesByIterations") {
+		if (env.PARALLEL == "NodesByIterations") {
 			childJobNum = NUM_MACHINES
 			// limit childJobNum
 			if (childJobNum > 20) {
@@ -194,7 +195,7 @@ def setupParallelEnv() {
 				echo "Reset NUM_MACHINES to 20..."
 				childJobNum = 20
 			}
-		} else if (params.PARALLEL == "Dynamic") {
+		} else if (env.PARALLEL == "Dynamic") {
 			try {
 				//get cached TRSS JSON data
 				timeout(time: 1, unit: 'HOURS') {
@@ -277,16 +278,16 @@ def setupParallelEnv() {
 		UPSTREAM_TEST_JOB_NAME = JOB_NAME
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 
-		echo "[PARALLEL: ${params.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
+		echo "[PARALLEL: ${env.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
 		create_jobs = [:]
 		parallelTestParams =[:]
 		for (int i = 0; i < childJobNum; i++) {
 			def buildListName = env.BUILD_LIST
 			def childTest = ""
 			def childTarget = TARGET
-			if (params.PARALLEL == "NodesByIterations") {
+			if (env.PARALLEL == "NodesByIterations") {
 				childTest = "iteration_${i}"
-			} else if (params.PARALLEL == "Dynamic") {
+			} else if (env.PARALLEL == "Dynamic") {
 				childTest = "testList_${i}"
 				childTarget = "-f parallelList.mk ${childTest}"
 			}
@@ -840,7 +841,7 @@ def runTest( ) {
 			}
 			checkTestResults(resultSum)
 		} else {
-			currentBuild.result = 'FAILURE'
+			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = manager.createSummary("error.svg")
 			summary.appendText("TEST BUILD FAILURE!", false)
@@ -856,16 +857,16 @@ def checkTestResults(results) {
 	def summary = null
 
 	if (results["TOTAL"] == 0) {
-		currentBuild.result = 'FAILURE'
-		echo 'No test ran, set build result to FAILURE.'
+		env.jobStatus = 'FAILURE'
+		echo 'No test ran, current build status is FAILURE.'
 		summary = manager.createSummary("folder-delete.svg")
 		summary.appendText("NO TEST FOUND!", false)
 		return
 	}
 
 	if (results["FAILED"] != 0) {
-		currentBuild.result = 'UNSTABLE'
-		echo 'There were test failures, set build result to UNSTABLE.'
+		env.jobStatus = 'UNSTABLE'
+		echo 'There were test failures, current build status is UNSTABLE.'
 		summary = manager.createSummary("warning.svg")
 	} else {
 		summary = manager.createSummary("accept.svg")
@@ -907,9 +908,6 @@ def post(output_name) {
 			pax_opt = "-x pax"
 			tar_cmd_suffix = ""
 		}
-
-		step([$class: "TapPublisher", testResults: "aqa-tests/TKG/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
-
 		//call the archive function for each file
 		archiveFile("aqa-tests/testenv/testenv.properties", true)
 		archiveFile("aqa-tests/TKG/**/*.tap", true)
@@ -941,7 +939,7 @@ def post(output_name) {
 				def pattern = "${env.WORKSPACE}/*_output.*"
 				uploadToArtifactory(pattern)
 			}
-		} else if ((currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
+		} else if ((env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') || params.ARCHIVE_TEST_RESULTS) {
 			def test_output_tar_name = "${output_name}_test_output${suffix}"
 			if (tar_cmd.startsWith('tar')) {
 				sh "${tar_cmd} - ${pax_opt} ./aqa-tests/TKG/output_* ${tar_cmd_suffix} > ${test_output_tar_name}"
@@ -993,11 +991,20 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-
-		addFailedTestsGrinderLink()
+		
+		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
+		if (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) {
+			addFailedTestsGrinderLink()
+		} else if ( env.PARALLEL == 'None' ) {
+			if ( rerunIterations > 0 ) {
+				getFailedAndCustomizedTest()
+			} else {
+				addFailedTestsGrinderLink()
+			}
+		} 
 
 		try {
-			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
+			junit skipMarkingBuildUnstable: true, allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
 		} catch (Exception e) {
 			echo "Caught exception: ${e.message}"
 		}
@@ -1032,13 +1039,15 @@ def testBuild() {
 				sh "sudo activate_multicast"
 			}
 			// prepare environment and compile test projects
-			if ((params.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
-				|| (params.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
+			if ((env.PARALLEL == "NodesByIterations" && NUM_MACHINES > 1)
+				|| (env.PARALLEL == "Dynamic" && (NUM_MACHINES > 1 || (params.TEST_TIME && !params.NUM_MACHINES)))) {
 				if (setupParallelEnv() == 1) {
-					// No need to run tests in parallel
+					// Fall back to non-parallel.
+					env.PARALLEL = 'None'
 					testExecution()
 				}
 			} else {
+				env.PARALLEL = 'None'
 				testExecution()
 			}
 		} finally {
@@ -1334,57 +1343,55 @@ def addGrinderLink() {
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
-def addFailedTestsGrinderLink(paths=""){
-	if (currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' || currentBuild.result == 'ABORTED') {
-		def failedTestList = ""
-		def jdkFailedTestCaseList = ""
-		def hotspotFailedTestCaseList = ""
-		def langtoolsFailedTestCaseList = ""
-		def jckRuntimeFailedTestCaseList = ""
-		def jckCompilerFailedTestCaseList = ""
-		def jckDevtoolsFailedTestCaseList = ""
-		List<String> buildPaths = paths.split(',')
-		for (def buildPath: buildPaths) {
-			def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
-			for (def tapFile: tapFiles) {
-				echo "Tap file found: ${tapFile}..."
-				def file = readFile(file: "${tapFile}")
-				TapConsumer tapConsumer = TapConsumerFactory.makeTap13YamlConsumer()
-				TestSet testSet = tapConsumer.load(file)
-				for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
-					if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
-						def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
-						failedTestList += "${failedtest},"
-						if (env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('jck')) {
-							def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
-							if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
-								failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
-								failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
-								failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
-								if (failedtest.startsWith("jdk_")) {
-									if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jdkFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
-									if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
-									if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
-									if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-										jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else if (failedtest.startsWith("langtools_")){
-									if (!langtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-										langtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-									}
-								} else {
-									if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
-										hotspotFailedTestCaseList += "${failedTestCasesInfo} "
-									}
+def getFailedAndCustomizedTest(String paths="") {
+	def failedTestList = ""
+	def jdkFailedTestCaseList = ""
+	def hotspotFailedTestCaseList = ""
+	def langtoolsFailedTestCaseList = ""
+	def jckRuntimeFailedTestCaseList = ""
+	def jckCompilerFailedTestCaseList = ""
+	def jckDevtoolsFailedTestCaseList = ""
+	List<String> buildPaths = paths.split(',')
+	for (def buildPath: buildPaths) {
+		def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
+		for (def tapFile: tapFiles) {
+			echo "Tap file found: ${tapFile}..."
+			def file = readFile(file: "${tapFile}")
+			TapConsumer tapConsumer = TapConsumerFactory.makeTap13YamlConsumer()
+			TestSet testSet = tapConsumer.load(file)
+			for (int i = 1; i <= testSet.getNumberOfTestResults(); i++) {
+				if (!testSet.getTestResult(i).getStatus().toString().equals("ok")) {
+					def failedtest = testSet.getTestResult(i).getDescription().trim().substring(2)
+					failedTestList += "${failedtest},"
+					if (env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('jck')) {
+						def failedTestCasesInfo = testSet.getTestResult(i).getDiagnostic().get("output").toString()
+						if (failedTestCasesInfo.contains("Failed test cases:") && failedTestCasesInfo.contains("Test results:")) {
+							failedTestCasesInfo = failedTestCasesInfo.substring(failedTestCasesInfo.indexOf('TEST:'))
+							failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
+							failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
+							if (failedtest.startsWith("jdk_")) {
+								if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jdkFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
+								if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
+								if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
+								if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else if (failedtest.startsWith("langtools_")){
+								if (!langtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
+									langtoolsFailedTestCaseList += "${failedTestCasesInfo} "
+								}
+							} else {
+								if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
+									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
 								}
 							}
 						}
@@ -1392,45 +1399,59 @@ def addFailedTestsGrinderLink(paths=""){
 				}
 			}
 		}
-		if (failedTestList) {
-			String failedTests = failedTestList.substring(0, failedTestList.length() - 1)
-			env.FAILED_TESTS= failedTests ?: ""
-			env.RERUN_TESTCASES=""
-			failedTestList = "testList+TESTLIST=" + failedTests
-			String url = env.RERUN_LINK
+	}
+	if (failedTestList) {
+		String failedTests = failedTestList[0..-2]
+		env.FAILED_TESTS= failedTests
+		env.RERUN_TESTCASES=""
+		def customizedTestCases = [:]
+		if (jdkFailedTestCaseList) {
+			customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
+		}
+		if (hotspotFailedTestCaseList) {
+			customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
+		}
+		if (langtoolsFailedTestCaseList) {
+			customizedTestCases['langtools'] = "${langtoolsFailedTestCaseList}"
+		}
+		if (jckRuntimeFailedTestCaseList) {
+			customizedTestCases['jckruntime'] = "${jckRuntimeFailedTestCaseList}"
+		}
+		if (jckCompilerFailedTestCaseList) {
+			customizedTestCases['jckcompiler'] = "${jckCompilerFailedTestCaseList}"
+		}
+		if (jckDevtoolsFailedTestCaseList) {
+			customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
+		}
+		if (customizedTestCases.size() == 1) {
+			def testCases=customizedTestCases.values().first()
+			def customTarget=customizedTestCases.keySet().first()
+			def testCaseSize=testCases.count(' ')
+			// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
+			if (testCaseSize < 80) {
+				env.RERUN_CUSTOMTARGET="${customTarget}_custom"
+				env.RERUN_TESTCASES="${testCases}"
+			}
+			return customizedTestCases
+		}
+	}
+	return null
+}
+
+def addFailedTestsGrinderLink(paths="") {
+	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
+		def customizedTestCases = getFailedAndCustomizedTest(paths)
+		String url = env.RERUN_LINK
+		// Add rerun FailedTests link only if there are targets other than _custom as it's duplicate with rerun customized link
+		if (env.FAILED_TESTS?.trim() && (env.FAILED_TESTS.contains(',') || !env.FAILED_TESTS.contains('_custom'))) {
+			// Remove _custom target from FAILED_TESTS
+			def filteredFailedTestLists = env.FAILED_TESTS.split(',').collect{ it.trim() }.findAll { !it.contains('_custom') }.join(',')
+			String failedTestList = "testList+TESTLIST=" + filteredFailedTestLists
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
 			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
-			def customizedTestCases = [:]
-			if (jdkFailedTestCaseList) {
-				customizedTestCases['jdk'] = "${jdkFailedTestCaseList}"
-			}
-			if (hotspotFailedTestCaseList) {
-				customizedTestCases['hotspot'] = "${hotspotFailedTestCaseList}"
-			}
-			if (langtoolsFailedTestCaseList) {
-				customizedTestCases['langtools'] = "${langtoolsFailedTestCaseList}"
-			}
-			if (jckRuntimeFailedTestCaseList) {
-				customizedTestCases['jckruntime'] = "${jckRuntimeFailedTestCaseList}"
-			}
-			if (jckCompilerFailedTestCaseList) {
-				customizedTestCases['jckcompiler'] = "${jckCompilerFailedTestCaseList}"
-			}
-			if (jckDevtoolsFailedTestCaseList) {
-				customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
-			}
-
-			if (customizedTestCases.size() == 1) {
-				def testCases=customizedTestCases.values().first()
-				def customTarget=customizedTestCases.keySet().first()
-				def testCaseSize=testCases.count(' ')
-				// Limitation of Header Fields https://github.com/adoptium/aqa-tests/issues/5241#issuecomment-2161927014
-				if (testCaseSize < 80) {
-					env.RERUN_CUSTOMTARGET="${customTarget}_custom"
-					env.RERUN_TESTCASES="${testCases}"
-				}
-			}
+		}
+		if ( customizedTestCases != null ) {
 			customizedTestCases.each { target, testcases ->
 				def tempTestCases = testcases.substring(0, testcases.length() - 1)
 				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
@@ -1472,7 +1493,7 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
 */
-def triggerRerunJob (rerunTestJobParams) {
+def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
 		if ((rerunIterations > 0 && env.FAILED_TESTS?.trim()) || (params.RERUN_FAILURE && rerunTestJobParams)) {
@@ -1530,7 +1551,7 @@ def triggerRerunJob (rerunTestJobParams) {
 						}
 					}
 					// generate job to rerun FAILURE test build(s)
-					if (params.RERUN_FAILURE && rerunTestJobParams) {
+					if (params.RERUN_FAILURE && rerunTestJobParams != null ) {
 						def newRerunJobs = [:]
 						rerunTestJobParams.each {
 							name, jobParams ->
@@ -1550,16 +1571,30 @@ def triggerRerunJob (rerunTestJobParams) {
 				if (rerunTestJobs) {
 					echo "Triggering rerun jobs in parallel ..."
 					def childJobs = parallel rerunTestJobs
-					archiveChildJobTap(childJobs)
+					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
+					echo " rerun trigger job rerun jobsstatus is ${rerunResults.jobStatus}"
+					echo "current jbo status is ${currentBuild.result}"
+					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
+						currentBuild.result = originalStatus
+					} else {
+						currentBuild.result = rerunResults.jobStatus
+					}
+					echo "after setting currentBuild.result is ${currentBuild.result}"
 				}
 			}
+		} else {
+			currentBuild.result = originalStatus
 		}
+	} else {
+		currentBuild.result = originalStatus
 	}
 }
 
-def archiveChildJobTap(childJobs) {
+// update to return worst child job status, and failure test job parameters.
+def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
 		def childTestJobParams = [:]
+		def currentStatus = 'SUCCESS';
 		forceCleanWS()
 		try {
 			def buildPaths = ""
@@ -1570,79 +1605,65 @@ def archiveChildJobTap(childJobs) {
 					def name = cjob.value.getProjectName()
 					def childResult = cjob.value.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
-					// track childTestJobParams if it is FAILURE job
-					if (childResult == "FAILURE") {
+					// track FAILURE job childTestJobParams if it's rerun stage
+					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
-
+					if (isWorseThan( childResult, currentStatus)) {
+						currentStatus = childResult
+					}
 					try {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${name}", selector: specific("${buildId}"), filter: "**/*.tap", target:"${name}/${buildId}")
 						}
-						step([$class: "TapPublisher", testResults: "${name}/${buildId}/**/*.tap", outputTapToConsole: false, failIfNoResults: true])
 						archiveFile("${name}/${buildId}/**/*.tap", true)
-						// add failed tests to Grinder link if it is not from the rerun build
-						if (!name.contains("_rerun")) {
-							buildPaths += "${name}/${buildId}/,"
-						}
+						buildPaths += "${name}/${buildId}/,"
 					} catch (Exception e) {
 						echo 'Exception: ' + e.toString()
 						echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 					}
-					if (!currentBuild.resultIsWorseOrEqualTo(childResult)) {
-						currentBuild.result = childResult;
-					}
 			}
-			def resultSum = parseResultSumFromTaps()
-			checkTestResults(resultSum)
+			
+			// In case rerun job status be worse than original job status
+			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
+				currentStatus = originalStatus
+			}
 
 			archiveAQAvitFiles()
-			if (buildPaths.length() > 0) {
-				addFailedTestsGrinderLink(buildPaths.substring(0, buildPaths.length() - 1))
+			env.jobStatus = currentStatus
+			if (currentStatus != "SUCCESS") {
+				if ( originalStatus == "SUCCESS" ) {
+					getFailedAndCustomizedTest(buildPaths[0..-2])
+				} else {
+					addFailedTestsGrinderLink(buildPaths[0..-2])
+				}
 			}
 		} finally {
 			forceCleanWS()
 		}
-		return childTestJobParams
+		return [jobStatus: currentStatus, jobParams: childTestJobParams]
 	}
+}
+
+def isWorseThan(String resultA, String resultB) {
+	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED']
+	def indexA = severityOrder.indexOf(resultA)
+	def indexB = severityOrder.indexOf(resultB)
+	return indexA > indexB
 }
 
 def runParallelTests() {
-	def rerunTestJobParams = [:]
-	if (params.PARALLEL && params.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
+	def parallelResults = [:]
+	if (env.PARALLEL != "None" && (NUM_MACHINES > 1 || params.TEST_TIME)) {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
-			rerunTestJobParams = archiveChildJobTap(childJobs)
-		}
-	}
-	return rerunTestJobParams
-}
-
-def parseResultSumFromTaps() {
-	def results = [:]
-	def tapFiles = findFiles(glob: "**/*.tap")
-	for (String tapFile : tapFiles) {
-		def tap = readFile(file: "${tapFile}")
-		def lines = tap.readLines()
-		def found = false
-		for (String line : lines) {
-			if ((match = line =~ /# RESULTS_SUMMARY: (TOTAL: \d+)\s*(EXECUTED: \d+)\s*(PASSED: \d+)\s*(FAILED: \d+)\s*(DISABLED: \d+)\s*(SKIPPED: \d+)/)) {
-				for (int i = 1; i < match.groupCount(); i++) {
-					def matchVals = match.group(i).split(": ")
-					if (!results[matchVals[0]]) {
-						results[matchVals[0]] = 0;
-					}
-					results[matchVals[0]] += matchVals[1] as int
-				}
-				found = true
-				break
+			// There are cases env.PARALLEL != "None", but job is non parallel if number list is 1
+			if ( !childJobs.isEmpty() ) { 
+				parallelResults = archiveChildJobTap(childJobs) 
 			}
 		}
-		if (!found) {
-			return [:]
-		}
 	}
-	return results
+	return parallelResults
 }
 
 def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {

@@ -449,11 +449,22 @@ timestamps{
                     }
                 }
             }
-            if (currentBuild.result != 'FAILURE') {
-                env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
-                echo "SETUP_LABEL: ${env.SETUP_LABEL}"
-                def rerunTestJobParams = jenkinsfile.runParallelTests()
-                jenkinsfile.triggerRerunJob(rerunTestJobParams)
+            env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
+            if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
+                jenkinsfile.triggerRerunJob(env.jobStatus)
+                echo " None paralle and after rerun job status is ${currentBuild.result}"
+            } else if ( env.PARALLEL != 'None' && currentBuild.result != 'FAILURE') {
+                def parallelResults = jenkinsfile.runParallelTests()
+                echo "after parallel parallelResults.jobStatus is ${parallelResults.jobStatus}"
+                if ( parallelResults.jobStatus != 'SUCCESS' ) {
+					jenkinsfile.triggerRerunJob(parallelResults.jobStatus, parallelResults.jobParams)
+                } else {
+                    currentBuild.result = 'SUCCESS'
+                }
+                echo " Paralle and after rerun job status is ${currentBuild.result}"
+            } else {
+                currentBuild.result = env.jobStatus
+                echo " None paralle non rerun or successjob status is ${currentBuild.result}"
             }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
