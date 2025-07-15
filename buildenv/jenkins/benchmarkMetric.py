@@ -23,10 +23,8 @@ def main():
                         higherbetter = metricChild.get("higherbetter")
                         units = metricChild.get("units")
                         metricMap = {}
-                        metricMap["benchmark"] = {
-                                "name": benchmark,
-                                "metric": {
-                                        "name": metric,
+                        metricMap[benchmark] = {
+                                metric: {
                                         "value": value,
                                         "higher_better": higherbetter,
                                         "units": units,
