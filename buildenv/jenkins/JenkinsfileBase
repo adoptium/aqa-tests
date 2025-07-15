@@ -1679,7 +1679,7 @@ def forceCleanWS() {
 def generateBenchmarkMetric() {
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
         sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
-        sh "python aqa-tests/buildenv/jenkins/metricConfig2JSON.py --metricConfig_js aqa-test-tools/TestResultSummaryService/parsers/BenchmarkMetric.js"
+        sh "python aqa-tests/buildenv/jenkins/metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
         sh "python aqa-tests/buildenv/jenkins/benchmarkMetric.py --metricConfig_json metricConfig.json --console console.txt --JOB_NAME ${env.JOB_NAME} --BUILD_NUMBER ${env.BUILD_NUMBER}"
         def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.json"
         archiveArtifacts artifacts: fileName, fingerprint: true, allowEmptyArchive: false
