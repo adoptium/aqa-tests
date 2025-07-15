@@ -1677,6 +1677,13 @@ def forceCleanWS() {
 }
 
 def generateBenchmarkMetric() {
+        sh '''
+                echo "PATH=$PATH"
+                which python || true
+                which python3 || true
+                python3 --version || true
+        '''
+
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
         sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
         sh "python aqa-tests/buildenv/jenkins/metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
