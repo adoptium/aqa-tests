@@ -24,6 +24,12 @@
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) testsuite=COMPILER tests="$(JCKCOMPILER_CUSTOM_TARGET)" isCustomTarget="isCustomTarget"
 		</command>
+		<disables>
+			<disable>
+				<comment>Temp exclude for Jul_2025 release, if testcases fail, auto-reruns will fail</comment>
+				<impl>hotspot</impl>
+			</disable>
+		</disables>
 		<levels>
 			<level>dev</level>
 		</levels>
