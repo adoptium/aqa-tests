@@ -1684,15 +1684,10 @@ def generateBenchmarkMetric() {
                 python3 --version || true
         '''
         sh '''
-                echo "Listing aqa-tests/buildenv/jenkins (relative to $PWD)"
-                # -a  show dot‑files
-                # -l  long format with permissions, sizes, dates
-                # -h  human‑readable sizes
-                ls -alh aqa-tests/buildenv/jenkins || {
-                        echo "Directory doesn’t exist at this path"
-                        exit 0
-                }
+                echo "Workspace root: $(pwd)"   # confirms where you are
+                ls -alh                        # long listing of the current directory only
         '''
+
 
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
         sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
