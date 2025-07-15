@@ -1683,10 +1683,7 @@ def generateBenchmarkMetric() {
                 which python3 || true
                 python3 --version || true
         '''
-        sh '''
-                echo "Workspace root: $(pwd)"   # confirms where you are
-                ls -alh                        # long listing of the current directory only
-        '''
+        params.each { k, v -> echo "${k} = ${v}" }
 
 
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
