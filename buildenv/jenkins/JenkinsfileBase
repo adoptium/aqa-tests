@@ -821,7 +821,7 @@ def runTest( ) {
 			}
 		}
                 node (params.SETUP_LABEL) {
-                        checkMetric()
+                        generateBenchmarkMetric()
                 }
 		def resultSum = [:]
 		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
@@ -1676,7 +1676,7 @@ def forceCleanWS() {
 	}
 }
 
-def checkMetric() {
+def generateBenchmarkMetric() {
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
         sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
         sh "python aqa-tests/buildenv/jenkins/metricConfig2JSON.py --metricConfig_js aqa-test-tools/TestResultSummaryService/parsers/BenchmarkMetric.js"
