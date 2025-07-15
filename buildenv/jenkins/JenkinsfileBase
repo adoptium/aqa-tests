@@ -820,7 +820,7 @@ def runTest( ) {
 				sh "genhtml --quiet codeCoverageInfoFinal.info --output-directory code_coverage_report"
 			}
 		}
-                node (params.SETUP_LABEL) {
+                node ('ci.role.test&&hw.arch.x86&&sw.os.linux') {
                         generateBenchmarkMetric()
                 }
 		def resultSum = [:]
@@ -1684,6 +1684,8 @@ def generateBenchmarkMetric() {
                 python3 --version || true
         '''
         params.each { k, v -> echo "${k} = ${v}" }
+        echo "show env"
+        env.each { k, v -> echo "${k} = ${v}" }
 
 
         writeFile file : 'console.txt', text: currentBuild.rawBuild.getLog() 
