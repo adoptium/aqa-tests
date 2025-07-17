@@ -2724,6 +2724,12 @@
 	</test>
 	<test>
 		<testCaseName>jdk_vector_float128_j9</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/21945</comment>
+				<version>25+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xjit:{*Float128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
@@ -2733,7 +2739,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Float128VectorTests.java$(Q)  &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Float128VectorTests.jtr; \
@@ -2760,6 +2765,12 @@
 	</test>
 	<test>
 		<testCaseName>jdk_vector_double128_j9</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/21945</comment>
+				<version>25+</version>
+			</disable>
+		</disables>
 		<variations>
 			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
@@ -2769,7 +2780,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Double128VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Double128VectorTests.jtr; \
@@ -2805,7 +2815,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Int128VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Int128VectorTests.jtr; \
@@ -2841,7 +2850,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Short128VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Short128VectorTests.jtr; \
@@ -2877,7 +2885,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte128VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte128VectorTests.jtr; \
@@ -2913,7 +2920,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Long128VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Long128VectorTests.jtr; \
@@ -2949,7 +2955,6 @@
 	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
 	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
 	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	$(Q)$(JTREG_JDK_TEST_DIR)$(D)jdk/incubator/vector/Byte64VectorTests.java$(Q) &amp;&amp; \
 	echo "grep #VECTOR API $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr" &amp;&amp; \
 	grep  "#VECTOR API" $(REPORTDIR)/work/jdk/incubator/vector/Byte64VectorTests.jtr; \
