@@ -63,6 +63,7 @@ node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
                 baseParams << string(name: "BENCHMARK", value: item.BENCHMARK)
                 baseParams << string(name: "TARGET", value: item.TARGET)
                 baseParams << string(name: "BUILD_LIST", value: item.BUILD_LIST)
+                baseParams << string(name: "PERF_ITERATIONS", value: item.PERF_ITERATIONS ? item.PERF_ITERATIONS.toString() : "4")
                 
                 item.PLAT_MACHINE_MAP.each { kv -> 
                         kv.each {p, m -> 
