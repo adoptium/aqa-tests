@@ -160,14 +160,14 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
                 aggregateMetrics[test].each { metric -> 
                         def value = runMetrics[test][metric.key]["value"]
                         if (value != null) metric.value[testType]["values"] << value
-                        else echo "${test} metric not found, may have failed or been disabled."
+                        else echo "${metric} metric for ${test} not found, may have failed or been disabled."
                 }
         }
 }
 
 def checkRegressions(aggregateMetrics, testList) {
-        testList.clone().each { test -> 
-                aggregateMetrics[test].each { metric ->
+        for test in testList.clone() {
+                for metric in aggregateMetrics[test] {
                         def testMetrics = metric.value["test"]["values"]
                         def baselineMetrics = metric.value["baseline"]["values"]
                         if (testMetrics.size() > 0 && baselineMetrics.size() > 0) {
@@ -184,19 +184,17 @@ def checkRegressions(aggregateMetrics, testList) {
 
                                 if (score <= 98) {
                                         currentBuild.result = 'UNSTABLE'
-                                        echo "Possible ${test} regression, set build result to UNSTABLE."
-                                } else { 
-                                        echo "Perf iteration for ${test} completed."
-                                        echo "testList: ${testList}"
-                                        echo "test: ${test}"
-                                        testList.remove(test) 
-                                }
+                                        echo "Possible ${metric} regression for ${test}, set build result to UNSTABLE."
+                                        break
                         }
                         else {
                                 currentBuild.result = 'UNSTABLE'
-                                echo "${test} metric not found across all iterations. Set build result to UNSTABLE."
+                                echo "${metric} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
+                                break 
                         }
-                }
+                } 
+                echo "Perf iteration for ${test} completed."
+                testList.remove(test) //no metrics had regression or errors, we can EXIT_EARLY this test 
         }
 }
 
