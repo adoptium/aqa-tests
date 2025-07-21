@@ -166,10 +166,10 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
 }
 
 def checkRegressions(aggregateMetrics, testList) {
-        testList.each { test -> 
+        testList.clone().each { test -> 
                 aggregateMetrics[test].each { metric ->
-                        testMetrics = metric.value["test"]["values"]
-                        baselineMetrics = metric.value["baseline"]["values"]
+                        def testMetrics = metric.value["test"]["values"]
+                        def baselineMetrics = metric.value["baseline"]["values"]
                         if (testMetrics.size() > 0 && baselineMetrics.size() > 0) {
                                 def testStats = getStats(testMetrics) 
                                 def baselineStats = getStats(baselineMetrics)
@@ -187,6 +187,8 @@ def checkRegressions(aggregateMetrics, testList) {
                                         echo "Possible ${test} regression, set build result to UNSTABLE."
                                 } else { 
                                         echo "Perf iteration for ${test} completed."
+                                        echo "testList: ${testList}"
+                                        echo "test: ${test}"
                                         testList.remove(test) 
                                 }
                         }
