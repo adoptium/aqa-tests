@@ -112,6 +112,25 @@ You can skip `-f` in `git push` if you've never pushed your branch before.
 11. Convert PR to `Ready for review` once the PR is ready.
 
 
+## Code Review Process Guideline
+
+To ensure high code quality, maintainability, and collaboration, all code changes should go through a structured review process before being merged into the main branch.
+
+1. Assigning Reviewers
+- Assign at least one project committer as the reviewer.
+- Choose a reviewer with relevant knowledge of the codebase or feature.
+2. Reviewer Responsibilities
+- Review the code for:
+   - Correctness and functionality
+   - Code style and readability
+   - Test coverage and reliability
+   - Code maintainability and performance
+- Approve the PR once it meets quality standards.
+3. Merging the PR
+- Only the assigned reviewer should merge the PR after approval.
+- The author should not merge their own PR unless explicitly allowed under specific circumstances (e.g. hotfixes with prior approval).
+
+
 ## Generative Artificial Intelligence (AI) Usage Guidelines
 
 To ensure transparency, maintain the quality and integrity of our codebase, we have the following expectations regarding the use of generative AI tools in contributions:
