@@ -1,14 +1,12 @@
 #!groovy
-def testStats = [:]
-def baselineStats = [:]
-def testRuntimes = []
-def baselineRuntimes = []
+
+def metrics = [:]
 def testParams = []
 def baselineParams = []
 int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
 
-def EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
+env.EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
 
 // loop through all the params and change the parameters if needed
 params.each { param ->
@@ -38,49 +36,68 @@ params.each { param ->
     }
 }
 
-node ("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+env.L2_Machine = "test-rhibmcloud-rhel9-x64-1" //grab and execute python scripts here
+
+node (env.L2_Machine) {
         timestamps {
                 try {
-                        ["TARGET", "BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
+                        ["BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
                                 [testParams, baselineParams].each { list ->
                                         list << string(name: key, value: params."${key}")
                                 }
                         }
+
+                        def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
+                        def runBase = "runBase.json"
+                        def aggrBase = "aggrBase.json"
+                        getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
+                        sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
+                        sh "python3 metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
+                        sh "python3 initBenchmarkMetrics.py --metricConfig_json metricConfig.json --testNames ${params.TARGET.split("=")[1]} --runBase ${runBase} --aggrBase ${aggrBase}"
+                        
+                        def testList = params.TARGET.split("=")[1].tokenize(",")
+
+                        metrics = readJSON file: aggrBase
                         
                         echo "starting to trigger build..."
                         lock(resource: params.LABEL) {
                                 for (int i = 0; i < PERF_ITERATIONS; i++) {
+                                        //clone to avoid mutation 
+                                        def thisTestParams = testParams.collect()
+                                        def thisBaselineParams = baselineParams.collect()
+
+                                        //set the target, testlist should change if some metrics regress while others do not
+                                        def testNames = testList.join(",")
+                                        def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
+
+                                        thisTestParams << string(name: "TARGET", value: TARGET)
+                                        thisBaselineParams << string(name: "TARGET", value: TARGET)
+
                                         // test
                                         testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                        def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, testParams, "test")
-                                        aggregateLogs(testRun, testRuntimes)
+                                        def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisTestParams, "test")
+                                        aggregateLogs(testRun, testNames, testList, runBase, metrics, "test")
 
                                         // baseline
                                         if (RUN_BASELINE) {
                                                 baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                                def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, baselineParams, "baseline")
-                                                aggregateLogs(baseRun, baselineRuntimes)
+                                                def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisBaselineParams, "baseline")
+                                                aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
                                         } else {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
-                                        if (params.TARGET && params.TARGET.contains('dacapo')) {
-                                                testStats = stats(testRuntimes)
-                                                baselineStats = stats(baselineRuntimes)
-                                                def score = (testStats.mean/baselineStats.mean) * 100
+                                        
+                                        echo "metrics ${metrics}"
 
-                                                echo "testRuntimes: ${testRuntimes}" 
-                                                echo "baselineRuntimes: ${baselineRuntimes}"
-                                                echo "score: ${score} %"
-
-                                                if (i == PERF_ITERATIONS || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
-                                                        if (score <= 98) {
-                                                                currentBuild.result = 'UNSTABLE'
-                                                                echo "Possible regression, set build result to UNSTABLE."
-                                                        } else {
-                                                                echo "Perf iteration completed. EXIT_EARLY: ${EXIT_EARLY}. PERF_ITERATIONS: ${PERF_ITERATIONS}. Actual iterations: ${i}."
-                                                                break
-                                                        }
+                                        if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                if (i == PERF_ITERATIONS) {
+                                                        echo "All iterations completed"
+                                                } else {
+                                                        echo "Attempting early exit"
                                                 }
+                                                echo "checking for regressions"
+                                                checkRegressions(metrics, testList)
+                                                if (testList.size() == 0) break 
                                         }
                                 }
                         }
@@ -120,49 +137,81 @@ def generateChildJobViaAutoGen(newJobName) {
     build job: 'Test_Job_Auto_Gen', parameters: jobParams, propagate: true
 }
 
-def aggregateLogs(run, runtimes) {
+def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, testType) {
         def json 
-        node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
-                def buildId  = run.getRawBuild().getNumber()
-                def name = run.getProjectName()
-                def result = run.getCurrentResult()
+        def buildId = run.getRawBuild().getNumber()
+        def name = run.getProjectName()
+        def result = run.getCurrentResult()
+        def fname = "${name}_${buildId}.json"
 
-                echo "${name} #${buildId} completed with status ${result}, copying JSON logs..."
+        echo "${name} #${buildId} completed with status ${result}, retrieving console log..."
+        writeFile file : 'console.txt', text: run.getRawBuild().getLog() 
+        sh "python3 benchmarkMetric.py --benchmarkMetricsTemplate_json ${templateName} --console console.txt --fname ${fname} --testNames ${testNames}"
 
-                try {
-                        timeout(time: 1, unit: 'HOURS') {
-                                copyArtifacts(
-                                        projectName: name,
-                                        selector: specific("${buildId}"),
-                                        filter: "**/${name}_${buildId}.json",
-                                        target: "."
-                                )
-                                
-                        }   
-                        json = readJSON file: "${name}_${buildId}.json"
-                        archiveArtifacts artifacts: "${name}_${buildId}.json", fingerprint: true, allowEmptyArchive: false
-                        def metricList = json.metrics['dacapo-h2']
-                        def runtimeMap = metricList.find{ it.containsKey('value') }
-                        if (runtimeMap) {
-                                runtimes << (runtimeMap.value as double)
-                        } else { 
-                                echo "No runtime in ${name}_${buildId}.json" 
-                        }
-                } catch (Exception e) {
-                        echo "Cannot copy/process ${name}_${buildId}.json from ${name}: ${e}"
+        try {
+                archiveArtifacts artifacts: fname, fingerprint: true, allowEmptyArchive: false
+        } catch (Exception e) {
+                echo "Cannot copy/process ${name}_${buildId}.json from ${name}: ${e}"
+        }
+
+        def runMetrics = readJSON file: fname 
+
+        testList.each { test ->
+                aggregateMetrics[test].each { metric -> 
+                        def value = runMetrics[test][metric.key]["value"]
+                        if (value != null) metric.value[testType]["values"] << value
+                        else echo "${test} metric not found, may have failed or been disabled."
                 }
         }
 }
 
-def stats (List nums) { 
-        def n = nums.size()
-        def mid = n.intdiv(2)
+def checkRegressions(aggregateMetrics, testList) {
+        testList.each { test -> 
+                aggregateMetrics[test].each { metric ->
+                        testMetrics = metric.value["test"]["values"]
+                        baselineMetrics = metric.value["baseline"]["values"]
+                        if (testMetrics.size() > 0 && baselineMetrics.size() > 0) {
+                                def testStats = getStats(testMetrics) 
+                                def baselineStats = getStats(baselineMetrics)
 
-        def sorted = nums.sort()
-        def mean = nums.sum()/n
+                                echo "testStats: ${testStats}"
+                                echo "baselineStats: ${baselineStats}"
+
+                                def score = (metric.value["higherbetter"]) ? testStats.mean/baselineStats.mean : baselineStats.mean/testStats.mean
+                                score *= 100 
+
+                                echo "score: ${score}"
+
+                                if (score <= 98) {
+                                        currentBuild.result = 'UNSTABLE'
+                                        echo "Possible ${test} regression, set build result to UNSTABLE."
+                                } else { 
+                                        echo "Perf iteration for ${test} completed."
+                                        testList.remove(test) 
+                                }
+                        }
+                        else {
+                                currentBuild.result = 'UNSTABLE'
+                                echo "${test} metric not found across all iterations. Set build result to UNSTABLE."
+                        }
+                }
+        }
+}
+
+def getStats (values) { 
+        def n = values.size()
+        def mid = n.intdiv(2)
+        def sorted = values.sort()
+        def mean = values.sum()/n
         def median = (n % 2 == 1) ? sorted[mid] : (sorted[mid-1]+sorted[mid])/2
-        def variance = nums.collect{(it-mean)**2}.sum()/n
+        def variance = values.collect{(it-mean)**2}.sum()/n
         def stdev = Math.sqrt(variance as double)
         [mean: mean, max: sorted[-1], min: sorted[0], median: median, std: stdev]
 }
 
+def getPythonDependencies (owner, branch) {
+        def pythonScripts = ["benchmarkMetric.py", "initBenchmarkMetrics.py", "metricConfig2JSON.py"]
+        pythonScripts.each { pythonScript ->
+                sh "curl -Os https://raw.githubusercontent.com/${owner}/aqa-tests/refs/heads/${branch}/buildenv/jenkins/${pythonScript}"
+        }
+}
