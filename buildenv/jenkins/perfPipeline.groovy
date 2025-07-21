@@ -87,7 +87,8 @@ node (env.L2_Machine) {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
                                         
-                                        echo "metrics ${metrics}"
+                                        writeJSON file: "metrics.json", json: metrics, pretty: 4
+                                        archiveArtifacts artifacts: "metrics.json" 
 
                                         if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
                                                 if (i == PERF_ITERATIONS) {
@@ -160,14 +161,13 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
                 aggregateMetrics[test].each { metric -> 
                         def value = runMetrics[test][metric.key]["value"]
                         if (value != null) metric.value[testType]["values"] << value
-                        else echo "${metric} metric for ${test} not found, may have failed or been disabled."
                 }
         }
 }
 
 def checkRegressions(aggregateMetrics, testList) {
         for (test in testList.clone()) {
-                for (metric in aggregateMetrics[test]) {
+                for (metric in aggregateMetrics[test].entrySet()) {
                         def testMetrics = metric.value["test"]["values"]
                         def baselineMetrics = metric.value["baseline"]["values"]
                         if (testMetrics.size() > 0 && baselineMetrics.size() > 0) {
@@ -184,12 +184,12 @@ def checkRegressions(aggregateMetrics, testList) {
 
                                 if (score <= 98) {
                                         currentBuild.result = 'UNSTABLE'
-                                        echo "Possible ${metric} regression for ${test}, set build result to UNSTABLE."
+                                        echo "Possible ${metric.key} regression for ${test}, set build result to UNSTABLE."
                                         break
                                 }
                                 else {
                                         currentBuild.result = 'UNSTABLE'
-                                        echo "${metric} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
+                                        echo "${metric.key} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
                                         break 
                                 }
                         }        
