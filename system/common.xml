@@ -324,15 +324,6 @@
 		<copy todir="${SYSTEMTEST_DEST}/openj9-systemtest" failonerror="false">
 			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest" includes="**" />
 		</copy>
-		<if>
-			<or>
-				<contains string="${JVM_VERSION}" substring="openj9"/>
-				<contains string="${JVM_VERSION}" substring="ibm"/>
-			</or>
-				<then>
-					<chmod file="${SYSTEMTEST_DEST}/openj9-systemtest/openj9.test.sharedClasses.jvmti/bin/native/**" perm="755"/>
-				</then>
-		</if>
 		<condition property="system_lib_dir_not_set" value="true" else="false">
 			<not>
 				<isset property="env.SYSTEM_LIB_DIR"/>
