@@ -165,8 +165,8 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
         }
 }
 
-def checkRegressions(aggregateMetrics, testList) {
-        for (test in testList.clone()) {
+def checkRegressions(aggregateMetrics, testList) { 
+testloop: for (test in testList.clone()) {
                 for (metric in aggregateMetrics[test].entrySet()) {
                         def testMetrics = metric.value["test"]["values"]
                         def baselineMetrics = metric.value["baseline"]["values"]
@@ -185,13 +185,13 @@ def checkRegressions(aggregateMetrics, testList) {
                                 if (score <= 98) {
                                         currentBuild.result = 'UNSTABLE'
                                         echo "Possible ${metric.key} regression for ${test}, set build result to UNSTABLE."
-                                        break
+                                        continue testloop
                                 }
                         }
                         else {
                                 currentBuild.result = 'UNSTABLE'
                                 echo "${metric.key} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
-                                break 
+                                continue testloop
                         }
                 }
                 echo "Perf iteration for ${test} completed."
