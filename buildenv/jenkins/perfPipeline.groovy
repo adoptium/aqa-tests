@@ -187,12 +187,12 @@ def checkRegressions(aggregateMetrics, testList) {
                                         echo "Possible ${metric.key} regression for ${test}, set build result to UNSTABLE."
                                         break
                                 }
-                                else {
-                                        currentBuild.result = 'UNSTABLE'
-                                        echo "${metric.key} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
-                                        break 
-                                }
-                        }        
+                        }
+                        else {
+                                currentBuild.result = 'UNSTABLE'
+                                echo "${metric.key} metric for ${test} not found across all iterations. Set build result to UNSTABLE."
+                                break 
+                        }
                 }
                 echo "Perf iteration for ${test} completed."
                 testList.remove(test) //no metrics had regression or errors, we can EXIT_EARLY this test 
