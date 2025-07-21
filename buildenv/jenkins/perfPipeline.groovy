@@ -166,8 +166,8 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
 }
 
 def checkRegressions(aggregateMetrics, testList) {
-        for test in testList.clone() {
-                for metric in aggregateMetrics[test] {
+        for (test in testList.clone()) {
+                for (metric in aggregateMetrics[test]) {
                         def testMetrics = metric.value["test"]["values"]
                         def baselineMetrics = metric.value["baseline"]["values"]
                         if (testMetrics.size() > 0 && baselineMetrics.size() > 0) {
