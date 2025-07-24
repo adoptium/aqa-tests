@@ -55,10 +55,6 @@ params.each { param ->
 }
 node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
         perfConfigJson.each { item ->
-                def BENCHMARK = item.BENCHMARK 
-                def TARGET = item.TARGET
-                def BUILD_LIST = item.BUILD_LIST
-                def PLATMACHINE_MAP = item.PLAT_MACHINE_MAP
                 def baseParams = childParams.collect()
                 baseParams << string(name: "BENCHMARK", value: item.BENCHMARK)
                 baseParams << string(name: "TARGET", value: item.TARGET)
