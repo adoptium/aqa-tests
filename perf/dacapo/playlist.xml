@@ -109,12 +109,9 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-luindex</testCaseName>
-                <disables>
-                        <disable>
-                                <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
-                                <version>8</version>
-                        </disable>
-                </disables>
+		<versions>
+			<version>11+</version>
+		</versions>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) luindex; \
 		$(TEST_STATUS)</command>
 		<levels>
