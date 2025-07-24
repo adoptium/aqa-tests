@@ -2724,12 +2724,6 @@
 	</test>
 	<test>
 		<testCaseName>jdk_vector_float128_j9</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/21945</comment>
-				<version>25+</version>
-			</disable>
-		</disables>
 		<variations>
 			<variation>-Xjit:{*Float128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
@@ -2765,12 +2759,6 @@
 	</test>
 	<test>
 		<testCaseName>jdk_vector_double128_j9</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/21945</comment>
-				<version>25+</version>
-			</disable>
-		</disables>
 		<variations>
 			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
 		</variations>
