@@ -147,23 +147,6 @@ setupWindowsEnv() {
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
 
-if [ $(uname) = Linux ]; then
-    JENKINS_HOME_DIR=/home/jenkins
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
-    setupLinuxEnv
-
-elif [ $(uname) = Darwin ]; then
-    JENKINS_HOME_DIR="/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
-    setupMacEnv
-
-elif [ "$OS" = "Windows_NT" ]; then
-    JENKINS_HOME_DIR="c:/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
-    setupWindowsEnv
-
-fi
-
 # Verify that the contents are present in jck_run
 TEST_GROUP=$1
 SPEC=$2
@@ -178,10 +161,19 @@ fi
 OSNAME="Unknown"
 if [[ $SPEC =~ osx.* ]]; then
     OSNAME="mac"
+    JENKINS_HOME_DIR="/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    setupMacEnv
 elif [[ $SPEC =~ linux.* ]]; then
     OSNAME="linux"
+    JENKINS_HOME_DIR=/home/jenkins
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
+    setupLinuxEnv
 elif [[ $SPEC =~ win.* ]]; then
     OSNAME="windows"
+    JENKINS_HOME_DIR="c:/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
+    setupWindowsEnv
 fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
