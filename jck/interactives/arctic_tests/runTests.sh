@@ -157,7 +157,7 @@ elif [ $(uname) = Darwin ]; then
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
     setupMacEnv
 
-elif [ $(uname) = Windows_NT ]; then
+elif [ "$OS" = "Windows_NT" ]; then
     JENKINS_HOME_DIR="c:/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
     setupWindowsEnv
