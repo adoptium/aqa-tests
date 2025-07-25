@@ -314,7 +314,12 @@ for i in "${active_versions[@]}"; do
             echo "       Testcase ${JCK_TEST} of scope ${i} ${ARCTIC_GROUP} ${ARCTIC_TESTCASE}"
             echo "         JCK class: ${TEST_CLASS}"
 
+   #'";C:\Users\jenkins\jck_root\JCK24-unzipped\JCK-runtime-24\classes;"' 
+if [ $OSNAME = "windows" ]; then
+            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath '\";${JCK_MATERIAL}/classes;\"' ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+else
             TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+fi
 
             # Certain tests require extra options
             if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
