@@ -349,7 +349,7 @@ for i in "${active_versions[@]}"; do
             fi
 
             # Check testcase started successfully.
-            ps -p $test_pid -o pid 2>/dev/null 1>&2
+            ps -p $test_pid 2>/dev/null 1>&2
             if [[ $? != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
@@ -397,7 +397,7 @@ for i in "${active_versions[@]}"; do
                 sleep $SLEEP_TIME
 
                 echo "Testcase process $test_pid should have finished if successfully automated, getting test process completion status..."
-                if ps -p $test_pid -o pid; then
+                if ps -p $test_pid; then
                   echo "ERROR: Testcase process $test_pid is still running... terminating!"
                   kill -9 $test_pid
                 fi
