@@ -50,6 +50,8 @@ node (env.L2_Machine) {
                         def testNames = null 
                         def testRun = null
                         def baseRun = null 
+                        def runBase = "runBase.json"
+                        def aggrBase = "aggrBase.json"
 
                         ["BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
                                 [testParams, baselineParams].each { list ->
@@ -59,8 +61,6 @@ node (env.L2_Machine) {
 
                         if (params.PROCESS_METRICS) {
                                 def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
-                                def runBase = "runBase.json"
-                                def aggrBase = "aggrBase.json"
                                 getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
                                 sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
                                 sh "python3 metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
