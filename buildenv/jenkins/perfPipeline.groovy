@@ -67,22 +67,25 @@ node (env.L2_Machine) {
                                 def testList = params.TARGET.split("=")[1].tokenize(",")
                                 metrics = readJSON file: aggrBase
                         }
+                        else {
+                                testParams << string(name: "TARGET", value: params.TARGET) 
+                                baselineParams << string(name: "TARGET", value: params.TARGET)
+                        }
                         
                         echo "starting to trigger build..."
                         lock(resource: params.LABEL) {
                                 for (int i = 0; i < PERF_ITERATIONS; i++) {
-                                        //clone to avoid mutation 
-                                        def thisTestParams = testParams.collect()
-                                        def thisBaselineParams = baselineParams.collect()
-
-                                        //set the target, testlist should change if some metrics regress while others do not
                                         if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                                                //clone to avoid mutation 
+                                                def thisTestParams = testParams.collect()
+                                                def thisBaselineParams = baselineParams.collect()
                                                 def testNames = testList.join(",")
+                                                //set the target, testlist should change if some metrics regress while others do not
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
+                                                thisTestParams << string(name: "TARGET", value: TARGET)
+                                                thisBaselineParams << string(name: "TARGET", value: TARGET)
+                                                
                                         }
-
-                                        thisTestParams << string(name: "TARGET", value: TARGET)
-                                        thisBaselineParams << string(name: "TARGET", value: TARGET)
 
                                         // test
                                         testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
