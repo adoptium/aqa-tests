@@ -3,10 +3,9 @@
 def metrics = [:]
 def testParams = []
 def baselineParams = []
-int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
 
-//note: need to update the perf pipeline UI and perfL2JobTemplate to support params.SETUP_LABEL, params.PROCESS_METRICS, params.EXIT_EARLY 
+//note: need to update the perf pipeline UI, root level, perfL2JobTemplate to support params.SETUP_LABEL, params.PROCESS_METRICS, params.EXIT_EARLY 
 if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
 } else {
