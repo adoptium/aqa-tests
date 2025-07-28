@@ -6,8 +6,6 @@ def baselineParams = []
 int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
 
-env.EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
-
 //note: need to update the perf pipeline UI and perfL2JobTemplate to support params.SETUP_LABEL, params.PROCESS_METRICS, params.EXIT_EARLY 
 if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
@@ -56,7 +54,7 @@ node (env.L2_Machine) {
                                 }
                         }
 
-                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                        if (params.PROCESS_METRICS) {
                                 def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
                                 def runBase = "runBase.json"
                                 def aggrBase = "aggrBase.json"
@@ -78,13 +76,12 @@ node (env.L2_Machine) {
                                         //clone to avoid mutation
                                         def thisTestParams = testParams.collect()
                                         def thisBaselineParams = baselineParams.collect()       
-                                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {     
+                                        if (params.PROCESS_METRICS) {     
                                                 def testNames = testList.join(",")
                                                 //set the target, testlist should change if some metrics regress while others do not
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
                                                 thisTestParams << string(name: "TARGET", value: TARGET)
                                                 thisBaselineParams << string(name: "TARGET", value: TARGET)
-                                                
                                         }
 
                                         // test
@@ -100,12 +97,12 @@ node (env.L2_Machine) {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
 
-                                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                                        if (params.PROCESS_METRICS) {
                                                 aggregateLogs(testRun, testNames, testList, runBase, metrics, "test")
                                                 aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
                                                 writeJSON file: "metrics.json", json: metrics, pretty: 4
                                                 archiveArtifacts artifacts: "metrics.json" 
-                                                if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                if (i == PERF_ITERATIONS-1 || (params.EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
                                                         if (i == PERF_ITERATIONS-1) {
                                                                 echo "All iterations completed"
                                                         } else {
