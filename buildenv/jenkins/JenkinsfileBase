@@ -1631,7 +1631,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 
 			archiveAQAvitFiles()
 			env.jobStatus = currentStatus
-			if (currentStatus != "SUCCESS") {
+			if (currentStatus != "SUCCESS" && buildPaths!= "") {
 				if ( originalStatus == "SUCCESS" ) {
 					getFailedAndCustomizedTest(buildPaths[0..-2])
 				} else {
