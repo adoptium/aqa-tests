@@ -8,7 +8,7 @@ if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
 } else {
     if (params.PROCESS_METRICS && params.EXIT_EARLY) {
-       SETUP_LABEL = "test-rhibmcloud-rhel9-x64-1"
+       SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux&&sw.os.rhel.9"
    } else {
        SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
    }
@@ -42,7 +42,7 @@ params.each { param ->
     }
 }
 
-node (env.L2_Machine) {
+node (SETUP_LABEL) {
         timestamps {
                 try {
                         def metrics = [:]
