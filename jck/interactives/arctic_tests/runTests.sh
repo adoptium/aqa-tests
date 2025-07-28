@@ -350,7 +350,7 @@ for i in "${active_versions[@]}"; do
 
             # Check testcase started successfully.
             ps -p $test_pid 2>/dev/null 1>&2
-            if [[ $? != 0 ]]; then
+            if [[ $skipped == true ]] || [[ $? != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
                 overallSuccess=false
