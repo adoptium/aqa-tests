@@ -8,7 +8,7 @@ if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
 } else {
     if (params.PROCESS_METRICS && params.EXIT_EARLY) {
-       SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux&&sw.os.rhel.9"
+       SETUP_LABEL = "test-rhibmcloud-rhel9-x64-1"
    } else {
        SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
    }
