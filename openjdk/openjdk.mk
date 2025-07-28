@@ -245,6 +245,17 @@ else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
 	FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList-OpenJCEPlus.txt$(Q)
 endif
 
+# If we are on alpine, also use the exclude file specific to alpine.
+ifneq (,$(findstring alpine, $(SPEC)))
+	ifneq (,$(wildcard $($(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q))))
+		ifeq (,$(FEATURE_PROBLEM_LIST_FILE))
+			FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
+		else
+			FEATURE_PROBLEM_LIST_FILE+=-exclude:$(Q)$(TEST_ROOT)$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
+		endif
+	endif
+endif
+
 VENDOR_PROBLEM_LIST_FILE:=
 ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft eclipse))
 	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
