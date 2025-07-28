@@ -8,6 +8,17 @@ boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoo
 
 env.EXIT_EARLY = (params.EXIT_EARLY) ? true : false 
 
+//note: need to update the perf pipeline UI and perfL2JobTemplate to support params.SETUP_LABEL, params.PROCESS_METRICS, params.EXIT_EARLY 
+if (params.SETUP_LABEL) {
+    SETUP_LABEL = params.SETUP_LABEL
+} else {
+    if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+       SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux&&sw.os.rhel.9"
+   } else {
+       SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
+   }
+}
+
 // loop through all the params and change the parameters if needed
 params.each { param ->
     if (param.key == "BASELINE_SDK_RESOURCE") {
@@ -36,8 +47,6 @@ params.each { param ->
     }
 }
 
-env.L2_Machine = "test-rhibmcloud-rhel9-x64-1" //grab and execute python scripts here
-
 node (env.L2_Machine) {
         timestamps {
                 try {
@@ -47,17 +56,17 @@ node (env.L2_Machine) {
                                 }
                         }
 
-                        def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
-                        def runBase = "runBase.json"
-                        def aggrBase = "aggrBase.json"
-                        getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
-                        sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
-                        sh "python3 metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
-                        sh "python3 initBenchmarkMetrics.py --metricConfig_json metricConfig.json --testNames ${params.TARGET.split("=")[1]} --runBase ${runBase} --aggrBase ${aggrBase}"
-                        
-                        def testList = params.TARGET.split("=")[1].tokenize(",")
-
-                        metrics = readJSON file: aggrBase
+                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                                def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
+                                def runBase = "runBase.json"
+                                def aggrBase = "aggrBase.json"
+                                getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
+                                sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
+                                sh "python3 metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
+                                sh "python3 initBenchmarkMetrics.py --metricConfig_json metricConfig.json --testNames ${params.TARGET.split("=")[1]} --runBase ${runBase} --aggrBase ${aggrBase}"
+                                def testList = params.TARGET.split("=")[1].tokenize(",")
+                                metrics = readJSON file: aggrBase
+                        }
                         
                         echo "starting to trigger build..."
                         lock(resource: params.LABEL) {
@@ -67,8 +76,10 @@ node (env.L2_Machine) {
                                         def thisBaselineParams = baselineParams.collect()
 
                                         //set the target, testlist should change if some metrics regress while others do not
-                                        def testNames = testList.join(",")
-                                        def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
+                                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                                                def testNames = testList.join(",")
+                                                def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
+                                        }
 
                                         thisTestParams << string(name: "TARGET", value: TARGET)
                                         thisBaselineParams << string(name: "TARGET", value: TARGET)
@@ -76,29 +87,31 @@ node (env.L2_Machine) {
                                         // test
                                         testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
                                         def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisTestParams, "test")
-                                        aggregateLogs(testRun, testNames, testList, runBase, metrics, "test")
 
                                         // baseline
                                         if (RUN_BASELINE) {
                                                 baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
                                                 def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisBaselineParams, "baseline")
-                                                aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
+                        
                                         } else {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
-                                        
-                                        writeJSON file: "metrics.json", json: metrics, pretty: 4
-                                        archiveArtifacts artifacts: "metrics.json" 
 
-                                        if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
-                                                if (i == PERF_ITERATIONS) {
-                                                        echo "All iterations completed"
-                                                } else {
-                                                        echo "Attempting early exit"
+                                        if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+                                                aggregateLogs(testRun, testNames, testList, runBase, metrics, "test")
+                                                aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
+                                                writeJSON file: "metrics.json", json: metrics, pretty: 4
+                                                archiveArtifacts artifacts: "metrics.json" 
+                                                if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                        if (i == PERF_ITERATIONS-1) {
+                                                                echo "All iterations completed"
+                                                        } else {
+                                                                echo "Attempting early exit"
+                                                        }
+                                                        echo "checking for regressions"
+                                                        checkRegressions(metrics, testList)
+                                                        if (testList.size() == 0) break 
                                                 }
-                                                echo "checking for regressions"
-                                                checkRegressions(metrics, testList)
-                                                if (testList.size() == 0) break 
                                         }
                                 }
                         }
