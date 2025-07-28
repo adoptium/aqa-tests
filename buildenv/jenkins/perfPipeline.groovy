@@ -1,6 +1,5 @@
 #!groovy
 
-def metrics = [:]
 def testParams = []
 def baselineParams = []
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
@@ -46,6 +45,12 @@ params.each { param ->
 node (env.L2_Machine) {
         timestamps {
                 try {
+                        def metrics = [:]
+                        def testList = []
+                        def testNames = null 
+                        def testRun = null
+                        def baseRun = null 
+
                         ["BUILD_LIST", "PLATFORM", "LABEL"].each { key ->
                                 [testParams, baselineParams].each { list ->
                                         list << string(name: key, value: params."${key}")
@@ -60,7 +65,7 @@ node (env.L2_Machine) {
                                 sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
                                 sh "python3 metricConfig2JSON.py --metricConfig_js BenchmarkMetric.js"
                                 sh "python3 initBenchmarkMetrics.py --metricConfig_json metricConfig.json --testNames ${params.TARGET.split("=")[1]} --runBase ${runBase} --aggrBase ${aggrBase}"
-                                def testList = params.TARGET.split("=")[1].tokenize(",")
+                                testList = params.TARGET.split("=")[1].tokenize(",")
                                 metrics = readJSON file: aggrBase
                         }
                         else {
@@ -73,10 +78,10 @@ node (env.L2_Machine) {
                                 for (int i = 0; i < params.PERF_ITERATIONS; i++) {
                                         //clone to avoid mutation
                                         def thisTestParams = testParams.collect()
-                                        def thisBaselineParams = baselineParams.collect()       
+                                        def thisBaselineParams = baselineParams.collect()
                                         if (params.PROCESS_METRICS) {     
-                                                def testNames = testList.join(",")
                                                 //set the target, testlist should change if some metrics regress while others do not
+                                                testNames = testList.join(",")
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
                                                 thisTestParams << string(name: "TARGET", value: TARGET)
                                                 thisBaselineParams << string(name: "TARGET", value: TARGET)
@@ -84,12 +89,12 @@ node (env.L2_Machine) {
 
                                         // test
                                         testParams << string(name: "TEST_NUM", value: "TEST_NUM" + i.toString())
-                                        def testRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisTestParams, "test")
+                                        testRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisTestParams, "test")
 
                                         // baseline
                                         if (RUN_BASELINE) {
                                                 baselineParams << string(name: "BASELINE_NUM", value: "BASELINE_NUM_" + i.toString())
-                                                def baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisBaselineParams, "baseline")
+                                                baseRun = triggerJob(params.BENCHMARK, params.PLATFORM, thisBaselineParams, "baseline")
                         
                                         } else {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
