@@ -70,17 +70,15 @@ node (env.L2_Machine) {
                         else {
                                 testParams << string(name: "TARGET", value: params.TARGET) 
                                 baselineParams << string(name: "TARGET", value: params.TARGET)
-                                def thisTestParams = testParams
-                                def thisBaselineParams = baselineParams
                         }
                         
                         echo "starting to trigger build..."
                         lock(resource: params.LABEL) {
                                 for (int i = 0; i < PERF_ITERATIONS; i++) {
+                                        //clone to avoid mutation
+                                        def thisTestParams = testParams.collect()
+                                        def thisBaselineParams = baselineParams.collect()       
                                         if (params.PROCESS_METRICS && params.EXIT_EARLY) {     
-                                                //clone to avoid mutation
-                                                def thisTestParams = testParams.collect()
-                                                def thisBaselineParams = baselineParams.collect()                           
                                                 def testNames = testList.join(",")
                                                 //set the target, testlist should change if some metrics regress while others do not
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
