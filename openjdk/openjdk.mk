@@ -246,8 +246,11 @@ else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
 endif
 
 # If we are on alpine, also use the exclude file specific to alpine.
+FEATURE_PROBLEM_LIST_FILE:=debug0
 ifneq (,$(findstring alpine, $(SPEC)))
+	FEATURE_PROBLEM_LIST_FILE:=debug1
 	ifneq (,$(wildcard $($(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q))))
+		FEATURE_PROBLEM_LIST_FILE:=debug2
 		ifeq (,$(FEATURE_PROBLEM_LIST_FILE))
 			FEATURE_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
 		else
