@@ -3,6 +3,7 @@
 def testParams = []
 def baselineParams = []
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
+int PERF_ITERATIONS = params.PERF_ITERATIONS.toInteger()
 
 if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
@@ -75,7 +76,7 @@ node (SETUP_LABEL) {
                         
                         echo "starting to trigger build..."
                         lock(resource: params.LABEL) {
-                                for (int i = 0; i < params.PERF_ITERATIONS; i++) {
+                                for (int i = 0; i < PERF_ITERATIONS; i++) {
                                         //clone to avoid mutation
                                         def thisTestParams = testParams.collect()
                                         def thisBaselineParams = baselineParams.collect()
@@ -105,8 +106,8 @@ node (SETUP_LABEL) {
                                                 aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
                                                 writeJSON file: "metrics.json", json: metrics, pretty: 4
                                                 archiveArtifacts artifacts: "metrics.json" 
-                                                if (i == params.PERF_ITERATIONS-1 || (params.EXIT_EARLY && i >= params.PERF_ITERATIONS * 0.8)) {
-                                                        if (i == params.PERF_ITERATIONS-1) {
+                                                if (i == PERF_ITERATIONS-1 || (params.EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                        if (i == PERF_ITERATIONS-1) {
                                                                 echo "All iterations completed"
                                                         } else {
                                                                 echo "Attempting early exit"
