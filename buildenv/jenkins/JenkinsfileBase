@@ -1631,11 +1631,15 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 
 			archiveAQAvitFiles()
 			env.jobStatus = currentStatus
-			if (currentStatus != "SUCCESS" && buildPaths!= "") {
-				if ( originalStatus == "SUCCESS" ) {
-					getFailedAndCustomizedTest(buildPaths[0..-2])
-				} else {
-					addFailedTestsGrinderLink(buildPaths[0..-2])
+			if (currentStatus != "SUCCESS") {
+				if ( buildPaths!= "" ) {
+					if ( originalStatus == "SUCCESS" ) {
+						getFailedAndCustomizedTest(buildPaths[0..-2])
+					} else {
+						addFailedTestsGrinderLink(buildPaths[0..-2])
+					}
+				} else if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
+					addFailedTestsGrinderLink()
 				}
 			}
 		} finally {
