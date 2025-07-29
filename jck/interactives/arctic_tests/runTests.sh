@@ -363,7 +363,8 @@ ps -ef
 
             # Check testcase started successfully.
             ps -p $test_pid
-            if [[ $skipped == true ]] || [[ $? != 0 ]]; then
+            rc=$?
+            if [[ $skipped == true ]] || [[ $rc != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
                 overallSuccess=false
