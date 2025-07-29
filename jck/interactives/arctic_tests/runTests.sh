@@ -362,7 +362,7 @@ echo "after sleep ALL processes"
 ps -ef
 
             # Check testcase started successfully.
-            ps -p $test_pid 2>/dev/null 1>&2
+            ps -p $test_pid
             if [[ $skipped == true ]] || [[ $? != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
