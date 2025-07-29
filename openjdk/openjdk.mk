@@ -254,6 +254,8 @@ ifneq (,$(findstring alpine, $(SPEC)))
 		else
 			FEATURE_PROBLEM_LIST_FILE+=-exclude:$(ALPINE_PROBLEM_LIST_FILE)
 		endif
+	else
+		$(warning We are running on Alpine, but could not find an Alpine-specific ProblemList.)
 	endif
 endif
 
