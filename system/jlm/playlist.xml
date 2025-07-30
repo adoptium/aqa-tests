@@ -14,10 +14,15 @@
 		<testCaseName>TestJlmLocal</testCaseName>
 		
 		    <variations>
-			<variation>Mode150</variation>
+	<!--	<variation>Mode150</variation>
 			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode1000</variation>  -->
+			<variation>Mode101</variation>
+			<variation>Mode112</variation>
+			<variation>Mode121</variation>
+			<variation>Mode614</variation>			
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmLocal; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -35,11 +40,15 @@
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
 		
-		<variations>
-			<variation>Mode150</variation>
+		 <variations>
+	<!--	<variation>Mode150</variation>
 			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode1000</variation> 103,119 ,553 -->
+			<variation>Mode103</variation>
+			<variation>Mode119</variation>
+			<variation>Mode553</variation>
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -55,11 +64,15 @@
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
 		
-		<variations>
-			<variation>Mode150</variation>
+		 <variations>
+	<!--	<variation>Mode150</variation>
 			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode1000</variation> 103,119 ,553 -->
+			<variation>Mode103</variation>
+			<variation>Mode119</variation>
+			<variation>Mode553</variation>
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteClassNoAuth; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -75,10 +88,15 @@
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
 		
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+	<!--	<variation>Mode150</variation>,<variation>Mode650</variation>
+			<variation>Mode1000</variation> 103,112,121,503,610 -->
+			<variation>Mode103</variation>
+			<variation>Mode112</variation>
+			<variation>Mode121</variation>
+			<variation>Mode610</variation>
+			<variation>Mode503</variation>
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
 	<!-- ###################################################################### 
@@ -98,11 +116,16 @@
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
 		
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+	<variations>
+	<!--	<variation>Mode150</variation>,<variation>Mode650</variation>
+			<variation>Mode1000</variation> 103,112,121,503,610 -->
+			<variation>Mode103</variation>
+			<variation>Mode112</variation>
+			<variation>Mode121</variation>
+			<variation>Mode610</variation>
+			<variation>Mode503</variation>
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryNoAuth; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -118,10 +141,16 @@
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
 		
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+	<!--	<variation>Mode150</variation>,<variation>Mode650</variation>
+			<variation>Mode1000</variation> 112,121 ,501,614	 -->
+		
+			<variation>Mode112</variation>
+			<variation>Mode121</variation>
+			<variation>Mode614</variation>
+			<variation>Mode501</variation>
 		</variations>
+		
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteNotifierProxyAuth; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -139,10 +168,14 @@
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
 		
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+	<!--	<variation>Mode150</variation>,<variation>Mode650</variation>
+			<variation>Mode1000</variation>105,121,555	 -->
+		
+			<variation>Mode105</variation>
+			<variation>Mode121</variation>
+			<variation>Mode555</variation>
 		</variations>
+		
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteThreadAuth; \
 	$(TEST_STATUS)</command>
 		<levels>
@@ -157,10 +190,13 @@
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
 		
-		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+	<variations>
+	<!--	<variation>Mode150</variation>,<variation>Mode650</variation>
+			<variation>Mode1000</variation>105,121,555	 -->
+		
+			<variation>Mode105</variation>
+			<variation>Mode121</variation>
+			<variation>Mode555</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteThreadNoAuth; \
 	$(TEST_STATUS)</command>
