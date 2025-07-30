@@ -12,19 +12,8 @@
 	
 	<test>
 		<testCaseName>TestJlmLocal</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
-				<impl>hotspot</impl>
-				<platform>arm_linux|aarch64_linux</platform>
-			</disable>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
-		<variations>
+		
+		    <variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
 			<variation>Mode1000</variation>
@@ -37,18 +26,15 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
-	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
+	
+	
+	<!-- #################################################################### -->
+	<!-- ######################################################################-->
 	<test>
 		<testCaseName>TestJlmRemoteClassAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -62,23 +48,13 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win,^os.zos</platformRequirements>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
+	<!-- ######################################################################-->
+	
 	<test>
 		<testCaseName>TestJlmRemoteClassNoAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/infrastructure/issues/2376</comment>
-				<version>8</version>
-				<impl>hotspot</impl>
-				<platform>arm_linux</platform>
-			</disable>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -92,29 +68,12 @@
 		<groups>
 			<group>system</group>
 		</groups>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
-	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
-	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
+	<!-- ######################################################################-->		
 	<test>
 		<testCaseName>TestJlmRemoteMemoryAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
-				<version>8</version>
-				<impl>hotspot</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
-				<version>11+</version>
-				<impl>hotspot</impl>
-				<platform>arm_linux|ppc64le_linux</platform>
-			</disable>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -122,37 +81,23 @@
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
+	<!-- ###################################################################### 
 		<features>
 			<feature>FIPS140_2:nonapplicable</feature>
-		</features>
+		</features>  -->
 		<levels>
 			<level>sanity</level>
 		</levels>
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win,^os.zos</platformRequirements>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
+	<!-- ######################################################################-->
+	
 	<test>
 		<testCaseName>TestJlmRemoteMemoryNoAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
-				<version>8</version>
-				<impl>hotspot</impl>
-			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-systemtest/issues/274</comment>
-				<version>11+</version>
-				<impl>hotspot</impl>
-				<platform>arm_linux</platform>
-			</disable>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -171,13 +116,7 @@
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteNotifierProxyAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -191,19 +130,14 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win,^os.zos</platformRequirements>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
+	<!-- ######################################################################  -->
 	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -217,17 +151,12 @@
 		<groups>
 			<group>system</group>
 		</groups>
-		<platformRequirements>^os.win,^os.zos</platformRequirements>
+		<platformRequirements>os.aix</platformRequirements>
 	</test>
+	<!-- ######################################################################  -->
 	<test>
 		<testCaseName>TestJlmRemoteThreadNoAuth</testCaseName>
-		<disables>
-			<disable>
-				<comment>automation/issues/474</comment>
-				<impl>ibm</impl>
-				<version>8</version>
-			</disable>
-		</disables>
+		
 		<variations>
 			<variation>Mode150</variation>
 			<variation>Mode650</variation>
@@ -242,6 +171,7 @@
 			<group>system</group>
 		</groups>
 	</test>
+	<!-- ######################################################################  -->
 	<!-- The following JLM tests are specific to OpenJDK-OpenJ9, they run tests from openj9.test.jlm project -->
 	<test>
 		<testCaseName>TestIBMJlmLocal</testCaseName>
