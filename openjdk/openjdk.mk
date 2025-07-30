@@ -246,7 +246,7 @@ else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
 endif
 
 # If we are on alpine, also use the exclude file specific to alpine.
-ALPINE_PROBLEM_LIST_FILE:=$(Q)$(TEST_ROOT)$(D)..$(D)jvmtest$(D)openjdk$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
+ALPINE_PROBLEM_LIST_FILE:=$(Q)$(TEST_ROOT)$(D)..$(D)jvmtest$(D)openjdk$(D)excludes$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
 ifneq (,$(findstring alpine, $(SPEC)))
 	ifneq (,$(wildcard $(ALPINE_PROBLEM_LIST_FILE)))
 		ifeq (,$(FEATURE_PROBLEM_LIST_FILE))
