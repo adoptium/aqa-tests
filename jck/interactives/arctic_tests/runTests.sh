@@ -344,22 +344,9 @@ for i in "${active_versions[@]}"; do
               echo "Testcase started process $test_pid"
             fi
 
-echo "ALL processes"
-ps -ef
-
-echo "process $test_pid"
-ps -p $test_pid
-
             if [[ $skipped == false ]]; then
               sleep $SLEEP_TIME
-echo "after sleep"
             fi
-
-echo "after sleep, process $test_pid"
-ps -p $test_pid
-echo "ps rc = $?"
-echo "after sleep ALL processes"
-ps -ef
 
             # Check testcase started successfully.
             ps -p $test_pid
