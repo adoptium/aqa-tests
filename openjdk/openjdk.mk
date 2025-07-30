@@ -257,6 +257,7 @@ ifneq (,$(findstring alpine, $(SPEC)))
 	else
 		# Using a dummy variable here so we can produce the message while avoiding this fatal error: "recipe commences before first target"
 		DUMMY_VAR:=$(warning Warning: We are running on Alpine, but could not find an Alpine-specific ProblemList.)
+		DUMMY_VAR:=$(warning Attempted to find the alpine problemlist here: $(ALPINE_PROBLEM_LIST_FILE))
 	endif
 endif
 
