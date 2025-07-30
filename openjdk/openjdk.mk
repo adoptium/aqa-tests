@@ -246,7 +246,7 @@ else ifneq (,$(findstring OpenJCEPlus, $(TEST_FLAG)))
 endif
 
 # If we are on alpine, also use the exclude file specific to alpine.
-ALPINE_PROBLEM_LIST_FILE:=$(Q)$(TEST_ROOT)$(D)openjdk$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
+ALPINE_PROBLEM_LIST_FILE:=$(Q)$(TEST_RESROOT)$(D)excludes$(D)alpine$(D)ProblemList_openjdk$(JDK_VERSION)_alpine.txt$(Q)
 ifneq (,$(findstring alpine, $(SPEC)))
 	ifneq (,$(wildcard $(ALPINE_PROBLEM_LIST_FILE)))
 		ifeq (,$(FEATURE_PROBLEM_LIST_FILE))
@@ -256,8 +256,7 @@ ifneq (,$(findstring alpine, $(SPEC)))
 		endif
 	else
 		# Using a dummy variable here so we can produce the message while avoiding this fatal error: "recipe commences before first target"
-		DUMMY_VAR:=$(warning Warning: We are running on Alpine, but could not find an Alpine-specific ProblemList.)
-		DUMMY_VAR:=$(warning Attempted to find the alpine problemlist here: $(ALPINE_PROBLEM_LIST_FILE))
+		DUMMY_VAR:=$(warning Warning: An Alpine-specific ProblemList could not be found here: $(ALPINE_PROBLEM_LIST_FILE))
 	endif
 endif
 
