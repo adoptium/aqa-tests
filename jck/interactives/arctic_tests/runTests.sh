@@ -70,7 +70,7 @@ setupMacEnv() {
     export AWT_FORCE_HEADFUL=true
     echo "Setup Mac Environment"
 
-    # Temp fix, point to Temurin-21 installation
+    # Point to specific system installed Temurin-21
     export ARCTIC_JDK=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java
 
     cat <<EOF > JMinWindows.java
@@ -137,12 +137,9 @@ EOF
 
 setupWindowsEnv() {
     echo "Setup Windows Environment"
-    # Temp fix point to openjdk-21 installation
+
+    # Point to specific system installed openjdk-21
     ARCTIC_JDK=$(cygpath -u "c:/openjdk/jdk-21/bin/java")
-    #echo "Copying Arctic.jar Into Place"
-    #cp -rf /cygdrive/c/temp/arctic_jars/arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
-    #cp -rf /cygdrive/c/temp/arctic_jars/JNativeHook-0.8.1.x86_64.dll ${LIB_DIR}/JNativeHook-0.8.1.x86_64.dll
-    #echo "Working directory: $(pwd)"
 }
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
@@ -246,7 +243,7 @@ echo "Java under test: $TEST_JDK_HOME"
 TOP_DIR=$JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/arctic_tests
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
-runTests=false
+hasRunTests=false
 overallSuccess=true
 FOUND_TESTS=()
 PASSED_TESTS=()
@@ -418,7 +415,7 @@ for i in "${active_versions[@]}"; do
                 fi
 
                 # Indicate we have run at least one arctic playback testcase
-                runTests=true
+                hasRunTests=true
 
                 # Get final Arctic status
                 result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${ARCTIC_GROUP}/${ARCTIC_TESTCASE})
@@ -479,7 +476,7 @@ fi
 echo "Finished running testcases, overallSuccess = $overallSuccess"
 
 # Indicate failure if no overall success or no tests were run...
-if [[ $overallSuccess != true ]] || [[ $runTests != true ]]; then
+if [[ $overallSuccess != true ]] || [[ $hasRunTests != true ]]; then
     echo "Arctic playback failed"
     exit 1
 else
