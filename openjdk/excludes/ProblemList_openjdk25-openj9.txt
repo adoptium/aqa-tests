@@ -131,10 +131,23 @@ java/lang/Thread/jni/AttachCurrentThread/AttachTest.java#id1 https://github.com/
 java/lang/Thread/virtual/CancelTimerWithContention.java https://github.com/eclipse-openj9/openj9/issues/21683 aix-all,linux-aarch64,linux-ppc64le,linux-s390x
 java/lang/Thread/virtual/Collectable.java https://github.com/eclipse-openj9/openj9/issues/18463 windows-all
 java/lang/Thread/virtual/JfrEvents.java https://github.com/eclipse-openj9/openj9/issues/20166 generic-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#default https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LEGACY https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/MonitorWaitNotify.java#Xint-LM_LIGHTWEIGHT https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
 java/lang/Thread/virtual/Starvation.java https://github.com/eclipse-openj9/openj9/issues/21957 aix-all,linux-ppc64le
 java/lang/Thread/virtual/ThreadAPI.java#default https://github.com/eclipse-openj9/openj9/issues/22029 windows-all
 java/lang/Thread/virtual/ThreadAPI.java#no-vmcontinuations https://github.com/eclipse-openj9/openj9/issues/22029 windows-all
+java/lang/Thread/virtual/stress/Skynet.java#default https://github.com/eclipse-openj9/openj9/issues/21957 generic-all
+java/lang/Thread/virtual/stress/Skynet100kWithMonitors.java#id0 https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
+java/lang/Thread/virtual/StackFrames.java https://github.com/eclipse-openj9/openj9/issues/21734 generic-all
 java/lang/Thread/virtual/stress/TimedGet.java https://github.com/eclipse-openj9/openj9/issues/15184 macosx-x64
+java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout https://github.com/eclipse-openj9/openj9/issues/22322 aarch64_mac,aix-all,linux-aarch64,linux-ppc64le,linux-s390x,windows-all
 java/lang/ThreadGroup/SetMaxPriority.java https://github.com/eclipse-openj9/openj9/issues/6691 generic-all
 java/lang/Throwable/SuppressedExceptions.java https://github.com/eclipse-openj9/openj9/issues/6692 generic-all
 jni/nullCaller/NullCallerTest.java https://github.com/eclipse-openj9/openj9/issues/15370 linux-ppc64le,macosx-all
@@ -351,9 +364,6 @@ java/nio/MappedByteBuffer/MapSyncFail.java https://github.com/eclipse-openj9/ope
 jdk/nio/zipfs/ZipFSTester.java https://github.com/eclipse-openj9/openj9/issues/4679 linux-x64,macosx-all
 java/nio/channels/vthread/BlockingChannelOps.java#id0 https://github.com/adoptium/aqa-tests/issues/1297 aix-all
 java/nio/channels/vthread/BlockingChannelOps.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 aix-all
-java/nio/channels/vthread/BlockingChannelOps.java#default https://github.com/eclipse-openj9/openj9/issues/21649 aix-all,linux-aarch64,linux-ppc64le,linux-s390x,macosx-all,windows-x64
-java/nio/channels/vthread/BlockingChannelOps.java#no-vmcontinuations https://github.com/eclipse-openj9/openj9/issues/21649 aix-all,linux-aarch64,linux-ppc64le,linux-s390x,macosx-all,windows-x64
-java/nio/channels/vthread/BlockingChannelOps.java#poller-modes https://github.com/eclipse-openj9/openj9/issues/21649 aix-all,linux-aarch64,linux-ppc64le,linux-s390x,macosx-all,windows-x64
 
 ############################################################################
 
@@ -390,7 +400,6 @@ javax/net/ssl/SSLEngine/LargePacket.java	https://github.ibm.com/runtimes/backlog
 javax/net/ssl/SSLSocket/Tls13PacketSize.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
 javax/net/ssl/TLSv11/TLSEnginesClosureTest.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all
 sun/security/ec/TestEC.java	https://github.ibm.com/runtimes/backlog/issues/795	aix-all,windows-all
-sun/security/pkcs12/AttributesMultiThread.java https://github.com/eclipse-openj9/openj9/issues/21696 aix-all,linux-aarch64,linux-ppc64le,linux-s390x,macosx-all,windows-x64
 sun/security/lib/cacerts/VerifyCACerts.java	https://github.com/adoptium/aqa-tests/issues/2123	generic-all
 sun/security/mscapi/CastError.java	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
 sun/security/mscapi/CngCipher.java 	https://github.ibm.com/runtimes/backlog/issues/795	windows-all
@@ -470,9 +479,6 @@ java/util/concurrent/locks/Lock/OOMEInAQS.java https://github.com/eclipse-openj9
 java/util/concurrent/StructuredTaskScope/StructuredTaskScopeTest.java#virtual https://github.com/eclipse-openj9/openj9/issues/21824 aix-all,linux-ppc64le
 java/util/concurrent/StructuredTaskScope/StructuredThreadDumpTest.java https://github.com/eclipse-openj9/openj9/issues/22220 generic-all
 java/util/concurrent/SynchronousQueue/Fairness.java https://github.com/eclipse-openj9/openj9/issues/18771 generic-all
-java/util/concurrent/tck/JSR166TestCase.java#default https://github.com/eclipse-openj9/openj9/issues/21639 generic-all
-java/util/concurrent/tck/JSR166TestCase.java#forkjoinpool-common-parallelism https://github.com/eclipse-openj9/openj9/issues/21639 generic-all
-java/util/concurrent/tck/JSR166TestCase.java#others https://github.com/eclipse-openj9/openj9/issues/21639 generic-all
 java/util/concurrent/TimeUnit/Basic.java https://github.com/adoptium/aqa-tests/issues/1665 windows-all
 java/util/logging/CheckZombieLockTest.java https://bugs.openjdk.java.net/browse/JDK-8148972 macosx-all,linux-all
 java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse-openj9/openj9/issues/4561 generic-all
