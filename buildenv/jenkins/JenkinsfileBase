@@ -1636,6 +1636,14 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						addFailedTestsGrinderLink(buildPaths[0..-2])
 					}
 				} else if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
+					try {
+						timeout(time: 1, unit: 'HOURS') {
+							copyArtifacts (projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_NUMBER}"), filter: "**/*.tap")
+						}
+					} catch (Exception e) {
+						echo 'Exception: ' + e.toString()
+						echo "Cannot copy *.tap from ${env.JOB_NAME} with buildid ${env.BUILD_NUMBER} . Skipping copyArtifacts..."
+					}
 					addFailedTestsGrinderLink()
 				}
 			}
