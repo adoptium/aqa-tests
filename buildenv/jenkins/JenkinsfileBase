@@ -1635,7 +1635,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					} else {
 						addFailedTestsGrinderLink(buildPaths[0..-2])
 					}
-				} else if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
+				} else if (env.PARALLEL == 'None') {
 					try {
 						timeout(time: 1, unit: 'HOURS') {
 							copyArtifacts (projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_NUMBER}"), filter: "**/*.tap")
