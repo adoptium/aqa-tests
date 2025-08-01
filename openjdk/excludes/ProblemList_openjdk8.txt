@@ -140,8 +140,7 @@ java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-t
 # jdk_lang
 
 java/lang/Math/HypotTests.java https://github.com/adoptium/aqa-tests/issues/128 linux-all
-# java/lang/ProcessBuilder/Basic.java same issue with alpine linux, exclude by linux-all for now
-java/lang/ProcessBuilder/Basic.java https://bugs.openjdk.org/browse/JDK-8282219 aix-all,solaris-x64,linux-all
+java/lang/ProcessBuilder/Basic.java https://bugs.openjdk.org/browse/JDK-8282219 aix-all,solaris-x64
 java/lang/invoke/MethodHandles/CatchExceptionTest.java https://bugs.openjdk.java.net/browse/JDK-8146623 linux-s390x,linux-arm
 java/lang/instrument/BootClassPath/BootClassPathTest.sh https://bugs.openjdk.java.net/browse/JDK-8256405 macosx-all
 
@@ -157,8 +156,8 @@ sun/management/jmxremote/bootstrap/RmiBootstrapTest.sh https://github.com/adopti
 sun/management/jmxremote/bootstrap/RmiSslNoKeyStoreTest.sh https://github.com/adoptium/aqa-tests/issues/2294 windows-all
 sun/management/jmxremote/bootstrap/RmiSslBootstrapTest.sh https://bugs.openjdk.org/browse/JDK-8205653 generic-all
 sun/management/jmxremote/bootstrap/RmiRegistrySslTest.sh https://bugs.openjdk.org/browse/JDK-8205653 generic-all
-# alpine-linux https://github.com/adoptium/aqa-tests/issues/3238
 sun/management/jmxremote/bootstrap/CustomLauncherTest.java https://bugs.openjdk.java.net/browse/JDK-8031420 linux-all
+sun/management/jmxremote/bootstrap/SSLConfigFilePermissionTest.sh https://github.com/adoptium/aqa-tests/issues/5917 solaris-x64
 com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk.java.net/browse/JDK-8255263 linux-all
 sun/management/jmxremote/startstop/JMXStartStopTest.java https://bugs.openjdk.org/browse/JDK-8274337 generic-all
 ############################################################################
@@ -248,6 +247,7 @@ sun/security/pkcs11/ec/TestECGenSpec.java https://github.com/adoptium/aqa-tests/
 sun/security/pkcs11/rsa/TestCACerts.java https://github.com/adoptium/aqa-tests/issues/68 linux-all
 sun/security/rsa/TestCACerts.java https://github.com/adoptium/aqa-tests/issues/68 generic-all
 com/sun/crypto/provider/Mac/MacClone.java https://bugs.openjdk.java.net/browse/JDK-7087021 solaris-all
+javax/net/ssl/ciphersuites/DisabledAlgorithms.java https://github.com/adoptium/aqa-tests/issues/5915 solaris-x64
 javax/net/ssl/ServerName/BestEffortOnLazyConnected.java https://bugs.openjdk.org/browse/JDK-8155049 solaris-x64
 javax/net/ssl/ServerName/SSLEngineExplorerMatchedSNI.java https://bugs.openjdk.org/browse/JDK-8212096 solaris-x64
 javax/net/ssl/Stapling/HttpsUrlConnClient.java https://github.com/adoptium/aqa-tests/issues/4150 solaris-sparcv9

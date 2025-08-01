@@ -62,10 +62,7 @@ java/lang/String/concat/IntegerMinValue.java https://github.com/adoptium/aqa-tes
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 generic-all
-# java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
-# java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
-java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
-java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
+java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
 java/lang/ScopedValue/StressStackOverflow.java https://bugs.openjdk.org/browse/JDK-8313260 linux-arm
 java/lang/Thread/virtual/stress/PingPong.java#ltq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 java/lang/Thread/virtual/stress/PingPong.java#sq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
@@ -248,9 +245,7 @@ sun/security/ssl/X509TrustManagerImpl/distrust/Entrust.java https://github.com/a
 
 # jdk_security4
 
-# Cleaners.java issue is specific to alpine-linux, but there appears to be no way to exclude on alpine-linux platform specifically
-# sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4366 linux-all
-sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4432 aix-all,linux-all
+sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4432 aix-all
 
 ###########################################################################
 
@@ -466,8 +461,11 @@ runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tes
 runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
 runtime/logging/loadLibraryTest/LoadLibraryTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
+runtime/memory/ReadFromNoaccessArea.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+runtime/memory/ReserveMemory.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://bugs.openjdk.java.net/browse/JDK-8269135 windows-x86
 runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
 runtime/os/TestHugePageDecisionsAtVMStartup.java#THP_enabled https://bugs.openjdk.org/browse/JDK-8324580 linux-all
@@ -514,4 +512,5 @@ serviceability/sa/ClhsdbWhere.java https://github.com/adoptium/aqa-tests/issues/
 serviceability/sa/TestJhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/sa/TestClhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/jvmti/RedefineClasses/RedefineSharedClass.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
+serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
 

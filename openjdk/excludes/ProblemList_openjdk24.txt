@@ -73,10 +73,7 @@ java/lang/String/concat/IntegerMinValue.java https://github.com/adoptium/aqa-tes
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 generic-all
-# java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
-# java/lang/ProcessBuilder/Basic.java is excluded for issue on alpine linux. As currently there is no way to exclude tests for alpine specifically, using linux-all instead
-java/lang/ProcessBuilder/Basic.java#id0 https://bugs.openjdk.org/browse/JDK-8245748 linux-all,aix-ppc64
-java/lang/ProcessBuilder/Basic.java#id1 https://bugs.openjdk.org/browse/JDK-8245748 linux-all
+java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
 java/lang/Thread/virtual/stress/PingPong.java#ltq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 java/lang/Thread/virtual/stress/PingPong.java#sq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 
@@ -221,6 +218,7 @@ java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/ado
 # java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
 java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789 aix-ppc64,windows-all
 java/nio/Buffer/DirectBufferAllocTest.java https://github.com/adoptium/aqa-tests/issues/3086 aix-ppc64
+java/nio/file/attribute/BasicFileAttributeView/SetTimesNanos.java https://github.com/eclipse-openj9/openj9/issues/21959 windows-x64
 java/nio/file/attribute/BasicFileAttributeView/UnixSocketFile.java https://github.com/adoptium/aqa-tests/issues/593 linux-all
 java/nio/channels/AsyncCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/1597 linux-all,aix-all
 java/nio/charset/spi/CharsetProviderBasicTest.java https://github.com/adoptium/aqa-tests/issues/593 linux-all
@@ -257,9 +255,7 @@ sun/security/ssl/X509TrustManagerImpl/distrust/Entrust.java https://github.com/a
 
 # jdk_security4
 
-# Cleaners.java issue is specific to alpine-linux, but there appears to be no way to exclude on alpine-linux platform specifically
-# sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4366 linux-all
-sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4432 aix-all,linux-all
+sun/security/krb5/auto/Cleaners.java https://github.com/adoptium/aqa-tests/issues/4432 aix-all
 
 ###########################################################################
 
@@ -506,7 +502,8 @@ runtime/os/TestTracePageSizes.java#G1 https://bugs.openjdk.org/browse/JDK-833755
 runtime/os/TestTracePageSizes.java#Parallel https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#Serial https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#compiler-options https://bugs.openjdk.org/browse/JDK-8337555 linux-all
-runtime/ErrorHandling/CreateCoredumpOnCrash.java https://bugs.openjdk.org/browse/JDK-8348862 windows-aarch64
+# runtime/ErrorHandling/CreateCoredumpOnCrash.java https://github.com/adoptium/infrastructure/issues/3984 macosx-aarch64, linux-riscv64, linux-ppc64le
+runtime/ErrorHandling/CreateCoredumpOnCrash.java https://bugs.openjdk.org/browse/JDK-8348862 windows-aarch64,macosx-aarch64,linux-riscv64,linux-ppc64le
 runtime/ReservedStack/ReservedStackTest.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
 runtime/ReservedStack/ReservedStackTestCompiler.java https://github.com/adoptium/aqa-tests/issues/5886 windows-aarch64
 runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
