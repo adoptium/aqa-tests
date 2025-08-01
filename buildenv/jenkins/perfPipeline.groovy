@@ -4,11 +4,13 @@ def testParams = []
 def baselineParams = []
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
 int PERF_ITERATIONS = params.PERF_ITERATIONS.toInteger()
+boolean PROCESS_METRICS = (params.PROCESS_METRICS != null) ? params.PROCESS_METRICS.toBoolean() : false 
+boolean EXIT_EARLY = (params.EXIT_EARLY != null) ? params.EXIT_EARLY.toBoolean() : false 
 
 if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
 } else {
-    if (params.PROCESS_METRICS && params.EXIT_EARLY) {
+    if (PROCESS_METRICS && EXIT_EARLY) {
        SETUP_LABEL = "test-rhibmcloud-rhel9-x64-1"
    } else {
        SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
@@ -60,7 +62,7 @@ node (SETUP_LABEL) {
                                 }
                         }
 
-                        if (params.PROCESS_METRICS) {
+                        if (PROCESS_METRICS) {
                                 def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
                                 getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
                                 sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
@@ -80,7 +82,7 @@ node (SETUP_LABEL) {
                                         //clone to avoid mutation
                                         def thisTestParams = testParams.collect()
                                         def thisBaselineParams = baselineParams.collect()
-                                        if (params.PROCESS_METRICS) {     
+                                        if (PROCESS_METRICS) {     
                                                 //set the target, testlist should change if some metrics regress while others do not
                                                 testNames = testList.join(",")
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
@@ -101,12 +103,12 @@ node (SETUP_LABEL) {
                                                 echo "Skipping baseline run since RUN_BASELINE is set to false"
                                         }
 
-                                        if (params.PROCESS_METRICS) {
+                                        if (PROCESS_METRICS) {
                                                 aggregateLogs(testRun, testNames, testList, runBase, metrics, "test")
                                                 aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
                                                 writeJSON file: "metrics.json", json: metrics, pretty: 4
                                                 archiveArtifacts artifacts: "metrics.json" 
-                                                if (i == PERF_ITERATIONS-1 || (params.EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
+                                                if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
                                                         if (i == PERF_ITERATIONS-1) {
                                                                 echo "All iterations completed"
                                                         } else {

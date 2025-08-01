@@ -60,9 +60,6 @@ node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
                 baseParams << string(name: "TARGET", value: item.TARGET)
                 baseParams << string(name: "BUILD_LIST", value: item.BUILD_LIST)
                 baseParams << string(name: "PERF_ITERATIONS", value: item.PERF_ITERATIONS ? item.PERF_ITERATIONS.toString() : "4")
-                baseParams << string(name: "SETUP_LABEL", value: item.SETUP_LABEL) 
-                baseParams << string(name: "PROCESS_METRICS", value: item.PROCESS_METRICS ? item.PROCESS_METRICS.toString() : "false")
-                baseParams << string(name: "EXIT_EARLY", value: item.EXIT_EARLY ? item.EXIT_EARLY.toString() : "false")
                 
                 item.PLAT_MACHINE_MAP.each { kv -> 
                         kv.each {p, m -> 
