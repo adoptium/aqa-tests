@@ -167,13 +167,11 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-tomcat</testCaseName>
-                <disables>
-                        <disable>
-                                <comment>https://bugs.openjdk.java.net/browse/JDK-8155588</comment>
-                        </disable>
-                </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) tomcat; \
 		$(TEST_STATUS)</command>
+		<versions>
+    			<version>11+</version>
+		</versions>
 		<levels>
 			<level>extended</level>
 		</levels>
