@@ -739,9 +739,10 @@ def getEBCNode() {
     propagate: false,
     wait: true,
     parameters: [
-        string(name: 'platform', value: params.PLATFORM),
-        string(name: 'nodeType', value: 'testmachine'),
+        string(name: 'PLATFORM', value: params.PLATFORM),
+        string(name: 'NODE_TYPE', value: 'testmachine'),
         string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()), 
+        string(name: 'GROUP_LABEL', value: UID.randomUUID().toString()), 
         booleanParam(name: 'WAIT', value: wait),
     ]
     return result.buildVariables.group_label
