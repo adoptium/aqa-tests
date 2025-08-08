@@ -70,7 +70,8 @@ setupMacEnv() {
     export AWT_FORCE_HEADFUL=true
     echo "Setup Mac Environment"
 
-    export ARCTIC_JDK=/usr/bin/java
+    # Point to specific system installed Temurin-21
+    export ARCTIC_JDK=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java
 
     cat <<EOF > JMinWindows.java
 		import java.awt.Robot;
@@ -136,31 +137,12 @@ EOF
 
 setupWindowsEnv() {
     echo "Setup Windows Environment"
-    ARCTIC_JDK=$(cygpath -u "C:/Users/jenkins/jck_run/${TEST_JDK_PATH}/bin/java")
-    echo "Copying Arctic.jar Into Place"
-    cp -rf /cygdrive/c/temp/arctic_jars/arctic-0.8.1.jar ${LIB_DIR}/arctic.jar
-    cp -rf /cygdrive/c/temp/arctic_jars/JNativeHook-0.8.1.x86_64.dll ${LIB_DIR}/JNativeHook-0.8.1.x86_64.dll
-    echo "Working directory: $(pwd)"
+
+    # Point to specific system installed openjdk-21
+    ARCTIC_JDK=$(cygpath -u "c:/openjdk/jdk-21/bin/java")
 }
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
-
-if [ $(uname) = Linux ]; then
-    JENKINS_HOME_DIR=/home/jenkins
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
-    setupLinuxEnv
-
-elif [ $(uname) = Darwin ]; then
-    JENKINS_HOME_DIR="/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
-    setupMacEnv
-
-elif [ $(uname) = Windows_NT ]; then
-    JENKINS_HOME_DIR="c:/Users/jenkins"
-    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
-    setupWindowsEnv
-
-fi
 
 # Verify that the contents are present in jck_run
 TEST_GROUP=$1
@@ -176,10 +158,19 @@ fi
 OSNAME="Unknown"
 if [[ $SPEC =~ osx.* ]]; then
     OSNAME="mac"
+    JENKINS_HOME_DIR="/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
+    setupMacEnv
 elif [[ $SPEC =~ linux.* ]]; then
     OSNAME="linux"
+    JENKINS_HOME_DIR=/home/jenkins
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
+    setupLinuxEnv
 elif [[ $SPEC =~ win.* ]]; then
     OSNAME="windows"
+    JENKINS_HOME_DIR="c:/Users/jenkins"
+    PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
+    setupWindowsEnv
 fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
@@ -252,6 +243,7 @@ echo "Java under test: $TEST_JDK_HOME"
 TOP_DIR=$JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/arctic_tests
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
+hasRunTests=false
 overallSuccess=true
 FOUND_TESTS=()
 PASSED_TESTS=()
@@ -319,7 +311,13 @@ for i in "${active_versions[@]}"; do
             echo "       Testcase ${JCK_TEST} of scope ${i} ${ARCTIC_GROUP} ${ARCTIC_TESTCASE}"
             echo "         JCK class: ${TEST_CLASS}"
 
-            TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+            if [ $OSNAME = "windows" ]; then
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dmultitest.testcaseOrder=sorted -classpath '\";${JCK_MATERIAL}/classes;\"' ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+            elif [ $OSNAME = "mac" ]; then
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+            else
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+            fi
 
             # Certain tests require extra options
             if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
@@ -348,8 +346,9 @@ for i in "${active_versions[@]}"; do
             fi
 
             # Check testcase started successfully.
-            ps -p $test_pid -o pid 2>/dev/null 1>&2
-            if [[ $? != 0 ]]; then
+            ps -p $test_pid
+            rc=$?
+            if [[ $skipped == true ]] || [[ $rc != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
                 overallSuccess=false
@@ -364,6 +363,8 @@ for i in "${active_versions[@]}"; do
 
               if [[ $rc -ne 0 ]]; then
                   echo "Unable to start playback for testcase $ARCTIC_GROUP/$ARCTIC_TESTCASE, rc=$rc"
+                  FAILED_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
+                  overallSuccess=false
               else
                 sleep $SLEEP_TIME
 
@@ -394,7 +395,7 @@ for i in "${active_versions[@]}"; do
                 sleep $SLEEP_TIME
 
                 echo "Testcase process $test_pid should have finished if successfully automated, getting test process completion status..."
-                if ps -p $test_pid -o pid; then
+                if ps -p $test_pid; then
                   echo "ERROR: Testcase process $test_pid is still running... terminating!"
                   kill -9 $test_pid
                 fi
@@ -412,6 +413,9 @@ for i in "${active_versions[@]}"; do
                 else
                   ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${ARCTIC_GROUP}" "${ARCTIC_TESTCASE}" false
                 fi
+
+                # Indicate we have run at least one arctic playback testcase
+                hasRunTests=true
 
                 # Get final Arctic status
                 result=$(${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test list ${ARCTIC_GROUP}/${ARCTIC_TESTCASE})
@@ -471,7 +475,8 @@ fi
 
 echo "Finished running testcases, overallSuccess = $overallSuccess"
 
-if [[ $overallSuccess != true ]]; then
+# Indicate failure if no overall success or no tests were run...
+if [[ $overallSuccess != true ]] || [[ $hasRunTests != true ]]; then
     echo "Arctic playback failed"
     exit 1
 else

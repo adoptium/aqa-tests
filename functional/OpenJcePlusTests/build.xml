@@ -128,13 +128,6 @@
 				<not>
 					<matches string="${JDK_VERSION}" pattern="^(8)$" />
 				</not>
-				<or>
-					<contains string="${SPEC}" substring="aix_ppc-64"/>
-					<contains string="${SPEC}" substring="linux_ppc-64_le"/>
-					<contains string="${SPEC}" substring="linux_x86-64"/>
-					<contains string="${SPEC}" substring="win_x86-64"/>
-					<contains string="${SPEC}" substring="linux_390-64"/>
-				</or>
 			</and>
 			<then>
 				<antcall target="clean" inheritall="true" />
