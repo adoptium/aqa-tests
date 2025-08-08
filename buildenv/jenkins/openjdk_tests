@@ -742,7 +742,7 @@ def getEBCNode() {
         string(name: 'PLATFORM', value: params.PLATFORM),
         string(name: 'NODE_TYPE', value: 'testmachine'),
         string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()), 
-        string(name: 'GROUP_LABEL', value: UID.randomUUID().toString()), 
+        string(name: 'GROUP_LABEL', value: UUID.randomUUID().toString()), 
         booleanParam(name: 'WAIT', value: wait),
     ]
     return result.buildVariables.group_label
