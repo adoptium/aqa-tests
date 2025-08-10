@@ -1572,14 +1572,14 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					echo "Triggering rerun jobs in parallel ..."
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
-					echo " rerun trigger job rerun jobsstatus is ${rerunResults.jobStatus}"
-					echo "current jbo status is ${currentBuild.result}"
+					echo "rerun job status is ${rerunResults.jobStatus}"
+					echo "current job status is ${currentBuild.result}"
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
 						currentBuild.result = originalStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
 					}
-					echo "after setting currentBuild.result is ${currentBuild.result}"
+					echo "set currentBuild.result to ${currentBuild.result}"
 				}
 			}
 		} else {
