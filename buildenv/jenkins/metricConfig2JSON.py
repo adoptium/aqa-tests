@@ -1,5 +1,6 @@
 import argparse, pathlib, json, re
 
+#regex used to convert BenchmarkMetric.js into valid JSON file
 RE_COMMENT = re.compile(r"""
         //.*?$ |
         /\*.*?\*/
@@ -13,6 +14,8 @@ RE_FUNC = re.compile(r"""(funcName:\s)(.*?)(,)""")
 
 RE_KEYS = re.compile(r"""([,{]\s*)([A-Za-z_]\w*)(\s*:)""")
 
+#parses the BenchmarkMetric.js file by grabbing the BenchmarkMetricRegex element, 
+#removing comments, and converting to proper JSON syntax 
 def js_to_json(metrics_js):
         benchmark_parser = re.search(r"const\s+BenchmarkMetricRegex\s*=\s*({[\s\S]*?});", metrics_js) 
         if not benchmark_parser:

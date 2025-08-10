@@ -14,6 +14,8 @@ def main():
         benchmarkMetricsTemplate = json.loads(benchmarkMetricsTemplate_json)
 
         tests = args.testNames.split(",") 
+        
+        #populate the template file with corresponding metrics extracted from console log
         for test in tests: 
                 for metric in benchmarkMetricsTemplate[test].values():
                         regex_parser = re.search(metric.get("regex"), console)

@@ -11,7 +11,7 @@ if (params.SETUP_LABEL) {
     SETUP_LABEL = params.SETUP_LABEL
 } else {
     if (PROCESS_METRICS && EXIT_EARLY) {
-       SETUP_LABEL = "test-rhibmcloud-rhel9-x64-1"
+       SETUP_LABEL = "test-rhibmcloud-rhel9-x64-1" //machine needs python
    } else {
        SETUP_LABEL = "ci.role.test&&hw.arch.x86&&sw.os.linux"
    }
@@ -62,7 +62,7 @@ node (SETUP_LABEL) {
                                 }
                         }
 
-                        if (PROCESS_METRICS) {
+                        if (PROCESS_METRICS) { //convert BenchmarkMetric.js to a JSON file optimized for metric processing 
                                 def owner = params.ADOPTOPENJDK_REPO.tokenize('/')[2]
                                 getPythonDependencies(owner, params.ADOPTOPENJDK_BRANCH) 
                                 sh "curl -Os  https://raw.githubusercontent.com/adoptium/aqa-test-tools/refs/heads/master/TestResultSummaryService/parsers/BenchmarkMetric.js"
@@ -71,7 +71,8 @@ node (SETUP_LABEL) {
                                 testList = params.TARGET.split("=")[1].tokenize(",")
                                 metrics = readJSON file: aggrBase
                         }
-                        else {
+                        
+                        if (!EXIT_EARLY) {
                                 testParams << string(name: "TARGET", value: params.TARGET) 
                                 baselineParams << string(name: "TARGET", value: params.TARGET)
                         }
@@ -82,8 +83,8 @@ node (SETUP_LABEL) {
                                         //clone to avoid mutation
                                         def thisTestParams = testParams.collect()
                                         def thisBaselineParams = baselineParams.collect()
-                                        if (PROCESS_METRICS) {     
-                                                //set the target, testlist should change if some metrics regress while others do not
+                                        if (EXIT_EARLY) {     
+                                                //update TARGET, testlist should hold metrics that were not exited early
                                                 testNames = testList.join(",")
                                                 def TARGET = params.TARGET.replaceFirst(/(?<=TESTLIST=)[^ ]+/, testNames)
                                                 thisTestParams << string(name: "TARGET", value: TARGET)
@@ -108,6 +109,8 @@ node (SETUP_LABEL) {
                                                 aggregateLogs(baseRun, testNames, testList, runBase, metrics, "baseline")
                                                 writeJSON file: "metrics.json", json: metrics, pretty: 4
                                                 archiveArtifacts artifacts: "metrics.json" 
+
+                                                //if we are on the final iteration, or we have executed enough iterations to decide likelihood of regression and have permission to exit early 
                                                 if (i == PERF_ITERATIONS-1 || (EXIT_EARLY && i >= PERF_ITERATIONS * 0.8)) {
                                                         if (i == PERF_ITERATIONS-1) {
                                                                 echo "All iterations completed"
@@ -115,8 +118,8 @@ node (SETUP_LABEL) {
                                                                 echo "Attempting early exit"
                                                         }
                                                         echo "checking for regressions"
-                                                        checkRegressions(metrics, testList)
-                                                        if (testList.size() == 0) break 
+                                                        checkRegressions(metrics, testList) //compute relevant performance stats, check for regression
+                                                        if (testList.size() == 0) break //if all tests have been exited early we can end testing
                                                 }
                                         }
                                 }
