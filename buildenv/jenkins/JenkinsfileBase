@@ -1575,14 +1575,11 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					echo "Triggering rerun jobs in parallel ..."
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
-					echo "rerun job status is ${rerunResults.jobStatus}"
-					echo "current job status is ${currentBuild.result}"
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
 						currentBuild.result = originalStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
 					}
-					echo "set currentBuild.result to ${currentBuild.result}"
 				}
 			}
 		} else {
@@ -1635,10 +1632,22 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			archiveAQAvitFiles()
 			env.jobStatus = currentStatus
 			if (currentStatus != "SUCCESS") {
-				if ( originalStatus == "SUCCESS" ) {
-					getFailedAndCustomizedTest(buildPaths[0..-2])
-				} else {
-					addFailedTestsGrinderLink(buildPaths[0..-2])
+				if ( buildPaths!= "" ) {
+					if ( originalStatus == "SUCCESS" ) {
+						getFailedAndCustomizedTest(buildPaths[0..-2])
+					} else {
+						addFailedTestsGrinderLink(buildPaths[0..-2])
+					}
+				} else if (env.PARALLEL == 'None') {
+					try {
+						timeout(time: 1, unit: 'HOURS') {
+							copyArtifacts (projectName: "${env.JOB_NAME}", selector: specific("${env.BUILD_NUMBER}"), filter: "**/*.tap")
+						}
+					} catch (Exception e) {
+						echo 'Exception: ' + e.toString()
+						echo "Cannot copy *.tap from ${env.JOB_NAME} with buildid ${env.BUILD_NUMBER} . Skipping copyArtifacts..."
+					}
+					addFailedTestsGrinderLink()
 				}
 			}
 		} finally {
