@@ -381,6 +381,9 @@ def getNumMachines() {
 
 def getMachineLimit(){
 	int limit = nodesByLabel(LABEL).size()
+    if (limit == 0) {
+        error("No active nodes match the supplied LABEL: ${LABEL}")
+    }
 	// Set limit for dynamic vm agents to 100
 	if (LABEL.contains('ci.agent.dynamic')) {
 		limit = 100
