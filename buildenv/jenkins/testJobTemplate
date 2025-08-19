@@ -187,8 +187,12 @@ ARCH_OS_LIST.each { ARCH_OS ->
 					assert false : "GROUP ${GROUP} is not in the the expected groups: ${expectedGroups}."
 				}
 				if ( BUILD_LIST && !BUILD_LIST.contains(GROUP) ) {
-					// Fail immediately, before we create a job that cannot build the tests it is expected to run.
-					assert false : "BUILD_LIST has been set to (${BUILD_LIST}), but it does not contain the tests we expect the target job to run in the Group: ${GROUP}."
+					// Limiting error logic to Adoptium as this is a check on a naming convention which
+					// is not necessarily used by other groups.
+					if ( ADOPTOPENJDK_REPO.equals("https://github.com/adoptium/aqa-tests.git") ) {
+						// Fail before we create a job that cannot build the tests it is expected to run.
+						assert false : "BUILD_LIST has been set to (${BUILD_LIST}), but it does not contain the tests we expect the target job to run in the Group: ${GROUP}."
+					}
 				}
 				def ACTUAL_TEST_JOB_NAME = TEST_JOB_NAME ? TEST_JOB_NAME : "Test_openjdk${JDK_VERSION}_${JDK_IMPL_SN}_${LEVEL}.${GROUP}_${ARCH_OS}${SUFFIX}"
 				def ACTUAL_TARGET = TARGET ? TARGET : "${LEVEL}.${GROUP}"
