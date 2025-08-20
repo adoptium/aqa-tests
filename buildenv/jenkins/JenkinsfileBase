@@ -1622,6 +1622,15 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						echo 'Exception: ' + e.toString()
 						echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 					}
+					def childBuildUrl = "${env.JENKINS_URL}job/${name}/${buildId}"
+					def badgeUrl = "${childBuildUrl}/badge/icon"
+					currentBuild.description += """
+						<p>${name}/${buildId}:
+						<a href="${childBuildUrl}">
+							<img src="${badgeUrl}" />
+						</a>
+						</p>
+					"""
 			}
 			
 			// In case rerun job status be worse than original job status
