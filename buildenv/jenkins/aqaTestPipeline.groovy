@@ -300,7 +300,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                     def buildId = downstreamJob.getNumber()
                     def childBuildUrl = "${env.JENKINS_URL}job/${TEST_JOB_NAME}/${buildId}"
                     def badgeUrl = "${childBuildUrl}/badge/icon"
-                    currentBuild.description += currentBuild.description + """
+                    currentBuild.description += """
                         <p>${TEST_JOB_NAME}/${buildId}:
                         <a href="${childBuildUrl}">
                             <img src="${badgeUrl}" />
