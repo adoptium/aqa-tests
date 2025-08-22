@@ -1617,6 +1617,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		forceCleanWS()
 		try {
 			def buildPaths = ""
+			def childJobStatus = "<table><tr><th>Child Job</th><th>Status</th><th>Duration</th></tr>"
 			def jobList = childJobs.values().toList()
 			sortByProjectName(jobList)
 			jobList.each {
@@ -1645,15 +1646,25 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					}
 					def childBuildUrl = "${env.JENKINS_URL}job/${name}/${buildId}"
 					def badgeUrl = "${childBuildUrl}/badge/icon"
-					currentBuild.description += """
-						<p>${name}/${buildId}:
-						<a href="${childBuildUrl}">
-							<img src="${badgeUrl}" />
-						</a>
-						</p>
+					def duration = cjob.getDuration() ?: ""
+					if (duration) {
+						long totalMillis = duration as long
+						def hours = ((int)(totalMillis / (1000 * 60 * 60))) % 24
+						def minutes = ((int)(totalMillis / (1000 * 60))) % 60
+						def seconds = ((int)(totalMillis / 1000)) % 60
+						duration = "${hours}h ${minutes}m ${seconds}s"
+					}
+					childJobStatus += """
+						<tr>
+							<td>${name}/${buildId}</td>
+							<td><a href="${childBuildUrl}"><img src="${badgeUrl}" /></a></td>
+							<td>${duration}</td>
+						</tr>
 					"""
 			}
-			
+			childJobStatus += "</table>"
+			currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus
+
 			// In case rerun job status be worse than original job status
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
