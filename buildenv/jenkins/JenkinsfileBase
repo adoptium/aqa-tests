@@ -1150,12 +1150,10 @@ def addJobDescription() {
 		}
 	}
 	def description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
-	def numMachines = (NUM_MACHINES) ?: 1
 	currentBuild.description = description \
 		+ "TARGET: ${params.TARGET}<br/>" \
 		+ "LABEL: <a href=${JENKINS_URL}label/${LABEL}>${LABEL}</a><br/>" \
-		+ "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a><br/>" \
-		+ "PARALLEL: ${numMachines}"
+		+ "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a><br/>"
 }
 
 def getJenkinsDomain() {
