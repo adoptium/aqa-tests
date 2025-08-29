@@ -281,14 +281,22 @@ def setupParallelEnv() {
 		echo "[PARALLEL: ${env.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
 		create_jobs = [:]
 		parallelTestParams =[:]
+
+		def format = "%d"
+		if (childJobNum > 10) {
+			def maxDigits = (int) Math.log10(childJobNum - 1) + 1
+			format = "%0${maxDigits}d"
+		}
+
 		for (int i = 0; i < childJobNum; i++) {
 			def buildListName = env.BUILD_LIST
 			def childTest = ""
 			def childTarget = TARGET
+			def suffix = String.format(format, i);
 			if (env.PARALLEL == "NodesByIterations") {
-				childTest = "iteration_${i}"
+				childTest = "iteration_${suffix}"
 			} else if (env.PARALLEL == "Dynamic") {
-				childTest = "testList_${i}"
+				childTest = "testList_${suffix}"
 				childTarget = "-f parallelList.mk ${childTest}"
 			}
 			def TEST_JOB_NAME = "${JOB_NAME}_${childTest}"
@@ -1596,12 +1604,14 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		forceCleanWS()
 		try {
 			def buildPaths = ""
-			childJobs.each {
+			childJobs.values().stream()
+					.sorted { Comparator.comparing { it.getProjectName() } }
+					.each {
 				cjob ->
-					def jobInvocation = cjob.value.getRawBuild()
+					def jobInvocation = cjob.getRawBuild()
 					def buildId = jobInvocation.getNumber()
-					def name = cjob.value.getProjectName()
-					def childResult = cjob.value.getCurrentResult()
+					def name = cjob.getProjectName()
+					def childResult = cjob.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
 					// track FAILURE job childTestJobParams if it's rerun stage
 					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
