@@ -786,9 +786,8 @@ def runTest( ) {
 		for (int i = 1; i <= ITERATIONS; i++) {
 			echo "ITERATION: ${i}/${ITERATIONS}"
 			if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') && (BUILD_LIST != "external")) {
-				// RHEL10 uses Wayland instead of X11
-				// TODO: once proper label is added on the machine, NODE_NAME check should be removed.
-				if (LABEL.contains("sw.os.rhel.10") || "${NODE_NAME}".toLowerCase().contains("rhel10")) {
+				// Detect if Xvfb is on the machine, and if not use the wayland startup code (Initially for EL10)
+				if ( sh(script:"which Xvfb 2>&1", returnStatus:true) != 0 ) {
 					sh "weston --no-config --socket=wayland-vfb --backend=headless-backend.so --xwayland &"
 					env.DISPLAY = ":0"
 
