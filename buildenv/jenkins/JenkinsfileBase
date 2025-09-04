@@ -791,9 +791,11 @@ def runTest( ) {
 		}
 		for (int i = 1; i <= ITERATIONS; i++) {
 			echo "ITERATION: ${i}/${ITERATIONS}"
-			if (env.SPEC.contains('linux') && !(LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER == 'azure') && (BUILD_LIST != "external")) {
+			if (env.SPEC.contains('linux') && (BUILD_LIST != "external")) {
 				// Detect if Xvfb is on the machine, and if not use the wayland startup code (Initially for EL10)
 				if ( sh(script:"which Xvfb 2>&1", returnStatus:true) != 0 ) {
+					env.XDG_RUNTIME_DIR = env.WORKSPACE + "/.xdg-runtime"
+					sh "mkdir -pm 0700 " + env.XDG_RUNTIME_DIR
 					sh "weston --no-config --socket=wayland-vfb --backend=headless-backend.so --xwayland &"
 					env.DISPLAY = ":0"
 
