@@ -1587,6 +1587,28 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	}
 }
 
+// Sort the given list of jobs by project name.
+@NonCPS
+def sortByProjectName(jobs) {
+	jobs.sort { job1, job2 ->
+		def name1 = job1.getProjectName()
+		def name2 = job2.getProjectName()
+		def index1 = name1.lastIndexOf('_')
+		def index2 = name2.lastIndexOf('_')
+
+		if ((index1 < 0) || (index2 < 0)) {
+			name1 <=> name2
+		} else {
+			def suffix1 = name1.substring(index1 + 1)
+			def suffix2 = name2.substring(index2 + 1)
+
+			name1.substring(0, index1) <=> name2.substring(0, index2)
+				?: suffix1.length() <=> suffix2.length()
+				?: suffix1 <=> suffix2
+		}
+	}
+}
+
 // update to return worst child job status, and failure test job parameters.
 def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
@@ -1595,12 +1617,14 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		forceCleanWS()
 		try {
 			def buildPaths = ""
-			childJobs.each {
+			def jobList = childJobs.values().toList()
+			sortByProjectName(jobList)
+			jobList.each {
 				cjob ->
-					def jobInvocation = cjob.value.getRawBuild()
+					def jobInvocation = cjob.getRawBuild()
 					def buildId = jobInvocation.getNumber()
-					def name = cjob.value.getProjectName()
-					def childResult = cjob.value.getCurrentResult()
+					def name = cjob.getProjectName()
+					def childResult = cjob.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
 					// track FAILURE job childTestJobParams if it's rerun stage
 					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
