@@ -334,13 +334,18 @@ timestamps{
                 LABEL = params.LABEL
             } else {
                 LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-                    if (params.BUILD_LIST.contains("perf")) {
-                        def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
-                        if (areNodesWithLabelOnline(perfLabel)) {
+                if (params.BUILD_LIST.contains("perf")) {
+                    def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
+                    if (areNodesWithLabelOnline(perfLabel)) {
                         LABEL = perfLabel
-                        }
                     }
                 }
+                if (PLATFORM == "ppc64_aix" && params.JDK_IMPL == "openj9" && env.JENKINS_URL.contains("hyc-runtimes")) {
+                    if (!params.JDK_VERSION.isInteger() || params.JDK_VERSION.toInteger() >= 25) {
+                        LABEL += "&&sw.tool.c++runtime.17_1"
+                    }
+                }
+            }
 
             // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
             if (params.TEST_FLAG) {
