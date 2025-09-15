@@ -123,12 +123,10 @@ class TestExclusionSplitLine(TestExclusionRawLine):
     @classmethod
     def from_raw_line(cls, test_excl: TestExclusionRawLine):
         split_line = test_excl.raw_line.split()
-        if len(split_line) < 3:
+        if len(split_line) != 3:
             raise TestExclusionProcessingException(
-                f'Not at least 3 elements when splitting {test_excl.raw_line}', test_excl)
-        custom_target = split_line[0]
-        issue_url = split_line[1]
-        raw_platform = split_line[2]
+                f'Not exactly 3 elements when splitting {test_excl.raw_line}', test_excl)
+        custom_target, issue_url, raw_platform = split_line
         return cls(
             **to_shallow_dict(test_excl),
             custom_target=custom_target,
