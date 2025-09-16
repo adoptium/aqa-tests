@@ -264,6 +264,7 @@ java/io/FileOutputStream/UnreferencedFOSClosesFd.java https://github.com/eclipse
 java/nio/Buffer/DirectBufferAllocTest.java https://github.com/eclipse-openj9/openj9/issues/4473 generic-all
 java/nio/Buffer/LimitDirectMemory.java https://github.com/eclipse-openj9/openj9/issues/8063 generic-all
 java/nio/Buffer/LimitDirectMemoryNegativeTest.java https://github.com/eclipse-openj9/openj9/issues/8065 generic-all
+java/nio/channels/AsyncCloseAndInterrupt.java https://github.com/eclipse-openj9/openj9/issues/21777 aix-all
 java/nio/channels/AsynchronousChannelGroup/Basic.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/AsynchronousChannelGroup/GroupOfOne.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/AsynchronousChannelGroup/Identity.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
@@ -377,6 +378,12 @@ java/security/SecureRandom/ApiTest.java https://github.com/eclipse-openj9/openj9
 java/security/SecureRandom/EnoughSeedTest.java https://github.com/eclipse-openj9/openj9/issues/16734 windows-all
 java/security/Signature/ResetAfterException.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
 java/security/Signature/SignatureLength.java    https://github.com/eclipse-openj9/openj9/issues/12807   windows-all
+
+############################################################################
+
+# jdk_security2
+
+javax/crypto/CryptoPermissions/InconsistentEntries.java https://github.com/eclipse-openj9/openj9/issues/22394 windows-all
 
 ############################################################################
 
@@ -529,12 +536,15 @@ java/foreign/stackwalk/TestReentrantUpcalls.java https://github.com/eclipse-open
 java/foreign/stackwalk/TestStackWalk.java#default_gc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestStackWalk.java#shenandoah https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
-java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/TestFallbackLookup.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
-java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/14002 generic-all
-java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
 java/foreign/TestHandshake.java https://github.com/eclipse-openj9/openj9/issues/13211 generic-all
 java/foreign/TestHFA.java https://github.com/eclipse-openj9/openj9/issues/17953 linux-ppc64le
+java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/14002 generic-all
+java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
+java/foreign/TestUpcallAsync.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
+java/foreign/TestUpcallScope.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
+java/foreign/TestUpcallStack.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
+java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/valist/VaListTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 
 ############################################################################

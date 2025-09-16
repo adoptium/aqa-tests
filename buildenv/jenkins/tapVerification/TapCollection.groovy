@@ -32,10 +32,10 @@ pipeline {
 
                     // Function to download attachments from text
                     def downloadAttachments = { text ->
-                        text.split('\r\n').each { line ->
+                        text.split(/\r?\n/).each { line ->
                             /* groovylint-disable-next-line LineLength */
                             if ((line.contains("https://github.com/${RELEASE_TRIAGE_REPO}/files/") || line.contains('https://github.com/user-attachments/files/')) && line.endsWith(')')) {
-                                def url = line.substring(line.indexOf('(https') + 1, line.lastIndexOf(')'))
+                                def url = line.substring(line.indexOf('(https://github.com/user-attachments/files/') + 1, line.lastIndexOf(')'))
                                 def filename = url.split('/').last()
                                 sh "curl -L -o ${tapsDir}/${filename} ${url}"
                             }

@@ -127,7 +127,7 @@ public class TWTagTest{
         String tag = "zh-TW-u-tz-twtpe"; //Defined in common/bcp47/teimezone.xml
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("中文 (台灣，時區：台北時間)", l.getDisplayName(l));
-        assertEquals("Chinese (Taiwan, Time Zone: Taipei Time)", l.getDisplayName(Locale.ENGLISH));
+        assertEquals("Chinese (Taiwan, Time Zone: Taiwan Time)", l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("tz-twtpe", l.getExtension('u'));
         assertEquals("twtpe", l.getUnicodeLocaleType("tz"));
@@ -149,7 +149,7 @@ public class TWTagTest{
         } else {
             assertEquals("中文 (台灣，民國曆，時區：台北時間)", l.getDisplayName(l));
         }
-        assertEquals("Chinese (Taiwan, Minguo Calendar, Time Zone: Taipei Time)",
+        assertEquals("Chinese (Taiwan, Minguo Calendar, Time Zone: Taiwan Time)",
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("ca-roc-tz-twtpe", l.getExtension('u'));
@@ -175,7 +175,7 @@ public class TWTagTest{
             assertEquals("中文 (台灣，民國曆，全形數字，時區：台北時間)",
                          l.getDisplayName(l));
         }
-        assertEquals("Chinese (Taiwan, Minguo Calendar, Full-Width Digits, Time Zone: Taipei Time)",
+        assertEquals("Chinese (Taiwan, Minguo Calendar, Full-Width Digits, Time Zone: Taiwan Time)",
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("ca-roc-nu-fullwide-tz-twtpe", l.getExtension('u'));

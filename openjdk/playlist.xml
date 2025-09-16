@@ -88,6 +88,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -238,6 +239,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<platformRequirementsList>
@@ -274,6 +276,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<platformRequirements>os.linux</platformRequirements>
@@ -555,6 +558,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -594,6 +598,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -633,6 +638,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -679,31 +685,9 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
-	</test>
-	<test>
-		<testCaseName>hotspot_sanity</testCaseName>
-		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
-	$(JTREG_BASIC_OPTIONS) $(JVM_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
-	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
-	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
-	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
-	-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
-	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
-	${FEATURE_PROBLEM_LIST_FILE} \
-	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_HOTSPOT_TEST_DIR)/sanity$(Q); \
-	$(TEST_STATUS)</command>
-		<levels>
-			<level>sanity</level>
-		</levels>
-		<groups>
-			<group>openjdk</group>
-		</groups>
-		<impls>
-			<impl>hotspot</impl>
-		</impls>
 	</test>
 	<test>
 		<testCaseName>hotspot_jdk</testCaseName>
@@ -774,6 +758,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -822,6 +807,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -854,6 +840,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -886,6 +873,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -917,6 +905,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -955,6 +944,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -989,6 +979,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<platformRequirements>os.win,bits.64</platformRequirements>
@@ -1026,6 +1017,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -1062,6 +1054,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -1097,6 +1090,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -1133,6 +1127,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1171,6 +1166,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1263,6 +1259,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1483,6 +1480,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -1523,6 +1521,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1560,6 +1559,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1592,6 +1592,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1624,6 +1625,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1667,6 +1669,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1709,6 +1712,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1746,6 +1750,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1763,6 +1768,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<levels>
@@ -1851,6 +1857,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -1882,6 +1889,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -1930,6 +1938,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2009,6 +2018,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2055,6 +2065,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2110,6 +2121,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2154,6 +2166,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2193,6 +2206,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2232,6 +2246,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2277,6 +2292,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2319,6 +2335,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2367,6 +2384,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2436,6 +2454,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2472,6 +2491,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2520,6 +2540,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2567,6 +2588,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2602,6 +2624,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2637,6 +2660,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2672,6 +2696,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2719,6 +2744,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
@@ -2750,6 +2776,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2785,6 +2812,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2820,6 +2848,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2855,6 +2884,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2890,6 +2920,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2925,6 +2956,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -2960,6 +2992,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 		<impls>
@@ -3286,6 +3319,7 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
