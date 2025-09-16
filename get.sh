@@ -326,6 +326,7 @@ getBinaryOpenjdk()
 					curl_options="-k ${curl_options}"
 				fi
 				download_urls=$(curl ${curl_options} ${download_api_url_base} | grep -E '.*\.tar\.gz"|.*\.zip"' | grep -E 'testimage|jdk|jre'| sed 's/.*"uri" : "\([^"]*\)".*/\1/')
+				arr=(${download_urls/ / })
 				download_url=()
 				download_url_base=(${download_url_base//\/ui\/native\//\/artifactory\/})
 				echo "downloading files from $latestBuildUrl"
