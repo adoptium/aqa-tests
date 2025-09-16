@@ -144,6 +144,10 @@
                                 <comment>https://github.com/adoptium/aqa-tests/issues/4858#issuecomment-2968494739</comment>
                                 <platform>x86-64_windows</platform>
                         </disable>
+                        <disable>
+                                <comment>https://github.com/adoptium/aqa-tests/issues/6563</comment>
+                                <platform>aarch64_windows</platform>
+                        </disable>
                 </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) pmd; \
 		$(TEST_STATUS)</command>
