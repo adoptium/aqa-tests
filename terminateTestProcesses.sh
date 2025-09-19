@@ -24,7 +24,7 @@ if [ "$OS" = "Windows_NT" ]; then
               not CommandLine like '%grep%'"
 
   count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
-  
+
   if [ $count -gt 0 ]; then
       echo Windows rogue processes detected, attempting to stop them..
       powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
@@ -35,7 +35,7 @@ if [ "$OS" = "Windows_NT" ]; then
       if [ $count -gt 0 ]; then
         echo "Cleanup failed, ${count} processes still remain..."
         exit 127
-      fi 
+      fi
       echo "Processes stopped successfully"
   else
       echo Woohoo - no rogue processes detected!
@@ -59,13 +59,13 @@ else
 
   LINUX_DOCKER_FILTER=""
   if [ `uname` = "Linux" ]; then
-      if egrep "\/docker\/" /proc/1/cgroup >nul; then
+      if egrep "/docker/" /proc/1/cgroup >nul; then
           echo Running in a Linux docker container
       else
           echo Running on a Linux host
           # Filter any possible docker container processes by cgroup containing "/docker"
           PSCOMMAND="ps -o cgroup,pid,state,tname,time,command -u $1"
-          LINUX_DOCKER_FILTER="| egrep -v '^[^[:space:]]+\/docker'"
+          LINUX_DOCKER_FILTER="| egrep -v '^[^[:space:]]+/docker'"
       fi
   fi
 
@@ -91,4 +91,3 @@ else
 fi
 
 exit 0
-
