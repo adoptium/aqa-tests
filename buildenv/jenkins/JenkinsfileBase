@@ -1744,7 +1744,8 @@ def forceCleanWS() {
 	def retry_count = 0
 	def max_retries = 3
 	def sleep_time = 30
-	
+	//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+		//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
 	retry(max_retries) {
 		try {
 			if (retry_count > 0) {
@@ -1760,7 +1761,7 @@ def forceCleanWS() {
 				sh "rm -rf aqa-tests/TKG"
 			}
 			cleanWs disableDeferredWipeout: true, deleteDirs: true
-		}
+		}// call cleanWs() again
 	}
 }
 
