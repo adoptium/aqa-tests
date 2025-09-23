@@ -677,7 +677,7 @@ def forceCleanWS() {
             cleanWs disableDeferredWipeout: true, deleteDirs: true
         } catch (Exception e) {
             echo 'Exception: ' + e.toString()
-            //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
         //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
             
             dir (env.WORKSPACE) {
