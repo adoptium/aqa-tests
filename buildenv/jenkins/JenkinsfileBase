@@ -247,10 +247,14 @@ def setupParallelEnv() {
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				} else if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
 					if (TARGET == "extended.jck" || TARGET == "special.system") {
-						if (NUM_LIST < 6) {
+						int minParallelNum = 10
+						if (PLATFORM.contains('windows')) {
+							minParallelNum = 15
+						}
+						if (NUM_LIST < minParallelNum) {
 							echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
-							echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
-							PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
+							echo "Regenerate parallel list with NUM_MACHINES=${minParallelNum} for TARGET ${TARGET}."
+							PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${minParallelNum} TEST_TIME="
 							NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 						}
 					} else if (TARGET == "sanity.functional" && PLATFORM.contains('windows')) {
