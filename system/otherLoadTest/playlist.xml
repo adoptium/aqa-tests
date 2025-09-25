@@ -181,6 +181,33 @@
 		</impls>
 	</test>
 	<test>
+		<testCaseName>MiniMix_extended_3h</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/597</comment>
+				<variation>Mode150-CS</variation>
+				<platform>^(?!x86-64_linux$).*</platform>
+			</disable>
+		 </disables>
+		<variations>
+			<variation>Mode501</variation>
+			<variation>Mode150-CS</variation>
+		</variations>
+		<command>
+			$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=3h$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q); $(TEST_STATUS)
+		</command>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>ClassLoadingTest_5m</testCaseName>
 		<disables>
 			<disable>
