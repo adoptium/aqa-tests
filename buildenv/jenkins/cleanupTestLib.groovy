@@ -9,7 +9,7 @@ def platformMap = [
     'alinux' : '(ci.role.test||ci.role.test.fips)&&hw.arch.aarch64&&sw.os.linux',
     'win' : '(ci.role.test||ci.role.test.fips)&&hw.arch.x86&&sw.os.windows',
     'aix' : '(ci.role.test||ci.role.test.fips)&&hw.arch.ppc64&&sw.os.aix',
-    'zos':'ci.role.test&&hw.arch.s390x&&sw.os.zos'
+    'zos' : 'ci.role.test&&hw.arch.s390x&&sw.os.zos'
 ]
 
 timeout(time: 72, unit: 'HOURS') {
@@ -17,20 +17,21 @@ timeout(time: 72, unit: 'HOURS') {
         def parallelJobs = [:]
         platformMap.each { platform, label ->
             echo "${platform}: ${label}"
-                if (params.PLATFORMS == 'all' || params.PLATFORMS == platform) {
-                    parallelJobs[platform] = {
-                        node(label) {
-                            def userHome = (platform == 'win') ? env.USERPROFILE.replace('\\', '//') + '/' : env.HOME
-                            def cmd = "hostname; if [ -d ${userHome}/${dependencyDir} ]; then ls -alt ${userHome}/${dependencyDir}/; rm -rf ${userHome}/${dependencyDir}/*; ls -alt ${userHome}/${dependencyDir}/; else echo 'Directory does not exist: ${userHome}/${dependencyDir}'; fi;"
-                            def cmd_clean_maven_libs = "if [ -d ${userHome}/.m2 ]; then ls -alt ${userHome}/.m2/; rm -rf ${userHome}/.m2/*; ls -alt ${userHome}/.m2/; else echo 'Directory does not exist: ${userHome}/.m2/'; fi"
-                            cmd += cmd_clean_maven_libs
-
-                            build job: 'all-nodes-matching-labels', parameters: [
-                            string(name: 'LABEL', value: label),
-                            string(name: 'COMMAND', value: cmd),
-                            string(name: 'TIMEOUT_TIME', value: '24')
-                        ], propagate: false
+            if (params.PLATFORMS == 'all' || params.PLATFORMS == platform) {
+                parallelJobs[platform] = {
+                    def cmd = ''
+                    node(label) {
+                        def jenkinsHome = env.WORKSPACE.replace('\\', '/').replaceAll('/workspace/.*', '')
+                        jenkinsHome = (platform == 'win') ? jenkinsHome.replaceAll('/', '//') + '/' : jenkinsHome
+                        cmd = "hostname; if [ -d ${jenkinsHome}/${dependencyDir} ]; then ls -alt ${jenkinsHome}/${dependencyDir}/; rm -rf ${jenkinsHome}/${dependencyDir}/*; ls -alt ${jenkinsHome}/${dependencyDir}/; else echo 'Directory does not exist: ${jenkinsHome}/${dependencyDir}'; fi;"
+                        def cmd_clean_maven_libs = "if [ -d ${jenkinsHome}/.m2 ]; then ls -alt ${jenkinsHome}/.m2/; rm -rf ${jenkinsHome}/.m2/*; ls -alt ${jenkinsHome}/.m2/; else echo 'Directory does not exist: ${jenkinsHome}/.m2/'; fi"
+                        cmd += cmd_clean_maven_libs
                     }
+                        build job: 'all-nodes-matching-labels', parameters: [
+                        string(name: 'LABEL', value: label),
+                        string(name: 'COMMAND', value: cmd),
+                        string(name: 'TIMEOUT_TIME', value: '24')
+                    ], propagate: false
                 }
             }
         }
