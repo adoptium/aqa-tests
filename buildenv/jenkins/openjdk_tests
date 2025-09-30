@@ -663,18 +663,28 @@ def checkErrors(errorList) {
 
 
 def forceCleanWS() {
-    try {
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
-    } catch (Exception e) {
-        echo 'Exception: ' + e.toString()
-        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-        dir (env.WORKSPACE) {
-            echo "Force clean Workspace at $pwd"
-            sh "rm -rf aqa-tests/TKG"
+    def retry_count = 0
+    def max_retries = 3
+    def sleep_time = 30
+    retry(max_retries) {
+        try {
+            if (retry_count > 0) {
+                echo "Retrying cleanWs attempt ${retry_count + 1}/${max_retries} after ${sleep_time} seconds sleep..."
+                sleep(sleep_time)
+            }
+            retry_count++
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
+        } catch (Exception e) {
+            echo 'Exception: ' + e.toString()
+            //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+            //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+            dir (env.WORKSPACE) {
+                echo "Force clean Workspace at $pwd"
+                sh "rm -rf aqa-tests/TKG"
+            }
+            // call cleanWs() again
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
-        // call cleanWs() again
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
     }
 }
 
