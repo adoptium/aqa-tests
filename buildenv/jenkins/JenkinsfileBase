@@ -231,9 +231,9 @@ def setupParallelEnv() {
 			if (params.TRSS_URL) {
 				PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 			}
-			int MAX_NUM_MACHINES = Math.min(20, getMachineLimit());
+			int MAX_NUM_MACHINES = getMachineLimit();
 			if (params.NUM_MACHINES) {
-				int numOfMachines = getNumMachines()
+				int numOfMachines = getNumMachines(MAX_NUM_MACHINES)
 				PARALLEL_OPTIONS += " NUM_MACHINES=${numOfMachines} TEST_TIME="
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 			} else if (params.TEST_TIME) {
@@ -241,7 +241,7 @@ def setupParallelEnv() {
 				PARALLEL_OPTIONS += " TEST_TIME=${params.TEST_TIME} NUM_MACHINES="
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				if (NUM_LIST > MAX_NUM_MACHINES && params.CLOUD_PROVIDER != "EBC") {
-					echo "TEST_TIME (${params.TEST_TIME} minutes) is not possible as it exceeds the machine limit."
+					echo "TEST_TIME (${params.TEST_TIME} minutes) is not possible as it exceeds the machine limit. NUM_LIST ${NUM_LIST} > MAX_NUM_MACHINES ${MAX_NUM_MACHINES}"
 					echo "Regenerate parallel list with NUM_MACHINES=${MAX_NUM_MACHINES}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
@@ -378,30 +378,33 @@ def genParallelList(PARALLEL_OPTIONS) {
 // Returns num
 // num = params.NUM_MACHINES. If it is not provided, the default value is 1
 // num cannot be greater than machines limit
-def getNumMachines() {
+def getNumMachines(limit) {
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
-	if (params.CLOUD_PROVIDER == "EBC") {
-		return num
-	} else {
-		int limit = getMachineLimit()
-		echo "machine limit is ${limit}"
-		if (num > limit) {
-			echo "Number of machines cannot be greater than ${limit}. Set num to ${limit}"
-			num = limit
-		}
-		return num
+	if (num > limit) {
+		echo "Number of machines ${num} cannot be greater than ${limit}. Set num to ${limit}."
+		num = limit
 	}
+	return num
 }
 
 def getMachineLimit(){
-	int limit = nodesByLabel(LABEL).size()
-    if (limit == 0) {
-        error("No active nodes match the supplied LABEL: ${LABEL}")
-    }
-	// Set limit for dynamic vm agents to 100
+	int limit = 1
 	if (LABEL.contains('ci.agent.dynamic')) {
-		limit = 100
+		limit = 40
+	} else if (env.JENKINS_URL.contains("hyc-runtimes") && (PLATFORM.contains("linux") || PLATFORM.contains("windows"))) {
+		limit = 40
+	} else {
+		limit = nodesByLabel(LABEL).size()
+		if (limit == 0) {
+			error("No active nodes match the supplied LABEL: ${LABEL}")
+		}
+		limit = Math.min(20, limit)
 	}
+	// For Grinder, set machine limit to 20 max
+	if (JOB_NAME.contains("Grinder")) {
+		limit = Math.min(20, limit)
+	}
+	echo "Machine limit is ${limit}."
 	return limit
 }
 
