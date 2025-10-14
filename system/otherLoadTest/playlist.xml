@@ -63,6 +63,32 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MiniMix_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MixedLoadTest -test-args=$(Q)timeLimit=5m$(Q) -java-args-execute-initial=$(Q)$(ADD_OPENS_CMD)$(Q);\
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>MiniMix_10m</testCaseName>
 		<disables>
 			<disable>
@@ -345,6 +371,33 @@
 		<platformRequirements>^os.zos</platformRequirements>
 	</test>
 	<test>
+		<testCaseName>DBBLoadTest_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=DirectByteBufferLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		 <impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<platformRequirements>^os.zos</platformRequirements>
+	</test>
+	<test>
 		<testCaseName>LangLoadTest_5m</testCaseName>
 		<disables>
 			<disable>
@@ -544,6 +597,8 @@
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(Q)-Xdisableexcessivegc$(Q) -test=HeapHogLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
@@ -570,6 +625,8 @@
 		<variations>
 			<variation>Mode110</variation>
 			<variation>Mode610</variation>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -java-args-execute-initial=$(Q)-Xnoclassgc$(Q) -test=ObjectTreeLoadTest -test-args=$(Q)timeLimit=5m$(Q); \
 	$(TEST_STATUS)</command>
