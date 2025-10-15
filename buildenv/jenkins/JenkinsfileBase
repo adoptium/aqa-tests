@@ -224,14 +224,15 @@ def setupParallelEnv() {
 				// If lib exists, SHA will be checked. Re-download if SHA does not match.
 				timeout(time: 20, unit: 'MINUTES') {
 					def customUrl = getCustomUrl()
+					env.CUSTOM_URL = customUrl
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 					}
-					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
 			} catch (Exception e) {
 				echo 'Exception: ' + e.toString()
@@ -714,14 +715,15 @@ def buildTest() {
 				// If lib exists, SHA will be checked. Re-download if SHA does not match.
 				timeout(time: 20, unit: 'MINUTES') {
 					def customUrl = getCustomUrl()
+					env.CUSTOM_URL = customUrl
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 					}
-					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
 			} catch (Exception e) {
 					echo 'Exception: ' + e.toString()
