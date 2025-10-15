@@ -219,8 +219,9 @@ def setupParallelEnv() {
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 					}
-					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
+					
 				}
 			} catch (Exception e) {
 				echo 'Exception: ' + e.toString()
@@ -709,8 +710,8 @@ def buildTest() {
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 					}
-					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
 			} catch (Exception e) {
 					echo 'Exception: ' + e.toString()
