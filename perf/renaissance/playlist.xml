@@ -77,6 +77,14 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6669</comment>
+				<vendor>eclipse</vendor>
+				<platform>arm_linux</platform>
+				<version>11</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
