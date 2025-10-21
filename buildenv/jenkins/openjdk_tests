@@ -175,8 +175,8 @@ timestamps{
             def target = "dev.external"
             def buildList = ""
             if (type == "criu") {
-                // Temporarily exclude JDK25+ due to lack of dockerfile
-                if (!(params.JDK_VERSION.isInteger() && params.JDK_VERSION.toInteger() >= 25)) {
+                // Temporarily exclude JDK26+ due to lack of dockerfile
+                if (!(params.JDK_VERSION.isInteger() && params.JDK_VERSION.toInteger() >= 26)) {
                     def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
                     if (params.LABEL_ADDITION) {
                         commonLabel += "&&${params.LABEL_ADDITION}"
