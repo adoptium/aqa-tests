@@ -1446,8 +1446,8 @@ def getFailedAndCustomizedTest(String paths="") {
 				env.RERUN_CUSTOMTARGET="${customTarget}_custom"
 				env.RERUN_TESTCASES="${testCases}"
 			}
-			return customizedTestCases
 		}
+		return customizedTestCases
 	}
 	return null
 }
@@ -1587,6 +1587,9 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
+						currentBuild.result = originalStatus
+					} else if ( originalStatus == 'ABORTED') { 
+						// Set job status to the worst result among its parallel branches including rerun branch.
 						currentBuild.result = originalStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
