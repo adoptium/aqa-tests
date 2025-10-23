@@ -1445,10 +1445,14 @@ def getFailedAndCustomizedTest(String paths="") {
 }
 
 def mergeTestCasesWithoutDup(String knownTestCases, String newTestCases) {
-	def knownTestCasesList = knownTestCases.split(/\s+/)
-	def newTestCasesList = newTestCases.split(/\s+/)
-	def filterednewTestCases = newTestCasesList.findAll { !(it in knownTestCasesList) }
-	return ( knownTestCases + " " + filterednewTestCases.join(" "))
+	if (knownTestCases) {
+		def knownTestCasesList = knownTestCases.split(/\s+/)
+		def newTestCasesList = newTestCases.split(/\s+/)
+		def filterednewTestCases = newTestCasesList.findAll { !(it in knownTestCasesList) }
+		return ( knownTestCases + " " + filterednewTestCases.join(" "))
+	} else {
+		return newTestCases
+	}
 }
 
 def addFailedTestsGrinderLink(paths="") {
@@ -1466,7 +1470,7 @@ def addFailedTestsGrinderLink(paths="") {
 		}
 		if ( customizedTestCases != null ) {
 			customizedTestCases.each { target, testcases ->
-				def tempTestCases = testcases.substring(0, testcases.length() - 1)
+				def tempTestCases = testcases
 				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
 				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")
 				customURL = customURL.replace(env.CUSTOM_TARGET_KEY_VALUE, "CUSTOM_TARGET=$tempTestCases")
