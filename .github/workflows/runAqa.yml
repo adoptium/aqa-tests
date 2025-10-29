@@ -45,7 +45,7 @@ jobs:
         log="${log//'%'/'%25'}"
         log="${log//$'\n'/'%0A'}"
         log="${log//$'\r'/'%0D'}"
-        log="${log/$'`'/'\`'}"
+        log="${log//'`'/'\`'}"
         echo ::set-output name=log::$log
       id: output_log
     - name: Create error comment
