@@ -143,11 +143,6 @@ JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS := $(JTREG_BASIC_OPTIONS)
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
 
-# Add APPLICATION_OPTIONS to pass options directly to jtreg (not through vmoptions)
-ifdef APPLICATION_OPTIONS
-    JTREG_BASIC_OPTIONS += $(APPLICATION_OPTIONS)
-endif
-
 # add another new parameter for concurrency
 SPECIAL_CONCURRENCY=$(EXTRA_JTREG_OPTIONS)
 # set SPECIAL_CONCURRENCY to 1 if the jdk is openj9 and the platform is linux_aarch64.
