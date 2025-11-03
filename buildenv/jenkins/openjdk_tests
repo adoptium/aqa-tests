@@ -347,11 +347,15 @@ timestamps{
                 }
             }
 
-            // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
+            // FIPS TEST_FLAG:
+            // FIPS140_2, FIPS140_3_OpenJCEPlusFIPS, FIPS140_3_OpenJCEPlusFIPS.FIPS140-3, FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced
             if (params.TEST_FLAG) {
-                if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
+                if (params.TEST_FLAG == "FIPS140_2") {
                     LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
                     env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+                } else if (params.TEST_FLAG == "FIPS140_3_OpenJCEPlusFIPS") {
+                    // Temporarily hardcode jvm option for FIPS140_3_OpenJCEPlusFIPS. For details, please see runtimes/automation/issues/653
+                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Weakly-Enforced"
                 } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
                     String[] tokens = TEST_FLAG.split('_')
                     def opts = tokens[2];
