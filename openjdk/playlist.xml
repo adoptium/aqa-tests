@@ -1675,7 +1675,7 @@
 		</features>
 	</test>
 	<test>
-		<testCaseName>jdk_util</testCaseName>
+		<testCaseName>jdk_util_other</testCaseName>
 		<variations>
 			<variation>$(TEST_VARIATION_DUMP) Mode150</variation>
 			<variation>$(TEST_VARIATION_DUMP) Mode650</variation>
@@ -1691,7 +1691,7 @@
 	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
 	${FEATURE_PROBLEM_LIST_FILE} \
 	${VENDOR_PROBLEM_LIST_FILE} \
-	$(Q)$(JTREG_JDK_TEST_DIR):jdk_util$(Q); \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_util_other$(Q); \
 	$(TEST_STATUS)</command>
 		<levels>
 			<level>sanity</level>
@@ -1703,7 +1703,106 @@
 			<feature>FIPS140_2:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
 			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
-            <feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
+			<feature>OpenJCEPlus:nonapplicable</feature>
+		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_collections</testCaseName>
+		<variations>
+			<variation>$(TEST_VARIATION_DUMP) Mode150</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode650</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx1540m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_collections$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
+			<feature>OpenJCEPlus:nonapplicable</feature>
+		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_concurrent</testCaseName>
+		<variations>
+			<variation>$(TEST_VARIATION_DUMP) Mode150</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode650</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx1540m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_concurrent$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
+			<feature>OpenJCEPlus:nonapplicable</feature>
+		</features>
+	</test>
+	<test>
+		<testCaseName>jdk_stream</testCaseName>
+		<variations>
+			<variation>$(TEST_VARIATION_DUMP) Mode150</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode650</variation>
+			<variation>$(TEST_VARIATION_DUMP) Mode1000</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx1540m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	$(TIMEOUT_HANDLER) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_stream$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<features>
+			<feature>FIPS140_2:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3:nonapplicable</feature>
+			<feature>FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced:nonapplicable</feature>
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
