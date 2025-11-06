@@ -19,9 +19,8 @@ SLEEP_TIME=5
 export LC_ALL=POSIX
 
 setupLinuxEnv() {
+    TEST_ROOT_DIR="$1"
     echo "Setup Linux Environment"
-    # Fetch the prebuilt arctic jar (will be pulled from prereq build eventually)
-    # wget -q https://ci.adoptium.net/job/Build_Arctic/5/artifact/upload/arctic-0.8.1.jar
 
     # Set environment variables, makes the assumption that JDK21 is the default java in /usr/bin/java
     export ARCTIC_JDK=/usr/bin/java
@@ -67,75 +66,28 @@ setupLinuxEnv() {
 }
 
 setupMacEnv() {
+    TEST_ROOT_DIR="$1"
     export AWT_FORCE_HEADFUL=true
     echo "Setup Mac Environment"
 
     # Point to specific system installed Temurin-21
     export ARCTIC_JDK=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java
 
-    cat <<EOF > JMinWindows.java
-		import java.awt.Robot;
-		import java.awt.event.KeyEvent;
-		import java.awt.Desktop;
-		import java.io.File;
-		public class JMinWindows {
-		public static void main(String... args) throws Exception {
-                    System.out.println("JMinWindows: Opening Finder on home folder so Finder becomes active front window and will get closed by Alt-Cmd-M");
-		    Desktop.getDesktop().open(new File(System.getProperty("user.home")));
-		    System.out.println("JMinWindows: Issuing Alt-Cmd-H to minimize all 'other' Windows");
-		    Robot r = new Robot();
-		    r.keyPress(KeyEvent.VK_META);
-		    r.delay(250);
-		    r.keyPress(KeyEvent.VK_ALT);
-		    r.delay(250);
-		    r.keyPress(KeyEvent.VK_H);
-		    r.delay(250);
-		    r.keyRelease(KeyEvent.VK_H);
-		    r.delay(250);
-		    r.keyRelease(KeyEvent.VK_ALT);
-		    r.delay(250);
-		    r.keyRelease(KeyEvent.VK_META);
-		    r.delay(250);
-		    System.out.println("JMinWindows: Issuing Alt-Cmd-M to minimize all Finder Windows");
-                    r.keyPress(KeyEvent.VK_META);
-                    r.delay(250);
-                    r.keyPress(KeyEvent.VK_ALT);
-                    r.delay(250);
-                    r.keyPress(KeyEvent.VK_M);
-                    r.delay(250);
-                    r.keyRelease(KeyEvent.VK_M);
-                    r.delay(250);
-                    r.keyRelease(KeyEvent.VK_ALT);
-                    r.delay(250);
-                    r.keyRelease(KeyEvent.VK_META);
-                    r.delay(250);
-		  }
-		}
-EOF
+    echo "Minimize all Mac Windows on Desktop"
+    javac "${TEST_ROOT_DIR}/buildenv/jenkins/src/MinimizeMacWindows.java"
+    echo "================================================"
+    java -Djava.awt.headless=false -cp "${TEST_ROOT_DIR}/buildenv/jenkins/src" MinimizeMacWindows
+    echo "================================================"
 
-		javac JMinWindows.java
-		java -Djava.awt.headless=false JMinWindows
-
-        echo "Running java ListJavaFonts..."
-
-cat <<EOF > ListJavaFonts.java
-                import java.awt.GraphicsEnvironment;
-                public class ListJavaFonts {
-                    public static void main( String[] args ) {
-                        String java_fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-                        for(String font : java_fonts) System.out.println( font );
-                    }
-                }
-EOF
-
-        javac ListJavaFonts.java
-        echo "================================================"
-        java ListJavaFonts
-        echo "================================================"
-
+    echo "Running java ListJavaFonts..."
+    javac "${TEST_ROOT_DIR}/buildenv/jenkins/src/ListJavaFonts.java"
+    echo "================================================"
+    java -cp "${TEST_ROOT_DIR}/buildenv/jenkins/src" ListJavaFonts
+    echo "================================================"
 }
 
 setupWindowsEnv() {
+    TEST_ROOT_DIR="$1"
     echo "Setup Windows Environment"
 
     # Point to specific system installed openjdk-21
@@ -144,12 +96,12 @@ setupWindowsEnv() {
 
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
 
-# Verify that the contents are present in jck_run
-TEST_GROUP=$1
-SPEC=$2
-VERSION=$3
-JCK_VERSION_NUMBER=$4
-TEST_SUB_DIR=$5
+TEST_ROOT=$1
+TEST_GROUP=$2
+SPEC=$3
+VERSION=$4
+JCK_VERSION_NUMBER=$5
+TEST_SUB_DIR=$6
 STARTING_SCOPE=$VERSION
 if [ $VERSION -eq 8 ]; then
     STARTING_SCOPE="default"
@@ -160,17 +112,17 @@ if [[ $SPEC =~ osx.* ]]; then
     OSNAME="mac"
     JENKINS_HOME_DIR="/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /Users/jenkins/jck_run/arctic/mac/arctic_tests#g'
-    setupMacEnv
+    setupMacEnv "${TEST_ROOT}"
 elif [[ $SPEC =~ linux.* ]]; then
     OSNAME="linux"
     JENKINS_HOME_DIR=/home/jenkins
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = /home/jenkins/jck_run/arctic/linux/arctic_tests#g'
-    setupLinuxEnv
+    setupLinuxEnv "${TEST_ROOT}"
 elif [[ $SPEC =~ win.* ]]; then
     OSNAME="windows"
     JENKINS_HOME_DIR="c:/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
-    setupWindowsEnv
+    setupWindowsEnv "${TEST_ROOT}"
 fi
 
 ARCTIC_GROUP="${TEST_SUB_DIR}"
@@ -346,8 +298,10 @@ for i in "${active_versions[@]}"; do
             fi
 
             # Check testcase started successfully.
-            ps -p $test_pid
-            rc=$?
+            if [[ $skipped == false ]]; then
+              ps -p $test_pid
+              rc=$?
+            fi
             if [[ $skipped == true ]] || [[ $rc != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
