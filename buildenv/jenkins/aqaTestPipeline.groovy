@@ -350,6 +350,8 @@ def remoteTriggerTemurinJCK () {
         blockBuildUntilComplete: true,
         job: 'AQA_Test_Pipeline',
         parameters: MapParameters(parameters: [MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
+                                                MapParameter(name: 'ADOPTOPENJDK_REPO', value: params.ADOPTOPENJDK_REPO),
+                                                MapParameter(name: 'ADOPTOPENJDK_BRANCH', value: params.ADOPTOPENJDK_BRANCH),
                                                 MapParameter(name: 'TARGETS', value: TARGETS),
                                                 MapParameter(name: 'JCK_GIT_REPO', value: env.JCK_GIT_REPO),
                                                 MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
