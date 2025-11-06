@@ -84,6 +84,10 @@ setupMacEnv() {
     echo "================================================"
     java -cp "${TEST_ROOT_DIR}/buildenv/jenkins/src" ListJavaFonts
     echo "================================================"
+
+    echo "Killing all Preview and TextEdit apps"
+    killall Preview 2>/dev/null || true
+    killall TextEdit 2>/dev/null || true
 }
 
 setupWindowsEnv() {
