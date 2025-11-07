@@ -86,8 +86,11 @@ setupMacEnv() {
     echo "================================================"
 
     echo "Killing all Preview and TextEdit apps"
-    killall Preview 2>/dev/null || true
-    killall TextEdit 2>/dev/null || true
+    killall Preview 2>/dev/null
+    killall TextEdit 2>/dev/null
+
+    echo "Tell Finder to close every window using AppleScript"
+    osascript -e 'tell application "Finder" to close every window'
 }
 
 setupWindowsEnv() {
