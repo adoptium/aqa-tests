@@ -49,6 +49,32 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>MathLoadTest_autosimd_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test-args=$(Q)workload=autoSimd,timeLimit=5m$(Q) -test=MathLoadTest; \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>MathLoadTest_bigdecimal_5m</testCaseName>
 		<disables>
 			<disable>
@@ -70,6 +96,32 @@
 		<groups>
 			<group>system</group>
 		</groups>
+	</test>
+	<test>
+		<testCaseName>MathLoadTest_bigdecimal_J9_5m</testCaseName>
+		<disables>
+			<disable>
+				<comment>automation/issues/474</comment>
+				<impl>ibm</impl>
+				<version>8</version>
+			</disable>
+		</disables>
+		<variations>
+			<variation>Mode501</variation>
+			<variation>Mode551</variation>
+		</variations>
+		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=MathLoadTest -test-args=$(Q)timeLimit=5m,workload=bigDecimal$(Q); \
+	$(TEST_STATUS)</command>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>system</group>
+		</groups>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
 	</test>
 	<test>
 		<testCaseName>MathLoadTest_all_CS_5m</testCaseName>

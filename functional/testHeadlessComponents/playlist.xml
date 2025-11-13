@@ -24,6 +24,29 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/5224</comment>
 				<impl>ibm</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6647#issuecomment-3382932623</comment>
+				<platform>aarch64_mac</platform>
+				<impl>hotspot</impl>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/pull/6648#issuecomment-3397002761</comment>
+				<platform>x86-64_windows</platform>
+				<impl>hotspot</impl>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/5775</comment>
+				<platform>x86-64_mac</platform>
+				<impl>hotspot</impl>
+				<version>8</version>
+			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/pull/6616#issuecomment-3323705754</comment>
+				<platform>x86-64_mac</platform>
+				<impl>hotspot</impl>
+				<version>25</version>
+			</disable>
 		</disables>
 		<command>
 			export OJDK_VERSION_NUMBER=$(JDK_VERSION) JREJDK="jdk" TMPRESULTS=$(Q)$(REPORTDIR)$(D)report$(Q); \

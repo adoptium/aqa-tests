@@ -34,16 +34,14 @@ public class DateFormatTest {
 			version = version.substring(index1+1, index2);
 		}
 	}
-        long feature = JavaVersion.getFeature();
-        if (feature == 16L) {
-		try {
-			resource = ResourceBundle.getBundle("ResourceBundleTest_16", locale);
-		} catch (MissingResourceException e) {} // Do nothing
-	} else if (feature >= 19L) {
-		try {
-			resource = ResourceBundle.getBundle("ResourceBundleTest_19", locale);
-		} catch (MissingResourceException e) {} // Do nothing
-        }
+    long feature = JavaVersion.getFeature();
+    if (feature >= 22L) {
+       resource = tryGetBundle("ResourceBundleTest_22", locale);
+    } else if (feature >= 19L) {
+        resource = tryGetBundle("ResourceBundleTest_19", locale);
+    } else if (feature == 16L) {
+        resource = tryGetBundle("ResourceBundleTest_16", locale);
+    }
 	if (resource == null){
 		resource = ResourceBundle.getBundle("ResourceBundleTest", locale);
 	}
@@ -54,6 +52,14 @@ public class DateFormatTest {
 	if (resource.getLocale().getLanguage().length() == 0){
 		System.out.println("Warning: Default resource file was selected. You may need to create a resource file for "+locale);
 	}
+    }
+    
+    private ResourceBundle tryGetBundle(String baseName, Locale locale) {
+        try {
+            return ResourceBundle.getBundle(baseName, locale);
+        } catch (MissingResourceException e) {
+            return null;
+        }
     }
     
     public DateFormatTest() {

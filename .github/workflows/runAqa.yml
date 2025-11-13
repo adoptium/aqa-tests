@@ -35,7 +35,7 @@ jobs:
     - name: Parse parameters
       env:
         args: ${{ github.event.comment.body }}
-      run: python3 TKG/scripts/testBot/runAqaArgParse.py $args 2> log.txt
+      run: python3 TKG/scripts/testBot/runAqaArgParse.py "$args" 2> log.txt
       id: argparse
     - name: Output log
       if: failure()
@@ -45,22 +45,23 @@ jobs:
         log="${log//'%'/'%25'}"
         log="${log//$'\n'/'%0A'}"
         log="${log//$'\r'/'%0D'}"
-        log="${log/$'`'/'\`'}"
+        log="${log//'`'/'\`'}"
         echo ::set-output name=log::$log
       id: output_log
     - name: Create error comment
       if: failure()
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-          comment_body = `
-          @${{ github.actor }}
-          \`\`\`
-          ${{ steps.output_log.outputs.log }}
-          \`\`\`
-          No builds were started.
-          `;
+          const log_content = `${{ steps.output_log.outputs.log }}`;
+          const comment_body = [
+            `@${{ github.actor }}`,
+            '```',
+            log_content,
+            '```',
+            'No builds were started.'
+          ].join('\n');
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
@@ -72,7 +73,7 @@ jobs:
       run: echo ::set-output name=failed::true
       id: failure_report
     - name: Create success comment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -132,7 +133,7 @@ jobs:
         sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
-    - uses: actions/github-script@v7
+    - uses: actions/github-script@v8
       id: get-pr
       with:
         script: |
@@ -157,7 +158,7 @@ jobs:
          version: ${{ matrix.jdk_version }}
          openjdk_testRepo: '${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}:${{ fromJSON(steps.get-pr.outputs.result).head.ref }}'
          tkg_Repo: ${{ matrix.tkg_repo }}
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+    - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
       if: failure()
       with:
         name: test_output
@@ -169,7 +170,7 @@ jobs:
     if: failure() && !needs.parseComment.outputs.failed
     steps:
     - name: Create comment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -190,7 +191,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -211,7 +212,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |

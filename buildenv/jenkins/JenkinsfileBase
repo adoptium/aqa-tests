@@ -237,9 +237,9 @@ def setupParallelEnv() {
 			if (params.TRSS_URL) {
 				PARALLEL_OPTIONS += " TRSS_URL=${params.TRSS_URL}"
 			}
-			int MAX_NUM_MACHINES = Math.min(20, getMachineLimit());
+			int MAX_NUM_MACHINES = getMachineLimit();
 			if (params.NUM_MACHINES) {
-				int numOfMachines = getNumMachines()
+				int numOfMachines = getNumMachines(MAX_NUM_MACHINES)
 				PARALLEL_OPTIONS += " NUM_MACHINES=${numOfMachines} TEST_TIME="
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 			} else if (params.TEST_TIME) {
@@ -247,15 +247,29 @@ def setupParallelEnv() {
 				PARALLEL_OPTIONS += " TEST_TIME=${params.TEST_TIME} NUM_MACHINES="
 				NUM_LIST = genParallelList(PARALLEL_OPTIONS)
 				if (NUM_LIST > MAX_NUM_MACHINES && params.CLOUD_PROVIDER != "EBC") {
-					echo "TEST_TIME (${params.TEST_TIME} minutes) is not possible as it exceeds the machine limit."
+					echo "TEST_TIME (${params.TEST_TIME} minutes) is not possible as it exceeds the machine limit. NUM_LIST ${NUM_LIST} > MAX_NUM_MACHINES ${MAX_NUM_MACHINES}"
 					echo "Regenerate parallel list with NUM_MACHINES=${MAX_NUM_MACHINES}."
 					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${MAX_NUM_MACHINES} TEST_TIME="
 					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
-				} else if (NUM_LIST < 6 && (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") && (TARGET == "extended.jck" || TARGET == "special.system")) {
-					echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
-					echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET}."
-					PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
-					NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+				} else if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
+					if (TARGET == "extended.jck" || TARGET == "special.system") {
+						int minParallelNum = 10
+						if (PLATFORM.contains('windows')) {
+							minParallelNum = 15
+						}
+						if (NUM_LIST < minParallelNum) {
+							echo "NUM_LIST value ${NUM_LIST} may not be calculated based on the actual execution time."
+							echo "Regenerate parallel list with NUM_MACHINES=${minParallelNum} for TARGET ${TARGET}."
+							PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=${minParallelNum} TEST_TIME="
+							NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+						}
+					} else if (TARGET == "sanity.functional" && PLATFORM.contains('windows')) {
+						if (NUM_LIST < 6) {
+							echo "Regenerate parallel list with NUM_MACHINES=6 for TARGET ${TARGET} due to long running tests (runtimes/automation/issues/654)."
+							PARALLEL_OPTIONS = PARALLEL_OPTIONS_TEMP + " NUM_MACHINES=6 TEST_TIME="
+							NUM_LIST = genParallelList(PARALLEL_OPTIONS)
+						}
+					}
 				} else if (NUM_LIST == 1 && env.JDK_IMPL == "hotspot" && (TARGET.contains("openjdk") || TARGET.contains("system"))) {
 					int FORCE_NUM_MACHINES = Math.min(3, MAX_NUM_MACHINES);
 					echo "NUM_LIST=1, Fall back to regenerate parallel lists with NUM_MACHINES=${FORCE_NUM_MACHINES}."
@@ -370,30 +384,33 @@ def genParallelList(PARALLEL_OPTIONS) {
 // Returns num
 // num = params.NUM_MACHINES. If it is not provided, the default value is 1
 // num cannot be greater than machines limit
-def getNumMachines() {
+def getNumMachines(limit) {
 	int num = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
-	if (params.CLOUD_PROVIDER == "EBC") {
-		return num
-	} else {
-		int limit = getMachineLimit()
-		echo "machine limit is ${limit}"
-		if (num > limit) {
-			echo "Number of machines cannot be greater than ${limit}. Set num to ${limit}"
-			num = limit
-		}
-		return num
+	if (num > limit) {
+		echo "Number of machines ${num} cannot be greater than ${limit}. Set num to ${limit}."
+		num = limit
 	}
+	return num
 }
 
 def getMachineLimit(){
-	int limit = nodesByLabel(LABEL).size()
-    if (limit == 0) {
-        error("No active nodes match the supplied LABEL: ${LABEL}")
-    }
-	// Set limit for dynamic vm agents to 100
+	int limit = 1
 	if (LABEL.contains('ci.agent.dynamic')) {
-		limit = 100
+		limit = 40
+	} else if (env.JENKINS_URL.contains("hyc-runtimes") && (PLATFORM.contains("linux") || PLATFORM.contains("windows"))) {
+		limit = 40
+	} else {
+		limit = nodesByLabel(LABEL).size()
+		if (limit == 0) {
+			error("No active nodes match the supplied LABEL: ${LABEL}")
+		}
+		limit = Math.min(20, limit)
 	}
+	// For Grinder, set machine limit to 20 max
+	if (JOB_NAME.contains("Grinder")) {
+		limit = Math.min(20, limit)
+	}
+	echo "Machine limit is ${limit}."
 	return limit
 }
 
@@ -796,6 +813,7 @@ def runTest( ) {
 				if ( sh(script:"which Xvfb 2>&1", returnStatus:true) != 0 ) {
 					env.XDG_RUNTIME_DIR = env.WORKSPACE + "/.xdg-runtime"
 					sh "mkdir -pm 0700 " + env.XDG_RUNTIME_DIR
+					sh "mkdir -p -m 1777 /tmp/.X11-unix"
 					sh "weston --no-config --socket=wayland-vfb --backend=headless-backend.so --xwayland &"
 					env.DISPLAY = ":0"
 
@@ -1178,9 +1196,9 @@ def getCustomUrl() {
 	def jenkinsDomain = getJenkinsDomain()
 	if (jenkinsDomain.contains("hyc-runtimes")) {
 		jenkinsDomain = "openj9-jenkins.osuosl.org"
-	} else if (jenkinsDomain.contains("temurin-compliance")) {
-                jenkinsDomain = "ci.adoptium.net"
-        }
+	} else if (jenkinsDomain.contains("temurin-compliance") || jenkinsDomain.contains("adoptium-team")) {
+		jenkinsDomain = "ci.adoptium.net"
+	}
 
 	def customUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
 	echo "Custom URL: ${customUrl}"
@@ -1378,29 +1396,17 @@ def getFailedAndCustomizedTest(String paths="") {
 							failedTestCasesInfo = failedTestCasesInfo.substring(0, failedTestCasesInfo.indexOf('Test results:'))
 							failedTestCasesInfo = failedTestCasesInfo.split("\\n").join(" ").replaceAll("TEST: ", "")
 							if (failedtest.startsWith("jdk_")) {
-								if (!jdkFailedTestCaseList.contains(failedTestCasesInfo)) {
-									jdkFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								jdkFailedTestCaseList = mergeTestCasesWithoutDup(jdkFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("jck-runtime") || failedtest.startsWith("jckruntime")) {
-								if (!jckRuntimeFailedTestCaseList.contains(failedTestCasesInfo)) {
-									jckRuntimeFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								jckRuntimeFailedTestCaseList = mergeTestCasesWithoutDup(jckRuntimeFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("jck-compiler") || failedtest.startsWith("jckcompiler")) {
-								if (!jckCompilerFailedTestCaseList.contains(failedTestCasesInfo)) {
-									jckCompilerFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								jckCompilerFailedTestCaseList = mergeTestCasesWithoutDup(jckCompilerFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("jck-devtools") || failedtest.startsWith("jckdevtools")) {
-								if (!jckDevtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-									jckDevtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								jckDevtoolsFailedTestCaseList = mergeTestCasesWithoutDup(jckDevtoolsFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("langtools_")){
-								if (!langtoolsFailedTestCaseList.contains(failedTestCasesInfo)) {
-									langtoolsFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								langtoolsFailedTestCaseList = mergeTestCasesWithoutDup(langtoolsFailedTestCaseList, failedTestCasesInfo)
 							} else {
-								if (!hotspotFailedTestCaseList.contains(failedTestCasesInfo)) {
-									hotspotFailedTestCaseList += "${failedTestCasesInfo} "
-								}
+								hotspotFailedTestCaseList = mergeTestCasesWithoutDup(hotspotFailedTestCaseList, failedTestCasesInfo)
 							}
 						}
 					}
@@ -1440,10 +1446,21 @@ def getFailedAndCustomizedTest(String paths="") {
 				env.RERUN_CUSTOMTARGET="${customTarget}_custom"
 				env.RERUN_TESTCASES="${testCases}"
 			}
-			return customizedTestCases
 		}
+		return customizedTestCases
 	}
 	return null
+}
+
+def mergeTestCasesWithoutDup(String knownTestCases, String newTestCases) {
+	if (knownTestCases) {
+		def knownTestCasesList = knownTestCases.split(/\s+/)
+		def newTestCasesList = newTestCases.split(/\s+/)
+		def filterednewTestCases = newTestCasesList.findAll { !(it in knownTestCasesList) }
+		return ( knownTestCases + " " + filterednewTestCases.join(" "))
+	} else {
+		return newTestCases
+	}
 }
 
 def addFailedTestsGrinderLink(paths="") {
@@ -1461,7 +1478,7 @@ def addFailedTestsGrinderLink(paths="") {
 		}
 		if ( customizedTestCases != null ) {
 			customizedTestCases.each { target, testcases ->
-				def tempTestCases = testcases.substring(0, testcases.length() - 1)
+				def tempTestCases = testcases
 				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
 				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")
 				customURL = customURL.replace(env.CUSTOM_TARGET_KEY_VALUE, "CUSTOM_TARGET=$tempTestCases")
@@ -1582,6 +1599,9 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
 						currentBuild.result = originalStatus
+					} else if ( originalStatus == 'ABORTED') { 
+						// Set job status to the worst result among its parallel branches including rerun branch.
+						currentBuild.result = originalStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
 					}
@@ -1595,6 +1615,28 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	}
 }
 
+// Sort the given list of jobs by project name.
+@NonCPS
+def sortByProjectName(jobs) {
+	jobs.sort { job1, job2 ->
+		def name1 = job1.getProjectName()
+		def name2 = job2.getProjectName()
+		def index1 = name1.lastIndexOf('_')
+		def index2 = name2.lastIndexOf('_')
+
+		if ((index1 < 0) || (index2 < 0)) {
+			name1 <=> name2
+		} else {
+			def suffix1 = name1.substring(index1 + 1)
+			def suffix2 = name2.substring(index2 + 1)
+
+			name1.substring(0, index1) <=> name2.substring(0, index2)
+				?: suffix1.length() <=> suffix2.length()
+				?: suffix1 <=> suffix2
+		}
+	}
+}
+
 // update to return worst child job status, and failure test job parameters.
 def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
@@ -1603,12 +1645,15 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		forceCleanWS()
 		try {
 			def buildPaths = ""
-			childJobs.each {
+			def childJobStatus = "<table><tr><th>Child Job</th><th>Status</th><th>Duration</th></tr>"
+			def jobList = childJobs.values().toList()
+			sortByProjectName(jobList)
+			jobList.each {
 				cjob ->
-					def jobInvocation = cjob.value.getRawBuild()
+					def jobInvocation = cjob.getRawBuild()
 					def buildId = jobInvocation.getNumber()
-					def name = cjob.value.getProjectName()
-					def childResult = cjob.value.getCurrentResult()
+					def name = cjob.getProjectName()
+					def childResult = cjob.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
 					// track FAILURE job childTestJobParams if it's rerun stage
 					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
@@ -1629,15 +1674,25 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					}
 					def childBuildUrl = "${env.JENKINS_URL}job/${name}/${buildId}"
 					def badgeUrl = "${childBuildUrl}/badge/icon"
-					currentBuild.description += """
-						<p>${name}/${buildId}:
-						<a href="${childBuildUrl}">
-							<img src="${badgeUrl}" />
-						</a>
-						</p>
+					def duration = cjob.getDuration() ?: ""
+					if (duration) {
+						long totalMillis = duration as long
+						def hours = ((int)(totalMillis / (1000 * 60 * 60))) % 24
+						def minutes = ((int)(totalMillis / (1000 * 60))) % 60
+						def seconds = ((int)(totalMillis / 1000)) % 60
+						duration = "${hours}h ${minutes}m ${seconds}s"
+					}
+					childJobStatus += """
+						<tr>
+							<td>${name}/${buildId}</td>
+							<td><a href="${childBuildUrl}"><img src="${badgeUrl}" /></a></td>
+							<td>${duration}</td>
+						</tr>
 					"""
 			}
-			
+			childJobStatus += "</table>"
+			currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus
+
 			// In case rerun job status be worse than original job status
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
@@ -1714,18 +1769,28 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 }
 
 def forceCleanWS() {
-	try {
-		cleanWs disableDeferredWipeout: true, deleteDirs: true
-	} catch (Exception e) {
-		echo 'Exception: ' + e.toString()
-		//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-		//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-		dir (env.WORKSPACE) {
-			echo "Force clean Workspace at $pwd"
-			sh "rm -rf aqa-tests/TKG"
+	def retry_count = 0
+	def max_retries = 3
+	def sleep_time = 30
+	retry(max_retries) {
+		try {
+			if (retry_count > 0) {
+				echo "Retrying cleanWs attempt ${retry_count + 1}/${max_retries} after ${sleep_time} seconds sleep..."
+				sleep(sleep_time)
+			}
+			retry_count++
+			cleanWs disableDeferredWipeout: true, deleteDirs: true
+		} catch (Exception e) {
+			echo 'Exception: ' + e.toString()
+			//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+			//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+			dir (env.WORKSPACE) {
+				echo "Force clean Workspace at $pwd"
+				sh "rm -rf aqa-tests/TKG"
+			}
+			// call cleanWs() again
+			cleanWs disableDeferredWipeout: true, deleteDirs: true
 		}
-		// call cleanWs() again
-		cleanWs disableDeferredWipeout: true, deleteDirs: true
 	}
 }
 

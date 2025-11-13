@@ -175,72 +175,75 @@ timestamps{
             def target = "dev.external"
             def buildList = ""
             if (type == "criu") {
-                def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
-                if (params.LABEL_ADDITION) {
-                    commonLabel += "&&${params.LABEL_ADDITION}"
-                }
-                buildList="external/criu,external/criu-portable-checkpoint,external/criu-portable-checkpoint,external/criu-portable-checkpoint,criu-ubi-portable-restore,external/criu-ubi-portable-checkpoint"
-                imageUploadMap = [
-                    'x86-64_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
-                            ],
-                    'aarch64_linux' : [
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
-                            ],
-                    's390x_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
-                            ],
-                    'ppc64le_linux' : [
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
+                // Temporarily exclude JDK26+ due to lack of dockerfile
+                if (!(params.JDK_VERSION.isInteger() && params.JDK_VERSION.toInteger() >= 26)) {
+                    def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
+                    if (params.LABEL_ADDITION) {
+                        commonLabel += "&&${params.LABEL_ADDITION}"
+                    }
+                    buildList="external/criu,external/criu-portable-checkpoint,external/criu-portable-checkpoint,external/criu-portable-checkpoint,criu-ubi-portable-restore,external/criu-ubi-portable-checkpoint"
+                    imageUploadMap = [
+                        'x86-64_linux' : [
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
+                                ],
+                        'aarch64_linux' : [
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
+                                ],
+                        's390x_linux' : [
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
+                                ],
+                        'ppc64le_linux' : [
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
+                        ]
                     ]
-                ]
-                imagePullMap = [
-                    'x86-64_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
-                            ],
-                    'aarch64_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
-                            ],
-                    's390x_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"]
-                                // no machine available ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
-                            ],
-                    'ppc64le_linux' : [
-                                // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
-                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
-                            ]
-                ]
-                target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+                    imagePullMap = [
+                        'x86-64_linux' : [
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                                ],
+                        'aarch64_linux' : [
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                                ],
+                        's390x_linux' : [
+                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"]
+                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
+                                ],
+                        'ppc64le_linux' : [
+                                    // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
+                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
+                                ]
+                    ]
+                    target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
-                if (params.PLATFORM == "ppc64le_linux") {
-                    // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
-                    target = target.minus("disabled.criu-portable-checkpoint_test,")
+                    if (params.PLATFORM == "ppc64le_linux") {
+                        // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
+                        target = target.minus("disabled.criu-portable-checkpoint_test,")
+                    }
                 }
             } else if (type == "scc") {
                 def commonLabel = "sw.tool.podman"
@@ -309,7 +312,7 @@ timestamps{
             echo "Trigger imagePullJobs in parallel ..."
             parallel imagePullJobs
         } else {
-            assert false : "imageUploadJobs and/or imagePullJobs is empty. \n imageUploadJobs: ${imageUploadJobs} \n imagePullJobs: ${imagePullJobs}."
+            echo "imageUploadJobs and/or imagePullJobs is empty, may because JDK Version or Platform not supported. \n imageUploadJobs: ${imageUploadJobs} \n imagePullJobs: ${imagePullJobs}."
         }
 
     } else {
@@ -331,19 +334,28 @@ timestamps{
                 LABEL = params.LABEL
             } else {
                 LABEL = PLATFORM_MAP[params.PLATFORM]["LABEL"]
-                    if (params.BUILD_LIST.contains("perf")) {
-                        def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
-                        if (areNodesWithLabelOnline(perfLabel)) {
+                if (params.BUILD_LIST.contains("perf")) {
+                    def perfLabel = LABEL.minus("ci.role.test&&").concat("&&ci.role.perf")
+                    if (areNodesWithLabelOnline(perfLabel)) {
                         LABEL = perfLabel
-                        }
                     }
                 }
+                if (PLATFORM == "ppc64_aix" && params.JDK_IMPL == "openj9" && env.JENKINS_URL.contains("hyc-runtimes")) {
+                    if (!params.JDK_VERSION.isInteger() || params.JDK_VERSION.toInteger() >= 25) {
+                        LABEL += "&&sw.tool.c++runtime.17_1"
+                    }
+                }
+            }
 
-            // Temporarily support both FIPS and FIPS140_2, remove FIPS in the next step
+            // FIPS TEST_FLAG:
+            // FIPS140_2, FIPS140_3_OpenJCEPlusFIPS, FIPS140_3_OpenJCEPlusFIPS.FIPS140-3, FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced
             if (params.TEST_FLAG) {
-                if (params.TEST_FLAG == "FIPS" || params.TEST_FLAG == "FIPS140_2") {
+                if (params.TEST_FLAG == "FIPS140_2") {
                     LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
                     env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+                } else if (params.TEST_FLAG == "FIPS140_3_OpenJCEPlusFIPS") {
+                    // Temporarily hardcode jvm option for FIPS140_3_OpenJCEPlusFIPS. For details, please see runtimes/automation/issues/653
+                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Weakly-Enforced"
                 } else if (params.TEST_FLAG.contains("FIPS140_3_")) {
                     String[] tokens = TEST_FLAG.split('_')
                     def opts = tokens[2];
@@ -655,18 +667,28 @@ def checkErrors(errorList) {
 
 
 def forceCleanWS() {
-    try {
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
-    } catch (Exception e) {
-        echo 'Exception: ' + e.toString()
-        //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
-        //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
-        dir (env.WORKSPACE) {
-            echo "Force clean Workspace at $pwd"
-            sh "rm -rf aqa-tests/TKG"
+    def retry_count = 0
+    def max_retries = 3
+    def sleep_time = 30
+    retry(max_retries) {
+        try {
+            if (retry_count > 0) {
+                echo "Retrying cleanWs attempt ${retry_count + 1}/${max_retries} after ${sleep_time} seconds sleep..."
+                sleep(sleep_time)
+            }
+            retry_count++
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
+        } catch (Exception e) {
+            echo 'Exception: ' + e.toString()
+            //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
+            //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
+            dir (env.WORKSPACE) {
+                echo "Force clean Workspace at $pwd"
+                sh "rm -rf aqa-tests/TKG"
+            }
+            // call cleanWs() again
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
-        // call cleanWs() again
-        cleanWs disableDeferredWipeout: true, deleteDirs: true
     }
 }
 
