@@ -51,10 +51,12 @@ jobs:
     - name: Create error comment
       if: failure()
       uses: actions/github-script@v8
+      env:
+        LOG_OUTPUT: ${{ steps.output_log.outputs.log }}
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-          const log_content = `${{ steps.output_log.outputs.log }}`;
+          const log_content = process.env.LOG_OUTPUT;
           const comment_body = [
             `@${{ github.actor }}`,
             '```',
