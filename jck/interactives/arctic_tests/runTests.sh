@@ -45,19 +45,19 @@ setupLinuxEnv() {
 
 	# Ensure consistent colors
 	sed -i 's/BorderColor.*$/BorderColor "slategrey"/g' $HOME/.twmrc
-	sed -i 's/DefaultBackground.*$/DefaultBackground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
+	sed -i 's/DefaultBackground.*$/DefaultBackground "rgb:2\/a\/9"/g' $HOME/.twmrc
 	sed -i 's/DefaultForeground.*$/DefaultForeground "gray85"/g' $HOME/.twmrc
-	sed -i 's/TitleBackground.*$/TitleBackground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
+	sed -i 's/TitleBackground.*$/TitleBackground "rgb:2\/a\/9"/g' $HOME/.twmrc
 	sed -i 's/TitleForeground.*$/TitleForeground "gray85"/g' $HOME/.twmrc
-	sed -i 's/MenuBackground.*$/MenuBackground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
+	sed -i 's/MenuBackground.*$/MenuBackground "rgb:2\/a\/9"/g' $HOME/.twmrc
 	sed -i 's/MenuForeground.*$/MenuForeground "gray85"/g' $HOME/.twmrc
 	sed -i 's/MenuBorderColor.*$/MenuBorderColor "slategrey"/g' $HOME/.twmrc
 	sed -i 's/MenuTitleBackground.*$/MenuTitleBackground "gray70"/g' $HOME/.twmrc
-	sed -i 's/MenuTitleForeground.*$/MenuTitleForeground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
-	sed -i 's/IconBackground.*$/IconBackground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
+	sed -i 's/MenuTitleForeground.*$/MenuTitleForeground "rgb:2\/a\/9"/g' $HOME/.twmrc
+	sed -i 's/IconBackground.*$/IconBackground "rgb:2\/a\/9"/g' $HOME/.twmrc
 	sed -i 's/IconForeground.*$/IconForeground "gray85"/g' $HOME/.twmrc
 	sed -i 's/IconBorderColor.*$/IconBorderColor "gray85"/g' $HOME/.twmrc
-	sed -i 's/IconManagerBackground.*$/IconManagerBackground "rgb:2\\/a\\/9"/g' $HOME/.twmrc
+	sed -i 's/IconManagerBackground.*$/IconManagerBackground "rgb:2\/a\/9"/g' $HOME/.twmrc
 	sed -i 's/IconManagerForeground.*$/IconManagerForeground "gray85"/g' $HOME/.twmrc
 
 	# Start twm
