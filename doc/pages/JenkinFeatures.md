@@ -32,7 +32,7 @@ Repositories where we pull test material from. Unless you are testing test code,
 | `STF_OWNER_BRANCH`                    | Optional. Use a specific `adoptium/STF` fork/branch.                                                     |
 | `JCK_GIT_REPO`                        | Optional. Use a specific private repository for JCK test material supplied under OCTLA.                  |
 
-Items marked with a (*) will be ignored if USE_TESTENV_PROPERTIES is set to true. Since this is the default you need to uncheck it for these properties to take effect
+Items marked with a (*) will be ignored if USE_TESTENV_PROPERTIES is set to true.
 
 ## Non-AQA Test Repositories
 Additional test repositories that can be overlaid onto existing AQA test material for extra testing.
