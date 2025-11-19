@@ -126,7 +126,7 @@ Parameters to determine what to do with post-run artifacts.
 | `ARTIFACTORY_REPO`         | Optional, use in conjunction with ARTIFACTORY_SERVER.                                                                                  |
 | `ARTIFACTORY_ROOT_DIR`     | Optional, use in conjunction with ARTIFACTORY_SERVER.                                                                                  |
 | `CLOUD_PROVIDER`           | Optional, if set, Jenkins jobs may try to spin up dynamic agents to run tests on if all real nodes are in use.                        |
-| `USE_TESTENV_PROPERTIES`   | Optional, boolean, use the values provided in the testenv.properties file to pin to particular versions of test material.            |
+| `USE_TESTENV_PROPERTIES`   | Optional, boolean, use the values provided in the testenv.properties file to pin to particular versions of test material. When true, values in the testenv.properties file override Test Repository Parameter values. |
 | `RERUN_ITERATIONS`         | Optional, if set, indicates that when test targets fail, they are to be rerun this many times.                                         |
 | `RELATED_NODES`            | Setting the client machine label for use in client/server testing.                                                                     |
 
