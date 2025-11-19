@@ -26,9 +26,9 @@ Repositories where we pull test material from. Unless you are testing test code,
 | `JDK_REPO` (*)                        | Optional. Use test material from a specific OpenJDK repository.                                          |
 | `JDK_BRANCH` (*)                      | Optional. Use test material from a specific OpenJDK branch.                                              |
 | `OPENJDK_SHA`                         | Optional. Pin to a specific OpenJDK SHA.                                                                 |
-| `TKG_OWNER_BRANCH`                    | Optional. Use a specific `adoptium/TKG` fork/branch.                                                     |
-| `ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH`| Optional. Use a specific `adoptium/aqa-systemtest` fork/branch.                                          |
-| `OPENJ9_SYSTEMTEST_OWNER_BRANCH`      | Optional. Use a specific `openj9/openj9-systemtest` fork/branch.                                         |
+| `TKG_OWNER_BRANCH` (*)               | Optional. Use a specific `adoptium/TKG` fork/branch.                                                     |
+| `ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH` (*) | Optional. Use a specific `adoptium/aqa-systemtest` fork/branch.                                          |
+| `OPENJ9_SYSTEMTEST_OWNER_BRANCH` (*)     | Optional. Use a specific `openj9/openj9-systemtest` fork/branch.                                         |
 | `STF_OWNER_BRANCH`                    | Optional. Use a specific `adoptium/STF` fork/branch.                                                     |
 | `JCK_GIT_REPO`                        | Optional. Use a specific private repository for JCK test material supplied under OCTLA.                  |
 
