@@ -149,9 +149,9 @@ TEST_GROUP=$1
 SPEC=$2
 VERSION=$3
 JCK_VERSION_NUMBER=$4
-TEST_SUB_DIR=$5
+TEST_DIR_OR_CASES="${*:5}"
 STARTING_SCOPE=$VERSION
-if [ $VERSION -eq 8 ]; then
+if [ "$VERSION" -eq 8 ]; then
     STARTING_SCOPE="default"
 fi
 
@@ -173,25 +173,25 @@ elif [[ $SPEC =~ win.* ]]; then
     setupWindowsEnv
 fi
 
-ARCTIC_GROUP="${TEST_SUB_DIR}"
-if [ $TEST_GROUP = "custom" ]; then
-    if [[ -z $TEST_SUB_DIR ]]; then
+if [[ $TEST_GROUP =~ "custom" ]]; then
+    if [ -z "$TEST_DIR_OR_CASES" ]; then
         echo "Custom: No custom Arctic groups specified, skipping."
         exit 0
     fi
 
-    if [[ $TEST_SUB_DIR == api/java_awt/* ]]; then
+    if [[ $TEST_GROUP =~ 'java_awt' ]]; then
         ARCTIC_GROUP="api/java_awt"
-    elif [[ $TEST_SUB_DIR == api/javax_swing/* ]]; then    
+    elif [[ $TEST_GROUP =~ 'javax_swing' ]]; then    
         ARCTIC_GROUP="api/javax_swing"
     else
-        echo "ERROR: custom Arctic target $TEST_SUB_DIR, is not a known group (api/java_awt, api/javax_swing)"
+        echo "ERROR: custom Arctic target $TEST_GROUP, is not a known group (api/java_awt, api/javax_swing)"
         exit 1
     fi
     # Strip ARCTIC_GROUP/ from front
-    CUSTOM_ARCTIC_TESTCASE=${TEST_SUB_DIR/$ARCTIC_GROUP/}
-    CUSTOM_ARCTIC_TESTCASE=${CUSTOM_ARCTIC_TESTCASE:1}
-    echo "Running custom target: $ARCTIC_GROUP $CUSTOM_ARCTIC_TESTCASE"
+    # TODO moving to next
+    echo "Running custom target: $ARCTIC_GROUP $TEST_DIR_OR_CASES"
+else
+    ARCTIC_GROUP="${TEST_DIR_OR_CASES}"
 fi
 
 JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VERSION_NUMBER}"
@@ -328,8 +328,8 @@ for i in "${active_versions[@]}"; do
             fi
             echo "EXECUTING: ${TEST_CMDLINE}"
 
-            # Custom check
-            if [[ "${TEST_GROUP}" == "custom" ]] && [[ "${ARCTIC_TESTCASE}" != "${CUSTOM_ARCTIC_TESTCASE}" ]]; then
+            # Custom check    $TEST_GROUP =~ 'java_awt'
+            if [[ $TEST_GROUP =~ 'custom' ]] && [[ "${TEST_DIR_OR_CASES}" != *"${ARCTIC_TESTCASE}"* ]]; then
               test_pid=-1
               skipped=true
               echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
