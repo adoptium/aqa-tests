@@ -27,9 +27,9 @@ setupLinuxEnv() {
     export ARCTIC_JDK=/usr/bin/java
 
     echo "Fonts:"
-	echo "==========================================="
+	echo "-------------------------------------------"
 	find /usr/share/fonts -name "*" -type d
-	echo "==========================================="
+	echo "-------------------------------------------"
 
 	cp /etc/X11/twm/system.twmrc $HOME/.twmrc
 	echo 'RightTitleButton "xlogo11" = f.delete' >> $HOME/.twmrc
@@ -129,9 +129,9 @@ cat <<EOF > ListJavaFonts.java
 EOF
 
         javac ListJavaFonts.java
-        echo "================================================"
+        echo "------------------------------------------------"
         java ListJavaFonts
-        echo "================================================"
+        echo "------------------------------------------------"
 
 }
 
@@ -219,9 +219,9 @@ if [ ! -f ${LIB_DIR}/arctic.jar ]; then
     ls -al ${LIB_DIR}
 fi
 
-echo "==========================================================================="
+echo "--------------------------------------------------------------------------"
 cat player.properties
-echo "==========================================================================="
+echo "---------------------------------------------------------------------------"
 
 echo "Starting player in background with RMI..."
 $ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
@@ -248,6 +248,10 @@ overallSuccess=true
 FOUND_TESTS=()
 PASSED_TESTS=()
 FAILED_TESTS=()
+numberOfTest=0
+numberOfPassed=0
+numberOfFailed=0
+
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
     START_DIR="${TOP_DIR}/${i}/${ARCTIC_GROUP}"
@@ -456,13 +460,13 @@ if [[ -n $twm_pid ]]; then
   kill $twm_pid 2>/dev/null
 fi
 
-echo "======================================================================================="
+echo "-------------------------------------------------------------------------------------"
 echo "PASSED Testcases:"
 for test in "${PASSED_TESTS[@]}"
 do
   echo "$test : PASSED"
 done
-echo "======================================================================================="
+echo "---------------------------------------------------------------------------------------"
 
 if [[ $overallSuccess != true ]]; then
   echo "FAILED Testcases:"
@@ -470,7 +474,10 @@ if [[ $overallSuccess != true ]]; then
   do
     echo "$test : FAILED"
   done
-  echo "======================================================================================="
+  echo "---------------------------------------------------------------------------------------"
+  echo "Test results: passed: ${#PASSED_TESTS[@]}; failed: ${#FAILED_TESTS[@]}"
+else
+  echo "Test results: passed: ${#PASSED_TESTS[@]}"
 fi
 
 echo "Finished running testcases, overallSuccess = $overallSuccess"

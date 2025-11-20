@@ -1369,6 +1369,8 @@ def getFailedAndCustomizedTest(String paths="") {
 	def jckRuntimeFailedTestCaseList = ""
 	def jckCompilerFailedTestCaseList = ""
 	def jckDevtoolsFailedTestCaseList = ""
+	def jckInteractiveAWTFailedTestCaseList = ""
+	def jckInteractiveSwingFailedTestCaseList = ""
 	List<String> buildPaths = paths.split(',')
 	for (def buildPath: buildPaths) {
 		def tapFiles = findFiles(glob: "${buildPath}**/*.tap")
@@ -1397,6 +1399,10 @@ def getFailedAndCustomizedTest(String paths="") {
 								jckDevtoolsFailedTestCaseList = mergeTestCasesWithoutDup(jckDevtoolsFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("langtools_")){
 								langtoolsFailedTestCaseList = mergeTestCasesWithoutDup(langtoolsFailedTestCaseList, failedTestCasesInfo)
+							} else if (failedtest.startsWith("jckinteractives_java_awt")) {
+								jckInteractiveAWTFailedTestCaseList = mergeTestCasesWithoutDup(jckInteractiveAWTFailedTestCaseList, failedTestCasesInfo)
+							} else if (failedtest.startsWith("jckinteractives_javax_swing")) {
+								jckInteractiveSwingFailedTestCaseList = mergeTestCasesWithoutDup(jckInteractiveSwingFailedTestCaseList, failedTestCasesInfo)
 							} else {
 								hotspotFailedTestCaseList = mergeTestCasesWithoutDup(hotspotFailedTestCaseList, failedTestCasesInfo)
 							}
