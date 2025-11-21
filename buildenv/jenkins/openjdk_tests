@@ -551,9 +551,9 @@ def runTest() {
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
         if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
-            //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-            docker.image('adoptopenjdk/centos7_build_image').pull()
-            docker.image('adoptopenjdk/centos7_build_image').inside {
+            // Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+            docker.image('ghcr.io/adoptium/test-containers:ubi10').pull()
+            docker.image('ghcr.io/adoptium/test-containers:ubi10').inside {
                 jenkinsfile.testBuild()
             }
         } else if (dockerAgentLabel.equals('default') && LABEL.contains('&&sw.tool.docker') && SPEC.equals('linux_riscv64')) {
