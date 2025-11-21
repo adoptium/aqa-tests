@@ -1399,9 +1399,9 @@ def getFailedAndCustomizedTest(String paths="") {
 								jckDevtoolsFailedTestCaseList = mergeTestCasesWithoutDup(jckDevtoolsFailedTestCaseList, failedTestCasesInfo)
 							} else if (failedtest.startsWith("langtools_")){
 								langtoolsFailedTestCaseList = mergeTestCasesWithoutDup(langtoolsFailedTestCaseList, failedTestCasesInfo)
-							} else if (failedtest.startsWith("jckinteractives_java_awt")) {
+							} else if (failedtest.startsWith("jckinteractives_java_awt") || failedtest.startsWith("jckinteractivesawt") ) {
 								jckInteractiveAWTFailedTestCaseList = mergeTestCasesWithoutDup(jckInteractiveAWTFailedTestCaseList, failedTestCasesInfo)
-							} else if (failedtest.startsWith("jckinteractives_javax_swing")) {
+							} else if (failedtest.startsWith("jckinteractives_javax_swing") || failedtest.startsWith("jckinteractivesswing") ) {
 								jckInteractiveSwingFailedTestCaseList = mergeTestCasesWithoutDup(jckInteractiveSwingFailedTestCaseList, failedTestCasesInfo)
 							} else {
 								hotspotFailedTestCaseList = mergeTestCasesWithoutDup(hotspotFailedTestCaseList, failedTestCasesInfo)
@@ -1434,6 +1434,12 @@ def getFailedAndCustomizedTest(String paths="") {
 		}
 		if (jckDevtoolsFailedTestCaseList) {
 			customizedTestCases['jckdevtools'] = "${jckDevtoolsFailedTestCaseList}"
+		}
+		if (jckInteractiveAWTFailedTestCaseList) {
+			customizedTestCases['jckinteractivesawt'] = "${jckInteractiveAWTFailedTestCaseList}"
+		}
+		if (jckInteractiveSwingFailedTestCaseList) {
+			customizedTestCases['jckinteractivesswing'] = "${jckInteractiveSwingFailedTestCaseList}"
 		}
 		if (customizedTestCases.size() == 1) {
 			def testCases=customizedTestCases.values().first()

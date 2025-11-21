@@ -248,9 +248,6 @@ overallSuccess=true
 FOUND_TESTS=()
 PASSED_TESTS=()
 FAILED_TESTS=()
-numberOfTest=0
-numberOfPassed=0
-numberOfFailed=0
 
 for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
