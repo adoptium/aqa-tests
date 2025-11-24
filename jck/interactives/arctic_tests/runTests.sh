@@ -345,9 +345,11 @@ for i in "${active_versions[@]}"; do
               sleep $SLEEP_TIME
             fi
 
-            # Check testcase started successfully.
-            ps -p $test_pid
-            rc=$?
+            # Check testcase started successfully if not Skipped.
+            if [[ $skipped == false ]]; then
+              ps -p $test_pid
+              rc=$?
+            fi
             if [[ $skipped == true ]] || [[ $rc != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
