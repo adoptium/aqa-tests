@@ -54,7 +54,7 @@ class ExcludeFileInfo:
     path: os.PathLike
     lines: List['TestExclusionRawLine']
 
-    FILE_PATTERN: ClassVar = re.compile(r'ProblemList_openjdk(?P<jdk_version>\d+)-?(?P<jdk_impl>.*).txt')
+    FILE_PATTERN: ClassVar = re.compile(r'ProblemList_openjdk(?P<jdk_version>(\d+|valhalla))-?(?P<jdk_impl>.*).txt')
 
     @classmethod
     def get_jdk_info(cls, exclude_path):
