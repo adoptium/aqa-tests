@@ -1650,8 +1650,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			sortByProjectName(jobList)
 			jobList.each {
 				cjob ->
-					def jobInvocation = cjob.getRawBuild()
-					def buildId = jobInvocation.getNumber()
+					def buildId = cjob.getNumber()
 					def name = cjob.getProjectName()
 					def childResult = cjob.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"

@@ -123,7 +123,7 @@ def generateChildJobViaAutoGen(newJobName) {
 def aggregateLogs(run, runtimes) {
         def json 
         node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
-                def buildId  = run.getRawBuild().getNumber()
+                def buildId  = run.getNumber()
                 def name = run.getProjectName()
                 def result = run.getCurrentResult()
 
