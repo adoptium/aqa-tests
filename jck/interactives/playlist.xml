@@ -15,11 +15,26 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<include>../jck.mk</include>
 	<test>
-		<testCaseName>jckinteractives_custom</testCaseName>
+		<testCaseName>jckinteractivesawt_custom</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh custom ${SPEC} ${JDK_VERSION} ${JCK_VERSION_NUMBER} ${JCKINTERACTIVES_CUSTOM_TARGET}; \
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh java_awt_custom ${SPEC} ${JDK_VERSION} ${JCK_VERSION_NUMBER} ${SIMPLE_JCKINTERACTIVESAWT_CUSTOM_TARGET}; \
+		$(TEST_STATUS)
+		</command>
+		<levels>
+			<level>dev</level>
+		</levels>
+		<groups>
+			<group>jck</group>
+		</groups>
+	</test>
+		<test>
+		<testCaseName>jckinteractivesswing_custom</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+		</variations>
+		<command>$(TEST_ROOT)$(D)jck$(D)interactives$(D)arctic_tests$(D)runTests.sh javax_swing_custom ${SPEC} ${JDK_VERSION} ${JCK_VERSION_NUMBER} ${SIMPLE_JCKINTERACTIVESSWING_CUSTOM_TARGET}; \
 		$(TEST_STATUS)
 		</command>
 		<levels>
