@@ -24,7 +24,11 @@ def testBuild() {
 				sh 'git clone https://github.com/adoptium/aqa-systemtest'
 				sh 'git clone https://github.com/adoptium/STF'
 				sh 'ant -f ./aqa-systemtest/openjdk.build/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
-				sh 'ant -f ./aqa-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
+				// Mauve source build process is currently unavailable.
+				// A temporary workaround is to copy a cached mauve.jar.
+				// sh 'ant -f ./aqa-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
+				sh 'mkdir -p /home/jenkins/workspace/systemtest.getDependency/systemtest_prereqs/mauve'
+                sh 'curl -LJks --output /home/jenkins/workspace/systemtest.getDependency/systemtest_prereqs/mauve/mauve.jar https://github.com/adoptium/aqa-triage-data/raw/refs/heads/main/AQAvit/mauve.jar'
 				archiveArtifacts '**/systemtest_prereqs/mauve/mauve.jar'
 				archiveArtifacts '**/systemtest_prereqs/junit/junit.jar'
 				archiveArtifacts '**/systemtest_prereqs/junit/hamcrest-core.jar'
