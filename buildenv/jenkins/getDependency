@@ -29,7 +29,7 @@ def testBuild() {
 			def branch = tokens[1];
 			sh "curl -Os https://raw.githubusercontent.com/${owner}/TKG/${branch}/scripts/getDependencies.pl"
 			sh "perl ./getDependencies.pl -path . -systemTest ${systemTestBool} -task default"
-			archiveArtifacts '**.jar, **.zip, **.txt, **.gz'
+			archiveArtifacts '**/*.jar, **/*.zip, **/*.txt, **/*.gz'
 		} finally {
 			cleanWs()
 		}
