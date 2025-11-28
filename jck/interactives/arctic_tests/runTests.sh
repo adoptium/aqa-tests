@@ -453,7 +453,7 @@ for i in "${active_versions[@]}"; do
                 if [[ $arcticAborted == true ]]; then
                     # Re-start Arctic player as process likely "hung"
                     echo "Re-starting Arctic player after ABORTED testcase playback..."
-                    kill $player_pid 2>/dev/null
+                    kill -9 $player_pid 2>/dev/null
                     startArcticPlayer
                 fi
               fi
