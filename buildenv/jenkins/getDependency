@@ -16,10 +16,6 @@ def testBuild() {
 	}
 	timeout(time: time_limit, unit: 'HOURS') {
 		try {
-			def systemTestBool = "false"
-			if( params.BUILD_TYPE == "systemtest" ){
-				systemTestBool = "true"
-			} 
 			def TKG_OWNER_BRANCH = params.TKG_OWNER_BRANCH ?: "adoptium:master"
 			def tokens = TKG_OWNER_BRANCH.split(':');
 			if (tokens.size() != 2) {
@@ -28,7 +24,7 @@ def testBuild() {
 			def owner = tokens[0];
 			def branch = tokens[1];
 			sh "curl -Os https://raw.githubusercontent.com/${owner}/TKG/${branch}/scripts/getDependencies.pl"
-			sh "perl ./getDependencies.pl -path . -systemTest ${systemTestBool} -task default"
+			sh "perl ./getDependencies.pl -path . -task default"
 			archiveArtifacts '**/*.jar, **/*.zip, **/*.txt, **/*.gz'
 		} finally {
 			cleanWs()
