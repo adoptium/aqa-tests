@@ -142,6 +142,24 @@ setupWindowsEnv() {
     ARCTIC_JDK=$(cygpath -u "c:/openjdk/jdk-21/bin/java")
 }
 
+startArcticPlayer() {
+    echo "Starting player in background with RMI..."
+    nohup $ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
+    player_pid=$!
+    rc=$?
+    if [ $rc -ne 0 ]; then
+       echo "Unable to start Arctic player, rc=$rc"
+       if [[ -n $twm_pid ]]; then
+         kill $twm_pid 2>/dev/null
+       fi
+       exit $rc
+    fi
+
+    # Sleep longer for Arctic RMI to start up...
+    sleep $SLEEP_TIME
+    sleep $SLEEP_TIME
+}
+
 JOPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.attach.allowAttachSelf=true -Dsun.rmi.activation.execPolicy=none -Djdk.xml.maxXMLNameLimit=4000"
 
 # Verify that the contents are present in jck_run
@@ -223,23 +241,10 @@ echo "==========================================================================
 cat player.properties
 echo "==========================================================================="
 
-echo "Starting player in background with RMI..."
-$ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
-rc=$?
-if [ $rc -ne 0 ]; then
-   echo "Unable to start Arctic player, rc=$rc"
-   if [[ -n $twm_pid ]]; then
-     kill $twm_pid 2>/dev/null
-   fi
-   exit $rc
-fi
-
-# Sleep longer for Arctic RMI to start up...
-sleep $SLEEP_TIME
-sleep $SLEEP_TIME
+# Startup Arctic RMI player process
+startArcticPlayer
 
 echo "Java under test: $TEST_JDK_HOME"
-# twm &
 TOP_DIR=$JENKINS_HOME_DIR/jck_run/arctic/$OSNAME/arctic_tests
 echo "TEST_GROUP is $TEST_GROUP, OSNAME is $OSNAME, VERSION is $VERSION, STARTING_SCOPE is $STARTING_SCOPE"
 
@@ -378,6 +383,7 @@ for i in "${active_versions[@]}"; do
                 status=$(echo $result | sed 's#'${ARCTIC_GROUP}/${ARCTIC_TESTCASE}'#TEST #' | tr -s ' '| cut -d' ' -f2) 
                 echo "==>" $status
                 loop_counter=360 # 30 mins
+                arcticAborted=false
                 while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
                 do
                   sleep $SLEEP_TIME
@@ -385,6 +391,7 @@ for i in "${active_versions[@]}"; do
                   if [[ $loop_counter -eq 0 ]]; then
                     echo "Arctic process has timed out. Tidying up processes and failing job."
                     status="ABORTED"
+                    arcticAborted=true
                     rc=1
                   else
                     result=$($ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test list $ARCTIC_GROUP/$ARCTIC_TESTCASE)
@@ -441,6 +448,13 @@ for i in "${active_versions[@]}"; do
                     overallSuccess=false
                 else
                     PASSED_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
+                fi
+
+                if [[ $arcticAborted == true ]]; then
+                    # Re-start Arctic player as process likely "hung"
+                    echo "Re-starting Arctic player after ABORTED testcase playback..."
+                    kill -9 $player_pid 2>/dev/null
+                    startArcticPlayer
                 fi
               fi
             fi
