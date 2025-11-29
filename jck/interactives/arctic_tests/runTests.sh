@@ -144,7 +144,7 @@ setupWindowsEnv() {
 
 startArcticPlayer() {
     echo "Starting player in background with RMI..."
-    $ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p & disown
+    nohup $ARCTIC_JDK -Darctic.scope=$VERSION -Darctic.logLevel=TRACE -jar ${LIB_DIR}/arctic.jar -p &
     player_pid=$!
     rc=$?
     if [ $rc -ne 0 ]; then
