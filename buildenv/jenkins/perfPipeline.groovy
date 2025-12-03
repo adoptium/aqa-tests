@@ -161,11 +161,12 @@ def generateChildJobViaAutoGen(newJobName) {
 }
 
 def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, testType) {
-        def json 
-        def buildId = run.getRawBuild().getNumber()
-        def name = run.getProjectName()
-        def result = run.getCurrentResult()
-        def fname = "${name}_${buildId}.json"
+        node("ci.role.test&&hw.arch.x86&&sw.os.linux") {
+                def json
+                def buildId  = run.getNumber()
+                def name = run.getProjectName()
+                def result = run.getCurrentResult()
+                def fname = "${name}_${buildId}.json"
 
         echo "${name} #${buildId} completed with status ${result}, retrieving console log..."
         writeFile file : 'console.txt', text: run.getRawBuild().getLog() 

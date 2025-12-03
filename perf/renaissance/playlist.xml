@@ -77,6 +77,14 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-db-shootout</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6669</comment>
+				<vendor>eclipse</vendor>
+				<platform>arm_linux</platform>
+				<version>11</version>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)db-shootout.json$(Q) db-shootout; \
 		$(TEST_STATUS)</command>
 		<!-- Issue https://github.com/renaissance-benchmarks/renaissance/issues/210 -->
@@ -256,6 +264,12 @@
 	</test>
 	<test>
 		<testCaseName>renaissance-naive-bayes</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/6701</comment>
+				<platform>.*windows.*</platform>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
 		<levels>

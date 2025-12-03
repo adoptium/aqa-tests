@@ -48,6 +48,7 @@ if (params.BUILD_TYPE == "nightly") {
 @Field Map JOBS = [:]
 
 timestamps {
+    currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
         if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
             def configJson = []
@@ -296,6 +297,16 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                     def downstreamJob = build job: TEST_JOB_NAME, parameters: childParams, propagate: false, wait: true
                     def downstreamJobResult = downstreamJob.getResult()
                     echo "${TEST_JOB_NAME} result is ${downstreamJobResult}"
+                    def buildId = downstreamJob.getNumber()
+                    def childBuildUrl = "${env.JENKINS_URL}job/${TEST_JOB_NAME}/${buildId}"
+                    def badgeUrl = "${childBuildUrl}/badge/icon"
+                    currentBuild.description += """
+                        <p>${TEST_JOB_NAME}/${buildId}:
+                        <a href="${childBuildUrl}">
+                            <img src="${badgeUrl}" />
+                        </a>
+                        </p>
+                    """
                     if (downstreamJobResult == 'SUCCESS' || downstreamJobResult == 'UNSTABLE') {
                         echo "[NODE SHIFT] MOVING INTO CONTROLLER NODE..."
                         node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {

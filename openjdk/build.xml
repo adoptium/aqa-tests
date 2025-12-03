@@ -151,12 +151,20 @@
 							</then>
 							<else>
 								<if>
-									<contains string="${SPEC}" substring="zos"/>
+									<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="Valhalla"/>
 									<then>
-										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos"/>
+										<property name="jdkName" value="openj9-openjdk-jdk.valuetypes"/>
 									</then>
 									<else>
-										<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}"/>
+										<if>
+											<contains string="${SPEC}" substring="zos"/>
+											<then>
+												<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}-zos"/>
+											</then>
+											<else>
+												<property name="jdkName" value="openj9-openjdk-jdk${JDK_VERSION}"/>
+											</else>
+										</if>
 									</else>
 								</if>
 							</else>
@@ -242,9 +250,31 @@
 	</target>
 
 	<target name="dist" depends="getJtreg, getOpenjdk" description="generate the distribution">
-		<copy todir="${DEST}">
-			<fileset dir="${src}" includes="*.xml,excludes/ProblemList*.txt,excludes/alpine/ProblemList*.txt,*.mk"/>
-		</copy>
+		<if>
+			<matches string="${JDK_IMPL}" pattern="openj9|ibm"/>
+			<then>
+				<if>
+					<equals arg1="${env.ORIGIN_JDK_VERSION}" arg2="Valhalla"/>
+					<then>
+						<copy todir="${DEST}">
+							<!-- When updating the problem list version also update
+							 PROBLEM_LIST_FILE for OpenJ9 in openjdk.mk -->
+							<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk26-openj9.txt,**/ProblemList_openjdkvalhalla-openj9.txt,*.mk"/>
+						</copy>
+					</then>
+					<else>
+						<copy todir="${DEST}">
+							<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk${env.JDK_VERSION}*.txt,*.mk"/>
+						</copy>
+					</else>
+				</if>
+			</then>
+			<else>
+				<copy todir="${DEST}">
+					<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk${env.JDK_VERSION}*.txt,*.mk"/>
+				</copy>
+			</else>
+		</if>
 	</target>
 
 	<target name="build">
