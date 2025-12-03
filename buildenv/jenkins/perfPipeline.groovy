@@ -3,7 +3,7 @@
 def testParams = []
 def baselineParams = []
 boolean RUN_BASELINE = (params.RUN_BASELINE != null) ? params.RUN_BASELINE.toBoolean() : true
-int PERF_ITERATIONS = params.PERF_ITERATIONS.toInteger()
+int PERF_ITERATIONS = params.PERF_ITERATIONS ? params.PERF_ITERATIONS.toInteger() : 4
 boolean PROCESS_METRICS = (params.PROCESS_METRICS != null) ? params.PROCESS_METRICS.toBoolean() : false 
 boolean EXIT_EARLY = (params.EXIT_EARLY != null) ? params.EXIT_EARLY.toBoolean() : false 
 
