@@ -185,7 +185,7 @@ def aggregateLogs(run, testNames, testList, templateName, aggregateMetrics, test
                         def value = runMetrics[test][metric.key]["value"]
                         if (value != null) metric.value[testType]["values"] << value
                 }
-        } 
+        } }
 }
 
 def checkRegressions(aggregateMetrics, testList) { 
