@@ -30,7 +30,7 @@ setup() {
 
 clone()	
 {
-	cd "$WORKDIR" || exit1
+	cd "$WORKDIR" || exit 1
 	version=$1
 	repo=$2
 	if [ -d "$WORKDIR/$version" ] ; then 
@@ -79,7 +79,8 @@ compareGroups()
 
 compareNewTestsInSubGroups() {
 	subGroups=("vm.verifier.instructions" "lang.CLSS" "lang.EXPR" "lang.CONV" "lang.INTF" "lang.LMBD" "lang.DASG" "lang.NAME" "lang.TYPE" "lang.ANNOT" "lang.STMT")
-	touch "$WORKDIR/logs/NewTestsInSubGroups.txt"
+	rm -f "$WORKDIR/logs/NewTestsInSubGroups.txt"
+	: > "$WORKDIR/logs/NewTestsInSubGroups.txt"
 	for group in "${subGroups[@]}"; do
 		grep "${group}" "${WORKDIR}/${VERSION2}/JCK-compiler-${VERSION_VALUE2}/NewTests.txt" | sort | uniq >> "$WORKDIR/logs/NewTestsInSubGroups.txt"
 	done
@@ -87,7 +88,8 @@ compareNewTestsInSubGroups() {
 	if [ ! -s "$WORKDIR/logs/NewTestsInSubGroups.txt" ]; then
 		echo " No Subdir Group changes."
 	else
-		touch "$WORKDIR/logs/DiffsInSubGroups.txt"
+		rm -f "$WORKDIR/logs/DiffsInSubGroups.txt"
+		: > "$WORKDIR/logs/DiffsInSubGroups.txt"
 		while IFS= read -r line; do
 			subdir=$(echo "$line" | tr '.' '/' | sed 's/[[:blank:]]//g')
 			component="compiler"
