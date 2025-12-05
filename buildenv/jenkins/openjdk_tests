@@ -410,7 +410,7 @@ timestamps{
                                 // We have a Cloud provider, so augment ci.role.test with ci.agent.dynamic
                                 // Note: if ci.role.test is not present then a specific LABEL has been specified by the user
                                 //       probably a specific node etc, so do not augment ci.agent.dynamic as user is being specific..
-                                if (LABEL.contains("ci.role.test&&") {
+                                if (LABEL.contains("ci.role.test&&")) {
                                     LABEL = LABEL.minus("ci.role.test&&")
                                     // Combine Static & Dynamic selection
                                     LABEL += '&&(ci.role.test||ci.agent.dynamic)'
