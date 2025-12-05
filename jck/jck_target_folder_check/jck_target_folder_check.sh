@@ -55,14 +55,15 @@ genTargetList() {
 }
 
 genTestFolderList() {
-	if [ "$VERSION" -eq 8 ] ; then 
+		if [ "$VERSION" -eq 8 ] ; then 
 		ver="$VERSION"c
 	elif [ "$VERSION" -eq 11 ] ; then 
+		ver="$VERSION"a
+	elif [ "$VERSION" -eq 17 ] ; then 
 		ver="$VERSION"a
 	else 
 		ver="$VERSION"
 	fi 
-
 	# Generate the list of folders - two step deep, so that they can be used for scanning later 
 	cd $JCK_ROOT/*-runtime-$ver/tests
 	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/runtime-dirs.txt
@@ -70,7 +71,7 @@ genTestFolderList() {
 	cd $JCK_ROOT/*-compiler-$ver/tests
 	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/compiler-dirs.txt
 
-	if [ $ver == "8c" ] || [ $ver == "11a" ]; then 
+	if [ "$ver" == "8c" ] || [ "$ver" == "11a" ] || [ "$ver" == "17a" ]; then 
 		cd $JCK_ROOT/*-devtools-$ver/tests
 		find . -maxdepth 2 -mindepth 2 -type d > $outputdir/devtools-dirs.txt
 	fi
