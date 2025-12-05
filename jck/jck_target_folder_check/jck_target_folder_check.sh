@@ -55,36 +55,26 @@ genTargetList() {
 }
 
 genTestFolderList() {
-echo "Generating test folder lists dynamically..."
-	mkdir -p "$outputdir"
+	if [ "$VERSION" -eq 8 ] ; then 
+		ver="$VERSION"c
+	elif [ "$VERSION" -eq 11 ] ; then 
+		ver="$VERSION"a
+	else 
+		ver="$VERSION"
+	fi 
 
-	# Clean old outputs
-	rm -f "$outputdir/runtime-dirs.txt"
-	rm -f "$outputdir/compiler-dirs.txt"
-	rm -f "$outputdir/devtools-dirs.txt"
+	# Generate the list of folders - two step deep, so that they can be used for scanning later 
+	cd $JCK_ROOT/*-runtime-$ver/tests
+	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/runtime-dirs.txt
+	
+	cd $JCK_ROOT/*-compiler-$ver/tests
+	find . -maxdepth 2 -mindepth 2 -type d > $outputdir/compiler-dirs.txt
 
-	# -------- Runtime --------
-	find "$JCK_ROOT" -type d -path "*/runtime*/tests" | while read runtimeDir; do
-		echo "Scanning runtime dir: $runtimeDir"
-		cd "$runtimeDir" || continue
-		find . -maxdepth 2 -mindepth 2 -type d >> "$outputdir/runtime-dirs.txt"
-	done
-
-	# -------- Compiler --------
-	find "$JCK_ROOT" -type d -path "*/compiler*/tests" | while read compilerDir; do
-		echo "Scanning compiler dir: $compilerDir"
-		cd "$compilerDir" || continue
-		find . -maxdepth 2 -mindepth 2 -type d >> "$outputdir/compilerer-dirs.txt"
-	done
-
-	# -------- Devtools (no version gating anymore) --------
-	find "$JCK_ROOT" -type d -path "*/devtools*/tests" | while read devtoolsDir; do
-		echo "Scanning devtools dir: $devtoolsDir"
-		cd "$devtoolsDir" || continue
-		find . -maxdepth 2 -mindepth 2 -type d >> "$outputdir/devtools-dirs.txt"
-	done
-
-	echo "Test folder list generation complete."
+	if [ $ver == "8c" ] || [ $ver == "11a" ]; then 
+		cd $JCK_ROOT/*-devtools-$ver/tests
+		find . -maxdepth 2 -mindepth 2 -type d > $outputdir/devtools-dirs.txt
+	fi
+}
 
 crossCheckTestFoldersIn() {
 	testType=$1
