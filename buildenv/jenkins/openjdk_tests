@@ -380,22 +380,19 @@ timestamps{
             }
 
             println "SPEC: ${SPEC}"
-            println "LABEL: ${LABEL}"
+            println "Specified LABEL: ${LABEL}"
 
             stage('Queue') {
-                if (!areNodesWithLabelOnline(LABEL) && !dockerAgents) {
-                    int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
-                    timeout(ACTIVE_NODE_TIMEOUT) {
-                        // If there is available node before timeout
-                        node(LABEL) {
-                            echo "find the node with label as ${env.NODE_NAME}"
-                        }
-                    }
-                } else {
-                    // If CLOUD_PROVIDER is set, use the supported virtual agent.
-                    dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
-                    println "dynamicAgents: ${dynamicAgents}"
-                    if ((CLOUD_PROVIDER != null && CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
+                // Queue & provisioning logic:
+                //  - Construct the correct required "Provisioning LABEL" based on static (ci.role.test) or
+                //    dynamic (ci.agent.dynamic) requirement from the users params and the "Specified LABEL"
+                //  - Then do a "online" check for the resulting "Provisioning LABEL" in case ALL nodes are "Down/Disconnected"
+                //  - Then do the node("Provisioning LABEL") provision request to Jenkins
+
+                // If CLOUD_PROVIDER is set, use the supported virtual agent.
+                dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
+                println "dynamicAgents: ${dynamicAgents}"
+                if ((CLOUD_PROVIDER != null && CLOUD_PROVIDER in dynamicAgents) || dockerAgents) {
                         // DynamicAgents and DockerAgents shouldn't contain the same label
                         if (CLOUD_PROVIDER != null && CLOUD_PROVIDER in dynamicAgents) {
                             if (CLOUD_PROVIDER == "EBC") {
@@ -416,9 +413,17 @@ timestamps{
                                 }
 
                             } else {
-                                LABEL = LABEL.minus("ci.role.test&&")
-                                LABEL += '&&ci.agent.dynamic'
-                                println "Starting dynamic vm, nodeLabel: '${LABEL}', dynamicLabel: '${CLOUD_PROVIDER}'"
+                                // We have a Cloud provider, so augment ci.role.test with ci.agent.dynamic
+                                // Note: if ci.role.test is not present then a specific LABEL has been specified by the user
+                                //       probably a specific node etc, so do not augment ci.agent.dynamic as user is being specific..
+                                if (LABEL.contains("ci.role.test&&")) {
+                                    LABEL = LABEL.minus("ci.role.test&&")
+                                    // Combine Static & Dynamic selection
+                                    LABEL += '&&(ci.role.test||ci.agent.dynamic)'
+                                    println "Added dynamic agent, nodeLabel: '${LABEL}', dynamicLabel: '${CLOUD_PROVIDER}'"
+                                } else {
+                                    println "User specific non ci.role.test LABEL specified so not adding '${CLOUD_PROVIDER}' dynamic agent, specified LABEL: '${LABEL}'"
+                                }
                             }
                         } else if (CLOUD_PROVIDER != null && CLOUD_PROVIDER in dockerAgents) {
                             dockerAgentLabel = CLOUD_PROVIDER
@@ -434,6 +439,23 @@ timestamps{
                                 }
                             }
                             println "Starting run test on docker node, nodeLabel: '${LABEL}', dockerAgentLabel: '${dockerAgentLabel}'"
+                        }
+                }
+
+                println "Provisioning LABEL: ${LABEL}"
+
+                // Now check if the provisioning LABEL nodes are all "OFFLINE" ?
+                //   This is to prevent a permanent hang through incorrect label, or the nodes are simply all down!
+                // Wait up to ACTIVE_NODE_TIMEOUT for one to come online
+                // They could come online either through:
+                //   - Admin brings a "static" node online
+                //   - "Cloud" provider dynamic "plugin" provisions a node
+                if (!areNodesWithLabelOnline(LABEL)) {
+                    int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
+                    timeout(ACTIVE_NODE_TIMEOUT) {
+                        // If there is available node before timeout
+                        node(LABEL) {
+                            echo "Found a node with label (${LABEL}) as : ${env.NODE_NAME}"
                         }
                     }
                 }
@@ -550,10 +572,10 @@ def runTest() {
             sh "cat ${javaSecurityFile}"
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-        if (LABEL.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
-            //Set dockerimage for azure agent. Fyre has stencil to setup the right environment
-            docker.image('adoptopenjdk/centos7_build_image').pull()
-            docker.image('adoptopenjdk/centos7_build_image').inside {
+        if (NODE_LABELS.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
+            // Set dockerimage for azure agent. Fyre has stencil to setup the right environment
+            docker.image('ghcr.io/adoptium/test-containers:ubi10').pull()
+            docker.image('ghcr.io/adoptium/test-containers:ubi10').inside {
                 jenkinsfile.testBuild()
             }
         } else if (dockerAgentLabel.equals('default') && LABEL.contains('&&sw.tool.docker') && SPEC.equals('linux_riscv64')) {
