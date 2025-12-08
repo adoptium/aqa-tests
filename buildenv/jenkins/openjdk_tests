@@ -383,6 +383,12 @@ timestamps{
             println "Specified LABEL: ${LABEL}"
 
             stage('Queue') {
+                // Queue & provisioning logic:
+                //  - Construct the correct required "Provisioning LABEL" based on static (ci.role.test) or
+                //    dynamic (ci.agent.dynamic) requirement from the users params and the "Specified LABEL"
+                //  - Then do a "online" check for the resulting "Provisioning LABEL" in case ALL nodes are "Down/Disconnected"
+                //  - Then do the node("Provisioning LABEL") provision request to Jenkins
+
                 // If CLOUD_PROVIDER is set, use the supported virtual agent.
                 dynamicAgents = PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] ? PLATFORM_MAP[params.PLATFORM]["DynamicAgents"] : []
                 println "dynamicAgents: ${dynamicAgents}"
