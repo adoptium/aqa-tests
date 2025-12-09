@@ -57,6 +57,10 @@ genTargetList() {
 genTestFolderList() {
 	if [ "$VERSION" -eq 8 ] ; then 
 		ver="$VERSION"c
+	elif [ "$VERSION" -eq 11 ] ; then 
+		ver="$VERSION"a
+	elif [ "$VERSION" -eq 17 ] ; then 
+		ver="$VERSION"a
 	else 
 		ver="$VERSION"
 	fi 
