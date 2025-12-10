@@ -817,7 +817,7 @@ def runTest( ) {
 				// Detect if Xvfb is on the machine, and if not use the wayland startup code (Initially for EL10)
 				if ( sh(script:"which Xvfb 2>&1", returnStatus:true) != 0 ) {
 					// XDG_RUNTIME_DIR is limited to 108 chars, so create a short tmp symlink
-					def tmp_wayland = sh(script: 'wayland-$(id -u)', returnStdout: true).trim()
+					def tmp_wayland = sh(script: 'echo wayland-$(id -u)', returnStdout: true).trim()
 					echo "Creating temporary wayland path and symlink /tmp/${tmp_wayland}"
 					sh "rm -rf /tmp/${tmp_wayland} && mkdir -pm 0700 /tmp/${tmp_wayland}"
 
