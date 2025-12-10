@@ -816,8 +816,17 @@ def runTest( ) {
 			if (env.SPEC.contains('linux') && (BUILD_LIST != "external")) {
 				// Detect if Xvfb is on the machine, and if not use the wayland startup code (Initially for EL10)
 				if ( sh(script:"which Xvfb 2>&1", returnStatus:true) != 0 ) {
-					env.XDG_RUNTIME_DIR = env.WORKSPACE + "/.xdg-runtime"
-					sh "mkdir -pm 0700 " + env.XDG_RUNTIME_DIR
+					// XDG_RUNTIME_DIR is limited to 108 chars, so create a short tmp symlink
+					def tmp_wayland = sh(script: 'echo wayland-$(id -u)', returnStdout: true).trim()
+					echo "Creating temporary wayland path and symlink /tmp/${tmp_wayland}"
+					sh "rm -rf /tmp/${tmp_wayland} && mkdir -pm 0700 /tmp/${tmp_wayland}"
+
+					sh "mkdir -pm 0700 " + env.WORKSPACE + "/.xdg-runtime"
+
+					// symlink tmp XDG path to workspace path
+					env.XDG_RUNTIME_DIR = "/tmp/${tmp_wayland}"
+					sh "ln -sfn " + env.XDG_RUNTIME_DIR + " " + env.WORKSPACE + "/.xdg-runtime"
+
 					sh "mkdir -p -m 1777 /tmp/.X11-unix"
 					sh "weston --no-config --socket=wayland-vfb --backend=headless-backend.so --xwayland &"
 					env.DISPLAY = ":0"
