@@ -376,7 +376,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
                                                                        a list of tests: testList TESTLIST=jit_jitt,jit_recognizedMethod_1,testSCCMLTests2_1<br/>
                                                                        Note: please do not use level, group or type (i.e., functional, sanity, etc) in the TESTLIST<br/>''')
 							stringParam('CUSTOM_TARGET', "",
-								'''Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute (typically ending in .java or .sh)<br>
+								'''Only used when the custom target is specified in TARGET , e.g. jdk_custom, langtools_custom, system_custom, etc., CUSTOM_TARGET=path to the test class to execute (typically ending in .java, .sh, or .html)<br>
 								Example 1:<br>
 								TARGET=system_custom<br>
 								CUSTOM_TARGET=-test=MathLoadTest -test-args="workload=math,timeLimit=5m"<br>
@@ -384,6 +384,15 @@ ARCH_OS_LIST.each { ARCH_OS ->
 								TARGET=jdk_custom (support multiple test cases separated by space, hotspot_custom works same<br>
 								CUSTOM_TARGET=test/jdk/java/math/BigInteger/LargeValueExceptions.java java/math/BigInteger/BigIntegerTest.java<br>
 								Example 3:<br>
+								TARGET=jckcompiler_custom<br>
+								CUSTOM_TARGET=api/javax_lang/xxxx/yyyy/zzzz/someTestCase.html<br>
+								Example 4:<br>
+								TARGET=jckinteractivesawt_custom<br>
+								CUSTOM_TARGET=api/java_awt/interactive/someTestCase.html<br>
+								Example 5:<br>
+								TARGET=jckinteractivesswing_custom<br>
+								CUSTOM_TARGET=api/javax_swing/interactive/someTestCase.html<br>
+								Example 6:<br>
 								TARGET=jckruntime_custom<br>
 								CUSTOM_TARGET=lang/INFR/....html<br>''')
 							parameterSeparatorDefinition {
