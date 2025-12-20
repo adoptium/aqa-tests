@@ -27,7 +27,7 @@ By default, Eclipse Temurin JDK of identical version as your JDK is used. You ca
 ## Running External tests locally
 To run any AQA tests locally, you follow the same pattern:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/doc/Prerequisites.md).  For external tests, you do need Docker or Podman installed.
+0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/docs/pages/Prerequisites.md).  For external tests, you do need Docker or Podman installed.
 
 1. Download/unpack the SDK that you want to test to your test machine
 1. `export TEST_JDK_HOME=</pathToWhereYouInstalledSDK>`
@@ -40,7 +40,7 @@ To run any AQA tests locally, you follow the same pattern:
 1. `make _jacoco_test`   (When you defined BUILD_LIST to point to a directory in [aqa-tests/external](https://github.com/adoptium/aqa-tests/tree/master/external), then this is a testCaseName from the playlist.xml file within the directory you chose)
 
 
-When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory.  This is unadvisable!  Limit what you compile and run, BUILD_LIST=external/`<someSubDirectory>`, and TARGET=`<testCaseNameFromSubdirPlaylist>`
+When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/docs/pages/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory.  This is unadvisable!  Limit what you compile and run, BUILD_LIST=external/`<someSubDirectory>`, and TARGET=`<testCaseNameFromSubdirPlaylist>`
 
 These tests run regularly and results can be found in [TRSS Third Party Application view](https://trss.adoptium.net/ThirdPartyAppView).
 
@@ -64,7 +64,7 @@ Our next steps to improve and expand this set of external tests is divided into 
 
 ### Triage Rules
 There are 4 common triage scenarios, with associated appropriate actions to take:
-![3rd Party App Test Triage Scenarios](../doc/diagrams/appTestTriageScenarios.png)
+![3rd Party App Test Triage Scenarios](../docs/diagrams/appTestTriageScenarios.png)
 
 ### How to Add New Tests
 - Learn how to run the application tests that you intend to automate in the build manually first, and find out any special dependencies the application testing may have.

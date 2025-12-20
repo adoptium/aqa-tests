@@ -21,7 +21,7 @@ Payloads are specified within each workload, each having a size, a finite lifesp
 
 Payloads are grouped into payload sets, each set having a start time, an end time and a data rate. The data rate is divided among any directly nested payloads according to their proportion fields and is inherited by any subsets. Subsets may override any parameters specified in parent sets. Payloads may inherit certain parameters from their parent set including their type.
 
-![Sessions workload design](doc/diagrams/Fig1_SyntheticWorkloadDiagram.png)
+![Sessions workload design](docs/diagrams/Fig1_SyntheticWorkloadDiagram.png)
 ##### *Figure 1: A simplified overview of the execution of a Sessions workload configuration
 
 
@@ -291,7 +291,7 @@ This application is designed to be highly salable, specifically to support massi
 The caching workload is designed to achieve a high rate transactions on the caches by a very large number of threads. It also is capable of logging real-time instantaneous throughput down to a granularity of 1ms.
 
 
-![Caching workload design](doc/diagrams/Fig2_SyntheticWorkloadCachingDesign.png)
+![Caching workload design](docs/diagrams/Fig2_SyntheticWorkloadCachingDesign.png)
 #### *Figure 2: A simplified overview of the Caching workload configuration
 
 
