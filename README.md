@@ -38,7 +38,7 @@ See the License for the specific language governing permissions and
 
 For nightly and release builds, there are test jobs running as part of the Adoptium continuous delivery pipelines.  There is a [blog post and brief presentation](https://blog.adoptopenjdk.net/2017/12/testing-java-help-count-ways) that explains what testing we run and how they fit into the overall delivery pipeline.  As the world of testing at Adoptium is evolving and improving quickly, some documentation may fall behind the march of progress.  Please let us know and help us keep it up-to-date, and ask questions at the [Adoptium testing Slack channel](https://adoptium.slack.com/archives/C5219G28G)!
 
-![CI pipeline view](doc/diagrams/ciPipeline.jpg)
+![CI pipeline view](docs/diagrams/ciPipeline.jpg)
 
 #### Test 'Inventory'
 
@@ -131,7 +131,7 @@ TCK tests (under the OpenJDK Community TCK License Agreement), in compliance wit
 --- 
 
 #### Guide to Running the Tests Yourself
-For more details on how to run the same tests that we run at Adoptium on your laptop or in your build farm, please consult our [User Guide](doc/userGuide.md) (work in progress).
+For more details on how to run the same tests that we run at Adoptium on your laptop or in your build farm, please consult our [User Guide](docs/pages/userGuide.md) (work in progress).
 
 #### What is our motivation?
 We want:
@@ -156,6 +156,6 @@ The test infrastructure in this repository allows us to lightly yoke a great var
 You can:
 - browse through the [aqa-tests issues list](https://github.com/adoptium/aqa-tests/issues), select one, add a comment to claim it and ask questions
 - browse through the [aqa-systemtest issues](https://github.com/adoptium/aqa-systemtest/issues) or [stf issues](https://github.com/adoptium/stf/issues), claim one with a comment and dig right in
-- triage live test jobs at [ci.adoptium.net](https://ci.adoptium.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/doc/Triage.md) for guidance
+- triage live test jobs at [ci.adoptium.net](https://ci.adoptium.net), check out the [triage doc](https://github.com/adoptium/aqa-tests/blob/master/docs/pages/Triage.md) for guidance
   - if you would like to regularly triage test jobs, you can optionally 'sign up for duty' via the [triage rotas](https://github.com/adoptium/aqa-tests/wiki/AdoptOpenJDK-Test-Triage-Rotas)
 - ask questions in the [#testing channel](https://adoptium.slack.com/archives/C5219G28G) 

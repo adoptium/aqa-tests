@@ -6,7 +6,7 @@ Wycheproof tests are a part of the external third-party application tests that h
 
 To run any AQA tests locally, you follow the same pattern:
 
-0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/doc/Prerequisites.md).  For external tests, you do need Docker installed.
+0. Ensure your test machine is set up with [test prereqs](https://github.com/adoptium/aqa-tests/blob/master/docs/pages/Prerequisites.md).  For external tests, you do need Docker installed.
 
 1. Download/unpack the SDK that you want to test to your test machine.
 
@@ -26,6 +26,6 @@ To run any AQA tests locally, you follow the same pattern:
 
 9. `make wycheproof_test`   (When you defined BUILD_LIST to point to a directory in [aqa-tests/external](https://github.com/adoptium/aqa-tests/tree/master/external), then this is a testCaseName from the playlist.xml file within the directory you chose)
 
-When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/doc/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory. This is unadvisable! Limit what you compile and run, BUILD_LIST=external/`wycheproof`, and TARGET=`testCaseNameFromPlaylistUnderDirwycheproof`
+When [running these from the command-line](https://github.com/adoptium/aqa-tests/blob/master/docs/pages/userGuide.md#local-testing-via-make-targets-on-the-commandline), these tests are grouped under a make target called 'external', so 'make external' would run the entire set of tests found in the aqa-tests/external directory. This is unadvisable! Limit what you compile and run, BUILD_LIST=external/`wycheproof`, and TARGET=`testCaseNameFromPlaylistUnderDirwycheproof`
 
 These tests run regularly and results can be found in [TRSS Third Party Application view](https://trss.adoptium.net/ThirdPartyAppView).

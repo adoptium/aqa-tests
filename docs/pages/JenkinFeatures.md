@@ -34,7 +34,7 @@ Repositories where we pull test material from. Unless you are testing test code,
 
 Items marked with a (*) will be ignored if USE_TESTENV_PROPERTIES is set to true.
 
-## Non-AQA Test Repositories
+### Non-AQA Test Repositories
 Additional test repositories that can be overlaid onto existing AQA test material for extra testing.
 This is used for laying down any test material, particularly useful for running private tests that cannot be open-sourced.  Examples of how these parameters are used can be seen by looking at the smoke tests in the temurin-build repository and some MSI tests in the installer repository.  TKG can discover any test material, as long as you tell it where to look (through setting these parameters), and that these repositories contain build instructions (via build.xml ant scripts) and execution instructions (via playlist.xml files).
 
@@ -80,7 +80,7 @@ Provide parameters for which test material to build and which test targets to ru
 | Parameter          | Description                                                                                                           |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------|
 | `BUILD_LIST`       | Required. Specifies directories to be compiled, e.g., `openjdk`, `system`, `perf`, `external`, `functional`.         |
-| `DYNAMIC_COMPILE`  | Optional. Boolean. TKG identifies dependencies and reduces compiled test material.                                 |
+| `DYNAMIC_COMPILE`  | Optional. Boolean. TKG identifies dependencies and reduces compiled test material. When compiling the entire `functional` folder with `JDK_IMPL=hotspot`, set `DYNAMIC_COMPILE=true`; otherwise TKG may detect and try to compile OpenJ9-specific test material, which can cause compile failures on HotSpot. |
 | `TARGET`           | Required. Specifies the test target. Cannot use top-level targets like `sanity.openjdk`, `extended.system`.        |
 |                    | Test targets are defined in `playlist.xml` files as `testCaseName` tags, like `jdk_math` or [jdk_custom](https://github.com/adoptium/aqa-tests/blob/master/openjdk/playlist.xml#L18). |
 | `CUSTOM_TARGET`    | Required when `TARGET=jdk_custom|hotspot_custom|langtools_custom`. Specifies a specific test class, directory, or space-separated list of test classes. For instance, `test/jdk/java/math/BigInteger/BigIntegerTest.java`. |
