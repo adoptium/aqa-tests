@@ -23,9 +23,23 @@ OUTPUT=output.txt
 
 . ${BASE}/check_env_unix.sh
 CHARMAP=${FULLLANG}
-SOURCE="${CHARMAP}.txt"
+
+# Get Java major version
+FULL_VERSION=$(java -version 2>&1 | grep 'version' | cut -d '"' -f2)
+JAVA_VERSION=${FULL_VERSION%%.*}
+
+#_22 file is only applicable for taiwanese in AIX and Linux else it should fall back to default
+if { [ "$CHARMAP" = "Linux_zh_TW.UTF-8" ] || [ "$CHARMAP" = "AIX_ZH_TW.UTF-8" ]; } && [ "$JAVA_VERSION" -ge 22 ]; then
+    SOURCE="${CHARMAP}_22.txt"
+else
+    SOURCE="${CHARMAP}.txt"
+fi
+
+# Create the expected file name
+EXP_FILE=expected_${SOURCE}
+
 echo "invoking FormatterTest2" > ${OUTPUT}
 ${JAVA_BIN}/java FormatterTest2 abc${TEST_STRING} >> ${OUTPUT}
-diff ${BASE}/expected_${SOURCE} ${OUTPUT} > /dev/null 2>&1
+diff ${BASE}/${EXP_FILE} ${OUTPUT} > /dev/null 2>&1
 RESULT=$?
 exit ${RESULT}
