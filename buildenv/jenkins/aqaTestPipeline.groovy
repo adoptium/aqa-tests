@@ -162,7 +162,24 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
             } else {
                 def suffix = ""
                 if (jobTestFlag) {
-                    suffix = "_" + jobTestFlag.toLowerCase().trim()
+                    // Use abbreviated FIPS suffixes in job names to keep naming consistent
+                    // across platforms while still passing the original jobTestFlag unchanged
+                    // to the tests via the TEST_FLAG child parameter.
+                    if (jobTestFlag.contains("FIPS")) {
+                        if (jobTestFlag == "FIPS140_2") {
+                            suffix = "_f2"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced") {
+                            suffix = "_f3_strong"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJCEPlusFIPS.FIPS140-3") {
+                            suffix = "_f3_strict"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJcePlusFIPS") {
+                            suffix = "_f3_weak"
+                        } else {
+                            suffix = "_" + jobTestFlag.toLowerCase().trim()
+                        }
+                    } else {
+                        suffix = "_" + jobTestFlag.toLowerCase().trim()
+                    }
                 }
                 TEST_JOB_NAME = "Test_openjdk${jobJdkVersion}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
             }
@@ -374,4 +391,3 @@ def remoteTriggerTemurinJCK () {
     echo 'Remote job ' + params.PIPELINE_DISPLAY_NAME + ' Status: ' + handle.getBuildResult().toString()
     currentBuild.result = handle.getBuildResult().toString()    
 }
-
