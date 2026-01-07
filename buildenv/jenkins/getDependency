@@ -23,8 +23,8 @@ def testBuild() {
 			}
 			def owner = tokens[0];
 			def branch = tokens[1];
-			sh "curl -Os https://raw.githubusercontent.com/${owner}/TKG/${branch}/scripts/getDependencies.pl"
-			sh "perl ./getDependencies.pl -path . -task default"
+			sh "curl -OsL https://raw.githubusercontent.com/${owner}/TKG/${branch}/scripts/getDependencies.pl"
+			sh "perl ./getDependencies.pl -path . -task default -curlOpts '-L'"
 			archiveArtifacts '**/*.jar, **/*.zip, **/*.txt, **/*.gz'
 		} finally {
 			cleanWs()
