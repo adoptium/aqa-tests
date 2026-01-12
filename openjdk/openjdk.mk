@@ -189,6 +189,10 @@ ifneq ($(JDK_VERSION),8)
 		# else if JDK_IMPL is openj9 or ibm
 		else ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+			# z/OS dynamic loader ignores -nativepath and uses LIBPATH
+			ifeq ($(OS), OS/390)
+			  export LIBPATH := $(TESTIMAGE_PATH)$(D)openj9:$(LIBPATH)
+			endif
 		endif
 	endif
 endif
