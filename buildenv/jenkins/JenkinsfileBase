@@ -133,11 +133,11 @@ def setupEnv() {
 		// to take personal repo and branch.
 		// Therefore, set LIGHT_WEIGHT_CHECKOUTto false and GENERATE_JOBS to true.
 		// This is a known Jenkins issue: https://issues.jenkins.io/browse/JENKINS-42971
-		if (!env.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
-			env.LIGHT_WEIGHT_CHECKOUT = false
-			env.GENERATE_JOBS = true
-			echo "ADOPTOPENJDK_REPO is set to personal repo in Grinder. Auto-set LIGHT_WEIGHT_CHECKOUT: ${env.LIGHT_WEIGHT_CHECKOUT} and GENERATE_JOBS: ${env.GENERATE_JOBS}"
-		}
+		#if (!env.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+		#	env.LIGHT_WEIGHT_CHECKOUT = false
+		#	env.GENERATE_JOBS = true
+		#	echo "ADOPTOPENJDK_REPO is set to personal repo in Grinder. Auto-set LIGHT_WEIGHT_CHECKOUT: ${env.LIGHT_WEIGHT_CHECKOUT} and GENERATE_JOBS: ${env.GENERATE_JOBS}"
+		#}
 	} else {
 		env.TAP_NAME = "${JOB_NAME}.tap"
 	}
