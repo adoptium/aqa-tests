@@ -179,19 +179,11 @@ if [[ $TEST_GROUP =~ "custom" ]]; then
         exit 0
     fi
 
-    if [[ $TEST_GROUP =~ 'java_awt' ]]; then
-        ARCTIC_GROUP="api/java_awt"
-    elif [[ $TEST_GROUP =~ 'javax_swing' ]]; then    
-        ARCTIC_GROUP="api/javax_swing"
-    else
-        echo "ERROR: custom Arctic target $TEST_GROUP, is not a known group (api/java_awt, api/javax_swing)"
-        exit 1
-    fi
-    # Strip ARCTIC_GROUP/ from front
-    # TODO moving to next
-    echo "Running custom target: $ARCTIC_GROUP $TEST_DIR_OR_CASES"
+    ARCTIC_GROUPS="api/java_awt api/javax_swing"
+    echo "Running custom target: '$ARCTIC_GROUPS' $TEST_DIR_OR_CASES"
 else
-    ARCTIC_GROUP="${TEST_DIR_OR_CASES}"
+    # Not custom, so TEST_DIR_OR_CASES will be just the group name
+    ARCTIC_GROUPS="${TEST_DIR_OR_CASES}"
 fi
 
 JCK_MATERIAL="$JENKINS_HOME_DIR/jck_root/JCK${VERSION}-unzipped/JCK-runtime-${JCK_VERSION_NUMBER}"
@@ -249,7 +241,9 @@ FOUND_TESTS=()
 PASSED_TESTS=()
 FAILED_TESTS=()
 
-for i in "${active_versions[@]}"; do
+# Iterate over the selected ARCTIC_GROUPS
+for ARCTIC_GROUP in $ARCTIC_GROUPS; do
+ for i in "${active_versions[@]}"; do
   if [[ "$i" == "default" ]] || [[ "$i" -le "${VERSION}" ]]; then
     START_DIR="${TOP_DIR}/${i}/${ARCTIC_GROUP}"
     # Remove any double slashes
@@ -296,13 +290,13 @@ for i in "${active_versions[@]}"; do
           FOUND=false
           for test in "${FOUND_TESTS[@]}"
           do
-            if [[ "$test" == "$ARCTIC_TESTCASE" ]]; then
+            if [[ "$test" == "${ARCTIC_GROUP}/${ARCTIC_TESTCASE}" ]]; then
               FOUND=true
             fi
           done
 
           if [[ $FOUND == false ]]; then
-            FOUND_TESTS+=("${ARCTIC_TESTCASE}")
+            FOUND_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
 
             # Get class name from JCK .html
             TEST_CLASS=$(grep "javasoft.sqe.tests" ${HTML_FILE} | head -1 | sed -e 's/ //g' -e 's/<[^>]*>//g')
@@ -329,8 +323,8 @@ for i in "${active_versions[@]}"; do
             fi
             echo "EXECUTING: ${TEST_CMDLINE}"
 
-            # Custom check    $TEST_GROUP =~ 'java_awt'
-            if [[ $TEST_GROUP =~ 'custom' ]] && [[ "${TEST_DIR_OR_CASES}" != *"${ARCTIC_TESTCASE}"* ]]; then
+            # Custom check
+            if [[ $TEST_GROUP =~ 'custom' ]] && [[ "${TEST_DIR_OR_CASES}" != *"${ARCTIC_GROUP}/${ARCTIC_TESTCASE}"* ]]; then
               test_pid=-1
               skipped=true
               echo "Skipping: $ARCTIC_GROUP $ARCTIC_TESTCASE"
@@ -450,6 +444,7 @@ for i in "${active_versions[@]}"; do
       fi
     done
   fi
+ done
 done
 
 echo "Terminating Arctic CLI..."
