@@ -1,18 +1,21 @@
+---
 name: Release Triage Tables
+description: Tables for use for Release Triage
 about: An Issue to track AQAvit triage during release
-title: '<Month Year> Release Triage - <JDK-Version>'
-labels: 'release triage'
+title: <Month Year> Release Triage - <JDK-Version>
+labels: release triage
 assignees: ''
+
+---
 
 Release Pipeline link(s):
 <insert links here>
 
---- 
+✔️ activity has successfully completed and no blocking issues found.<br/>
+⏳ actively triaging for this version/platform.<br/>
+⛔ no build planned or blocking issues for this version/platform combination.<br/>
+⏸️ activity not yet started.<br/>
 
-✔️ activity has successfully completed and no blocking issues found.
-⏳ actively triaging for this version/platform.
-⛔ no build planned or blocking issues for this version/platform combination.
-⏸️ activity not yet started.
 
 <Keep only the version table that applies to what is being triaged>
 <JDK8 Table>
