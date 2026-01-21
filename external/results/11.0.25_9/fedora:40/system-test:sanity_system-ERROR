@@ -1,0 +1,64 @@
+ 
+export TEST_JDK_HOME=/tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9
+export EXTRA_DOCKER_ARGS=-v /tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9:/opt/java/openjdk ;
+export BUILD_LIST=external/system-test ;
+export EXTERNAL_AQA_IMAGE=fedora:40;
+make compile
+make _sanity_system
+
+JAVA_HOME is set to /tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+
+dist:
+
+BUILD FAILED
+/home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml:58: The following error occurred while executing this line:
+/home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml:45: A zip file cannot include itself
+
+Total time: 2 seconds
+1
+make: *** [makefile:105: compileTools] Error 1
+JAVA_HOME is set to /tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=sanity_system TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec= --microArch="" --osLabel="" --jdkVersion= --impl= --vendor="" --buildList=external/system-test --iterations=1 --aotIterations= --testFlag= --testTarget=sanity_system --testList= --numOfMachines= --testTime= --TRSSURL= 
+Error: Please update file resources/buildPlatformMap.properties! Add entry for .
+make[1]: *** [makeGen.mk:45: autogen] Error 1
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:60: _sanity_system] Error 2
+compilation: 2
+runtime: 2
