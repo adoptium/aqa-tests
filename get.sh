@@ -973,6 +973,15 @@ if [ "$VENDOR_REPOS" != "" ]; then
 	getVendorTestMaterial
 fi
 
+echo "=========================================="
+echo "DEBUG: End of script checks"
+echo "DOWNLOAD_LIBERTY value: '$DOWNLOAD_LIBERTY'"
+echo "VENDOR_REPOS value: '$VENDOR_REPOS'"
+echo "=========================================="
+
 if [ "$DOWNLOAD_LIBERTY" == "true" ]; then
+	echo "DEBUG: Calling getLibertyArtifact"
 	getLibertyArtifact
+else
+	echo "DEBUG: Skipping Liberty download"
 fi
