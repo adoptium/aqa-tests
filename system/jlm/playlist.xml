@@ -282,8 +282,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
