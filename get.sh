@@ -39,6 +39,9 @@ DEBUG_IMAGES_REQUIRED=true
 CURL_OPTS="s"
 CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
+LIBERTY_URL="https://na.artifactory.swg-devops.com/artifactory/sys-rt-generic-local/PMA/liberty.zip"
+CLIENT_WORK_DIR="/java/perffarm/liberty"
+DOWNLOAD_LIBERTY=false
 
 usage ()
 {
@@ -64,6 +67,8 @@ usage ()
 	echo '                [--vendor_branches ] : optional. Comma separated vendor branches'
 	echo '                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources'
 	echo '                [--code_coverage ] : optional. indicate if code coverage is required'
+	echo '                [--download_liberty ] : optional. true or false. Download Liberty artifact if set to true. Default to false'
+
 }
 
 parseCommandLineArgs()
@@ -149,6 +154,9 @@ parseCommandLineArgs()
 
 			"--additional_artifacts_required" )
 				ADDITIONAL_ARTIFACTS_REQUIRED="$1"; shift;;
+			
+			"--download_liberty" )
+				DOWNLOAD_LIBERTY="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -649,6 +657,54 @@ executeCmdWithRetry()
 	return "$rt_code"
 }
 
+getLibertyArtifact()
+{
+	echo "get Liberty artifact..."
+	
+	# Create the directory if it doesn't exist
+	if [ ! -d "$CLIENT_WORK_DIR" ]; then
+		echo "Creating directory: $CLIENT_WORK_DIR"
+		mkdir -p $CLIENT_WORK_DIR
+	fi
+	
+	cd $CLIENT_WORK_DIR
+	
+	if [ "$USERNAME" != "" ] && [ "$PASSWORD" != "" ]; then
+		curl_options="--user $USERNAME:$PASSWORD"
+	fi
+	
+	echo "Downloading Liberty to: $CLIENT_WORK_DIR"
+	echo "Liberty URL: $LIBERTY_URL"
+	executeCmdWithRetry "liberty.zip" "_ENCODE_FILE_NEW=UNTAGGED curl -OLJSk${CURL_OPTS} ${curl_options} $LIBERTY_URL"
+	rt_code=$?
+	if [ $rt_code != 0 ]; then
+		echo "curl error code: $rt_code"
+		echo "Failed to retrieve Liberty artifact from $LIBERTY_URL"
+		exit 1
+	fi
+	
+	# Extract the Liberty artifact
+	liberty_file=`ls *.zip 2>/dev/null || ls *.tar.gz 2>/dev/null || true`
+	if [ "$liberty_file" != "" ]; then
+		if [[ "$liberty_file" == *zip ]]; then
+			echo "Extracting $liberty_file..."
+			unzip -q $liberty_file
+			rm $liberty_file
+		elif [[ "$liberty_file" == *tar.gz ]]; then
+			echo "Extracting $liberty_file..."
+			tar -xzf $liberty_file
+			rm $liberty_file
+		fi
+	fi
+	
+	echo "Liberty artifact available at $CLIENT_WORK_DIR"
+	ls -l $CLIENT_WORK_DIR
+	
+	# Return to TESTDIR
+	cd $TESTDIR
+}
+
+
 getFunctionalTestMaterial()
 {
 	echo "get functional test material..."
@@ -915,4 +971,8 @@ fi
 
 if [ "$VENDOR_REPOS" != "" ]; then
 	getVendorTestMaterial
+fi
+
+if [ "$DOWNLOAD_LIBERTY" == "true" ]; then
+	getLibertyArtifact
 fi
