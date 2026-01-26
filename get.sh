@@ -41,7 +41,8 @@ CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
 LIBERTY_URL="https://na.artifactory.swg-devops.com/artifactory/sys-rt-generic-local/PMA/liberty.zip"
 CLIENT_WORK_DIR="/java/perffarm/liberty"
-DOWNLOAD_LIBERTY=false
+DOWNLOAD_LIBERTY="${DOWNLOAD_LIBERTY:-false}"
+
 
 usage ()
 {
