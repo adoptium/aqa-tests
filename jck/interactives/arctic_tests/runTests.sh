@@ -373,7 +373,7 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
                 status=$(echo $result | sed 's#'${ARCTIC_GROUP}/${ARCTIC_TESTCASE}'#TEST #' | tr -s ' '| cut -d' ' -f2) 
                 echo "==>" $status
                 loop_counter=360 # 30 mins
-                while [[ $rc -eq 0 ]] && { [[ "$status" == "RUNNING" ]] || [[ "$status" == "STARTING" ]]; };
+                while [[ $rc -eq 0 ]] && { [[ "$status" == *RUNNING* ]] || [[ "$status" == *STARTING* ]]; };
                 do
                   sleep $SLEEP_TIME
                   loop_counter=$((loop_counter - 1))
@@ -404,7 +404,7 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
                 # Finish Arctic TESTCASE session
                 # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
                 success=false
-                if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
+                if [[ $status == *UNCONFIRMED* ]] && [[ $test_exit_status == 95 ]]; then
                   ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${ARCTIC_GROUP}" "${ARCTIC_TESTCASE}" true
                   success=true
                 else
