@@ -404,7 +404,7 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
                 # Finish Arctic TESTCASE session
                 # NOTE: PASSED == 95 for jtharness test status, javatest CLI will be "0" !
                 success=false
-                if [[ $status == "UNCONFIRMED" ]] && [[ $test_exit_status == 95 ]]; then
+                if [[ $status == *UNCONFIRMED* ]] && [[ $test_exit_status == 95 ]]; then
                   ${ARCTIC_JDK} -jar ${LIB_DIR}/arctic.jar -c test finish "${ARCTIC_GROUP}" "${ARCTIC_TESTCASE}" true
                   success=true
                 else
