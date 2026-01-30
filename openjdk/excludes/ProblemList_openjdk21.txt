@@ -532,3 +532,30 @@ vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.
 vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
+
+############################################################################
+
+# Unreliables - Tests that fail infrequently. These must not block releases.
+
+# java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
+java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 linux-x64,macosx-all
+java/lang/Thread/virtual/stress/ParkALot.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
+java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+java/net/ServerSocket/AnotherSelectFdsLimit.java https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
+java/nio/channels/etc/AdaptorCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+java/nio/channels/FileChannel/LargeGatheringWrite.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
+java/security/cert/CertificateFactory/slowstream.sh https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+javax/imageio/plugins/bmp/BMPPluginTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
+serviceability/jvmti/GetMethodDeclaringClass/TestUnloadedClass.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
+sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
+sun/security/krb5/runNameEquals.sh https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+sun/tools/jhsdb/JStackStressTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+tools/jpackage/share/BasicTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+tools/jpackage/share/EmptyFolderTest.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+tools/jpackage/share/ServiceTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+
