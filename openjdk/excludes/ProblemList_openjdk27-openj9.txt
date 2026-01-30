@@ -40,7 +40,6 @@ java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/eclipse-openj9
 java/lang/annotation/AnnotationsInheritanceOrderRedefinitionTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/annotation/loaderLeak/Main.java https://github.com/eclipse-openj9/openj9/issues/6701 generic-all
 java/lang/annotation/LoaderLeakTest.java https://github.com/eclipse-openj9/openj9/issues/13201 generic-all
-java/lang/Class/getEnclosingMethod/BadEnclosingMethodTest.java https://github.com/eclipse-openj9/openj9/issues/21732 generic-all
 java/lang/Class/GetModuleTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/ClassLoader/Assert.java https://github.com/eclipse-openj9/openj9/issues/6668 macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java https://github.com/eclipse-openj9/openj9/issues/3055 generic-all
@@ -145,24 +144,24 @@ java/lang/Thread/virtual/stress/Skynet100kWithMonitors.java#id0 https://github.c
 java/lang/Thread/virtual/stress/TimedGet.java https://github.com/eclipse-openj9/openj9/issues/15184 macosx-x64
 java/lang/ThreadGroup/SetMaxPriority.java https://github.com/eclipse-openj9/openj9/issues/6691 generic-all
 java/lang/Throwable/SuppressedExceptions.java https://github.com/eclipse-openj9/openj9/issues/6692 generic-all
-jdk/internal/misc/Unsafe/AddressComputationContractTest.java https://github.com/eclipse-openj9/openj9/issues/23118 generic-all
 jdk/modules/etc/JmodExcludedFiles.java https://github.com/eclipse-openj9/openj9/issues/23124 generic-all
 jni/nullCaller/NullCallerTest.java https://github.com/eclipse-openj9/openj9/issues/15370 linux-ppc64le,macosx-all
 
 ############################################################################
 
 # jdk_internal
-jdk/internal/loader/NativeLibraries/Main.java  https://github.com/eclipse-openj9/openj9/issues/9018  generic-all
+
+jdk/internal/loader/NativeLibraries/Main.java https://github.com/eclipse-openj9/openj9/issues/9018 generic-all
 jdk/internal/reflect/Reflection/GetCallerClassTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
 jdk/internal/reflect/Reflection/GetCallerClassTest.java#id3 https://github.com/eclipse-openj9/openj9/issues/14097 generic-all
-jdk/internal/vm/Continuation/MovingCompWindow.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 jdk/internal/vm/Continuation/Basic.java#id0 https://github.com/eclipse-openj9/openj9/issues/15163 generic-all
 jdk/internal/vm/Continuation/Basic.java#id1 https://github.com/eclipse-openj9/openj9/issues/15163 generic-all
 jdk/internal/vm/Continuation/ClassUnloading.java https://github.com/eclipse-openj9/openj9/issues/15152 generic-all
 jdk/internal/vm/Continuation/Fuzz.java https://github.com/eclipse-openj9/openj9/issues/15247 generic-all
 jdk/internal/vm/Continuation/LiveFramesDriver.java https://github.com/eclipse-openj9/openj9/issues/15152 generic-all
+jdk/internal/vm/Continuation/MovingCompWindow.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 jdk/internal/vm/Continuation/OSRTest.java https://github.com/eclipse-openj9/openj9/issues/19357 generic-all
+jdk/internal/vm/Continuation/OSRWithManyLocals.java https://github.com/eclipse-openj9/openj9/issues/22871 generic-all
 jdk/internal/vm/Continuation/Scoped.java https://github.com/eclipse-openj9/openj9/issues/15163 generic-all
 
 ############################################################################
@@ -549,7 +548,6 @@ java/foreign/stackwalk/TestStackWalk.java#shenandoah https://github.com/eclipse-
 java/foreign/stackwalk/TestStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/TestFallbackLookup.java https://github.com/adoptium/aqa-tests/issues/1297 z/OS-s390x
 java/foreign/TestIllegalLink.java https://github.com/eclipse-openj9/openj9/issues/14002 generic-all
-java/foreign/TestSegments.java https://github.com/eclipse-openj9/openj9/issues/23112 generic-all
 java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/openj9/issues/14828 generic-all
 java/foreign/TestUpcallAsync.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
 java/foreign/TestUpcallScope.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
@@ -606,6 +604,7 @@ serviceability/jvmti/SuspendWithObjectMonitorEnter/SuspendWithObjectMonitorEnter
 serviceability/jvmti/VMObjectAlloc/VMObjectAllocTest.java https://github.com/eclipse-openj9/openj9/issues/15994 generic-all
 serviceability/jvmti/events/FieldAccess/fieldacc03/fieldacc03.java https://github.com/eclipse-openj9/openj9/issues/16218 generic-all
 serviceability/jvmti/events/FieldAccess/fieldacc04/fieldacc04.java https://github.com/eclipse-openj9/openj9/issues/16218 generic-all
+serviceability/jvmti/events/VMDeath/AllocatingInVMDeath/TestAllocatingInVMDeath.java https://github.com/eclipse-openj9/openj9/issues/23175 generic-all
 serviceability/jvmti/thread/GetStackTrace/getstacktr06/getstacktr06.java https://github.com/eclipse-openj9/openj9/issues/16238 generic-all
 serviceability/jvmti/thread/GetStackTrace/getstacktr08/getstacktr08.java https://github.com/eclipse-openj9/openj9/issues/16238 generic-all
 serviceability/jvmti/vthread/MethodExitTest/MethodExitTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -639,5 +638,5 @@ jdk/internal/platform/docker/TestPidsLimit.java https://github.com/eclipse-openj
 ############################################################################
 
 # jdk_vector
-jdk/incubator/vector/Float128VectorTests.java https://github.com/eclipse-openj9/openj9/issues/23000 generic-all
-jdk/incubator/vector/Double128VectorTests.java https://github.com/eclipse-openj9/openj9/issues/23000 generic-all
+jdk/incubator/vector/Double128VectorTests.java https://github.com/eclipse-openj9/openj9/issues/23000 linux-x64,macosx-x64,windows-x64
+jdk/incubator/vector/Float128VectorTests.java https://github.com/eclipse-openj9/openj9/issues/23000 linux-x64,macosx-x64,windows-x64

@@ -189,6 +189,9 @@ ifneq ($(JDK_VERSION),8)
 		# else if JDK_IMPL is openj9 or ibm
 		else ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+			ifeq ($(OS),OS/390)
+			  ZOS_ONLY_NATIVE_LIBPATH := -e LIBPATH=$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native
+			endif
 		endif
 	endif
 endif

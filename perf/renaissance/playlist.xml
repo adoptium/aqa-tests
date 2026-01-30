@@ -177,31 +177,6 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>renaissance-gauss-mix</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/3189</comment>
-				<platform>x86-32_windows|arm_linux</platform>
-			</disable>
-			<disable>
-				<comment>runtimes/infrastructure/issues/5444</comment>
-				<vendor>ibm</vendor>
-			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/4129#issuecomment-1307899175</comment>
-				<platform>aarch64_windows</platform>
-			</disable>
-		</disables>
-		<command>$(JAVA_COMMAND) $(ADD_OPENS_CMD) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)gauss-mix.json$(Q) gauss-mix; \
-		$(TEST_STATUS)</command>
-		<levels>
-			<level>extended</level>
-		</levels>
-		<groups>
-			<group>perf</group>
-		</groups>
-	</test>
-	<test>
 		<testCaseName>renaissance-log-regression</testCaseName>
 		<disables>
 			<disable>
