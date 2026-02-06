@@ -38,6 +38,7 @@ runtime/jni/nativeStack/TestNativeStack.java        https://github.com/adoptium/
 
 serviceability/jvmti/stress/StackTrace/NotSuspended/GetStackTraceNotSuspendedStressTest.java  https://github.com/adoptium/aqa-tests/issues/4714             windows-aarch64
 serviceability/jvmti/vthread/ToggleNotifyJvmtiTest/ToggleNotifyJvmtiTest.java                 https://github.com/adoptium/aqa-tests/issues/4714             windows-aarch64
+serviceability/jvmti/stress/StackTrace/Suspended/GetStackTraceSuspendedStressTest.java        https://github.com/adoptium/aqa-tests/issues/4714             windows-aarch64
 
 ############################################################################
 
@@ -81,92 +82,9 @@ compiler/c2/aarch64/TestTrampoline.java                                         
 java/lang/Thread/virtual/stress/PingPong.java#ltq                                           https://github.com/adoptium/aqa-tests/issues/4155               windows-aarch64
 java/lang/Thread/virtual/stress/PingPong.java#sq                                            https://github.com/adoptium/aqa-tests/issues/4155               windows-aarch64
 java/lang/ProcessBuilder/Basic.java#id0                                                     https://github.com/adoptium/aqa-tests/issues/4155               windows-aarch64
-
-java/lang/Thread/virtual/RetryMonitorEnterWhenPinned.java                                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MiscMonitorTests.java#default                                      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MiscMonitorTests.java#Xint                                         https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp                                        https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp-TieredStopAtLevel3                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MiscMonitorTests.java#Xcomp-noTieredCompilation                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/lang/Thread/virtual/MiscMonitorTests.java#gc                                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/GetStackTraceALotWhenBlocking.java                          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/LotsOfContendedMonitorEnter.java#default                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/LotsOfContendedMonitorEnter.java#LM_LIGHTWEIGHT             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/lang/Thread/virtual/stress/Skynet.java#default                                         https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/lang/Thread/virtual/stress/Skynet.java#Z                                               https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-notify                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-interrupt                        https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/TimedWaitALot.java#timeout-notify-interrupt                 https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CancelTimerWithContention.java                                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#default                                      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#LM_LEGACY                                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#LM_LIGHTWEIGHT                               https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xint-LM_LEGACY                               https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xint-LM_LIGHTWEIGHT                          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-LM_LEGACY                              https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-LM_LIGHTWEIGHT                         https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-TieredStopAtLevel1-LM_LEGACY           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-TieredStopAtLevel1-LM_LIGHTWEIGHT      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-noTieredCompilation-LM_LEGACY          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterExit.java#Xcomp-noTieredCompilation-LM_LIGHTWEIGHT     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#default                                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#LM_LEGACY                                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#LM_LIGHTWEIGHT                              https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xint-LM_LEGACY                              https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xint-LM_LIGHTWEIGHT                         https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LEGACY                             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-LM_LIGHTWEIGHT                        https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LEGACY          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-TieredStopAtLevel1-LM_LIGHTWEIGHT     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LEGACY         https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorWaitNotify.java#Xcomp-noTieredCompilation-LM_LIGHTWEIGHT    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/GetStackTraceALotWhenParking.java#id0                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0                        https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/GetStackTraceALotWithTimedWait.java#id0                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/LotsOfUncontendedMonitorEnter.java#default                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/LotsOfUncontendedMonitorEnter.java#LM_LEGACY                https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/LotsOfUncontendedMonitorEnter.java#LM_LIGHTWEIGHT           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/ParkALot.java#id0                                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/PinALot.java#id0                                            https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/Skynet100kWithMonitors.java#id0                             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/SleepALot.java#id0                                          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/YieldALot.java#id0                                          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/BigStackChunk.java                                                 https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CarrierThreadInfo.java#default                                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CarrierThreadInfo.java#LM_LEGACY                                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CarrierThreadInfo.java#LM_LIGHTWEIGHT                              https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CarrierThreadInfo.java#LM_MONITOR                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Collectable.java                                                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/CustomScheduler.java                                               https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/JfrEvents.java                                                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Locking.java                                                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterWaitOOME.java#monitorenter                             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterWaitOOME.java#timedwait                                https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorEnterWaitOOME.java#untimedwait                              https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/MonitorPinnedEvents.java                                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Parking.java#default                                               https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Parking.java#Xcomp                                                 https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Parking.java#Xcomp-noTieredCompilation                             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Parking.java#Xint                                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ParkWithFixedThreadPool.java                                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Reflection.java                                                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ShutdownHook.java                                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/StackFrames.java                                                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/Starvation.java                                                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/SynchronizedNative.java#default                                    https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/SynchronizedNative.java#Xcomp-noTieredCompilation                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/SynchronizedNative.java#Xcomp-TieredStopAtLevel1                   https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/SynchronizedNative.java#Xint                                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ThreadAPI.java#default                                             https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ThreadAPI.java#no-vmcontinuations                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ThreadLocals.java                                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ThreadPollOnYield.java#c2                                          https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/ThreadPollOnYield.java#default                                     https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/TraceVirtualThreadLocals.java                                      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/YieldQueuing.java                                                  https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-java/lang/Thread/virtual/stress/GetStackTraceALotWhenBlocking.java#id0                      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
-
 java/lang/instrument/appendToClassLoaderSearch/CircularityErrorTest.sh                      https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/lang/instrument/appendToClassLoaderSearch/ClassUnloadTest.sh                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/lang/instrument/appendToClassLoaderSearch/run_tests.sh                                 https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
@@ -192,6 +110,8 @@ java/net/httpclient/ConcurrentResponses.java                                    
 java/net/httpclient/HttpClientLocalAddrTest.java                                            https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/net/httpclient/ManyRequests.java                                                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/net/httpclient/PlainProxyConnectionTest.java                                           https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
+java/net/httpclient/ConnectTimeoutWithProxyAsync.java                                       https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
+java/net/httpclient/ConnectTimeoutWithProxySync.java                                        https://github.com/adoptium/aqa-tests/issues/4714               windows-aarch64
 java/net/CookieHandler/B6644726.java                                                        https://github.com/adoptium/aqa-tests/issues/4714               windows-all
 
 ############################################################################

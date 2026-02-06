@@ -52,6 +52,11 @@
                                 <version>8</version>
                                 <platform>s390x_linux</platform>
                         </disable>
+                        <disable>
+                                <comment>https://github.com/adoptium/aqa-tests/issues/6850</comment>
+                                <version>8</version>
+                                <platform>x86-64_mac</platform>
+                        </disable>
                 </disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) fop; \
 		$(TEST_STATUS)</command>

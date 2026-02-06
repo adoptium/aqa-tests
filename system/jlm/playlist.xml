@@ -50,9 +50,9 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode150 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode650 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode1000 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
@@ -116,9 +116,9 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode150 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode650 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode1000 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
@@ -179,9 +179,9 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode150 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode650 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode1000 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteNotifierProxyAuth; \
 	$(TEST_STATUS)</command>
@@ -205,9 +205,9 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode150</variation>
-			<variation>Mode650</variation>
-			<variation>Mode1000</variation>
+			<variation>Mode150 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode650 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode1000 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestJlmRemoteThreadAuth; \
 	$(TEST_STATUS)</command>
@@ -282,8 +282,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
@@ -314,8 +314,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
@@ -344,8 +344,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteClassAuth; \
 	$(TEST_STATUS)</command>
@@ -454,7 +454,7 @@
 		</impls>
 		<platformRequirements>os.linux,^arch.ppc</platformRequirements>
 	</test>
-	<!--Exclude TestIBMJlmRemoteMemoryAuth from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
+	<!--Exclude from running on openjdk8-openj9 on ppc64le Linux. Reason: adoptium/aqa-systemtest/issues/145-->
 	<!-- Excluded from Windows due to https://github.com/adoptium/aqa-systemtest/issues/198 -->
 	<!-- Temporarily excluding from z/OS due to : jdk11-zos/issues/567 -->
 	<test>
@@ -467,8 +467,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
@@ -499,8 +499,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
@@ -529,8 +529,8 @@
 			</disable>
 		</disables>
 		<variations>
-			<variation>Mode110</variation>
-			<variation>Mode610</variation>
+			<variation>Mode110 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
+			<variation>Mode610 -Djdk.rmi.ssl.client.enableEndpointIdentification=false</variation>
 		</variations>
 		<command>$(SYSTEMTEST_CMD_TEMPLATE) -test=TestIBMJlmRemoteMemoryAuth; \
 	$(TEST_STATUS)</command>
