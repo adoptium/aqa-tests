@@ -76,10 +76,10 @@ sun/management/jmxremote/startstop/JMXStartStopTest.java https://github.com/adop
 sun/management/jmxremote/startstop/JMXStatusPerfCountersTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 # sun/management/jmxremote/startstop/JMXStatusTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusTest.java https://bugs.openjdk.org/browse/JDK-8207908 macosx-all,linux-ppc64le
-sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 sun/management/jdp/JdpOffTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 
 ############################################################################
 
@@ -128,8 +128,8 @@ java/net/MulticastSocket/B6427403.java https://github.com/adoptium/aqa-tests/iss
 java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all,linux-ppc64le
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
 java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+# java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+# java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/MulticastAddresses.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
@@ -197,7 +197,7 @@ java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/i
 java/nio/file/spi/SetDefaultProvider.java https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-all,linux-s390x,windows-x64,linux-ppc64le
-java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all
+# java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all
 java/nio/channels/FileChannel/Transfer2GPlus.java https://github.com/adoptium/aqa-tests/issues/3086 generic-all
 java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
@@ -537,25 +537,13 @@ vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.
 ############################################################################
 
 # Unreliables - Tests that fail infrequently. These must not block releases.
+# Uncomment duplicates above if any of these lines are removed.
 
-# java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
-#java/lang/Thread/virtual/stress/GetStackTraceALotWhenPinned.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 linux-x64,macosx-all
-#java/lang/Thread/virtual/stress/ParkALot.java#id0 https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
-#java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#java/net/ServerSocket/AnotherSelectFdsLimit.java https://github.com/adoptium/aqa-tests/issues/6421 macosx-all
-#java/nio/channels/etc/AdaptorCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#java/nio/channels/FileChannel/LargeGatheringWrite.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
-#java/security/cert/CertificateFactory/SlowStream.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
-#javax/imageio/plugins/bmp/BMPPluginTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
-#serviceability/jvmti/GetMethodDeclaringClass/TestUnloadedClass.java https://github.com/adoptium/aqa-tests/issues/6421 linux-aarch64
-#sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/6421 linux-s390x
-#sun/security/krb5/Krb5NameEquals.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
-#sun/tools/jhsdb/JStackStressTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
-#tools/jpackage/share/BasicTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
-#tools/jpackage/share/ServiceTest.java https://github.com/adoptium/aqa-tests/issues/6421 windows-x64
+java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
+java/nio/channels/FileChannel/LargeGatheringWrite.java https://github.com/adoptium/infrastructure/issues/4252 linux-aarch64,aix-all
+sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
 

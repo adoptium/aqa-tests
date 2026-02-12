@@ -380,11 +380,11 @@ java/util/stream/boottest/java/util/stream/SpinedBufferTest.java https://github.
 java/util/stream/test/org/openjdk/tests/java/util/stream/CountLargeTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/util/stream/test/org/openjdk/tests/java/util/stream/ExplodeOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/util/stream/test/org/openjdk/tests/java/util/stream/FlatMapOpTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
-java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+# java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
+# java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x
 java/util/stream/test/org/openjdk/tests/java/util/stream/SliceOpTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/StreamSpliteratorTest.java https://github.com/adoptium/aqa-tests/issues/1051 linux-s390x,linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x
+# java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x
 java/util/stream/test/org/openjdk/tests/java/util/stream/TabulatorsTest.java https://bugs.openjdk.java.net/browse/JDK-8173112 linux-s390x,linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/TeeOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/ForEachOpTest.java https://github.com/adoptium/aqa-tests/issues/2263 linux-arm
@@ -421,7 +421,7 @@ javax/imageio/spi/AppletContextTest/BadPluginConfigurationTest.sh https://github
 # jdk_jfr
 
 jdk/jfr/api/flightrecorder/TestGetEventTypes.java https://bugs.openjdk.org/browse/JDK-8309729 solaris-sparcv9
-jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-1964356593 macosx-all
+# jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/2754#issuecomment-1964356593 macosx-all
 # jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/3301 linux-arm
 jdk/jfr/event/runtime/TestShutdownEvent.java https://github.com/adoptium/aqa-tests/issues/2985 generic-all
 jdk/jfr/event/compiler/TestCompilerPhase.java https://bugs.openjdk.org/browse/JDK-8326521 generic-all
@@ -471,6 +471,7 @@ tools/javah/ReadOldClass.sh https://github.com/adoptium/aqa-tests/issues/5854 ai
 ############################################################################
 
 # Unreliables - Tests that fail infrequently. These must not block releases.
+# Uncomment duplicates above if any of these lines are removed.
 
 compiler/tiered/LevelTransitionTest.java https://github.com/adoptium/aqa-tests/issues/6883 macosx-x64
 java/util/concurrent/BlockingQueue/CancelledProducerConsumerLoops.java https://github.com/adoptium/aqa-tests/issues/6879 linux-arm
@@ -481,15 +482,15 @@ java/util/stream/boottest/java/util/stream/DoubleNodeTest.java https://github.co
 java/util/stream/boottest/java/util/stream/FlagOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
 java/util/stream/boottest/java/util/stream/NodeTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/FilterOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/InfiniteStreamWithLimitOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm,linux-s390x
 java/util/stream/test/org/openjdk/tests/java/util/stream/IntSliceOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/IntUniqOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
 java/util/stream/test/org/openjdk/tests/java/util/stream/RangeTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
-java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm
+java/util/stream/test/org/openjdk/tests/java/util/stream/SequentialOpTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm,linux-s390x
+java/util/stream/test/org/openjdk/tests/java/util/stream/StreamBuilderTest.java https://github.com/adoptium/aqa-tests/issues/5098 linux-arm,linux-s390x
 jdk/jfr/event/gc/detailed/TestPromotionFailedEventWithParNew.java https://github.com/adoptium/aqa-tests/issues/3770 linux-aarch64
 jdk/jfr/event/runtime/TestThrowableInstrumentation.java https://github.com/adoptium/aqa-tests/issues/3760 linux-aarch64
-jdk/jfr/event/sampling/TestNative.sh https://github.com/adoptium/aqa-tests/issues/6884 linux-x64
+jdk/jfr/event/sampling/TestNative.java https://github.com/adoptium/aqa-tests/issues/6884 linux-x64,macosx-all
 tools/javac/defaultMethods/super/TestDefaultSuperCall.java https://github.com/adoptium/aqa-tests/issues/6881 linux-arm
 tools/javac/lambda/TestInvokeDynamic.java https://github.com/adoptium/aqa-tests/issues/6882 linux-arm
 
