@@ -185,7 +185,11 @@ public class JPTagTest{
         String tag = "ja-JP-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("日本語 (日本、fw: mon)", l.getDisplayName(l));
-        assertEquals("Japanese (Japan, First day of week: Monday)", l.getDisplayName(Locale.ENGLISH));
+        // CLDR 48.0 (JDK 26+) changed format from "First Day of Week Is Monday" to "First day of week: Monday"
+        String expectedDisplay = (JavaVersion.getFeature() >= 26)
+            ? "Japanese (Japan, First day of week: Monday)"
+            : "Japanese (Japan, First Day of Week Is Monday)";
+        assertEquals(expectedDisplay, l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));
