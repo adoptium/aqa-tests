@@ -344,9 +344,6 @@ timestamps{
                     if (!params.JDK_VERSION.isInteger() || params.JDK_VERSION.toInteger() >= 25) {
                         LABEL += "&&sw.tool.c++runtime.17_1"
                     }
-                    if (params.TARGET && (params.TARGET.contains("extended.openjdk") || (params.TARGET.contains("testList") && params.UPSTREAM_TEST_JOB_NAME?.contains("extended.openjdk")))) {
-                        LABEL += "&&!sw.os.aix.7_1"
-                    }
                 }
             }
 
@@ -373,6 +370,7 @@ timestamps{
                     LABEL += "&&!sw.os.mac.10"
                 }
             }
+
             if (params.DOCKER_REQUIRED) {
                 LABEL += "&&sw.tool.docker"
             }
