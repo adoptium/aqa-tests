@@ -185,7 +185,7 @@ public class CNTagTest{
         String tag = "zh-CN-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("中文 (中国，fw：mon)", l.getDisplayName(l));
-        assertEquals("Chinese (China, First Day of Week Is Monday)", l.getDisplayName(Locale.ENGLISH));
+        assertEquals("Chinese (China, First day of week: Monday)", l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));

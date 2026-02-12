@@ -182,7 +182,7 @@ public class KRTagTest{
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("한국어 (대한민국, fw: mon)",
                      l.getDisplayName(l));
-        assertEquals("Korean (South Korea, First Day of Week Is Monday)",
+        assertEquals("Korean (South Korea, First day of week: Monday)",
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));

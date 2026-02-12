@@ -185,7 +185,7 @@ public class JPTagTest{
         String tag = "ja-JP-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("日本語 (日本、fw: mon)", l.getDisplayName(l));
-        assertEquals("Japanese (Japan, First Day of Week Is Monday)", l.getDisplayName(Locale.ENGLISH));
+        assertEquals("Japanese (Japan, First day of week: Monday)", l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));

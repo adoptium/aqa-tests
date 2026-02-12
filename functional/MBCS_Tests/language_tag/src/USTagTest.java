@@ -178,7 +178,7 @@ public class USTagTest{
     public void firstDayOfWeekTest(){
         String tag = "en-US-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
-        assertEquals("English (United States, First Day of Week Is Monday)", l.getDisplayName(Locale.ENGLISH));
+        assertEquals("English (United States, First day of week: Monday)", l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));
