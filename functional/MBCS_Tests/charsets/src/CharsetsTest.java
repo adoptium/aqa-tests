@@ -32,6 +32,7 @@ public class CharsetsTest {
     static Class<?> ArrayEncoder = null;
     static Method ArrayDecoder_decode = null;
     static Method ArrayEncoder_encode = null;
+    static Method ArrayEncoder_encodeFromUTF16 = null;
 
     static int err_cnt = 0;
 
@@ -41,9 +42,20 @@ public class CharsetsTest {
             ArrayEncoder = Class.forName("sun.nio.cs.ArrayEncoder");
             ArrayDecoder_decode = ArrayDecoder.getDeclaredMethod("decode",
                 byte[].class, int.class, int.class, char[].class);
-            ArrayEncoder_encode = ArrayEncoder.getDeclaredMethod("encode",
-                char[].class, int.class, int.class, byte[].class);
+            ArrayDecoder_decode.setAccessible(true);
+            
+            // JDK 26+ uses encodeFromUTF16, earlier versions use encode
+            if (JavaVersion.getFeature() >= 26) {
+                ArrayEncoder_encodeFromUTF16 = ArrayEncoder.getDeclaredMethod("encodeFromUTF16",
+                    byte[].class, int.class, int.class, byte[].class, int.class);
+                ArrayEncoder_encodeFromUTF16.setAccessible(true);
+            } else {
+                ArrayEncoder_encode = ArrayEncoder.getDeclaredMethod("encode",
+                    char[].class, int.class, int.class, byte[].class);
+                ArrayEncoder_encode.setAccessible(true);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         {
             Vector<TreeSet[]> vector = new Vector<TreeSet[]>();
@@ -223,8 +235,22 @@ public class CharsetsTest {
             }
             char[] ca = Character.toChars(i);
             ce.reset();
+            
             byte[] ba = new byte[(int)Math.ceil(ce.maxBytesPerChar()*ca.length)];
-            int len = (int)ArrayEncoder_encode.invoke(ArrayEncoder.cast(ce),ca,0,ca.length,ba);
+            int len;
+            
+            // JDK 26+ uses encodeFromUTF16, earlier versions use encode
+            if (JavaVersion.getFeature() >= 26) {
+                // Convert char[] to UTF-16 LE byte array for the new API
+                byte[] utf16Bytes = new byte[ca.length * 2];
+                for (int j = 0; j < ca.length; j++) {
+                    utf16Bytes[j * 2] = (byte)(ca[j] & 0xFF);
+                    utf16Bytes[j * 2 + 1] = (byte)(ca[j] >> 8);
+                }
+                len = (int)ArrayEncoder_encodeFromUTF16.invoke(ArrayEncoder.cast(ce), utf16Bytes, 0, ca.length, ba, 0);
+            } else {
+                len = (int)ArrayEncoder_encode.invoke(ArrayEncoder.cast(ce), ca, 0, ca.length, ba);
+            }
             StringBuffer sb0 = new StringBuffer();
             for(int j=0; j<len; j++) sb0.append(String.format("\\x%02X", (int)ba[j] & 0xFF));
             StringBuffer sb1 = new StringBuffer();
