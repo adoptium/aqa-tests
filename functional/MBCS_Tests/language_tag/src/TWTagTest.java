@@ -198,7 +198,11 @@ public class TWTagTest{
         String tag = "zh-TW-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("中文 (台灣，fw：mon)", l.getDisplayName(l));
-        assertEquals("Chinese (Taiwan, First Day of Week Is Monday)", l.getDisplayName(Locale.ENGLISH));
+        // CLDR 48.0 (JDK 26+) changed format from "First Day of Week Is Monday" to "First day of week: Monday"
+        String expectedDisplay = (JavaVersion.getFeature() >= 26)
+            ? "Chinese (Taiwan, First day of week: Monday)"
+            : "Chinese (Taiwan, First Day of Week Is Monday)";
+        assertEquals(expectedDisplay, l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));

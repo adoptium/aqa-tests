@@ -178,7 +178,11 @@ public class USTagTest{
     public void firstDayOfWeekTest(){
         String tag = "en-US-u-fw-mon";
         Locale l = Locale.forLanguageTag(tag);
-        assertEquals("English (United States, First Day of Week Is Monday)", l.getDisplayName(Locale.ENGLISH));
+        // CLDR 48.0 (JDK 26+) changed format from "First Day of Week Is Monday" to "First day of week: Monday"
+        String expectedDisplay = (JavaVersion.getFeature() >= 26)
+            ? "English (United States, First day of week: Monday)"
+            : "English (United States, First Day of Week Is Monday)";
+        assertEquals(expectedDisplay, l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
         assertEquals("mon", l.getUnicodeLocaleType("fw"));
