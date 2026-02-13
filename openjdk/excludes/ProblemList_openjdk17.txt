@@ -38,7 +38,7 @@ java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java https://github.com/adop
 java/beans/XMLEncoder/javax_swing_JButton.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JLayeredPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JSplitPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
+# java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_OverlayLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_border_TitledBorder.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_plaf_BorderUIResource_TitledBorderUIResource.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
@@ -67,10 +67,10 @@ com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk
 sun/management/jmxremote/startstop/JMXStartStopTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusPerfCountersTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
-sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 sun/management/jdp/JdpOffTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
+# sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 
 ############################################################################
 
@@ -121,11 +121,11 @@ java/net/MulticastSocket/B6427403.java https://github.com/adoptium/aqa-tests/iss
 java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
 java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+# java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+# java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/MulticastAddresses.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
+# java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 # java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
 # java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
@@ -529,3 +529,19 @@ vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.
 vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
+
+############################################################################
+
+# Unreliables - Tests that fail infrequently. These must not block releases.
+# Uncomment duplicates above if any of these lines are removed.
+
+gc/z/TestUncommit.java https://github.com/adoptium/aqa-tests/issues/6424 linux-x64
+java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/infrastructure/issues/4243 linux-s390x,aix-all
+java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
+sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+
