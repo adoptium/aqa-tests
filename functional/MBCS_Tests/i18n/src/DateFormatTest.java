@@ -35,7 +35,9 @@ public class DateFormatTest {
 		}
 	}
     long feature = JavaVersion.getFeature();
-    if (feature >= 22L) {
+    if (feature >= 26L) {
+       resource = tryGetBundle("ResourceBundleTest_26", locale);
+    } else if (feature >= 22L) {
        resource = tryGetBundle("ResourceBundleTest_22", locale);
     } else if (feature >= 19L) {
         resource = tryGetBundle("ResourceBundleTest_19", locale);
