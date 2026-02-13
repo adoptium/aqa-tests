@@ -114,7 +114,6 @@ sun/net/www/protocol/file/DirPermissionDenied.java https://github.com/adoptium/a
 sun/net/www/http/KeepAliveCache/KeepAliveProperty.java https://bugs.openjdk.org/browse/JDK-8285836 linux-ppc64le
 com/sun/net/httpserver/bugs/B6361557.java https://github.com/adoptium/aqa-tests/issues/1272 windows-all
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
-java/net/httpclient/StreamingBody.java https://github.com/adoptium/temurin-build/issues/893 aix-all
 java/net/httpclient/ConnectTimeoutWithProxySync.java https://bugs.openjdk.org/browse/JDK-8375352 generic-all
 java/net/httpclient/ConnectTimeoutWithProxyAsync.java https://bugs.openjdk.org/browse/JDK-8375352 generic-all
 
@@ -315,7 +314,7 @@ compiler/loopopts/TestRemoveEmptyLoop.java https://github.com/adoptium/aqa-tests
 
 # jdk_imageio
 
-javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/aqa-tests/issues/2814 aix-all
+# javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/aqa-tests/issues/2814 aix-all
 
 ############################################################################
 
@@ -386,3 +385,19 @@ vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.
 vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
+
+############################################################################
+
+# Unreliables - Tests that fail infrequently. These must not block releases.
+# Uncomment duplicates above if any of these lines are removed.
+
+java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/adoptium/aqa-tests/issues/5018 macosx-x64
+java/net/httpclient/http2/ConnectionReuseTest.java https://github.com/adoptium/aqa-tests/issues/6887 linux-s390x
+java/net/httpclient/StreamingBody.java https://github.com/adoptium/infrastructure/issues/3523 aix-all
+java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/aqa-tests/issues/6888 linux-s390x
+javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/infrastructure/issues/4243 linux-s390x,aix-all
+tools/jmod/hashes/HashesOrderTest.java https://github.com/adoptium/aqa-tests/issues/6886 linux-aarch64
+sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
+sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
+
