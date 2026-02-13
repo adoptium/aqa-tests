@@ -182,7 +182,11 @@ public class KRTagTest{
         Locale l = Locale.forLanguageTag(tag);
         assertEquals("한국어 (대한민국, fw: mon)",
                      l.getDisplayName(l));
-        assertEquals("Korean (South Korea, First Day of Week Is Monday)",
+        // CLDR 48.0 (JDK 26+) changed format from "First Day of Week Is Monday" to "First day of week: Monday"
+        String expectedDisplay = (JavaVersion.getFeature() >= 26)
+            ? "Korean (South Korea, First day of week: Monday)"
+            : "Korean (South Korea, First Day of Week Is Monday)";
+        assertEquals(expectedDisplay,
                      l.getDisplayName(Locale.ENGLISH));
         assertEquals(tag, l.toLanguageTag());
         assertEquals("fw-mon", l.getExtension('u'));
