@@ -20,17 +20,22 @@
 
 ############################################################################
 valhalla/valuetypes/FlatVarHandleTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
+valhalla/valuetypes/LambdaMetaFactory/LambdaConversion.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 valhalla/valuetypes/MethodHandleTest.java https://github.com/eclipse-openj9/openj9/issues/22648 generic-all
 valhalla/valuetypes/NullRestrictedArraysTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 valhalla/valuetypes/NullRestrictedTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-valhalla/valuetypes/ValueObjectMethodsTest.java https://github.com/eclipse-openj9/openj9/issues/23172 generic-all
+valhalla/valuetypes/ValueObjectMethodsTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+valhalla/valuetypes/RecursiveValueClass.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/Reflection.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
+valhalla/valuetypes/StreamTest.java  https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+valhalla/valuetypes/SubstitutabilityTest.java  https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 
 ############################################################################
 
 # jdk_valhalla - java/lang/invoke
 
 ############################################################################
+java/lang/invoke/callerSensitive/CallerSensitiveAccess.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 java/lang/invoke/VarHandles/VarHandleTestAccessValue.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessValue.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 java/lang/invoke/defineHiddenClass/BasicTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
@@ -65,6 +70,8 @@ runtime/valhalla/inlinetypes/MonitorEnterTest.java#id0 https://github.com/eclips
 runtime/valhalla/inlinetypes/MonitorEnterTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/MonitorEnterTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/NullRestrictedArrayTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/ObjectMethods.java#compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+runtime/valhalla/inlinetypes/ObjectMethods.java#no-compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/PreloadCircularityTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/QuickeningTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/StaticFieldsTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
@@ -74,8 +81,7 @@ runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id0 https://github
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id2 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestInheritedInlineTypeFields.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/TestJNIIsSameObject.java#id0 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/TestJNIIsSameObject.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/TestJNIIsSameObject.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/ValuePreloadTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/ValueTearing.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/VolatileTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
@@ -320,6 +326,8 @@ compiler/valhalla/inlinetypes/TestVirtualThreads.java#xcomp-co-test-di https://g
 compiler/valhalla/inlinetypes/TestVirtualThreads.java#xcomp-co-test-di-exclude-helper https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 compiler/valhalla/inlinetypes/TestVirtualThreads.java#xcomp-co-test-di-helper https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/AnnotationsTests.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/DirectMethodTest.java#default https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+runtime/valhalla/inlinetypes/DirectMethodTest.java#no-array-flattening https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/field_layout/EmptyValueTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/FieldAlignmentTest.java#64_COOP_CCP_COH https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/FieldAlignmentTest.java#64_COOP_CCP_NCOH https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -340,10 +348,12 @@ runtime/valhalla/inlinetypes/field_layout/TestLayoutFlags.java#TestLayoutFlags_4
 runtime/valhalla/inlinetypes/field_layout/TestLayoutFlags.java#TestLayoutFlags_5 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/TestLayoutFlags.java#TestLayoutFlags_6 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/TestLayoutFlags.java#TestLayoutFlags_7 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_atomic_flat_and_no_nullable_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_atomic_flat_and_nullable_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_no_nullable_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_atomic_flat_and_no_nullable_atomic_flat_and_no_nullable_nonatomic_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_atomic_flat_and_nullable_atomic_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_no_nullable_atomic_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_nullable_atomic_flat_and_no_nullable_non_atomic_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_nullable_atomic_flat_and_nullable_non_atomic_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_nullable_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/ValueCompositionTest.java#ValueCompositionTest_no_atomic_flat_and_nullable_flat https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/ValueFieldInheritanceTest.java#64_COOP_CCP_NCOH https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/field_layout/ValueFieldInheritanceTest.java#64_COOP_CCP_COH https://github.com/adoptium/aqa-tests/issues/1297 generic-all
