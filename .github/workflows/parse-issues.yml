@@ -26,7 +26,7 @@ jobs:
       - name: discover disabled tests
         run : |
           echo "::group::openjdk exclude files"
-          ls -1dq openjdk/excludes/* | tee exclude_files.txt
+          find openjdk/excludes -name '*ProblemList*.txt' | tee exclude_files.txt
           echo "::endgroup::"
           echo "::group::playlist files"
           find . -name "playlist.xml" -not -path "scripts" | tee playlist_files.txt
