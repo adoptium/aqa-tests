@@ -354,6 +354,9 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
               # Testcase started, start Arctic playback...
               sleep $SLEEP_TIME
 
+              echo "Clearing Arctic session info prior to testcase playback..."
+              $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c session clear
+
               echo "Starting Arctic: testcase $ARCTIC_GROUP $ARCTIC_TESTCASE"
               $ARCTIC_JDK -jar ${LIB_DIR}/arctic.jar -c test start "$ARCTIC_GROUP" "$ARCTIC_TESTCASE"
               rc=$?
