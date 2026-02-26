@@ -180,6 +180,8 @@ FULLPATH_LANGTOOLS_CUSTOM_TARGET = $(foreach target,$(LANGTOOLS_CUSTOM_TARGET),$
 
 JDK_NATIVE_OPTIONS :=
 JVM_NATIVE_OPTIONS :=
+# Use for J9 tests that require hotspot native images
+JVM_NATIVE_OPTIONS_HOTSPOT_FOR_J9 :=
 
 ifneq ($(JDK_VERSION),8)
 	ifdef TESTIMAGE_PATH
@@ -189,6 +191,7 @@ ifneq ($(JDK_VERSION),8)
 		# else if JDK_IMPL is openj9 or ibm
 		else ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 			JVM_NATIVE_OPTIONS := -nativepath:"$(TESTIMAGE_PATH)$(D)openj9"
+			JVM_NATIVE_OPTIONS_HOTSPOT_FOR_J9 := -nativepath:"$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native"
 			ifeq ($(OS),OS/390)
 			  ZOS_ONLY_NATIVE_LIBPATH := -e LIBPATH=$(TESTIMAGE_PATH)$(D)hotspot$(D)jtreg$(D)native
 			endif
