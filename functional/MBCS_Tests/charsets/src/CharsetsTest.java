@@ -55,6 +55,10 @@ public class CharsetsTest {
                 ArrayEncoder_encode.setAccessible(true);
             }
         } catch (Exception e) {
+            System.err.println("  ArrayDecoder: " + (ArrayDecoder != null ? "loaded" : "FAILED"));
+            System.err.println("  ArrayEncoder: " + (ArrayEncoder != null ? "loaded" : "FAILED"));
+            System.err.println("  JDK Version: " + JavaVersion.getFeature());
+            System.err.println("  Expected method: " + (JavaVersion.getFeature() >= 26 ? "encodeFromUTF16" : "encode"));
             e.printStackTrace();
         }
         {
