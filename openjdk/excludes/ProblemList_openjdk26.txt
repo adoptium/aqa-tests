@@ -202,6 +202,7 @@ com/sun/jdi/FinalizerTest.java https://github.com/adoptium/aqa-tests/issues/5705
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
 # java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
 java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all 
+java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all,linux-aarch64
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-all,linux-s390x,windows-x64,linux-ppc64le
 java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all
@@ -331,7 +332,9 @@ com/sun/jdi/ThreadMemoryLeakTest.java https://github.com/adoptium/aqa-tests/issu
 
 # jdk_util
 
-java/util/concurrent/tck/JSR166TestCase.java https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#default https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#forkjoinpool-common-parallelism https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#others https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
 java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/issues/3818 linux-all
 java/util/zip/DeInflate.java https://bugs.openjdk.org/browse/JDK-8299748 linux-s390x
 
