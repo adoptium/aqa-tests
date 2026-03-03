@@ -148,7 +148,7 @@ java/net/DatagramSocket/PortUnreachable.java https://github.com/adoptium/aqa-tes
 java/net/DatagramSocket/ReuseAddressTest.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/DatagramSocket/Send12k.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 # java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
-java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3088 aix-ppc64,linux-ppc64le 
+java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3088 aix-ppc64,linux-ppc64le
 java/net/DatagramSocket/SendSize.java.SendSize https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/DatagramSocket/SetDatagramSocketImplFactory/ADatagramSocket.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 java/net/Socket/CloseAvailable.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
@@ -202,11 +202,11 @@ com/sun/jdi/FinalizerTest.java https://github.com/adoptium/aqa-tests/issues/5705
 # java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
 # java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
-java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all 
+java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all
 java/nio/file/spi/SetDefaultProvider.java https://github.com/adoptium/aqa-tests/issues/2871 linux-arm
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
 java/nio/channels/Channels/ReadXBytes.java https://github.com/adoptium/aqa-tests/issues/3034 linux-aarch64,aix-all,linux-s390x,windows-x64,linux-ppc64le
-java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all
+java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all,linux-aarch64
 java/nio/channels/FileChannel/Transfer2GPlus.java https://github.com/adoptium/aqa-tests/issues/3086 generic-all
 java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
@@ -231,7 +231,7 @@ jdk/nio/zipfs/ZipFSTester.java https://github.com/adoptium/aqa-tests/issues/602 
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/file/attribute/UserDefinedFileAttributeView/Basic.java https://bugs.openjdk.org/browse/JDK-8370316 aix-all
 
-############################################################################ 
+############################################################################
 
 # jdk_rmi
 
@@ -337,7 +337,9 @@ com/sun/jdi/ThreadMemoryLeakTest.java https://github.com/adoptium/aqa-tests/issu
 
 # jdk_util
 
-java/util/concurrent/tck/JSR166TestCase.java https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#default https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#forkjoinpool-common-parallelism https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
+java/util/concurrent/tck/JSR166TestCase.java#others https://bugs.openjdk.org/browse/JDK-8377034 windows-all,linux-s390x
 java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/issues/3818 linux-all
 java/util/zip/DeInflate.java https://bugs.openjdk.org/browse/JDK-8299748 linux-s390x
 
@@ -697,4 +699,3 @@ sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infra
 #sun/security/util/Pem/encoding.sh https://github.com/adoptium/aqa-tests/issues/6420 windows-x64
 #sun/security/validator/certreplace.sh https://github.com/adoptium/aqa-tests/issues/6420 windows-x64
 #sun/security/validator/samedn.sh https://github.com/adoptium/aqa-tests/issues/6420 windows-x64
-
