@@ -22,7 +22,7 @@
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) \
-			-vmoptions:$(Q)-Xmx512m --patch-module java.base=$(TEST_JDK_HOME)$(D)lib$(D)valueclasses$(D)java.base-valueclasses.jar \
+			-vmoptions:$(Q)-Xmx512m \
 			--enable-preview $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 			$(TIMEOUT_HANDLER) \
 			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
@@ -59,7 +59,7 @@
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) \
 			$(JVM_NATIVE_OPTIONS_HOTSPOT_FOR_J9) \
-			-vmoptions:$(Q)-Xmx512m --patch-module java.base=$(TEST_JDK_HOME)$(D)lib$(D)valueclasses$(D)java.base-valueclasses.jar \
+			-vmoptions:$(Q)-Xmx512m \
 			--enable-preview -Djdk.debug=release $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 			$(TIMEOUT_HANDLER) \
 			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
