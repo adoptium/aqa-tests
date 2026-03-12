@@ -348,6 +348,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
 def remoteTriggerTemurinJCK () {
     def handle = triggerRemoteJob abortTriggeredJob: true,
         blockBuildUntilComplete: true,
+        pollInterval: 240,
         job: 'AQA_Test_Pipeline',
         parameters: MapParameters(parameters: [MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
                                                 MapParameter(name: 'TARGETS', value: TARGETS),
