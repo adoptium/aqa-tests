@@ -38,8 +38,8 @@ public class DateFormatTest {
 		}
 	}
 
-        long feature = JavaVersion.getFeature();
-        resource = tryGetBundle("ResourceBundleTest", locale, feature);
+	long feature = JavaVersion.getFeature();
+	resource = tryGetBundle("ResourceBundleTest", locale, feature);
 	if (resource == null) {
 		System.err.println("Cannot get resource for "+locale);
 		System.exit(-1);
