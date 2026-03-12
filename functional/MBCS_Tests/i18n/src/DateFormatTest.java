@@ -51,7 +51,7 @@ public class DateFormatTest {
     
     private ResourceBundle tryGetBundle(String baseName, Locale locale, long version) {
         // Try loading version specific bundles first..
-        for(Long i : resourceBundleFixVersions) {
+        for(long i : resourceBundleFixVersionsToTry) {
             if (i <= version) {
                 try {
                     return ResourceBundle.getBundle(baseName+"_"+i, locale);
