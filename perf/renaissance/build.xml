@@ -34,7 +34,18 @@
 		        <echo message="${FILE_NAME} exists. Hence, not downloading it." />
 		    </then>
 		    <else>
-				<var name="curl_options" value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.0/renaissance-mit-0.16.0.jar -o ${FILE_NAME}"/>
+				<if>
+					<or>
+						<equals arg1="${JDK_VERSION}" arg2="26"/>
+						<matches string="${JDK_VERSION}" pattern="^(2[7-9]|[3-9][0-9])$"/>
+					</or>
+					<then>
+						<var name="curl_options" value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.1/renaissance-mit-0.16.1.jar -o ${FILE_NAME}"/>
+					</then>
+					<else>
+						<var name="curl_options" value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.0/renaissance-mit-0.16.0.jar -o ${FILE_NAME}"/>
+					</else>
+				</if>
 				<retry retrycount="3">
 		 			<sequential>
 						<echo message="curl ${curl_options}" />
@@ -45,7 +56,7 @@
 		 		</retry>
 		    </else>
 		</if>
-	</target>	
+	</target>
 
 	<target name="dist" depends="getRenaissanceSuite" description="generate the distribution">
 		<copy todir="${DEST}">
