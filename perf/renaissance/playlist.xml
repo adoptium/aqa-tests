@@ -244,10 +244,6 @@
 				<comment>https://github.com/adoptium/aqa-tests/issues/6701</comment>
 				<platform>.*windows.*</platform>
 			</disable>
-			<disable>
-				<comment>https://github.com/adoptium/aqa-tests/issues/6896</comment>
-				<version>26+</version>
-			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)renaissance.jar$(Q) --json $(Q)$(REPORTDIR)$(D)naive-bayes.json$(Q) naive-bayes; \
 		$(TEST_STATUS)</command>
