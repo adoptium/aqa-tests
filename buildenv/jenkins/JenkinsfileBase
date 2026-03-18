@@ -223,15 +223,15 @@ def setupParallelEnv() {
 				// check for each lib. If lib does not exist, donwload it.
 				// If lib exists, SHA will be checked. Re-download if SHA does not match.
 				timeout(time: 20, unit: 'MINUTES') {
-					def customUrl = getCustomUrl()
-					env.CUSTOM_URL = customUrl
+					def testDependencyUrl = getTestDependencyUrl()
+					env.TEST_DEPENDENCY_URL = testDependencyUrl
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
-						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -testDependencyUrl ${testDependencyUrl}"
 					}
 				}
 			} catch (Exception e) {
@@ -714,15 +714,15 @@ def buildTest() {
 				// check for each lib. If lib does not exist, donwload it.
 				// If lib exists, SHA will be checked. Re-download if SHA does not match.
 				timeout(time: 20, unit: 'MINUTES') {
-					def customUrl = getCustomUrl()
-					env.CUSTOM_URL = customUrl
+					def testDependencyUrl = getTestDependencyUrl()
+					env.TEST_DEPENDENCY_URL = testDependencyUrl
 					if (PLATFORM.contains("windows")) {
 						env.LIB_DIR = env.LIB_DIR.replaceAll("\\\\", "/")
 						env.SYSTEM_LIB_DIR = env.SYSTEM_LIB_DIR.replaceAll("\\\\", "/")
 					}
 					if (env.BUILD_LIST == 'system') {
 						env.LIB_DIR = env.SYSTEM_LIB_DIR
-						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
+						sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -testDependencyUrl ${testDependencyUrl}"
 					}
 				}
 			} catch (Exception e) {
@@ -1208,7 +1208,7 @@ def getJenkinsDomain() {
 	return domainName
 }
 
-def getCustomUrl() {
+def getTestDependencyUrl() {
 	def jenkinsDomain = getJenkinsDomain()
 	if (jenkinsDomain.contains("hyc-runtimes")) {
 		jenkinsDomain = "openj9-jenkins.osuosl.org"
@@ -1216,9 +1216,9 @@ def getCustomUrl() {
 		jenkinsDomain = "ci.adoptium.net"
 	}
 
-	def customUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
-	echo "Custom URL: ${customUrl}"
-	return customUrl
+	def testDependencyUrl = "https://${jenkinsDomain}/job/test.getDependency/lastSuccessfulBuild/artifact/"
+	echo "Test Dependency URL: ${testDependencyUrl}"
+	return testDependencyUrl
 }
 
 def archiveAQAvitFiles() {
