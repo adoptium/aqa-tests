@@ -791,7 +791,7 @@ public class JavatestUtil {
 			}
 			
 			System.out.println("RI JDK Used: " + riJavaForMultiJVMCompTest);
-			if (jckVersionInt <= 26) {
+			if (jckVersionInt < 26) {
 				generatedJti.setProperty("jck.env.compiler.compRefExecute." + cmdAsStringOrFile, riJavaForMultiJVMCompTest);
 				if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 					// On jck11+ z/OS and AIX set the compRefExecute file and path separators
@@ -822,7 +822,7 @@ public class JavatestUtil {
 			
 			// Add the JVM options supplied by the user plus those added in this method to the jtb file option.
 			if (!testExecutionType.equals("multijvm")) { 
-				if (jckVersionInt <= 26) {
+				if (jckVersionInt < 26) {
 					generatedJti.setProperty("jck.env.compiler.compRefExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
 				} else {
 					generatedJti.setProperty("jck.env.compiler.refExecute.otherOpts", extraJvmOptions + " " + jvmOpts);
