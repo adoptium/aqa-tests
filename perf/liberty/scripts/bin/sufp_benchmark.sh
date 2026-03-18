@@ -128,7 +128,7 @@ checkAndSetSUFPEnvVars()
         case $PLATFORM in
             AIX)
                 echo "Optional REMOUNTSCRIPT not set for AIX."
-                
+
                 ;;
         esac
     fi
@@ -151,17 +151,17 @@ scenarioSpecificServerSetup()
             export CLIENT_SERVERXML="sufpdtserver.xml"
             export CLIENT_BOOTSTRAP="sufpbootstrap.properties"
             ;;
-            
+
         DayTrader7)
             export CLIENT_SERVERXML="sufpdt7server.xml"
             export CLIENT_BOOTSTRAP="sufpbootstrap.properties"
-            ;;            
+            ;;
 
         DayTraderSec)
             export CLIENT_SERVERXML="sufpdtserver.xml"
             export CLIENT_BOOTSTRAP="sufpj2secbootstrap.properties"
             ;;
-        
+
         Cognos)
             export CLIENT_SERVERXML="sufpcogserver.xml"
             export CLIENT_BOOTSTRAP="sufpcogbootstrap.properties"
@@ -243,7 +243,7 @@ scenarioSpecificServerSetup()
             cat  ${SERVER_DIR}/server.xml
             exit 1
         fi
-        
+
         if [ "$PLATFORM" = "OS/390" ]; then
             ${BENCHMARK_DIR}/bin/encode.sh -toascii ${SERVER_DIR}/server.xml
         fi
@@ -274,7 +274,7 @@ scenarioSpecificServerSetup()
                 export LIBPATH=${LIB_PATH}:${LIBPATH:-}
                 export JDK_OPTIONS="-Djava.library.path=${LIBPATH} ${JDK_OPTIONS}"
                 ;;
-                
+
             CYGWIN)
                 # TODO: confirm LD_LIBRARY_PATH = PATH for cygwin
                 echo "Exporting: PATH=${LIB_PATH}:$PATH"
@@ -305,7 +305,7 @@ scenarioSpecificServerSetup()
         echo "java.library.path=${LIB_PATH}"
         echo "install.dir=${COGNOS_INSTALL_DIR}"
         local BOOTSTRAP=`sed "s%LIBRARY_PATH_HERE%${LIB_PATH}%g" ${SERVER_DIR}/bootstrap.properties | sed "s%INSTALL_DIR_HERE%${COGNOS_INSTALL_DIR}%g"`
-        
+
         ###############
         #CHECK IF CORRECTLY REPLACED PLACEHOLDERS IN BOOTSTRAP.PROPERTIES
         ###############
@@ -373,7 +373,7 @@ stopCognos()
 #
 # Requires the following environment set:
 #   BENCHMARK_DIR, LIBERTY_DIR, SERVER_DIR, JAVA_HOME, JDK_OPTIONS
-#	
+#
 #	Optional environment:
 #	  IS_COLD_RUN=true
 startupFootprint()
@@ -390,7 +390,7 @@ startupFootprint()
 
   #function received "Xjit" as a parameter
   if [ ! -z $1 ] && [ $1 = "Xjit" ]; then
-    echo "Adding -Xjit:verbose={compilePerformance},disableSuffixLogs,vlog=verbosejit.txt to jvm.options. "
+    echo "Adding -Xjit:verbose={compilePerformance},dontApplyLogFileNameSuffix,vlog=verbosejit.txt to jvm.options. "
 
     #backup jvm.options file if it exists or create new one
     if [ -e ${SERVER_DIR}/jvm.options ]; then
@@ -401,7 +401,7 @@ startupFootprint()
     fi
 
     #add xjit to jvm.options
-    echo "-Xjit:verbose={compilePerformance},disableSuffixLogs,vlog=verbosejit.txt" >> ${SERVER_DIR}/jvm.options
+    echo "-Xjit:verbose={compilePerformance},dontApplyLogFileNameSuffix,vlog=verbosejit.txt" >> ${SERVER_DIR}/jvm.options
     export xjitMode=true
     enableJitThreadUtilizationInfo
   fi
@@ -459,7 +459,7 @@ startupFootprint()
   # TODO: Once verfied, enableJitThreadUtilizationInfo for runs other than xjit
   echoAndRunCmd "cd ${BENCHMARK_DIR}/tmp"
   startLibertyServer 1
-  
+
   echoAndRunCmd "cd -"
   disableJitThreadUtilizationInfo
   echo ""
@@ -480,7 +480,7 @@ startupFootprint()
   ###############
 
   calculateFootprint
-  
+
   ###############
   #RUN PETER'S FOOTPRINT TOOL
   ###############
@@ -535,10 +535,10 @@ startupFootprint()
         sleep 5
         mv /proc/${SERVER_PID}/cwd/javacore*${SERVER_PID}*txt ${BENCHMARK_DIR}/tmp/
         FILES_TO_STORE="${FILES_TO_STORE} ${BENCHMARK_DIR}/tmp/javacore*${SERVER_PID}*txt"
-        ;; 
+        ;;
     esac
   fi
-      
+
   ###############
   #PROPERLY STOP SERVER WITH LIBERTY SCRIPT
   ###############
@@ -551,7 +551,7 @@ startupFootprint()
   if [ "${SDK_SUPPORTS_SCC}" = "true" ]; then
     printSharedClassCacheInfo
   fi
-  
+
   # restore previous JVM args
   export JVM_ARGS="${BACKUP_JVM_OPTIONS}"
 
@@ -594,7 +594,7 @@ startupFootprint()
         ;;
       DayTrader7)
         calcTime "${SERVER_DIR}/logs/${TRACE_FILE}" ${LIBERTY_START_TIME} "daytrader7" ${SERVER_NAME}
-        ;;        
+        ;;
       TradeLite|TradeLiteSec)
         calcTime "${SERVER_DIR}/logs/${TRACE_FILE}" ${LIBERTY_START_TIME} "tradelite" ${SERVER_NAME}
         ;;
@@ -678,7 +678,7 @@ calcTime()
 	###############
 
 	# awk doesn't like the formatting in the trace file name, so make a temp copy
-	cp "${FILE}" trace.log 
+	cp "${FILE}" trace.log
 
 	if [ ! -e trace.log ]; then
 		echo "Could not find trace file."
@@ -695,7 +695,7 @@ calcTime()
 			# idealy use this regex, but requires gawk v4+
 			#regex="[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{9}"
 			regex="[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]"
-			
+
 			}
 				{
 					if(match($0,regex)) {
@@ -720,7 +720,7 @@ calcTime()
 							matched = 0 + millis + (seconds * 1000) + (minutes * 1000 * 60) + (hours * 1000 * 60 * 60);
 						}
 			}
-					
+
 			}
 
 		END {
@@ -754,7 +754,7 @@ calcTime()
 			# idealy use this regex, but requires gawk v4+
 			#regex="[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}"
 			regex="[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]"
-			
+
 		}
 		/'"${SEARCH}"'/{
 			if(match($0,regex)) {
@@ -779,7 +779,7 @@ calcTime()
 							matched = 0 + millis + (seconds * 1000) + (minutes * 1000 * 60) + (hours * 1000 * 60 * 60);
 						}
 			}
-			
+
 		}
 		END {
 			print matched;
@@ -845,7 +845,7 @@ calcTime()
 				# idealy use this regex, but requires gawk v4+
 				#regex="[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}"
 				regex="[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]"
-				
+
 			}
 			/'"${SEARCH}"'/{
 				if(match($0,regex)) {
@@ -885,16 +885,16 @@ calcTime()
 		SEARCH="The server ${SERVER_NAME} is ready to run a smarter planet"
 		echo "Search string: ${SEARCH}"
 		END_TIME=$(awk ' /'"${SEARCH}"'/ { print $2 }' trace.log)
-		
+
 		if [ -z "$END_TIME" ]; then
 		    echo "END_TIME is NULL. Couldn't find ${SEARCH}."
-		    
+
 		    #Open Liberty 19.0.0.4 uses this new string. 18.0.0.4 and before used the old one.
 		    SEARCH="The ${SERVER_NAME} server is ready to run a smarter planet"
 		    echo "Search new string: ${SEARCH}"
 		    END_TIME=$(awk ' /'"${SEARCH}"'/ { print $2 }' trace.log)
 		fi
-		
+
 		echo "End time: ${END_TIME}"
 
 
@@ -903,7 +903,7 @@ calcTime()
 				# idealy use this regex, but requires gawk v4+
 				#regex="[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}"
 				regex="[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]"
-				
+
 			}
 			/'"${SEARCH}"'/{
 				if(match($0,regex)) {
@@ -1150,11 +1150,11 @@ if [ $SCENARIO = "Cognos" ]; then
   echo "Waiting for log to show Cognos has started."
   echo "Start time : "`date`
   export searchCriteria="The dispatcher is ready to process requests."
-  
+
   #as the log file sits around waiting for the above message, we need to wait for a line to appear (searchCriteria)
   #but we don't want to wait for ever. 2 minutes seems a sensible time at the moment, perhaps for -Xint startup
   #we may need to increase this....
-  
+
   if [ -z $COGNOS_WAIT ]; then
     export waitTime=120
   else
@@ -1163,7 +1163,7 @@ if [ $SCENARIO = "Cognos" ]; then
   finishTime=`date +%s`
   export finishTime=`expr ${finishTime} + $waitTime`
   tail -f ${SERVER_DIR}/logs/${TRACE_FILE} | waitForLog
-  if [ "$WaitJobFail" = "true" ]; then	
+  if [ "$WaitJobFail" = "true" ]; then
     exit
   else
     echo "Log shows Cognos has started. Current time : "`date`

@@ -3053,7 +3053,7 @@
 	<test>
 		<testCaseName>jdk_vector_float128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Float128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Float128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3089,7 +3089,7 @@
 	<test>
 		<testCaseName>jdk_vector_double128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3125,7 +3125,7 @@
 	<test>
 		<testCaseName>jdk_vector_int128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Int128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Int128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3161,7 +3161,7 @@
 	<test>
 		<testCaseName>jdk_vector_short128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Short128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Short128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3197,7 +3197,7 @@
 	<test>
 		<testCaseName>jdk_vector_byte128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Byte128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Byte128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3233,7 +3233,7 @@
 	<test>
 		<testCaseName>jdk_vector_long128_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Long128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Long128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -3269,7 +3269,7 @@
 	<test>
 		<testCaseName>jdk_vector_byte64_j9</testCaseName>
 		<variations>
-			<variation>-Xjit:{*Byte64VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,disableSuffixLogs,verbose={vectorAPI}</variation>
+			<variation>-Xjit:{*Byte64VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
