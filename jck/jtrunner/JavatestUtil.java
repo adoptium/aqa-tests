@@ -608,7 +608,7 @@ public class JavatestUtil {
 			}
 
 			if (jckVersionInt >= 26) {
-				generatedJti.setProperty("jck.env.runtime.refExecute.cmdAsString", pathToJava);
+				generatedJti.setProperty("jck.env.runtime.refExecute.cmdAsString", riJavaForMultiJVMCompTest);
 			}
 			
 			if ( tests.startsWith("vm/jvmti") || tests.equals("vm") ) {
