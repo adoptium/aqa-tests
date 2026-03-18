@@ -606,6 +606,10 @@ public class JavatestUtil {
 					generatedJti.setProperty("jck.env.runtime.testExecute.additionalClasspathRemote", pathToToolsJar);
 				}
 			}
+
+			if (jckVersionInt >= 26) {
+				generatedJti.setProperty("jck.env.runtime.refExecute.cmdAsString", pathToJava);
+			}
 			
 			if ( tests.startsWith("vm/jvmti") || tests.equals("vm") ) {
 				generatedJti.setProperty("jck.env.runtime.testExecute.jvmtiLivePhase", "Yes");
@@ -788,12 +792,14 @@ public class JavatestUtil {
 			
 			System.out.println("RI JDK Used: " + riJavaForMultiJVMCompTest);
 			generatedJti.setProperty("jck.env.compiler.compRefExecute." + cmdAsStringOrFile, riJavaForMultiJVMCompTest);
-
 			if (!jckVersion.contains("jck8") && (spec.contains("zos") || spec.contains("aix"))) {
 				// On jck11+ z/OS and AIX set the compRefExecute file and path separators
 				// due to JCK class OsHelper bug with getFileSep() in Compiler JCK Interviewer
 				generatedJti.setProperty("jck.env.compiler.compRefExecute.fileSep", "/");
 				generatedJti.setProperty("jck.env.compiler.compRefExecute.pathSep", ":");
+			}
+			if (jckVersionInt >= 26) {
+				generatedJti.setProperty("jck.env.compiler.refExecute." + cmdAsStringOrFile, riJavaForMultiJVMCompTest);
 			}
 
 			extraJvmOptions += suppressOutOfMemoryDumpOptions;
