@@ -1,0 +1,13 @@
+JAVA_HOME is set to /tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=netty_test TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.oO5IF97LbJ/jdk-11.0.25+9/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec= --microArch="" --osLabel="" --jdkVersion= --impl= --vendor="" --buildList=external/netty --iterations=1 --aotIterations= --testFlag= --testTarget=netty_test --testList= --numOfMachines= --testTime= --TRSSURL= 
+Error: Unable to initialize main class org.testKitGen.MainRunner
+Caused by: java.lang.NoClassDefFoundError: org/testKitGen/DirectoryVisitor
+make[1]: *** [makeGen.mk:45: autogen] Error 1
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:60: _netty_test] Error 2
+compilation: 2
+runtime: 2
