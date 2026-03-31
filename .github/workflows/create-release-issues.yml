@@ -48,7 +48,7 @@ jobs:
       - name: Create parent and sub-issues
         env:
           GH_TOKEN: ${{ secrets.TEMURIN_ISSUES_TOKEN || secrets.GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version || github.event.client_payload.version }}
+          VERSION: "JDK${{ inputs.version || github.event.client_payload.version }}"
           RELEASE_DATE: ${{ inputs.releaseDate || github.event.client_payload.releaseDate }}
           MATRIX_INT: ${{ inputs.matrixInt || github.event.client_payload.matrixInt }}
           PRIMARY_PLATFORMS: "aarch64_linux,aarch64_mac,x86-64_linux,x86-64_mac,x86-64_windows"
