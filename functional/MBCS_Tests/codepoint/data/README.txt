@@ -55,3 +55,10 @@ https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
 Unihan_IRGSources-16.0.0.txt was downloaded by following link.
 Unihan_IRGSources.txt was original name.
 https://www.unicode.org/Public/16.0.0/ucd/Unihan.zip
+
+UnicodeData-17.0.0.txt was downloaded by following link
+https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt
+
+Unihan_IRGSources-17.0.0.txt was downloaded by following link.
+Unihan_IRGSources.txt was original name.
+https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip
