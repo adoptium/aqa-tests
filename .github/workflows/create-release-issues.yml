@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (label and titles, i.e. 8 or 21)"
+        description: "Release version (such as JDK8 or JDK21)"
         required: true
         type: string
       releaseDate:
@@ -30,7 +30,7 @@ on:
         required: false
         type: number
       pipelineUrl:
-        description: "URL of the release pipeline"
+        description: "Optional URL of the release pipeline, if available"
         required: false
         type: string
   repository_dispatch:
@@ -55,8 +55,6 @@ jobs:
           SECONDARY_PLATFORMS: "aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
           SKIP_INTERACTIVES: "true"
           HEADLESS_PLATFORMS: "aarch64_alpine-linux,riscv64_linux,x86-64_alpine-linux"
-          SKIP_LIST_1: ""
-          SKIP_LIST_2: "" 
           PIPELINE_URL: ${{ inputs.pipelineUrl || github.event.client_payload.pipelineUrl }}
         run: |
           set -euo pipefail
@@ -66,20 +64,12 @@ jobs:
           if [[ "$VERSION" == "JDK8" ]]; then
             PRIMARY_PLATFORMS="aarch64_linux,x86-64_linux,x86-64_mac,x86-64_windows"
             SECONDARY_PLATFORMS="x86-64_alpine-linux,arm_linux,ppc64le_linux,ppc64_aix"
-            SKIP_LIST_1="aarch64_linux,ppc64le_linux"
-            SKIP_LIST_2="arm_linux,x86-64_linux"
           elif [[ "$VERSION" == "JDK11" ]]; then
             SECONDARY_PLATFORMS="x86-64_alpine-linux,arm_linux,ppc64le_linux,s390x_linux,ppc64_aix"
-            SKIP_LIST_1="arm_linux,x86-64_linux,s390x_linux,x86-64_mac"
-            SKIP_LIST_2="aarch64_linux,ppc64le_linux,aarch64_mac"
           elif [[ "$VERSION" == "JDK17" ]]; then
             SECONDARY_PLATFORMS="riscv64_linux,x86-64_alpine-linux,arm_linux,ppc64le_linux,s390x_linux,ppc64_aix"
-            SKIP_LIST_1="aarch64_linux,ppc64le_linux,aarch64_mac"
-            SKIP_LIST_2="arm_linux,x86-64_linux,s390x_linux,x86-64_mac"
           else
             SECONDARY_PLATFORMS="aarch64_alpine-linux,riscv64_linux,x86-64_alpine-linux,aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
-            SKIP_LIST_1="arm_linux,x86-64_linux,s390x_linux,x86-64_mac,aarch64_windows"
-            SKIP_LIST_2="aarch64_linux,ppc64le_linux,aarch64_mac,x86-64_windows"
           fi
 
           gh label create "$version_label" -d "Version $version_label" -c "ededed" >/dev/null 2>&1 || true
@@ -87,8 +77,6 @@ jobs:
           IFS=',' read -r -a primary_platforms <<< "$PRIMARY_PLATFORMS"
           IFS=',' read -r -a secondary_platforms <<< "$SECONDARY_PLATFORMS"
           IFS=',' read -r -a headless_platforms <<< "$HEADLESS_PLATFORMS"
-          IFS=',' read -r -a skip_list_1 <<< "$SKIP_LIST_1"
-          IFS=',' read -r -a skip_list_2 <<< "$SKIP_LIST_2"
 
           tasks=""
 
@@ -104,7 +92,7 @@ jobs:
               for interactive in "${headless_platforms[@]}"; do
                 if [[ "$platform" == "$(echo "$interactive" | xargs)" ]]; then
                   echo "Adjusting issue body for non-interactive platform: $platform"
-                  sub_body=$(printf 'Version: %s\nHeadless Platform: %s\n\nChecklist:\n- [ ] Triage AQAvit tests\n- [ ] Triage TCK automated tests\n %s\n\nClose this issue when checklist completed.' "$VERSION" "$platform")
+                  sub_body=$(printf 'Version: %s\nHeadless Platform: %s\n\nChecklist:\n- [ ] Triage AQAvit tests\n- [ ] Triage TCK automated tests (no dev.jck for headless)\n %s\n\nClose this issue when checklist completed.' "$VERSION" "$platform")
                 fi
               done
             fi
@@ -132,7 +120,7 @@ jobs:
               for interactive in "${headless_platforms[@]}"; do
                 if [[ "$platform" == "$(echo "$interactive" | xargs)" ]]; then
                   echo "Adjusting issue body for non-interactive platform: $platform"
-                  sub_body=$(printf 'Version: %s\nHeadless Platform: %s\n\nChecklist:\n- [ ] Triage AQAvit tests\n- [ ] Triage TCK automated tests\n %s\n\nClose this issue when checklist completed.' "$VERSION" "$platform")
+                  sub_body=$(printf 'Version: %s\nHeadless Platform: %s\n\nChecklist:\n- [ ] Triage AQAvit tests\n- [ ] Triage TCK automated tests (no dev.jck for headless)\n %s\n\nClose this issue when checklist completed.' "$VERSION" "$platform")
                 fi
               done
             fi
