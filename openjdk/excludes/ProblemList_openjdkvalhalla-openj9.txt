@@ -19,11 +19,7 @@
 # jdk_valhalla_j9 - valhalla
 
 ############################################################################
-valhalla/valuetypes/FlatVarHandleTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-valhalla/valuetypes/LambdaMetaFactory/LambdaConversion.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 valhalla/valuetypes/MethodHandleTest.java https://github.com/eclipse-openj9/openj9/issues/22648 generic-all
-valhalla/valuetypes/NullRestrictedArraysTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-valhalla/valuetypes/NullRestrictedTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 valhalla/valuetypes/ValueObjectMethodsTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/RecursiveValueClass.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/Reflection.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
@@ -34,12 +30,13 @@ valhalla/valuetypes/ValueClassPreviewTest.java https://github.com/eclipse-openj9
 ############################################################################
 
 # jdk_valhalla_j9 - com/sun/jdi/valhalla
+# These tests are all disabled on IBM/OpenJ9 builds due to https://github.com/adoptium/aqa-tests/issues/1071
 
 ############################################################################
-com/sun/jdi/valhalla/CtorDebuggingTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-com/sun/jdi/valhalla/FieldWatchpointsTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-com/sun/jdi/valhalla/ValueArrayReferenceTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-com/sun/jdi/valhalla/ValueClassTypeTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
+com/sun/jdi/valhalla/CtorDebuggingTest.java https://github.com/adoptium/aqa-tests/issues/1071 generic-all
+com/sun/jdi/valhalla/FieldWatchpointsTest.java https://github.com/adoptium/aqa-tests/issues/1071 generic-all
+com/sun/jdi/valhalla/ValueArrayReferenceTest.java https://github.com/adoptium/aqa-tests/issues/1071 generic-all
+com/sun/jdi/valhalla/ValueClassTypeTest.java https://github.com/adoptium/aqa-tests/issues/1071 generic-all
 
 ############################################################################
 
@@ -53,31 +50,15 @@ com/sun/jdi/valhalla/ValueClassTypeTest.java https://github.com/eclipse-openj9/o
 
 ############################################################################
 runtime/valhalla/inlinetypes/AcmpTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/ArrayQueryTest.java  https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/EmptyInlineTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/FlatArraysTest.java#default https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/FlatArraysTest.java#no-array-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/FlattenableSemanticTest.java  https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/InlineTypeArray.java#default https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/InlineTypeArray.java#no-array-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/InlineTypeArray.java#no-tearable https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/InlineTypeArray.java#nullable-value-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/InlineTypeGetField.java  https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/InlineWithJni.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/MonitorEnterTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/MonitorEnterTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/MonitorEnterTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/MonitorEnterTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/NullRestrictedArrayTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/ObjectMethods.java#compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/ObjectMethods.java#no-compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
-runtime/valhalla/inlinetypes/PreloadCircularityTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/QuickeningTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestCloneableValue.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
-runtime/valhalla/inlinetypes/TestFieldNullability.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id0 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id2 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestInheritedInlineTypeFields.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestJNIIsSameObject.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestJNIIsValueObject.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
@@ -94,7 +75,7 @@ runtime/valhalla/inlinetypes/classloading/PreLoadFailuresDoNotImpactApplicationT
 
 ############################################################################
 serviceability/jvmti/valhalla/GetObjectHashCode/ValueGetObjectHashCodeTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-serviceability/jvmti/valhalla/Heapwalking/ValueHeapwalkingTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+serviceability/jvmti/valhalla/Heapwalking/ValueHeapwalkingTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 serviceability/jvmti/valhalla/SetTag/ValueTagMapTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 
 ############################################################################
@@ -102,7 +83,17 @@ serviceability/jvmti/valhalla/SetTag/ValueTagMapTest.java https://github.com/ecl
 # Tests to revisit after JEP for null-restricted value types is finalized.
 
 ############################################################################
+runtime/valhalla/inlinetypes/ArrayQueryTest.java https://github.com/eclipse-openj9/openj9/issues/23555 generic-all
+runtime/valhalla/inlinetypes/FlatArraysTest.java#default https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/FlatArraysTest.java#no-array-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/InlineTypeArray.java#default https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/InlineTypeArray.java#no-array-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/InlineTypeArray.java#no-tearable https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/InlineTypeArray.java#nullable-value-flattening https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/NullRestrictedArrayTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/classfileparser/NullRestrictionWithoutPreview.java https://github.com/eclipse-openj9/openj9/issues/23555 generic-all
+valhalla/valuetypes/NullRestrictedArraysTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+valhalla/valuetypes/NullRestrictedTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 
 ############################################################################
 
@@ -158,5 +149,9 @@ runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id0 https://github.com/adop
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id3 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/PreloadCircularityTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id0 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/ValuePreloadTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 valhalla/valuetypes/LayoutIterationTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
