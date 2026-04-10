@@ -50,7 +50,7 @@ jobs:
       id: output_log
     - name: Create error comment
       if: failure()
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       env:
         LOG_OUTPUT: ${{ steps.output_log.outputs.log }}
       with:
@@ -75,7 +75,7 @@ jobs:
       run: echo ::set-output name=failed::true
       id: failure_report
     - name: Create success comment
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -135,7 +135,7 @@ jobs:
         sourceType: 'url'
         impl: ${{ matrix.jdk_impl }}
     # get-pr step by @Simran-B https://github.com/actions/checkout/issues/331#issuecomment-707103442
-    - uses: actions/github-script@v8
+    - uses: actions/github-script@v9
       id: get-pr
       with:
         script: |
@@ -172,7 +172,7 @@ jobs:
     if: failure() && !needs.parseComment.outputs.failed
     steps:
     - name: Create comment
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -193,7 +193,7 @@ jobs:
     if: cancelled()
     steps:
     - name: Create comment
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -214,7 +214,7 @@ jobs:
     if: success()
     steps:
     - name: Create comment
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
