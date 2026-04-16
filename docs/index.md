@@ -60,7 +60,7 @@ Welcome to the documentation for the **Eclipse AQAvit** project — the quality 
 |----------|-------------|
 | [Prerequisites](pages/reference/Prerequisites) | Required tools and setup |
 | [AQAvit Terminology](pages/reference/AQAvit-terminology) | Common terms used in AQAvit |
-| [How OpenJDK Tests Map to AQAvit Targets](pages/How-OpenJDK-tests-map-to-AQAvit-test-targets) | Mapping guide |
+| [How OpenJDK Tests Map to AQAvit Targets](pages/reference/How-OpenJDK-tests-map-to-AQAvit-test-targets) | Mapping guide |
 | [Jenkins Features Reference](pages/reference/JenkinFeatures) | Configure Grinder jobs on Jenkins |
 | [Label Schema](pages/reference/LabelSchema) | Jenkins machine labelling schema |
 
