@@ -30,25 +30,47 @@ Welcome to the documentation for the **Eclipse AQAvit** project — the quality 
 
 ---
 
-## Quick Links
+## Explanation
 
-| Section | Description |
-|---------|-------------|
+| Document | Description |
+|----------|-------------|
+| [AQAvit Manifesto](pages/explanations/Manifesto) | The guiding principles of AQAvit |
+| [Scope](pages/explanations/Scope) | What AQAvit covers |
+| [Layered Design](pages/explanations/LayeredDesign) | The 3-Layer Cake architecture |
+
+---
+
+## How-to Guides
+
+| Document | Description |
+|----------|-------------|
 | [User Guide](pages/userGuide) | How to run AQA tests on your machine or CI |
-| [Prerequisites](pages/Prerequisites) | Required tools and setup |
-| [Run AQA GitHub Action](pages/RunAqa) | Trigger test runs via PR comments |
-| [Jenkins Features Reference](pages/JenkinFeatures) | Configure Grinder jobs on Jenkins |
-| [Triage Guide](pages/Triage) | How to triage test failures |
-| [Triage Checklist](pages/TriageChecklist) | Quick-reference checklist for triage |
-| [How to Triage an Adoptium Release](pages/HowToTriageanAdoptiumRelease) | Release triage walkthrough |
-| [AQAvit Manifesto](pages/Manifesto) | The guiding principles of AQAvit |
-| [Scope](pages/Scope) | What AQAvit covers |
-| [Layered Design](pages/LayeredDesign) | The 3-Layer Cake architecture |
-| [AQAvit Terminology](pages/AQAvit-terminology) | Common terms used in AQAvit |
-| [How OpenJDK Tests Map to AQAvit Targets](pages/How-OpenJDK-tests-map-to-AQAvit-test-targets) | Mapping guide |
-| [Label Schema](pages/LabelSchema) | Jenkins machine labelling schema |
+| [Run AQA GitHub Action](pages/howto/RunAqa) | Trigger test runs via PR comments |
 | [Contribute a Test Suite](pages/howto/first-contrib) | Step-by-step first contribution guide |
-| [Creating OpenJDK Test Defects](pages/Guidance-for-Creating-OpenJDK-Test-Defects) | Bug reporting guidance |
+| [Creating OpenJDK Test Defects](pages/howto/Guidance-for-Creating-OpenJDK-Test-Defects) | Bug reporting guidance |
+| [Triage Guide](pages/howto/triage/Triage) | How to triage test failures |
+| [Triage Checklist](pages/howto/triage/TriageChecklist) | Quick-reference checklist for triage |
+| [How to Triage an Adoptium Release](pages/howto/triage/HowToTriageanAdoptiumRelease) | Release triage walkthrough |
+
+---
+
+## Reference
+
+| Document | Description |
+|----------|-------------|
+| [Prerequisites](pages/reference/Prerequisites) | Required tools and setup |
+| [AQAvit Terminology](pages/reference/AQAvit-terminology) | Common terms used in AQAvit |
+| [How OpenJDK Tests Map to AQAvit Targets](pages/How-OpenJDK-tests-map-to-AQAvit-test-targets) | Mapping guide |
+| [Jenkins Features Reference](pages/reference/JenkinFeatures) | Configure Grinder jobs on Jenkins |
+| [Label Schema](pages/reference/LabelSchema) | Jenkins machine labelling schema |
+
+---
+
+## Tutorials
+
+| Document | Description |
+|----------|-------------|
+| _Coming soon_ | Tutorials will be added here |
 
 ---
 
