@@ -1,3 +1,10 @@
+---
+layout: default
+title: AQAvit Terminology
+parent: Reference
+nav_order: 1
+---
+
 # AQAvit Terminology 
 
 ---

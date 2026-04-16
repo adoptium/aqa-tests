@@ -1,3 +1,9 @@
+---
+layout: default
+title: Jenkins Features Reference
+nav_order: 7
+---
+
 # Jenkins Features Reference
 The "Jenkins Features Reference" is a comprehensive documentation outlining the various [configuration parameters](https://ci.adoptium.net/view/Test_grinder/job/Grinder/build?delay=0sec) and options available for running [Grinder jobs](https://ci.adoptium.net/view/Test_grinder/job/Grinder/) on the Jenkins server.
 It serves as a guide for testers and developers using AQAvit Grinder to perform testing and triage on the ci.adoptium.net Jenkins server and the OpenJ9 Jenkins server (and internal servers).

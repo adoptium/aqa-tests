@@ -1,3 +1,10 @@
+---
+layout: default
+title: Triage Checklist
+parent: Triage
+nav_order: 1
+---
+
 ## Triage checklist
 
 You are investigating a test failure.

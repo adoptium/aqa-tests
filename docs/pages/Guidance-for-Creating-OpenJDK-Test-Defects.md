@@ -1,3 +1,10 @@
+---
+layout: default
+title: Creating OpenJDK Test Defects
+parent: How-to Guides
+nav_order: 1
+---
+
 # Guidance for Creating OpenJDK Test Defects
 
 If this is an openjdk test failure, there are a couple of steps to creating a useful test defect that we would like people to follow:

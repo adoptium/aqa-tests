@@ -1,3 +1,10 @@
+---
+layout: default
+title: Scope
+parent: Explainers
+nav_order: 2
+---
+
 ## The Scope of Adoptium Quality Assurance (AQA)
 
 The Eclipse AQAvit project consists of several Github repositories and the main objective of the project is to deliver a quality assurance program that can be utilized in several ways.  This quality assurance program called Adoptium Quality Assurance (AQA) ensures the reliability and excellence of OpenJDK builds distributed by the Eclipse Temurin project and is also used by many other OpenJDK distributors.

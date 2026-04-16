@@ -31,6 +31,7 @@ See the License for the specific language governing permissions and
 [![OpenChain](https://tinyurl.com/3zdb5ptz)](https://www.eclipse.org/openchain/)
 [![slack](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=white)](https://adoptium.net/slack/)
 [![Twitter](https://img.shields.io/twitter/follow/adoptium?style=social)](https://twitter.com/adoptium)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://adoptium.github.io/aqa-tests/)
 
 # Adoptium Testing
 
@@ -131,7 +132,7 @@ TCK tests (under the OpenJDK Community TCK License Agreement), in compliance wit
 --- 
 
 #### Guide to Running the Tests Yourself
-For more details on how to run the same tests that we run at Adoptium on your laptop or in your build farm, please consult our [User Guide](docs/pages/userGuide.md) (work in progress).
+For more details on how to run the same tests that we run at Adoptium on your laptop or in your build farm, please consult our [User Guide](https://adoptium.github.io/aqa-tests/pages/userGuide) (work in progress).
 
 #### What is our motivation?
 We want:

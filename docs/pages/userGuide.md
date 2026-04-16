@@ -1,3 +1,10 @@
+---
+layout: default
+title: User Guide
+nav_order: 2
+has_children: true
+---
+
 # Running AdoptOpenJDK Tests
 
 If you have immediate test-related questions, please post them to the [AdoptOpenJDK testing Slack channel](https://adoptium.slack.com/archives/C5219G28G).
@@ -23,7 +30,7 @@ You can set up your own Jenkins-based test builds using the adoptium aqa-tests J
 - Repository url - :https://github.com/adoptium/aqa-tests.git
 - Branches to build - */master
 - Script path - buildenv/jenkins/fileToMatchVersionAndPlatformToTest, example openjdk8_x86-64_linux
-![pipeline from SCM](/docs/diagrams/pipelineFromSCM.jpg)
+![pipeline from SCM](../diagrams/pipelineFromSCM.jpg)
 
 2. Create necessary parameters
 
@@ -31,7 +38,7 @@ You can set up your own Jenkins-based test builds using the adoptium aqa-tests J
 * JVM_VERSION - depending on what SDK you are testing against (some possible values are: openjdk8, openjdk8-openj9, openjdk9, openjdk9-openj9, openjdk10, openjdk10-openj9, openjdk10-sap)
 * CUSTOMIZED_SDK_URL - the URL for where to pick up the SDK to test (if you are picking up builds from AdoptOpenJDK, please refer to the [openjdk-api README](https://github.com/AdoptOpenJDK/openjdk-api/blob/master/README.md) for more details)
 
-![jenkins parameters](/docs/diagrams/jenkinsParameters.jpg)
+![jenkins parameters](../diagrams/jenkinsParameters.jpg)
 
 ## How to pass in environment variables
 
@@ -43,19 +50,19 @@ This method is typically used if that environment variable is to be used in that
 
 1.	Find the folder that your test is in
 
- ![test_folder](/docs/diagrams/testFolder.jpg)
+ ![test_folder](../diagrams/testFolder.jpg)
 
 2.	Open the playlist.xml file
 
- ![playlist_file](/docs/diagrams/playListFile.jpg)
+ ![playlist_file](../diagrams/playListFile.jpg)
 
 3.	Find the testCaseName matching with the test you want to run
 
- ![test_case_name](/docs/diagrams/testCaseName.jpg)
+ ![test_case_name](../diagrams/testCaseName.jpg)
 
 4.	In the corresponding command section, at the beginning, add the key word `export`, your environment variable, followed by a semicolon, just as you might do if you were running this set of commands locally
 
- ![export](/docs/diagrams/commandSection.jpg)
+ ![export](../diagrams/commandSection.jpg)
 
 5.	Save it, git add, commit, push
 
@@ -67,25 +74,25 @@ git push origin env_var
 
 6.	Go to the Jenkins page, and open up the Grinders
 
- ![open_grinders](/docs/diagrams/openGrinders.jpg)
+ ![open_grinders](../diagrams/openGrinders.jpg)
 
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
 
 8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
 
- ![repo](/docs/diagrams/repo.jpg)
+ ![repo](../diagrams/repo.jpg)
 
 9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
 
- ![branch](/docs/diagrams/branch.jpg)
+ ![branch](../diagrams/branch.jpg)
 
 10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
 
- ![build_list_target](/docs/diagrams/buildListTarget.jpg)
+ ![build_list_target](../diagrams/buildListTarget.jpg)
 
 11.	Scroll to the bottom and hit the Build button
 
- ![build](/docs/diagrams/build.jpg)
+ ![build](../diagrams/build.jpg)
 
 
 #### Method 2: Put it in the .mk file of the test that you want to run
@@ -94,19 +101,19 @@ This method is to be used when the objective is to set that environment variable
 
 1.	Open the aqa-tests/system folder
 
- ![system_folder](/docs/diagrams/systemFolder.jpg)
+ ![system_folder](../diagrams/systemFolder.jpg)
 
 2.	Open the .mk file corresponding to your test
 
- ![system_test](/docs/diagrams/systemtest.jpg)
+ ![system_test](../diagrams/systemtest.jpg)
 
 3.	Find the last line of the file with the RESROOT name, the line that says SYSTEMTEST_RESROOT=$(TEST_RESROOT)/../ in this example
 
- ![resroot_line](/docs/diagrams/resrootLine.jpg)
+ ![resroot_line](../diagrams/resrootLine.jpg)
 
 4.	Insert the key word `export`, followed by your environment variable, without any single or double quotation marks, in the line above it
 
- ![export](/docs/diagrams/export.jpg)
+ ![export](../diagrams/export.jpg)
 
 5.	Save it, git add, commit, push
 
@@ -118,25 +125,25 @@ git push origin env_var
 
 6.	Go to the Jenkins page, and open up the Grinders
 
- ![open_grinders](/docs/diagrams/openGrinders.jpg)
+ ![open_grinders](../diagrams/openGrinders.jpg)
 
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
 
 8.	In the ADOPTOPENJDK_REPO section, put in the repository you were working from when you made those changes
 
- ![repo](/docs/diagrams/repo.jpg)
+ ![repo](../diagrams/repo.jpg)
 
 9.	In the ADOPTOPENJDK_BRANCH section, put in the branch you were on
 
- ![branch](/docs/diagrams/branch.jpg)
+ ![branch](../diagrams/branch.jpg)
 
 10.	In the BUILD_LIST and TARGET sections, put in the corresponding information
 
- ![build_list_target](/docs/diagrams/buildListTarget.jpg)
+ ![build_list_target](../diagrams/buildListTarget.jpg)
 
 11.	Scroll to the bottom and hit the Build button
 
- ![build](/docs/diagrams/build.jpg)
+ ![build](../diagrams/build.jpg)
 
 
 #### Method 3: Put it in the testEnv.mk file
@@ -145,15 +152,15 @@ This method is to be used when the objective is to set that environment variable
 
 1.	Fork https://github.com/AdoptOpenJDK/TKG
 
- ![test_config](/docs/diagrams/testConfig.jpg)
+ ![test_config](../diagrams/testConfig.jpg)
 
 2.	Edit the [testEnv.mk](https://github.com/AdoptOpenJDK/TKG/blob/master/testEnv.mk) file
 
- ![test_env](/docs/diagrams/testEnv.jpg)
+ ![test_env](../diagrams/testEnv.jpg)
 
 3.	Insert the key word export, followed by your environment variable, without any single or double quotation marks, or spaces
 
- ![export](/docs/diagrams/otherExport.jpg)
+ ![export](../diagrams/otherExport.jpg)
 
 5.	Save it, git add, commit, push
 ```
@@ -163,7 +170,7 @@ git push origin env_var
 ```
 6.	Go to the Jenkins page, and open up the Grinder_TKG job
 
- ![open_grinders](/docs/diagrams/openGrinders.jpg)
+ ![open_grinders](../diagrams/openGrinders.jpg)
 
 7.	Click “Build with Parameters” on the left side of the page, third down from the top
 
@@ -171,7 +178,7 @@ git push origin env_var
 
 9. 	Scroll to the bottom and hit the Build button
 
- ![open_grinders](/docs/diagrams/build.jpg)
+ ![open_grinders](../diagrams/build.jpg)
 
 ## Local testing via make targets on the commandline
 
