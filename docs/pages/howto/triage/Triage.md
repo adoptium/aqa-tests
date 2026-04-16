@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Triage
-nav_order: 6
+parent: How-to Guides
+nav_order: 3
 has_children: true
 ---
 

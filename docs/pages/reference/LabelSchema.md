@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Label Schema
-nav_order: 8
+parent: Reference
+nav_order: 4
 ---
 
 # Jenkins Machine Labelling Schema

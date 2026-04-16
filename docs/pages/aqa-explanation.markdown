@@ -18,6 +18,6 @@ See the License for the specific language governing permissions and
 
 # Explainer Documents
 
-- [AQAvit Manifesto](Manifesto.md)
-- [The Scope of the AQAvit project](Scope.md)
-- [Why AQAvit has a Layered Design](LayeredDesign.md)
+- [AQAvit Manifesto](explanations/Manifesto.md)
+- [The Scope of the AQAvit project](explanations/Scope.md)
+- [Why AQAvit has a Layered Design](explanations/LayeredDesign.md)

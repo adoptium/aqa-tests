@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Jenkins Features Reference
-nav_order: 7
+parent: Reference
+nav_order: 3
 ---
 
 # Jenkins Features Reference
