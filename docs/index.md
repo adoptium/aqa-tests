@@ -70,7 +70,7 @@ Welcome to the documentation for the **Eclipse AQAvit** project — the quality 
 
 | Document | Description |
 |----------|-------------|
-| _Coming soon_ | Tutorials will be added here |
+| [Adding AQAvit Support for a New Platform](pages/tutorials/AddingAQAvitSupportForNewPlatform) | Step-by-step guide to adding AQAvit support for a new platform |
 
 ---
 
