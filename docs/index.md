@@ -82,3 +82,9 @@ AQAvit (Adoptium Quality Assurance vitality) is the quality assurance program us
 - **CI dashboard:** [ci.adoptium.net](https://ci.adoptium.net)
 - **Test results:** [trss.adoptium.net](https://trss.adoptium.net)
 - **Slack:** [#testing channel](https://adoptium.slack.com/archives/C5219G28G)
+
+---
+
+--- | ---
+[![Tutorials](pics/tutorials.png)](pages/aqa-tutorials) | [![How-To Guides](pics/howto-guides.png)](pages/aqa-howto)
+[![Explanation](pics/explanation.png)](pages/aqa-explanation) | [![Reference](pics/reference.png)](pages/aqa-reference)
