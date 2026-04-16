@@ -86,5 +86,5 @@ AQAvit (Adoptium Quality Assurance vitality) is the quality assurance program us
 ---
 
 --- | ---
-[![Tutorials](pics/tutorials.png)](pages/aqa-tutorials) | [![How-To Guides](pics/howto-guides.png)](pages/aqa-howto)
-[![Explanation](pics/explanation.png)](pages/aqa-explanation) | [![Reference](pics/reference.png)](pages/aqa-reference)
+[![Tutorials](diagrams/tutorials.png)](pages/aqa-tutorials) | [![How-To Guides](diagrams/howto-guides.png)](pages/aqa-howto)
+[![Explanation](diagrams/explanation.png)](pages/aqa-explanation) | [![Reference](diagrams/reference.png)](pages/aqa-reference)
