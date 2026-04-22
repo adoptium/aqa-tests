@@ -1,0 +1,268 @@
+name: "Cherry-pick PR to Release Branch"
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    # Only run when comment starts with /cherry-pick and is on a merged PR
+    if: |
+      startsWith(github.event.comment.body, '/cherry-pick') &&
+      github.event.issue.pull_request &&
+      github.event.issue.state == 'closed'
+    steps:
+      - name: Get PR details
+        id: get-pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            // Check if PR is actually merged
+            if (!pr.data.merged) {
+              core.setFailed('PR is not merged. Cherry-pick can only be performed on merged PRs.');
+              return;
+            }
+            
+            core.setOutput('merged', pr.data.merged);
+            core.setOutput('merge_commit_sha', pr.data.merge_commit_sha);
+            core.setOutput('pr_number', pr.data.number);
+            core.setOutput('pr_title', pr.data.title);
+            core.setOutput('pr_author', pr.data.user.login);
+            core.setOutput('base_branch', pr.data.base.ref);
+            
+            return pr.data;
+
+      - name: Parse cherry-pick command
+        id: parse-command
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          
+          # Extract target branch from comment (e.g., /cherry-pick v1.2.3-release)
+          # If no branch specified, we'll determine it from existing release branches
+          TARGET_BRANCH=$(echo "$COMMENT_BODY" | sed -n 's|^/cherry-pick\s*\(\S*\).*|\1|p')
+          
+          if [ -z "$TARGET_BRANCH" ]; then
+            echo "auto_detect=true" >> $GITHUB_OUTPUT
+            echo "No target branch specified, will auto-detect latest release branch"
+          else
+            echo "target_branch=$TARGET_BRANCH" >> $GITHUB_OUTPUT
+            echo "auto_detect=false" >> $GITHUB_OUTPUT
+            echo "Target branch specified: $TARGET_BRANCH"
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine target branch
+        id: determine-branch
+        run: |
+          if [ "${{ steps.parse-command.outputs.auto_detect }}" = "true" ]; then
+            # Find the latest release branch matching pattern vX.X.X-release
+            LATEST_RELEASE=$(git branch -r | grep -E 'origin/v[0-9]+\.[0-9]+\.[0-9]+-release' | sed 's|origin/||' | sort -V | tail -n 1)
+            
+            if [ -z "$LATEST_RELEASE" ]; then
+              echo "No release branch found matching pattern vX.X.X-release"
+              exit 1
+            fi
+            
+            echo "target_branch=$LATEST_RELEASE" >> $GITHUB_OUTPUT
+            echo "Auto-detected target branch: $LATEST_RELEASE"
+          else
+            TARGET="${{ steps.parse-command.outputs.target_branch }}"
+            # Verify the branch exists
+            if git show-ref --verify --quiet refs/remotes/origin/$TARGET; then
+              echo "target_branch=$TARGET" >> $GITHUB_OUTPUT
+              echo "Using specified target branch: $TARGET"
+            else
+              echo "Branch $TARGET does not exist"
+              exit 1
+            fi
+          fi
+
+      - name: Create cherry-pick branch
+        id: create-branch
+        run: |
+          TARGET_BRANCH="${{ steps.determine-branch.outputs.target_branch }}"
+          PR_NUMBER="${{ steps.get-pr.outputs.pr_number }}"
+          TIMESTAMP=$(date +%s)
+          CHERRY_PICK_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}-${TIMESTAMP}"
+          
+          echo "branch_name=$CHERRY_PICK_BRANCH" >> $GITHUB_OUTPUT
+          
+          # Checkout target branch and create new branch
+          git checkout -b "$CHERRY_PICK_BRANCH" "origin/$TARGET_BRANCH"
+
+      - name: Cherry-pick commit
+        id: cherry-pick
+        continue-on-error: true
+        run: |
+          MERGE_COMMIT="${{ steps.get-pr.outputs.merge_commit_sha }}"
+          
+          # Attempt cherry-pick
+          if git cherry-pick -m 1 "$MERGE_COMMIT"; then
+            echo "success=true" >> $GITHUB_OUTPUT
+            echo "Cherry-pick successful"
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "Cherry-pick failed with conflicts"
+            
+            # Get list of conflicted files
+            CONFLICTS=$(git diff --name-only --diff-filter=U | tr '\n' ', ' | sed 's/,$//')
+            echo "conflicts=$CONFLICTS" >> $GITHUB_OUTPUT
+            
+            # Abort the cherry-pick
+            git cherry-pick --abort
+          fi
+
+      - name: Push cherry-pick branch
+        if: steps.cherry-pick.outputs.success == 'true'
+        run: |
+          git push origin "${{ steps.create-branch.outputs.branch_name }}"
+
+      - name: Create Pull Request
+        if: steps.cherry-pick.outputs.success == 'true'
+        id: create-pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const targetBranch = '${{ steps.determine-branch.outputs.target_branch }}';
+            const cherryPickBranch = '${{ steps.create-branch.outputs.branch_name }}';
+            const originalPrNumber = '${{ steps.get-pr.outputs.pr_number }}';
+            const originalPrTitle = '${{ steps.get-pr.outputs.pr_title }}';
+            const originalPrAuthor = '${{ steps.get-pr.outputs.pr_author }}';
+            const commentAuthor = '${{ github.event.comment.user.login }}';
+            
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[${targetBranch}] ${originalPrTitle}`,
+              head: cherryPickBranch,
+              base: targetBranch,
+              body: `Cherry-pick of #${originalPrNumber} to ${targetBranch}
+            
+            Original PR: #${originalPrNumber}
+            Original Author: @${originalPrAuthor}
+            Requested by: @${commentAuthor}
+            
+            ---
+            
+            This PR was automatically created by the cherry-pick workflow.`
+            });
+            
+            core.setOutput('pr_number', pr.data.number);
+            core.setOutput('pr_url', pr.data.html_url);
+            
+            return pr.data;
+
+      - name: Comment on original PR - Success
+        if: steps.cherry-pick.outputs.success == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const targetBranch = '${{ steps.determine-branch.outputs.target_branch }}';
+            const newPrNumber = '${{ steps.create-pr.outputs.pr_number }}';
+            const newPrUrl = '${{ steps.create-pr.outputs.pr_url }}';
+            const commentAuthor = '${{ github.event.comment.user.login }}';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `@${commentAuthor} Cherry-pick successful! ✅
+            
+            Created PR #${newPrNumber} to merge into \`${targetBranch}\`
+            ${newPrUrl}`
+            });
+
+      - name: Comment on original PR - Failure
+        if: steps.cherry-pick.outputs.success == 'false'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const targetBranch = '${{ steps.determine-branch.outputs.target_branch }}';
+            const conflicts = '${{ steps.cherry-pick.outputs.conflicts }}';
+            const commentAuthor = '${{ github.event.comment.user.login }}';
+            const mergeCommit = '${{ steps.get-pr.outputs.merge_commit_sha }}';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `@${commentAuthor} Cherry-pick failed due to conflicts ❌
+            
+            Target branch: \`${targetBranch}\`
+            Merge commit: \`${mergeCommit}\`
+            
+            Conflicted files:
+            \`\`\`
+            ${conflicts}
+            \`\`\`
+            
+            Please resolve conflicts manually by:
+            1. \`git checkout ${targetBranch}\`
+            2. \`git checkout -b cherry-pick-${context.issue.number}-to-${targetBranch}\`
+            3. \`git cherry-pick -m 1 ${mergeCommit}\`
+            4. Resolve conflicts and commit
+            5. Create a PR to \`${targetBranch}\``
+            });
+
+      - name: Comment on original PR - Branch not found
+        if: failure() && steps.determine-branch.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commentAuthor = '${{ github.event.comment.user.login }}';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `@${commentAuthor} Cherry-pick failed ❌
+            
+            Could not find a valid release branch. Please specify a target branch:
+            \`/cherry-pick <branch-name>\`
+            
+            Example: \`/cherry-pick v1.2.3-release\``
+            });
+
+      - name: Comment on original PR - Not merged
+        if: failure() && steps.get-pr.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commentAuthor = '${{ github.event.comment.user.login }}';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `@${commentAuthor} Cherry-pick cannot be performed ❌
+            
+            This PR has not been merged yet. Cherry-pick can only be performed on merged PRs.`
+            });
+
+# Made with Bob
