@@ -1,3 +1,10 @@
+---
+layout: default
+title: How OpenJDK Tests Map to AQAvit Targets
+parent: Reference
+nav_order: 2
+---
+
 # How OpenJDK tests map to AQAvit test targets
 
 ---

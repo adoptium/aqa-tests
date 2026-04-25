@@ -1,3 +1,11 @@
+---
+layout: default
+title: Triage
+parent: How-to Guides
+nav_order: 3
+has_children: true
+---
+
 # Test Triage at Adoptium
 
 ## Generate a Release Summary Report
@@ -47,4 +55,4 @@ There are many different test jobs running at the adoptium project.  No matter w
   - for openjdk tests, see [Exclude an openjdk test](https://github.com/adoptium/aqa-tests/tree/master/openjdk#exclude-a-testcase)
   - for other tests (like system, external and perf tests), tests are typically disabled via the associated playlist.xml (see [example playlist](https://github.com/adoptium/aqa-tests/blob/master/external/example-test/playlist.xml)) file either by using `<platformRequirements>^os.win</platformRequirements>` for permanent exclusion based on platform, or `<disable>` tag for temporary exclusion.
 
-![Common Triage Paths](./diagrams/commonTriagePaths.png)
+![Common Triage Paths](../diagrams/commonTriagePaths.png)

@@ -1,3 +1,10 @@
+---
+layout: default
+title: Explainers
+nav_order: 3
+has_children: true
+---
+
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -11,6 +18,6 @@ See the License for the specific language governing permissions and
 
 # Explainer Documents
 
-- [AQAvit Manifesto](Manifesto.md)
-- [The Scope of the AQAvit project](Scope.md)
-- [Why AQAvit has a Layered Design](LayeredDesign.md)
+- [AQAvit Manifesto](explanations/Manifesto.md)
+- [The Scope of the AQAvit project](explanations/Scope.md)
+- [Why AQAvit has a Layered Design](explanations/LayeredDesign.md)

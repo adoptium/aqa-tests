@@ -1,3 +1,10 @@
+---
+layout: default
+title: How to Triage an Adoptium Release
+parent: Triage
+nav_order: 2
+---
+
 # How to Triage an Adoptium Release
 ## Recording
 [AQAvit Triage Lightning Introduction Video](https://www.youtube.com/watch?v=TWD_b8cwIVg&ab_channel=EclipseAdoptium)

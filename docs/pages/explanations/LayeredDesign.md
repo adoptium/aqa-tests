@@ -1,3 +1,10 @@
+---
+layout: default
+title: Layered Design
+parent: Explainers
+nav_order: 3
+---
+
 ## Why AQAvit Uses the '3 Layer Cake' Architecture
 
 The Adoptium Quality Assurance (AQA) process which is encapsulated within the [Eclipse AQAvit project](https://projects.eclipse.org/projects/adoptium.aqavit), plays a crucial role in ensuring the reliability, stability, and security of OpenJDK builds distributed by the [Eclipse Temurin project](https://projects.eclipse.org/projects/adoptium.temurin) (both AQAvit and Temurin are active projects under the top-level [Eclipse Adoptium project](https://projects.eclipse.org/projects/adoptium)).

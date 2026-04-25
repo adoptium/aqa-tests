@@ -1,3 +1,10 @@
+---
+layout: default
+title: Label Schema
+parent: Reference
+nav_order: 4
+---
+
 # Jenkins Machine Labelling Schema
 
 As our Jenkins build environment expands and we incorporate more machines, it becomes imperative to establish a labelling scheme that provides flexibility and improves machine management. This labelling schema enables us to categorize machines and their attributes efficiently, facilitating the addition of new labels and preventing duplication. Additionally, it helps prevent jobs from running on unintended machines, allows for increased flexibility in pipeline scripts, and expedites the process of identifying failures based on machine attributes.
