@@ -271,8 +271,13 @@ ifneq (,$(findstring alpine, $(SPEC)))
 endif
 
 VENDOR_PROBLEM_LIST_FILE:=
-ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft eclipse))
-	VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
+ifeq ($(JDK_VENDOR),$(filter $(JDK_VENDOR),redhat azul alibaba microsoft eclipse temurin))
+	# temurin is part of the eclipse foundation, so use the eclipse vendor exclude file
+	ifeq ($(JDK_VENDOR),temurin)
+		VENDOR_FILE:=excludes$(D)vendors$(D)eclipse$(D)ProblemList_openjdk$(JDK_VERSION).txt
+	else
+		VENDOR_FILE:=excludes$(D)vendors$(D)$(JDK_VENDOR)$(D)ProblemList_openjdk$(JDK_VERSION).txt
+	endif
 	ifneq (,$(wildcard $(VENDOR_FILE)))
 		VENDOR_PROBLEM_LIST_FILE:=-exclude:$(Q)$(TEST_ROOT)$(D)openjdk$(D)$(VENDOR_FILE)$(Q)
 	endif
