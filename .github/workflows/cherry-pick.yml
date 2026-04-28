@@ -77,8 +77,9 @@ jobs:
         id: branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TARGET: ${{ steps.parse.outputs.target_branch }}
         run: |
-          TARGET="${{ steps.parse.outputs.target_branch }}"
+          TARGET="$INPUT_TARGET"
 
           if [ -z "$TARGET" ]; then
             # Auto-detect the latest vX.X.X-release branch
@@ -169,7 +170,8 @@ jobs:
         run: |
           git push origin "$NEW_BRANCH"
 
-          PR_BODY="Cherry-pick of #${PR_NUMBER} to \`${TARGET_BRANCH}\`."$'\n\n'"Triggered by @${COMMENTER} via [comment](${COMMENT_URL})."
+          PR_BODY=$(printf 'Cherry-pick of #%s to `%s`.\n\nTriggered by @%s via [comment](%s).' \
+            "$PR_NUMBER" "$TARGET_BRANCH" "$COMMENTER" "$COMMENT_URL")
 
           PR_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
@@ -199,9 +201,9 @@ jobs:
           TARGET_BRANCH: ${{ steps.branch.outputs.target }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          CONFLICT_BODY=$(printf '⚠️ Cherry-pick to `%s` failed due to conflicts. Please resolve them manually:\n\n```bash\ngit fetch origin\ngit checkout -b cherry-pick-%s-to-%s origin/%s\ngit cherry-pick -x %s\n# resolve conflicts, then:\ngit cherry-pick --continue\ngit push origin cherry-pick-%s-to-%s\n```\n\nThen open a PR from `cherry-pick-%s-to-%s` to `%s`.' \
-            "$TARGET_BRANCH" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH" "$MERGE_COMMIT" \
-            "$PR_NUMBER" "$TARGET_BRANCH" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH")
+          MANUAL_STEPS="git fetch origin"$'\n'"git checkout -b cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH} origin/${TARGET_BRANCH}"$'\n'"git cherry-pick -x ${MERGE_COMMIT}"$'\n'"# resolve conflicts, then:"$'\n'"git cherry-pick --continue"$'\n'"git push origin cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
+          CONFLICT_BODY=$(printf '⚠️ Cherry-pick to `%s` failed due to conflicts. Please resolve them manually:\n\n```bash\n%s\n```\n\nThen open a PR from `cherry-pick-%s-to-%s` to `%s`.' \
+            "$TARGET_BRANCH" "$MANUAL_STEPS" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH")
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
