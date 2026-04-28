@@ -1,0 +1,207 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Cherry Pick to Release Branch
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.issue.pull_request != null &&
+      (github.event.comment.body == '/cherry-pick' ||
+       startsWith(github.event.comment.body, '/cherry-pick '))
+    steps:
+      - name: Parse command
+        id: parse
+        run: |
+          COMMENT="${{ github.event.comment.body }}"
+          # Extract optional branch argument
+          if echo "$COMMENT" | grep -qP '^/cherry-pick\s+\S'; then
+            TARGET_BRANCH=$(echo "$COMMENT" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
+          else
+            TARGET_BRANCH=""
+          fi
+          echo "target_branch=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Get PR details
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          PR_DATA=$(gh pr view "$PR_NUMBER" --repo "$REPO" \
+            --json merged,mergeCommit,title,headRefName)
+
+          MERGED=$(echo "$PR_DATA" | jq -r '.merged')
+          MERGE_COMMIT=$(echo "$PR_DATA" | jq -r '.mergeCommit.oid // empty')
+          PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
+
+          echo "merged=$MERGED" >> "$GITHUB_OUTPUT"
+          echo "merge_commit=$MERGE_COMMIT" >> "$GITHUB_OUTPUT"
+          echo "pr_title=$PR_TITLE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate PR is merged
+        if: steps.pr.outputs.merged != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="❌ Cannot cherry-pick: PR #${{ github.event.issue.number }} is not yet merged."
+          exit 1
+
+      - name: Resolve target branch
+        id: branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET="${{ steps.parse.outputs.target_branch }}"
+
+          if [ -z "$TARGET" ]; then
+            # Auto-detect the latest vX.X.X-release branch
+            TARGET=$(gh api "/repos/${{ github.repository }}/branches" \
+              --paginate \
+              --jq '.[].name' \
+              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-release$' \
+              | sort -V \
+              | tail -1)
+
+            if [ -z "$TARGET" ]; then
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+                -f body="❌ Cannot cherry-pick: No release branch matching \`vX.X.X-release\` was found. Please specify a branch explicitly, e.g. \`/cherry-pick v0.9.9-release\`."
+              exit 1
+            fi
+
+            echo "Auto-detected release branch: $TARGET"
+          else
+            # Verify the specified branch exists
+            if ! gh api "/repos/${{ github.repository }}/branches/$TARGET" > /dev/null 2>&1; then
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+                -f body="❌ Cannot cherry-pick: Branch \`$TARGET\` does not exist in this repository."
+              exit 1
+            fi
+          fi
+
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+
+      - name: Post acknowledgement comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="🍒 Attempting to cherry-pick to \`${{ steps.branch.outputs.target }}\`…"
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Cherry-pick commit
+        id: cherry_pick
+        run: |
+          TARGET="${{ steps.branch.outputs.target }}"
+          MERGE_COMMIT="${{ steps.pr.outputs.merge_commit }}"
+          PR_NUMBER="${{ github.event.issue.number }}"
+          NEW_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET}"
+
+          git fetch origin "$TARGET"
+          git checkout -b "$NEW_BRANCH" "origin/$TARGET"
+
+          if git cherry-pick -x "$MERGE_COMMIT"; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "success=false" >> "$GITHUB_OUTPUT"
+            git cherry-pick --abort || true
+          fi
+
+          echo "new_branch=$NEW_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Push branch and create PR
+        if: steps.cherry_pick.outputs.success == 'true'
+        id: create_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_BRANCH="${{ steps.cherry_pick.outputs.new_branch }}"
+          TARGET="${{ steps.branch.outputs.target }}"
+          PR_NUMBER="${{ github.event.issue.number }}"
+          PR_TITLE="${{ steps.pr.outputs.pr_title }}"
+
+          git push origin "$NEW_BRANCH"
+
+          PR_BODY="Cherry-pick of #${PR_NUMBER} to \`${TARGET}\`."$'\n\n'"Triggered by @${{ github.event.comment.user.login }} via [comment](${{ github.event.comment.html_url }})."
+
+          PR_URL=$(gh pr create \
+            --repo "${{ github.repository }}" \
+            --base "$TARGET" \
+            --head "$NEW_BRANCH" \
+            --title "[cherry-pick] $PR_TITLE" \
+            --body "$PR_BODY")
+
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Comment success
+        if: steps.cherry_pick.outputs.success == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="✅ Cherry-pick to \`${{ steps.branch.outputs.target }}\` succeeded! New PR created: ${{ steps.create_pr.outputs.pr_url }}"
+
+      - name: Comment conflict
+        if: steps.cherry_pick.outputs.success == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MERGE_COMMIT="${{ steps.pr.outputs.merge_commit }}"
+          TARGET="${{ steps.branch.outputs.target }}"
+          PR_NUMBER="${{ github.event.issue.number }}"
+          CONFLICT_BODY=$(printf '⚠️ Cherry-pick to `%s` failed due to conflicts. Please resolve them manually:\n\n```bash\ngit fetch origin\ngit checkout -b cherry-pick-%s-to-%s origin/%s\ngit cherry-pick -x %s\n# resolve conflicts, then:\ngit cherry-pick --continue\ngit push origin cherry-pick-%s-to-%s\n```\n\nThen open a PR from `cherry-pick-%s-to-%s` to `%s`.' \
+            "$TARGET" "$PR_NUMBER" "$TARGET" "$TARGET" "$MERGE_COMMIT" \
+            "$PR_NUMBER" "$TARGET" "$PR_NUMBER" "$TARGET" "$TARGET")
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=$CONFLICT_BODY"
+          exit 1
