@@ -31,11 +31,12 @@ jobs:
     steps:
       - name: Parse command
         id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          COMMENT="${{ github.event.comment.body }}"
           # Extract optional branch argument
-          if echo "$COMMENT" | grep -qP '^/cherry-pick\s+\S'; then
-            TARGET_BRANCH=$(echo "$COMMENT" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
+          if echo "$COMMENT_BODY" | grep -qP '^/cherry-pick\s+\S'; then
+            TARGET_BRANCH=$(echo "$COMMENT_BODY" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
           else
             TARGET_BRANCH=""
           fi
@@ -135,14 +136,15 @@ jobs:
 
       - name: Cherry-pick commit
         id: cherry_pick
+        env:
+          MERGE_COMMIT: ${{ steps.pr.outputs.merge_commit }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          TARGET="${{ steps.branch.outputs.target }}"
-          MERGE_COMMIT="${{ steps.pr.outputs.merge_commit }}"
-          PR_NUMBER="${{ github.event.issue.number }}"
-          NEW_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET}"
+          NEW_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
 
-          git fetch origin "$TARGET"
-          git checkout -b "$NEW_BRANCH" "origin/$TARGET"
+          git fetch origin "$TARGET_BRANCH"
+          git checkout -b "$NEW_BRANCH" "origin/$TARGET_BRANCH"
 
           if git cherry-pick -x "$MERGE_COMMIT"; then
             echo "success=true" >> "$GITHUB_OUTPUT"
@@ -158,19 +160,20 @@ jobs:
         id: create_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_BRANCH: ${{ steps.cherry_pick.outputs.new_branch }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_TITLE: ${{ steps.pr.outputs.pr_title }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          COMMENT_URL: ${{ github.event.comment.html_url }}
         run: |
-          NEW_BRANCH="${{ steps.cherry_pick.outputs.new_branch }}"
-          TARGET="${{ steps.branch.outputs.target }}"
-          PR_NUMBER="${{ github.event.issue.number }}"
-          PR_TITLE="${{ steps.pr.outputs.pr_title }}"
-
           git push origin "$NEW_BRANCH"
 
-          PR_BODY="Cherry-pick of #${PR_NUMBER} to \`${TARGET}\`."$'\n\n'"Triggered by @${{ github.event.comment.user.login }} via [comment](${{ github.event.comment.html_url }})."
+          PR_BODY="Cherry-pick of #${PR_NUMBER} to \`${TARGET_BRANCH}\`."$'\n\n'"Triggered by @${COMMENTER} via [comment](${COMMENT_URL})."
 
           PR_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
-            --base "$TARGET" \
+            --base "$TARGET_BRANCH" \
             --head "$NEW_BRANCH" \
             --title "[cherry-pick] $PR_TITLE" \
             --body "$PR_BODY")
@@ -192,13 +195,13 @@ jobs:
         if: steps.cherry_pick.outputs.success == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_COMMIT: ${{ steps.pr.outputs.merge_commit }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          MERGE_COMMIT="${{ steps.pr.outputs.merge_commit }}"
-          TARGET="${{ steps.branch.outputs.target }}"
-          PR_NUMBER="${{ github.event.issue.number }}"
           CONFLICT_BODY=$(printf '⚠️ Cherry-pick to `%s` failed due to conflicts. Please resolve them manually:\n\n```bash\ngit fetch origin\ngit checkout -b cherry-pick-%s-to-%s origin/%s\ngit cherry-pick -x %s\n# resolve conflicts, then:\ngit cherry-pick --continue\ngit push origin cherry-pick-%s-to-%s\n```\n\nThen open a PR from `cherry-pick-%s-to-%s` to `%s`.' \
-            "$TARGET" "$PR_NUMBER" "$TARGET" "$TARGET" "$MERGE_COMMIT" \
-            "$PR_NUMBER" "$TARGET" "$PR_NUMBER" "$TARGET" "$TARGET")
+            "$TARGET_BRANCH" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH" "$MERGE_COMMIT" \
+            "$PR_NUMBER" "$TARGET_BRANCH" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH")
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
