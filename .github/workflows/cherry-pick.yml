@@ -117,12 +117,13 @@ jobs:
       - name: Post acknowledgement comment
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
         run: |
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="🍒 Attempting to cherry-pick to \`${{ steps.branch.outputs.target }}\`…"
+            -f "body=🍒 Attempting to cherry-pick to \`${TARGET_BRANCH}\`…"
 
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -186,12 +187,14 @@ jobs:
         if: steps.cherry_pick.outputs.success == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
+          NEW_PR_URL: ${{ steps.create_pr.outputs.pr_url }}
         run: |
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="✅ Cherry-pick to \`${{ steps.branch.outputs.target }}\` succeeded! New PR created: ${{ steps.create_pr.outputs.pr_url }}"
+            -f "body=✅ Cherry-pick to \`${TARGET_BRANCH}\` succeeded! New PR created: ${NEW_PR_URL}"
 
       - name: Comment conflict
         if: steps.cherry_pick.outputs.success == 'false'
