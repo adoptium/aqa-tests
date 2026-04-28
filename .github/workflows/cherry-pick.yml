@@ -35,7 +35,7 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
           # Extract optional branch argument
-          if echo "$COMMENT_BODY" | grep -qP '^/cherry-pick\s+\S'; then
+          if echo "$COMMENT_BODY" | grep -qE '^/cherry-pick[[:space:]]+[^[:space:]]'; then
             TARGET_BRANCH=$(echo "$COMMENT_BODY" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
           else
             TARGET_BRANCH=""
@@ -204,7 +204,12 @@ jobs:
           TARGET_BRANCH: ${{ steps.branch.outputs.target }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          MANUAL_STEPS="git fetch origin"$'\n'"git checkout -b cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH} origin/${TARGET_BRANCH}"$'\n'"git cherry-pick -x ${MERGE_COMMIT}"$'\n'"# resolve conflicts, then:"$'\n'"git cherry-pick --continue"$'\n'"git push origin cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
+          MANUAL_STEPS="git fetch origin"
+          MANUAL_STEPS+=$'\n'"git checkout -b cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH} origin/${TARGET_BRANCH}"
+          MANUAL_STEPS+=$'\n'"git cherry-pick -x ${MERGE_COMMIT}"
+          MANUAL_STEPS+=$'\n'"# resolve conflicts, then:"
+          MANUAL_STEPS+=$'\n'"git cherry-pick --continue"
+          MANUAL_STEPS+=$'\n'"git push origin cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
           CONFLICT_BODY=$(printf '⚠️ Cherry-pick to `%s` failed due to conflicts. Please resolve them manually:\n\n```bash\n%s\n```\n\nThen open a PR from `cherry-pick-%s-to-%s` to `%s`.' \
             "$TARGET_BRANCH" "$MANUAL_STEPS" "$PR_NUMBER" "$TARGET_BRANCH" "$TARGET_BRANCH")
           gh api \
