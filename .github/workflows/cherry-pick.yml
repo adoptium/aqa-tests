@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event.issue.pull_request != null &&
+      github.event.issue.pull_request.merged_at != null &&
       (github.event.comment.body == '/cherry-pick' ||
        startsWith(github.event.comment.body, '/cherry-pick '))
     steps:
@@ -51,27 +52,13 @@ jobs:
           REPO="${{ github.repository }}"
 
           PR_DATA=$(gh pr view "$PR_NUMBER" --repo "$REPO" \
-            --json merged,mergeCommit,title,headRefName)
+            --json mergeCommit,title)
 
-          MERGED=$(echo "$PR_DATA" | jq -r '.merged')
           MERGE_COMMIT=$(echo "$PR_DATA" | jq -r '.mergeCommit.oid // empty')
           PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
 
-          echo "merged=$MERGED" >> "$GITHUB_OUTPUT"
           echo "merge_commit=$MERGE_COMMIT" >> "$GITHUB_OUTPUT"
           echo "pr_title=$PR_TITLE" >> "$GITHUB_OUTPUT"
-
-      - name: Validate PR is merged
-        if: steps.pr.outputs.merged != 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="❌ Cannot cherry-pick: PR #${{ github.event.issue.number }} is not yet merged."
-          exit 1
 
       - name: Resolve target branch
         id: branch
