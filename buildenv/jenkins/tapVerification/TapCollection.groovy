@@ -96,7 +96,7 @@ pipeline {
                                     script: """
                                         count=0
                                         if [ -d "${build}" ]; then
-                                            for tapfile in ${build}/*.tap 2>/dev/null; do
+                                            find ${build} -maxdepth 1 -name '*.tap' -type f 2>/dev/null | while read tapfile; do
                                                 if [ -f "\$tapfile" ]; then
                                                     mv "\$tapfile" ${tapsDir}/
                                                     count=\$((count + 1))
@@ -104,7 +104,7 @@ pipeline {
                                                 fi
                                             done
                                         fi
-                                        echo \$count
+                                        ls -1 ${tapsDir}/*.tap 2>/dev/null | wc -l
                                     """,
                                     returnStdout: true
                                 ).trim()
