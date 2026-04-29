@@ -75,38 +75,36 @@ pipeline {
                             artifactExists = false
                         }
                         
-                        // If artifact doesn't exist in AQAvitTaps, search recursively in target directory
+                        // If artifact doesn't exist in AQAvitTaps, directly copy tap files from target directory
                         if (!artifactExists) {
-                            echo "Artifact not found in AQAvitTaps for build ${build}, searching recursively in target directory..."
+                            echo "Artifact not found in AQAvitTaps for build ${build}, copying tap files from target/**/temurin/AQAvitTaps/..."
                             try {
-                                // Copy all artifacts from the build
+                                // Directly copy only .tap files using the known path pattern
+                                // ** matches any number of directory levels
                                 copyArtifacts (
-                                    filter: "**/*",
+                                    filter: "target/**/temurin/AQAvitTaps/*.tap",
                                     fingerprintArtifacts: true,
                                     projectName: "${Release_PipelineJob_Name}",
                                     selector: specific("${build}"),
                                     target: "${build}/",
+                                    flatten: true,
                                     optional: true
                                 )
                                 
-                                // Recursively find all .tap files in any AQAvitaps directories under target
+                                // Move the tap files to tapsDir
                                 def tapCount = sh(
                                     script: """
-                                        if [ -d "${build}/target" ]; then
-                                            # Find all AQAvitaps directories recursively under target
-                                            find ${build}/target -type d -iname 'AQAvitaps' 2>/dev/null | while read aqadir; do
-                                                echo "Searching in: \$aqadir"
-                                                # Find all .tap files in each AQAvitaps directory
-                                                find "\$aqadir" -type f -name '*.tap' 2>/dev/null | while read tapfile; do
-                                                    echo "Found: \$tapfile"
-                                                    cp "\$tapfile" ${tapsDir}/ 2>/dev/null && echo "Copied: \$(basename \$tapfile)"
-                                                done
+                                        count=0
+                                        if [ -d "${build}" ]; then
+                                            for tapfile in ${build}/*.tap 2>/dev/null; do
+                                                if [ -f "\$tapfile" ]; then
+                                                    mv "\$tapfile" ${tapsDir}/
+                                                    count=\$((count + 1))
+                                                    echo "Moved: \$(basename \$tapfile)"
+                                                fi
                                             done
-                                            # Count total tap files copied
-                                            ls -1 ${tapsDir}/*.tap 2>/dev/null | wc -l
-                                        else
-                                            echo "0"
                                         fi
+                                        echo \$count
                                     """,
                                     returnStdout: true
                                 ).trim()
