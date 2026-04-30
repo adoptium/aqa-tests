@@ -72,6 +72,10 @@ timestamps {
 
             configJson.each { item ->
                 def releaseTestFlag = item.TEST_FLAG
+                def globalBuildConfig = item.GLOBAL_BUILD_CONFIG ?: [:]
+                def targetSpecificConfig = item.TARGET_SPECIFIC_CONFIG ?: [:]
+                def platformSpecificConfig = item.PLATFORM_SPECIFIC_CONFIG ?: [:]
+                
                 item.PLATFORM_TARGETS.each { pt ->
                     pt.each { p, t ->
                         // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
@@ -79,10 +83,10 @@ timestamps {
                         if (params.PLATFORMS) {
                             if (params.PLATFORMS.contains(p)) {
                                 echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
-                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig)
                             }
                         } else {
-                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL)
+                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig)
                         }
                     }
                 }
@@ -92,14 +96,14 @@ timestamps {
                 remoteTriggerTemurinJCK()
 
             } else {
-                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL)
+                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL, [:], [:], [:])
             }
         }
     }
     parallel JOBS
 }
 
-def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel) {
+def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:]) {
     if (jobTargets instanceof String) {
         if (jobTargets.contains("defaultFips")) {
             jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
@@ -156,6 +160,54 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
         echo "download_url: ${download_url}"
 
         jobTargets.each { TARGET ->
+            // Apply configuration hierarchy: global -> target-specific -> platform-specific -> params
+            def buildConfig = [:]
+            
+            // Start with global build config from JSON
+            if (globalBuildConfig) {
+                buildConfig.putAll(globalBuildConfig)
+            }
+            
+            // Apply target-specific config (e.g., functional, openjdk, jck)
+            if (targetSpecificConfig) {
+                // Check for exact match first (e.g., "dev.openjdk")
+                if (targetSpecificConfig.containsKey(TARGET)) {
+                    buildConfig.putAll(targetSpecificConfig[TARGET])
+                } else {
+                    // Check for partial matches (e.g., "functional" matches "sanity.functional")
+                    targetSpecificConfig.each { key, value ->
+                        if (TARGET.contains(key)) {
+                            buildConfig.putAll(value)
+                        }
+                    }
+                }
+            }
+            
+            // Apply platform-specific config for this target
+            if (platformSpecificConfig && platformSpecificConfig.containsKey(TARGET)) {
+                def platformConfig = platformSpecificConfig[TARGET]
+                if (platformConfig.containsKey(PLATFORM)) {
+                    buildConfig.putAll(platformConfig[PLATFORM])
+                }
+            }
+            
+            // Override with pipeline parameters if provided
+            if (params.JDK_REPO) buildConfig.JDK_REPO = params.JDK_REPO
+            if (params.JDK_BRANCH) buildConfig.JDK_BRANCH = params.JDK_BRANCH
+            if (params.OPENJ9_BRANCH) buildConfig.OPENJ9_BRANCH = params.OPENJ9_BRANCH
+            if (params.VENDOR_TEST_REPOS) buildConfig.VENDOR_TEST_REPOS = params.VENDOR_TEST_REPOS
+            if (params.VENDOR_TEST_BRANCHES) buildConfig.VENDOR_TEST_BRANCHES = params.VENDOR_TEST_BRANCHES
+            if (params.VENDOR_TEST_DIRS) buildConfig.VENDOR_TEST_DIRS = params.VENDOR_TEST_DIRS
+            if (params.LABEL) buildConfig.LABEL = params.LABEL
+            if (params.LABEL_ADDITION) buildConfig.LABEL_ADDITION = params.LABEL_ADDITION
+            if (params.KEEP_REPORTDIR != null) buildConfig.KEEP_REPORTDIR = params.KEEP_REPORTDIR
+            if (params.DYNAMIC_COMPILE != null) buildConfig.DYNAMIC_COMPILE = params.DYNAMIC_COMPILE
+            if (params.RERUN_ITERATIONS) buildConfig.RERUN_ITERATIONS = params.RERUN_ITERATIONS
+            if (params.BUILD_LIST) buildConfig.BUILD_LIST = params.BUILD_LIST
+            if (params.ACTIVE_NODE_TIMEOUT) buildConfig.ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT
+            if (params.USE_TESTENV_PROPERTIES != null) buildConfig.USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES
+            if (params.ADOPTOPENJDK_BRANCH) buildConfig.ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH
+            
             def TEST_JOB_NAME = "Grinder"
             if (TARGET.contains("Grinder")) {
                 TEST_JOB_NAME = TARGET
@@ -184,28 +236,20 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 TEST_JOB_NAME = "Test_openjdk${jobJdkVersion}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
             }
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
+            echo "Applied buildConfig: ${buildConfig}"
 
-            def keep_reportdir = false
-            if (TARGET.contains("functional") || TARGET.contains("jck") || TARGET.contains("openjdk") || TARGET.contains("osb")) {
-                keep_reportdir = true
-            }
-
-            def DYNAMIC_COMPILE = false
-            if (!params.DYNAMIC_COMPILE) {
-                if (("${TARGET}".contains('functional')) || ("${TARGET}".contains('external'))) {
-                    DYNAMIC_COMPILE = true
-                } else {
-                    DYNAMIC_COMPILE = false
-                }
-            } else {
-                DYNAMIC_COMPILE = params.DYNAMIC_COMPILE ? params.DYNAMIC_COMPILE.toBoolean() : false
-            }
-
-            def VENDOR_TEST_REPOS = ''
-            def VENDOR_TEST_BRANCHES = ''
-            def VENDOR_TEST_DIRS = ''
-            int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
-            def buildList = params.BUILD_LIST ?: ""
+            // Extract values from buildConfig with fallbacks
+            def keep_reportdir = buildConfig.KEEP_REPORTDIR ? buildConfig.KEEP_REPORTDIR.toBoolean() : false
+            def DYNAMIC_COMPILE = buildConfig.DYNAMIC_COMPILE ? buildConfig.DYNAMIC_COMPILE.toBoolean() : false
+            def VENDOR_TEST_REPOS = buildConfig.VENDOR_TEST_REPOS ?: ''
+            def VENDOR_TEST_BRANCHES = buildConfig.VENDOR_TEST_BRANCHES ?: ''
+            def VENDOR_TEST_DIRS = buildConfig.VENDOR_TEST_DIRS ?: ''
+            int rerunIterations = buildConfig.RERUN_ITERATIONS ? buildConfig.RERUN_ITERATIONS.toString().toInteger() : 0
+            def buildList = buildConfig.BUILD_LIST ?: ""
+            def testLabel = buildConfig.LABEL ?: ""
+            def additionalTestLabel = buildConfig.LABEL_ADDITION ?: ""
+            
+            // Apply variant-specific logic (keep existing logic for backward compatibility)
             if (params.VARIANT == "openj9" || params.VARIANT == "ibm") {
                 // default rerunIterations is 3 for openj9
                 rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 3
@@ -305,8 +349,49 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 childParams << string(name: "VENDOR_TEST_BRANCHES", value: VENDOR_TEST_BRANCHES)
                 childParams << string(name: "VENDOR_TEST_DIRS", value: VENDOR_TEST_DIRS)
                 childParams << string(name: "VENDOR_TEST_REPOS", value: VENDOR_TEST_REPOS)
+                
+                // Add build-specific parameters from config
+                if (buildConfig.JDK_REPO) {
+                    childParams << string(name: "JDK_REPO", value: buildConfig.JDK_REPO)
+                }
+                if (buildConfig.JDK_BRANCH) {
+                    childParams << string(name: "JDK_BRANCH", value: buildConfig.JDK_BRANCH)
+                }
+                if (buildConfig.OPENJ9_BRANCH) {
+                    childParams << string(name: "OPENJ9_BRANCH", value: buildConfig.OPENJ9_BRANCH)
+                }
+                if (testLabel) {
+                    childParams << string(name: "LABEL", value: testLabel)
+                }
+                if (additionalTestLabel) {
+                    childParams << string(name: "LABEL_ADDITION", value: additionalTestLabel)
+                }
+                if (buildConfig.ACTIVE_NODE_TIMEOUT) {
+                    childParams << string(name: "ACTIVE_NODE_TIMEOUT", value: buildConfig.ACTIVE_NODE_TIMEOUT.toString())
+                }
+                if (buildConfig.USE_TESTENV_PROPERTIES != null) {
+                    childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: buildConfig.USE_TESTENV_PROPERTIES.toBoolean())
+                }
+                if (buildConfig.ADOPTOPENJDK_BRANCH) {
+                    childParams << string(name: "ADOPTOPENJDK_BRANCH", value: buildConfig.ADOPTOPENJDK_BRANCH)
+                }
+                if (buildConfig.RERUN_FAILURE != null) {
+                    childParams << booleanParam(name: "RERUN_FAILURE", value: buildConfig.RERUN_FAILURE.toBoolean())
+                }
                 if (buildList) {
                     childParams << string(name: "BUILD_LIST", value: buildList)
+                }
+                
+                // Add any additional test params from config
+                if (buildConfig.ADDITIONAL_TEST_PARAMS && buildConfig.ADDITIONAL_TEST_PARAMS instanceof Map) {
+                    buildConfig.ADDITIONAL_TEST_PARAMS.each { key, value ->
+                        def valueStr = value.toString()
+                        if (valueStr == "true" || valueStr == "false") {
+                            childParams << booleanParam(name: key, value: valueStr.toBoolean())
+                        } else {
+                            childParams << string(name: key, value: valueStr)
+                        }
+                    }
                 }
 
                 int jobNum = JOBS.size() + 1
