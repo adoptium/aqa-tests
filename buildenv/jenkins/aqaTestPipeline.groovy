@@ -38,11 +38,23 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 @Field String defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
 @Field String defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
+
 // There is no applicable tests for FIPS140-2 extended.functional atm, so temporarily disable FIPS140-2 extended.functional
 @Field String defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
 
-if (params.BUILD_TYPE == "nightly") {
-    defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
+// Set defaultTestTargets based on VARIANT
+if (params.VARIANT == "temurin") {
+    if (params.BUILD_TYPE == "nightly") {
+        defaultTestTargets = "sanity.functional,extended.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.perf,extended.perf,sanity.jck,sanity.system,extended.system"
+    } else {
+        defaultTestTargets = "sanity.functional,extended.functional,special.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
+    }
+} else if (params.VARIANT == "openj9" || params.VARIANT == "ibm") {
+    if (params.BUILD_TYPE == "nightly") {
+        defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
+    } else {
+        defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
+    }
 }
 
 @Field Map JOBS = [:]
