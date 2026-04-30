@@ -280,11 +280,12 @@ public class CharsetsTest {
 
             // JDK 26+ uses encodeFromUTF16, earlier versions use encode
             if (JavaVersion.getFeature() >= 26) {
-                // Convert char[] to UTF-16 LE byte array for the new API
+                // Convert char[] to UTF-16 LE byte array for the new API, ensuring handles big vs little endian
                 byte[] utf16Bytes = new byte[ca.length * 2];
+                ByteBuffer buffer = ByteBuffer.wrap(utf16Bytes);
+                buffer.order(ByteOrder.nativeOrder());
                 for (int j = 0; j < ca.length; j++) {
-                    utf16Bytes[j * 2] = (byte)(ca[j] & 0xFF);
-                    utf16Bytes[j * 2 + 1] = (byte)(ca[j] >> 8);
+                    buffer.putChar(ca[j]);
                 }
                 len = (int)ArrayEncoder_encodeFromUTF16.invoke(ArrayEncoder.cast(ce), utf16Bytes, 0, ca.length, ba, 0);
             } else {
