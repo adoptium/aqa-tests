@@ -87,6 +87,8 @@ timestamps {
                 def globalBuildConfig = item.GLOBAL_BUILD_CONFIG ?: [:]
                 def targetSpecificConfig = item.TARGET_SPECIFIC_CONFIG ?: [:]
                 def platformSpecificConfig = item.PLATFORM_SPECIFIC_CONFIG ?: [:]
+                def platformAdditionalTestLabels = item.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
+                def platformAdditionalTestParams = item.PLATFORM_ADDITIONAL_TEST_PARAMS ?: [:]
                 
                 item.PLATFORM_TARGETS.each { pt ->
                     pt.each { p, t ->
@@ -95,10 +97,10 @@ timestamps {
                         if (params.PLATFORMS) {
                             if (params.PLATFORMS.contains(p)) {
                                 echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
-                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig)
+                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                             }
                         } else {
-                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig)
+                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                         }
                     }
                 }
@@ -108,14 +110,14 @@ timestamps {
                 remoteTriggerTemurinJCK()
 
             } else {
-                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL, [:], [:], [:])
+                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL, [:], [:], [:], [:], [:])
             }
         }
     }
     parallel JOBS
 }
 
-def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:]) {
+def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
     if (jobTargets instanceof String) {
         if (jobTargets.contains("defaultFips")) {
             jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
@@ -201,6 +203,25 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 if (platformConfig.containsKey(PLATFORM)) {
                     buildConfig.putAll(platformConfig[PLATFORM])
                 }
+            }
+            
+            // Apply platform-specific additional test labels
+            if (platformAdditionalTestLabels && platformAdditionalTestLabels.containsKey(PLATFORM)) {
+                def additionalLabel = platformAdditionalTestLabels[PLATFORM]
+                if (buildConfig.LABEL_ADDITION) {
+                    buildConfig.LABEL_ADDITION = "${buildConfig.LABEL_ADDITION}&&${additionalLabel}"
+                } else {
+                    buildConfig.LABEL_ADDITION = additionalLabel
+                }
+            }
+            
+            // Apply platform-specific additional test params
+            if (platformAdditionalTestParams && platformAdditionalTestParams.containsKey(PLATFORM)) {
+                def additionalParams = platformAdditionalTestParams[PLATFORM]
+                if (!buildConfig.ADDITIONAL_TEST_PARAMS) {
+                    buildConfig.ADDITIONAL_TEST_PARAMS = [:]
+                }
+                buildConfig.ADDITIONAL_TEST_PARAMS.putAll(additionalParams)
             }
             
             // Override with pipeline parameters if provided

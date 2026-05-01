@@ -15,6 +15,7 @@
             { "aarch64_alpine-linux": "defaultTestTargets" },
             { "aarch64_windows": "defaultTestTargets" }
         ],
+        "COMMENT": "Configuration based on ci-jenkins-pipelines/pipelines/jobs/configurations/jdk*_pipeline_config.groovy",
         "GLOBAL_BUILD_CONFIG": {
             "JDK_REPO": "https://github.com/adoptium/temurin-build",
             "JDK_BRANCH": "master",
@@ -90,6 +91,18 @@
                 "aarch64_mac": {
                     "LABEL": "ci.role.test.repro&&hw.arch.aarch64&&(sw.os.osx||sw.os.mac)"
                 }
+            }
+        },
+        "PLATFORM_ADDITIONAL_TEST_LABELS": {
+            "x86-64_linux": "!sw.tool.glibc.2_12",
+            "ppc64_aix": "sw.os.aix.7_2TL5"
+        },
+        "PLATFORM_ADDITIONAL_TEST_PARAMS": {
+            "x86-64_linux": {
+                "CLOUD_PROVIDER": "azure"
+            },
+            "ppc64_aix": {
+                "TIME_LIMIT": "30"
             }
         }
     }

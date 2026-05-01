@@ -217,6 +217,34 @@ PIPELINE PARAM: (no override)
 ### 1. Standalone Test Execution
 
 Trigger `aqaTestPipeline` job with parameters:
+#### 6. PLATFORM_ADDITIONAL_TEST_LABELS
+Platform-specific additional test labels (from ci-jenkins-pipelines configurations):
+
+```json
+"PLATFORM_ADDITIONAL_TEST_LABELS": {
+    "x86-64_linux": "!sw.tool.glibc.2_12",
+    "ppc64_aix": "sw.os.aix.7_2TL5"
+}
+```
+
+These labels are appended to `LABEL_ADDITION` for the specified platforms. This corresponds to `additionalTestLabels` in ci-jenkins-pipelines build configurations.
+
+#### 7. PLATFORM_ADDITIONAL_TEST_PARAMS
+Platform-specific additional test parameters (from ci-jenkins-pipelines configurations):
+
+```json
+"PLATFORM_ADDITIONAL_TEST_PARAMS": {
+    "x86-64_linux": {
+        "CLOUD_PROVIDER": "azure"
+    },
+    "ppc64_aix": {
+        "TIME_LIMIT": "30"
+    }
+}
+```
+
+These parameters are merged into `ADDITIONAL_TEST_PARAMS` for the specified platforms. This corresponds to `additionalTestParams` in ci-jenkins-pipelines build configurations.
+
 ```groovy
 build job: 'AQA_Test_Pipeline',
     parameters: [
