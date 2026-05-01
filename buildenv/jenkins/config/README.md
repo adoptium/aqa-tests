@@ -60,6 +60,29 @@ config/
         }
     }
 ]
+
+### Version-Specific Configuration Files
+
+Configuration files can be version-specific to handle differences between JDK versions:
+
+**File Selection Priority:**
+1. `jdk${VERSION}.json` (e.g., `jdk21.json`, `jdk17.json`)
+2. `default.json` (fallback for all versions)
+
+**Example:**
+```
+config/temurin/nightly/
+├── default.json      # JDK 25+ configuration (latest)
+├── jdk21.json        # JDK 21 specific overrides
+└── jdk17.json        # JDK 17 specific overrides
+```
+
+**Version Differences Example:**
+- **JDK 25+**: Uses `sw.os.aix.7_2TL5` and `TIME_LIMIT=30` for ppc64_aix
+- **JDK 21**: Uses `sw.os.aix.7_2` without TIME_LIMIT for ppc64_aix
+
+This allows handling version-specific test requirements from ci-jenkins-pipelines configurations.
+
 ```
 
 ### Configuration Sections
