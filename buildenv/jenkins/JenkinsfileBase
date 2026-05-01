@@ -109,6 +109,15 @@ def setupEnv() {
 	env.TKG_ITERATIONS = params.TKG_ITERATIONS ? "${params.TKG_ITERATIONS}".toInteger() : 1
 	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false
 	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
+
+	// Initialize iteration result accumulators for multi-iteration test runs
+	env.ITER_COUNT = '0'
+	env.ITER_TOTAL = '0'
+	env.ITER_EXECUTED = '0'
+	env.ITER_PASSED = '0'
+	env.ITER_FAILED = '0'
+	env.ITER_DISABLED = '0'
+	env.ITER_SKIPPED = '0'
 	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	if (CLOUD_PROVIDER == 'azure') {
 		// Needs to be inside the workspace as the docker container won't have permissions to write to higher level directories
@@ -858,7 +867,23 @@ def runTest( ) {
 					makeTest("${RUNTEST_CMD}")
 				}
 			}
+
+			// Accumulate results after each iteration
+			def resultSum = [:]
+			def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
+			if (matcher?.matches()) {
+				for (int j = 1; j <= matcher.groupCount(); j++) {
+					if (matcher.group(j) != null) {
+						def matchVals = matcher.group(j).split(": ")
+						resultSum[matchVals[0]] = matchVals[1] as int
+					}
+				}
+				checkTestResults(resultSum)
+			}
 		}
+
+		// Write aggregated summary after all iterations complete
+		writeSummary()
 
 		if (params.CODE_COVERAGE) {
 			echo 'Generating Code Coverage Reports...'
@@ -870,26 +895,16 @@ def runTest( ) {
 			}
 		}
 
-                if (env.BUILD_LIST.startsWith('perf')) {
-                    checkDacapoH2Metric()
-                }
-
-		def resultSum = [:]
-		def matcher = manager.getLogMatcher(".*(TOTAL: \\d+)\\s*(EXECUTED: \\d+)\\s*(PASSED: \\d+)\\s*(FAILED: \\d+)\\s*(DISABLED: \\d+)?\\s*(SKIPPED: \\d+)\\s*\$")
-		if (matcher?.matches()) {
-			for (int i = 1; i <= matcher.groupCount(); i++) {
-				if (matcher.group(i) != null) {
-					def matchVals = matcher.group(i).split(": ")
-					resultSum[matchVals[0]] = matchVals[1] as int
-				}
-			}
-			checkTestResults(resultSum)
-		} else {
+		if (env.BUILD_LIST.startsWith('perf')) {
+			checkDacapoH2Metric()
+		}
+		// Check if any iterations ran and accumulated results
+		if (env.ITER_COUNT.toInteger() == 0) {
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = createBadgeSummary("error.svg")
-			appendSummaryText(summary, "TEST BUILD FAILURE!")
-		}
+			appendSummaryText(summary,"TEST BUILD FAILURE!")
+		} 
 	}
 }
 
@@ -921,11 +936,18 @@ def appendSummaryText(summary, text) {
 }
 
 def checkTestResults(results) {
-	if (results.isEmpty()) {
+	if (results.isEmpty()) {	
 		return
 	}
 
-	def summary = null
+	// Accumulate results across iterations (see issue #978)
+	env.ITER_COUNT = (env.ITER_COUNT.toInteger() + 1).toString()
+	env.ITER_TOTAL = (env.ITER_TOTAL.toInteger() + (results["TOTAL"] ?: 0)).toString()
+	env.ITER_EXECUTED = (env.ITER_EXECUTED.toInteger() + (results["EXECUTED"] ?: 0)).toString()
+	env.ITER_PASSED = (env.ITER_PASSED.toInteger() + (results["PASSED"] ?: 0)).toString()
+	env.ITER_FAILED = (env.ITER_FAILED.toInteger() + (results["FAILED"] ?: 0)).toString()
+	env.ITER_DISABLED = (env.ITER_DISABLED.toInteger() + (results["DISABLED"] ?: 0)).toString()
+	env.ITER_SKIPPED = (env.ITER_SKIPPED.toInteger() + (results["SKIPPED"] ?: 0)).toString()
 
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
@@ -938,16 +960,48 @@ def checkTestResults(results) {
 	if (results["FAILED"] != 0) {
 		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, current build status is UNSTABLE.'
-		summary = createBadgeSummary("warning.svg")
-	} else {
-		summary = createBadgeSummary("accept.svg")
+	}
+	
+	// Summary writing is deferred to writeSummary() after all iterations complete
+}
+
+def writeSummary() {
+	def iterCount = env.ITER_COUNT.toInteger()
+
+	// If no iterations ran, nothing to summarize
+	if (iterCount == 0) {
+		return
 	}
 
-	appendSummaryText(summary, "TEST TARGETS SUMMARY:<ul>")
-	results.each {
-		appendSummaryText(summary, "<li><b>$it.key</b> : $it.value</li>")
+	def totalTests = env.ITER_TOTAL.toInteger()
+	def failedTests = env.ITER_FAILED.toInteger()
+
+	// Handle case where no tests were found
+	if (totalTests == 0) {
+		def summary = createBadgeSummary("folder-delete.svg")
+		appendSummaryText(summary,"NO TEST FOUND!")
+		return
 	}
-	appendSummaryText(summary, "</ul>")
+
+	// Choose icon based on test results
+	def svg = failedTests != 0 ? "warning.svg" : "accept.svg"
+	def summary = createBadgeSummary(svg)
+
+	// Add iteration count to header if multiple iterations ran
+	def header = iterCount > 1
+		? "TEST TARGETS SUMMARY (${iterCount} iterations):"
+		: "TEST TARGETS SUMMARY:"
+
+	appendSummaryText(summary,"${header}<ul>")
+	appendSummaryText(summary,"<li><b>TOTAL</b> : ${env.ITER_TOTAL}</li>")
+	appendSummaryText(summary,"<li><b>EXECUTED</b> : ${env.ITER_EXECUTED}</li>")
+	appendSummaryText(summary,"<li><b>PASSED</b> : ${env.ITER_PASSED}</li>")
+	appendSummaryText(summary,"<li><b>FAILED</b> : ${env.ITER_FAILED}</li>")
+	if (env.ITER_DISABLED.toInteger() > 0) {
+		appendSummaryText(summary,"<li><b>DISABLED</b> : ${env.ITER_DISABLED}</li>")
+	}
+	appendSummaryText(summary,"<li><b>SKIPPED</b> : ${env.ITER_SKIPPED}</li>")
+	appendSummaryText(summary,"</ul>")
 }
 
 def post(output_name) {
