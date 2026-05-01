@@ -36,26 +36,10 @@ def PIPELINE_DISPLAY_NAME = (params.PIPELINE_DISPLAY_NAME) ? "#${currentBuild.nu
 // Set the AQA_TEST_PIPELINE Jenkins job displayName
 currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
-@Field String defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-@Field String defaultFipsTestTargets = "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck"
-
-// There is no applicable tests for FIPS140-2 extended.functional atm, so temporarily disable FIPS140-2 extended.functional
-@Field String defaultFips140_2TestTargets = defaultFipsTestTargets.replace("extended.functional,", "")
-
-// Set defaultTestTargets based on VARIANT
-if (params.VARIANT == "temurin") {
-    if (params.BUILD_TYPE == "nightly") {
-        defaultTestTargets = "sanity.functional,extended.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.perf,extended.perf,sanity.jck,sanity.system,extended.system"
-    } else {
-        defaultTestTargets = "sanity.functional,extended.functional,special.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-    }
-} else if (params.VARIANT == "openj9" || params.VARIANT == "ibm") {
-    if (params.BUILD_TYPE == "nightly") {
-        defaultTestTargets = "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system"
-    } else {
-        defaultTestTargets = "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck"
-    }
-}
+// Default test targets - will be loaded from config JSON files
+@Field String defaultTestTargets = ""
+@Field String defaultFipsTestTargets = ""
+@Field String defaultFips140_2TestTargets = ""
 
 @Field Map JOBS = [:]
 
@@ -71,10 +55,11 @@ timestamps {
                 node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
                     checkout scm
                     dir (env.WORKSPACE) {
-                        def filePath = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
-                        filePath = filePath + "default.json"
-                        if (fileExists(filePath + "jdk${JDK_VERSION}.json")) {
-                            filePath = filePath + "jdk${JDK_VERSION}.json"
+                        def baseDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
+                        def filePath = "${baseDir}default.json"
+                        def versionSpecificFile = "${baseDir}jdk${JDK_VERSION}.json"
+                        if (fileExists(versionSpecificFile)) {
+                            filePath = versionSpecificFile
                         }
                         echo "Read JSON from file ${filePath}..."
                         configJson = readJSON(file: filePath)
@@ -89,6 +74,17 @@ timestamps {
                 def platformSpecificConfig = item.PLATFORM_SPECIFIC_CONFIG ?: [:]
                 def platformAdditionalTestLabels = item.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
                 def platformAdditionalTestParams = item.PLATFORM_ADDITIONAL_TEST_PARAMS ?: [:]
+                
+                // Load default test targets from config
+                if (item.DEFAULT_TEST_TARGETS) {
+                    defaultTestTargets = item.DEFAULT_TEST_TARGETS
+                }
+                if (item.DEFAULT_FIPS_TEST_TARGETS) {
+                    defaultFipsTestTargets = item.DEFAULT_FIPS_TEST_TARGETS
+                }
+                if (item.DEFAULT_FIPS140_2_TEST_TARGETS) {
+                    defaultFips140_2TestTargets = item.DEFAULT_FIPS140_2_TEST_TARGETS
+                }
                 
                 item.PLATFORM_TARGETS.each { pt ->
                     pt.each { p, t ->

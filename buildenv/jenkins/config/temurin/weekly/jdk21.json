@@ -1,9 +1,9 @@
 [
     {
         "TEST_FLAG": "NONE",
-        "COMMENT": "Default configuration for JDK 25+ (including JDK 26, 27, etc.). For JDK 21 and earlier, see jdk21.json",
-        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.perf,extended.perf,sanity.jck,sanity.system,extended.system",
-        "DEFAULT_FIPS_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
+        "COMMENT": "JDK 21 specific weekly configuration - uses sw.os.aix.7_2 (not 7_2TL5) and no TIME_LIMIT for ppc64_aix",
+        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck",
+        "DEFAULT_FIPS_TEST_TARGETS": "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "DEFAULT_FIPS140_2_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "PLATFORM_TARGETS": [
             { "aarch64_linux": "defaultTestTargets" },
@@ -19,7 +19,6 @@
             { "aarch64_alpine-linux": "defaultTestTargets" },
             { "aarch64_windows": "defaultTestTargets" }
         ],
-        "COMMENT": "Configuration based on ci-jenkins-pipelines/pipelines/jobs/configurations/jdk*_pipeline_config.groovy",
         "GLOBAL_BUILD_CONFIG": {
             "JDK_REPO": "https://github.com/adoptium/temurin-build",
             "JDK_BRANCH": "master",
@@ -99,14 +98,11 @@
         },
         "PLATFORM_ADDITIONAL_TEST_LABELS": {
             "x86-64_linux": "!sw.tool.glibc.2_12",
-            "ppc64_aix": "sw.os.aix.7_2TL5"
+            "ppc64_aix": "sw.os.aix.7_2"
         },
         "PLATFORM_ADDITIONAL_TEST_PARAMS": {
             "x86-64_linux": {
                 "CLOUD_PROVIDER": "azure"
-            },
-            "ppc64_aix": {
-                "TIME_LIMIT": "30"
             }
         }
     }
