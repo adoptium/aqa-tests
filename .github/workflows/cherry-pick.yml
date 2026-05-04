@@ -27,20 +27,15 @@ jobs:
     if: |
       github.event.issue.pull_request != null &&
       github.event.issue.pull_request.merged_at != null &&
-      (github.event.comment.body == '/cherry-pick' ||
-       startsWith(github.event.comment.body, '/cherry-pick '))
+      startsWith(github.event.comment.body, '/cherry-pick ')
     steps:
       - name: Parse command
         id: parse
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          # Extract optional branch argument
-          if echo "$COMMENT_BODY" | grep -qE '^/cherry-pick[[:space:]]+[^[:space:]]'; then
-            TARGET_BRANCH=$(echo "$COMMENT_BODY" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
-          else
-            TARGET_BRANCH=""
-          fi
+          # Extract required branch argument
+          TARGET_BRANCH=$(echo "$COMMENT_BODY" | sed 's|^/cherry-pick[[:space:]]*||' | xargs)
           echo "target_branch=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Get PR details
@@ -60,7 +55,7 @@ jobs:
           echo "merge_commit=$MERGE_COMMIT" >> "$GITHUB_OUTPUT"
           echo "pr_title=$PR_TITLE" >> "$GITHUB_OUTPUT"
 
-      - name: Resolve target branch
+      - name: Validate target branch
         id: branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,35 +63,14 @@ jobs:
         run: |
           TARGET="$INPUT_TARGET"
 
-          if [ -z "$TARGET" ]; then
-            # Auto-detect the latest vX.X.X-release branch
-            TARGET=$(gh api "/repos/${{ github.repository }}/branches" \
-              --paginate \
-              --jq '.[].name' \
-              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-release$' \
-              | sort -V \
-              | tail -1)
-
-            if [ -z "$TARGET" ]; then
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github+json" \
-                "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-                -f body="❌ Cannot cherry-pick: No release branch matching \`vX.X.X-release\` was found. Please specify a branch explicitly, e.g. \`/cherry-pick v0.9.9-release\`."
-              exit 1
-            fi
-
-            echo "Auto-detected release branch: $TARGET"
-          else
-            # Verify the specified branch exists
-            if ! gh api "/repos/${{ github.repository }}/branches/$TARGET" > /dev/null 2>&1; then
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github+json" \
-                "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-                -f body="❌ Cannot cherry-pick: Branch \`$TARGET\` does not exist in this repository."
-              exit 1
-            fi
+          # Verify the specified branch exists
+          if ! gh api "/repos/${{ github.repository }}/branches/$TARGET" > /dev/null 2>&1; then
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+              -f body="❌ Cannot cherry-pick: Branch \`$TARGET\` does not exist in this repository."
+            exit 1
           fi
 
           echo "target=$TARGET" >> "$GITHUB_OUTPUT"
