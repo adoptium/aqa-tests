@@ -171,7 +171,7 @@ jobs:
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f "body=@${COMMENTER} ✅ Cherry-pick to \`${TARGET_BRANCH}\` succeeded! New PR created (open, awaiting review and merge): ${NEW_PR_URL}"
+            -f "body=@${COMMENTER} ✅ Cherry-pick to \`${TARGET_BRANCH}\` succeeded! New PR created: ${NEW_PR_URL}"
 
       - name: Comment conflict
         if: steps.cherry_pick.outputs.success == 'false'
