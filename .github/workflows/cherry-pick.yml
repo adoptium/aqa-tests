@@ -30,6 +30,28 @@ jobs:
       (github.event.comment.body == '/cherry-pick' ||
        startsWith(github.event.comment.body, '/cherry-pick '))
     steps:
+      - name: Check permission
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+        run: |
+          PR_DATA=$(gh pr view "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --json author,reviews,mergedBy)
+
+          if ! echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '
+            .author.login == $user or
+            (.mergedBy.login // "") == $user or
+            ([ .reviews[].author.login ] | index($user)) != null
+          ' > /dev/null; then
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+              -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author, reviewers, or the person who merged the PR can use this command."
+            exit 1
+          fi
+
       - name: Parse command
         id: parse
         env:
