@@ -176,7 +176,7 @@ jobs:
             --repo "${{ github.repository }}" \
             --base "$TARGET_BRANCH" \
             --head "$NEW_BRANCH" \
-            --title "[cherry-pick] $PR_TITLE" \
+            --title "[$TARGET_BRANCH] $PR_TITLE" \
             --body "$PR_BODY")
 
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
