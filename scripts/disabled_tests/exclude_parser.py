@@ -37,6 +37,39 @@ ARCH_EXCEPTIONS = {
     "x86": "x86-32",
 }
 
+# Valid OS names accepted in ProblemList platform fields (before exception mapping)
+VALID_OS = {
+    "linux",
+    "windows",
+    "macosx",
+    "solaris",
+    "aix",
+    "z/os",
+    "sunos",
+    "alpine-linux",
+}
+
+# Valid ARCH names accepted in ProblemList platform fields (before exception mapping)
+VALID_ARCH = {
+    "aarch64",
+    "arm",
+    "all",
+    "x64",
+    "x86",
+    "x86-64",
+    "x86-32",
+    "ppc64",
+    "ppc64le",
+    "ppc32",
+    "s390x",
+    "s390",
+    "sparc",
+    "sparcv9",
+    "i586",
+    "riscv64",
+    "loongarch64",
+}
+
 class ExclusionFileProcessingException(Exception):
     pass
 
@@ -184,6 +217,18 @@ def transform_platform(os_arch_platform: str) -> str:
         raise ValueError(f"Cannot split {os_arch_platform!r} over regex pattern {split_pattern.pattern!r}")
 
     os_name, arch_name = split_list
+
+    # validate OS and ARCH against whitelists
+    if os_name not in VALID_OS:
+        raise ValueError(
+            f"Invalid OS name {os_name!r} in platform {os_arch_platform!r}. "
+            f"Valid OS names are: {sorted(VALID_OS)}"
+        )
+    if arch_name not in VALID_ARCH:
+        raise ValueError(
+            f"Invalid ARCH name {arch_name!r} in platform {os_arch_platform!r}. "
+            f"Valid ARCH names are: {sorted(VALID_ARCH)}"
+        )
 
     # rename OS if needed
     if os_name in OS_EXCEPTIONS:
