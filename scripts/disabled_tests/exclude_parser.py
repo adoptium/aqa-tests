@@ -46,7 +46,6 @@ VALID_OS = {
     "aix",
     "z/os",
     "sunos",
-    "alpine-linux",
     "general",
     "bsd",
 }
