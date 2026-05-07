@@ -47,6 +47,8 @@ VALID_OS = {
     "z/os",
     "sunos",
     "alpine-linux",
+    "general",
+    "bsd",
 }
 
 # Valid ARCH names accepted in ProblemList platform fields (before exception mapping)
@@ -58,16 +60,23 @@ VALID_ARCH = {
     "x86",
     "x86-64",
     "x86-32",
+    "x32",
     "ppc64",
     "ppc64le",
     "ppc32",
+    "ppc",
     "s390x",
     "s390",
     "sparc",
     "sparcv9",
     "i586",
     "riscv64",
+    "riscv32",
     "loongarch64",
+    "mips64",
+    "mips64el",
+    "mips",
+    "mipsel",
 }
 
 class ExclusionFileProcessingException(Exception):
