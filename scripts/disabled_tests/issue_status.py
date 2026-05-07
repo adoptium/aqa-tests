@@ -4,6 +4,7 @@ import enum
 import json
 import logging
 import os
+import re
 import sys
 import urllib.parse
 from collections import defaultdict
@@ -152,18 +153,79 @@ class BugsOpenJdkHandler(BaseHandler):
             return (status_enum, "OPEN",)
         else:
             resolution = resp_json.get('fields', {}).get('resolution', {}).get('name', '')
-            return (status_enum, "CLOSED: " + self.resolution_parser(resolution),)
+            return (status_enum, "CLOSED: " + self.resolution_parser(resolution, resp_json),)
 
-    def resolution_parser(self, resolution):
+    def resolution_parser(self, resolution, resp_json):
         if resolution == 'null' or resolution == '':
             return "Unknown resolution. Action: Investigate"
         elif resolution == "Won't Fix":
             return "Won't Fix"
         elif resolution == "Fixed":
-            return "Fixed. Action: Unexclude"
+            # Identify fix commit links while ignoring -dev links
+            fix_commits_list = []
+            comments_dict = resp_json.get('fields', {}).get('comment', {}).get('comments', [])
+            fix_commits_list = self.comments_parser(comments_dict, fix_commits_list)
+            # For each issue link identified as a backport, do the same.
+            issues_list = resp_json.get('fields', {}).get('issuelinks', {})
+            for issue_dict in issues_list:
+                if issue_dict.get('type', {}).get('name', '') == "Backport":
+                    backport_url = self.BUGS_OPENJDK_API_BASE_URL + "/" + issue_dict.get('outwardIssue', {}).get('key', '')
+                    backport_resp = requests.get(backport_url)
+                    backport_resp.raise_for_status()
+                    backport_resp_json = backport_resp.json()
+                    backport_comments = backport_resp_json.get('fields', {}).get('comment', {}).get('comments', [])
+                    fix_commits_list = self.comments_parser(backport_comments, fix_commits_list)
+            # For every link, reduce it to the jdk version int and append to the fixed string.
+            versions_csv = ","
+            if len(fix_commits_list) == 0:
+                return "Fixed but unpropagated. No action."
+            for commit_url in fix_commits_list:
+                single_version = ""
+                if "/jdk/commit" in commit_url:
+                    # Fix went into the openjdk/jdk repository.
+                    # Will now attempt to identify the earliest tagged version.
+                    single_version = "unknown_jdk_head_tag"
+                    commit_resp = requests.get(commit_url)
+                    commit_resp.raise_for_status()
+                    commit_resp_text = commit_resp.text
+                    commit_tag_list = re.findall("href=\"\/openjdk\/jdk\/releases\/tag\/jdk\-[0-9]*", commit_resp_text)
+                    if commit_tag_list is None:
+                        continue
+                    commit_tag_end = commit_tag_list[len(commit_tag_list) - 1]
+                    version_matcher = re.search("jdk\-[0-9]*", commit_tag_end)
+                    if version_matcher is None:
+                        continue
+                    version_matcher = re.search("[0-9]", version_matcher.group())
+                    if version_matcher is None:
+                        continue
+                    single_version = version_matcher.group() + "+"
+                else:
+                    version_matcher = re.search("jdk[0-9]+u?\/commit", commit_url)
+                    if version_matcher is None:
+                        continue
+                    version_matcher = re.search("[0-9]*", version_matcher.group())
+                    if version_matcher is None:
+                        continue
+                    single_version = version_matcher.group()
+                if ("," + single_version + ",") not in versions_csv:
+                    versions_csv += single_version + ","
+            return "Fixed. Action: Unexclude for JDK" + versions_csv[1:-1] + " only"
         else:
             return "Unknown resolution \"" + resolution + "\". Action: Investigate."
 
+    def comments_parser(self, comments, URLs_list):
+        for comment in comments:
+            author = comment.get('author', {}).get('name', '')
+            if author == "dukebot":
+                comment_text = comment.get('body', '')
+                comment_url = re.search("URL\:\ +https\:\/\/git\.openjdk\.org\/jdk[0-9]+u?\/commit/[0-9a-z]*", comment_text)
+                if comment_url is None:
+                    continue
+                comment_url = re.search("https.*", comment_url.group())
+                if comment_url is None:
+                    continue
+                URLs_list.append(comment_url.group())
+        return URLs_list
 
 class Dispatcher:
     """
