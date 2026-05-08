@@ -14,6 +14,8 @@
 
 # hotspot_all
 
+runtime/os/AvailableProcessors.java https://github.com/adoptium/infrastructure/issues/4100 linux-aarch64
+
 ############################################################################
 
 # hotspot_jre
@@ -29,6 +31,11 @@
 ############################################################################
 
 # jdk_compiler
+
+compiler/compilercontrol/matcher/MethodMatcherTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+compiler/compilercontrol/InlineMatcherTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+compiler/compilercontrol/mixed/RandomValidCommandsTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+compiler/oracle/MethodMatcherTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 
 ############################################################################
 
@@ -50,8 +57,14 @@
 
 # jdk_net
 
+java/net/MulticastSocket/Promiscuous.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+java/net/SocketPermission/SocketPermissionTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 java/net/Inet6Address/B6206527.java https://github.com/adoptium/infrastructure/issues/3614 linux-all
 java/net/ipv6tests/B6521014.java https://github.com/adoptium/infrastructure/issues/3614 linux-all
+java/net/Socket/B8312065.java https://github.com/adoptium/infrastructure/issues/4300 linux-aarch64,linux-ppc64le
 
 ############################################################################
 
@@ -60,6 +73,9 @@ java/net/ipv6tests/B6521014.java https://github.com/adoptium/infrastructure/issu
 ############################################################################
 
 # jdk_nio
+
+java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+java/nio/channels/DatagramChannel/PromiscuousIPv6.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 
 ############################################################################
 
@@ -96,8 +112,10 @@ java/net/ipv6tests/B6521014.java https://github.com/adoptium/infrastructure/issu
 ############################################################################
 
 # jdk_tools
+
 sun/tools/native2ascii/Native2AsciiTests.sh https://github.com/adoptium/aqa-tests/issues/5893 linux-all
 tools/launcher/ExecutionEnvironment.java https://github.com/adoptium/aqa-tests/issues/5894 linux-all
+
 ############################################################################
 
 # jdk_jdi
@@ -109,6 +127,10 @@ tools/launcher/ExecutionEnvironment.java https://github.com/adoptium/aqa-tests/i
 ############################################################################
 
 # svc_tools
+
+sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
+sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 
 ############################################################################
 

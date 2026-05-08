@@ -48,20 +48,76 @@ pipeline {
                     comments.each { comment ->
                         downloadAttachments(comment.body)
                     }
-                    //Download Taps from upsteam 
+                    //Download Taps from upsteam
                     def builds = "${Release_PipelineJob_Numbers}".split(',')
                     def tapTars = "AQAvitTapFiles.tar.gz"
                     builds.each { build ->
                         echo "build is ${build}"
-                        copyArtifacts (
-                            filter: "AQAvitTaps/${tapTars}", 
-                            fingerprintArtifacts: true, 
-                            projectName: "${Release_PipelineJob_Name}",
-                            selector: specific("${build}"),
-                            target: "${build}/",
-                            flatten: true
-                        )
-                        sh "tar -xzvf ${build}/${tapTars} -C ${tapsDir}"
+                        // Try to copy artifacts from AQAvitTaps directory
+                        def artifactExists = false
+                        try {
+                            copyArtifacts (
+                                filter: "AQAvitTaps/${tapTars}",
+                                fingerprintArtifacts: true,
+                                projectName: "${Release_PipelineJob_Name}",
+                                selector: specific("${build}"),
+                                target: "${build}/",
+                                flatten: true
+                            )
+                            // Check if the artifact file actually exists
+                            artifactExists = sh(script: "test -f ${build}/${tapTars}", returnStatus: true) == 0
+                            if (artifactExists) {
+                                echo "Found ${tapTars} in AQAvitTaps directory for build ${build}"
+                                sh "tar -xzvf ${build}/${tapTars} -C ${tapsDir}"
+                            }
+                        } catch (Exception e) {
+                            echo "Failed to copy ${tapTars} from AQAvitTaps directory: ${e.message}"
+                            artifactExists = false
+                        }
+                        
+                        // If artifact doesn't exist in AQAvitTaps, directly copy tap files from target directory
+                        if (!artifactExists) {
+                            echo "Artifact not found in AQAvitTaps for build ${build}, copying tap files from target/**/temurin/AQAvitTaps/..."
+                            try {
+                                // Directly copy only .tap files using the known path pattern
+                                // ** matches any number of directory levels
+                                copyArtifacts (
+                                    filter: "target/**/temurin/AQAvitTaps/*.tap",
+                                    fingerprintArtifacts: true,
+                                    projectName: "${Release_PipelineJob_Name}",
+                                    selector: specific("${build}"),
+                                    target: "${build}/",
+                                    flatten: true,
+                                    optional: true
+                                )
+                                
+                                // Move the tap files to tapsDir
+                                def tapCount = sh(
+                                    script: """
+                                        count=0
+                                        if [ -d "${build}" ]; then
+                                            find ${build} -maxdepth 1 -name '*.tap' -type f 2>/dev/null | while read tapfile; do
+                                                if [ -f "\$tapfile" ]; then
+                                                    mv "\$tapfile" ${tapsDir}/
+                                                    count=\$((count + 1))
+                                                    echo "Moved: \$(basename \$tapfile)"
+                                                fi
+                                            done
+                                        fi
+                                        ls -1 ${tapsDir}/*.tap 2>/dev/null | wc -l
+                                    """,
+                                    returnStdout: true
+                                ).trim()
+                                
+                                if (tapCount.toInteger() > 0) {
+                                    echo "Successfully collected ${tapCount} tap file(s) from target directory for build ${build}"
+                                } else {
+                                    echo "No tap files found in target directory for build ${build}"
+                                }
+                            } catch (Exception e) {
+                                echo "Failed to search for tap files in target directory: ${e.message}"
+                            }
+                        }
                     }
 
                     sh """

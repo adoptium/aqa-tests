@@ -21,6 +21,12 @@
 				<platform>.*mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/rh-openjdk/ssl-tests/issues/39</comment>
+				<platform>x86-64_alpine-linux</platform>
+				<version>8</version>
+				<impl>hotspot</impl>
+			</disable>
 		</disables>
 		<command>
 			JTREG_HOME="$(TEST_RESROOT)$(D)jtreg" \

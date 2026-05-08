@@ -53,6 +53,16 @@ getSemeruDockerfile() {
                 if [[ $jdkVersion -lt 21 ]]; then
                     findCommandAndReplace '\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses;' "\/opt\/java\/openjdk\/legal\/java.base\/LICENSE \/licenses\/;" $semeruDockerfile true
                 fi
+                # UBI 10 specific fixes: remove iptables and other packages that don't exist
+                if [[ $docker_os_version == "10" ]]; then
+                    # Remove iptables from the package list as it doesn't exist in UBI 10
+                    findCommandAndReplace 'iptables-libs iptables jansson libibverbs libmnl libnet libnftnl libpcap nftables protobuf-c' 'jansson libibverbs libnet libnftnl libpcap nftables protobuf-c' $semeruDockerfile false
+                    # Add --no-same-permissions to tar to avoid permission errors in rootless podman builds
+                    findCommandAndReplace 'tar -xzf criu.tar.gz --strip-components=1;' 'tar -xzf criu.tar.gz --strip-components=1 --no-same-permissions;' $semeruDockerfile false
+                fi
+                # Remove specific version constraints for libexpat1 packages to avoid 404 errors when versions are superseded
+                findCommandAndReplace 'libexpat1-dev=[^ ]*' 'libexpat1-dev' $semeruDockerfile false
+                findCommandAndReplace 'libexpat1=[^ ]*' 'libexpat1' $semeruDockerfile false
             else # docker_os is ubuntu
                 echo "curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}"
                 curl -OLJSks ${semeruDockerfileUrlBase}/${semeruDockerfile}
@@ -147,7 +157,7 @@ findCommandAndReplace() {
 
 buildImage() {
     echo "build image at $(pwd)..."
-    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log 
+    sudo podman build -t local-ibm-semeru-runtimes:latest -f Dockerfile.open.releases.full . --build-arg DOCKER_REGISTRY_CREDENTIALS_USR=$DOCKER_REGISTRY_CREDENTIALS_USR --build-arg DOCKER_REGISTRY_CREDENTIALS_PSW=$DOCKER_REGISTRY_CREDENTIALS_PSW 2>&1 | tee build_semeru_image.log
     # Temporarily OpenLiberty ubi dockerfile only supports openjdk 17, not 11, need to add jdkVersion for ubuntu support later
     sudo podman build -t icr.io/appcafe/open-liberty:beta-instanton -f ci.docker/releases/latest/full/Dockerfile.${docker_os}.openjdk17 ci.docker/releases/latest/beta
     sudo podman build -t ol-instanton-test-pingperf:latest -f Dockerfile.pingperf .
@@ -241,7 +251,12 @@ pushImage() {
     dockerRegistryLogin
     echo "Pushing docker image..."
 
-    restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    # Build the image path, handling empty docker_image_source_job_name
+    if [ -z "${docker_image_source_job_name}" ]; then
+        restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    else
+        restore_ready_checkpoint_image_folder="${DOCKER_REGISTRY_URL}/${docker_image_source_job_name}/pingperf_${JDK_VERSION}-${JDK_IMPL}-${docker_os}-${docker_os_version}-${PLATFORM}-${node_label_current_os}-${node_label_micro_architecture}"
+    fi
     tagged_restore_ready_checkpoint_image_num="${restore_ready_checkpoint_image_folder}:${build_number}"
 
     # Push a docker image with build_num for records
@@ -292,9 +307,19 @@ pullImageUnprivilegedRestore() {
     dockerRegistryLogin
     getImageNameList
     echo "The host machine micro-architecture is ${node_label_micro_architecture}"
+    imagesTestedCount=0
     for restore_docker_image_name in ${restore_docker_image_name_list[@]}
     do
         echo "Pulling image $restore_docker_image_name"
+
+        # Pre-flight check: verify image exists before attempting pull
+        echo "Checking if image exists in registry..."
+        if ! skopeo inspect --creds "${DOCKER_REGISTRY_CREDENTIALS_USR}:${DOCKER_REGISTRY_CREDENTIALS_PSW}" \
+            docker://$restore_docker_image_name &>/dev/null; then
+            echo "SKIP: Image $restore_docker_image_name not available in registry"
+            continue
+        fi
+
         sudo podman pull $restore_docker_image_name
         getCriuseccompproFile
 
@@ -302,7 +327,13 @@ pullImageUnprivilegedRestore() {
         restoreImage=$restore_docker_image_name
         testUnprivilegedRestoreOnly
         clean
+        imagesTestedCount=$((imagesTestedCount + 1))
     done
+
+    if [ $imagesTestedCount -eq 0 ]; then
+        echo "ERROR: No images were successfully tested."
+        exit 1
+    fi
 
     dockerRegistryLogout
 }
@@ -311,17 +342,32 @@ pullImagePrivilegedRestore() {
     dockerRegistryLogin
     getImageNameList
     echo "The host machine micro-architecture is ${node_label_micro_architecture}"
+    imagesTestedCount=0
     for restore_docker_image_name in ${restore_docker_image_name_list[@]}
     do
         echo "Pulling image $restore_docker_image_name"
+
+        # Pre-flight check: verify image exists before attempting pull
+        echo "Checking if image exists in registry..."
+        if ! skopeo inspect --creds "${DOCKER_REGISTRY_CREDENTIALS_USR}:${DOCKER_REGISTRY_CREDENTIALS_PSW}" \
+            docker://$restore_docker_image_name &>/dev/null; then
+            echo "SKIP: Image $restore_docker_image_name not available in registry"
+            continue
+        fi
+
         sudo podman pull $restore_docker_image_name
 
         # restore
         restoreImage=$restore_docker_image_name
         testPrivilegedRestoreOnly
         clean
+        imagesTestedCount=$((imagesTestedCount + 1))
     done
 
+    if [ $imagesTestedCount -eq 0 ]; then
+        echo "ERROR: No images were successfully tested."
+        exit 1
+    fi
     dockerRegistryLogout
 }
 

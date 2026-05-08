@@ -186,16 +186,18 @@ timestamps{
                         'x86-64_linux' : [
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
                                 ],
                         'aarch64_linux' : [
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
+                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
                                 ],
                         's390x_linux' : [
@@ -203,14 +205,17 @@ timestamps{
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
+                                    // rhel.9 s390x excluded from upload: sudo requires password on all available nodes (runtimes_backlog_issues_879)
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
                                 ],
                         'ppc64le_linux' : [
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
+                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
@@ -218,9 +223,13 @@ timestamps{
                     ]
                     imagePullMap = [
                         'x86-64_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
                                 ],
                         'aarch64_linux' : [
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
@@ -238,7 +247,7 @@ timestamps{
                                     ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
                                 ]
                     ]
-                    target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
+                    target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi10,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
 
                     if (params.PLATFORM == "ppc64le_linux") {
                         // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
@@ -329,7 +338,7 @@ timestamps{
                 dockerAgents = PLATFORM_MAP[params.PLATFORM]["DockerAgents"] ? PLATFORM_MAP[params.PLATFORM]["DockerAgents"] : []
             }
             @Field String dockerAgentLabel = ''
-            @Field String LABEL = '' 
+            @Field String LABEL = ''
             if (params.LABEL) {
                 LABEL = params.LABEL
             } else {
@@ -783,8 +792,8 @@ def getEBCNode() {
     parameters: [
         string(name: 'PLATFORM', value: params.PLATFORM),
         string(name: 'NODE_TYPE', value: 'testmachine'),
-        string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()), 
-        string(name: 'GROUP_LABEL', value: UUID.randomUUID().toString()), 
+        string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()),
+        string(name: 'GROUP_LABEL', value: UUID.randomUUID().toString()),
         booleanParam(name: 'WAIT', value: wait),
     ]
     return result.buildVariables.group_label

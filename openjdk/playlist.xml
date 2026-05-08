@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../TKG/resources/playlist.xsd">
 	<include>openjdk.mk</include>
 	<test>
-		<testCaseName>jdk_valhalla</testCaseName>
+		<testCaseName>jdk_valhalla_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
@@ -51,7 +51,7 @@
 		</groups>
 	</test>
 	<test>
-		<testCaseName>hotspot_valhalla</testCaseName>
+		<testCaseName>hotspot_valhalla_runtime_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
 			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
@@ -70,7 +70,44 @@
 			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE_VALHALLA)$(Q) \
 			${FEATURE_PROBLEM_LIST_FILE} \
 			${VENDOR_PROBLEM_LIST_FILE} \
-			$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_valhalla$(Q); \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR):hotspot_valhalla_runtime$(Q); \
+			$(TEST_STATUS)
+		</command>
+		<versions>
+			<version>Valhalla</version>
+		</versions>
+		<impls>
+			<impl>openj9</impl>
+			<impl>ibm</impl>
+		</impls>
+		<levels>
+			<level>special</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+	</test>
+	<test>
+		<testCaseName>serviceability_valhalla_j9</testCaseName>
+		<variations>
+			<variation>NoOptions</variation>
+			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+		</variations>
+		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+			$(JTREG_BASIC_OPTIONS) \
+			$(JVM_NATIVE_OPTIONS_HOTSPOT_FOR_J9) \
+			-vmoptions:$(Q)-Xmx512m \
+			--enable-preview -Djdk.debug=release $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+			$(TIMEOUT_HANDLER) \
+			-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+			-r $(Q)$(TEST_RESROOT)$(D)report$(Q) \
+			-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+			-exclude:$(Q)$(JTREG_HOTSPOT_TEST_DIR)$(D)ProblemList.txt$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+			-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE_VALHALLA)$(Q) \
+			${FEATURE_PROBLEM_LIST_FILE} \
+			${VENDOR_PROBLEM_LIST_FILE} \
+			$(Q)$(JTREG_HOTSPOT_TEST_DIR)/serviceability/jvmti/valhalla$(Q); \
 			$(TEST_STATUS)
 		</command>
 		<versions>

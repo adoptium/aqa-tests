@@ -119,3 +119,18 @@ https://www.unicode.org/Public/16.0.0/ucd/Scripts.txt
 
 UnicodeData-16.0.0.txt
 https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt
+
+Blocks-17.0.0.txt
+https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt
+
+NormalizationTest-17.0.0.txt
+https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt
+
+PropertyValueAliases-17.0.0.txt
+https://www.unicode.org/Public/17.0.0/ucd/PropertyValueAliases.txt
+
+Scripts-17.0.0.txt
+https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt
+
+UnicodeData-17.0.0.txt
+https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt

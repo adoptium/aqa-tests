@@ -21,8 +21,6 @@ platform_map = {
     "linux-s390": "s390_linux",
     "solaris-sparcv9": "sparcv9_solaris",
     "solaris-x86-64": "x86-64_solaris",
-    "alpine-linux-x86-64": "x86-64_alpine-linux",
-    "alpine-linux_aarch64": "aarch64_alpine-linux",
     "linux-x86-32": "x86-32_linux",
 
     "linux-all": "all_linux",
@@ -34,6 +32,28 @@ class Test(TestCase):
     def test_transform_platform_with_map(self):
         for k, v in platform_map.items():
             self.assertEqual(transform_platform(k), v)
+
+    def test_transform_platform_invalid_os(self):
+        invalid_os_platforms = [
+            "linuxx-x64",
+            "aixx-ppc64",
+            "windoows-x64",
+            "macox-aarch64",
+        ]
+        for platform in invalid_os_platforms:
+            with self.assertRaises(ValueError, msg=f"Expected ValueError for invalid OS in {platform!r}"):
+                transform_platform(platform)
+
+    def test_transform_platform_invalid_arch(self):
+        invalid_arch_platforms = [
+            "aix-pcc64",
+            "linux-xyz",
+            "linux-aarch65",
+            "windows-x65",
+        ]
+        for platform in invalid_arch_platforms:
+            with self.assertRaises(ValueError, msg=f"Expected ValueError for invalid ARCH in {platform!r}"):
+                transform_platform(platform)
 
     def test_parse_file(self):
         test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
