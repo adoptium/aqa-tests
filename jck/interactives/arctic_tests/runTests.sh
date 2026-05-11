@@ -348,6 +348,7 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
             if [[ $skipped == true ]] || [[ $rc != 0 ]]; then
               if [[ $skipped == false ]]; then
                 echo "ERROR: Test class failed prior to playback."
+                FAILED_TESTS+=("${ARCTIC_GROUP}/${ARCTIC_TESTCASE}")
                 overallSuccess=false
               fi
             else

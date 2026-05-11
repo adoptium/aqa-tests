@@ -53,6 +53,10 @@ public class DateFormatTest {
         // Try loading version specific bundles first..
         for(long i : resourceBundleFixVersionsToTry) {
             if (i <= version) {
+                if (i == 16L && version != i) {
+                    // in case of 16, only match exact jdk version
+                    continue;
+                }
                 try {
                     return ResourceBundle.getBundle(baseName+"_"+i, locale);
                 } catch (MissingResourceException e) {

@@ -73,6 +73,7 @@ java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjd
 java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
 java/lang/Thread/virtual/stress/PingPong.java#ltq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 java/lang/Thread/virtual/stress/PingPong.java#sq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
+java/lang/instrument/RetransformRecordTypeAnn/TestRetransformRecord.java https://github.com/adoptium/aqa-tests/issues/7039 generic-all
 
 ############################################################################
 
@@ -294,33 +295,8 @@ sun/tools/jstatd/TestJstatdPort.java https://github.com/adoptium/aqa-tests/issue
 sun/tools/jstatd/TestJstatdPortAndServer.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 sun/tools/jstatd/TestJstatdRmiPort.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
 sun/tools/jstatd/TestJstatdServer.java https://github.com/adoptium/aqa-tests/issues/3088 linux-ppc64le
-tools/jpackage/share/AddLauncherTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/AppImagePackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/EmptyFolderPackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/FileAssociationsTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/share/IconTest.java https://github.com/adoptium/infrastructure/issues/2291 linux-aarch64
-# The following 8 tests under tools/jpackage/share/ excluded on linux-aarch64 the tracked issue is https://github.com/adoptium/infrastructure/issues/2291
-tools/jpackage/share/InstallDirTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/LicenseTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/MultiLauncherTwoPhaseTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/MultiNameTwoPhaseTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/RuntimePackageTest.java#id0 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/SimplePackageTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/jdk/jpackage/tests/BasicTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/share/jdk/jpackage/tests/VendorTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all,linux-aarch64
-tools/jpackage/windows/WinDirChooserTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinInstallerUiTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinL10nTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinMenuGroupTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinMenuTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinPerUserInstallTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinScriptTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinShortcutPromptTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinShortcutTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinUpgradeUUIDTest.java#id1 https://github.com/adoptium/infrastructure/issues/2310 windows-all
-tools/jpackage/windows/WinUrlTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jlink/JLinkReproducible3Test.java https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
-tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aixx-ppc64
+tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aix-ppc64
 tools/jlink/plugins/VendorInfoPluginsTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AddLShortcutTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -368,6 +344,7 @@ compiler/unsafe/UnsafeCopyMemory.java https://github.com/adoptium/aqa-tests/issu
 compiler/jvmci/jdk.vm.ci.hotspot.test/src/jdk/vm/ci/hotspot/test/TestTranslatedException.java https://github.com/adoptium/aqa-tests/issues/3658 linux-x64,windows-x64,linux-aarch64,macosx-all
 compiler/codegen/aes/Test8292158.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
 compiler/codegen/aes/TestAESMain.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
+compiler/vectorapi/TestVectorReallocation.java https://bugs.openjdk.org/browse/JDK-8381257 linux-s390x
 
 ############################################################################
 
@@ -507,6 +484,12 @@ vmTestbase/jit/misctests/fpustack/GraphApplet.java https://github.com/adoptium/i
 # hotspot_vmTestbase_vm_mlvm
 
 vmTestbase/vm/mlvm/mixed/stress/java/findDeadlock/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6715 aix-all
+
+############################################################################
+
+# hotspot_vmTestbase_vm_gc
+
+vmTestbase/gc/gctests/MTLinkedListGC/MTLinkedListGC.java https://github.com/adoptium/aqa-tests/issues/6849 aix-ppc64
 
 ############################################################################
 

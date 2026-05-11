@@ -311,7 +311,7 @@ tools/jpackage/windows/WinUrlTest.java https://github.com/adoptium/infrastructur
 tools/jpackage/windows/Win8365790Test.java https://bugs.openjdk.org/browse/JDK-8376188 windows-all
 tools/jlink/JLinkTest.java https://github.com/adoptium/aqa-tests/issues/2857 windows-x86,linux-arm
 tools/jlink/JLinkReproducible3Test.java https://bugs.openjdk.java.net/browse/JDK-8253688 aix-all
-tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aixx-ppc64
+tools/jlink/CheckExecutable.java https://github.com/adoptium/aqa-tests/issues/2857 aix-ppc64
 tools/jlink/plugins/VendorInfoPluginsTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-aarch64
 tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AddLShortcutTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
@@ -349,6 +349,7 @@ javax/management/mxbean/ThreadStartTest.java https://github.com/adoptium/aqa-tes
 
 # hotspot_compiler
 
+compiler/intrinsics/sha/cli/TestUseMD5IntrinsicsOptionOnUnsupportedCPU.java https://github.com/adoptium/aqa-tests/issues/7021 linux-riscv64
 compiler/arguments/CheckCICompilerCount.java https://github.com/adoptium/aqa-tests/issues/5378 windows-x86
 compiler/c2/irTests/TestPostParseCallDevirtualization.java https://github.com/adoptium/aqa-tests/issues/3004 windows-x86
 compiler/c2/cr6340864/TestByteVect.java https://github.com/adoptium/aqa-tests/issues/2382 windows-x86
@@ -447,6 +448,7 @@ containers/docker/TestMemoryWithCgroupV1.java https://bugs.openjdk.org/browse/JD
 
 # hotspot_gc
 
+gc/stress/TestStressIHOPMultiThread.java#id0 https://github.com/adoptium/aqa-tests/issues/7023 linux-riscv64
 gc/shenandoah/compiler/TestBarrierAboveProj.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 gc/shenandoah/jni/CriticalNativeStress.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 
@@ -463,6 +465,7 @@ runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tes
 runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
+runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/aqa-tests/issues/7008 windows-aarch64
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
@@ -490,7 +493,8 @@ serviceability/dtrace/DTraceOptionsTest.java#enabled https://github.com/adoptium
 serviceability/jvmti/GetOwnedMonitorStackDepthInfo/GetOwnedMonitorStackDepthInfoWithEATest.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
 serviceability/jvmti/Heap/IterateHeapWithEscapeAnalysisEnabled.java https://github.com/adoptium/aqa-tests/issues/4469 aix-all
 serviceability/jvmti/HeapMonitor/MyPackage/HeapMonitorStatArrayCorrectnessTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
-serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+#serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
+serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
 serviceability/sa/CDSJMapClstats.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 serviceability/sa/ClhsdbCDSCore.java https://github.com/adoptium/aqa-tests/issues/5622 generic-all
 serviceability/sa/ClhsdbFindPC.java#id0 https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
@@ -515,7 +519,6 @@ serviceability/sa/ClhsdbWhere.java https://github.com/adoptium/aqa-tests/issues/
 serviceability/sa/TestJhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/sa/TestClhsdbJstackLock.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
 serviceability/jvmti/RedefineClasses/RedefineSharedClass.java https://github.com/adoptium/aqa-tests/issues/5672 windows-aarch64
-serviceability/jvmti/RedefineClasses/RedefineSharedClassJFR.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
 
 ############################################################################
 
@@ -532,12 +535,14 @@ vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.
 vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
+vmTestbase/gc/gctests/MTLinkedListGC/MTLinkedListGC.java https://github.com/adoptium/aqa-tests/issues/6849 aix-ppc64
 
 ############################################################################
 
 # hotspot_vmTestbase_vm_mlvm
 
 vmTestbase/vm/mlvm/mixed/stress/java/findDeadlock/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6715 aix-all
+vmTestbase/vm/mlvm/hiddenloader/stress/byteMutation/Test.java https://github.com/adoptium/aqa-tests/issues/7024 windows-aarch64
 
 ############################################################################
 

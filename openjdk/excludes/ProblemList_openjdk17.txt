@@ -136,6 +136,7 @@ java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-
 sun/net/www/http/KeepAliveCache/KeepAliveProperty.java https://bugs.openjdk.org/browse/JDK-8285836 linux-ppc64le
 java/net/httpclient/ConnectTimeoutWithProxySync.java https://bugs.openjdk.org/browse/JDK-8375352 generic-all
 java/net/httpclient/ConnectTimeoutWithProxyAsync.java https://bugs.openjdk.org/browse/JDK-8375352 generic-all
+java/net/Socket/B8312065.java https://github.com/adoptium/aqa-tests/issues/7043 linux-all
 
 ############################################################################
 
@@ -200,6 +201,7 @@ sun/security/util/Debug/DebugOptions.java https://bugs.openjdk.org/browse/JDK-83
 sun/security/tools/jarsigner/TimestampCheck.java https://bugs.openjdk.org/browse/JDK-8352302 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Camerfirma.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Entrust.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
+sun/security/util/AlgorithmConstraints/InvalidCryptoDisabledAlgos.java https://bugs.openjdk.org/browse/JDK-8367583 generic-all
 
 #############################################################################
 
@@ -396,6 +398,7 @@ compiler/whitebox/MakeMethodNotCompilableTest.java https://github.com/adoptium/a
 compiler/codecache/MHIntrinsicAllocFailureTest.java https://github.com/adoptium/aqa-tests/issues/4515#issuecomment-1512404678 windows-x86,linux-arm
 compiler/loopopts/TestRemoveEmptyCountedLoop.java https://bugs.openjdk.org/browse/JDK-8311964 windows-x86
 compiler/splitif/TestCrashAtIGVNSplitIfSubType.java https://bugs.openjdk.org/browse/JDK-8311964 windows-x86
+compiler/intrinsics/sha/cli/TestUseMD5IntrinsicsOptionOnUnsupportedCPU.java https://github.com/adoptium/aqa-tests/issues/7021 linux-riscv64
 
 ############################################################################
 
@@ -525,12 +528,20 @@ vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.
 vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
+vmTestbase/gc/gctests/MTLinkedListGC/MTLinkedListGC.java https://github.com/adoptium/aqa-tests/issues/6849 aix-ppc64
 
 ############################################################################
 
 # hotspot_vmTestbase_vm_mlvm
 
 vmTestbase/vm/mlvm/mixed/stress/java/findDeadlock/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6715 aix-all
+
+############################################################################
+
+# hotspot_tier1_runtime
+
+runtime/DefineClass/NullClassBytesTest.java https://github.com/adoptium/aqa-tests/issues/6197 aix-ppc64
+runtime/ErrorHandling/MachCodeFramesInErrorFile.java https://github.com/adoptium/aqa-tests/issues/6197 aix-ppc64
 
 ############################################################################
 
