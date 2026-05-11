@@ -235,11 +235,13 @@ class BugsOpenJdkHandler(BaseHandler):
     def comments_parser(self, comments, URLs_list):
         for comment in comments:
             author = comment.get('author', {}).get('name', '')
-            if author == "dukebot":
+            if author == "dukebot" or author == "roboduke":
                 comment_text = comment.get('body', '')
                 comment_url = re.search(r"URL: +https://git\.openjdk\.org/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
                 if comment_url is None:
-                    continue
+                    comment_url = re.search(r"URL: +https://git\.openjdk\.java\.net/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
+                    if comment_url is None:
+                        continue
                 comment_url = re.search("https.*", comment_url.group())
                 if comment_url is None:
                     continue
