@@ -135,6 +135,11 @@ class BugsOpenJdkHandler(BaseHandler):
     URL handler for bugs.openjdk (Jira-based board)
     """
     BUGS_OPENJDK_API_BASE_URL = f'https://bugs.openjdk.java.net/rest/api/latest/issue'
+    PARAMS = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
+
+    def __init__(self, user=None, token=None):
+        self.user = user
+        self.token = token
 
     def can_handle(self, url):
         return 'bugs.openjdk' in url
@@ -191,7 +196,12 @@ class BugsOpenJdkHandler(BaseHandler):
                     # Fix went into the openjdk/jdk repository.
                     # Will now attempt to identify the earliest tagged version.
                     single_version = "unknown_jdk_head_tag"
-                    commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key)
+                    # Use anonymous auth if user/token not provided
+                    if all([self.user, self.token]):
+                        auth = requests.auth.HTTPBasicAuth(self.user, self.token)
+                    else:
+                        auth = None
+                    commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth)
                     commit_resp.raise_for_status()
                     commit_resp_text = commit_resp.text
                     commit_tag_list = re.findall(">jdk-[0-9]+[^<]+<", commit_resp_text)
@@ -379,7 +389,7 @@ def main():
     dispatcher = Dispatcher(
         handlers=[
             GitHubHandler(args.github_user, args.github_token),
-            BugsOpenJdkHandler(),
+            BugsOpenJdkHandler(args.github_user, args.github_token),
         ]
     )
 
