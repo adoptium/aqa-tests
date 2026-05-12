@@ -119,7 +119,7 @@ class GitHubHandler(BaseHandler):
         if status_enum == Status.OPEN:
             return (status_enum, "OPEN",)
         else:
-            return (status_enum, self.resolution_parser(labels_list),)
+            return (status_enum, "CLOSED: " + self.resolution_parser(labels_list),)
 
     def resolution_parser(self, labels_list):
         for single_label in labels_list:
@@ -127,7 +127,7 @@ class GitHubHandler(BaseHandler):
                 return "Won't Fix"
             elif single_label['name'] == 'fixed':
                 return "Fixed. Action: Unexclude"
-        return "Unknown resolution. Action: Add label: fixed wontfix exclusion:permanent"
+        return "Action: Add issue label: fixed wontfix exclusion:permanent"
 
 
 class BugsOpenJdkHandler(BaseHandler):
@@ -260,7 +260,7 @@ class BugsOpenJdkHandler(BaseHandler):
             else:
                 return "Fixed. No commits found."
         else:
-            return "Uncertain resolution \"" + resolution + "\". Action: Investigate."
+            return "\"" + resolution + "\". Action: Unexclude or change link."
 
     def comments_parser(self, comments, URLs_list):
         authors_list = ["dukebot", "roboduke", "hgupdate"]
