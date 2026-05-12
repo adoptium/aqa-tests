@@ -202,7 +202,7 @@ class BugsOpenJdkHandler(BaseHandler):
                     *_, commit_key = commit_url.split('/')  # get the element after the last slash
                     # Fix went into the openjdk/jdk repository.
                     # Will now attempt to identify the earliest tagged version.
-                    commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth)
+                    commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth, proxies=None/{})
                     commit_resp.raise_for_status()
                     commit_resp_text = commit_resp.text
                     commit_tag_list = re.findall(">jdk-[0-9]+[^<]+<", commit_resp_text)
