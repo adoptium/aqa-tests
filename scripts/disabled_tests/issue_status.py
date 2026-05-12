@@ -184,23 +184,24 @@ class BugsOpenJdkHandler(BaseHandler):
                     backport_comments = backport_resp_json.get('fields', {}).get('comment', {}).get('comments', [])
                     if len(backport_comments) == 0:
                         continue
+                    if "Fixed" not in resp_json.get('fields', {}).get('resolution', {}).get('name', ''):
+                        continue
                     fix_commits_list = self.comments_parser(backport_comments, fix_commits_list)
-            # For every link, reduce it to the jdk version int and append to the fixed string.
-            versions_csv = ","
+            # For every link, reduce it to the jdk version int and append to the list.
+            versions_list = []
+            version_plus = 0
+            # Use anonymous github auth if user/token not provided
+            if all([self.user, self.token]):
+                auth = requests.auth.HTTPBasicAuth(self.user, self.token)
+            else:
+                auth = None
             if len(fix_commits_list) == 0:
                 return "Fixed but unpropagated. No action."
             for commit_url in fix_commits_list:
-                single_version = ""
                 if "/jdk/commit" in commit_url:
                     *_, commit_key = commit_url.split('/')  # get the element after the last slash
                     # Fix went into the openjdk/jdk repository.
                     # Will now attempt to identify the earliest tagged version.
-                    single_version = "unknown_jdk_head_tag"
-                    # Use anonymous auth if user/token not provided
-                    if all([self.user, self.token]):
-                        auth = requests.auth.HTTPBasicAuth(self.user, self.token)
-                    else:
-                        auth = None
                     commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth)
                     commit_resp.raise_for_status()
                     commit_resp_text = commit_resp.text
@@ -217,35 +218,73 @@ class BugsOpenJdkHandler(BaseHandler):
                     version_matcher = re.search("[0-9]+", version_matcher.group())
                     if version_matcher is None:
                         continue
-                    single_version = version_matcher.group() + "+"
+                    if version_plus == 0 or version_plus > int(version_matcher.group()):
+                        version_plus = int(version_matcher.group())
+                    versions_list.append(version_plus)
                 else:
+                    if "hg.openjdk.java.net" in commit_url:
+                        # If this is a mercurial commit, switch to best-guess logic.
+                        issue_int = resp_json.get('key', '')[4:]
+                        for version_int in [8, 11, 17]:
+                            search_resp = requests.get("https://github.com/search?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "+" + str(issue_int) + "%3A&type=commits", params=self.PARAMS, auth=auth)
+                            search_resp.raise_for_status()
+                            search_resp_text = search_resp.text
+                            if "0 results" not in search_resp_text:
+                                if re.search("[0-9] result", search_resp_text):
+                                    versions_list.append(int(version_int))
+                        # Any mercurial commit is implied to be present in all jdk versions after 16,
+                        # as jdk16 was the last jdk version before mercurial was phased out.
+                        # We check for jdk17 just to be sure though.
+                        if 17 in versions_list:
+                            if version_plus == 0 or version_plus > 17:
+                                version_plus = 17
+                        continue
+
+                    # Otherwise use github logic
                     version_matcher = re.search("jdk[0-9]+u?/commit", commit_url)
                     if version_matcher is None:
                         continue
                     version_matcher = re.search("[0-9]+", version_matcher.group())
                     if version_matcher is None:
                         continue
-                    single_version = version_matcher.group()
-                if ("," + single_version + ",") not in versions_csv:
-                    versions_csv += single_version + ","
-            return "Fixed. Action: Unexclude for JDK" + versions_csv[1:-1] + " only"
+                    versions_list.append(int(version_matcher.group()))
+
+            versions_list = list(set(versions_list))
+            versions_string = ""
+            for single_version in versions_list:
+                if single_version < version_plus:
+                    versions_string += str(single_version) + ","
+            if version_plus:
+                versions_string += str(version_plus) + "+,"
+            if versions_string:
+                return "Fixed. Action: Unexclude for JDK: " + versions_string[:-1]
+            else:
+                return "Fixed. No commits found."
         else:
-            return "Unknown resolution \"" + resolution + "\". Action: Investigate."
+            return "Uncertain resolution \"" + resolution + "\". Action: Investigate."
 
     def comments_parser(self, comments, URLs_list):
+        authors_list = ["dukebot", "roboduke", "hgupdate"]
         for comment in comments:
             author = comment.get('author', {}).get('name', '')
-            if author == "dukebot" or author == "roboduke":
+            if author in authors_list:
                 comment_text = comment.get('body', '')
                 comment_url = re.search(r"URL: +https://git\.openjdk\.org/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
-                if comment_url is None:
-                    comment_url = re.search(r"URL: +https://git\.openjdk\.java\.net/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
-                    if comment_url is None:
-                        continue
-                comment_url = re.search("https.*", comment_url.group())
-                if comment_url is None:
+                if comment_url:
+                    comment_url = re.search("https.*", comment_url.group())
+                    URLs_list.append(comment_url.group())
                     continue
-                URLs_list.append(comment_url.group())
+
+                comment_url = re.search(r"URL: +https://git\.openjdk\.java\.net/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
+                if comment_url:
+                    comment_url = re.search("https.*", comment_url.group())
+                    URLs_list.append(comment_url.group())
+                    continue
+
+                comment_url = re.search(r"URL: +https?://hg\.openjdk\.java\.net/.*", comment_text)
+                if comment_url:
+                    comment_url = re.search("http.*", comment_url.group())
+                    URLs_list.append(comment_url.group())
         return URLs_list
 
 class Dispatcher:
