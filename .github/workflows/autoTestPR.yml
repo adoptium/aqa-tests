@@ -70,7 +70,6 @@ jobs:
           COMMENTER: ${{ github.event.comment.user.login }}
         run: |
           # Extract command components
-          echo "comment_body=$COMMENT_BODY" >> "$GITHUB_OUTPUT"
           echo "commenter=$COMMENTER" >> "$GITHUB_OUTPUT"
           
           # Basic validation - check format
