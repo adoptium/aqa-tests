@@ -63,6 +63,37 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, '/exclude ')
     steps:
+      - name: Check permission
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          # Check if commenter is the issue author
+          if [ "$COMMENTER" = "$ISSUE_AUTHOR" ]; then
+            echo "✅ Commenter is the issue author"
+            exit 0
+          fi
+          
+          # Check if commenter has write permission (is a project committer)
+          PERMISSION=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
+            --jq '.permission' 2>/dev/null || echo "none")
+          
+          if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "write" ]; then
+            echo "✅ Commenter has $PERMISSION permission"
+            exit 0
+          fi
+          
+          # Permission denied
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger test exclusions. Only the issue author or project committers can use this command."
+          exit 1
+          
       - name: Parse exclude command
         id: parse
         env:
