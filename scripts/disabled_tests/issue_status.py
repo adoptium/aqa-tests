@@ -226,12 +226,11 @@ class BugsOpenJdkHandler(BaseHandler):
                         # If this is a mercurial commit, switch to best-guess logic.
                         issue_int = resp_json.get('key', '')[4:]
                         for version_int in [8, 11, 17]:
-                            search_resp = requests.get("https://github.com/search?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "+" + str(issue_int) + "%3A&type=commits", params=self.PARAMS, auth=auth)
+                            search_resp = requests.get("https://api.github.com/search/commits?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "u+" + str(issue_int) + "%3A", params=self.PARAMS, auth=auth)
                             search_resp.raise_for_status()
-                            search_resp_text = search_resp.text
-                            if "0 results" not in search_resp_text:
-                                if re.search("[0-9] result", search_resp_text):
-                                    versions_list.append(int(version_int))
+                            search_resp_json = search_resp.json()
+                            if int(search_resp_json.get('total_count', '')) > 0:
+                                versions_list.append(int(version_int))
                         # Any mercurial commit is implied to be present in all jdk versions after 16,
                         # as jdk16 was the last jdk version before mercurial was phased out.
                         # We check for jdk17 just to be sure though.
