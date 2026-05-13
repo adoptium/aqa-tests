@@ -64,7 +64,7 @@ class NoHandlerFoundException(Exception):
 
 class BaseHandler(abc.ABC):
 
-    PARAMS: dict[str, str] = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
+    PARAMS = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
 
     user: str | bytes
     token: str | bytes
