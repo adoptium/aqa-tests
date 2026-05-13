@@ -887,9 +887,36 @@ def runTest( ) {
 		} else {
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
-			def summary = manager.addSummary("error.svg")
-			summary.setText(summary.getText() + "TEST BUILD FAILURE!")
+			def summary = createBadgeSummary("error.svg")
+			appendSummaryText(summary, "TEST BUILD FAILURE!")
 		}
+	}
+}
+
+def createBadgeSummary(iconName) {
+	// Try new method first (badge plugin v3.583+), fallback to deprecated method for older versions
+	def summary = null
+	try {
+		summary = manager.addSummary(iconName)
+	} catch (Exception e) {
+		echo "addSummary failed, trying deprecated createSummary method: ${e.message}"
+		try {
+			summary = manager.createSummary(iconName)
+		} catch (Exception e2) {
+			echo "Both addSummary and createSummary failed: ${e2.message}"
+			throw e2
+		}
+	}
+	return summary
+}
+
+def appendSummaryText(summary, text) {
+	try {
+		def currentText = summary.getText() ?: ""
+		summary.setText(currentText + text)
+	} catch (Exception e) {
+		echo "setText failed, trying deprecated appendText: ${e.message}"
+		summary.appendText(text, false)
 	}
 }
 
@@ -903,24 +930,24 @@ def checkTestResults(results) {
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
-		summary = manager.addSummary("folder-delete.svg")
-		summary.setText(summary.getText() + "NO TEST FOUND!")
+		summary = createBadgeSummary("folder-delete.svg")
+		appendSummaryText(summary, "NO TEST FOUND!")
 		return
 	}
 
 	if (results["FAILED"] != 0) {
 		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, current build status is UNSTABLE.'
-		summary = manager.createSummary("warning.svg")
+		summary = createBadgeSummary("warning.svg")
 	} else {
-		summary = manager.createSummary("accept.svg")
+		summary = createBadgeSummary("accept.svg")
 	}
 
-	summary.setText(summary.getText() + "TEST TARGETS SUMMARY:<ul>")
+	appendSummaryText(summary, "TEST TARGETS SUMMARY:<ul>")
 	results.each {
-		summary.setText(summary.getText() + "<li><b>$it.key</b> : $it.value</li>")
+		appendSummaryText(summary, "<li><b>$it.key</b> : $it.value</li>")
 	}
-	summary.setText(summary.getText() + "</ul>")
+	appendSummaryText(summary, "</ul>")
 }
 
 def post(output_name) {
