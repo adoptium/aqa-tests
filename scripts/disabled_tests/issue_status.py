@@ -66,11 +66,8 @@ class BaseHandler(abc.ABC):
 
     PARAMS = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
 
-    user: str | bytes
-    token: str | bytes
-
     # Fetches the status of an issue given its tracking URL
-    STATUS_NAME_TO_ENUM: dict[str, Status] = {
+    STATUS_NAME_TO_ENUM = {
         'new': Status.OPEN,
         'open': Status.OPEN,
         'closed': Status.CLOSED,
@@ -85,16 +82,9 @@ class BaseHandler(abc.ABC):
         allowed_methods=["GET"] # Methods to retry
     )
 
-    def __init__(self, user: str | bytes, token: str | bytes):
+    def __init__(self, user=None, token=None):
         self.user = user
         self.token = token
-
-    @classmethod
-    def name_to_status(cls, name):
-        maybe_status = cls.STATUS_NAME_TO_ENUM.get(name)
-        if maybe_status is None:
-            raise HandlerException(f"Unrecognized issue status name: {name!r}")
-        return maybe_status
 
     def get_resp_from_url(self, url) -> requests.Response:
         # Use anonymous auth if user/token not provided
@@ -107,6 +97,13 @@ class BaseHandler(abc.ABC):
         resp = session.get(url, params=self.PARAMS, auth=auth)
         resp.raise_for_status()
         return resp
+
+    @classmethod
+    def name_to_status(cls, name):
+        maybe_status = cls.STATUS_NAME_TO_ENUM.get(name)
+        if maybe_status is None:
+            raise HandlerException(f"Unrecognized issue status name: {name!r}")
+        return maybe_status
 
     @abc.abstractmethod
     def can_handle(self, url) -> bool:
