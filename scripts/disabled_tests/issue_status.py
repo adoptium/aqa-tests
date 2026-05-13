@@ -10,9 +10,11 @@ import urllib.parse
 from collections import defaultdict
 from concurrent import futures
 from typing import List, Dict, Tuple
+from urllib3.util.retry import Retry
 
 import requests
 import requests.auth
+from requests.adapters import HTTPAdapter
 
 from common import models
 
@@ -61,15 +63,31 @@ class NoHandlerFoundException(Exception):
 
 
 class BaseHandler(abc.ABC):
-    """
-    Fetches the status of an issue given its tracking URL
-    """
-    STATUS_NAME_TO_ENUM = {
+
+    PARAMS: dict[str, str] = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
+
+    user: str | bytes
+    token: str | bytes
+
+    # Fetches the status of an issue given its tracking URL
+    STATUS_NAME_TO_ENUM: dict[str, Status] = {
         'new': Status.OPEN,
         'open': Status.OPEN,
         'closed': Status.CLOSED,
         'resolved': Status.CLOSED,
     }
+
+    # Configure retry strategy
+    retry_strategy = Retry(
+        total=10,               # Total number of retries
+        backoff_factor=7,       # Wait 64 seconds between retries
+        status_forcelist=[403, 429, 500, 502, 503, 504],  # Retry on these status codes
+        allowed_methods=["GET"] # Methods to retry
+    )
+
+    def __init__(self, user: str | bytes, token: str | bytes):
+        self.user = user
+        self.token = token
 
     @classmethod
     def name_to_status(cls, name):
@@ -78,12 +96,24 @@ class BaseHandler(abc.ABC):
             raise HandlerException(f"Unrecognized issue status name: {name!r}")
         return maybe_status
 
+    def get_resp_from_url(self, url) -> requests.Response:
+        # Use anonymous auth if user/token not provided
+        auth= None
+        if all([self.user, self.token]):
+            auth = requests.auth.HTTPBasicAuth(username=self.user, password=self.token)
+        adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
+        session: requests.Session = requests.Session()
+        session.mount("https://", adapter)
+        resp = session.get(url, params=self.PARAMS, auth=auth)
+        resp.raise_for_status()
+        return resp
+
     @abc.abstractmethod
     def can_handle(self, url) -> bool:
         pass
 
     @abc.abstractmethod
-    def handle(self, url) -> Status:
+    def handle(self, url) -> tuple:
         pass
 
 
@@ -92,11 +122,6 @@ class GitHubHandler(BaseHandler):
     URL handler for GitHub
     """
     GITHUB_API_BASE_URL = f'https://api.github.com/repos'
-    PARAMS = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
-
-    def __init__(self, user=None, token=None):
-        self.user = user
-        self.token = token
 
     def can_handle(self, url):
         return 'github.com' in url
@@ -104,17 +129,7 @@ class GitHubHandler(BaseHandler):
     def handle(self, url):
         path = _extract_path(url)
         url = self.GITHUB_API_BASE_URL + path
-
-        # Use anonymous auth if user/token not provided
-        if all([self.user, self.token]):
-            auth = requests.auth.HTTPBasicAuth(self.user, self.token)
-        else:
-            auth = None
-        session = requests.Session()
-        session.trust_env = False
-        resp = session.get(url, params=self.PARAMS, auth=auth)
-        resp.raise_for_status()
-        resp_json = resp.json()
+        resp_json = self.get_resp_from_url(url).json()
         status_name = resp_json["state"]
         status_enum = self.name_to_status(status_name)
         labels_list = resp_json.get('labels', {})
@@ -137,11 +152,6 @@ class BugsOpenJdkHandler(BaseHandler):
     URL handler for bugs.openjdk (Jira-based board)
     """
     BUGS_OPENJDK_API_BASE_URL = f'https://bugs.openjdk.java.net/rest/api/latest/issue'
-    PARAMS = {'accept': 'application/vnd.github.v3+json', 'state': 'all'}
-
-    def __init__(self, user=None, token=None):
-        self.user = user
-        self.token = token
 
     def can_handle(self, url):
         return 'bugs.openjdk' in url
@@ -150,9 +160,7 @@ class BugsOpenJdkHandler(BaseHandler):
         path = _extract_path(url)
         *_, issue_key = path.split('/')  # get the element after the last slash
         url = self.BUGS_OPENJDK_API_BASE_URL + '/' + issue_key
-        resp = requests.get(url)
-        resp.raise_for_status()
-        resp_json = resp.json()
+        resp_json = self.get_resp_from_url(url).json()
         status_name = resp_json.get('fields', {}).get('status', {}).get('name', '').lower()
         status_enum = self.name_to_status(status_name)
         if status_enum == Status.OPEN:
@@ -179,9 +187,7 @@ class BugsOpenJdkHandler(BaseHandler):
                     if len(backport_url) == 0:
                         continue
                     backport_url = self.BUGS_OPENJDK_API_BASE_URL + "/" + backport_url
-                    backport_resp = requests.get(backport_url)
-                    backport_resp.raise_for_status()
-                    backport_resp_json = backport_resp.json()
+                    backport_resp_json = self.get_resp_from_url(backport_url).json()
                     backport_comments = backport_resp_json.get('fields', {}).get('comment', {}).get('comments', [])
                     if len(backport_comments) == 0:
                         continue
@@ -191,11 +197,6 @@ class BugsOpenJdkHandler(BaseHandler):
             # For every link, reduce it to the jdk version int and append to the list.
             versions_list = []
             version_plus = 0
-            # Use anonymous github auth if user/token not provided
-            if all([self.user, self.token]):
-                auth = requests.auth.HTTPBasicAuth(self.user, self.token)
-            else:
-                auth = None
             if len(fix_commits_list) == 0:
                 return "Fixed but unpropagated. No action."
             for commit_url in fix_commits_list:
@@ -203,10 +204,7 @@ class BugsOpenJdkHandler(BaseHandler):
                     *_, commit_key = commit_url.split('/')  # get the element after the last slash
                     # Fix went into the openjdk/jdk repository.
                     # Will now attempt to identify the earliest tagged version.
-                    session = requests.Session()
-                    session.trust_env = False
-                    commit_resp = session.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth)
-                    commit_resp.raise_for_status()
+                    commit_resp = self.get_resp_from_url("https://github.com/openjdk/jdk/branch_commits/" + commit_key)
                     commit_resp_text = commit_resp.text
                     commit_tag_list = re.findall(">jdk-[0-9]+[^<]+<", commit_resp_text)
                     if len(commit_tag_list) == 0:
@@ -229,11 +227,8 @@ class BugsOpenJdkHandler(BaseHandler):
                         # If this is a mercurial commit, switch to best-guess logic.
                         issue_int = resp_json.get('key', '')[4:]
                         for version_int in [8, 11, 17]:
-                            session = requests.Session()
-                            session.trust_env = False
-                            search_resp = session.get("https://api.github.com/search/commits?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "u+" + str(issue_int) + "%3A", params=self.PARAMS, auth=auth)
-                            search_resp.raise_for_status()
-                            search_resp_json = search_resp.json()
+                            url = "https://api.github.com/search/commits?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "u+" + str(issue_int) + "%3A"
+                            search_resp_json = self.get_resp_from_url(url).json()
                             if int(search_resp_json.get('total_count', '')) > 0:
                                 versions_list.append(int(version_int))
                         # Any mercurial commit is implied to be present in all jdk versions after 16,
@@ -267,7 +262,7 @@ class BugsOpenJdkHandler(BaseHandler):
         else:
             return "\"" + resolution + "\". Action: Unexclude or change link."
 
-    def comments_parser(self, comments, URLs_list):
+    def comments_parser(self, comments, URLs_list: List[str]):
         authors_list = ["dukebot", "roboduke", "hgupdate"]
         for comment in comments:
             author = comment.get('author', {}).get('name', '')
@@ -276,19 +271,22 @@ class BugsOpenJdkHandler(BaseHandler):
                 comment_url = re.search(r"URL: +https://git\.openjdk\.org/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
                 if comment_url:
                     comment_url = re.search("https.*", comment_url.group())
-                    URLs_list.append(comment_url.group())
-                    continue
+                    if comment_url:
+                        URLs_list.append(comment_url.group())
+                        continue
 
                 comment_url = re.search(r"URL: +https://git\.openjdk\.java\.net/jdk[0-9]*u?/commit/[0-9a-z]+", comment_text)
                 if comment_url:
                     comment_url = re.search("https.*", comment_url.group())
-                    URLs_list.append(comment_url.group())
-                    continue
+                    if comment_url:
+                        URLs_list.append(comment_url.group())
+                        continue
 
                 comment_url = re.search(r"URL: +https?://hg\.openjdk\.java\.net/.*", comment_text)
                 if comment_url:
                     comment_url = re.search("http.*", comment_url.group())
-                    URLs_list.append(comment_url.group())
+                    if comment_url:
+                        URLs_list.append(comment_url.group())
         return URLs_list
 
 class Dispatcher:
