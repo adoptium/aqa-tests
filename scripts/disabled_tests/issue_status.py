@@ -110,7 +110,9 @@ class GitHubHandler(BaseHandler):
             auth = requests.auth.HTTPBasicAuth(self.user, self.token)
         else:
             auth = None
-        resp = requests.get(url, params=self.PARAMS, auth=auth)
+        session = requests.Session()
+        session.trust_env = False
+        resp = session.get(url, params=self.PARAMS, auth=auth)
         resp.raise_for_status()
         resp_json = resp.json()
         status_name = resp_json["state"]
@@ -148,7 +150,6 @@ class BugsOpenJdkHandler(BaseHandler):
         path = _extract_path(url)
         *_, issue_key = path.split('/')  # get the element after the last slash
         url = self.BUGS_OPENJDK_API_BASE_URL + '/' + issue_key
-
         resp = requests.get(url)
         resp.raise_for_status()
         resp_json = resp.json()
@@ -202,7 +203,9 @@ class BugsOpenJdkHandler(BaseHandler):
                     *_, commit_key = commit_url.split('/')  # get the element after the last slash
                     # Fix went into the openjdk/jdk repository.
                     # Will now attempt to identify the earliest tagged version.
-                    commit_resp = requests.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth, proxies=None/{})
+                    session = requests.Session()
+                    session.trust_env = False
+                    commit_resp = session.get("https://github.com/openjdk/jdk/branch_commits/" + commit_key, params=self.PARAMS, auth=auth)
                     commit_resp.raise_for_status()
                     commit_resp_text = commit_resp.text
                     commit_tag_list = re.findall(">jdk-[0-9]+[^<]+<", commit_resp_text)
@@ -226,7 +229,9 @@ class BugsOpenJdkHandler(BaseHandler):
                         # If this is a mercurial commit, switch to best-guess logic.
                         issue_int = resp_json.get('key', '')[4:]
                         for version_int in [8, 11, 17]:
-                            search_resp = requests.get("https://api.github.com/search/commits?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "u+" + str(issue_int) + "%3A", params=self.PARAMS, auth=auth)
+                            session = requests.Session()
+                            session.trust_env = False
+                            search_resp = session.get("https://api.github.com/search/commits?q=repo%3Aopenjdk%2Fjdk" + str(version_int) + "u+" + str(issue_int) + "%3A", params=self.PARAMS, auth=auth)
                             search_resp.raise_for_status()
                             search_resp_json = search_resp.json()
                             if int(search_resp_json.get('total_count', '')) > 0:
