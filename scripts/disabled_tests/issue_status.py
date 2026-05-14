@@ -88,7 +88,7 @@ class BaseHandler(abc.ABC):
 
     def get_resp_from_url(self, url) -> requests.Response:
         # Use anonymous auth if user/token not provided
-        auth= None
+        auth = None
         if all([self.user, self.token]):
             auth = requests.auth.HTTPBasicAuth(username=self.user, password=self.token)
         adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
@@ -391,6 +391,7 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
 
 
 def main():
+    global return_code
     parser = argparse.ArgumentParser(description="Fetch issue status for each disabled test", allow_abbrev=False)
     parser.add_argument('--github-user', metavar='USER',
                         help=f"GitHub User used for API [env: {GITHUB_USER_ENV}]")
@@ -404,6 +405,8 @@ def main():
                         help='Output file, defaults to stdout')
     parser.add_argument('--verbose', '-v', action='count', default=0,
                         help="Enable info logging level, debug level if -vv")
+    parser.add_argument('--minimal', '-m', action="store_true"
+                        help="Minimal, high-speed check of each url's validity. Performs no futher checks.")
     args = parser.parse_args()
 
     if not args.github_user:
@@ -426,6 +429,23 @@ def main():
     LOG.debug(f"Loading JSON from {getattr(args.infile, 'name', '<unknown>')}")
     issues: List[models.Scheme] = json.load(args.infile)
 
+    if args.minimal:
+        # Check each url for validity, report any errors, and end script early.
+        raw_url_to_issues = group_issues_by_url(issues)
+        for url, issues in raw_url_to_issues.items():
+            # Ignore urls that are actually comments.
+            if url.startswith("#"):
+                continue
+            auth = None
+            if all([args.github_user, args.github_token]):
+                auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
+            resp = session.head(url, allow_redirects=True, auth=auth)
+            if resp.status_code < 404 or resp.status_code == 429:
+                LOG.info(f"{url!r} exists. Status code {resp.status_code}")
+            else:
+                LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
+                return_code = 1
+
     dispatcher = Dispatcher(
         handlers=[
             GitHubHandler(args.github_user, args.github_token),
@@ -442,7 +462,6 @@ def main():
         indent=2,
     )
 
-    global return_code
     return return_code
 
 

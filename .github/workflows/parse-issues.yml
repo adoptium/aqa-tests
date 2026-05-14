@@ -27,8 +27,8 @@ jobs:
         run : |
           echo "::group::openjdk exclude files"
           find openjdk/excludes -name '*ProblemList*.txt' > exclude_files.txt
-          # This line ignores exclude files for jdk versions other than LTS and JDK25+
-          sed -i '/openjdk\(8\|11\|17\|21\|\(2[5-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
+          # This line ignores exclude files for jdk versions other than LTS and JDK26+
+          sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
           cat exclude_files.txt
           echo "::endgroup::"
           echo "::group::playlist files"

@@ -8,17 +8,46 @@ on:
 jobs:
   disableTestsLinter:
     runs-on: ubuntu-latest
+    env:
+        AQA_ISSUE_TRACKER_GITHUB_USER: ${{ github.actor }}
+        AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
+      - name: Set up Python 3.8
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+            python-version: 3.8
+
+      - name: checkout current repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: install reqs
+        run: |
+          pip install -r scripts/disabled_tests/requirements.txt
+        
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install python3 python3-lxml
+          sudo apt-get install python3 python3-lxml python3-requests python3-urllib3
 
       - name: Run exclude_parser.py on ProblemList files
         run: find ./openjdk/excludes -name "ProblemList*" | python3 ./scripts/disabled_tests/exclude_parser.py > /dev/null
 
-      - name: Run playlist_parser.py on playlist.xml files
-        run: find . -name "playlist.xml" | python3 ./scripts/disabled_tests/playlist_parser.py > /dev/null
+      - name: discover disabled tests
+        run : |
+            find openjdk/excludes -name '*ProblemList*.txt' > exclude_files.txt
+            # This line ignores exclude files for jdk versions other than LTS and JDK26+
+            sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
+            find . -name "playlist.xml" -not -path "scripts" | playlist_files.txt
+
+      - name: Run exclude_parser.py on ProblemList files
+        run: |
+            cat exclude_files.txt | python3 scripts/disabled_tests/exclude_parser.py -v > exclude.json
+
+      - name: Run playlist_parser.py on Playlist files
+        run: |
+            cat playlist_files.txt | python3 scripts/disabled_tests/playlist_parser.py -v > playlist.json
+
+      - name: Run issue_status.py on both ProblemList and Playlist files # Using the --minimal option, so it will only validate issue urls. Nothing more.
+        run: |
+            jq -s 'flatten(1)' exclude.json playlist.json > all.json
+            cat all.json | python3 scripts/disabled_tests/issue_status.py --minimal > output.json
