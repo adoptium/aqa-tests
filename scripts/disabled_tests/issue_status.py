@@ -446,6 +446,7 @@ def main():
             else:
                 LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
                 return_code = 1
+        return return_code
 
     dispatcher = Dispatcher(
         handlers=[
