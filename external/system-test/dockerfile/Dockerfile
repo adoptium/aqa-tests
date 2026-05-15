@@ -33,7 +33,6 @@ FROM $IMAGE_NAME:$IMAGE_VERSION
 RUN apt-get update \
 	&& apt-get -y install \
 	ant \
-	ant-contrib \
 	apt-transport-https \
 	ca-certificates \
 	dirmngr \

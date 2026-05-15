@@ -15,7 +15,6 @@
 -->
 
 <project name="Crypto Security Functional tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Crypto Security Functional tests
 	</description>
@@ -32,15 +31,9 @@
 		</condition>
 	</target>
 
-	<if>
+	<condition property="GIT_REPO" value="git@github.com:" else="https://github.com/">
 		<contains string="${SPEC}" substring="zos"/>
-		<then>
-			<property name="GIT_REPO" value="git@github.com:" />
-		</then>
-		<else>
-			<property name="GIT_REPO" value="https://github.com/" />
-		</else>
-	</if>
+	</condition>
 	<target name="getCryptoTest" depends="cryptoTest.check" unless="cryptoTestdir.exists">
 		<getFileWithRetry file="CryptoTest" command="git clone --depth 1 -q ${GIT_REPO}rh-openjdk/CryptoTest.git -b master CryptoTest"/>
 	</target>

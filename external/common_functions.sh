@@ -225,7 +225,6 @@ function set_test_info() {
     test_options=$(getProperty "test_options")
     test_results=$(getProperty "test_results")
     ant_version=$(getProperty "ant_version")
-    ant_contrib_version=$(getProperty "ant_contrib_version")
     ivy_version=$(getProperty "ivy_version")
     jdk_install=$(getProperty "jdk_install")
     tag_version=$(getProperty "tag_version")

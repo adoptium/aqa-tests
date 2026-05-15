@@ -14,8 +14,7 @@
 # limitations under the License.
 -->
 
-<project name="OpenJcePlus tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+<project name="OpenJcePlus tests" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<description>
 		OpenJCEPlus Tests
 	</description>
@@ -36,25 +35,13 @@
 		</condition>
 	</target>
 	<set-property name="OPENJCEPLUS_GIT_REPO_ISSET" if-property-isset="env.OPENJCEPLUS_GIT_REPO"/>
-	<if>
+	<condition property="openjceplusGitRepo" value="${env.OPENJCEPLUS_GIT_REPO}" else="https://github.com/ibmruntimes/OpenJCEPlus.git">
 		<isset property="OPENJCEPLUS_GIT_REPO_ISSET"/>
-		<then>
-			<property name="openjceplusGitRepo" value="${env.OPENJCEPLUS_GIT_REPO}"/>
-		</then>
-		<else>
-			<property name="openjceplusGitRepo" value="https://github.com/ibmruntimes/OpenJCEPlus.git"/>
-		</else>
-	</if>
-	<set-property name="OPENJCEPLUS_GIT_BRANCH_ISSET" if-property-isset="env.OPENJCEPLUS_GIT_BRANCH"/>	
-	<if>
+	</condition>
+	<set-property name="OPENJCEPLUS_GIT_BRANCH_ISSET" if-property-isset="env.OPENJCEPLUS_GIT_BRANCH"/>
+	<condition property="openjceplusGitBranch" value="${env.OPENJCEPLUS_GIT_BRANCH}" else="semeru-java${JDK_VERSION}">
 		<isset property="OPENJCEPLUS_GIT_BRANCH_ISSET"/>
-		<then>
-			<property name="openjceplusGitBranch" value="${env.OPENJCEPLUS_GIT_BRANCH}"/>
-		</then>
-		<else>
-			<property name="openjceplusGitBranch" value="semeru-java${JDK_VERSION}"/>
-		</else>
-	</if>
+	</condition>
 
 	<target name="getOpenJcePlusTests" depends="openJcePlusTests.check" unless="openJcePlusTests.exists">
 		<getFileWithRetry file="OpenJCEPlus" command="git clone -q ${openjceplusGitRepo} OpenJCEPlus"/>
@@ -63,31 +50,26 @@
 			<arg value="rev-parse"/>
 			<arg value="${openjceplusGitBranch}"/>
 		</exec>
-		<if>
+		<!-- If branch not found locally (code=128), try origin/branch -->
+		<condition property="repo_code_128">
 			<equals arg1="${code}" arg2="128"/>
-			<then>
-				<echo message="git rev-parse origin/${openjceplusGitBranch}"/>
-				<exec executable="git" failonerror="true" dir="OpenJCEPlus" outputproperty="repo_sha2" resultproperty="code2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${openjceplusGitBranch}"/>
-				</exec>
-				<property name="repo_sha" value="${repo_sha2}"/>
-			</then>
-		</if>
-		<if>
-			<not>
-				<isset property="repo_sha"/>
-			</not>
-			<then>
-				<property name="repo_sha" value="${repo_sha1}"/>
-			</then>
-		</if>
-		<if>
-			<isset property="isZOS"/>
-			<then>
-				<propertyregex property="repo_sha" input="${repo_sha}" regexp="\n" replace="" override="true"/>
-			</then>
-		</if>
+		</condition>
+		<echo message="git rev-parse origin/${openjceplusGitBranch}" if:set="repo_code_128"/>
+		<exec executable="git" failonerror="true" dir="OpenJCEPlus" outputproperty="repo_sha2" resultproperty="code2" if:set="repo_code_128">
+			<arg value="rev-parse"/>
+			<arg value="origin/${openjceplusGitBranch}"/>
+		</exec>
+		<!-- Use sha2 if branch wasn't found locally, otherwise sha1 -->
+		<property name="repo_sha_raw" value="${repo_sha2}" if:set="repo_code_128"/>
+		<property name="repo_sha_raw" value="${repo_sha1}"/>
+		<!-- Strip newlines (safe on all platforms, needed on z/OS) -->
+		<loadresource property="repo_sha">
+			<propertyresource name="repo_sha_raw"/>
+			<filterchain>
+				<striplinebreaks/>
+				<trim/>
+			</filterchain>
+		</loadresource>
 		<echo message="git checkout -q -f ${repo_sha} "/>
 		<exec executable="git" failonerror="true" dir="OpenJCEPlus">
 			<arg value="checkout"/>
@@ -120,19 +102,18 @@
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build">
-		<if>
-			<and>
-				<equals arg1="${JDK_VENDOR}" arg2="ibm" />
-				<equals arg1="${JDK_IMPL}" arg2="openj9" />
-				<not>
-					<matches string="${JDK_VERSION}" pattern="^(8)$" />
-				</not>
-			</and>
-			<then>
-				<antcall target="clean" inheritall="true" />
-			</then>
-		</if>
+	<condition property="can.build.openjceplus">
+		<and>
+			<equals arg1="${JDK_VENDOR}" arg2="ibm" />
+			<equals arg1="${JDK_IMPL}" arg2="openj9" />
+			<not>
+				<matches string="${JDK_VERSION}" pattern="^(8)$" />
+			</not>
+		</and>
+	</condition>
+
+	<target name="build" if="can.build.openjceplus">
+		<antcall target="clean" inheritall="true" />
 	</target>
 
 </project>

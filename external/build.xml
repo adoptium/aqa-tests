@@ -15,7 +15,6 @@
 -->
 
 <project name="external" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Build external tests
 	</description>
@@ -27,24 +26,12 @@
 
 	<set-property name="DOCKERIMAGE_TAG_ISSET" if-property-isset="env.DOCKERIMAGE_TAG"/>
 	<set-property name="EXTRA_DOCKER_ARGS_ISSET" if-property-isset="env.EXTRA_DOCKER_ARGS"/>
-	<if>
+	<condition property="dockerImageTag" value="${env.DOCKERIMAGE_TAG}" else="nightly">
 		<isset property="DOCKERIMAGE_TAG_ISSET"/>
-		<then>
-			<property name="dockerImageTag" value="${env.DOCKERIMAGE_TAG}"/>
-		</then>
-		<else>
-			<property name="dockerImageTag" value="nightly"/>
-		</else>
-	</if>
-	<if>
+	</condition>
+	<condition property="extra_docker_args" value="${env.EXTRA_DOCKER_ARGS}" else="">
 		<isset property="EXTRA_DOCKER_ARGS_ISSET"/>
-		<then>
-			<property name="extra_docker_args" value="${env.EXTRA_DOCKER_ARGS}"/>
-		</then>
-		<else>
-			<property name="extra_docker_args" value=""/>
-		</else>
-	</if>
+	</condition>
 
 	<target name="init">
 		<mkdir dir="${DEST_EXTERNAL}" />

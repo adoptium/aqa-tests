@@ -14,7 +14,6 @@ limitations under the License.
 -->
 
 <project name="MBCS_Tests/compact_number_format" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 	MBCS_Tests/compact_number_format
 	</description>
@@ -27,6 +26,10 @@ limitations under the License.
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
+
+	<condition property="skip.build">
+		<matches string="${JDK_VERSION}" pattern="^(8|9|10|11|12|13|14)$$" />
+	</condition>
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
@@ -64,14 +67,7 @@ limitations under the License.
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build" >
-		<if>
-			<not>
-				<matches string="${JDK_VERSION}" pattern="^(8|9|10|11|12|13|14)$$" />
-			</not>
-			<then>
-				<antcall target="clean" inheritall="true" />
-			</then>
-		</if>
+	<target name="build" unless="skip.build">
+		<antcall target="clean" inheritall="true" />
 	</target>
 </project>

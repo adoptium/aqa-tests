@@ -15,7 +15,6 @@
 -->
 
 <project name="ssl-tests Security Functional tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		ssl-tests Security Functional tests
 	</description>
@@ -32,15 +31,9 @@
 		</condition>
 	</target>
 
-	<if>
+	<condition property="GIT_REPO" value="git@github.com:" else="https://github.com/">
 		<contains string="${SPEC}" substring="zos"/>
-		<then>
-			<property name="GIT_REPO" value="git@github.com:" />
-		</then>
-		<else>
-			<property name="GIT_REPO" value="https://github.com/" />
-		</else>
-	</if>
+	</condition>
 	<target name="getSsltestsTest" depends="ssltests.check" unless="ssltestsTestdir.exists">
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />

@@ -256,27 +256,6 @@ print_ant_install() {
     fi
 }
 
-# Install Ant Contrib
-print_ant_contrib_install() {
-    local file=$1
-    local ant_contrib_version=$2
-
-    echo -e "ARG ANT_CONTRIB_VERSION=${ant_contrib_version}" \
-        "\nENV ANT_CONTRIB_VERSION=\$ANT_CONTRIB_VERSION" \
-        "\n\n# Install Ant Contrib" \
-        "\nRUN wget --no-verbose --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
-        "\n\t&& wget --no-verbose --no-check-certificate --no-cookies https://sourceforge.net/projects/ant-contrib/files/ant-contrib/\${ANT_CONTRIB_VERSION}/ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5 \\" >> ${file}
-
-    echo -e "\t&& echo \"\$(cat ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5) ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz\" | md5sum -c \\" >> ${file}
-
-    echo -e "\t&& tar -zvxf ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz -C /tmp/ \\" \
-            "\n\t&& mv /tmp/ant-contrib/ant-contrib-\${ANT_CONTRIB_VERSION}.jar \${ANT_HOME}/lib/ant-contrib.jar \\" \
-            "\n\t&& rm -rf /tmp/ant-contrib \\" \
-            "\n\t&& rm -f ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz \\" \
-            "\n\t&& rm -f ant-contrib-\${ANT_CONTRIB_VERSION}-bin.tar.gz.md5" \
-            "\n" >> ${file}
-}
-
 # Install SBT
 print_sbt_install() {
     local file=$1
@@ -644,10 +623,6 @@ generate_dockerfile() {
 
     if [[ ! -z ${ant_version} ]]; then
         print_ant_install ${file} ${ant_version} ${os};
-    fi
-
-    if [[ ! -z ${ant_contrib_version} ]]; then
-        print_ant_contrib_install ${file} ${ant_contrib_version};
     fi
 
     if [[ ! -z ${ivy_version} ]]; then

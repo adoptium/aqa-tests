@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project name="systemtest_common" default="common_build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+<project name="systemtest_common" default="common_build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<description>Build STF based System Tests </description>
 
 	<!-- set global properties for this build -->
@@ -38,14 +37,7 @@
 	</condition>
 
 	<target name="common_init">
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_DEST}" type="dir" />
-			</not>
-			<then>
-				<mkdir dir="${SYSTEMTEST_DEST}" />
-			</then>
-		</if>
+		<mkdir dir="${SYSTEMTEST_DEST}" />
 	</target>
 	<target name="clone_stf">
 		<getFileWithRetry file="STF" command="git clone -q ${stf_repo}" dest="${SYSTEMTEST_ROOT}"/>
@@ -54,36 +46,26 @@
 			<arg value="rev-parse"/>
 			<arg value="${stf_branch}"/>
 		</exec>
-		<if>
+		<!-- If branch not found locally (code=128), try origin/branch -->
+		<condition property="stf_code_128">
 			<equals arg1="${code}" arg2="128"/>
-			<then>
-				<echo message="git rev-parse origin/${stf_branch}"/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha2" resultproperty="code2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${stf_branch}"/>
-				</exec>
-				<property name="stf_sha" value="${stf_sha2}"/>
-			</then>
-		</if>
-		<if>
-			<not>
-				<isset property="stf_sha"/>
-			</not>
-			<then>
-				<property name="stf_sha" value="${stf_sha1}"/>
-			</then>
-		</if>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<propertyregex
-					property="stf_sha"
-					input="${stf_sha}"
-					regexp="\n"
-					replace=""
-					override="true"/>
-			</then>
-		</if>
+		</condition>
+		<echo message="git rev-parse origin/${stf_branch}" if:set="stf_code_128"/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" outputproperty="stf_sha2" resultproperty="code2" if:set="stf_code_128">
+			<arg value="rev-parse"/>
+			<arg value="origin/${stf_branch}"/>
+		</exec>
+		<!-- Use sha2 if branch wasn't found locally, otherwise sha1 -->
+		<property name="stf_sha_raw" value="${stf_sha2}" if:set="stf_code_128"/>
+		<property name="stf_sha_raw" value="${stf_sha1}"/>
+		<!-- Strip newlines (safe on all platforms, needed on z/OS) -->
+		<loadresource property="stf_sha">
+			<propertyresource name="stf_sha_raw"/>
+			<filterchain>
+				<striplinebreaks/>
+				<trim/>
+			</filterchain>
+		</loadresource>
 		<echo message="git checkout -q -f ${stf_sha} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/STF" >
 			<arg value="checkout"/>
@@ -91,27 +73,23 @@
 			<arg value="-f"/>
 			<arg value="${stf_sha}"/>
 		</exec>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-				<fileset dir="${SYSTEMTEST_ROOT}/STF/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/STF/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/STF/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/STF/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
+		<!-- z/OS specific git attribute handling -->
+		<delete includeemptydirs="true" failonerror="false" if:set="isZOS">
+			<fileset dir="${SYSTEMTEST_ROOT}/STF/.git/info" includes="**/*"/>
+		</delete>
+		<mkdir dir="${SYSTEMTEST_ROOT}/STF/.git/info" if:set="isZOS"/>
+		<move file="${SYSTEMTEST_ROOT}/STF/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/STF/.git/info/attributes" if:set="isZOS"/>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false" if:set="isZOS">
+			<arg value="rm" />
+			<arg value="--cached" />
+			<arg value="-r" />
+			<arg value="-q" />
+			<arg value="." />
+		</exec>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/STF" failonerror="false" if:set="isZOS">
+			<arg value="reset" />
+			<arg value="--hard" />
+		</exec>
 		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/STF" repoName="STF"/>
 	</target>
 	<target name="clone_systemtest">
@@ -121,36 +99,26 @@
 			<arg value="rev-parse"/>
 			<arg value="${openjdk_systemtest_branch}"/>
 		</exec>
-		<if>
- 			<equals arg1="${code}" arg2="128"/>
-			<then>
-				<echo message="git rev-parse origin/${openjdk_systemtest_branch}"/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${openjdk_systemtest_branch}"/>
-				</exec>
-				<property name="openjdk_systemtest_sha" value="${openjdk_systemtest_sha2}"/>
-			</then>
-		</if>
-		<if>
-			<not>
-				<isset property="openjdk_systemtest_sha"/>
-			</not>
-			<then>
-				<property name="openjdk_systemtest_sha" value="${openjdk_systemtest_sha1}"/>
-			</then>
-		</if>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<propertyregex
-					property="openjdk_systemtest_sha"
-					input="${openjdk_systemtest_sha}"
-					regexp="\n"
-					replace=""
-					override="true"/>
-			</then>
-		</if>
+		<!-- If branch not found locally (code=128), try origin/branch -->
+		<condition property="systemtest_code_128">
+			<equals arg1="${code}" arg2="128"/>
+		</condition>
+		<echo message="git rev-parse origin/${openjdk_systemtest_branch}" if:set="systemtest_code_128"/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" outputproperty="openjdk_systemtest_sha2" if:set="systemtest_code_128">
+			<arg value="rev-parse"/>
+			<arg value="origin/${openjdk_systemtest_branch}"/>
+		</exec>
+		<!-- Use sha2 if branch wasn't found locally, otherwise sha1 -->
+		<property name="openjdk_systemtest_sha_raw" value="${openjdk_systemtest_sha2}" if:set="systemtest_code_128"/>
+		<property name="openjdk_systemtest_sha_raw" value="${openjdk_systemtest_sha1}"/>
+		<!-- Strip newlines (safe on all platforms, needed on z/OS) -->
+		<loadresource property="openjdk_systemtest_sha">
+			<propertyresource name="openjdk_systemtest_sha_raw"/>
+			<filterchain>
+				<striplinebreaks/>
+				<trim/>
+			</filterchain>
+		</loadresource>
 		<echo message="git checkout -q -f ${openjdk_systemtest_sha} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" >
 			<arg value="checkout"/>
@@ -158,28 +126,23 @@
 			<arg value="-f"/>
 			<arg value="${openjdk_systemtest_sha}"/>
 		</exec>
-
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
+		<!-- z/OS specific git attribute handling -->
+		<delete includeemptydirs="true" failonerror="false" if:set="isZOS">
+			<fileset dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" includes="**/*"/>
+		</delete>
+		<mkdir dir="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info" if:set="isZOS"/>
+		<move file="${SYSTEMTEST_ROOT}/aqa-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/aqa-systemtest/.git/info/attributes" if:set="isZOS"/>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false" if:set="isZOS">
+			<arg value="rm" />
+			<arg value="--cached" />
+			<arg value="-r" />
+			<arg value="-q" />
+			<arg value="." />
+		</exec>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/aqa-systemtest" failonerror="false" if:set="isZOS">
+			<arg value="reset" />
+			<arg value="--hard" />
+		</exec>
  		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/aqa-systemtest" repoName="AQA_SYSTEMTEST" />
 	</target>
 
@@ -190,36 +153,26 @@
 			<arg value="rev-parse"/>
 			<arg value="${openj9_systemtest_branch}"/>
 		</exec>
-		<if>
+		<!-- If branch not found locally (code=128), try origin/branch -->
+		<condition property="openj9_code_128">
 			<equals arg1="${code}" arg2="128"/>
-			<then>
-				<echo message="git rev-parse origin/${openj9_systemtest_branch}"/>
-				<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha2">
-					<arg value="rev-parse"/>
-					<arg value="origin/${openj9_systemtest_branch}"/>
-				</exec>
-				<property name="openj9_systemtest_sha" value="${openj9_systemtest_sha2}"/>
-			</then>
-		</if>
-		<if>
-			<not>
-				<isset property="openj9_systemtest_sha"/>
-			</not>
-			<then>
-				<property name="openj9_systemtest_sha" value="${openj9_systemtest_sha1}"/>
-			</then>
-		</if>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<propertyregex
-					property="openj9_systemtest_sha"
-					input="${openj9_systemtest_sha}"
-					regexp="\n"
-					replace=""
-					override="true"/>
-			</then>
-		</if>
+		</condition>
+		<echo message="git rev-parse origin/${openj9_systemtest_branch}" if:set="openj9_code_128"/>
+		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" outputproperty="openj9_systemtest_sha2" if:set="openj9_code_128">
+			<arg value="rev-parse"/>
+			<arg value="origin/${openj9_systemtest_branch}"/>
+		</exec>
+		<!-- Use sha2 if branch wasn't found locally, otherwise sha1 -->
+		<property name="openj9_systemtest_sha_raw" value="${openj9_systemtest_sha2}" if:set="openj9_code_128"/>
+		<property name="openj9_systemtest_sha_raw" value="${openj9_systemtest_sha1}"/>
+		<!-- Strip newlines (safe on all platforms, needed on z/OS) -->
+		<loadresource property="openj9_systemtest_sha">
+			<propertyresource name="openj9_systemtest_sha_raw"/>
+			<filterchain>
+				<striplinebreaks/>
+				<trim/>
+			</filterchain>
+		</loadresource>
 		<echo message="git checkout -q -f ${openj9_systemtest_sha} "/>
 		<exec executable="git" failonerror="true" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" >
 			<arg value="checkout"/>
@@ -227,91 +180,71 @@
 			<arg value="-f"/>
 			<arg value="${openj9_systemtest_sha}"/>
 		</exec>
-
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<delete includeemptydirs="true" failonerror="false">
-				   <fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
-				</delete>
-				<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" />
-				<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" />
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
-					<arg value="rm" />
-					<arg value="--cached" />
-					<arg value="-r" />
-					<arg value="-q" />
-					<arg value="." />
-				</exec>
-				<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false">
-					<arg value="reset" />
-					<arg value="--hard" />
-				</exec>
-			</then>
-		</if>
+		<!-- z/OS specific git attribute handling -->
+		<delete includeemptydirs="true" failonerror="false" if:set="isZOS">
+			<fileset dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" includes="**/*"/>
+		</delete>
+		<mkdir dir="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info" if:set="isZOS"/>
+		<move file="${SYSTEMTEST_ROOT}/openj9-systemtest/.gitattributes.zos" tofile="${SYSTEMTEST_ROOT}/openj9-systemtest/.git/info/attributes" if:set="isZOS"/>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false" if:set="isZOS">
+			<arg value="rm" />
+			<arg value="--cached" />
+			<arg value="-r" />
+			<arg value="-q" />
+			<arg value="." />
+		</exec>
+		<exec executable="git" dir="${SYSTEMTEST_ROOT}/openj9-systemtest" failonerror="false" if:set="isZOS">
+			<arg value="reset" />
+			<arg value="--hard" />
+		</exec>
  		<addTestenvProperties repoDir="${SYSTEMTEST_ROOT}/openj9-systemtest" repoName="OPENJ9_SYSTEMTEST"/>
 	</target>
 
 	<target name="check_systemtest" depends="common_init">
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_ROOT}/STF" type="dir" />
-			</not>
-			<then>
-				<echo message="${SYSTEMTEST_ROOT}/STF does not exist, clone from GitHub" />
-				<antcall target="clone_stf" inheritall="true" />
-			</then>
-			<else>
-				<echo message="${SYSTEMTEST_ROOT}/STF exists, skip cloning" />
-			</else>
-		</if>
-		<if>
-			<not>
-				<available file="${SYSTEMTEST_ROOT}/aqa-systemtest" type="dir" />
-			</not>
-			<then>
-				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest does not exist, clone from GitHub" />
-				<antcall target="clone_systemtest" inheritall="true" />
-			</then>
-			<else>
-				<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest exists, skip cloning" />
-			</else>
-		</if>
-		<if>
+		<condition property="stf.exists">
+			<available file="${SYSTEMTEST_ROOT}/STF" type="dir" />
+		</condition>
+		<echo message="${SYSTEMTEST_ROOT}/STF does not exist, clone from GitHub" unless:set="stf.exists"/>
+		<antcall target="clone_stf" inheritall="true" unless:set="stf.exists"/>
+		<echo message="${SYSTEMTEST_ROOT}/STF exists, skip cloning" if:set="stf.exists"/>
+
+		<condition property="aqa_systemtest.exists">
+			<available file="${SYSTEMTEST_ROOT}/aqa-systemtest" type="dir" />
+		</condition>
+		<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest does not exist, clone from GitHub" unless:set="aqa_systemtest.exists"/>
+		<antcall target="clone_systemtest" inheritall="true" unless:set="aqa_systemtest.exists"/>
+		<echo message="${SYSTEMTEST_ROOT}/aqa-systemtest exists, skip cloning" if:set="aqa_systemtest.exists"/>
+
+		<condition property="is_openj9_or_ibm">
 			<or>
 				<contains string="${JVM_VERSION}" substring="openj9"/>
 				<contains string="${JVM_VERSION}" substring="ibm"/>
 			</or>
-			<then>
-				<if>
-					<not>
-						<available file="${SYSTEMTEST_ROOT}/openj9-systemtest" type="dir" />
-					</not>
-					<then>
-						<echo message="${SYSTEMTEST_ROOT}/openj9-systemtest does not exist, clone from GitHub" />
-						<antcall target="clone_openj9-systemtest" inheritall="true" />
-					</then>
-					<else>
-						<echo message="${SYSTEMTEST_ROOT}/openj9-systemtest exists, skip cloning" />
-					</else>
-				</if>
-			</then>
-		</if>
+		</condition>
+		<condition property="openj9_systemtest.exists">
+			<available file="${SYSTEMTEST_ROOT}/openj9-systemtest" type="dir" />
+		</condition>
+		<condition property="need_clone_openj9_systemtest">
+			<and>
+				<isset property="is_openj9_or_ibm"/>
+				<not>
+					<isset property="openj9_systemtest.exists"/>
+				</not>
+			</and>
+		</condition>
+		<echo message="${SYSTEMTEST_ROOT}/openj9-systemtest does not exist, clone from GitHub" if:set="need_clone_openj9_systemtest"/>
+		<antcall target="clone_openj9-systemtest" inheritall="true" if:set="need_clone_openj9_systemtest"/>
 	</target>
 
 	<target name="configure_systemtest" depends="check_systemtest">
-		<if>
+		<condition property="is_openj9_or_ibm">
 			<or>
 				<contains string="${JVM_VERSION}" substring="openj9"/>
 				<contains string="${JVM_VERSION}" substring="ibm"/>
 			</or>
-			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false"/>
-			</then>
-			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/" target="configure" inheritAll="false"/>
-			</else>
-		</if>
+		</condition>
+		<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/" target="configure" inheritAll="false" if:set="is_openj9_or_ibm"/>
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/" target="configure" inheritAll="false" unless:set="is_openj9_or_ibm"/>
 	</target>
 
 	<target name="common_dist" description="generate the distribution">
@@ -329,48 +262,36 @@
 				<isset property="env.SYSTEM_LIB_DIR"/>
 			</not>
 		</condition>
-		<if>
-			<equals arg1="${system_lib_dir_not_set}" arg2="true"/>
-			<then>
-				<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs"/>
-				<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
-					<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**"/>
-				</copy>
-			</then>
-		</if>
+		<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs" if:true="system_lib_dir_not_set"/>
+		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/" if:true="system_lib_dir_not_set">
+			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**"/>
+		</copy>
 		
-		<if>
+		<condition property="is_svt_testrepo">
 			<equals arg1="${env.IS_SVT_TESTREPO}" arg2="true"/>
-			<then>
-				<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs"/>
-				<mkdir dir="${TEST_ROOT}/systemtest_prereqs"/>
-				<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/">
-					<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
-				</copy>
-				<copy todir="${TEST_ROOT}/systemtest_prereqs/">
-					<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
-				</copy>
-			</then>
-		</if>
+		</condition>
+		<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs" if:set="is_svt_testrepo"/>
+		<mkdir dir="${TEST_ROOT}/systemtest_prereqs" if:set="is_svt_testrepo"/>
+		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/" if:set="is_svt_testrepo">
+			<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
+		</copy>
+		<copy todir="${TEST_ROOT}/systemtest_prereqs/" if:set="is_svt_testrepo">
+			<fileset dir="${env.SYSTEM_LIB_DIR}/" includes="**"/>
+		</copy>
 	</target>
 
 	<!-- target to build all projects in the repository.  -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
 	<target name="build-dependencies" depends="configure_systemtest">
-		<if>
+		<condition property="is_openj9_or_ibm">
 			<or>
 				<contains string="${JVM_VERSION}" substring="openj9"/>
 				<contains string="${JVM_VERSION}" substring="ibm"/>
 			</or>
-
-			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false"/>
-			</then>
-			<else>
-				<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false"/>
-			</else>
-		</if>
+		</condition>
+		<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" if:set="is_openj9_or_ibm"/>
+		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false" unless:set="is_openj9_or_ibm"/>
 		<antcall target="common_dist" inheritall="false" />
 	</target>
 
@@ -382,15 +303,13 @@
 
 	<target name="clean">
 		<ant antfile="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build/build.xml" dir="${SYSTEMTEST_ROOT}/aqa-systemtest/openjdk.build" inheritAll="false" target="clean"/>
-		<if>
+		<condition property="is_openj9_or_ibm">
 			<or>
 				<contains string="${JVM_VERSION}" substring="openj9"/>
 				<contains string="${JVM_VERSION}" substring="ibm"/>
 			</or>
-			<then>
-				<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean"/>
-			</then>
-		</if>
+		</condition>
+		<ant antfile="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build/build.xml" dir="${SYSTEMTEST_ROOT}/openj9-systemtest/openj9.build" inheritAll="false" target="clean" if:set="is_openj9_or_ibm"/>
 		<ant antfile="${SYSTEMTEST_ROOT}/STF/stf.build/build.xml" dir="${SYSTEMTEST_ROOT}/STF/stf.build" inheritAll="false" target="clean"/>
 	</target>
 </project>
