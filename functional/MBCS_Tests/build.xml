@@ -13,8 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="MBCS_Tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+<project name="MBCS_Tests" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<description>
 		Build MBCS_Tests
 	</description>
@@ -24,26 +23,23 @@ limitations under the License.
 	<!-- set properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests" />
 
+	<condition property="is.jcl.latest">
+		<equals arg1="${JCL_VERSION}" arg2="latest" />
+	</condition>
+
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
 
 	<target name="build" depends="dist">
-		<if>
-			<equals arg1="${JCL_VERSION}" arg2="latest" />
-			<then>
-				<subant target="">
-					<fileset dir="." includes="*/build.xml">
-						<exclude name="proxyFieldAccess/build.xml" />
-					</fileset>
-				</subant>
-			</then>
-			<else>
-				<subant target="">
-					<fileset dir="." includes="*/build.xml" />
-				</subant>
-			</else>
-		</if>
+		<subant target="" if:set="is.jcl.latest">
+			<fileset dir="." includes="*/build.xml">
+				<exclude name="proxyFieldAccess/build.xml" />
+			</fileset>
+		</subant>
+		<subant target="" unless:set="is.jcl.latest">
+			<fileset dir="." includes="*/build.xml" />
+		</subant>
 	</target>
 	
 	<target name="dist" depends="init,copyData">

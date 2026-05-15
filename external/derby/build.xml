@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <project name="Derby-Test" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Build derby-test Docker image
 	</description>
@@ -11,24 +10,21 @@
 	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
+	<!-- Temporarily disable for openj9 and ibm due to ibm_git/runtimes/infrastructure/issues/6056 -->
+	<condition property="skip.build">
+		<or>
+			<equals arg1="${JDK_IMPL}" arg2="ibm" />
+			<equals arg1="${JDK_IMPL}" arg2="openj9" />
+		</or>
+	</condition>
+
 	<target name="init">
 		<mkdir dir="${DEST}"/>
 	</target>
 
 	<target name="dist" depends="move_scripts,clean_image,build_image,copy_dest" description="generate the distribution" />
 
-	<target name="build">
-		<!-- Temporarily disable for openj9 and ibm due to ibm_git/runtimes/infrastructure/issues/6056 -->
-		<if>
-			<not>
-				<or>
-					<equals arg1="${JDK_IMPL}" arg2="ibm"  />
-					<equals arg1="${JDK_IMPL}" arg2="openj9" />
-				</or>
-			</not>
-			<then>
-				<antcall target="dist" inheritall="true" />
-			</then>
-		</if>
+	<target name="build" unless="skip.build">
+		<antcall target="dist" inheritall="true" />
 	</target>
 </project>

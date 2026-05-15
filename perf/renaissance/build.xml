@@ -14,48 +14,43 @@
 # limitations under the License.
 -->
 
-<project name="Renaissance suite" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+<project name="Renaissance suite" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<description>Renaissance suite</description>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/perf/renaissance" />
 	<property name="SRC" location="." />
+	<property name="FILE_NAME" value="renaissance.jar"/>
+
+	<!-- Set curl_options based on JDK version -->
+	<condition property="curl_options"
+		value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.1/renaissance-mit-0.16.1.jar -o ${FILE_NAME}"
+		else="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.0/renaissance-mit-0.16.0.jar -o ${FILE_NAME}">
+		<or>
+			<equals arg1="${JDK_VERSION}" arg2="26"/>
+			<matches string="${JDK_VERSION}" pattern="^(2[7-9]|[3-9][0-9])$"/>
+		</or>
+	</condition>
 	
 	<target name="init">
 		<mkdir dir="${DEST}" />
 	</target>
 
-	<target name="getRenaissanceSuite" depends="init">
-		<var name="FILE_NAME" value="renaissance.jar"/>
-		<if>
-		    <available file="${FILE_NAME}" type="file" />
-		    <then>
-		        <echo message="${FILE_NAME} exists. Hence, not downloading it." />
-		    </then>
-		    <else>
-				<if>
-					<or>
-						<equals arg1="${JDK_VERSION}" arg2="26"/>
-						<matches string="${JDK_VERSION}" pattern="^(2[7-9]|[3-9][0-9])$"/>
-					</or>
-					<then>
-						<var name="curl_options" value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.1/renaissance-mit-0.16.1.jar -o ${FILE_NAME}"/>
-					</then>
-					<else>
-						<var name="curl_options" value="-Lks -C - https://github.com/renaissance-benchmarks/renaissance/releases/download/v0.16.0/renaissance-mit-0.16.0.jar -o ${FILE_NAME}"/>
-					</else>
-				</if>
-				<retry retrycount="3">
-		 			<sequential>
-						<echo message="curl ${curl_options}" />
-						<exec executable="curl" failonerror="true">
-							<arg line="${curl_options}" />
-						</exec>
-					</sequential>
-		 		</retry>
-		    </else>
-		</if>
+	<target name="getRenaissanceSuite.check">
+		<condition property="renaissance.exists">
+			<available file="${FILE_NAME}" type="file"/>
+		</condition>
+	</target>
+
+	<target name="getRenaissanceSuite" depends="init,getRenaissanceSuite.check" unless="renaissance.exists">
+		<retry retrycount="3">
+			<sequential>
+				<echo message="curl ${curl_options}" />
+				<exec executable="curl" failonerror="true">
+					<arg line="${curl_options}" />
+				</exec>
+			</sequential>
+		</retry>
 	</target>
 
 	<target name="dist" depends="getRenaissanceSuite" description="generate the distribution">

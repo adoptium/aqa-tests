@@ -14,8 +14,7 @@
 # limitations under the License.
 -->
 
-<project name="jck" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+<project name="jck" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<description>Build JCK Tests</description>
 
 	<!-- set global properties for this build -->
@@ -117,161 +116,166 @@
 	
 	<target name="stage-jck-material">
 		<!-- Starting downloading or updating JCK materials based on JCK GIT REPO and JCK VERSION-->
-		<if>
-			<available file="${JCK_ROOT_USED}" type="dir" />
-			<then>
-				<if>
-					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
-					<then>
-						<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git checks at ${JCK_ROOT_USED}. Continue." />
-					</then>
-					<else>
-						<!--Obtain local and remote SHA to figure out if local materials are up-to-date--> 
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code">
-							<arg line="rev-parse"/>
-							<arg line="HEAD"/>
-						</exec>
-						<if>
-							<not>
-								<equals arg1="${return.code}" arg2="0"/>
-							</not>
-							<then>
-								<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." />
-								<delete dir="${JCK_ROOT_USED}" failonerror="true" />
-							</then>
-							<else>
-								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA">
-									<arg line="ls-remote"/>
-									<arg line="${JCK_GIT_REPO_USED}"/>
-									<arg line="${jck_branch}"/>
-								</exec>
-								<loadresource property="localSHATrimmed">
-									<propertyresource name="localSHA"/>
-										<filterchain>
-										<tokenfilter>
-											<trim/>
-										</tokenfilter>
-										<striplinebreaks/>
-									</filterchain>
-								</loadresource>
-								<echo message="LocalSHA = --${localSHATrimmed}--"/>
-								<echo message="RemoteSHA= --${remoteSHA}--"/>
-								<condition property="local-material-uptodate">
-									<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
-								</condition>
-							</else>
-						</if>
-					</else>
-				</if>
-			</then>
-		</if>	
-		<if>
-			<not>
-				<available file="${JCK_ROOT_USED}" type="dir" />
-			</not>
-			<!-- jck materials don't exist, download them -->
-			<then>
-				<echo message="${JCK_ROOT_USED} does not exist,
-					clone from ${JCK_GIT_REPO_USED}, ${jck_branch} branch, to ${JCK_ROOT_USED}" />
-				<mkdir dir="${JCK_ROOT_USED}/.." />
-				<exec executable="git" dir="${JCK_ROOT_USED}/.." failonerror="true">
-					<arg value="clone" />
-					<arg value="--single-branch" />
-					<arg value="-b"/>
-					<arg value="${jck_branch}"/>
-					<arg value="${JCK_GIT_REPO_USED}" />
-					<arg value="${JCK_ROOT_USED}" />
-				</exec>
-			</then>
-			<!-- jck materials exist, update jck materials if needed-->
-			<else>
-				<if>
-					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
-					<!-- don't want to update local JCK materials -->
-					<then>
-						<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git update at ${JCK_ROOT_USED}. Continue." />
-					</then>
-					<else>
-						<if>
-							<isset property="local-material-uptodate" />
-							<then> 
-								<echo message="Local JCK materials up-to-date. Skipping update"/>
-							</then>
-							<else>
-								<if>
-									<available file="${JCK_ROOT_USED}/natives" type="dir" />
-									<then>
-										<echo message="Deleting ${JCK_ROOT_USED}/natives..." />
-										<delete includeEmptyDirs="true">
-  											<fileset dir="${JCK_ROOT_USED}/natives"/>
-										</delete>
-									</then>
-								</if>
-								<echo message="Updating ${JCK_ROOT_USED} with latest..." />
-								<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" resultproperty="return.code">
-									<arg value="pull" />
-									<arg value="${JCK_GIT_REPO_USED}" />
-									<arg value="${jck_branch}" />
-								</exec>
-								<if>
-									<not>
-										<equals arg1="${return.code}" arg2="0"/>
-									</not> 
-									<then>
-										<echo message="Performing hard reset..." />
-										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-											<arg value="reset" />
-											<arg value="--hard" />
-											<arg value="origin/main" />
-										</exec>
-										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-											<arg value="clean" />
-											<arg value="-f" />
-											<arg value="-d" />
-										</exec>
-										<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true">
-											<arg value="pull" />
-											<arg value="${JCK_GIT_REPO_USED}" />
-											<arg value="${jck_branch}" />
-										</exec>
-									</then>
-								</if>
-							</else>
-						</if>
-					</else>
-				</if>
-			</else>
-		</if>
-		<if>
-			<isset property="isZOS" />
-			<then>
-				<if>
-					<isset property="local-material-uptodate"/>
-					<then> 
-						<echo message="Local JCK materials up-to-date. Skipping hard reset"/>
-					</then>
-					<else>
-						<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..."/>
-						<delete includeemptydirs="true" failonerror="false">
-							<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
-						</delete>
-						<mkdir dir="${JCK_ROOT_USED}/.git/info" />
-						<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" />
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-							<arg value="rm" />
-							<arg value="--cached" />
-							<arg value="-r" />
-							<arg value="-q" />
-							<arg value="." />
-						</exec>
-						<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false">
-							<arg value="reset" />
-							<arg value="--hard" />
-						</exec>
-					</else>
-				</if>
-			</then>
-		</if> 
+
+		<!-- Phase 1: If JCK dir exists and we're not skipping, check git status -->
+		<condition property="jck_dir_exists_phase1">
+			<available file="${JCK_ROOT_USED}" type="dir"/>
+		</condition>
+		<condition property="skip_jck_git_update">
+			<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
+		</condition>
+		<condition property="jck_exists_and_check">
+			<and>
+				<isset property="jck_dir_exists_phase1"/>
+				<not><isset property="skip_jck_git_update"/></not>
+			</and>
+		</condition>
+
+		<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git checks at ${JCK_ROOT_USED}. Continue." if:set="skip_jck_git_update"/>
+
+		<!--Obtain local and remote SHA to figure out if local materials are up-to-date-->
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" outputproperty="localSHA" resultproperty="return.code" if:set="jck_exists_and_check">
+			<arg line="rev-parse"/>
+			<arg line="HEAD"/>
+		</exec>
+		<condition property="git_check_failed">
+			<and>
+				<isset property="jck_exists_and_check"/>
+				<not><equals arg1="${return.code}" arg2="0"/></not>
+			</and>
+		</condition>
+		<condition property="git_check_passed">
+			<and>
+				<isset property="jck_exists_and_check"/>
+				<equals arg1="${return.code}" arg2="0"/>
+			</and>
+		</condition>
+		<echo message="Error: Git command failed with return code ${return.code}. Delete the directory and continue." if:set="git_check_failed"/>
+		<delete dir="${JCK_ROOT_USED}" failonerror="true" if:set="git_check_failed"/>
+
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" outputproperty="remoteSHA" if:set="git_check_passed">
+			<arg line="ls-remote"/>
+			<arg line="${JCK_GIT_REPO_USED}"/>
+			<arg line="${jck_branch}"/>
+		</exec>
+		<loadresource property="localSHATrimmed" if:set="git_check_passed">
+			<propertyresource name="localSHA"/>
+				<filterchain>
+				<tokenfilter>
+					<trim/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadresource>
+		<echo message="LocalSHA = --${localSHATrimmed}--" if:set="git_check_passed"/>
+		<echo message="RemoteSHA= --${remoteSHA}--" if:set="git_check_passed"/>
+		<condition property="local-material-uptodate">
+			<and>
+				<isset property="git_check_passed"/>
+				<contains string="${remoteSHA}" substring="${localSHATrimmed}" />
+			</and>
+		</condition>
+
+		<!-- Phase 2: Clone or update based on current state -->
+		<condition property="jck_dir_exists_phase2">
+			<available file="${JCK_ROOT_USED}" type="dir"/>
+		</condition>
+
+		<!-- If dir doesn't exist, clone it -->
+		<echo message="${JCK_ROOT_USED} does not exist, clone from ${JCK_GIT_REPO_USED}, ${jck_branch} branch, to ${JCK_ROOT_USED}" unless:set="jck_dir_exists_phase2"/>
+		<mkdir dir="${JCK_ROOT_USED}/.." unless:set="jck_dir_exists_phase2"/>
+		<exec executable="git" dir="${JCK_ROOT_USED}/.." failonerror="true" unless:set="jck_dir_exists_phase2">
+			<arg value="clone" />
+			<arg value="--single-branch" />
+			<arg value="-b"/>
+			<arg value="${jck_branch}"/>
+			<arg value="${JCK_GIT_REPO_USED}" />
+			<arg value="${JCK_ROOT_USED}" />
+		</exec>
+
+		<!-- If dir exists and we should update -->
+		<condition property="jck_exists_and_should_update">
+			<and>
+				<isset property="jck_dir_exists_phase2"/>
+				<not><isset property="skip_jck_git_update"/></not>
+			</and>
+		</condition>
+		<echo message="env.SKIP_JCK_GIT_UPDATE is set to true. Skip Running git update at ${JCK_ROOT_USED}. Continue." if:set="skip_jck_git_update"/>
+		<echo message="Local JCK materials up-to-date. Skipping update" if:set="local-material-uptodate"/>
+
+		<condition property="jck_needs_update">
+			<and>
+				<isset property="jck_exists_and_should_update"/>
+				<not><isset property="local-material-uptodate"/></not>
+			</and>
+		</condition>
+
+		<!-- Delete natives before update if they exist -->
+		<condition property="jck_natives_exist">
+			<and>
+				<isset property="jck_needs_update"/>
+				<available file="${JCK_ROOT_USED}/natives" type="dir"/>
+			</and>
+		</condition>
+		<echo message="Deleting ${JCK_ROOT_USED}/natives..." if:set="jck_natives_exist"/>
+		<delete includeEmptyDirs="true" if:set="jck_natives_exist">
+			<fileset dir="${JCK_ROOT_USED}/natives"/>
+		</delete>
+
+		<echo message="Updating ${JCK_ROOT_USED} with latest..." if:set="jck_needs_update"/>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" resultproperty="pull.return.code" if:set="jck_needs_update">
+			<arg value="pull" />
+			<arg value="${JCK_GIT_REPO_USED}" />
+			<arg value="${jck_branch}" />
+		</exec>
+		<condition property="pull_failed">
+			<and>
+				<isset property="jck_needs_update"/>
+				<not><equals arg1="${pull.return.code}" arg2="0"/></not>
+			</and>
+		</condition>
+		<echo message="Performing hard reset..." if:set="pull_failed"/>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" if:set="pull_failed">
+			<arg value="reset" />
+			<arg value="--hard" />
+			<arg value="origin/main" />
+		</exec>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" if:set="pull_failed">
+			<arg value="clean" />
+			<arg value="-f" />
+			<arg value="-d" />
+		</exec>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="true" if:set="pull_failed">
+			<arg value="pull" />
+			<arg value="${JCK_GIT_REPO_USED}" />
+			<arg value="${jck_branch}" />
+		</exec>
+
+		<!-- Phase 3: z/OS specific git attribute handling -->
+		<condition property="zos_needs_reset">
+			<and>
+				<isset property="isZOS"/>
+				<not><isset property="local-material-uptodate"/></not>
+			</and>
+		</condition>
+		<echo message="Local JCK materials up-to-date. Skipping hard reset" if:set="local-material-uptodate"/>
+		<echo message="Performing hard reset of ${JCK_ROOT_USED} using .gitattributes.zos for file conversions..." if:set="zos_needs_reset"/>
+		<delete includeemptydirs="true" failonerror="false" if:set="zos_needs_reset">
+			<fileset dir="${JCK_ROOT_USED}/.git/info" includes="**/*"/>
+		</delete>
+		<mkdir dir="${JCK_ROOT_USED}/.git/info" if:set="zos_needs_reset"/>
+		<move file="${JCK_ROOT_USED}/.gitattributes.zos" tofile="${JCK_ROOT_USED}/.git/info/attributes" if:set="zos_needs_reset"/>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" if:set="zos_needs_reset">
+			<arg value="rm" />
+			<arg value="--cached" />
+			<arg value="-r" />
+			<arg value="-q" />
+			<arg value="." />
+		</exec>
+		<exec executable="git" dir="${JCK_ROOT_USED}" failonerror="false" if:set="zos_needs_reset">
+			<arg value="reset" />
+			<arg value="--hard" />
+		</exec>
 	</target>
 	
 	<target name="build-jck-natives" depends="setup-native-build-command, build-natives-windows, build-natives-unix"> 
@@ -320,24 +324,27 @@
 	</target>
 
 	<target name="build">
-				<if>
-					<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
-					<then>
-						<echo message="=== SKIP_JCK_GIT_UPDATE set to true, not enforcing existence of env.JCK_GIT_REPO ===" />
-					</then>
-					<else>
-						<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests,
-						please use BUILD_LIST to include test folders you want to test.">
-							<condition>
-								<not>
-									<isset property="env.JCK_GIT_REPO"/>
-								</not>
-							</condition>
-						</fail>
+		<condition property="skip_jck_git_update_build">
+			<equals arg1="${env.SKIP_JCK_GIT_UPDATE}" arg2="true"/>
+		</condition>
+		<echo message="=== SKIP_JCK_GIT_UPDATE set to true, not enforcing existence of env.JCK_GIT_REPO ===" if:set="skip_jck_git_update_build"/>
+		<fail message="env.JCK_GIT_REPO: ${env.JCK_GIT_REPO} was not correctly set for running JCK tests. If you do not want to compile JCK tests, please use BUILD_LIST to include test folders you want to test." unless:set="skip_jck_git_update_build">
+			<condition>
+				<not>
+					<isset property="env.JCK_GIT_REPO"/>
+				</not>
+			</condition>
+		</fail>
 
-					</else>
-				</if>
-		<propertyregex property="JCK_GIT_REPO_USED" input="${env.JCK_GIT_REPO}" regexp="JCKnext-unzipped.git" replace="JCK${JDK_VERSION}-unzipped.git" casesensitive="false" defaultValue="${env.JCK_GIT_REPO}"/>
+		<!-- Replace JCKnext-unzipped.git with JCK${JDK_VERSION}-unzipped.git in repo URL -->
+		<loadresource property="JCK_GIT_REPO_USED">
+			<propertyresource name="env.JCK_GIT_REPO"/>
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="(?i)JCKnext-unzipped\.git" replace="JCK${JDK_VERSION}-unzipped.git"/>
+				</tokenfilter>
+			</filterchain>
+		</loadresource>
 		<echo>=== JCK_GIT_REPO_USED is set to ${JCK_GIT_REPO_USED} ===</echo>
 
 		<condition property="JCK_ROOT_RELATIVE_PATH" value="${env.JCK_ROOT}" else="${basedir}/../../../../jck_root/JCK${JDK_VERSION}-unzipped">
@@ -347,43 +354,32 @@
 		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
 
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
-        <set-property name="JCK_VERSION_ISSET" if-property-isset="env.JCK_VERSION"/>
-		<if>
-			<isset property="JCK_VERSION_ISSET" />
-			<then>
-				<property name="JCK_VERSION_USED" value="${env.JCK_VERSION}" />
-			</then>
-			<else>
-				<if>
-					<equals arg1="${JDK_VERSION}" arg2="8" />
-					<then>
-						<property name="JCK_VERSION_USED" value="jck8d" />
-					</then>
-					<else>
-						<if>
-							<equals arg1="${JDK_VERSION}" arg2="11" />
-							<then>
-								<property name="JCK_VERSION_USED" value="jck11a" />
-							</then>
-							<else>
-								<if>
-									<equals arg1="${JDK_VERSION}" arg2="17" />
-									<then>
-										<property name="JCK_VERSION_USED" value="jck17a" />
-									</then>
-									<else>
-										<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}" />
-									</else>
-								</if>
-							</else>
-						</if>
-					</else>
-				</if>
-			</else>
-		</if>
+		<!-- Determine JCK_VERSION_USED: use env if set, otherwise derive from JDK_VERSION -->
+		<set-property name="JCK_VERSION_ISSET" if-property-isset="env.JCK_VERSION"/>
+		<condition property="JCK_VERSION_USED" value="${env.JCK_VERSION}">
+			<isset property="JCK_VERSION_ISSET"/>
+		</condition>
+		<condition property="JCK_VERSION_USED" value="jck8d">
+			<equals arg1="${JDK_VERSION}" arg2="8"/>
+		</condition>
+		<condition property="JCK_VERSION_USED" value="jck11a">
+			<equals arg1="${JDK_VERSION}" arg2="11"/>
+		</condition>
+		<condition property="JCK_VERSION_USED" value="jck17a">
+			<equals arg1="${JDK_VERSION}" arg2="17"/>
+		</condition>
+		<property name="JCK_VERSION_USED" value="jck${JDK_VERSION}"/>
 		<echo>=== JCK_VERSION_USED is set to ${JCK_VERSION_USED} ===</echo>
 
-		<propertyregex property="jck_short_version" input="${JCK_VERSION_USED}" regexp="jck([^\.]*)" select="\1" casesensitive="false" />
+		<!-- Extract short version from JCK_VERSION_USED (e.g. "jck8d" -> "8d") -->
+		<loadresource property="jck_short_version">
+			<propertyresource name="JCK_VERSION_USED"/>
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="jck([^\.]*)" replace="\1" flags="i"/>
+				</tokenfilter>
+			</filterchain>
+		</loadresource>
 		<property name="jck_runtimes_src_dir" value="${JCK_ROOT_USED}/JCK-runtime-${jck_short_version}"/>
 		
 		<echo>start staging jck materials</echo>
