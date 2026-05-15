@@ -319,7 +319,11 @@ def augment_with_status(issues, issue_status):
 def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Scheme]]:
     url_to_issues = defaultdict(list)
     for issue in issues:
-        url_to_issues[issue["ISSUE_TRACKER"]].append(issue)
+        urls_list = issue["ISSUE_TRACKER"].split(",")
+        for url in urls_list:
+            url_to_issues[url.strip()].append(issue)
+    print(url_to_issues.keys())
+    sys.exit(1)
     return url_to_issues
 
 
@@ -366,14 +370,18 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
     """
     raw_url_to_issues = group_issues_by_url(issues)
 
-    # Remove all issues whose tracker contains a URL segment listed in `EXCEPTIONS`
+    # Split URLs containing multiple URLs
     url_to_issues = {}
+    
+    # Remove all issues whose tracker contains a URL segment listed in `EXCEPTIONS`
     for url, issues in raw_url_to_issues.items():
         exclude, reason = should_exclude(url)
         if exclude:
             LOG.warning(f"Excluding {url!r} due to exception segment {reason!r}")
         else:
             url_to_issues[url] = issues
+
+    
 
     len_trackers = len(url_to_issues)
     LOG.debug(f"Unique issue trackers found: {len_trackers}")
