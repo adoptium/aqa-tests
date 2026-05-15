@@ -322,8 +322,6 @@ def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Sc
         urls_list = issue["ISSUE_TRACKER"].split(",")
         for url in urls_list:
             url_to_issues[url.strip()].append(issue)
-    print(url_to_issues.keys())
-    sys.exit(1)
     return url_to_issues
 
 
