@@ -851,7 +851,7 @@ def runTest( ) {
 						}
 					}
 				}
-			} else if (env.SPEC.startsWith('zos')) { 
+			} else if (env.SPEC.startsWith('zos')) {
 				makeTest("${RUNTEST_CMD}")
 			} else {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
@@ -887,9 +887,36 @@ def runTest( ) {
 		} else {
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
-			def summary = manager.createSummary("error.svg")
-			summary.appendText("TEST BUILD FAILURE!", false)
+			def summary = createBadgeSummary("error.svg")
+			appendSummaryText(summary, "TEST BUILD FAILURE!")
 		}
+	}
+}
+
+def createBadgeSummary(iconName) {
+	// Try new method first (badge plugin v3.583+), fallback to deprecated method for older versions
+	def summary = null
+	try {
+		summary = manager.addSummary(iconName)
+	} catch (Exception e) {
+		echo "addSummary failed, trying deprecated createSummary method: ${e.message}"
+		try {
+			summary = manager.createSummary(iconName)
+		} catch (Exception e2) {
+			echo "Both addSummary and createSummary failed: ${e2.message}"
+			throw e2
+		}
+	}
+	return summary
+}
+
+def appendSummaryText(summary, text) {
+	try {
+		def currentText = summary.getText() ?: ""
+		summary.setText(currentText + text)
+	} catch (Exception e) {
+		echo "setText failed, trying deprecated appendText: ${e.message}"
+		summary.appendText(text, false)
 	}
 }
 
@@ -903,24 +930,24 @@ def checkTestResults(results) {
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
-		summary = manager.createSummary("folder-delete.svg")
-		summary.appendText("NO TEST FOUND!", false)
+		summary = createBadgeSummary("folder-delete.svg")
+		appendSummaryText(summary, "NO TEST FOUND!")
 		return
 	}
 
 	if (results["FAILED"] != 0) {
 		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, current build status is UNSTABLE.'
-		summary = manager.createSummary("warning.svg")
+		summary = createBadgeSummary("warning.svg")
 	} else {
-		summary = manager.createSummary("accept.svg")
+		summary = createBadgeSummary("accept.svg")
 	}
 
-	summary.appendText("TEST TARGETS SUMMARY:<ul>", false)
+	appendSummaryText(summary, "TEST TARGETS SUMMARY:<ul>")
 	results.each {
-		summary.appendText("<li><b>$it.key</b> : $it.value</li>", false)
+		appendSummaryText(summary, "<li><b>$it.key</b> : $it.value</li>")
 	}
-	summary.appendText("</ul>", false)
+	appendSummaryText(summary, "</ul>")
 }
 
 def post(output_name) {
@@ -1035,7 +1062,7 @@ def post(output_name) {
 				uploadToArtifactory(pattern)
 			}
 		}
-		
+
 		int rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 0
 		if (JOB_NAME.contains("_rerun") || JOB_NAME.contains("_testList_") || JOB_NAME.contains("_iteration_")) {
 			addFailedTestsGrinderLink()
@@ -1045,7 +1072,7 @@ def post(output_name) {
 			} else {
 				addFailedTestsGrinderLink()
 			}
-		} 
+		}
 
 		try {
 			junit skipMarkingBuildUnstable: true, allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
@@ -1621,7 +1648,7 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
 						currentBuild.result = originalStatus
-					} else if ( originalStatus == 'ABORTED') { 
+					} else if ( originalStatus == 'ABORTED') {
 						// Set job status to the worst result among its parallel branches including rerun branch.
 						currentBuild.result = originalStatus
 					} else {
@@ -1677,7 +1704,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					def childResult = cjob.getCurrentResult()
 					echo "${name} #${buildId} completed with status ${childResult}"
 					// track FAILURE job childTestJobParams if it's rerun stage
-					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) { 
+					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) {
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
 					if (isWorseThan( childResult, currentStatus)) {
@@ -1760,8 +1787,8 @@ def runParallelTests() {
 		stage ("Parallel Tests") {
 			def childJobs = parallel parallel_tests
 			// There are cases env.PARALLEL != "None", but job is non parallel if number list is 1
-			if ( !childJobs.isEmpty() ) { 
-				parallelResults = archiveChildJobTap(childJobs) 
+			if ( !childJobs.isEmpty() ) {
+				parallelResults = archiveChildJobTap(childJobs)
 			}
 		}
 	}
@@ -1817,10 +1844,10 @@ def forceCleanWS() {
 
 def checkDacapoH2Metric() {
         def regex = ".*=====\\sDaCapo.*?h2\\sPASSED\\sin\\s(\\d*\\.?\\d*)\\smsec\\s=====\\s*\$"
-        def matcher = manager.getLogMatcher(regex)  
+        def matcher = manager.getLogMatcher(regex)
 
         if (matcher?.matches()) {
-                def runtime = matcher.group(1) 
+                def runtime = matcher.group(1)
                 archiveDacapoH2Metric(runtime)
                 println("DaCapo-h2 metric found and archived")
         } else {
@@ -1831,11 +1858,11 @@ def checkDacapoH2Metric() {
 def archiveDacapoH2Metric(runtime) {
         def fileName = "${env.JOB_NAME}_${env.BUILD_NUMBER}.json"
         def jsonData = [
-                "benchmark": "dacapo-h2", 
+                "benchmark": "dacapo-h2",
                         "metrics": [
                                 "dacapo-h2": [
                                         ["value": runtime],
-                                        ["higherbetter": true], 
+                                        ["higherbetter": true],
                                         ["units": "msec"]
                                 ]
                         ]

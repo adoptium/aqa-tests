@@ -15,6 +15,17 @@ See the License for the specific language governing permissions and
 
 Scripts which parse various formats of lists, containing disabled JDK tests, into a uniform JSON format. In addition, a script which augments, within the generated JSON files, each disabled test with the status of their associated issue.
 
+## Quickstart: `parse_disabled_tests.sh`
+
+These two steps will setup your environment and run:
+- exclude_parser.py
+- playlist_parser.py
+- issue_status.py
+
+Step 1: Cd to root clone directory (aqa-tests).
+Step 2. Run "bash ./scripts/disabled_tests/parse_disabled_tests.sh"
+
+Optional: Add script argument "-c" to erase previous results files.
 
 ### Prerequisites
 
