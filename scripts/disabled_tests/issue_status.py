@@ -90,7 +90,7 @@ class BaseHandler(abc.ABC):
         # Use anonymous auth if user/token not provided
         auth = None
         if all([self.user, self.token]):
-            auth = requests.auth.HTTPBasicAuth(username=self.user, password=self.token)
+            auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
         adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
         session: requests.Session = requests.Session()
         session.mount("https://", adapter)
@@ -405,7 +405,7 @@ def main():
                         help='Output file, defaults to stdout')
     parser.add_argument('--verbose', '-v', action='count', default=0,
                         help="Enable info logging level, debug level if -vv")
-    parser.add_argument('--minimal', '-m', action="store_true"
+    parser.add_argument('--minimal', '-m', action="store_true",
                         help="Minimal, high-speed check of each url's validity. Performs no futher checks.")
     args = parser.parse_args()
 
@@ -439,6 +439,7 @@ def main():
             auth = None
             if all([args.github_user, args.github_token]):
                 auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
+            session = requests.Session()
             resp = session.head(url, allow_redirects=True, auth=auth)
             if resp.status_code < 404 or resp.status_code == 429:
                 LOG.info(f"{url!r} exists. Status code {resp.status_code}")
