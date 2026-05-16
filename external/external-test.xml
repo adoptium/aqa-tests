@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<!--
+  Generic build file for external test children.
+
+  Each child directory imports this file. The TEST name is auto-derived
+  from the child directory name. Behaviour is controlled via optional
+  build.properties in the child directory:
+
+    do.move_scripts  = true|false  (default true)
+    do.clean_image   = true|false  (default true)
+    do.build_image   = true|false  (default true)
+    do.prepare       = true|false  (default false)
+    prepare.registry_url = ...     (default icr.io)
+    prepare.registry_dir = ...     (default default)
+    skip.impls       = comma-separated list of JDK_IMPL values to skip
+
+  See README.md for the full list of options.
+-->
+<project name="external-test" default="build" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+	<!-- Auto-derive TEST from the directory name -->
+	<basename property="TEST" file="${basedir}" />
+	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
+	<property name="src" location="." />
+
+	<!-- Load optional per-test configuration -->
+	<property file="build.properties" />
+
+	<!-- Import shared targets (move_scripts, clean_image, build_image, prepare_base_image, copy_dest) -->
+	<import file="${TEST_ROOT}/external/external-targets.xml" />
+
+	<!-- Pipeline step defaults -->
+	<property name="do.move_scripts" value="true" />
+	<property name="do.clean_image" value="true" />
+	<property name="do.build_image" value="true" />
+	<property name="do.prepare" value="false" />
+
+	<!-- Prepare defaults -->
+	<property name="prepare.registry_url" value="icr.io" />
+	<property name="prepare.registry_dir" value="default" />
+
+	<!-- Skip logic: set skip.build if JDK_IMPL matches any value in skip.impls -->
+	<condition property="skip.build">
+		<or>
+			<contains string=",${skip.impls}," substring=",${JDK_IMPL}," />
+		</or>
+	</condition>
+
+	<target name="pipeline" description="run the configurable build pipeline">
+		<antcall target="move_scripts" if:true="${do.move_scripts}" />
+		<antcall target="clean_image" if:true="${do.clean_image}" />
+		<antcall target="prepare_base_image" if:true="${do.prepare}" />
+		<antcall target="build_image" if:true="${do.build_image}" />
+		<antcall target="copy_dest" />
+	</target>
+
+	<target name="build" unless="skip.build">
+		<antcall target="pipeline" inheritall="true" />
+	</target>
+</project>
