@@ -47,22 +47,43 @@ timestamps{
 
                     if (SDK_RESOURCE == "customized" ) {
                         if (params.TOP_LEVEL_SDK_URL) {
-                            // example: <jenkins_url>/job/build-scripts/job/openjdk17-pipeline-IBM/354/artifact/target/linux/s390x/openj9/AQAvitTaps/*zip*/AQAvitTaps.zip
+                            // Use release structure with TAP files at root
+                            // example: <jenkins_url>/job/AQA_Test_Pipeline_Release/473/artifact/*zip*/archive.zip
+                            download_url = params.TOP_LEVEL_SDK_URL + "artifact/*zip*/archive.zip"
 
-                            download_url = params.TOP_LEVEL_SDK_URL + "artifact/target/${os}/${arch}/${params.VARIANT}/AQAvitTaps/*zip*/AQAvitTaps.zip"
                             dir("${WORKSPACE}") {
                                 env.PLATFORM = PLATFORM
                                 def PLATFORM_DIR = params.PLATFORM_DIR ? "${params.PLATFORM_DIR}" : "${PLATFORM}"
-                                def aqaTapCmd = "${WORKSPACE}/aqaTap.sh -u ${download_url} -p ${PLATFORM_DIR}"
+
+                                echo "Using release structure with TAP files at root"
+                                echo "Filtering for targets: ${TARGETS.join(', ')}"
+
                                 if (params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID) {
-                                    // USERNAME and PASSWORD reference with a withCredentials block will not be visible within job output
                                     withCredentials([usernamePassword(credentialsId: "${params.CUSTOMIZED_SDK_URL_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                        sh "$aqaTapCmd"
+                                        sh "curl -u \$USERNAME:\$PASSWORD -L -o archive.zip '${download_url}'"
                                     }
                                 } else {
-                                    sh "$aqaTapCmd"
+                                    sh "curl -L -o archive.zip '${download_url}'"
                                 }
 
+                                sh "unzip -q archive.zip -d temp_extract || true"
+                                sh "mkdir -p AQAvitTapFiles/${PLATFORM_DIR}"
+
+                                // Build target filter patterns for find command
+                                def targetPatterns = TARGETS.collect { target ->
+                                    "-name '*_${target}_${PLATFORM}.tap' -o -name '*_${target}_${PLATFORM}_*.tap'"
+                                }.join(' -o ')
+
+                                // Find and copy only TAP files matching the specified targets and platform
+                                sh """
+                                    find temp_extract \\( ${targetPatterns} \\) | while read file; do
+                                        if [ -f "\$file" ]; then
+                                            cp "\$file" "AQAvitTapFiles/${PLATFORM_DIR}/" 2>/dev/null || true
+                                            echo "Copied: \$(basename \$file)"
+                                        fi
+                                    done
+                                """
+                                sh "rm -rf temp_extract archive.zip"
                             }
                         }
                     }
