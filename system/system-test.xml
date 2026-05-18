@@ -20,8 +20,7 @@
   standard init/build targets that 9 of 11 system children share.
 -->
 <project name="system-test" default="build" basedir=".">
-
-	<import file="../common.xml"/>
+	<import file="${TEST_ROOT}/system/common.xml"/>
 
 	<!-- Auto-derive test name and DEST from directory -->
 	<basename property="SYSDIR" file="${basedir}" />
