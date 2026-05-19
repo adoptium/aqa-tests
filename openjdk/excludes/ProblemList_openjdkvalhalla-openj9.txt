@@ -19,11 +19,12 @@
 # jdk_valhalla_j9 - valhalla
 
 ############################################################################
+valhalla/valuetypes/IdentityReflectionTest.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
 valhalla/valuetypes/MethodHandleTest.java https://github.com/eclipse-openj9/openj9/issues/22648 generic-all
 valhalla/valuetypes/ValueObjectMethodsTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/RecursiveValueClass.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/Reflection.java https://github.com/eclipse-openj9/openj9/issues/20404 generic-all
-valhalla/valuetypes/StreamTest.java  https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+valhalla/valuetypes/StreamTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/SubstitutabilityTest.java  https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 valhalla/valuetypes/ValueClassPreviewTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 
@@ -50,18 +51,14 @@ com/sun/jdi/valhalla/ValueClassTypeTest.java https://github.com/adoptium/aqa-tes
 
 ############################################################################
 runtime/valhalla/inlinetypes/AcmpTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+runtime/valhalla/inlinetypes/HashOverflowTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/InheritedFlatFieldTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/InlineWithJni.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/MonitorEnterTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/MonitorEnterTest.java#id0 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/MonitorEnterTest.java#id1 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/MonitorEnterTest.java#id2 https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/ObjectMethods.java#compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/ObjectMethods.java#no-compressed-class-pointers https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/QuickeningTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/TestCloneableValue.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
 runtime/valhalla/inlinetypes/TestInheritedInlineTypeFields.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
-runtime/valhalla/inlinetypes/VolatileTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/classloading/BigClassTreeClassLoader.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/classloading/ConcurrentClassLoadingTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 runtime/valhalla/inlinetypes/classloading/PreLoadCircularityTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
@@ -74,7 +71,9 @@ runtime/valhalla/inlinetypes/classloading/PreLoadCircularityTest.java https://gi
 serviceability/jvmti/valhalla/GetCtorLocal/ValueGetCtorLocal.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 serviceability/jvmti/valhalla/GetObjectHashCode/ValueGetObjectHashCodeTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 serviceability/jvmti/valhalla/Heapwalking/ValueHeapwalkingTest.java https://github.com/eclipse-openj9/openj9/issues/15768 generic-all
+serviceability/jvmti/valhalla/SampledObjectAllocValue/SampledObjectAllocValue.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 serviceability/jvmti/valhalla/SetTag/ValueTagMapTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
+serviceability/jvmti/valhalla/VMObjectAllocValue/VMObjectAllocValueTest.java https://github.com/eclipse-openj9/openj9/issues/13182 generic-all
 
 ############################################################################
 
@@ -141,6 +140,7 @@ runtime/valhalla/inlinetypes/field_layout/ValueObjectContainerTest.java https://
 runtime/valhalla/inlinetypes/FlatArrayCopyingTest.java#parallel https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/FlatArrayCopyingTest.java#g1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/FlatArrayCopyingTest.java#serial https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/FlatFieldAccessorMethods.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/InlineTypeDensity.java#compressed-oops https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/InlineTypeDensity.java#force-non-tearable https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/InlineTypeDensity.java#no-compressed-oops https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -149,9 +149,15 @@ runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id0 https://github.com/adop
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/LarvalMarkWordTest.java#id3 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/MonitorEnterTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/MonitorEnterTest.java#id0 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/MonitorEnterTest.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/MonitorEnterTest.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/PreloadCircularityTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id0 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/TestFlatteningBudget.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/ValuePreloadTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/VolatileTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 valhalla/valuetypes/LayoutIterationTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
