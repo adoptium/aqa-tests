@@ -69,24 +69,24 @@ jobs:
           COMMENTER: ${{ github.event.comment.user.login }}
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
         run: |
-          # Check if commenter is the issue author
+          # Allow if commenter is the issue author
           if [ "$COMMENTER" = "$ISSUE_AUTHOR" ]; then
             echo "✅ Commenter is the issue author"
             exit 0
           fi
           
-          # Check if commenter has write permission (is a project committer)
+          # Allow if commenter is a project committer (write/admin permission)
           PERMISSION=$(gh api \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
             --jq '.permission' 2>/dev/null || echo "none")
           
           if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "write" ]; then
-            echo "✅ Commenter has $PERMISSION permission"
+            echo "✅ Commenter is a project committer with $PERMISSION permission"
             exit 0
           fi
           
-          # Permission denied
+          # Deny if neither condition is met
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
