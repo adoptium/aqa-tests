@@ -3,17 +3,27 @@
 Script to add OpenJDK test exclusions to ProblemList files.
 
 Usage:
-    python exclude_openjdk.py -m "/exclude <targets> <testcase> <issue_url> <platform>" -c <comment_url> -d <workspace_dir>
+    python exclude_openjdk.py -m "/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]" -c <comment_url> -d <workspace_dir>
 
-Example:
-    python exclude_openjdk.py -m "/exclude jdk11,jdk21-openj9 java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all" -c "https://github.com/..." -d "/path/to/aqa-tests"
+Examples:
+    # Simple exclusion (all JDK versions)
+    python exclude_openjdk.py -m "/exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all" -c "https://..." -d "."
+    
+    # Specific JDK versions
+    python exclude_openjdk.py -m "/exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all jdk=11,17,21" -c "https://..." -d "."
+    
+    # With implementation
+    python exclude_openjdk.py -m "/exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 linux-x64 jdk=11,21 impl=openj9" -c "https://..." -d "."
+    
+    # With variant (alpine or vendor)
+    python exclude_openjdk.py -m "/exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 linux-x64 jdk=11 variant=alpine" -c "https://..." -d "."
 """
 
 import argparse
 import os
 import re
 import sys
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, Optional
 
 
 class ExcludeCommandError(Exception):
@@ -21,25 +31,46 @@ class ExcludeCommandError(Exception):
     pass
 
 
-def parse_exclude_command(comment_body: str) -> Tuple[List[str], List[str], str, str]:
+def parse_optional_params(params_str: str) -> Dict[str, str]:
     """
-    Parse /exclude command with target specifiers.
+    Parse optional parameters in format key=value.
     
-    Format: /exclude <targets> <testcases> <issue_urls> <platforms>
+    Args:
+        params_str: String containing optional parameters
+        
+    Returns:
+        Dictionary of parameter name to value
+    """
+    params = {}
+    # Match patterns like jdk=11,17 impl=openj9 variant=alpine
+    pattern = r'(\w+)=([^\s]+)'
+    matches = re.findall(pattern, params_str)
+    
+    for key, value in matches:
+        params[key] = value
+    
+    return params
+
+
+def parse_exclude_command(comment_body: str) -> Tuple[List[str], str, str, Dict[str, str]]:
+    """
+    Parse /exclude command with optional parameters.
+    
+    Format: /exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]
     
     Where:
-    - targets: comma-separated (e.g., jdk11,jdk17,jdk21) - will be parsed
-    - testcases: comma-separated (e.g., test1.java,test2.java) - will be parsed
-    - issue_urls: kept as-is (can contain commas like https://...,https://...)
-    - platforms: kept as-is (can contain commas like linux-all,windows-x64)
-    
-    Each testcase will create one line in ProblemList with the same issue_urls and platforms.
+    - testcases: comma-separated (e.g., test1.java,test2.java)
+    - issue_url: single URL
+    - platform: platform spec (can contain commas)
+    - jdk: optional, comma-separated versions (e.g., 11,17,21) - defaults to all
+    - impl: optional, implementation (e.g., openj9, sap)
+    - variant: optional, variant (e.g., alpine, eclipse, microsoft)
     
     Args:
         comment_body: The full comment body containing the /exclude command
         
     Returns:
-        Tuple of (target_list, testcase_list, issue_urls, platforms)
+        Tuple of (testcase_list, issue_url, platform, optional_params)
         
     Raises:
         ExcludeCommandError: If command format is invalid
@@ -55,22 +86,30 @@ def parse_exclude_command(comment_body: str) -> Tuple[List[str], List[str], str,
     if not exclude_line:
         raise ExcludeCommandError("No /exclude command found in comment")
     
-    # Split the command into parts (space-separated)
-    parts = exclude_line.split(None, 4)
+    # Split the command: /exclude <testcases> <issue_url> <platform> [optional params...]
+    # First split on spaces, but we need at least 4 parts (command, testcases, issue_url, platform)
+    parts = exclude_line.split(None, 3)
     
-    if len(parts) != 5:
+    if len(parts) < 4:
         raise ExcludeCommandError(
-            f"Invalid format. Expected: /exclude <targets> <testcases> <issue_urls> <platforms>\n"
+            f"Invalid format. Expected: /exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]\n"
             f"Got {len(parts)} parts: {parts}"
         )
     
-    _, targets_str, testcases_str, issue_urls, platforms = parts
+    _, testcases_str, issue_url, remaining = parts
     
-    # Parse comma-separated targets
-    targets = [t.strip() for t in targets_str.split(',') if t.strip()]
-    
-    if not targets:
-        raise ExcludeCommandError("At least one target must be specified")
+    # Parse remaining part for platform and optional parameters
+    # Platform is everything before the first key=value pattern
+    optional_match = re.search(r'\s+(\w+=)', remaining)
+    if optional_match:
+        # Found optional parameters
+        platform = remaining[:optional_match.start()].strip()
+        optional_str = remaining[optional_match.start():].strip()
+        optional_params = parse_optional_params(optional_str)
+    else:
+        # No optional parameters, everything is platform
+        platform = remaining.strip()
+        optional_params = {}
     
     # Parse comma-separated test cases
     testcases = [tc.strip() for tc in testcases_str.split(',') if tc.strip()]
@@ -78,66 +117,97 @@ def parse_exclude_command(comment_body: str) -> Tuple[List[str], List[str], str,
     if not testcases:
         raise ExcludeCommandError("At least one test case must be specified")
     
-    return targets, testcases, issue_urls, platforms
+    if not platform:
+        raise ExcludeCommandError("Platform must be specified")
+    
+    return testcases, issue_url, platform, optional_params
 
 
-def resolve_target_to_file(target: str, base_dir: str) -> str:
+def resolve_targets_from_params(optional_params: Dict[str, str], base_dir: str) -> List[Tuple[str, str]]:
     """
-    Resolves a target specifier to ProblemList file path.
-    
-    Format: jdk{version}[-{variant}]
-    
-    Variants:
-    - None (default): openjdk/excludes/ProblemList_openjdk{version}.txt
-    - openj9/sap: openjdk/excludes/ProblemList_openjdk{version}-{impl}.txt
-    - alpine: openjdk/excludes/alpine/ProblemList_openjdk{version}.txt
-    - vendor names: openjdk/excludes/vendors/{vendor}/ProblemList_openjdk{version}.txt
+    Resolve target files from optional parameters.
     
     Args:
-        target: Target specifier (e.g., jdk11, jdk21-openj9, jdk11-alpine)
+        optional_params: Dictionary of optional parameters (jdk, impl, variant)
         base_dir: Base directory of the workspace
         
     Returns:
-        Full path to the ProblemList file
+        List of tuples (target_description, file_path)
         
     Raises:
-        ExcludeCommandError: If target format is invalid or file doesn't exist
+        ExcludeCommandError: If parameters are invalid or files don't exist
     """
-    # Parse target: jdk{version}[-{variant}]
-    match = re.match(r'^jdk(\d+|valhalla)(?:-(.+))?$', target.lower())
-    if not match:
-        raise ExcludeCommandError(
-            f"Invalid target format: '{target}'. Expected: jdk{{version}}[-{{variant}}]"
-        )
-    
-    version = match.group(1)
-    variant = match.group(2)
-    
     excludes_dir = os.path.join(base_dir, "openjdk", "excludes")
     
-    if variant is None:
-        # Root level: ProblemList_openjdk{version}.txt
-        file_path = os.path.join(excludes_dir, f"ProblemList_openjdk{version}.txt")
-    
-    elif variant in ['openj9', 'sap']:
-        # Implementation-specific: ProblemList_openjdk{version}-{impl}.txt
-        file_path = os.path.join(excludes_dir, f"ProblemList_openjdk{version}-{variant}.txt")
-    
-    elif variant == 'alpine':
-        # Alpine: alpine/ProblemList_openjdk{version}.txt
-        file_path = os.path.join(excludes_dir, "alpine", f"ProblemList_openjdk{version}.txt")
-    
+    # Parse JDK versions (default to all if not specified)
+    jdk_versions = []
+    if 'jdk' in optional_params:
+        jdk_versions = [v.strip() for v in optional_params['jdk'].split(',') if v.strip()]
     else:
-        # Vendor-specific: vendors/{vendor}/ProblemList_openjdk{version}.txt
-        file_path = os.path.join(excludes_dir, "vendors", variant, f"ProblemList_openjdk{version}.txt")
+        # Default: find all available JDK versions
+        jdk_versions = get_all_jdk_versions(excludes_dir)
     
-    # Validate file exists
-    if not os.path.isfile(file_path):
-        raise ExcludeCommandError(
-            f"ProblemList file not found for target '{target}': {file_path}"
-        )
+    impl = optional_params.get('impl', '')  # e.g., 'openj9', 'sap'
+    variant = optional_params.get('variant', '')  # e.g., 'alpine', 'eclipse', 'microsoft'
     
-    return file_path
+    targets = []
+    
+    for version in jdk_versions:
+        # Construct file path based on parameters
+        if variant:
+            # Variant takes precedence
+            if variant == 'alpine':
+                file_path = os.path.join(excludes_dir, "alpine", f"ProblemList_openjdk{version}.txt")
+                target_desc = f"jdk{version}-{variant}"
+            else:
+                # Assume it's a vendor
+                file_path = os.path.join(excludes_dir, "vendors", variant, f"ProblemList_openjdk{version}.txt")
+                target_desc = f"jdk{version}-{variant}"
+        elif impl:
+            # Implementation-specific
+            file_path = os.path.join(excludes_dir, f"ProblemList_openjdk{version}-{impl}.txt")
+            target_desc = f"jdk{version}-{impl}"
+        else:
+            # Root level (default)
+            file_path = os.path.join(excludes_dir, f"ProblemList_openjdk{version}.txt")
+            target_desc = f"jdk{version}"
+        
+        # Validate file exists
+        if not os.path.isfile(file_path):
+            raise ExcludeCommandError(
+                f"ProblemList file not found for {target_desc}: {file_path}"
+            )
+        
+        targets.append((target_desc, file_path))
+    
+    return targets
+
+
+def get_all_jdk_versions(excludes_dir: str) -> List[str]:
+    """
+    Get default JDK versions for exclusions (LTS versions + latest).
+    
+    Returns LTS versions (8, 11, 17, 21, 25) and the latest version (currently 26).
+    This list should be updated quarterly when new versions are released.
+    
+    Args:
+        excludes_dir: Path to the excludes directory
+        
+    Returns:
+        List of JDK version strings (e.g., ['8', '11', '17', '21', '25', '26'])
+    """
+    # LTS versions: 8, 11, 17, 21, 25 (next LTS will be 29 in 2028)
+    # Latest: 26 (update quarterly: 27 in Q1 2026, 28 in Q3 2026, etc.)
+    default_versions = ['8', '11', '17', '21', '25', '26']
+    
+    # Verify each version has a ProblemList file
+    available_versions = []
+    for version in default_versions:
+        file_path = os.path.join(excludes_dir, f"ProblemList_openjdk{version}.txt")
+        if os.path.isfile(file_path):
+            available_versions.append(version)
+    
+    return available_versions
 
 
 def check_exclusion_exists(file_path: str, testcase: str, platform: str) -> bool:
@@ -187,7 +257,7 @@ def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platfor
         print(f"  ⚠️  Exclusion already exists in {os.path.basename(file_path)}")
         return False
     
-    # Read the file to find the right place to insert
+    # Read the file
     with open(file_path, 'r') as f:
         lines = f.readlines()
     
@@ -223,13 +293,22 @@ def process_exclude_command(comment_body: str, workspace_dir: str) -> Dict[str, 
         ExcludeCommandError: If command processing fails
     """
     # Parse the command
-    targets, testcases, issue_urls, platforms = parse_exclude_command(comment_body)
+    testcases, issue_url, platform, optional_params = parse_exclude_command(comment_body)
     
     print(f"Processing /exclude command:")
-    print(f"  Targets: {', '.join(targets)}")
     print(f"  Test cases: {', '.join(testcases)}")
-    print(f"  Issue URLs: {issue_urls}")
-    print(f"  Platforms: {platforms}")
+    print(f"  Issue URL: {issue_url}")
+    print(f"  Platform: {platform}")
+    if optional_params:
+        print(f"  Optional parameters: {optional_params}")
+    print()
+    
+    # Resolve targets from parameters
+    targets = resolve_targets_from_params(optional_params, workspace_dir)
+    
+    print(f"Resolved targets:")
+    for target_desc, file_path in targets:
+        print(f"  {target_desc} → {os.path.relpath(file_path, workspace_dir)}")
     print()
     
     # Process each target
@@ -238,44 +317,39 @@ def process_exclude_command(comment_body: str, workspace_dir: str) -> Dict[str, 
     total_exclusions_added = 0
     total_exclusions_skipped = 0
     
-    for target in targets:
-        try:
-            file_path = resolve_target_to_file(target, workspace_dir)
-            print(f"Target '{target}' → {os.path.relpath(file_path, workspace_dir)}")
-            
-            # Add each testcase as a separate line
-            target_added = 0
-            target_skipped = 0
-            
-            for testcase in testcases:
-                was_added = add_exclusion_to_file(file_path, testcase, issue_urls, platforms)
-                
-                if was_added:
-                    target_added += 1
-                    total_exclusions_added += 1
-                else:
-                    target_skipped += 1
-                    total_exclusions_skipped += 1
-            
-            if target_added > 0:
-                modified_files.append({
-                    'target': target,
-                    'file_path': os.path.relpath(file_path, workspace_dir),
-                    'exclusions_added': target_added,
-                    'exclusions_skipped': target_skipped
-                })
-            else:
-                skipped_files.append({
-                    'target': target,
-                    'file_path': os.path.relpath(file_path, workspace_dir),
-                    'exclusions_skipped': target_skipped
-                })
+    for target_desc, file_path in targets:
+        print(f"Processing {target_desc}...")
         
-        except ExcludeCommandError as e:
-            print(f"  ❌ Error: {e}")
-            raise
+        # Add each testcase as a separate line
+        target_added = 0
+        target_skipped = 0
+        
+        for testcase in testcases:
+            was_added = add_exclusion_to_file(file_path, testcase, issue_url, platform)
+            
+            if was_added:
+                target_added += 1
+                total_exclusions_added += 1
+            else:
+                target_skipped += 1
+                total_exclusions_skipped += 1
+        
+        if target_added > 0:
+            modified_files.append({
+                'target': target_desc,
+                'file_path': os.path.relpath(file_path, workspace_dir),
+                'exclusions_added': target_added,
+                'exclusions_skipped': target_skipped
+            })
+        else:
+            skipped_files.append({
+                'target': target_desc,
+                'file_path': os.path.relpath(file_path, workspace_dir),
+                'exclusions_skipped': target_skipped
+            })
+        
+        print()
     
-    print()
     print(f"Summary:")
     print(f"  Modified: {len(modified_files)} file(s)")
     print(f"  Total exclusions added: {total_exclusions_added}")
@@ -285,10 +359,10 @@ def process_exclude_command(comment_body: str, workspace_dir: str) -> Dict[str, 
         raise ExcludeCommandError("No files were processed")
     
     return {
-        'targets': targets,
         'testcases': testcases,
-        'issue_urls': issue_urls,
-        'platforms': platforms,
+        'issue_url': issue_url,
+        'platform': platform,
+        'optional_params': optional_params,
         'modified_files': modified_files,
         'skipped_files': skipped_files,
         'total_exclusions_added': total_exclusions_added,
