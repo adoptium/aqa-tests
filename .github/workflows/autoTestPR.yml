@@ -168,6 +168,7 @@ jobs:
             
       - name: Create Pull Request
         if: success()
+        id: create-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           path: 'tests'
@@ -191,7 +192,7 @@ jobs:
           signoff: 'true'
           
       - name: Add label
-        if: success()
+        if: success() && steps.create-pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -202,7 +203,23 @@ jobs:
             -f "labels[]=test excluded"
             
       - name: Comment success
-        if: success()
+        if: success() && steps.create-pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGETS: ${{ steps.parse.outputs.targets }}
+          TESTCASE: ${{ steps.parse.outputs.testcase }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
+          PR_OPERATION: ${{ steps.create-pr.outputs.pull-request-operation }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} ✅ Successfully ${PR_OPERATION} PR #${PR_NUMBER} to exclude \`${TESTCASE}\` for targets: \`${TARGETS}\`"
+
+      - name: Comment no changes
+        if: success() && steps.create-pr.outputs.pull-request-number == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGETS: ${{ steps.parse.outputs.targets }}
@@ -213,4 +230,4 @@ jobs:
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f "body=@${COMMENTER} ✅ Successfully created PR to exclude \`${TESTCASE}\` for targets: \`${TARGETS}\`"
+            -f "body=@${COMMENTER} ℹ️ No changes were made — \`${TESTCASE}\` may already be excluded for targets: \`${TARGETS}\`"
