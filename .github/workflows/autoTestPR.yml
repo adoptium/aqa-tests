@@ -155,7 +155,7 @@ jobs:
             -d "$GITHUB_WORKSPACE/tests"
             
       - name: Script failed
-        if: failure()
+        if: failure() && steps.exclude.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENTER: ${{ steps.parse.outputs.commenter }}
@@ -214,3 +214,17 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
             -f "body=@${COMMENTER} ✅ Successfully created PR to exclude \`${TESTCASE}\` for targets: \`${TARGETS}\`"
+
+      - name: Comment no changes
+        if: success() && steps.create-pr.outputs.pull-request-number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGETS: ${{ steps.parse.outputs.targets }}
+          TESTCASE: ${{ steps.parse.outputs.testcase }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} ℹ️ No changes were made — \`${TESTCASE}\` may already be excluded for targets: \`${TARGETS}\`"
