@@ -155,7 +155,7 @@ jobs:
             -d "$GITHUB_WORKSPACE/tests"
             
       - name: Script failed
-        if: failure()
+        if: failure() && steps.exclude.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENTER: ${{ steps.parse.outputs.commenter }}
