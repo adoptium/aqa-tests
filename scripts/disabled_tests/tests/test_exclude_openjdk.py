@@ -2,7 +2,6 @@ import os
 import tempfile
 import shutil
 from unittest import TestCase
-from unittest.mock import patch
 
 from exclude_openjdk import (
     parse_exclude_command,
