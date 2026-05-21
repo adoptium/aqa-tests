@@ -57,8 +57,8 @@ getSemeruDockerfile() {
                 if [[ $docker_os_version == "10" ]]; then
                     # Remove iptables from the package list as it doesn't exist in UBI 10
                     findCommandAndReplace 'iptables-libs iptables jansson libibverbs libmnl libnet libnftnl libpcap nftables protobuf-c' 'jansson libibverbs libnet libnftnl libpcap nftables protobuf-c' $semeruDockerfile false
-                    # Add --no-same-permissions to tar to avoid permission errors in rootless podman builds
-                    findCommandAndReplace 'tar -xzf criu.tar.gz --strip-components=1;' 'tar -xzf criu.tar.gz --strip-components=1 --no-same-permissions;' $semeruDockerfile false
+                    # Add --no-same-permissions and --no-same-owner to tar to avoid permission errors in rootless podman builds
+                    findCommandAndReplace 'tar -xzf criu.tar.gz --strip-components=1;' 'tar -xzf criu.tar.gz --strip-components=1 --no-same-permissions --no-same-owner;' $semeruDockerfile false
                 fi
                 # Remove specific version constraints for libexpat1 packages to avoid 404 errors when versions are superseded
                 findCommandAndReplace 'libexpat1-dev=[^ ]*' 'libexpat1-dev' $semeruDockerfile false

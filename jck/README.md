@@ -17,7 +17,7 @@
 * Prerequisites:
   * OpenJDK Community TCK License Agreement (OCTLA)
   * your own set of JCK test materials (JCK test source under OCTLA License): jck8d or jck9
-  * ant 1.10.1 or above with ant-contrib.jar
+  * ant 1.10.1 or above
 
 1. Create an empty folder where your JCK test materials will be stored. For example `makedir /jck`.
 

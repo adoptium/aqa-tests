@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 
 # Prerequisites:
 
-- ant 1.9.6 or above with ant-contrib (1.0b2 or above)
+- ant 1.9.6 or above
 - git 2.11.4 or above
 - make 4.1 or above
 - perl 5.10.1 or above\*\*
@@ -24,12 +24,10 @@ Note for Windows testing, cygwin is also required.
 
 ## Detailed installation instructions
 
-# install ant 1.9.6 or above with ant-contrib (1.0b2 or above) following the following steps :
+# install ant 1.9.6 or above following the following steps :
 
-- Visit the `http://ant-contrib.sourceforge.net/ `
-- From there visit `https://ant.apache.org/bindownload.cgi` to download any binary listed out there.
-- I would suggest installing ant manually. Follow this article `https://girishkr.medium.com/install-apache-ant-1-10-on-ubuntu-16-04-7e249765e1bc` for a proper guide if you are on Ubuntu. Remember that if you are not familiar with vim you might replace the sudo vim /etc/profile.d/ant.sh with sudo nano /etc/profile.d/ant.sh. It gives an easy to understand interface.
-- For any other OS you might be using, refer to `https://ant.apache.org/manual/install.html`
+- Visit `https://ant.apache.org/bindownload.cgi` to download any binary listed out there.
+- I would suggest installing ant manually. For any other OS you might be using, refer to `https://ant.apache.org/manual/install.html`
 
   - Assume Ant is installed in c:\ant\. The following sets up the environment:
 
@@ -41,13 +39,6 @@ Note for Windows testing, cygwin is also required.
   Buildfile: build.xml does not exist!
   Build failed
 - If you don't get this then you may log out and log in into your system again to check if you got it right!
-
-# Installing ant-contrib 1.03b or above
-
-- Visit `https://sourceforge.net/projects/ant-contrib/files/`
-- Download version ant-contrib-1.03b or above
-- Unzip the folder in your desired location
-- To install the ant-contrib file simply copy the ant-contrib-0.x.jar to the lib directory of the Ant installation
 
 # make 4.1 or above
 

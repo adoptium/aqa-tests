@@ -15,7 +15,6 @@
 -->
 
 <project name="churn" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Test targeting garbage collector(s)
 	</description>
@@ -31,15 +30,9 @@
 		</condition>
 	</target>
 
-	<if>
+	<condition property="GIT_REPO" value="git@github.com:" else="https://github.com/">
 		<contains string="${SPEC}" substring="zos"/>
-		<then>
-			<property name="GIT_REPO" value="git@github.com:" />
-		</then>
-		<else>
-			<property name="GIT_REPO" value="https://github.com/" />
-		</else>
-	</if>
+	</condition>
 
 	<target name="getChurn" depends="THC.check" unless="THCdir.exists">
 		<exec executable="git" failonerror="true">

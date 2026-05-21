@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <project name="External_custom Test" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
 		Build external_custom Docker image
 	</description>
@@ -24,16 +23,15 @@
 	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
 	<property name="src" location="." />
 
+	<condition property="has.custom.repo">
+		<not>
+			<equals arg1="${EXTERNAL_CUSTOM_REPO}" arg2=""/>
+		</not>
+	</condition>
+
 	<target name="dist" depends="move_scripts,clean_image,build_image,copy_dest" description="generate the distribution" />
 
-	<target name="build">
-		<if>
-			<not>
-				<equals arg1="${EXTERNAL_CUSTOM_REPO}" arg2=""/>
-			</not>
-			<then>
-				<antcall target="dist" inheritall="true" />
-			</then>
-		</if>
+	<target name="build" if="has.custom.repo">
+		<antcall target="dist" inheritall="true" />
 	</target>
 </project>

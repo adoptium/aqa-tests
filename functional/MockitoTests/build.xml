@@ -14,7 +14,6 @@ limitations under the License.
 -->
 
 <project name="Mockito Tests" default="build" basedir=".">
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<description>
     	Mockito Tests
 	</description>
@@ -65,14 +64,11 @@ limitations under the License.
 		<delete dir="${build}" />
 	</target>
 
-	<target name="build" >
-		<if>
-			<not>
-				<matches string="${JDK_VERSION}" pattern="^(8|9|10)$$" />
-			</not>
-			<then>
-				<antcall target="clean" inheritall="true" />
-			</then>
-		</if>
+	<condition property="skip.build">
+		<matches string="${JDK_VERSION}" pattern="^(8|9|10)$$" />
+	</condition>
+
+	<target name="build" unless="skip.build">
+		<antcall target="clean" inheritall="true" />
 	</target>
 </project>
