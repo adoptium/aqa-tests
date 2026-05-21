@@ -398,7 +398,7 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
 
 def main():
     global return_code
-    print("debug c")
+
     parser = argparse.ArgumentParser(description="Fetch issue status for each disabled test", allow_abbrev=False)
     parser.add_argument('--github-user', metavar='USER',
                         help=f"GitHub User used for API [env: {GITHUB_USER_ENV}]")
@@ -421,27 +421,29 @@ def main():
         if not args.github_user:
             parser.print_usage()
             parser.exit(1, message="GitHub User must be provided as environment variable or command-line argument")
-    print("debug b")
+
     if not args.github_token:
         args.github_token = os.getenv(GITHUB_TOKEN_ENV)
         if not args.github_token:
             parser.print_usage()
             parser.exit(1, message="GitHub Token must be provided as environment variable or command-line argument")
-    print("debug a")
+
     if args.verbose == 1:
         LOG.setLevel(logging.INFO)
     elif args.verbose == 2:
         LOG.setLevel(logging.DEBUG)
-    LOG.error("debug zzz")
+
     LOG.debug(f"Loading JSON from {getattr(args.infile, 'name', '<unknown>')}")
     issues: List[models.Scheme] = json.load(args.infile)
 
-    print("debug 1")
+    LOG.error("debug 1")
     if args.minimal:
-        print("debug 2")
+        LOG.error("debug 2")
         # Check each url for validity, report any errors, and end script early.
         raw_url_to_issues = group_issues_by_url(issues)
+        LOG.error("debug 2.5")
         for url, issues in raw_url_to_issues.items():
+            LOG.error("debug 3")
             # Ignore urls that are actually comments.
             if url.startswith("#"):
                 continue
