@@ -465,62 +465,6 @@ def createJob( TEST_JOB_NAME, ARCH_OS ) {
 	return create
 }
 
-def cloneComplianceScriptsRepo() {
-	try {
-		jenkins_home = "${env.WORKSPACE}/../../"
-        echo "cd ${jenkins_home}"
-
-        echo "*************************************************************************"
-        echo "* Extracting jck_run to ${jenkins_home} on node: ${NODE_NAME}"
-        echo "*************************************************************************"
-
-        //checkout([$class: 'GitSCM', branches: [[name: "${COMPLIANCE_SCRIPTS_BRANCH}"]],
-        //    userRemoteConfigs: [[url: "${COMPLIANCE_SCRIPTS_REPO}",
-        //    credentialsId: "${params.USER_CREDENTIALS_ID}"]]
-        //])
-
-		// Compliance repo was cloned as part of VENDOR_TEST_REPO preparation
-		// Move it to the jck_run folder
-
-        echo "Cleaning ${jenkins_home}/jck_run/arctic folder prior to extract"
-		sh "rm -rf ${jenkins_home}/jck_run/arctic"
-
-        def statusCode=sh(script:"cp -r jck_run ${jenkins_home} 2>&1", returnStatus:true)
-        echo "returnCode = ${statusCode}"
-        if (statusCode != 0) {
-            result = "FAILURE"
-        } else {
-            sh "chgrp jck ${jenkins_home}/jck_run"
-            sh "chmod g+s ${jenkins_home}/jck_run"
-        }
-
-        echo "*************************************************************************"
-
-    } catch (Exception e) {
-        context.println "Failed to extract on node ${label} : ${e.message}"
-    }
-
-    // Reorganize scripts dir
-    echo "Move ./scripts folder to jck_run"
-    def statusCode=sh(script:"cp -r ./scripts ${jenkins_home}/jck_run 2>&1", returnStatus:true)
-    echo "cp returnCode = ${statusCode}"
-    if (statusCode != 0) {
-        result = "FAILURE"
-    }
-
-    // Set permissions
-    statusCode=sh(script:"chgrp -R jck ${jenkins_home}/jck_run 2>&1", returnStatus:true)
-    echo "chgrp returnCode = ${statusCode}"
-    if (statusCode != 0) {
-        result = "FAILURE"
-    }
-    statusCode=sh(script:"chmod -R 775 ${jenkins_home}/jck_run 2>&1", returnStatus:true)
-    echo "chmod returnCode = ${statusCode}"
-    if (statusCode != 0) {
-        result = "FAILURE"
-    }
-}
-
 def setup() {
 	stage('Setup') {
 		setupEnv()
@@ -638,7 +582,8 @@ def setup() {
 		ADDITIONAL_ARTIFACTS_REQUIRED_OPTION = (params.ADDITIONAL_ARTIFACTS_REQUIRED) ? "--additional_artifacts_required ${params.ADDITIONAL_ARTIFACTS_REQUIRED}" : ""
 
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
-		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION}"
+		SETUP_JCK_RUN_OPTION = (params.SETUP_JCK_RUN) ? "--setup_jck_run true" : ""
+		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION} ${SETUP_JCK_RUN_OPTION}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -733,10 +678,6 @@ def get_sources() {
 	}
 	if (params.SETUP_JCK_RUN && env.BUILD_LIST.contains('jck')) {
 		setup_jck_interactives()
-		if (env.IS_COMPLIANCE_SCRIPTS_REPO) {
-			println("Setup jck_run with compliance repo contents")
-			// cloneComplianceScriptsRepo()
-		}
 	}
 }
 def makeCompileTest(){
