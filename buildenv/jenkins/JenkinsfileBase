@@ -562,15 +562,6 @@ def setup() {
 		VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 		VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
 
-		println(VENDOR_TEST_REPOS)
-		env.IS_COMPLIANCE_SCRIPTS_REPO = (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_REPOS.contains('compliance')) ? true : false
-		echo "IS_COMPLIANCE_SCRIPTS_REPO is set to ${env.IS_COMPLIANCE_SCRIPTS_REPO}"
-
-		// compliance scripts repository must be first, if multiple vendor test repos supplied
-		// env.COMPLIANCE_SCRIPTS_REPO = (params.VENDOR_TEST_REPOS) ? ${params.VENDOR_TEST_REPOS}.split(',')[0] : ""
-		// env.COMPLIANCE_SCRIPTS_BRANCH = (params.VENDOR_TEST_BRANCHES) ? ${params.VENDOR_TEST_BRANCHES}.split(',')[0] : ""
-		// env.COMPLIANCE_SCRIPTS_DIR = (params.VENDOR_TEST_DIRS) ? ${params.VENDOR_TEST_DIRS}.split(',')[0] : ""
-
 		env.IS_SVT_TESTREPO = (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_REPOS.contains('SVTTestRepo')) ? true : false
 		echo "IS_SVT_TESTREPO is set to ${env.IS_SVT_TESTREPO}"
 
