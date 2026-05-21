@@ -711,7 +711,7 @@ getFunctionalTestMaterial()
 
 moveComplianceRepoToJckRun() {
 	echo "*************************************************************************"
-	echo "* Moving jck_run dir to jenkins home"
+	echo "* Replacing jenkins_home/jck_run contents with compliance_repo/jck_run   "
 	echo "*************************************************************************"
 	
 	# Determine jenkins home directory (two levels up from TESTDIR)
