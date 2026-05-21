@@ -435,12 +435,18 @@ def main():
     LOG.debug(f"Loading JSON from {getattr(args.infile, 'name', '<unknown>')}")
     issues: List[models.Scheme] = json.load(args.infile)
 
+    print("debug 1")
     if args.minimal:
+        print("debug 2")
         # Check each url for validity, report any errors, and end script early.
         raw_url_to_issues = group_issues_by_url(issues)
         for url, issues in raw_url_to_issues.items():
             # Ignore urls that are actually comments.
             if url.startswith("#"):
+                continue
+            if not url.startswith("http"):
+                LOG.error(f"\"{url!r}\" is not a valid url.")
+                return_code = 1
                 continue
             auth = None
             if all([args.github_user, args.github_token]):

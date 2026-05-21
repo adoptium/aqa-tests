@@ -59,6 +59,7 @@ Parse disabled tests from AQA test repository.
 OPTIONS:
     -c, --clean     Clean output directory before running
     -h, --help      Show this help message
+    -m, --minimal   Only check issue URLs for validity. Do not check status or commit URLs.
 
 ENVIRONMENT VARIABLES:
     AQA_ISSUE_TRACKER_GITHUB_USER   GitHub username for API access
@@ -75,6 +76,7 @@ EOF
 
 # Parse command line arguments
 CLEAN_OUTPUT=false
+MINIMAL=false
 VERBOSE=false
 OUTPUT_DIR="./output"
 
@@ -82,6 +84,10 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         -c|--clean)
             CLEAN_OUTPUT=true
+            shift
+            ;;
+        -m|--minimal)
+            MINIMAL=true
             shift
             ;;
         -h|--help)
@@ -192,6 +198,8 @@ fi
 log_info "Checking if Python requirements are already installed."
 while read rawRequirement; do
     singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n')"
+    [[ "${singleRequirement:0:1}" == "-" ]] && continue
+    echo "debugsh ${singleRequirement}"
     if ! pip3 show "$singleRequirement" &> /dev/null; then
         log_error "One or more of the Python requirements were not found."
         log_info "Use this command to install the requirements before rerunning this script."
@@ -201,6 +209,8 @@ while read rawRequirement; do
 done < scripts/disabled_tests/requirements.txt
 
 log_success "Python requirements already installed"
+
+exit
 
 ################################################################################
 # Step 2: Discover disabled tests
@@ -254,7 +264,9 @@ log_endgroup
 
 log_group "status"
 log_info "Checking issue status..."
-cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py -v > "${OUTPUT_JSON}"
+flags="--verbose"
+[[ "${MINIMAL}" == "true" ]] && minimal+=" --minimal"
+cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py ${flags} > "${OUTPUT_JSON}"
 validate_json_file "${OUTPUT_JSON}" "Output data" || exit 1
 OUTPUT_COUNT=$(jq 'length' "${OUTPUT_JSON}")
 log_success "Generated output with $OUTPUT_COUNT entries"
