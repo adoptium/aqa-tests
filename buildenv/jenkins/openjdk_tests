@@ -186,18 +186,16 @@ timestamps{
                         'x86-64_linux' : [
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
                                 ],
                         'aarch64_linux' : [
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
-                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
                                 ],
                         's390x_linux' : [
@@ -205,8 +203,7 @@ timestamps{
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
-                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
                                     // rhel.9 s390x excluded from upload: sudo requires password on all available nodes (runtimes_backlog_issues_879)
                                     // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
@@ -214,8 +211,7 @@ timestamps{
                                 ],
                         'ppc64le_linux' : [
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
-                                    // rhel.8 excluded from upload: ubi10 tar permission bug on rhel.8 (runtimes_backlog_issues_879)
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
+                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
                                     ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
                                     // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
