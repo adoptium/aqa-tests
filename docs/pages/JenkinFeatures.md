@@ -39,10 +39,12 @@ Additional test repositories that can be overlaid onto existing AQA test materia
 This is used for laying down any test material, particularly useful for running private tests that cannot be open-sourced.  Examples of how these parameters are used can be seen by looking at the smoke tests in the temurin-build repository and some MSI tests in the installer repository.  TKG can discover any test material, as long as you tell it where to look (through setting these parameters), and that these repositories contain build instructions (via build.xml ant scripts) and execution instructions (via playlist.xml files).
 
 - `VENDOR_TEST_REPOS`: optional, comma-separated list of repositories containing additional test material.
+  - **Special handling for compliance repositories**: If a repository URL contains the word "compliance" and `SETUP_JCK_RUN` is set to true, the `jck_run` folder from that repository will be moved to the Jenkins home directory for JCK test execution. Other repositories in the comma-separated list will have their contents copied to the test directory only.
 - `VENDOR_TEST_BRANCHES`: optional, comma-separated list of branches for additional test material.
 - `VENDOR_TEST_SHAS`: optional, pin to particular SHAS of VENDOR_TEST_REPOS.
 - `VENDOR_TEST_DIRS`: optional, directories within VENDOR_TEST_REPOS where to find test material.
 - `USER_CREDENTIALS_ID`: optional, credentials to use if VENDOR_TEST_REPOS require them.
+- `SETUP_JCK_RUN`: optional, boolean (default: false). When set to true and `VENDOR_TEST_REPOS` contains a repository with "compliance" in its URL, the `jck_run` folder from the compliance repository will be moved to the Jenkins home directory. This is used for setting up JCK test environments. The move operation only occurs when `BUILD_LIST` contains "jck".
 
 ### Platform and Machine Selection Parameters
 Choose which platform to run tests on and optionally specify the machine label to send the test job to a certain machine if desired.
