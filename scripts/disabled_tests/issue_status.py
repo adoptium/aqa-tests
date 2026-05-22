@@ -319,9 +319,12 @@ def augment_with_status(issues, issue_status):
 def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Scheme]]:
     url_to_issues = defaultdict(list)
     for issue in issues:
-        urls_list = issue["ISSUE_TRACKER"].split(",")
-        for url in urls_list:
-            url_to_issues[url.strip()].append(issue)
+        if issue["ISSUE_TRACKER"].startswith("#"):
+            url_to_issues[issue["ISSUE_TRACKER"].strip()].append(issue)
+        else: 
+            urls_list = issue["ISSUE_TRACKER"].split(",")
+            for url in urls_list:
+                url_to_issues[url.strip()].append(issue)
     return url_to_issues
 
 

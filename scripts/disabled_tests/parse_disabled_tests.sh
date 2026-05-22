@@ -57,6 +57,7 @@ Usage: $(basename "$0") [OPTIONS]
 Parse disabled tests from AQA test repository.
 
 OPTIONS:
+    -a, --all       Check all ProblemList files, not just the ones for relevant releases.
     -c, --clean     Clean output directory before running
     -h, --help      Show this help message
     -m, --minimal   Only check issue URLs for validity. Do not check status or commit URLs.
@@ -75,6 +76,7 @@ EOF
 }
 
 # Parse command line arguments
+CHECK_ALL_FILES=false
 CLEAN_OUTPUT=false
 MINIMAL=false
 VERBOSE=false
@@ -82,6 +84,10 @@ OUTPUT_DIR="./output"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        -a|--all)
+            CHECK_ALL_FILES=true
+            shift
+            ;;
         -c|--clean)
             CLEAN_OUTPUT=true
             shift
@@ -197,7 +203,7 @@ fi
 
 log_info "Checking if Python requirements are already installed."
 while read rawRequirement; do
-    singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n')"
+    singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n' | cut -d= -f1)"
     [[ "${singleRequirement:0:1}" == "-" ]] && continue
     echo "debugsh ${singleRequirement}"
     if ! pip3 show "$singleRequirement" &> /dev/null; then
@@ -210,14 +216,14 @@ done < scripts/disabled_tests/requirements.txt
 
 log_success "Python requirements already installed"
 
-exit
-
 ################################################################################
 # Step 2: Discover disabled tests
 ################################################################################
 
 log_group "openjdk exclude files"
-find openjdk/excludes -name '*ProblemList*.txt' | tee "${EXCLUDE_FILES}"
+find openjdk/excludes -name '*ProblemList*.txt' > "${EXCLUDE_FILES}"
+[[ "${CHECK_ALL_FILES}" == "false" ]] && sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' "${EXCLUDE_FILES}"
+cat "${EXCLUDE_FILES}"
 log_endgroup
 
 log_group "playlist files"
@@ -235,15 +241,25 @@ log_success "Found $EXCLUDE_COUNT exclude files and $PLAYLIST_COUNT playlist fil
 log_group "parsing"
 
 log_info "Parsing exclude files..."
-cat "${EXCLUDE_FILES}" | python3 scripts/disabled_tests/exclude_parser.py -v > "${EXCLUDE_JSON}"
+if cat "${EXCLUDE_FILES}" | python3 scripts/disabled_tests/exclude_parser.py -v > "${EXCLUDE_JSON}"; then
+  log_success "exclude_parser.py passed."
+else
+  log_error "exclude_parser.py failed. Terminating."
+  exit 1
+fi
 validate_json_file "${EXCLUDE_JSON}" "Exclude data" || exit 1
 log_success "Exclude files parsed"
 
 log_info "Parsing playlist files..."
-cat "${PLAYLIST_FILES}" | python3 scripts/disabled_tests/playlist_parser.py -v > "${PLAYLIST_JSON}"
+if cat "${PLAYLIST_FILES}" | python3 scripts/disabled_tests/playlist_parser.py -v > "${PLAYLIST_JSON}"; then
+  log_success "playlist_parser.py passed."
+else
+  log_error "playlist_parser.py failed. Terminating."
+  exit 1
+fi
+
 validate_json_file "${PLAYLIST_JSON}" "Playlist data" || exit 1
 log_success "Playlist files parsed"
-
 log_endgroup
 
 ################################################################################
@@ -265,8 +281,14 @@ log_endgroup
 log_group "status"
 log_info "Checking issue status..."
 flags="--verbose"
-[[ "${MINIMAL}" == "true" ]] && minimal+=" --minimal"
-cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py ${flags} > "${OUTPUT_JSON}"
+[[ "${MINIMAL}" == "true" ]] && flags+=" --minimal"
+if cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py ${flags} > "${OUTPUT_JSON}"; then
+  log_success "issue_status.py passed."
+else
+  log_error "issue_status.py failed. Terminating."
+  exit 1
+fi
+
 validate_json_file "${OUTPUT_JSON}" "Output data" || exit 1
 OUTPUT_COUNT=$(jq 'length' "${OUTPUT_JSON}")
 log_success "Generated output with $OUTPUT_COUNT entries"
