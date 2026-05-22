@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<!--
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+-->
+
+<!-- Shared target definitions for external tests. Imported by both the
+     parent orchestrator (external/build.xml) and child test build files. -->
+<project name="external-targets" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+	<property name="DEST_EXTERNAL" value="${BUILD_ROOT}/external" />
+	<property environment="env" />
+	<property name="top" location="../" />
+
+	<set-property name="DOCKERIMAGE_TAG_ISSET" if-property-isset="env.DOCKERIMAGE_TAG"/>
+	<set-property name="EXTRA_DOCKER_ARGS_ISSET" if-property-isset="env.EXTRA_DOCKER_ARGS"/>
+	<condition property="dockerImageTag" value="${env.DOCKERIMAGE_TAG}" else="nightly">
+		<isset property="DOCKERIMAGE_TAG_ISSET"/>
+	</condition>
+	<condition property="extra_docker_args" value="${env.EXTRA_DOCKER_ARGS}" else="">
+		<isset property="EXTRA_DOCKER_ARGS_ISSET"/>
+	</condition>
+
+	<target name="move_scripts" description="move shell scripts to working directory">
+		<copy todir="${DEST_EXTERNAL}/${TEST}">
+			<fileset dir="${src}/" includes="*.sh, *.properties"/>
+		</copy>
+		<copy todir="${DEST_EXTERNAL}">
+			<fileset dir="${top}" includes="*.sh common.properties"/>
+		</copy>
+	</target>
+
+	<target name="clean_image" description="clean test docker image if there is one">
+		<echo message="Executing external.sh --clean --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} " />
+		<exec executable="bash">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--clean"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+		</exec>
+	</target>
+
+	<target name="build_image" description="build test dockerfile">
+		<echo message="Executing external.sh --build --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} --platform ${env.SPEC} --docker_args ${extra_docker_args} " />
+		<exec executable="bash" failonerror="true">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--build"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+			<arg value="--platform"/>
+			<arg value="${env.SPEC}"/>
+			<arg value="--docker_args"/>
+			<arg value="${extra_docker_args}"/>
+		</exec>
+	</target>
+
+	<target name="prepare_base_image" description="prepare the base image">
+		<echo message="Executing external.sh --prepare --dir ${TEST} --tag ${dockerImageTag} --version ${JDK_VERSION} --impl ${JDK_IMPL} --base_docker_registry_url '${prepare.registry_url}' --base_docker_registry_dir '${prepare.registry_dir}' --docker_args ${extra_docker_args} " />
+		<exec executable="bash" failonerror="true">
+			<arg value="${DEST_EXTERNAL}/external.sh"/>
+			<arg value="--prepare"/>
+			<arg value="--dir"/>
+			<arg value="${TEST}"/>
+			<arg value="--tag"/>
+			<arg value="${dockerImageTag}"/>
+			<arg value="--version"/>
+			<arg value="${JDK_VERSION}"/>
+			<arg value="--impl"/>
+			<arg value="${JDK_IMPL}"/>
+			<arg value="--base_docker_registry_url"/>
+			<arg value="${prepare.registry_url}"/>
+			<arg value="--base_docker_registry_dir"/>
+			<arg value="${prepare.registry_dir}"/>
+			<arg value="--docker_args"/>
+			<arg value="${extra_docker_args}"/>
+		</exec>
+	</target>
+
+	<target name="copy_dest">
+		<copy todir="${DEST}">
+			<fileset dir="${src}" includes="*.xml, *.mk, *.sh"/>
+		</copy>
+		<copy todir="${src}">
+			<fileset dir="${DEST}" includes="**/Dockerfile.*"/>
+		</copy>
+	</target>
+</project>
