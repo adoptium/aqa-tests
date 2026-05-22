@@ -396,6 +396,50 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
     return all_issues
 
 
+def is_known_url_format(url: str):
+    known_url_patterns = [
+                            re.compile("^https://github.com/adoptium/[a-z0-9-]+/issues/[0-9]+(#issuecomment-[0-9]+)?$"),
+                            re.compile("^https://github.com/eclipse-openj9/[a-z0-9-]+/issues/[0-9]+(#issuecomment-[0-9]+)?$"),
+                            re.compile("^https://github.ibm.com/runtimes/[a-z0-9-]+/issues/[0-9]+(#issuecomment-[0-9]+)?$"),
+                            re.compile("^https://bugs.openjdk.org/browse/JDK-[0-9]+$"),
+                            re.compile("^https://bugs.openjdk.java.net/browse/JDK-[0-9]+$")
+                         ]
+    for pattern in known_url_patterns:
+        if pattern.match(url):
+            return True
+    return False
+
+
+def minimal_issues_check(issues: List[models.Scheme], auth):
+    global return_code
+
+    raw_url_to_issues = group_issues_by_url(issues)
+
+    for url, issues in raw_url_to_issues.items():
+        # Ignore urls that are actually comments.
+        if url.startswith("#"):
+            continue
+
+        if not url.startswith("http"):
+            LOG.error(f"\"{url!r}\" is not a valid url.")
+            return_code = 1
+            continue
+
+        # If a url has a known format, only check syntax to save time.
+        if is_known_url_format(url):
+            LOG.info(f"{url!r} uses a known url format.")
+            continue
+
+        # If this url does not match a known url format, test it directly.
+        session = requests.Session()
+        resp = session.head(url, allow_redirects=True, auth=auth)
+        if resp.status_code < 404 or resp.status_code == 429:
+            LOG.info(f"{url!r} exists. Status code {resp.status_code}")
+        else:
+            LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
+            return_code = 1
+
+
 def main():
     global return_code
 
@@ -436,31 +480,12 @@ def main():
     LOG.debug(f"Loading JSON from {getattr(args.infile, 'name', '<unknown>')}")
     issues: List[models.Scheme] = json.load(args.infile)
 
-    LOG.error("debug 1")
     if args.minimal:
-        LOG.error("debug 2")
         # Check each url for validity, report any errors, and end script early.
-        raw_url_to_issues = group_issues_by_url(issues)
-        LOG.error("debug 2.5")
-        for url, issues in raw_url_to_issues.items():
-            LOG.error("debug 3")
-            # Ignore urls that are actually comments.
-            if url.startswith("#"):
-                continue
-            if not url.startswith("http"):
-                LOG.error(f"\"{url!r}\" is not a valid url.")
-                return_code = 1
-                continue
-            auth = None
-            if all([args.github_user, args.github_token]):
-                auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
-            session = requests.Session()
-            resp = session.head(url, allow_redirects=True, auth=auth)
-            if resp.status_code < 404 or resp.status_code == 429:
-                LOG.info(f"{url!r} exists. Status code {resp.status_code}")
-            else:
-                LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
-                return_code = 1
+        auth = None
+        if all([args.github_user, args.github_token]):
+            auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
+        minimal_issues_check(issues, auth)
         return return_code
 
     dispatcher = Dispatcher(
