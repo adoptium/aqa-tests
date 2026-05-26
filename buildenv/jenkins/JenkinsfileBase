@@ -561,6 +561,7 @@ def setup() {
 		VENDOR_TEST_BRANCHES = (params.VENDOR_TEST_BRANCHES) ? "--vendor_branches \"${params.VENDOR_TEST_BRANCHES}\"" : ""
 		VENDOR_TEST_DIRS = (params.VENDOR_TEST_DIRS) ? "--vendor_dirs \"${params.VENDOR_TEST_DIRS}\"" : ""
 		VENDOR_TEST_SHAS = (params.VENDOR_TEST_SHAS) ? "--vendor_shas \"${params.VENDOR_TEST_SHAS}\"" : ""
+
 		env.IS_SVT_TESTREPO = (params.VENDOR_TEST_REPOS && params.VENDOR_TEST_REPOS.contains('SVTTestRepo')) ? true : false
 		echo "IS_SVT_TESTREPO is set to ${env.IS_SVT_TESTREPO}"
 
@@ -572,7 +573,8 @@ def setup() {
 		ADDITIONAL_ARTIFACTS_REQUIRED_OPTION = (params.ADDITIONAL_ARTIFACTS_REQUIRED) ? "--additional_artifacts_required ${params.ADDITIONAL_ARTIFACTS_REQUIRED}" : ""
 
 		CURL_OPTS = (params.CURL_OPTS) ? "--curl_opts \"${params.CURL_OPTS}\"" : ""
-		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION}"
+		SETUP_JCK_RUN_OPTION = (params.SETUP_JCK_RUN) ? "--setup_jck_run true" : ""
+		GET_SH_CMD = "./get.sh -s `pwd`/.. -p $PLATFORM -r ${SDK_RESOURCE} ${JDK_VERSION_OPTION} ${JDK_IMPL_OPTION} ${CUSTOMIZED_SDK_URL_OPTION} ${CLONE_OPENJ9_OPTION} ${OPENJ9_REPO_OPTION} ${OPENJ9_BRANCH_OPTION} ${OPENJ9_SHA_OPTION} ${TKG_REPO_OPTION} ${TKG_BRANCH_OPTION} ${VENDOR_TEST_REPOS} ${VENDOR_TEST_BRANCHES} ${VENDOR_TEST_DIRS} ${VENDOR_TEST_SHAS} ${TEST_IMAGES_REQUIRED} ${DEBUG_IMAGES_REQUIRED} ${CODE_COVERAGE_OPTION} ${CURL_OPTS} ${ADDITIONAL_ARTIFACTS_REQUIRED_OPTION} ${SETUP_JCK_RUN_OPTION}"
 		RESOLVED_MAKE = "if [ `uname` = AIX ] || [ `uname` = SunOS ] || [ `uname` = *BSD ]; then MAKE=gmake; else MAKE=make; fi"
 		dir( WORKSPACE) {
 			// use sshagent with Jenkins credentials ID for all platforms except zOS
@@ -665,7 +667,7 @@ def get_sources() {
 			sh "$GET_SH_CMD"
 		}
 	}
-	if (params.SETUP_JCK_RUN && env.BUILD_LIST.contains('jck') && SDK_RESOURCE.contains('customized')) {
+	if (params.SETUP_JCK_RUN && env.BUILD_LIST.contains('jck')) {
 		setup_jck_interactives()
 	}
 }
