@@ -40,8 +40,10 @@ CURL_OPTS="s"
 CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
 SETUP_JCK_RUN="false"
-# Use this dict to restore inputs in case USE_TESTENV_PROPERTIES is set to true
-declare -A TESTENV_CLI_OVERRIDES
+# Use parallel arrays to restore inputs in case USE_TESTENV_PROPERTIES is set to true.
+# macOS still ships Bash 3.2, which does not support associative arrays (dictionaries).
+declare -a TESTENV_CLI_OVERRIDE_KEYS
+declare -a TESTENV_CLI_OVERRIDE_VALUES
 
 usage ()
 {
@@ -72,13 +74,21 @@ usage ()
 
 # Ensures that test environment variables are properly set,
 #   even if USE_TESTENV_PROPERTIES is set to true
+rememberTestenvOverride()
+{
+	TESTENV_CLI_OVERRIDE_KEYS+=("$1")
+	TESTENV_CLI_OVERRIDE_VALUES+=("$2")
+}
+
 replayTestenvOverrides()
 {
+	local i
 	local key
 	# Iterate through all env overwrites that the user provided as input
-	for key in "${!TESTENV_CLI_OVERRIDES[@]}"; do
+	for i in "${!TESTENV_CLI_OVERRIDE_KEYS[@]}"; do
+		key="${TESTENV_CLI_OVERRIDE_KEYS[$i]}"
 		# Set the env overwrite again
-		printf -v "$key" '%s' "${TESTENV_CLI_OVERRIDES[$key]}"
+		printf -v "$key" '%s' "${TESTENV_CLI_OVERRIDE_VALUES[$i]}"
 		# export the env variable so that future processes are consistent
 		export "$key"
 	done
@@ -128,7 +138,7 @@ parseCommandLineArgs()
 
 			"--openj9_repo" )
 				OPENJ9_REPO="$1"
-				TESTENV_CLI_OVERRIDES["OPENJ9_REPO"]="$OPENJ9_REPO"
+				rememberTestenvOverride "OPENJ9_REPO" "$OPENJ9_REPO"
 				shift;;
 
 			"--openj9_sha" )
@@ -136,17 +146,17 @@ parseCommandLineArgs()
 
 			"--openj9_branch" )
 				OPENJ9_BRANCH="$1"
-				TESTENV_CLI_OVERRIDES["OPENJ9_BRANCH"]="$OPENJ9_BRANCH"
+				rememberTestenvOverride "OPENJ9_BRANCH" "$OPENJ9_BRANCH"
 				shift;;
 
 			"--tkg_repo" )
 				TKG_REPO="$1"
-				TESTENV_CLI_OVERRIDES["TKG_REPO"]="$TKG_REPO"
+				rememberTestenvOverride "TKG_REPO" "$TKG_REPO"
 				shift;;
 
 			"--tkg_branch" )
 				TKG_BRANCH="$1"
-				TESTENV_CLI_OVERRIDES["TKG_BRANCH"]="$TKG_BRANCH"
+				rememberTestenvOverride "TKG_BRANCH" "$TKG_BRANCH"
 				shift;;
 
 			"--vendor_repos" )
