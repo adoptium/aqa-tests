@@ -40,6 +40,7 @@ CURL_OPTS="s"
 CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
 SETUP_JCK_RUN="false"
+declare -A TESTENV_CLI_OVERRIDES
 
 usage ()
 {
@@ -66,6 +67,20 @@ usage ()
 	echo '                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources'
 	echo '                [--setup_jck_run ] : optional. true or false. Setup jck_run folder if compliance repo is provided. Default to false'
 	echo '                [--code_coverage ] : optional. indicate if code coverage is required'
+}
+
+# Ensures that test environment variables are properly set,
+#   even if USE_TESTENV_PROPERTIES is set to true
+replayTestenvOverrides()
+{
+	local key
+	# Itereate through all env overwrites that the user provided as input
+	for key in "${!TESTENV_CLI_OVERRIDES[@]}"; do
+		# Set the env overwrite again
+		printf -v "$key" '%s' "${TESTENV_CLI_OVERRIDES[$key]}"
+		# export the env variable so that future processes are consistent
+		export "$key"
+	done
 }
 
 parseCommandLineArgs()
@@ -111,19 +126,27 @@ parseCommandLineArgs()
 				CLONE_OPENJ9="$1"; shift;;
 
 			"--openj9_repo" )
-				OPENJ9_REPO="$1"; shift;;
+				OPENJ9_REPO="$1"
+				TESTENV_CLI_OVERRIDES["OPENJ9_REPO"]="$OPENJ9_REPO"
+				shift;;
 
 			"--openj9_sha" )
 				OPENJ9_SHA="$1"; shift;;
 
 			"--openj9_branch" )
-				OPENJ9_BRANCH="$1"; shift;;
+				OPENJ9_BRANCH="$1"
+				TESTENV_CLI_OVERRIDES["OPENJ9_BRANCH"]="$OPENJ9_BRANCH"
+				shift;;
 
 			"--tkg_repo" )
-				TKG_REPO="$1"; shift;;
+				TKG_REPO="$1"
+				TESTENV_CLI_OVERRIDES["TKG_REPO"]="$TKG_REPO"
+				shift;;
 
 			"--tkg_branch" )
-				TKG_BRANCH="$1"; shift;;
+				TKG_BRANCH="$1"
+				TESTENV_CLI_OVERRIDES["TKG_BRANCH"]="$TKG_BRANCH"
+				shift;;
 
 			"--vendor_repos" )
 				VENDOR_REPOS="$1"; shift;;
@@ -955,6 +978,8 @@ if [ "$USE_TESTENV_PROPERTIES" = true ]; then
 		echo "load ./testenv/testenv.properties"
 		source ./testenv/testenv.properties
 	fi
+	# Reapply all use input test environment overrides
+	replayTestenvOverrides
 	if [[ $JDK_IMPL != "openj9" && $JDK_IMPL != "ibm" ]]; then
 		echo "Running checkTags with $teFile and $JDK_VERSION"
 		./scripts/testenv/checkTags.sh $teFile $JDK_VERSION
