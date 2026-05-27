@@ -40,6 +40,7 @@ CURL_OPTS="s"
 CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
 SETUP_JCK_RUN="false"
+# Use this dict to restore inputs in case USE_TESTENV_PROPERTIES is set to true
 declare -A TESTENV_CLI_OVERRIDES
 
 usage ()
@@ -74,7 +75,7 @@ usage ()
 replayTestenvOverrides()
 {
 	local key
-	# Itereate through all env overwrites that the user provided as input
+	# Iterate through all env overwrites that the user provided as input
 	for key in "${!TESTENV_CLI_OVERRIDES[@]}"; do
 		# Set the env overwrite again
 		printf -v "$key" '%s' "${TESTENV_CLI_OVERRIDES[$key]}"
