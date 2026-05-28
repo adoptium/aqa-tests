@@ -141,7 +141,7 @@ class GitHubHandler(BaseHandler):
                 return "Won't Fix"
             elif single_label['name'] == 'fixed':
                 return "Fixed. Action: Unexclude"
-        return "Action: Add issue label: fixed wontfix exclusion:permanent"
+        return "Fixed. Action: Unexclude or add issue label: wontfix / exclusion:permanent"
 
 
 class BugsOpenJdkHandler(BaseHandler):
