@@ -489,6 +489,7 @@ def main():
         if all([args.github_user, args.github_token]):
             auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
         minimal_issues_check(issues, auth)
+        LOG.info("Script complete.")
         return return_code
 
     dispatcher = Dispatcher(
