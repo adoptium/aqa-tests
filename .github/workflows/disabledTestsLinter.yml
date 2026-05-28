@@ -46,4 +46,4 @@ jobs:
       - name: Run issue_status.py on both ProblemList and Playlist files # Using the --minimal option, so it will only validate issue urls. Nothing more.
         run: |
             jq -s 'flatten(1)' exclude.json playlist.json > all.json
-            cat all.json | python3 scripts/disabled_tests/issue_status.py --minimal
+            cat all.json | python3 scripts/disabled_tests/issue_status.py --minimal --verbose
