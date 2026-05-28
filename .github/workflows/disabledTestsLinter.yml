@@ -10,11 +10,8 @@ permissions:
   contents: read
     
 jobs:
-  disableTestsLinter:
+  setup:
     runs-on: ubuntu-latest
-    env:
-        AQA_ISSUE_TRACKER_GITHUB_USER: ${{ github.actor }}
-        AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Set up Python 3.8
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -35,14 +32,37 @@ jobs:
             sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
             find . -name "playlist.xml" -not -path "scripts" > playlist_files.txt
 
+  excludeparser:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
       - name: Run exclude_parser.py on ProblemList files
         run: |
             cat exclude_files.txt | python3 scripts/disabled_tests/exclude_parser.py -v > exclude.json
 
+  playlistparser:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
       - name: Run playlist_parser.py on Playlist files
         run: |
             cat playlist_files.txt | python3 scripts/disabled_tests/playlist_parser.py -v > playlist.json
 
+  duplicates:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Run issue_status.py on both ProblemList and Playlist files # Using the --minimal option, so it will only validate issue urls. Nothing more.
+        run: |
+            bash scripts/disabled_tests/duplicate_finder.sh "$(pwd)/exclude_files.txt"
+
+  issues:
+    runs-on: ubuntu-latest
+    needs: [excludeparser, playlistparser]
+    env:
+        AQA_ISSUE_TRACKER_GITHUB_USER: ${{ github.actor }}
+        AQA_ISSUE_TRACKER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
       - name: Run issue_status.py on both ProblemList and Playlist files # Using the --minimal option, so it will only validate issue urls. Nothing more.
         run: |
             echo "::group::Flatten and group parsed ProblemList and Playlist files."
