@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - name: Run issue_status.py on both ProblemList and Playlist files # Using the --minimal option, so it will only validate issue urls. Nothing more.
+      - name: Find any duplicate tests in the playlists or exclusion files.
         run: |
             bash scripts/disabled_tests/duplicate_finder.sh "$(pwd)/exclude_files.txt"
 
