@@ -1,26 +1,4 @@
 <?xml version="1.0"?>
-<project name="Tomcat-Test" default="build" basedir=".">
-	<description>
-		Build tomcat-test Docker image
-	</description>
-	<import file="${TEST_ROOT}/external/build.xml"/>
-
-	<!-- set properties for this build -->
-	<property name="TEST" value="tomcat" />
-	<property name="DEST" value="${BUILD_ROOT}/external/${TEST}" />
-	<property name="src" location="." />
-
-	<!-- Temporarily disable for openj9 and ibm due to ibm_git/runtimes/infrastructure/issues/6056 -->
-	<condition property="skip.build">
-		<or>
-			<equals arg1="${JDK_IMPL}" arg2="ibm" />
-			<equals arg1="${JDK_IMPL}" arg2="openj9" />
-		</or>
-	</condition>
-
-	<target name="dist" depends="move_scripts,clean_image,build_image,copy_dest" description="generate the distribution" />
-
-	<target name="build" unless="skip.build">
-		<antcall target="dist" inheritall="true" />
-	</target>
+<project default="build" basedir=".">
+	<import file="${TEST_ROOT}/external/external-test.xml" />
 </project>

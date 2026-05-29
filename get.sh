@@ -39,6 +39,7 @@ DEBUG_IMAGES_REQUIRED=true
 CURL_OPTS="s"
 CODE_COVERAGE=false
 ADDITIONAL_ARTIFACTS_REQUIRED=""
+SETUP_JCK_RUN="false"
 
 usage ()
 {
@@ -63,6 +64,7 @@ usage ()
 	echo '                [--vendor_shas ] : optional. Comma separated SHAs of the vendor repositories'
 	echo '                [--vendor_branches ] : optional. Comma separated vendor branches'
 	echo '                [--vendor_dirs ] : optional. Comma separated directories storing vendor test resources'
+	echo '                [--setup_jck_run ] : optional. true or false. Setup jck_run folder if compliance repo is provided. Default to false'
 	echo '                [--code_coverage ] : optional. indicate if code coverage is required'
 }
 
@@ -149,6 +151,9 @@ parseCommandLineArgs()
 
 			"--additional_artifacts_required" )
 				ADDITIONAL_ARTIFACTS_REQUIRED="$1"; shift;;
+
+			"--setup_jck_run" )
+				SETUP_JCK_RUN="$1"; shift;;
 
 			"--help" | "-h" )
 				usage; exit 0;;
@@ -704,6 +709,59 @@ getFunctionalTestMaterial()
 	cd $TESTDIR
 }
 
+moveComplianceRepoToJckRun() {
+	echo "*************************************************************************"
+	echo "* Replacing jenkins_home/jck_run contents with compliance_repo/jck_run   "
+	echo "*************************************************************************"
+	
+	# Determine jenkins home directory (two levels up from TESTDIR)
+	jenkins_home="$(cd "$TESTDIR/../.." && pwd)"
+	echo "Jenkins home: ${jenkins_home}"
+	
+	if [ -d "$TESTDIR/jck_run" ]; then
+		echo "Cleaning ${jenkins_home}/jck_run/arctic folder prior to extract"
+		rm -rf "${jenkins_home}/jck_run/arctic"
+		
+		echo "Copying jck_run directory to ${jenkins_home}"
+		cp -r "$TESTDIR/jck_run" "${jenkins_home}/" 2>&1
+		
+		if [ $? -eq 0 ]; then
+			echo "Successfully copied jck_run to ${jenkins_home}"
+			
+			# Set permissions if not on Windows
+			if [[ ! "$PLATFORM" == *"windows"* ]]; then
+				chgrp jck "${jenkins_home}/jck_run" 2>/dev/null || echo "Warning: Could not change group to jck"
+				chmod g+s "${jenkins_home}/jck_run" 2>/dev/null || echo "Warning: Could not set setgid bit"
+			fi
+			
+			# Copy scripts folder to jck_run
+			if [ -d "$TESTDIR/scripts" ]; then
+				echo "Copying scripts folder to jck_run"
+				cp -r "$TESTDIR/scripts" "${jenkins_home}/jck_run/" 2>&1
+				
+				if [ $? -eq 0 ]; then
+					echo "Successfully copied scripts to ${jenkins_home}/jck_run"
+				else
+					echo "Warning: Failed to copy scripts folder"
+				fi
+			fi
+			
+			# Set final permissions if not on Windows
+			if [[ ! "$PLATFORM" == *"windows"* ]]; then
+				chgrp -R jck "${jenkins_home}/jck_run" 2>/dev/null || echo "Warning: Could not recursively change group to jck"
+				chmod -R 775 "${jenkins_home}/jck_run" 2>/dev/null || echo "Warning: Could not set permissions to 775"
+			fi
+		else
+			echo "Error: Failed to copy jck_run directory"
+			return 1
+		fi
+	else
+		echo "Warning: jck_run directory not found in $TESTDIR"
+	fi
+	
+	echo "*************************************************************************"
+}
+
 getVendorTestMaterial() {
 	echo "get vendor test material..."
 	cd $TESTDIR
@@ -712,6 +770,7 @@ getVendorTestMaterial() {
 	declare -a vendor_branches_array
 	declare -a vendor_shas_array
 	declare -a vendor_dirs_array
+	local is_compliance_repo=false
 
 	# convert VENDOR_REPOS to array
 	vendor_repos_array=(`echo $VENDOR_REPOS | sed 's/,/\n/g'`)
@@ -742,6 +801,12 @@ getVendorTestMaterial() {
 		branchOption=""
 		if [ "$branch" != "" ]; then
 			branchOption="-b $branch"
+		fi
+
+		# Check if this is a compliance repo
+		if [[ "$repoURL" == *"compliance"* ]]; then
+			is_compliance_repo=true
+			echo "Compliance repository detected: $repoURL"
 		fi
 
 		if [[ "$dir" =~ "jck" ]]; then
@@ -792,6 +857,17 @@ getVendorTestMaterial() {
 		cd $TESTDIR
 
 	done
+	
+	# After processing all vendor repos, check if we need to move compliance repo to jck_run
+	if [ "$is_compliance_repo" = true ] && [ "$SETUP_JCK_RUN" = "true" ]; then
+		echo "SETUP_JCK_RUN is true and compliance repo detected"
+		if [[ "$BUILD_LIST" =~ "jck" ]]; then
+			echo "BUILD_LIST contains 'jck', proceeding with jck_run setup"
+			moveComplianceRepoToJckRun
+		else
+			echo "BUILD_LIST does not contain 'jck', skipping jck_run setup"
+		fi
+	fi
 }
 
 testJavaVersion()
