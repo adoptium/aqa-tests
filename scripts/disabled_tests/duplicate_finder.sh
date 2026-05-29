@@ -36,15 +36,15 @@ while IFS= read -r exclude_file_raw; do
     fi
   fi
   echo "Processing: $exclude_file"
-  exclude_file_contents=$(grep -o '^[^#].[^ ]*' "$exclude_file" || echo "")
+  exclude_file_contents=$(grep -o '^[^#].[^[:space:]]*' "$exclude_file" || echo "")
   if [[ "$exclude_file_contents" == "" ]]; then
     echo "Warning: Skipping exclude file. No tests found. File name: $exclude_file"
     continue
   fi
   while IFS= read -r test; do
-    num_of_test_mentions="$(grep -c "^$test" "$exclude_file")"
+    num_of_test_mentions="$(grep -c "^${test}\s" "$exclude_file")"
     if [[ "$num_of_test_mentions" != "1" ]]; then
-      [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n"; 
+      [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n";
     fi
   done <<< "$exclude_file_contents"
 done < "$list_of_exclude_files"
