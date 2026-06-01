@@ -133,7 +133,7 @@ class Disable(RawDisable):
         for url_node in issue_url_nodes:
             if not url_node.text.startswith("#"):
                 issue_url += url_node.text + ","
-        if issue_url == ''
+        if issue_url == '':
             issue_url = "# No URLs are associated with this disable node."
         else
             issue_url = issue_url[:-1]
