@@ -57,8 +57,10 @@ Usage: $(basename "$0") [OPTIONS]
 Parse disabled tests from AQA test repository.
 
 OPTIONS:
+    -a, --all       Check all ProblemList files, not just the ones for relevant releases.
     -c, --clean     Clean output directory before running
     -h, --help      Show this help message
+    -m, --minimal   Only check issue URLs for validity. Do not check status or commit URLs.
 
 ENVIRONMENT VARIABLES:
     AQA_ISSUE_TRACKER_GITHUB_USER   GitHub username for API access
@@ -74,14 +76,24 @@ EOF
 }
 
 # Parse command line arguments
+CHECK_ALL_FILES=false
 CLEAN_OUTPUT=false
+MINIMAL=false
 VERBOSE=false
 OUTPUT_DIR="./output"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        -a|--all)
+            CHECK_ALL_FILES=true
+            shift
+            ;;
         -c|--clean)
             CLEAN_OUTPUT=true
+            shift
+            ;;
+        -m|--minimal)
+            MINIMAL=true
             shift
             ;;
         -h|--help)
@@ -118,6 +130,7 @@ log_info "Output directory created."
 EXCLUDE_FILES="${OUTPUT_DIR}/exclude_files.txt"
 PLAYLIST_FILES="${OUTPUT_DIR}/playlist_files.txt"
 EXCLUDE_JSON="${OUTPUT_DIR}/exclude.json"
+EXCLUDE_DUPS="${OUTPUT_DIR}/exclude_dups.txt"
 PLAYLIST_JSON="${OUTPUT_DIR}/playlist.json"
 ALL_JSON="${OUTPUT_DIR}/all.json"
 OUTPUT_JSON="${OUTPUT_DIR}/output.json"
@@ -191,7 +204,8 @@ fi
 
 log_info "Checking if Python requirements are already installed."
 while read rawRequirement; do
-    singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n')"
+    singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n' | cut -d= -f1)"
+    [[ "${singleRequirement:0:1}" == "-" ]] && continue
     if ! pip3 show "$singleRequirement" &> /dev/null; then
         log_error "One or more of the Python requirements were not found."
         log_info "Use this command to install the requirements before rerunning this script."
@@ -207,7 +221,20 @@ log_success "Python requirements already installed"
 ################################################################################
 
 log_group "openjdk exclude files"
-find openjdk/excludes -name '*ProblemList*.txt' | tee "${EXCLUDE_FILES}"
+find openjdk/excludes -name '*ProblemList*.txt' > "${EXCLUDE_FILES}"
+if [[ "${CHECK_ALL_FILES}" == "false" ]]; then
+  temporary_file="${OUTPUT_DIR}/temp_file"
+  touch "${temporary_file}"
+  exclude_files_content="$(cat ${EXCLUDE_FILES})"
+  while IFS= read -r single_line; do
+    if [[ "${single_line}" =~ openjdk(8|11|17|21|25|(2[6-9]|[3-9][0-9]|[1-9][0-9][0-9])|valhalla) ]]; then
+      echo "${single_line}" >> "${temporary_file}"
+    fi
+  done < "${EXCLUDE_FILES}"
+  rm "${EXCLUDE_FILES}"
+  mv "${temporary_file}" "${EXCLUDE_FILES}"
+fi
+cat "${EXCLUDE_FILES}"
 log_endgroup
 
 log_group "playlist files"
@@ -225,15 +252,25 @@ log_success "Found $EXCLUDE_COUNT exclude files and $PLAYLIST_COUNT playlist fil
 log_group "parsing"
 
 log_info "Parsing exclude files..."
-cat "${EXCLUDE_FILES}" | python3 scripts/disabled_tests/exclude_parser.py -v > "${EXCLUDE_JSON}"
+if cat "${EXCLUDE_FILES}" | python3 scripts/disabled_tests/exclude_parser.py -v > "${EXCLUDE_JSON}"; then
+  log_success "exclude_parser.py passed."
+else
+  log_error "exclude_parser.py failed. Terminating."
+  exit 1
+fi
 validate_json_file "${EXCLUDE_JSON}" "Exclude data" || exit 1
 log_success "Exclude files parsed"
 
 log_info "Parsing playlist files..."
-cat "${PLAYLIST_FILES}" | python3 scripts/disabled_tests/playlist_parser.py -v > "${PLAYLIST_JSON}"
+if cat "${PLAYLIST_FILES}" | python3 scripts/disabled_tests/playlist_parser.py -v > "${PLAYLIST_JSON}"; then
+  log_success "playlist_parser.py passed."
+else
+  log_error "playlist_parser.py failed. Terminating."
+  exit 1
+fi
+
 validate_json_file "${PLAYLIST_JSON}" "Playlist data" || exit 1
 log_success "Playlist files parsed"
-
 log_endgroup
 
 ################################################################################
@@ -249,12 +286,34 @@ log_success "Merged $MERGED_COUNT disabled test entries"
 log_endgroup
 
 ################################################################################
-# Step 5: Check issue status
+# Step 5: Check for exclusion file test duplicates
+################################################################################
+
+log_group "duplicates"
+log_info "Checking for ProblemList test exclusion duplicates..."
+if bash scripts/disabled_tests/duplicate_finder.sh "${EXCLUDE_FILES}" > "${EXCLUDE_DUPS}"; then
+  log_success "duplicate_finder.sh passed."
+else
+  log_error "duplicate_finder.sh failed. Terminating."
+  exit 1
+fi
+log_endgroup
+
+################################################################################
+# Step 6: Check issue status
 ################################################################################
 
 log_group "status"
 log_info "Checking issue status..."
-cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py -v > "${OUTPUT_JSON}"
+flags="--verbose"
+[[ "${MINIMAL}" == "true" ]] && flags+=" --minimal"
+if cat "${ALL_JSON}" | python3 scripts/disabled_tests/issue_status.py ${flags} > "${OUTPUT_JSON}"; then
+  log_success "issue_status.py passed."
+else
+  log_error "issue_status.py failed. Terminating."
+  exit 1
+fi
+
 validate_json_file "${OUTPUT_JSON}" "Output data" || exit 1
 OUTPUT_COUNT=$(jq 'length' "${OUTPUT_JSON}")
 log_success "Generated output with $OUTPUT_COUNT entries"

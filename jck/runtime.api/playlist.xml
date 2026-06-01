@@ -342,7 +342,8 @@
 		<testCaseName>jck-runtime-api-signaturetest</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -386,7 +387,8 @@
 		<testCaseName>jck-runtime-api-java_util-regex</testCaseName>
 		<disables>
 			<disable>
-				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<comment># Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/669</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -448,18 +450,20 @@
 		</versions>
 		<disables>
 			<disable>
-				<comment>Disabled on aix for backlog/issues/486 Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on aix for backlog/issues/486 Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/486</comment>
 				<platform>ppc64_aix</platform>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>Disabled on Mac for Problem Report 147661. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on Mac for Problem Report 147661. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
 				<platform>x86-64_mac</platform>
 				<version>8</version>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -483,11 +487,13 @@
 		<testCaseName>jck-runtime-api-java_awt</testCaseName>
 		<disables>
 			<disable>
-				<comment>backlog/issues/608 : To be run manually</comment>
+				<comment># backlog/issues/608 : To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
 				<impl>ibm</impl>
 			</disable>
 			<disable>
-				<comment>backlog/issues/608 : To be run manually</comment>
+				<comment># backlog/issues/608 : To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
 				<impl>openj9</impl>
 			</disable>
 		</disables>
@@ -510,15 +516,17 @@
                 <testCaseName>jck-runtime-api-java_awt-robot</testCaseName>
                 <disables>
                         <disable>
-                                <comment>backlog/issues/608 : To be run manually</comment>
+                                <comment># backlog/issues/608 : To be run manually</comment>
+                                <comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
                                 <impl>ibm</impl>
                         </disable>
                         <disable>
-                                <comment>backlog/issues/608 : To be run manually</comment>
+                                <comment># backlog/issues/608 : To be run manually</comment>
+                                <comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
                                 <impl>openj9</impl>
                         </disable>
                         <disable>
-                                <comment>Disabled on aix and windows as no xvfb capable of robot interaction, hangs on s390x</comment>
+                                <comment># Disabled on aix and windows as no xvfb capable of robot interaction, hangs on s390x</comment>
                                 <platform>ppc64_aix|x86-64_windows|x86-32_windows|aarch64_windows|s390x_linux</platform>
                                 <impl>hotspot</impl>
                         </disable>
@@ -542,13 +550,15 @@
 		<testCaseName>jck-runtime-api-java_beans</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/486</comment>
 				<platform>ppc64_aix</platform>
 				<version>11</version>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -624,11 +634,15 @@
 		<testCaseName>jck-runtime-api-java_net</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on all platforms due to backlog/issues/462. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/462</comment>
 				<platform>.*zos.*</platform>
 			</disable>
 			<disable>
-				<comment>Disabled due to backlog/issues/921,923,750. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled due to backlog/issues/921,923,750. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/921</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/923</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/750</comment>
 				<platform>ppc64_aix|x86-64_mac|x86-64_windows|x86-32_windows</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -669,7 +683,8 @@
 		<testCaseName>jck-runtime-api-java_rmi</testCaseName>
 		<disables>
 			<disable>
-				<comment>Temporarily disabled on z/OS for backlog/issues/744</comment>
+				<comment># Temporarily disabled on z/OS for backlog/issues/744</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/744</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -694,13 +709,14 @@
 		<testCaseName>jck-runtime-api-java_security</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on win for backlog/issues/488. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/488</comment>
 				<platform>x86-64_windows|x86-32_windows</platform>
 				<version>8+</version>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>backlog/issues/1118</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1118</comment>
 				<version>8+</version>
 				<impl>openj9</impl>
 				<testflag>fips140_2</testflag>
@@ -776,7 +792,8 @@
 		<testCaseName>jck-runtime-api-java_util</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/732</comment>
+				<comment># Disabled on z/OS due to backlog/issues/732</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/732</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -801,12 +818,14 @@
 		<testCaseName>jck-runtime-api-javax_accessibility</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment># Disabled on aix for backlog/issues/486. Awaiting some automation improvements, in the interim these targets will be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/486</comment>
 				<platform>ppc64_aix</platform>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -887,7 +906,8 @@
 		<testCaseName>jck-runtime-api-javax_crypto</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/730</comment>
+				<comment># Disabled on z/OS due to backlog/issues/730</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/730</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -912,7 +932,8 @@
 		<testCaseName>jck-runtime-api-javax_imageio</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
@@ -953,7 +974,8 @@
 		<testCaseName>jck-runtime-api-javax_management</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/730</comment>
+				<comment># Disabled on z/OS due to backlog/issues/730</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/730</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -995,13 +1017,15 @@
 		<testCaseName>jck-runtime-api-javax_net</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/461</comment>
+				<comment># Disabled on z/OS due to backlog/issues/461</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/461</comment>
 				<version>8</version>
 				<impl>ibm</impl>
 				<platform>.*zos.*</platform>
 			</disable>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<comment># Disabled on z/OS due to backlog/issues/744</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/744</comment>
 				<version>11</version>
 				<impl>ibm</impl>
 				<platform>s390x_zos</platform>
@@ -1026,12 +1050,14 @@
 		<testCaseName>jck-runtime-api-javax_print</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on all platforms on 17 for backlog/issues/633 (intermittent machine issue). To be run manually</comment>
+				<comment># Disabled on all platforms on 17 for backlog/issues/633 (intermittent machine issue). To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/633</comment>
 				<version>17+</version>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>Disabled on all platforms on 17 for backlog/issues/633 (intermittent machine issue). To be run manually</comment>
+				<comment># Disabled on all platforms on 17 for backlog/issues/633 (intermittent machine issue). To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/633</comment>
 				<version>17+</version>
 				<impl>ibm</impl>
 			</disable>
@@ -1055,7 +1081,8 @@
 		<testCaseName>jck-runtime-api-javax_rmi</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on z/OS due to backlog/issues/744</comment>
+				<comment># Disabled on z/OS due to backlog/issues/744</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/744</comment>
 				<version>11</version>
 				<impl>ibm</impl>
 				<platform>s390x_zos</platform>
@@ -1114,7 +1141,8 @@
 		<testCaseName>jck-runtime-api-javax_sound</testCaseName>
 		<disables>
 			<disable>
-				<comment>Temporarily disabled on x64 + aarch64 Mac for backlog/issues/718</comment>
+				<comment># Temporarily disabled on x64 + aarch64 Mac for backlog/issues/718</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/718</comment>
 				<platform>(aarch64_mac|x86-64_mac).*</platform>
 				<impl>openj9</impl>
 				<version>11+</version>
@@ -1156,11 +1184,13 @@
 		<testCaseName>jck-runtime-api-javax_swing</testCaseName>
 		<disables>
 			<disable>
-				<comment>backlog/issues/608 : To be run manually</comment>
+				<comment># backlog/issues/608 : To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
 				<impl>ibm</impl>
 			</disable>
 			<disable>
-				<comment>backlog/issues/608 : To be run manually</comment>
+				<comment># backlog/issues/608 : To be run manually</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/608</comment>
 				<impl>openj9</impl>
 			</disable>
 		</disables>
@@ -1183,7 +1213,8 @@
 		<testCaseName>jck-runtime-api-javax_tools</testCaseName>
 		<disables>
 			<disable>
-				<comment>Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<comment># Temporarily disabled on z/OS for backlog/issues/669</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/669</comment>
 				<platform>.*zos.*</platform>
 				<impl>ibm</impl>
 				<version>11</version>
@@ -1243,11 +1274,11 @@
 		</groups>
 		<disables>
 			<disable>
-				<comment>backlog/issues/600</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/600</comment>
 				<impl>openj9</impl>
 			</disable>
 			<disable>
-				<comment>backlog/issues/600</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/600</comment>
 				<impl>ibm</impl>
 			</disable>
 		</disables>
@@ -1270,7 +1301,7 @@
 		</groups>
 		<disables>
 			<disable>
-				<comment>backlog/issues/567</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/567</comment>
 				<platform>.*zos.*</platform>
 			</disable>
 		</disables>
@@ -1367,7 +1398,8 @@
 		<testCaseName>jck-runtime-api-serializabletypes</testCaseName>
 		<disables>
 			<disable>
-				<comment>Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment># Disabled on aarch64_mac due to backlog/issues/1300.</comment>
+				<comment>https://github.ibm.com/runtimes/backlog/issues/1300</comment>
 				<platform>aarch64_mac.*</platform>
 				<impl>openj9</impl>
 			</disable>
