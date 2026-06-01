@@ -42,7 +42,8 @@ while IFS= read -r exclude_file_raw; do
     continue
   fi
   while IFS= read -r test; do
-    num_of_test_mentions="$(grep -F -- "${test} " "$exclude_file" | grep -c ^[^#] || true)" 
+    test_regex="$(echo "$test" | sed 's/[^a-zA-Z0-9]/./g')"
+    num_of_test_mentions="$(echo "$exclude_file_contents" | grep -c "^${test_regex}$" || true)"
     if [[ "$num_of_test_mentions" != "1" ]]; then
       [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n";
     fi
