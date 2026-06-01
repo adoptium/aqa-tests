@@ -130,6 +130,7 @@ log_info "Output directory created."
 EXCLUDE_FILES="${OUTPUT_DIR}/exclude_files.txt"
 PLAYLIST_FILES="${OUTPUT_DIR}/playlist_files.txt"
 EXCLUDE_JSON="${OUTPUT_DIR}/exclude.json"
+EXCLUDE_DUPS="${OUTPUT_DIR}/exclude_dups.txt"
 PLAYLIST_JSON="${OUTPUT_DIR}/playlist.json"
 ALL_JSON="${OUTPUT_DIR}/all.json"
 OUTPUT_JSON="${OUTPUT_DIR}/output.json"
@@ -275,7 +276,21 @@ log_success "Merged $MERGED_COUNT disabled test entries"
 log_endgroup
 
 ################################################################################
-# Step 5: Check issue status
+# Step 5: Check for exclusion file test duplicates
+################################################################################
+
+log_group "duplicates"
+log_info "Checking for ProblemList test exclusion duplicates..."
+if bash scripts/disabled_tests/duplicate_finder.sh "${EXCLUDE_FILES}" > "${EXCLUDE_DUPS}"; then
+  log_success "duplicate_finder.py passed."
+else
+  log_error "duplicate_finder.py failed. Terminating."
+  exit 1
+fi
+log_endgroup
+
+################################################################################
+# Step 6: Check issue status
 ################################################################################
 
 log_group "status"
