@@ -222,7 +222,18 @@ log_success "Python requirements already installed"
 
 log_group "openjdk exclude files"
 find openjdk/excludes -name '*ProblemList*.txt' > "${EXCLUDE_FILES}"
-[[ "${CHECK_ALL_FILES}" == "false" ]] && sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' "${EXCLUDE_FILES}"
+if [[ "${CHECK_ALL_FILES}" == "false" ]]; then
+  temporary_file="${OUTPUT_DIR}/temp_file"
+  touch "${temporary_file}"
+  exclude_files_content="$(cat ${EXCLUDE_FILES})"
+  while IFS= read -r single_line; do
+    if [[ "${single_line}" =~ openjdk(8|11|17|21|25|(2[6-9]|[3-9][0-9]|[1-9][0-9][0-9])|valhalla) ]]; then
+      echo "${single_line}" >> "${temporary_file}"
+    fi
+  done < "${EXCLUDE_FILES}"
+  rm "${EXCLUDE_FILES}"
+  mv "${temporary_file}" "${EXCLUDE_FILES}"
+fi
 cat "${EXCLUDE_FILES}"
 log_endgroup
 
@@ -281,9 +292,9 @@ log_endgroup
 log_group "duplicates"
 log_info "Checking for ProblemList test exclusion duplicates..."
 if bash scripts/disabled_tests/duplicate_finder.sh "${EXCLUDE_FILES}" > "${EXCLUDE_DUPS}"; then
-  log_success "duplicate_finder.py passed."
+  log_success "duplicate_finder.sh passed."
 else
-  log_error "duplicate_finder.py failed. Terminating."
+  log_error "duplicate_finder.sh failed. Terminating."
   exit 1
 fi
 log_endgroup

@@ -436,7 +436,8 @@ def minimal_issues_check(issues: List[models.Scheme], auth):
         # If this url does not match a known url format, test it directly.
         session = requests.Session()
         resp = session.head(url, allow_redirects=True, auth=auth)
-        if resp.status_code < 404 or resp.status_code == 429:
+        acceptable_return_codes = [405, 429]
+        if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
             LOG.info(f"{url!r} exists. Status code {resp.status_code}")
         else:
             LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
