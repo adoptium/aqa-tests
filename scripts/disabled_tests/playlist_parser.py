@@ -131,7 +131,7 @@ class Disable(RawDisable):
             raise DisableNodeProcessingException(f'disable node has no {cls.ISSUE_TAG!r} child; skipping node')
         issue_url = ""
         for url_node in issue_url_nodes:
-            if ! url_node.text.startswith("#"):
+            if not url_node.text.startswith("#"):
                 issue_url += url_node.text + ","
         issue_url = issue_url[:-1]
 
