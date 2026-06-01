@@ -7,7 +7,7 @@
 # whether any of the uncommented tests appear more than once in any one file.
 #
 # Usage:
-#   ./duplicate_finder.sh file_containing_list_of_exclude_files
+#   ./duplicate_finder.sh file_containing_a_list_of_exclude_files
 ################################################################################
 
 set -e  # Exit on error
@@ -36,13 +36,13 @@ while IFS= read -r exclude_file_raw; do
     fi
   fi
   echo "Processing: $exclude_file"
-  exclude_file_contents=$(grep -o '^[^#].[^[:space:]]*' "$exclude_file" || echo "")
+  exclude_file_contents=$(grep -o '^[^#].[^[:space:]]*' "$exclude_file" || true)
   if [[ "$exclude_file_contents" == "" ]]; then
     echo "Warning: Skipping exclude file. No tests found. File name: $exclude_file"
     continue
   fi
   while IFS= read -r test; do
-    num_of_test_mentions="$(grep -c "^${test}\s" "$exclude_file")"
+    num_of_test_mentions="$(grep -F -c -- "${test} " "$exclude_file" || true)" 
     if [[ "$num_of_test_mentions" != "1" ]]; then
       [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n";
     fi

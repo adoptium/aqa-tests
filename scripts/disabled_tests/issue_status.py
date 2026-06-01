@@ -129,7 +129,7 @@ class GitHubHandler(BaseHandler):
         resp_json = self.get_resp_from_url(url).json()
         status_name = resp_json["state"]
         status_enum = self.name_to_status(status_name)
-        labels_list = resp_json.get('labels', {})
+        labels_list = resp_json.get('labels', [])
         if status_enum == Status.OPEN:
             return (status_enum, "OPEN",)
         else:
