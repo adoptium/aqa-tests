@@ -206,7 +206,6 @@ log_info "Checking if Python requirements are already installed."
 while read rawRequirement; do
     singleRequirement="$(echo "$rawRequirement" | tr -d '[:space:]' | tr -d '\r\n' | cut -d= -f1)"
     [[ "${singleRequirement:0:1}" == "-" ]] && continue
-    echo "debugsh ${singleRequirement}"
     if ! pip3 show "$singleRequirement" &> /dev/null; then
         log_error "One or more of the Python requirements were not found."
         log_info "Use this command to install the requirements before rerunning this script."
