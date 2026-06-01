@@ -135,7 +135,7 @@ class Disable(RawDisable):
                 issue_url += url_node.text + ","
         if issue_url == '':
             issue_url = "# No URLs are associated with this disable node."
-        else
+        else:
             issue_url = issue_url[:-1]
 
         test_name = raw_disable.parent_test.name
