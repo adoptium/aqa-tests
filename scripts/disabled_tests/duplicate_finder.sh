@@ -42,7 +42,7 @@ while IFS= read -r exclude_file_raw; do
     continue
   fi
   while IFS= read -r test; do
-    num_of_test_mentions="$(grep -F -c -- "${test} " "$exclude_file" || true)" 
+    num_of_test_mentions="$(grep -F -- "${test} " "$exclude_file" | grep -c ^[^#] || true)" 
     if [[ "$num_of_test_mentions" != "1" ]]; then
       [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n";
     fi
