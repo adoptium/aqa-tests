@@ -1,9 +1,9 @@
 [
     {
         "TEST_FLAG": "NONE",
-        "COMMENT": "JDK 8-21 shared configuration - uses sw.os.aix.7_2 (not 7_2TL5)",
-        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.perf,extended.perf,sanity.jck,sanity.system,extended.system",
-        "DEFAULT_FIPS_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
+        "COMMENT": "JDK 21 specific release configuration - uses sw.os.aix.7_2 (not 7_2TL5) and no TIME_LIMIT for ppc64_aix",
+        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck",
+        "DEFAULT_FIPS_TEST_TARGETS": "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "DEFAULT_FIPS140_2_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "PLATFORM_TARGETS": [
             { "aarch64_linux": "defaultTestTargets" },
