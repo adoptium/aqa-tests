@@ -115,13 +115,10 @@ timestamps {
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
     if (jobTargets instanceof String) {
-        if (jobTargets.contains("defaultFips")) {
-            jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
-            jobTargets = jobTargets.replace("defaultFips140_2TestTargets","${defaultFips140_2TestTargets}")
-        } else {
-            jobTargets = jobTargets.replace("defaultTestTargets","${defaultTestTargets}")
-        }
-       jobTargets = jobTargets.split("\\s*,\\s*")
+        jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
+        jobTargets = jobTargets.replace("defaultFips140_2TestTargets","${defaultFips140_2TestTargets}")
+        jobTargets = jobTargets.replace("defaultTestTargets","${defaultTestTargets}")
+        jobTargets = jobTargets.split("\\s*,\\s*")
     }
     if (jobPlatforms instanceof String) {
         jobPlatforms = jobPlatforms.split("\\s*,\\s*")
