@@ -1,8 +1,7 @@
 [
     {
         "TEST_FLAG": "NONE",
-        "COMMENT": "JDK 8-21 shared release configuration - uses sw.os.aix.7_2 (not 7_2TL5) and has more platforms",
-        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,special.openjdk,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck",
+        "COMMENT": "JDK 8-21 shared configuration - uses sw.os.aix.7_2 (not 7_2TL5) and has more platforms",
         "PLATFORM_TARGETS": [
             { "aarch64_linux": "defaultTestTargets" },
             { "aarch64_mac": "defaultTestTargets" },
@@ -20,11 +19,6 @@
         "PLATFORM_ADDITIONAL_TEST_LABELS": {
             "x86-64_linux": "!sw.tool.glibc.2_12",
             "ppc64_aix": "sw.os.aix.7_2"
-        },
-        "PLATFORM_ADDITIONAL_TEST_PARAMS": {
-            "x86-64_linux": {
-                "CLOUD_PROVIDER": "azure"
-            }
         }
     }
 ]
