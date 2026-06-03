@@ -1,7 +1,7 @@
 [
     {
         "TEST_FLAG": "NONE",
-        "COMMENT": "Default OpenJ9 nightly configuration for JDK 8+",
+        "COMMENT": "Level 2: OpenJ9 nightly configuration for JDK 8+. Merged with Level 1 (config/openj9/default.json)",
         "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,sanity.openjdk,extended.openjdk,sanity.perf,sanity.jck,sanity.system,special.system",
         "DEFAULT_FIPS_TEST_TARGETS": "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "DEFAULT_FIPS140_2_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
@@ -15,72 +15,6 @@
             { "x86-64_mac": "defaultTestTargets" },
             { "x86-64_windows": "defaultTestTargets" },
             { "x86-32_windows": "defaultTestTargets" }
-        ],
-        "GLOBAL_BUILD_CONFIG": {
-            "JDK_REPO": "https://github.com/ibmruntimes/openj9-openjdk-jdk",
-            "JDK_BRANCH": "openj9",
-            "OPENJ9_BRANCH": "master",
-            "VENDOR_TEST_REPOS": "git@github.ibm.com:runtimes/test.git",
-            "VENDOR_TEST_BRANCHES": "master",
-            "VENDOR_TEST_DIRS": "functional",
-            "LABEL": "",
-            "LABEL_ADDITION": "",
-            "KEEP_REPORTDIR": false,
-            "PARALLEL": "Dynamic",
-            "NUM_MACHINES": "3",
-            "TEST_TIME": "120",
-            "USE_TESTENV_PROPERTIES": false,
-            "ADOPTOPENJDK_BRANCH": "master",
-            "ACTIVE_NODE_TIMEOUT": "1",
-            "DYNAMIC_COMPILE": false,
-            "RERUN_FAILURE": true,
-            "RERUN_ITERATIONS": "3",
-            "BUILD_LIST": "",
-            "TIME_LIMIT": "10",
-            "ADDITIONAL_TEST_PARAMS": {}
-        },
-        "TARGET_SPECIFIC_CONFIG": {
-            "functional": {
-                "DYNAMIC_COMPILE": true,
-                "KEEP_REPORTDIR": true,
-                "VENDOR_TEST_REPOS": "git@github.ibm.com:runtimes/test.git",
-                "VENDOR_TEST_BRANCHES": "master",
-                "VENDOR_TEST_DIRS": "functional"
-            },
-            "openjdk": {
-                "KEEP_REPORTDIR": true
-            },
-            "jck": {
-                "KEEP_REPORTDIR": true,
-                "VENDOR_TEST_REPOS": "git@github.ibm.com:runtimes/jck.git",
-                "VENDOR_TEST_BRANCHES": "main",
-                "VENDOR_TEST_DIRS": "jck"
-            },
-            "perf": {
-                "PARALLEL": "None"
-            },
-            "external": {
-                "DYNAMIC_COMPILE": true,
-                "PARALLEL": "None",
-                "RERUN_ITERATIONS": "0"
-            },
-            "dev": {
-                "RERUN_ITERATIONS": "0"
-            },
-            "dev.openjdk": {
-                "LABEL_ADDITION": "sw.tool.docker"
-            },
-            "dev.functional": {
-                "KEEP_REPORTDIR": true
-            },
-            "special.openjdk": {
-                "VENDOR_TEST_REPOS": "git@github.ibm.com:runtimes/osb-tests.git",
-                "VENDOR_TEST_BRANCHES": "ibm_tlda",
-                "VENDOR_TEST_DIRS": "openjdk"
-            }
-        },
-        "PLATFORM_SPECIFIC_CONFIG": {},
-        "PLATFORM_ADDITIONAL_TEST_LABELS": {},
-        "PLATFORM_ADDITIONAL_TEST_PARAMS": {}
+        ]
     }
 ]

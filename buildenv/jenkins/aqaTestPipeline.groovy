@@ -43,6 +43,29 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 @Field Map JOBS = [:]
 
+/**
+ * Deep merge two maps recursively.
+ * Values from the override map take precedence over the base map.
+ *
+ * @param base The base map
+ * @param override The override map whose values take precedence
+ * @return The merged map
+ */
+def deepMerge(Map base, Map override) {
+    Map result = base.clone()
+    override.each { key, value ->
+        if (value instanceof Map && result[key] instanceof Map) {
+            result[key] = deepMerge(result[key], value)
+        } else if (value instanceof List && result[key] instanceof List) {
+            // For lists, override completely (don't merge elements)
+            result[key] = value
+        } else {
+            result[key] = value
+        }
+    }
+    return result
+}
+
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -55,14 +78,41 @@ timestamps {
                 node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
                     checkout scm
                     dir (env.WORKSPACE) {
-                        def baseDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/${params.BUILD_TYPE}/"
-                        def filePath = "${baseDir}default.json"
-                        def versionSpecificFile = "${baseDir}jdk${JDK_VERSION}.json"
-                        if (fileExists(versionSpecificFile)) {
-                            filePath = versionSpecificFile
+                        // 2-Level Configuration Hierarchy:
+                        // Level 1: config/{variant}/default.json (variant-wide base)
+                        // Level 2: config/{variant}/{build_type}/jdk{version}.json OR
+                        //          config/{variant}/{build_type}/default.json (fallback)
+                        
+                        def variantDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
+                        def buildTypeDir = "${variantDir}${params.BUILD_TYPE}/"
+                        
+                        // Level 1: Read variant-wide base configuration
+                        def level1File = "${variantDir}default.json"
+                        def baseConfig = [:]
+                        if (fileExists(level1File)) {
+                            echo "Reading Level 1 config from ${level1File}..."
+                            baseConfig = readJSON(file: level1File)
+                        } else {
+                            echo "Warning: Level 1 config file not found: ${level1File}"
                         }
-                        echo "Read JSON from file ${filePath}..."
-                        configJson = readJSON(file: filePath)
+                        
+                        // Level 2: Try version-specific file first, fallback to build-type default
+                        def level2File = "${buildTypeDir}jdk${JDK_VERSION}.json"
+                        if (!fileExists(level2File)) {
+                            level2File = "${buildTypeDir}default.json"
+                        }
+                        
+                        echo "Reading Level 2 config from ${level2File}..."
+                        def level2Config = readJSON(file: level2File)
+                        
+                        // Merge: Level 2 overrides Level 1
+                        if (baseConfig) {
+                            echo "Merging configurations: Level 2 overrides Level 1..."
+                            configJson = [deepMerge(baseConfig, level2Config)]
+                        } else {
+                            // If no Level 1 config, use Level 2 only (backward compatibility)
+                            configJson = [level2Config]
+                        }
                     }
                 }
             }
