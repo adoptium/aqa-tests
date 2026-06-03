@@ -2,16 +2,23 @@
     {
         "TEST_FLAG": "NONE",
         "COMMENT": "Level 2: OpenJ9 release configuration for JDK 8+. Merged with Level 1 (config/openj9/default.json)",
-        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck",
         "PLATFORM_TARGETS": [
-            { "aarch64_linux": "defaultTestTargets" },
+            { "aarch64_linux": "defaultTestTargets,dev.external" },
             { "aarch64_mac": "defaultTestTargets" },
             { "ppc64_aix": "defaultTestTargets" },
-            { "ppc64le_linux": "defaultTestTargets" },
-            { "s390x_linux": "defaultTestTargets" },
-            { "x86-64_linux": "defaultTestTargets" },
+            { "ppc64le_linux": "defaultTestTargets,dev.external" },
+            { "s390x_linux": "defaultTestTargets,dev.external" },
+            { "x86-64_linux": "defaultTestTargets,dev.external" },
             { "x86-64_mac": "defaultTestTargets" },
             { "x86-64_windows": "defaultTestTargets" }
+        ]
+    },
+    {
+        "TEST_FLAG": "FIPS140_2",
+        "PLATFORM_TARGETS": [
+            { "ppc64le_linux": "defaultFips140_2TestTargets" },
+            { "s390x_linux": "defaultFips140_2TestTargets" },
+            { "x86-64_linux": "defaultFips140_2TestTargets" }
         ]
     },
     {
@@ -54,11 +61,16 @@
         ]
     },
     {
-        "TEST_FLAG": "FIPS140_2",
+        "TEST_FLAG": "OpenJCEPlus",
         "PLATFORM_TARGETS": [
-            { "ppc64le_linux": "defaultFips140_2TestTargets" },
-            { "s390x_linux": "defaultFips140_2TestTargets" },
-            { "x86-64_linux": "defaultFips140_2TestTargets" }
+            { "aarch64_linux": "defaultFipsTestTargets" },
+            { "aarch64_mac": "defaultFipsTestTargets" },
+            { "ppc64_aix": "defaultFipsTestTargets" },
+            { "ppc64le_linux": "defaultFipsTestTargets" },
+            { "s390x_linux": "defaultFipsTestTargets" },
+            { "x86-64_linux": "defaultFipsTestTargets" },
+            { "x86-64_mac": "defaultFipsTestTargets" },
+            { "x86-64_windows": "defaultFipsTestTargets" }
         ]
     }
 ]
