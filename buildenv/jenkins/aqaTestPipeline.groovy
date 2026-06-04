@@ -92,16 +92,34 @@ timestamps {
                         // Merge: Level 2 overrides Level 1
                         if (baseConfig) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
-                            // Inline merge to avoid DSL method resolution issues
+                            // Inline deep merge to avoid DSL method resolution issues
                             def merged = [:]
-                            baseConfig.each { k, v -> merged[k] = v }
+                            baseConfig.each { k, v ->
+                                if (v instanceof Map) {
+                                    merged[k] = [:]
+                                    v.each { k2, v2 ->
+                                        if (v2 instanceof Map) {
+                                            merged[k][k2] = [:]
+                                            v2.each { k3, v3 -> merged[k][k2][k3] = v3 }
+                                        } else {
+                                            merged[k][k2] = v2
+                                        }
+                                    }
+                                } else {
+                                    merged[k] = v
+                                }
+                            }
                             level2Config.each { key, value ->
                                 if (value instanceof Map && merged[key] instanceof Map) {
-                                    // For nested maps, merge recursively
-                                    def nestedMerged = [:]
-                                    merged[key].each { k, v -> nestedMerged[k] = v }
-                                    value.each { k, v -> nestedMerged[k] = v }
-                                    merged[key] = nestedMerged
+                                    // Merge nested maps
+                                    value.each { k2, v2 ->
+                                        if (v2 instanceof Map && merged[key][k2] instanceof Map) {
+                                            // Merge 2 levels deep
+                                            v2.each { k3, v3 -> merged[key][k2][k3] = v3 }
+                                        } else {
+                                            merged[key][k2] = v2
+                                        }
+                                    }
                                 } else {
                                     merged[key] = value
                                 }
