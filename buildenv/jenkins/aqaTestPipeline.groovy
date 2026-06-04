@@ -51,6 +51,7 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
  * @param override The override map whose values take precedence
  * @return The merged map
  */
+@NonCPS
 def deepMerge(Map base, Map override) {
     Map result = base.clone()
     override.each { key, value ->
