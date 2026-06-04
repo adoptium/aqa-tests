@@ -331,28 +331,9 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 }
                 buildConfig.ADDITIONAL_TEST_PARAMS.putAll(additionalParams)
             }
+            // Build config is now fully determined by JSON config files.
+            // Pipeline-level parameters (JDK_VERSIONS, PLATFORMS, TARGETS) are separate and not in JSON.
             
-            // Note: For release/nightly/weekly builds, JSON config files are the primary source.
-            // Pipeline parameters below will override JSON config if explicitly provided.
-            // However, be aware that parameters have default values which may not match your intent.
-            // For production builds, modify the JSON config files instead of relying on parameters.
-            
-            // Override with pipeline parameters if explicitly provided
-            if (params.JDK_REPO) buildConfig.JDK_REPO = params.JDK_REPO
-            if (params.JDK_BRANCH) buildConfig.JDK_BRANCH = params.JDK_BRANCH
-            if (params.OPENJ9_BRANCH) buildConfig.OPENJ9_BRANCH = params.OPENJ9_BRANCH
-            if (params.VENDOR_TEST_REPOS) buildConfig.VENDOR_TEST_REPOS = params.VENDOR_TEST_REPOS
-            if (params.VENDOR_TEST_BRANCHES) buildConfig.VENDOR_TEST_BRANCHES = params.VENDOR_TEST_BRANCHES
-            if (params.VENDOR_TEST_DIRS) buildConfig.VENDOR_TEST_DIRS = params.VENDOR_TEST_DIRS
-            if (params.LABEL) buildConfig.LABEL = params.LABEL
-            if (params.LABEL_ADDITION) buildConfig.LABEL_ADDITION = params.LABEL_ADDITION
-            if (params.KEEP_REPORTDIR != null) buildConfig.KEEP_REPORTDIR = params.KEEP_REPORTDIR
-            if (params.DYNAMIC_COMPILE != null) buildConfig.DYNAMIC_COMPILE = params.DYNAMIC_COMPILE
-            if (params.RERUN_ITERATIONS) buildConfig.RERUN_ITERATIONS = params.RERUN_ITERATIONS
-            if (params.BUILD_LIST) buildConfig.BUILD_LIST = params.BUILD_LIST
-            if (params.ACTIVE_NODE_TIMEOUT) buildConfig.ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT
-            if (params.USE_TESTENV_PROPERTIES != null) buildConfig.USE_TESTENV_PROPERTIES = params.USE_TESTENV_PROPERTIES
-            if (params.ADOPTOPENJDK_BRANCH) buildConfig.ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH
             
             def TEST_JOB_NAME = "Grinder"
             if (TARGET.contains("Grinder")) {
