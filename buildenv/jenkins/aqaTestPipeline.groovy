@@ -130,9 +130,16 @@ timestamps {
                                 }
                             }
                             configJson = [merged]
+                            echo "DEBUG: Merged config keys: ${merged.keySet()}"
+                            if (merged.PLATFORM_TARGETS) {
+                                echo "DEBUG: PLATFORM_TARGETS found: ${merged.PLATFORM_TARGETS}"
+                            } else {
+                                echo "DEBUG: PLATFORM_TARGETS is missing!"
+                            }
                         } else {
                             // If no Level 1 config, use Level 2 only (backward compatibility)
                             configJson = [level2Config]
+                            echo "DEBUG: Using Level 2 only, keys: ${level2Config.keySet()}"
                         }
                     }
                 }
