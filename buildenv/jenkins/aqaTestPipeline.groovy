@@ -84,6 +84,13 @@ timestamps {
                         //          config/{variant}/{build_type}/default.json (fallback)
                         
                         def variantDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
+                        
+                        // Fallback: if variant is 'ibm' and config doesn't exist, use 'openj9' config
+                        if (params.VARIANT == "ibm" && !fileExists("${variantDir}default.json")) {
+                            echo "Config for variant 'ibm' not found, falling back to 'openj9' config..."
+                            variantDir = "./aqa-tests/buildenv/jenkins/config/openj9/"
+                        }
+                        
                         def buildTypeDir = "${variantDir}${params.BUILD_TYPE}/"
                         
                         // Level 1: Read variant-wide base configuration
@@ -230,10 +237,40 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 // Check for exact match first (e.g., "dev.openjdk")
                 if (targetSpecificConfig.containsKey(TARGET)) {
                     buildConfig.putAll(targetSpecificConfig[TARGET])
-                } else {
-                    // Check for partial matches (e.g., "functional" matches "sanity.functional")
-                    targetSpecificConfig.each { key, value ->
-                        if (TARGET.contains(key)) {
+                }
+                
+                // Apply test flag-only config (e.g., "FIPS", "OpenJCEPlus") - applies to any target
+                if (jobTestFlag && targetSpecificConfig.containsKey(jobTestFlag)) {
+                    buildConfig.putAll(targetSpecificConfig[jobTestFlag])
+                }
+                
+                // Check for target + test flag combination (e.g., "functional.FIPS")
+                if (jobTestFlag && targetSpecificConfig.containsKey("${TARGET}.${jobTestFlag}")) {
+                    buildConfig.putAll(targetSpecificConfig["${TARGET}.${jobTestFlag}"])
+                }
+                
+                // Check for partial matches (e.g., "functional" matches "sanity.functional")
+                targetSpecificConfig.each { key, value ->
+                    if (key.contains('.')) {
+                        def parts = key.split('\\.')
+                        if (parts.size() == 2) {
+                            // Check if this is a test flag key (e.g., "functional.FIPS")
+                            def isTestFlagKey = ['FIPS', 'OpenJCEPlus'].contains(parts[1])
+                            
+                            if (isTestFlagKey) {
+                                // Test flag keys are handled above, skip here
+                                return
+                            } else if (TARGET.contains(parts[0])) {
+                                // Non-test-flag compound keys (e.g., "special.openjdk")
+                                // Only apply if jobTestFlag is empty
+                                if (!jobTestFlag || jobTestFlag == "") {
+                                    buildConfig.putAll(value)
+                                }
+                            }
+                        }
+                    } else if (TARGET.contains(key)) {
+                        // Simple keys always apply (but skip test flag keys as they're handled above)
+                        if (!['FIPS', 'OpenJCEPlus'].contains(key)) {
                             buildConfig.putAll(value)
                         }
                     }
@@ -325,47 +362,13 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
             def testLabel = buildConfig.LABEL ?: ""
             def additionalTestLabel = buildConfig.LABEL_ADDITION ?: ""
             
-            // Apply variant-specific logic (keep existing logic for backward compatibility)
+            // Apply variant-specific logic for special cases not covered by config
             if (params.VARIANT == "openj9" || params.VARIANT == "ibm") {
-                // default rerunIterations is 3 for openj9
-                rerunIterations = params.RERUN_ITERATIONS ? params.RERUN_ITERATIONS.toInteger() : 3
-                if (TARGET.contains('external')) {
-                    jobParallel = "None"
-                    rerunIterations = 0
-                } else if (TARGET.contains('functional')) {
-                    if (jobTestFlag.contains("FIPS")) {
-                        if (!buildList) {
-                            buildList = "functional/OpenJcePlusTests,functional/security"
-                        }
-                    } else {
-                        VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/test.git'
-                        // Default VENDOR_TEST_BRANCHES is master. 
-                        // If offical adoptium repo is used, set VENDOR_TEST_BRANCHES to match with params.ADOPTOPENJDK_BRANCH.
-                        VENDOR_TEST_BRANCHES = 'master'
-                        if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
-                            VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
-                        }
-                        VENDOR_TEST_DIRS = 'functional'
+                // Handle VENDOR_TEST_BRANCHES override for adoptium repo
+                if (TARGET.contains('functional') && !jobTestFlag.contains("FIPS")) {
+                    if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
+                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
                     }
-                } else if (TARGET.contains('jck')) {
-                    VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/jck.git'
-                    VENDOR_TEST_BRANCHES = "main"
-                    VENDOR_TEST_DIRS = 'jck'
-                } else if (TARGET.contains('openjdk')) {
-                    // only use osb repo for regular testing
-                    if (TARGET.contains('special') && jobTestFlag == "") {
-                        VENDOR_TEST_REPOS = 'git@github.ibm.com:runtimes/osb-tests.git'
-                        VENDOR_TEST_BRANCHES = "ibm_tlda"
-                        VENDOR_TEST_DIRS = 'openjdk'
-                    }
-                }
-
-                if (jobTestFlag.contains("FIPS") || jobTestFlag.contains("OpenJCEPlus") || (TARGET.contains("dev"))) {
-                    rerunIterations = 0
-                }
-            } else if (params.VARIANT == "temurin") {
-                if (TARGET.contains("functional") || TARGET.contains("perf")) {
-                    jobParallel = "None"
                 }
             }
             // Grinder job has special settings and should be regenerated specifically, not via aqaTestPipeline

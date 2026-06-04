@@ -1,7 +1,6 @@
 [
     {
         "COMMENT": "Level 1: OpenJ9 variant-wide base configuration. This is merged with Level 2 configs (build-type specific).",
-        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,special.openjdk,sanity.system,extended.system,special.system,sanity.perf,extended.perf,sanity.jck,extended.jck,special.jck",
         "DEFAULT_FIPS_TEST_TARGETS": "extended.functional,sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "DEFAULT_FIPS140_2_TEST_TARGETS": "sanity.openjdk,extended.openjdk,sanity.jck,extended.jck,special.jck",
         "GLOBAL_BUILD_CONFIG": {
@@ -35,7 +34,19 @@
                 "VENDOR_TEST_BRANCHES": "master",
                 "VENDOR_TEST_DIRS": "functional"
             },
+            "FIPS": {
+                "RERUN_ITERATIONS": "0"
+            },
+            "OpenJCEPlus": {
+                "RERUN_ITERATIONS": "0"
+            },
+            "functional.FIPS": {
+                "BUILD_LIST": "functional/OpenJcePlusTests,functional/security"
+            },
             "openjdk": {
+                "KEEP_REPORTDIR": true
+            },
+             "osb": {
                 "KEEP_REPORTDIR": true
             },
             "jck": {
