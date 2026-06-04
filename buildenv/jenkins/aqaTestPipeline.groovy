@@ -332,7 +332,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                 buildConfig.ADDITIONAL_TEST_PARAMS.putAll(additionalParams)
             }
             
-            // Override with pipeline parameters if provided
+            // Note: For release/nightly/weekly builds, JSON config files are the primary source.
+            // Pipeline parameters below will override JSON config if explicitly provided.
+            // However, be aware that parameters have default values which may not match your intent.
+            // For production builds, modify the JSON config files instead of relying on parameters.
+            
+            // Override with pipeline parameters if explicitly provided
             if (params.JDK_REPO) buildConfig.JDK_REPO = params.JDK_REPO
             if (params.JDK_BRANCH) buildConfig.JDK_BRANCH = params.JDK_BRANCH
             if (params.OPENJ9_BRANCH) buildConfig.OPENJ9_BRANCH = params.OPENJ9_BRANCH
