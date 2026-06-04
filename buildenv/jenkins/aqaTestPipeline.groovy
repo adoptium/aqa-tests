@@ -105,12 +105,17 @@ timestamps {
                                             merged[k][k2] = v2
                                         }
                                     }
+                                } else if (v instanceof List) {
+                                    merged[k] = v.clone()
                                 } else {
                                     merged[k] = v
                                 }
                             }
                             level2Config.each { key, value ->
-                                if (value instanceof Map && merged[key] instanceof Map) {
+                                if (value instanceof List) {
+                                    // Lists override completely
+                                    merged[key] = value
+                                } else if (value instanceof Map && merged[key] instanceof Map) {
                                     // Merge nested maps
                                     value.each { k2, v2 ->
                                         if (v2 instanceof Map && merged[key][k2] instanceof Map) {
