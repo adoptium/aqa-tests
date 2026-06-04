@@ -92,7 +92,7 @@ timestamps {
                         // Merge: Level 2 overrides Level 1
                         if (baseConfig) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
-                            configJson = [this.deepMerge(baseConfig, level2Config)]
+                            configJson = [deepMerge(baseConfig, level2Config)]
                         } else {
                             // If no Level 1 config, use Level 2 only (backward compatibility)
                             configJson = [level2Config]
@@ -155,9 +155,13 @@ timestamps {
  * @param override The override map whose values take precedence
  * @return The merged map
  */
-@NonCPS
 def deepMerge(Map base, Map override) {
-    Map result = base.clone()
+    Map result = [:]
+    // First, add all keys from base
+    base.each { k, v ->
+        result[k] = v
+    }
+    // Then, override/merge with override map
     override.each { key, value ->
         if (value instanceof Map && result[key] instanceof Map) {
             result[key] = deepMerge(result[key], value)
