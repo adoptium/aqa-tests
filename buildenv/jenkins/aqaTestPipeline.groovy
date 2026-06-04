@@ -43,30 +43,6 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 @Field Map JOBS = [:]
 
-/**
- * Deep merge two maps recursively.
- * Values from the override map take precedence over the base map.
- *
- * @param base The base map
- * @param override The override map whose values take precedence
- * @return The merged map
- */
-@NonCPS
-def deepMerge(Map base, Map override) {
-    Map result = base.clone()
-    override.each { key, value ->
-        if (value instanceof Map && result[key] instanceof Map) {
-            result[key] = deepMerge(result[key], value)
-        } else if (value instanceof List && result[key] instanceof List) {
-            // For lists, override completely (don't merge elements)
-            result[key] = value
-        } else {
-            result[key] = value
-        }
-    }
-    return result
-}
-
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -169,6 +145,30 @@ timestamps {
         }
     }
     parallel JOBS
+}
+
+/**
+ * Deep merge two maps recursively.
+ * Values from the override map take precedence over the base map.
+ *
+ * @param base The base map
+ * @param override The override map whose values take precedence
+ * @return The merged map
+ */
+@NonCPS
+def deepMerge(Map base, Map override) {
+    Map result = base.clone()
+    override.each { key, value ->
+        if (value instanceof Map && result[key] instanceof Map) {
+            result[key] = deepMerge(result[key], value)
+        } else if (value instanceof List && result[key] instanceof List) {
+            // For lists, override completely (don't merge elements)
+            result[key] = value
+        } else {
+            result[key] = value
+        }
+    }
+    return result
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
