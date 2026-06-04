@@ -178,10 +178,10 @@ timestamps {
                         if (params.PLATFORMS) {
                             if (params.PLATFORMS.contains(p)) {
                                 echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
-                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
+                                generateJobs(JDK_VERSION, releaseTestFlag, p, t, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                             }
                         } else {
-                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, PARALLEL, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
+                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                         }
                     }
                 }
@@ -191,14 +191,14 @@ timestamps {
                 remoteTriggerTemurinJCK()
 
             } else {
-                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, PARALLEL, [:], [:], [:], [:], [:])
+                generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, [:], [:], [:], [:], [:])
             }
         }
     }
     parallel JOBS
 }
 
-def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
+def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
     if (jobTargets instanceof String) {
         jobTargets = jobTargets.replace("defaultFipsTestTargets","${defaultFipsTestTargets}")
         jobTargets = jobTargets.replace("defaultFips140_2TestTargets","${defaultFips140_2TestTargets}")
@@ -209,7 +209,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
         jobPlatforms = jobPlatforms.split("\\s*,\\s*")
     }
 
-    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}, jobParallel: ${jobParallel}"
+    echo "jobJdkVersion: ${jobJdkVersion}, jobTestFlag: ${jobTestFlag}, jobPlatforms: ${jobPlatforms}, jobTargets: ${jobTargets}"
     if (jobTestFlag == "NONE") {
         jobTestFlag = ""
     }
@@ -415,7 +415,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParall
                     } else if (param.key == "CUSTOMIZED_SDK_URL") {
                         childParams << string(name: param.key, value: download_url)
                     } else if (param.key == "PARALLEL") {
-                        childParams << string(name: param.key, value: jobParallel)
+                        childParams << string(name: param.key, value: buildConfig.PARALLEL ?: "Dynamic")
                     } else if (param.key == "NUM_MACHINES") {
                        childParams << string(name: param.key, value: NUM_MACHINES.toString())
                     } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
