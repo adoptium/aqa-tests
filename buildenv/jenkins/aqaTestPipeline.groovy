@@ -92,7 +92,21 @@ timestamps {
                         // Merge: Level 2 overrides Level 1
                         if (baseConfig) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
-                            configJson = [deepMerge(baseConfig, level2Config)]
+                            // Inline merge to avoid DSL method resolution issues
+                            def merged = [:]
+                            baseConfig.each { k, v -> merged[k] = v }
+                            level2Config.each { key, value ->
+                                if (value instanceof Map && merged[key] instanceof Map) {
+                                    // For nested maps, merge recursively
+                                    def nestedMerged = [:]
+                                    merged[key].each { k, v -> nestedMerged[k] = v }
+                                    value.each { k, v -> nestedMerged[k] = v }
+                                    merged[key] = nestedMerged
+                                } else {
+                                    merged[key] = value
+                                }
+                            }
+                            configJson = [merged]
                         } else {
                             // If no Level 1 config, use Level 2 only (backward compatibility)
                             configJson = [level2Config]
@@ -145,34 +159,6 @@ timestamps {
         }
     }
     parallel JOBS
-}
-
-/**
- * Deep merge two maps recursively.
- * Values from the override map take precedence over the base map.
- *
- * @param base The base map
- * @param override The override map whose values take precedence
- * @return The merged map
- */
-def deepMerge(Map base, Map override) {
-    Map result = [:]
-    // First, add all keys from base
-    base.each { k, v ->
-        result[k] = v
-    }
-    // Then, override/merge with override map
-    override.each { key, value ->
-        if (value instanceof Map && result[key] instanceof Map) {
-            result[key] = deepMerge(result[key], value)
-        } else if (value instanceof List && result[key] instanceof List) {
-            // For lists, override completely (don't merge elements)
-            result[key] = value
-        } else {
-            result[key] = value
-        }
-    }
-    return result
 }
 
 def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, jobParallel, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
