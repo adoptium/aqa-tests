@@ -111,12 +111,16 @@ timestamps {
                                     merged[k] = v
                                 }
                             }
+                            echo "DEBUG: level2Config keys: ${level2Config.keySet()}"
                             level2Config.each { key, value ->
+                                echo "DEBUG: Processing key '${key}', value type: ${value.getClass().simpleName}"
                                 if (value instanceof List) {
                                     // Lists override completely
+                                    echo "DEBUG: Adding List '${key}'"
                                     merged[key] = value
                                 } else if (value instanceof Map && merged[key] instanceof Map) {
                                     // Merge nested maps
+                                    echo "DEBUG: Merging Map '${key}'"
                                     value.each { k2, v2 ->
                                         if (v2 instanceof Map && merged[key][k2] instanceof Map) {
                                             // Merge 2 levels deep
@@ -126,6 +130,7 @@ timestamps {
                                         }
                                     }
                                 } else {
+                                    echo "DEBUG: Adding/overriding '${key}'"
                                     merged[key] = value
                                 }
                             }
