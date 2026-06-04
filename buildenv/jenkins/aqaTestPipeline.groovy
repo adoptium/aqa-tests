@@ -75,7 +75,8 @@ timestamps {
                         def baseConfig = [:]
                         if (fileExists(level1File)) {
                             echo "Reading Level 1 config from ${level1File}..."
-                            baseConfig = readJSON(file: level1File)
+                            def level1Array = readJSON(file: level1File)
+                            baseConfig = level1Array[0] // Extract first element from array
                         } else {
                             echo "Warning: Level 1 config file not found: ${level1File}"
                         }
@@ -87,10 +88,11 @@ timestamps {
                         }
                         
                         echo "Reading Level 2 config from ${level2File}..."
-                        def level2Config = readJSON(file: level2File)
+                        def level2Array = readJSON(file: level2File)
+                        def level2Config = level2Array[0] // Extract first element from array
                         
                         // Merge: Level 2 overrides Level 1
-                        if (baseConfig) {
+                        if (baseConfig && baseConfig.size() > 0) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
                             // Inline deep merge to avoid DSL method resolution issues
                             def merged = [:]
