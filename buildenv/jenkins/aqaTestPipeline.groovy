@@ -115,7 +115,7 @@ timestamps {
                         // Merge: Level 2 overrides Level 1
                         if (baseConfig) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
-                            configJson = [deepMerge(baseConfig, level2Config)]
+                            configJson = [this.deepMerge(baseConfig, level2Config)]
                         } else {
                             // If no Level 1 config, use Level 2 only (backward compatibility)
                             configJson = [level2Config]
