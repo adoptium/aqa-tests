@@ -3,19 +3,22 @@
         "TEST_FLAG": "NONE",
         "COMMENT": "Level 2: Weekly build configuration for JDK 25+ (including JDK 26, 27, etc.). Merged with Level 1 (config/temurin/default.json). For JDK 21 and earlier, see jdk21.json",
         "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf,special.openjdk,dev.functional",
+        "GLOBAL_BUILD_CONFIG": {
+            "TIME_LIMIT": "30"
+        },
         "PLATFORM_TARGETS": [
-            { "aarch64_linux": "defaultTestTargets" },
-            { "aarch64_mac": "defaultTestTargets" },
+            { "aarch64_linux": "defaultTestTargets,special.system" },
+            { "aarch64_mac": "defaultTestTargets,dev.system,special.system" },
             { "ppc64_aix": "defaultTestTargets" },
-            { "ppc64le_linux": "defaultTestTargets" },
-            { "s390x_linux": "defaultTestTargets" },
-            { "x86-64_linux": "defaultTestTargets" },
-            { "x86-64_mac": "defaultTestTargets" },
-            { "x86-64_windows": "defaultTestTargets" },
+            { "ppc64le_linux": "defaultTestTargets,special.system" },
+            { "s390x_linux": "defaultTestTargets,special.system" },
+            { "x86-64_linux": "defaultTestTargets,dev.system,special.system,dev.openjdk" },
+            { "x86-64_mac": "defaultTestTargets,dev.system,special.system" },
+            { "x86-64_windows": "defaultTestTargets,dev.system,special.system" },
             { "x86-64_alpine-linux": "defaultTestTargets" },
+            { "riscv64_linux": "defaultTestTargets" },
             { "aarch64_alpine-linux": "defaultTestTargets" },
-            { "aarch64_windows": "defaultTestTargets" },
-            { "riscv64_linux": "defaultTestTargets" }
+            { "aarch64_windows": "defaultTestTargets" }
         ]
     }
 ]
