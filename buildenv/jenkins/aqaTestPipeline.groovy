@@ -245,29 +245,41 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
         echo "download_url: ${download_url}"
 
         jobTargets.each { TARGET ->
+            // Helper function to merge configs with special handling for LABEL_ADDITION
+            def mergeConfig = { target, source ->
+                source.each { key, value ->
+                    if (key == "LABEL_ADDITION" && target.containsKey("LABEL_ADDITION") && target["LABEL_ADDITION"]) {
+                        // Append to existing LABEL_ADDITION instead of replacing
+                        target["LABEL_ADDITION"] = "${target['LABEL_ADDITION']}&&${value}"
+                    } else {
+                        target[key] = value
+                    }
+                }
+            }
+            
             // Apply configuration hierarchy: global -> target-specific -> platform-specific -> params
             def buildConfig = [:]
             
             // Start with global build config from JSON
             if (globalBuildConfig) {
-                buildConfig.putAll(globalBuildConfig)
+                mergeConfig(buildConfig, globalBuildConfig)
             }
             
             // Apply target-specific config (e.g., functional, openjdk, jck)
             if (targetSpecificConfig) {
                 // Check for exact match first (e.g., "dev.openjdk")
                 if (targetSpecificConfig.containsKey(TARGET)) {
-                    buildConfig.putAll(targetSpecificConfig[TARGET])
+                    mergeConfig(buildConfig, targetSpecificConfig[TARGET])
                 }
                 
                 // Apply test flag-only config (e.g., "FIPS", "OpenJCEPlus") - applies to any target
                 if (jobTestFlag && targetSpecificConfig.containsKey(jobTestFlag)) {
-                    buildConfig.putAll(targetSpecificConfig[jobTestFlag])
+                    mergeConfig(buildConfig, targetSpecificConfig[jobTestFlag])
                 }
                 
                 // Check for target + test flag combination (e.g., "functional.FIPS")
                 if (jobTestFlag && targetSpecificConfig.containsKey("${TARGET}.${jobTestFlag}")) {
-                    buildConfig.putAll(targetSpecificConfig["${TARGET}.${jobTestFlag}"])
+                    mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.${jobTestFlag}"])
                 }
                 
                 // Apply configs in hierarchical order: base configs first, then specific overrides
@@ -279,7 +291,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                         // Simple keys use substring match (e.g., "functional" matches "sanity.functional")
                         // This allows base category configs to apply to all variants
                         if (!['FIPS', 'OpenJCEPlus'].contains(key)) {
-                            buildConfig.putAll(value)
+                            mergeConfig(buildConfig, value)
                         }
                     }
                 }
@@ -300,7 +312,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                                 // This overrides any base config applied in first pass
                                 // Only apply if jobTestFlag is empty
                                 if (!jobTestFlag || jobTestFlag == "") {
-                                    buildConfig.putAll(value)
+                                    mergeConfig(buildConfig, value)
                                 }
                             }
                         }
@@ -312,11 +324,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
             if (platformSpecificConfig && platformSpecificConfig.containsKey(TARGET)) {
                 def platformConfig = platformSpecificConfig[TARGET]
                 if (platformConfig.containsKey(PLATFORM)) {
-                    buildConfig.putAll(platformConfig[PLATFORM])
+                    mergeConfig(buildConfig, platformConfig[PLATFORM])
                 }
             }
             
             // Apply platform-specific additional test labels
+            // This appends to any LABEL_ADDITION already set by target-specific config
             if (platformAdditionalTestLabels && platformAdditionalTestLabels.containsKey(PLATFORM)) {
                 def additionalLabel = platformAdditionalTestLabels[PLATFORM]
                 if (buildConfig.LABEL_ADDITION) {
@@ -332,7 +345,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 if (!buildConfig.ADDITIONAL_TEST_PARAMS) {
                     buildConfig.ADDITIONAL_TEST_PARAMS = [:]
                 }
-                buildConfig.ADDITIONAL_TEST_PARAMS.putAll(additionalParams)
+                mergeConfig(buildConfig.ADDITIONAL_TEST_PARAMS, additionalParams)
             }
             // Build config is now fully determined by JSON config files.
             // Pipeline-level parameters (JDK_VERSIONS, PLATFORMS, TARGETS) are separate and not in JSON.
