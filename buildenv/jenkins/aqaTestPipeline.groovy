@@ -11,13 +11,6 @@ def TEST_FLAG = (params.TEST_FLAG) ?: ""
 def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
 def MODE = params.MODE ? params.MODE : "ENTRYPOINT"
 
-@Field String NUM_MACHINES = ""
-if (params.NUM_MACHINES) {
-    NUM_MACHINES = params.NUM_MACHINES
-} else if (!params.TEST_TIME && PARALLEL == "Dynamic") {
-    // set default NUM_MACHINES to 3 if params.NUM_MACHINES and params.TEST_TIME are not set and PARALLEL is Dynamic 
-    NUM_MACHINES = 3
-}
 
 @Field String SDK_RESOURCE
 @Field String TIME_LIMIT
@@ -427,7 +420,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                     } else if (param.key == "PARALLEL") {
                         childParams << string(name: param.key, value: buildConfig.PARALLEL ?: "Dynamic")
                     } else if (param.key == "NUM_MACHINES") {
-                       childParams << string(name: param.key, value: NUM_MACHINES.toString())
+                        childParams << string(name: param.key, value: buildConfig.NUM_MACHINES ?: (params.NUM_MACHINES ?: ""))
                     } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
                         childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                     } else if (param.key == "TIME_LIMIT") {
