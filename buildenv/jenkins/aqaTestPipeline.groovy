@@ -277,7 +277,21 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                     buildConfig.putAll(targetSpecificConfig["${TARGET}.${jobTestFlag}"])
                 }
                 
-                // Check for partial matches (e.g., "functional" matches "sanity.functional")
+                // Apply configs in hierarchical order: base configs first, then specific overrides
+                // This allows "openjdk" to apply to all openjdk variants, but "sanity.openjdk" to override
+                
+                // First pass: Apply base configs (simple keys that match via substring)
+                targetSpecificConfig.each { key, value ->
+                    if (!key.contains('.') && TARGET.contains(key)) {
+                        // Simple keys use substring match (e.g., "functional" matches "sanity.functional")
+                        // This allows base category configs to apply to all variants
+                        if (!['FIPS', 'OpenJCEPlus'].contains(key)) {
+                            buildConfig.putAll(value)
+                        }
+                    }
+                }
+                
+                // Second pass: Apply specific compound configs (exact match overrides)
                 targetSpecificConfig.each { key, value ->
                     if (key.contains('.')) {
                         def parts = key.split('\\.')
@@ -288,18 +302,14 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                             if (isTestFlagKey) {
                                 // Test flag keys are handled above, skip here
                                 return
-                            } else if (TARGET.contains(parts[0])) {
-                                // Non-test-flag compound keys (e.g., "special.openjdk")
+                            } else if (TARGET == key) {
+                                // Exact match for compound keys (e.g., "special.openjdk" matches "special.openjdk")
+                                // This overrides any base config applied in first pass
                                 // Only apply if jobTestFlag is empty
                                 if (!jobTestFlag || jobTestFlag == "") {
                                     buildConfig.putAll(value)
                                 }
                             }
-                        }
-                    } else if (TARGET.contains(key)) {
-                        // Simple keys always apply (but skip test flag keys as they're handled above)
-                        if (!['FIPS', 'OpenJCEPlus'].contains(key)) {
-                            buildConfig.putAll(value)
                         }
                     }
                 }
