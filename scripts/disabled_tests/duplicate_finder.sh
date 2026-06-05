@@ -41,13 +41,12 @@ while IFS= read -r exclude_file_raw; do
     echo "Warning: Skipping exclude file. No tests found. File name: $exclude_file"
     continue
   fi
-  while IFS= read -r test; do
-    test_regex="$(echo "$test" | sed 's/[^a-zA-Z0-9]/./g')"
-    num_of_test_mentions="$(echo "$exclude_file_contents" | grep -c "^${test_regex}$" || true)"
-    if [[ "$num_of_test_mentions" != "1" ]]; then
-      [[ $duplicates != *"$test"* ]] && duplicates+="$exclude_file - $test - $num_of_test_mentions instances\n";
-    fi
-  done <<< "$exclude_file_contents"
+  dup_tests_in_problemlist="$(echo "$exclude_file_contents" | uniq -d -c)"
+  if [[ "${dup_tests_in_problemlist}" != '' ]]; then
+    while IFS= read -r single_dup; do
+      duplicates+="${exclude_file}: $(echo ${single_dup} | sed 's/^ *//')\n";
+    done <<< "$dup_tests_in_problemlist"
+  fi
 done < "$list_of_exclude_files"
 
 if [[ $duplicates ]]; then

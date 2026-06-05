@@ -88,13 +88,16 @@ class BaseHandler(abc.ABC):
 
     def get_resp_from_url(self, url) -> requests.Response:
         # Use anonymous auth if user/token not provided
-        auth = None
-        if all([self.user, self.token]):
-            auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
-        adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
-        session: requests.Session = requests.Session()
-        session.mount("https://", adapter)
-        resp = session.get(url, params=self.PARAMS, auth=auth)
+        if url.startswith("https://github.com/"):
+            auth = None
+            if all([self.user, self.token]):
+                auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
+            adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
+            session: requests.Session = requests.Session()
+            session.mount("https://", adapter)
+            resp = session.get(url, params=self.PARAMS, auth=auth)
+        else:
+            resp = requests.get(url)
         resp.raise_for_status()
         return resp
 
@@ -435,7 +438,10 @@ def minimal_issues_check(issues: List[models.Scheme], auth):
 
         # If this url does not match a known url format, test it directly.
         session = requests.Session()
-        resp = session.head(url, allow_redirects=True, auth=auth)
+        if url.startswith("https://github.com/"):
+            resp = session.head(url, allow_redirects=True, auth=auth)
+        else:
+            resp = session.head(url)
         acceptable_return_codes = [405, 429]
         if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
             LOG.info(f"{url!r} exists. Status code {resp.status_code}")
