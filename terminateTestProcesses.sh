@@ -12,11 +12,14 @@ if [ "$OS" = "Windows_NT" ]; then
              CommandLine like '%java%javatest%' or \
              CommandLine like '%java%-Xfuture%' or \
              CommandLine like '%java%-Xverify:all%' or \
+             CommandLine like '%jhsdb.exe%' or \
+             CommandLine like '%jshell.exe%' or \
              CommandLine like '%rmid%' or \
              CommandLine like '%rmiregistry%' or \
              CommandLine like '%tnameserv%' or \
              CommandLine like '%notepad.exe%' or \
-             CommandLine like '%make.exe%')"
+             CommandLine like '%make.exe%' or \
+             CommandLine like '%8261518ModularAppTest.exe%')"
 
   # Ignore Jenkins agent and grep cmd
   ignore_str="not CommandLine like '%remoting.jar%' and \

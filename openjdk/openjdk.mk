@@ -170,7 +170,7 @@ else
 endif
 
 JDK_CUSTOM_TARGET ?= java/math/BigInteger/BigIntegerTest.java
-HOTSPOT_CUSTOM_TARGET ?= gc/stress/gclocker/TestExcessGCLockerCollections.java
+HOTSPOT_CUSTOM_TARGET ?= gc/TestSystemGC.java
 HOTSPOT_CUSTOM_J9_TARGET ?= serviceability/jvmti/GetSystemProperty/JvmtiGetSystemPropertyTest.java
 LANGTOOLS_CUSTOM_TARGET ?= tools/javac/4241573/T4241573.java
 FULLPATH_JDK_CUSTOM_TARGET = $(foreach target,$(JDK_CUSTOM_TARGET),$(JTREG_JDK_TEST_DIR)$(D)$(target))
