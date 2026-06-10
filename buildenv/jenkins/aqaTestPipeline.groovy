@@ -39,7 +39,7 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
-        if (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly") {
+        if ( params.MODE != 'RELAY' && (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly" )) {
             def configJson = []
             if (params.CONFIG_JSON) {
                 echo "Read JSON from CONFIG_JSON parameter..."
@@ -180,9 +180,8 @@ timestamps {
                 }
             }
         } else {
-            if ( MODE == 'RELAY' ) {
-                remoteTriggerTemurinJCK()
-
+            if ( params.MODE == 'RELAY' && params.VARIANT == "temurin" ) {
+                remoteTriggerTemurinJCK(JDK_VERSION, PLATFORMS)
             } else {
                 generateJobs(JDK_VERSION, TEST_FLAG, PLATFORMS, TARGETS, [:], [:], [:], [:], [:])
             }
@@ -556,32 +555,229 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
     }
 }
 
-def remoteTriggerTemurinJCK () {
-    def handle = triggerRemoteJob abortTriggeredJob: true,
-        blockBuildUntilComplete: true,
-        pollInterval: 240,
-        job: 'AQA_Test_Pipeline',
-        parameters: MapParameters(parameters: [MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
-                                                MapParameter(name: 'TARGETS', value: TARGETS),
-                                                MapParameter(name: 'JCK_GIT_REPO', value: env.JCK_GIT_REPO),
-                                                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
-                                                MapParameter(name: 'JDK_VERSIONS', value: params.JDK_VERSIONS),
-                                                MapParameter(name: 'PARALLEL', value: PARALLEL),
-                                                MapParameter(name: 'NUM_MACHINES', value: env.NUM_MACHINES),
-                                                MapParameter(name: 'PLATFORMS', value: params.PLATFORMS),
-                                                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: params.PIPELINE_DISPLAY_NAME),
-                                                MapParameter(name: 'APPLICATION_OPTIONS', value: env.APPLICATION_OPTIONS),
-                                                MapParameter(name: 'LABEL_ADDITION', value: env.LABEL_ADDITION),
-                                                MapParameter(name: 'AUTO_AQA_GEN', value: "${params.AUTO_AQA_GEN}"),
-                                                MapParameter(name: 'RERUN_ITERATIONS', value: "1"),
-                                                MapParameter(name: 'RERUN_FAILURE', value: "true"),
-                                                MapParameter(name: 'EXTRA_OPTIONS', value: env.EXTRA_OPTIONS),
-                                                MapParameter(name: 'SETUP_JCK_RUN', value: env.SETUP_JCK_RUN)]),
-        remoteJenkinsName: 'temurin-compliance',
-        shouldNotFailBuild: true,
-        token: 'RemoteTrigger',
-        useCrumbCache: true,
-        useJobInfoCache: true   
-    echo 'Remote job ' + params.PIPELINE_DISPLAY_NAME + ' Status: ' + handle.getBuildResult().toString()
-    currentBuild.result = handle.getBuildResult().toString()    
+def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
+    // Load JCK configuration from JSON files
+    def jckConfig = loadJCKConfig(jobJdkVersion)
+    
+    if (!jckConfig) {
+        error "Failed to load JCK configuration for JDK ${jobJdkVersion}"
+    }
+    
+    // Determine if this is a release build (for SETUP_JCK_RUN)
+    def isReleaseBuild = (params.BUILD_TYPE == "release")
+    
+    def globalConfig = jckConfig.GLOBAL_BUILD_CONFIG ?: [:]
+    def targetSpecificConfig = jckConfig.TARGET_SPECIFIC_CONFIG ?: [:]
+    def platformSpecificConfig = jckConfig.PLATFORM_SPECIFIC_CONFIG ?: [:]
+    def platformApplicationOptions = jckConfig.PLATFORM_APPLICATION_OPTIONS ?: [:]
+    def platformAdditionalTestLabels = jckConfig.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
+    def jckGitRepoTemplate = jckConfig.JCK_GIT_REPO_TEMPLATE ?: "git@github.com:temurin-compliance/JCK\${JDK_VERSION}-unzipped.git"
+    
+    // Get platform targets from config to determine which tests run on which platforms
+    def platformTargets = jckConfig.PLATFORM_TARGETS ?: []
+    
+    jobPlatforms.each { platform ->
+        // Find the targets for this platform from PLATFORM_TARGETS
+        def platformTargetEntry = platformTargets.find { it.containsKey(platform) }
+        if (!platformTargetEntry) {
+            echo "No test targets defined for platform ${platform}, skipping"
+            return
+        }
+        
+        def targetsForPlatform = platformTargetEntry[platform].split(',').collect { it.trim() }
+        
+        targetsForPlatform.each { target ->
+            
+            // Build configuration by merging: global -> target-specific -> platform-specific
+            def config = [:]
+            
+            // Start with global config
+            globalConfig.each { k, v -> config[k] = v }
+            
+            // Apply target-specific config
+            def targetConfig = targetSpecificConfig[target] ?: [:]
+            targetConfig.each { k, v -> config[k] = v }
+            
+            // Apply platform-specific config for this target
+            def platformConfig = platformSpecificConfig[target]?[platform] ?: [:]
+            platformConfig.each { k, v ->
+                if (k == 'ADDITIONAL_TEST_PARAMS' && config[k]) {
+                    // Merge ADDITIONAL_TEST_PARAMS
+                    config[k] = config[k] + v
+                } else {
+                    config[k] = v
+                }
+            }
+            
+            // Apply platform-specific config for all jck targets
+            def jckPlatformConfig = platformSpecificConfig['jck']?[platform] ?: [:]
+            jckPlatformConfig.each { k, v ->
+                if (k == 'ADDITIONAL_TEST_PARAMS') {
+                    // Merge ADDITIONAL_TEST_PARAMS
+                    if (!config[k]) config[k] = [:]
+                    v.each { k2, v2 -> config[k][k2] = v2 }
+                } else if (!config.containsKey(k)) {
+                    config[k] = v
+                }
+            }
+            
+            // Get platform-specific APPLICATION_OPTIONS (customJtx path)
+            def appOptions = platformApplicationOptions[platform] ?: ""
+            appOptions = appOptions.replace('${JDK_VERSION}', jobJdkVersion)
+            
+            // Add any extra APPLICATION_OPTIONS from config
+            def extraAppOptions = config.ADDITIONAL_TEST_PARAMS?.APPLICATION_OPTIONS ?: ""
+            if (extraAppOptions) {
+                appOptions = appOptions ? "${appOptions} ${extraAppOptions}" : extraAppOptions
+            }
+            
+            // Get EXTRA_OPTIONS
+            def extraOptions = config.ADDITIONAL_TEST_PARAMS?.EXTRA_OPTIONS ?: ""
+            
+            // Get LABEL and LABEL_ADDITION
+            def label = config.LABEL ?: ""
+            def labelAddition = config.LABEL_ADDITION ?: ""
+            
+            // Add platform-specific additional labels
+            def platformLabel = platformAdditionalTestLabels[platform] ?: ""
+            if (platformLabel) {
+                labelAddition = labelAddition ? "${labelAddition}&&${platformLabel}" : platformLabel
+            }
+            
+            // Build JCK_GIT_REPO from template
+            def jckGitRepo = jckGitRepoTemplate.replace('${JDK_VERSION}', jobJdkVersion)
+            
+            // Get parallel and num_machines settings
+            def parallel = config.PARALLEL ?: "None"
+            def numMachines = config.NUM_MACHINES ?: "1"
+            
+            // Get other settings
+            def rerunIterations = config.RERUN_ITERATIONS ?: "1"
+            def rerunFailure = config.RERUN_FAILURE ? "true" : "false"
+            // SETUP_JCK_RUN is true for release builds
+            def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
+            def autoAqaGen = config.AUTO_AQA_GEN ? "true" : "false"
+            
+            // Build display name
+            def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} jdk${jobJdkVersion} : ${platform} : ${target}"
+            
+            echo "Triggering ${target} on ${platform} with JDK ${jobJdkVersion}"
+            echo "  PARALLEL: ${parallel}, NUM_MACHINES: ${numMachines}"
+            echo "  JCK_GIT_REPO: ${jckGitRepo}"
+            echo "  APPLICATION_OPTIONS: ${appOptions}"
+            echo "  EXTRA_OPTIONS: ${extraOptions}"
+            echo "  LABEL: ${label}, LABEL_ADDITION: ${labelAddition}"
+            
+            // Build parameter list
+            def paramList = [
+                MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
+                MapParameter(name: 'TARGETS', value: target),
+                MapParameter(name: 'JCK_GIT_REPO', value: jckGitRepo),
+                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
+                MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion),
+                MapParameter(name: 'PARALLEL', value: parallel),
+                MapParameter(name: 'NUM_MACHINES', value: numMachines),
+                MapParameter(name: 'PLATFORMS', value: platform),
+                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName),
+                MapParameter(name: 'APPLICATION_OPTIONS', value: appOptions),
+                MapParameter(name: 'LABEL_ADDITION', value: labelAddition),
+                MapParameter(name: 'AUTO_AQA_GEN', value: autoAqaGen),
+                MapParameter(name: 'RERUN_ITERATIONS', value: rerunIterations),
+                MapParameter(name: 'RERUN_FAILURE', value: rerunFailure),
+                MapParameter(name: 'EXTRA_OPTIONS', value: extraOptions),
+                MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun)
+            ]
+            
+            // Add LABEL if specified
+            if (label) {
+                paramList.add(MapParameter(name: 'LABEL', value: label))
+            }
+            
+            // Trigger remote job
+            def handle = triggerRemoteJob abortTriggeredJob: true,
+                blockBuildUntilComplete: true,
+                pollInterval: 240,
+                job: 'AQA_Test_Pipeline',
+                parameters: MapParameters(parameters: paramList),
+                remoteJenkinsName: 'temurin-compliance',
+                shouldNotFailBuild: true,
+                token: 'RemoteTrigger',
+                useCrumbCache: true,
+                useJobInfoCache: true
+                
+            echo "Remote job ${displayName} Status: ${handle.getBuildResult().toString()}"
+            
+            // Update build result if any test fails
+            if (handle.getBuildResult().toString() != 'SUCCESS') {
+                currentBuild.result = handle.getBuildResult().toString()
+            }
+        }
+    }
+}
+
+def loadJCKConfig(jdkVersion) {
+    def jckConfig = [:]
+    
+    node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+        checkout scm
+        dir (env.WORKSPACE) {
+            def jckDir = "./aqa-tests/buildenv/jenkins/config/temurin/jck/"
+            
+            // Load default.json (JDK 24+ settings)
+            def defaultFile = "${jckDir}default.json"
+            if (!fileExists(defaultFile)) {
+                error "JCK default configuration not found: ${defaultFile}"
+            }
+            
+            echo "Loading JCK default config from ${defaultFile}..."
+            def defaultArray = readJSON(file: defaultFile)
+            jckConfig = defaultArray[0] // Extract first element from array
+            
+            // Load version-specific override file
+            // Priority: jdk${VERSION}.json > jdk21.json (for 17-21) > jdk11.json (for 8-11)
+            // JDK 25+ uses default.json only (no override needed)
+            def versionFile = null
+            def jdkVersionInt = jdkVersion.toInteger()
+            
+            // Try exact version match first
+            def exactVersionFile = "${jckDir}jdk${jdkVersion}.json"
+            if (fileExists(exactVersionFile)) {
+                versionFile = exactVersionFile
+            } else if (jdkVersionInt >= 17 && jdkVersionInt <= 24) {
+                // JDK 17-24 use jdk21.json
+                versionFile = "${jckDir}jdk21.json"
+            } else if (jdkVersionInt >= 8 && jdkVersionInt <= 11) {
+                // JDK 8-11 use jdk11.json
+                versionFile = "${jckDir}jdk11.json"
+            }
+            // JDK 25+ uses default.json only (no override)
+            
+            if (versionFile && fileExists(versionFile)) {
+                echo "Loading JDK ${jdkVersion} specific config from ${versionFile}..."
+                def versionArray = readJSON(file: versionFile)
+                def versionConfig = versionArray[0]
+                
+                // Merge version-specific config (overrides default)
+                versionConfig.each { key, value ->
+                    if (value instanceof Map && jckConfig[key] instanceof Map) {
+                        // Merge nested maps
+                        value.each { k2, v2 ->
+                            if (v2 instanceof Map && jckConfig[key][k2] instanceof Map) {
+                                // Merge 2 levels deep
+                                v2.each { k3, v3 -> jckConfig[key][k2][k3] = v3 }
+                            } else {
+                                jckConfig[key][k2] = v2
+                            }
+                        }
+                    } else {
+                        jckConfig[key] = value
+                    }
+                }
+            } else {
+                echo "No version-specific config found for JDK ${jdkVersion}, using default only"
+            }
+        }
+    }
+    
+    return jckConfig
 }

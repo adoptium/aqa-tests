@@ -1,0 +1,102 @@
+[
+    {
+        "COMMENT": "Base JCK configuration for JDK 25+ (default for all newer versions). Used by remoteTriggerTemurinJCK() function when MODE == 'RELAY'. For older JDK versions, create version-specific override files if settings differ. See https://bugs.openjdk.org/browse/JDK-8185862 for JDK 25+ headless changes.",
+        "GLOBAL_BUILD_CONFIG": {
+            "PARALLEL": "None",
+            "NUM_MACHINES": "1",
+            "RERUN_ITERATIONS": "1",
+            "RERUN_FAILURE": true,
+            "KEEP_REPORTDIR": true,
+            "AUTO_AQA_GEN": false,
+            "SETUP_JCK_RUN": false
+        },
+        "PLATFORM_TARGETS": [
+            { "aarch64_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "aarch64_mac": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "ppc64_aix": "sanity.jck, extended.jck, special.jck" },
+            { "ppc64le_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "s390x_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "x86-64_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "x86-64_mac": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "x86-64_windows": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "x86-64_alpine-linux": "sanity.jck, extended.jck, special.jck" },
+            { "aarch64_alpine-linux": "sanity.jck, extended.jck, special.jck" },
+            { "aarch64_windows": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "riscv64_linux": "sanity.jck, extended.jck, special.jck" }
+        ],
+        "TARGET_SPECIFIC_CONFIG": {},
+        "PLATFORM_SPECIFIC_CONFIG": {
+            "extended.jck": {
+                "x86-64_linux": {
+                    "PARALLEL": "Dynamic",
+                    "NUM_MACHINES": "2"
+                },
+                "x86-64_windows": {
+                    "PARALLEL": "Dynamic",
+                    "NUM_MACHINES": "2"
+                },
+                "x86-64_mac": {
+                    "PARALLEL": "Dynamic",
+                    "NUM_MACHINES": "2"
+                },
+                "aarch64_mac": {
+                    "LABEL_ADDITION": "!sw.os.osx.12"
+                },
+                "s390x_linux": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "EXTRA_OPTIONS": " -Xss4m"
+                    }
+                }
+            },
+            "special.jck": {
+                "ppc64_aix": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "APPLICATION_OPTIONS": "customJvmOpts=-Djava.net.preferIPv4Stack=true"
+                    }
+                }
+            },
+            "dev.jck": {
+                "x86-64_windows": {
+                    "LABEL": "ci.role.test.interactive"
+                }
+            },
+            "jck": {
+                "aarch64_mac": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "LABEL_ADDITION": "sw.os.osx.12"
+                    }
+                },
+                "x86-64_windows": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "EXTRA_OPTIONS": " -Djava.awt.headless=false -Xmx512m"
+                    }
+                },
+                "aarch64_windows": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "EXTRA_OPTIONS": " -Djava.awt.headless=false -Xmx512m"
+                    }
+                }
+            }
+        },
+        "PLATFORM_ADDITIONAL_TEST_LABELS": {
+            "x86-64_linux": "!sw.tool.glibc.2_12",
+            "ppc64_aix": "sw.os.aix.7_2TL5"
+        },
+        "PLATFORM_APPLICATION_OPTIONS": {
+            "COMMENT": "Platform-specific options for JCK tests",
+            "x86-64_linux": "customJtx=/home/jenkins/jck_run/jdk${JDK_VERSION}/linux/temurin.jtx",
+            "aarch64_linux": "customJtx=/home/jenkins/jck_run/jdk${JDK_VERSION}/linux/temurin.jtx",
+            "ppc64le_linux": "customJtx=/home/jenkins/jck_run/jdk${JDK_VERSION}/linux/temurin.jtx",
+            "s390x_linux": "customJtx=/home/jenkins/jck_run/jdk${JDK_VERSION}/linux/temurin.jtx",
+            "riscv64_linux": "",
+            "x86-64_alpine-linux": "",
+            "aarch64_alpine-linux": "",
+            "ppc64_aix": "concurrency=3 customJtx=/home/jenkins/jck_run/jdk${JDK_VERSION}/aix/temurin.jtx",
+            "x86-64_mac": "customJtx=/Users/jenkins/jck_run/jdk${JDK_VERSION}/mac/temurin.jtx",
+            "aarch64_mac": "customJtx=/Users/jenkins/jck_run/jdk${JDK_VERSION}/mac/temurin.jtx",
+            "x86-64_windows": "customJtx=c:/Users/jenkins/jck_run/jdk${JDK_VERSION}/windows/temurin.jtx",
+            "aarch64_windows": "customJtx=c:/Users/jenkins/jck_run/jdk${JDK_VERSION}/windows/temurin.jtx"
+        },
+        "JCK_GIT_REPO_TEMPLATE": "git@github.com:temurin-compliance/JCK${JDK_VERSION}-unzipped.git"
+    }
+]

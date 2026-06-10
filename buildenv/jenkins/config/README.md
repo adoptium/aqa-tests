@@ -18,6 +18,11 @@ The configuration files allow you to:
 config/
 ├── README.md (this file)
 ├── temurin/
+│   ├── default.json          # Level 1: Base config for regular tests
+│   ├── jck/                  # JCK-specific configurations (separate from regular tests)
+│   │   ├── README.md         # JCK configuration documentation
+│   │   ├── default.json      # Base JCK config for all versions
+│   │   └── jdk<version>.json # Version-specific JCK overrides (e.g., jdk24.json)
 │   ├── nightly/
 │   │   ├── default.json
 │   │   └── jdk<version>.json (optional, version-specific overrides)
@@ -36,6 +41,12 @@ config/
 └── ibm/
     └── (similar structure)
 ```
+
+**Note:** JCK tests have a separate configuration structure under `temurin/jck/` because they:
+- Are triggered differently (via `remoteTriggerTemurinJCK()` when `BUILD_TYPE == 'RELAY'`)
+- Only run for weekly and release builds (no nightly)
+- Have unique platform-specific requirements (customJtx paths, special labels, etc.)
+- See `temurin/jck/README.md` for detailed JCK configuration documentation
 
 ## Configuration File Format
 
