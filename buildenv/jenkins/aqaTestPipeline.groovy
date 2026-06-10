@@ -599,7 +599,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
             targetConfig.each { k, v -> config[k] = v }
             
             // Apply platform-specific config for this target
-            def platformConfig = platformSpecificConfig[target]?[platform] ?: [:]
+            def platformConfig = platformSpecificConfig[target]?.[platform] ?: [:]
             platformConfig.each { k, v ->
                 if (k == 'ADDITIONAL_TEST_PARAMS' && config[k]) {
                     // Merge ADDITIONAL_TEST_PARAMS
@@ -610,7 +610,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
             }
             
             // Apply platform-specific config for all jck targets
-            def jckPlatformConfig = platformSpecificConfig['jck']?[platform] ?: [:]
+            def jckPlatformConfig = platformSpecificConfig['jck']?.[platform] ?: [:]
             jckPlatformConfig.each { k, v ->
                 if (k == 'ADDITIONAL_TEST_PARAMS') {
                     // Merge ADDITIONAL_TEST_PARAMS
