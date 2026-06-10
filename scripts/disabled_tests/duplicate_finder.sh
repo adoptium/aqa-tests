@@ -36,12 +36,12 @@ while IFS= read -r exclude_file_raw; do
     fi
   fi
   echo "Processing: $exclude_file"
-  exclude_file_contents=$(grep -o '^[^#].[^[:space:]]*' "$exclude_file" || true)
+  exclude_file_contents=$(grep -E '^[[:space:]]*[^#[:space:]]' "$exclude_file" | awk '{print $1}' | sort || true)
   if [[ "$exclude_file_contents" == "" ]]; then
     echo "Warning: Skipping exclude file. No tests found. File name: $exclude_file"
     continue
   fi
-  dup_tests_in_problemlist="$(echo "$exclude_file_contents" | uniq -d -c)"
+  dup_tests_in_problemlist="$(printf '%s\n' "$exclude_file_contents" | uniq -d -c)"
   if [[ "${dup_tests_in_problemlist}" != '' ]]; then
     while IFS= read -r single_dup; do
       duplicates+="${exclude_file}: $(echo ${single_dup} | sed 's/^ *//')\n";

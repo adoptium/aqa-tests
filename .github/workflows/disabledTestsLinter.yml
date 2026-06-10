@@ -33,7 +33,7 @@ jobs:
             find openjdk/excludes -name '*ProblemList*.txt' > exclude_files.txt
             # This line ignores exclude files for jdk versions other than LTS and JDK26+
             sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
-            find . -name "playlist.xml" -not -path */scripts/*. > playlist_files.txt
+            find . -name "playlist.xml" -not -path "*/scripts/*" > playlist_files.txt
 
       - name: Run exclude_parser.py on ProblemList files
         run: |

@@ -87,17 +87,24 @@ class BaseHandler(abc.ABC):
         self.token = token
 
     def get_resp_from_url(self, url) -> requests.Response:
-        # Use anonymous auth if user/token not provided
-        if url.startswith("https://github.com/"):
+        timeout_s = 30
+        is_github_api = url.startswith("https://api.github.com/")
+        is_github_web = url.startswith("https://github.com/")
+        if is_github_api or is_github_web:
             auth = None
             if all([self.user, self.token]):
                 auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
+
+            headers = None
+            if is_github_api:
+                headers = self.PARAMS
+
             adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
             session: requests.Session = requests.Session()
             session.mount("https://", adapter)
-            resp = session.get(url, params=self.PARAMS, auth=auth)
+            resp = session.get(url, params=headers, auth=auth, timeout=timeout_s)
         else:
-            resp = requests.get(url)
+            resp = requests.get(url, timeout=timeout_s)
         resp.raise_for_status()
         return resp
 
@@ -166,7 +173,7 @@ class BugsOpenJdkHandler(BaseHandler):
         if status_enum == Status.OPEN:
             return (status_enum, "OPEN",)
         else:
-            resolution = resp_json.get('fields', {}).get('resolution', {}).get('name', '')
+            resolution = ((resp_json.get('fields', {}).get('resolution') or {}).get('name') or '')
             return (status_enum, "CLOSED: " + self.resolution_parser(resolution, resp_json),)
 
     def resolution_parser(self, resolution, resp_json):
@@ -180,7 +187,7 @@ class BugsOpenJdkHandler(BaseHandler):
             comments_dict = resp_json.get('fields', {}).get('comment', {}).get('comments', [])
             fix_commits_list = self.comments_parser(comments_dict, fix_commits_list)
             # For each issue link identified as a backport, do the same.
-            issues_list = resp_json.get('fields', {}).get('issuelinks', {})
+            issues_list = resp_json.get('fields', {}).get('issuelinks') or []
             for issue_dict in issues_list:
                 if issue_dict.get('type', {}).get('name', '') == "Backport":
                     backport_url = issue_dict.get('outwardIssue', {}).get('key', '')
@@ -191,7 +198,7 @@ class BugsOpenJdkHandler(BaseHandler):
                     backport_comments = backport_resp_json.get('fields', {}).get('comment', {}).get('comments', [])
                     if len(backport_comments) == 0:
                         continue
-                    if "Fixed" not in resp_json.get('fields', {}).get('resolution', {}).get('name', ''):
+                    if "Fixed" not in ((resp_json.get('fields', {}).get('resolution') or {}).get('name', '')):
                         continue
                     fix_commits_list = self.comments_parser(backport_comments, fix_commits_list)
             # For every link, reduce it to the jdk version int and append to the list.
