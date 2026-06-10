@@ -129,14 +129,13 @@ class Disable(RawDisable):
         issue_url_nodes = raw_disable.node.findall(f'.//{cls.ISSUE_TAG}')
         if issue_url_nodes is None or not issue_url_nodes:
             raise DisableNodeProcessingException(f'disable node has no {cls.ISSUE_TAG!r} child; skipping node')
-        issue_url = ""
+        issue_urls: List[str] = []
         for url_node in issue_url_nodes:
-            if not url_node.text.startswith("#"):
-                issue_url += url_node.text.strip() + ","
-        if issue_url == '':
-            issue_url = "# No URLs are associated with this disable node."
-        else:
-            issue_url = issue_url[:-1]
+            text = (url_node.text or '').strip()
+            if not text or text.startswith('#'):
+                continue
+            issue_urls.append(text)
+        issue_url = ",".join(issue_urls) if issue_urls else "# No URLs are associated with this disable node."
 
         test_name = raw_disable.parent_test.name
         custom_target = test_name + cls.get_suffix(raw_disable)
