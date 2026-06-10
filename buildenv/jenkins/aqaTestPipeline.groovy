@@ -587,129 +587,134 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
         def targetsForPlatform = platformTargetEntry[platform].split(',').collect { it.trim() }
         
         targetsForPlatform.each { target ->
+            // Create a unique job name for this JDK version+platform+target combination
+            int jobNum = JOBS.size() + 1
+            def jobName = "JCK_jdk${jobJdkVersion}_${platform}_${target}_${jobNum}"
             
-            // Build configuration by merging: global -> target-specific -> platform-specific
-            def config = [:]
-            
-            // Start with global config
-            globalConfig.each { k, v -> config[k] = v }
-            
-            // Apply target-specific config
-            def targetConfig = targetSpecificConfig[target] ?: [:]
-            targetConfig.each { k, v -> config[k] = v }
-            
-            // Apply platform-specific config for this target
-            def platformConfig = platformSpecificConfig[target]?.[platform] ?: [:]
-            platformConfig.each { k, v ->
-                if (k == 'ADDITIONAL_TEST_PARAMS' && config[k]) {
-                    // Merge ADDITIONAL_TEST_PARAMS
-                    config[k] = config[k] + v
-                } else {
-                    config[k] = v
-                }
-            }
-            
-            // Apply platform-specific config for all jck targets
-            def jckPlatformConfig = platformSpecificConfig['jck']?.[platform] ?: [:]
-            jckPlatformConfig.each { k, v ->
-                if (k == 'ADDITIONAL_TEST_PARAMS') {
-                    // Merge ADDITIONAL_TEST_PARAMS
-                    if (!config[k]) config[k] = [:]
-                    v.each { k2, v2 -> config[k][k2] = v2 }
-                } else if (!config.containsKey(k)) {
-                    config[k] = v
-                }
-            }
-            
-            // Get platform-specific APPLICATION_OPTIONS (customJtx path)
-            def appOptions = platformApplicationOptions[platform] ?: ""
-            appOptions = appOptions.replace('${JDK_VERSION}', jobJdkVersion)
-            
-            // Add any extra APPLICATION_OPTIONS from config
-            def extraAppOptions = config.ADDITIONAL_TEST_PARAMS?.APPLICATION_OPTIONS ?: ""
-            if (extraAppOptions) {
-                appOptions = appOptions ? "${appOptions} ${extraAppOptions}" : extraAppOptions
-            }
-            
-            // Get EXTRA_OPTIONS
-            def extraOptions = config.ADDITIONAL_TEST_PARAMS?.EXTRA_OPTIONS ?: ""
-            
-            // Get LABEL and LABEL_ADDITION
-            def label = config.LABEL ?: ""
-            def labelAddition = config.LABEL_ADDITION ?: ""
-            
-            // Add platform-specific additional labels
-            def platformLabel = platformAdditionalTestLabels[platform] ?: ""
-            if (platformLabel) {
-                labelAddition = labelAddition ? "${labelAddition}&&${platformLabel}" : platformLabel
-            }
-            
-            // Build JCK_GIT_REPO from template
-            def jckGitRepo = jckGitRepoTemplate.replace('${JDK_VERSION}', jobJdkVersion)
-            
-            // Get parallel and num_machines settings
-            def parallel = config.PARALLEL ?: "None"
-            def numMachines = config.NUM_MACHINES ?: "1"
-            
-            // Get other settings
-            def rerunIterations = config.RERUN_ITERATIONS ?: "1"
-            def rerunFailure = config.RERUN_FAILURE ? "true" : "false"
-            // SETUP_JCK_RUN is true for release builds
-            def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
-            def autoAqaGen = config.AUTO_AQA_GEN ? "true" : "false"
-            
-            // Build display name
-            def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} jdk${jobJdkVersion} : ${platform} : ${target}"
-            
-            echo "Triggering ${target} on ${platform} with JDK ${jobJdkVersion}"
-            echo "  PARALLEL: ${parallel}, NUM_MACHINES: ${numMachines}"
-            echo "  JCK_GIT_REPO: ${jckGitRepo}"
-            echo "  APPLICATION_OPTIONS: ${appOptions}"
-            echo "  EXTRA_OPTIONS: ${extraOptions}"
-            echo "  LABEL: ${label}, LABEL_ADDITION: ${labelAddition}"
-            
-            // Build parameter list
-            def paramList = [
-                MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
-                MapParameter(name: 'TARGETS', value: target),
-                MapParameter(name: 'JCK_GIT_REPO', value: jckGitRepo),
-                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
-                MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion),
-                MapParameter(name: 'PARALLEL', value: parallel),
-                MapParameter(name: 'NUM_MACHINES', value: numMachines),
-                MapParameter(name: 'PLATFORMS', value: platform),
-                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName),
-                MapParameter(name: 'APPLICATION_OPTIONS', value: appOptions),
-                MapParameter(name: 'LABEL_ADDITION', value: labelAddition),
-                MapParameter(name: 'AUTO_AQA_GEN', value: autoAqaGen),
-                MapParameter(name: 'RERUN_ITERATIONS', value: rerunIterations),
-                MapParameter(name: 'RERUN_FAILURE', value: rerunFailure),
-                MapParameter(name: 'EXTRA_OPTIONS', value: extraOptions),
-                MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun)
-            ]
-            
-            // Add LABEL if specified
-            if (label) {
-                paramList.add(MapParameter(name: 'LABEL', value: label))
-            }
-            
-            // Trigger remote job
-            def handle = triggerRemoteJob abortTriggeredJob: true,
-                blockBuildUntilComplete: true,
-                pollInterval: 240,
-                job: 'AQA_Test_Pipeline',
-                parameters: MapParameters(parameters: paramList),
-                remoteJenkinsName: 'temurin-compliance',
-                shouldNotFailBuild: true,
-                token: 'RemoteTrigger',
-                useCrumbCache: true,
-                useJobInfoCache: true
+            JOBS[jobName] = {
+                // Build configuration by merging: global -> target-specific -> platform-specific
+                def config = [:]
                 
-            echo "Remote job ${displayName} Status: ${handle.getBuildResult().toString()}"
-            
-            // Update build result if any test fails
-            if (handle.getBuildResult().toString() != 'SUCCESS') {
-                currentBuild.result = handle.getBuildResult().toString()
+                // Start with global config
+                globalConfig.each { k, v -> config[k] = v }
+                
+                // Apply target-specific config
+                def targetConfig = targetSpecificConfig[target] ?: [:]
+                targetConfig.each { k, v -> config[k] = v }
+                
+                // Apply platform-specific config for this target
+                def platformConfig = (platformSpecificConfig[target] && platformSpecificConfig[target][platform]) ? platformSpecificConfig[target][platform] : [:]
+                platformConfig.each { k, v ->
+                    if (k == 'ADDITIONAL_TEST_PARAMS' && config[k]) {
+                        // Merge ADDITIONAL_TEST_PARAMS
+                        config[k] = config[k] + v
+                    } else {
+                        config[k] = v
+                    }
+                }
+                
+                // Apply platform-specific config for all jck targets
+                def jckPlatformConfig = (platformSpecificConfig['jck'] && platformSpecificConfig['jck'][platform]) ? platformSpecificConfig['jck'][platform] : [:]
+                jckPlatformConfig.each { k, v ->
+                    if (k == 'ADDITIONAL_TEST_PARAMS') {
+                        // Merge ADDITIONAL_TEST_PARAMS
+                        if (!config[k]) config[k] = [:]
+                        v.each { k2, v2 -> config[k][k2] = v2 }
+                    } else if (!config.containsKey(k)) {
+                        config[k] = v
+                    }
+                }
+                
+                // Get platform-specific APPLICATION_OPTIONS (customJtx path)
+                def appOptions = platformApplicationOptions[platform] ?: ""
+                appOptions = appOptions.replace('${JDK_VERSION}', jobJdkVersion)
+                
+                // Add any extra APPLICATION_OPTIONS from config
+                def extraAppOptions = config.ADDITIONAL_TEST_PARAMS?.APPLICATION_OPTIONS ?: ""
+                if (extraAppOptions) {
+                    appOptions = appOptions ? "${appOptions} ${extraAppOptions}" : extraAppOptions
+                }
+                
+                // Get EXTRA_OPTIONS
+                def extraOptions = config.ADDITIONAL_TEST_PARAMS?.EXTRA_OPTIONS ?: ""
+                
+                // Get LABEL and LABEL_ADDITION
+                def label = config.LABEL ?: ""
+                def labelAddition = config.LABEL_ADDITION ?: ""
+                
+                // Add platform-specific additional labels
+                def platformLabel = platformAdditionalTestLabels[platform] ?: ""
+                if (platformLabel) {
+                    labelAddition = labelAddition ? "${labelAddition}&&${platformLabel}" : platformLabel
+                }
+                
+                // Build JCK_GIT_REPO from template
+                def jckGitRepo = jckGitRepoTemplate.replace('${JDK_VERSION}', jobJdkVersion)
+                
+                // Get parallel and num_machines settings
+                def parallel = config.PARALLEL ?: "None"
+                def numMachines = config.NUM_MACHINES ?: "1"
+                
+                // Get other settings
+                def rerunIterations = config.RERUN_ITERATIONS ?: "1"
+                def rerunFailure = config.RERUN_FAILURE ? "true" : "false"
+                // SETUP_JCK_RUN is true for release builds
+                def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
+                def autoAqaGen = config.AUTO_AQA_GEN ? "true" : "false"
+                
+                // Build display name
+                def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} : jdk${jobJdkVersion} : ${platform} : ${target}"
+                
+                echo "Triggering ${target} on ${platform} with JDK ${jobJdkVersion}"
+                echo "  PARALLEL: ${parallel}, NUM_MACHINES: ${numMachines}"
+                echo "  JCK_GIT_REPO: ${jckGitRepo}"
+                echo "  APPLICATION_OPTIONS: ${appOptions}"
+                echo "  EXTRA_OPTIONS: ${extraOptions}"
+                echo "  LABEL: ${label}, LABEL_ADDITION: ${labelAddition}"
+                
+                // Build parameter list
+                def paramList = [
+                    MapParameter(name: 'SDK_RESOURCE', value: 'customized'),
+                    MapParameter(name: 'TARGETS', value: target),
+                    MapParameter(name: 'JCK_GIT_REPO', value: jckGitRepo),
+                    MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL),
+                    MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion),
+                    MapParameter(name: 'PARALLEL', value: parallel),
+                    MapParameter(name: 'NUM_MACHINES', value: numMachines),
+                    MapParameter(name: 'PLATFORMS', value: platform),
+                    MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName),
+                    MapParameter(name: 'APPLICATION_OPTIONS', value: appOptions),
+                    MapParameter(name: 'LABEL_ADDITION', value: labelAddition),
+                    MapParameter(name: 'AUTO_AQA_GEN', value: autoAqaGen),
+                    MapParameter(name: 'RERUN_ITERATIONS', value: rerunIterations),
+                    MapParameter(name: 'RERUN_FAILURE', value: rerunFailure),
+                    MapParameter(name: 'EXTRA_OPTIONS', value: extraOptions),
+                    MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun)
+                ]
+                
+                // Add LABEL if specified
+                if (label) {
+                    paramList.add(MapParameter(name: 'LABEL', value: label))
+                }
+                
+                // Trigger remote job
+                def handle = triggerRemoteJob abortTriggeredJob: true,
+                    blockBuildUntilComplete: true,
+                    pollInterval: 240,
+                    job: 'AQA_Test_Pipeline',
+                    parameters: MapParameters(parameters: paramList),
+                    remoteJenkinsName: 'temurin-compliance',
+                    shouldNotFailBuild: true,
+                    token: 'RemoteTrigger',
+                    useCrumbCache: true,
+                    useJobInfoCache: true
+                    
+                echo "Remote job ${displayName} Status: ${handle.getBuildResult().toString()}"
+                
+                // Update build result if any test fails
+                if (handle.getBuildResult().toString() != 'SUCCESS') {
+                    currentBuild.result = handle.getBuildResult().toString()
+                }
             }
         }
     }
