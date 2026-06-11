@@ -520,7 +520,7 @@ timestamps{
         echo "Cleaning up @script folder: ${scriptDir}"
         def scriptDirFile = new File(scriptDir)
         if (scriptDirFile.exists()) {
-            scriptDirFile.deleteDir()
+            deleteFileRecursive(scriptDirFile)
         }
     } catch (Exception e) {
         echo "Warning: Failed to clean up @script folder: ${e.toString()}"
@@ -826,4 +826,19 @@ def freeEBCNode() {
                 println("Warning: Exception when triggering EBC_Delete_Node. This does not affect test build result.")
                 println(e.toString())
         }
+}
+
+// Recursively deletes a file or directory using standard Java File methods
+// (whitelisted in Jenkins sandbox, unlike Groovy GDK deleteDir()).
+@NonCPS
+def deleteFileRecursive(File f) {
+    if (f.isDirectory()) {
+        File[] children = f.listFiles()
+        if (children != null) {
+            for (File child : children) {
+                deleteFileRecursive(child)
+            }
+        }
+    }
+    f.delete()
 }
