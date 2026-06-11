@@ -53,6 +53,7 @@ if (!binding.hasVariable('BASE_DOCKER_REGISTRY_CREDENTIAL_ID')) BASE_DOCKER_REGI
 if (!binding.hasVariable('SLACK_CHANNEL')) SLACK_CHANNEL = ""
 if (!binding.hasVariable('TRIGGER_SCHEDULE')) TRIGGER_SCHEDULE = ""
 if (!binding.hasVariable('LIGHT_WEIGHT_CHECKOUT')) LIGHT_WEIGHT_CHECKOUT = true
+if (!binding.hasVariable('USE_SPARSE_CHECKOUT')) USE_SPARSE_CHECKOUT = false
 if (!binding.hasVariable('NUM_MACHINES')) NUM_MACHINES = ""
 if (!binding.hasVariable('JDK_REPO')) JDK_REPO = ""
 if (!binding.hasVariable('JDK_BRANCH')) JDK_BRANCH = ""
@@ -450,6 +451,9 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							If LIGHT_WEIGHT_CHECKOUT sets to true, generated job will check out faster. But the generated child job will NOT take ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH as parameters in job configure. <br>
 							If LIGHT_WEIGHT_CHECKOUT sets to false, the generated child job will take user-provided ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH in job configure. <br>
 							LIGHT_WEIGHT_CHECKOUT is expected to be set to false for Grinder. For regular nightly/weekly runs, the value is expected to be set to true.<br>''')
+							booleanParam('USE_SPARSE_CHECKOUT', USE_SPARSE_CHECKOUT.toBoolean(), '''Optional. Only takes effect when LIGHT_WEIGHT_CHECKOUT is false and GENERATE_JOBS is true. <br>
+							If set to true, the generated job will use sparse checkout, checking out only the pipeline script file (SCRIPT_PATH) rather than the full repository. <br>
+							This significantly reduces the size of the @script folder on the Jenkins controller.<br>''')
 
 							parameterSeparatorDefinition {
 							    name('POST_RUN_PARAMS')
@@ -494,6 +498,13 @@ ARCH_OS_LIST.each { ARCH_OS ->
 											depth(1)
 											shallow(true)
 											timeout(60)
+										}
+										if (!LIGHT_WEIGHT_CHECKOUT && USE_SPARSE_CHECKOUT.toBoolean()) {
+											sparseCheckoutPaths {
+												sparseCheckoutPath {
+													path(SCRIPT_PATH)
+												}
+											}
 										}
 									}
 								}

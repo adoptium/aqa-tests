@@ -766,6 +766,7 @@ def generateJobViaAutoGen(testJobName) {
         jobParams << string(name: 'TEST_JOB_NAME', value: testJobName)
         jobParams << string(name: 'ARCH_OS_LIST', value: params.PLATFORM)
         jobParams << booleanParam(name: 'LIGHT_WEIGHT_CHECKOUT', value: false)
+        jobParams << booleanParam(name: 'USE_SPARSE_CHECKOUT', value: params.USE_SPARSE_CHECKOUT ?: false)
 
         def jdk_impl = params.JDK_IMPL ?: ""
         def jdk_version = params.JDK_VERSION ?: ""
