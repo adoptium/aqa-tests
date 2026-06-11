@@ -521,6 +521,7 @@ timestamps{
             def scriptDir = pwd().replaceAll(/@\d+$/, '') + '@script'
             try {
                 if (fileExists(scriptDir)) {
+                    echo "Cleaning up @script folder: ${scriptDir}"
                     dir(scriptDir) {
                         deleteDir()
                     }
