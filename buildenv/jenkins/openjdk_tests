@@ -514,21 +514,13 @@ timestamps{
     // Delete the @script folder on Jenkins master to free up disk space.
     // This folder is created by the heavyweight SCM checkout for the pipeline script
     // and is not automatically cleaned up by Jenkins.
+    // This runs in the flyweight executor context on the controller (no node executor needed).
     try {
-        node('built-in') {
-            // Use pwd() to get the current workspace and derive the @script folder path.
-            // Strip any @N suffix Jenkins may append for concurrent workspace allocation.
-            def scriptDir = pwd().replaceAll(/@\d+$/, '') + '@script'
-            try {
-                if (fileExists(scriptDir)) {
-                    echo "Cleaning up @script folder: ${scriptDir}"
-                    dir(scriptDir) {
-                        deleteDir()
-                    }
-                }
-            } catch (Exception e) {
-                echo "Warning: Failed to delete @script folder at ${scriptDir}: ${e.toString()}"
-            }
+        def scriptDir = "${env.JENKINS_HOME}/workspace/${env.JOB_NAME}@script"
+        echo "Cleaning up @script folder: ${scriptDir}"
+        def scriptDirFile = new File(scriptDir)
+        if (scriptDirFile.exists()) {
+            scriptDirFile.deleteDir()
         }
     } catch (Exception e) {
         echo "Warning: Failed to clean up @script folder: ${e.toString()}"
