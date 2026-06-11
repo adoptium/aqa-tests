@@ -130,6 +130,7 @@ def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 def CLOUD_PROVIDER = params.CLOUD_PROVIDER ?: ""
 
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
+try {
 timestamps{
     if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PLATFORMS.any { it.contains("all") }) {
         if (SDK_RESOURCE != 'nightly' && SDK_RESOURCE != 'releases') {
@@ -507,6 +508,29 @@ timestamps{
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
         }
+    }
+}
+} finally {
+    // Delete the @script folder on Jenkins master to free up disk space.
+    // This folder is created by the heavyweight SCM checkout for the pipeline script
+    // and is not automatically cleaned up by Jenkins.
+    try {
+        node('built-in') {
+            // Use pwd() to get the current workspace and derive the @script folder path.
+            // Strip any @N suffix Jenkins may append for concurrent workspace allocation.
+            def scriptDir = pwd().replaceAll(/@\d+$/, '') + '@script'
+            try {
+                if (fileExists(scriptDir)) {
+                    dir(scriptDir) {
+                        deleteDir()
+                    }
+                }
+            } catch (Exception e) {
+                echo "Warning: Failed to delete @script folder at ${scriptDir}: ${e.toString()}"
+            }
+        }
+    } catch (Exception e) {
+        echo "Warning: Failed to clean up @script folder: ${e.toString()}"
     }
 }
 
