@@ -829,13 +829,14 @@ def freeEBCNode() {
 }
 
 // Recursively deletes a file or directory using standard Java File methods
-// (whitelisted in Jenkins sandbox, unlike Groovy GDK deleteDir()).
-@NonCPS
+// (isDirectory, listFiles, delete) that are whitelisted in the Jenkins sandbox.
+// Not annotated @NonCPS because that can cause sandbox interceptors to reject
+// whitelisted methods in some Jenkins versions.
 def deleteFileRecursive(File f) {
     if (f.isDirectory()) {
-        File[] children = f.listFiles()
+        def children = f.listFiles()
         if (children != null) {
-            for (File child : children) {
+            for (def child : children) {
                 deleteFileRecursive(child)
             }
         }
