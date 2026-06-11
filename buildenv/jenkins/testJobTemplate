@@ -499,7 +499,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 											shallow(true)
 											timeout(60)
 										}
-										if (!LIGHT_WEIGHT_CHECKOUT && USE_SPARSE_CHECKOUT.toBoolean()) {
+										if (!LIGHT_WEIGHT_CHECKOUT.toBoolean() && USE_SPARSE_CHECKOUT.toBoolean()) {
 											sparseCheckoutPaths {
 												sparseCheckoutPath {
 													path(SCRIPT_PATH)
