@@ -383,9 +383,10 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
             // Extract values from buildConfig with fallbacks
             def keep_reportdir = buildConfig.KEEP_REPORTDIR ? buildConfig.KEEP_REPORTDIR.toBoolean() : false
             def DYNAMIC_COMPILE = buildConfig.DYNAMIC_COMPILE ? buildConfig.DYNAMIC_COMPILE.toBoolean() : false
-            def VENDOR_TEST_REPOS = buildConfig.VENDOR_TEST_REPOS ?: ''
-            def VENDOR_TEST_BRANCHES = buildConfig.VENDOR_TEST_BRANCHES ?: ''
-            def VENDOR_TEST_DIRS = buildConfig.VENDOR_TEST_DIRS ?: ''
+            // Override config values with params if provided
+            def VENDOR_TEST_REPOS = params.VENDOR_TEST_REPOS ?: (buildConfig.VENDOR_TEST_REPOS ?: '')
+            def VENDOR_TEST_BRANCHES = params.VENDOR_TEST_BRANCHES ?: (buildConfig.VENDOR_TEST_BRANCHES ?: '')
+            def VENDOR_TEST_DIRS = params.VENDOR_TEST_DIRS ?: (buildConfig.VENDOR_TEST_DIRS ?: '')
             int rerunIterations = buildConfig.RERUN_ITERATIONS ? buildConfig.RERUN_ITERATIONS.toString().toInteger() : 0
             def buildList = buildConfig.BUILD_LIST ?: ""
             def testLabel = buildConfig.LABEL ?: ""
@@ -701,6 +702,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def handle = triggerRemoteJob abortTriggeredJob: true,
                     blockBuildUntilComplete: true,
                     pollInterval: 240,
+                    connectionRetryLimit: 5,
                     job: 'AQA_Test_Pipeline',
                     parameters: MapParameters(parameters: paramList),
                     remoteJenkinsName: 'temurin-compliance',

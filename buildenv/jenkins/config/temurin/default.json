@@ -51,6 +51,15 @@
                 "LABEL_ADDITION": "ci.role.test.repro",
                 "VENDOR_TEST_REPOS": "https://github.com/adoptium/temurin-build",
                 "VENDOR_TEST_BRANCHES": "master",
+                "VENDOR_TEST_DIRS": "/test/system",
+                "ADDITIONAL_TEST_PARAMS": {
+                    "CLOUD_PROVIDER": ""
+                }
+            },
+            "dev.system": {
+                "LABEL_ADDITION": "ci.role.test.repro",
+                "VENDOR_TEST_REPOS": "https://github.com/adoptium/temurin-build",
+                "VENDOR_TEST_BRANCHES": "master",
                 "VENDOR_TEST_DIRS": "/test/system"
             }
         },
@@ -62,7 +71,7 @@
                 "CLOUD_PROVIDER": "azure"
             },
             "x86-64_mac": {
-                "CLOUD_PROVIDER": "azure"
+                "CLOUD_PROVIDER": "gha"
             }
         }
     }
