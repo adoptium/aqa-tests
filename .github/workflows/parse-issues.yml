@@ -26,7 +26,10 @@ jobs:
       - name: discover disabled tests
         run : |
           echo "::group::openjdk exclude files"
-          find openjdk/excludes -name '*ProblemList*.txt' | tee exclude_files.txt
+          find openjdk/excludes -name '*ProblemList*.txt' > exclude_files.txt
+          # This line ignores exclude files for jdk versions other than LTS and JDK26+
+          sed -i '/openjdk\(8\|11\|17\|21\|25\|\(2[6-9]\|[3-9][0-9]\|[1-9][0-9][0-9]\)\|valhalla\)\(\-\|\.\)/!d' exclude_files.txt
+          cat exclude_files.txt
           echo "::endgroup::"
           echo "::group::playlist files"
           find . -name "playlist.xml" -not -path "scripts" | tee playlist_files.txt
@@ -41,7 +44,8 @@ jobs:
           jq -s 'flatten(1)' exclude.json playlist.json > all.json
           echo "::endgroup::"
           echo "::group::status"
-          cat all.json | python scripts/disabled_tests/issue_status.py -v > output.json
+          cat all.json | python scripts/disabled_tests/issue_status.py --verbose > output.json
+          cat output.json
           echo "::endgroup::"
       - name: store artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
