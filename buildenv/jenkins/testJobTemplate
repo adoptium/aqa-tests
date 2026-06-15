@@ -448,7 +448,7 @@ ARCH_OS_LIST.each { ARCH_OS ->
 							booleanParam('GENERATE_JOBS', GENERATE_JOBS.toBoolean(), "Force generate child jobs?")
 							booleanParam('LIGHT_WEIGHT_CHECKOUT', LIGHT_WEIGHT_CHECKOUT.toBoolean(), '''Optional. It takes effects if GENERATE_JOBS sets to true. <br>
 							If LIGHT_WEIGHT_CHECKOUT sets to true, generated job will check out faster. But the generated child job will NOT take ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH as parameters in job configure. <br>
-							If LIGHT_WEIGHT_CHECKOUT sets to false, the generated child job will take user-provided ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH in job configure. <br>
+							If LIGHT_WEIGHT_CHECKOUT sets to false, the generated child job will take user-provided ADOPTOPENJDK_REPO and ADOPTOPENJDK_BRANCH in job configure. The SCM checkout will be done via a sparse checkout of SCRIPT_PATH.<br>
 							LIGHT_WEIGHT_CHECKOUT is expected to be set to false for Grinder. For regular nightly/weekly runs, the value is expected to be set to true.<br>''')
 
 							parameterSeparatorDefinition {
@@ -494,6 +494,14 @@ ARCH_OS_LIST.each { ARCH_OS ->
 											depth(1)
 											shallow(true)
 											timeout(60)
+										}
+										// If not LIGHT_WEIGHT_CHECKOUT, then use SCM git plugin sparse checkout to keep Jenkins controller workspace @script folder usage to a minimum.
+										if (!LIGHT_WEIGHT_CHECKOUT.toBoolean()) {
+											sparseCheckoutPaths {
+												sparseCheckoutPath {
+													path(SCRIPT_PATH)
+												}
+											}
 										}
 									}
 								}
