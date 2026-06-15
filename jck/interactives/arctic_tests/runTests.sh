@@ -315,8 +315,10 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
             fi
 
             # Certain tests require extra options
-            if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
-              TEST_CMDLINE="${TEST_CMDLINE} -platform.hasPrinter true"
+            if ! [[ "${ARCTIC_TESTCASE}" =~ .*PrintFileHandler.* ]]; then
+              if [[ "${ARCTIC_TESTCASE}" =~ .*PageDialog.* ]] || [[ "${ARCTIC_TESTCASE}" =~ .*Print.* ]]; then
+                TEST_CMDLINE="${TEST_CMDLINE} -platform.hasPrinter true"
+              fi
             fi
             if [[ "${ARCTIC_TESTCASE}" =~ .*Robot.* ]]; then
               TEST_CMDLINE="${TEST_CMDLINE} -platform.robotAvailable true"
