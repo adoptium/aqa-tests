@@ -153,12 +153,11 @@ def SETUP_JCK_RUN = false
 // If LIGHT_WEIGHT_CHECKOUT is set to true, set Repository URL to its explicit value and keep Branch Specifier as parameter
 def ADOPTOPENJDK_REPO_BUILD_PARAM = '${ADOPTOPENJDK_REPO}'
 def ADOPTOPENJDK_BRANCH_BUILD_PARAM = '${ADOPTOPENJDK_BRANCH}'
-def SCRIPT_PATH = "aqa-tests/buildenv/jenkins/openjdk_tests"
+def SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 
 LIGHT_WEIGHT_CHECKOUT = LIGHT_WEIGHT_CHECKOUT.toBoolean()
 if (LIGHT_WEIGHT_CHECKOUT) {
 	ADOPTOPENJDK_REPO_BUILD_PARAM = ADOPTOPENJDK_REPO
-	SCRIPT_PATH = "buildenv/jenkins/openjdk_tests"
 }
 
 String sectionHeaderStyleCss = ' color: blue; font-family: Roboto, sans-serif !important; padding: 5px; font-weight: bold; margin-top: 0.5rem; font-size: 1rem; outline: 0; '
