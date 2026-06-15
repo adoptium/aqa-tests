@@ -44,14 +44,8 @@ def updateBuildResult(newResult) {
     def newPriority = resultPriority[newResult] ?: 0
     
     if (newPriority > currentPriority) {
-        synchronized(this) {
-            // Double-check after acquiring lock
-            currentPriority = resultPriority[currentBuild.result] ?: 0
-            if (newPriority > currentPriority) {
-                echo "Updating build result from ${currentBuild.result} to ${newResult}"
-                currentBuild.result = newResult
-            }
-        }
+        echo "Updating build result from ${currentBuild.result} to ${newResult}"
+        currentBuild.result = newResult
     }
 }
 
