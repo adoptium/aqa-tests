@@ -497,9 +497,11 @@ ARCH_OS_LIST.each { ARCH_OS ->
 										}
 										// If not LIGHT_WEIGHT_CHECKOUT, then use SCM git plugin sparse checkout to keep Jenkins controller workspace @script folder usage to a minimum.
 										if (!LIGHT_WEIGHT_CHECKOUT.toBoolean()) {
-											sparseCheckoutPaths {
-												sparseCheckoutPath {
-													path(SCRIPT_PATH)
+											sparseCheckoutPaths { 
+												sparseCheckoutPaths {
+													sparseCheckoutPath {
+														path(SCRIPT_PATH)
+													}
 												}
 											}
 										}
