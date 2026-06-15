@@ -451,6 +451,10 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                         childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                     } else if (param.key == "TIME_LIMIT") {
                         childParams << string(name: param.key, value: TIME_LIMIT.toString())
+                    } else if (params.VARIANT == "openj9" && param.key == "ADOPTOPENJDK_REPO") {
+                        childParams << string(name: param.key, value: "https://github.com/adoptium/aqa-tests.git") 
+                    } else if (params.VARIANT == "openj9" && param.key == "ADOPTOPENJDK_BRANCH") {
+                        childParams << string(name: param.key, value: "master") 
                     } else {
                         def value = param.value.toString()
                         if (value == "true" || value == "false") {
