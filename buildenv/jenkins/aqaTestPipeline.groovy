@@ -36,6 +36,25 @@ currentBuild.setDisplayName(PIPELINE_DISPLAY_NAME)
 
 @Field Map JOBS = [:]
 
+// Helper function to update build result to worst status
+// Priority: ABORTED > FAILURE > UNSTABLE > SUCCESS
+def updateBuildResult(newResult) {
+    def resultPriority = ['ABORTED': 4, 'FAILURE': 3, 'UNSTABLE': 2, 'SUCCESS': 1, 'NOT_BUILT': 0]
+    def currentPriority = resultPriority[currentBuild.result] ?: 0
+    def newPriority = resultPriority[newResult] ?: 0
+    
+    if (newPriority > currentPriority) {
+        synchronized(this) {
+            // Double-check after acquiring lock
+            currentPriority = resultPriority[currentBuild.result] ?: 0
+            if (newPriority > currentPriority) {
+                echo "Updating build result from ${currentBuild.result} to ${newResult}"
+                currentBuild.result = newResult
+            }
+        }
+    }
+}
+
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -546,11 +565,12 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                             }
                         }
                     }
-                    currentBuild.result = downstreamJobResult
+                    // Update build result to worst status
+                    updateBuildResult(downstreamJobResult)
                 }
             } else {
                 println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
-                currentBuild.result = "FAILURE"
+                updateBuildResult("FAILURE")
             }
         }
     }
@@ -713,10 +733,8 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     
                 echo "Remote job ${displayName} Status: ${handle.getBuildResult().toString()}"
                 
-                // Update build result if any test fails
-                if (handle.getBuildResult().toString() != 'SUCCESS') {
-                    currentBuild.result = handle.getBuildResult().toString()
-                }
+                // Update build result to worst status
+                updateBuildResult(handle.getBuildResult().toString())
             }
         }
     }
