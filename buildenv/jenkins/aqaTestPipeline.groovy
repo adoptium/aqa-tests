@@ -20,7 +20,7 @@ def MODE = params.MODE ? params.MODE : "ENTRYPOINT"
 SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
-LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: false
+LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: true
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
