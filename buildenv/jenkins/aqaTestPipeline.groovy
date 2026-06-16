@@ -436,10 +436,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                         childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                     } else if (param.key == "TIME_LIMIT") {
                         childParams << string(name: param.key, value: TIME_LIMIT.toString())
-                    } else if (params.VARIANT == "openj9" && param.key == "ADOPTOPENJDK_REPO") {
-                        childParams << string(name: param.key, value: "https://github.com/adoptium/aqa-tests.git") 
-                    } else if (params.VARIANT == "openj9" && param.key == "ADOPTOPENJDK_BRANCH") {
-                        childParams << string(name: param.key, value: "master") 
                     } else {
                         def value = param.value.toString()
                         if (value == "true" || value == "false") {
@@ -462,11 +458,14 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 childParams << string(name: "VENDOR_TEST_REPOS", value: VENDOR_TEST_REPOS)
                 
                 // Add build-specific parameters from config
+                // Support variable substitution for ${JDK_VERSION} in config values
                 if (buildConfig.JDK_REPO) {
-                    childParams << string(name: "JDK_REPO", value: buildConfig.JDK_REPO)
+                    def jdkRepo = buildConfig.JDK_REPO.toString().replace('${JDK_VERSION}', jobJdkVersion)
+                    childParams << string(name: "JDK_REPO", value: jdkRepo)
                 }
                 if (buildConfig.JDK_BRANCH) {
-                    childParams << string(name: "JDK_BRANCH", value: buildConfig.JDK_BRANCH)
+                    def jdkBranch = buildConfig.JDK_BRANCH.toString().replace('${JDK_VERSION}', jobJdkVersion)
+                    childParams << string(name: "JDK_BRANCH", value: jdkBranch)
                 }
                 if (buildConfig.OPENJ9_BRANCH) {
                     childParams << string(name: "OPENJ9_BRANCH", value: buildConfig.OPENJ9_BRANCH)
