@@ -570,7 +570,14 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
 }
 
 def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
-    // Load JCK configuration from JSON files
+    // Check if this is a rerun with predefined parameters (TARGETS is set)
+    if (params.TARGETS && params.TARGETS.trim() != "") {
+        echo "Rerun mode detected - using predefined parameters, skipping configuration file loading"
+        remoteTriggerTemurinJCKDirect()
+        return
+    }
+    
+    // Load JCK configuration from JSON files for normal run
     def jckConfig = loadJCKConfig(jobJdkVersion)
     
     if (!jckConfig) {
@@ -715,7 +722,6 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def handle = triggerRemoteJob abortTriggeredJob: true,
                     blockBuildUntilComplete: true,
                     pollInterval: 240,
-                    connectionRetryLimit: 5,
                     job: 'AQA_Test_Pipeline',
                     parameters: MapParameters(parameters: paramList),
                     remoteJenkinsName: 'temurin-compliance',
@@ -724,10 +730,54 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     useCrumbCache: true,
                     useJobInfoCache: true
                     
-                echo "Remote job ${displayName} Status: ${handle.getBuildResult().toString()}"
+                def remoteJobResult = handle.getBuildResult().toString()
+                echo "Remote job ${displayName} Status: ${remoteJobResult}"
+                
+                // Get remote job details and add to build description
+                def remoteBuildNumber = handle.getBuildNumber()
+                def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
+                def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+                
+                // Build rerun URL
+                def rerunParams = [
+                    SDK_RESOURCE: 'customized',
+                    TARGETS: target,
+                    JCK_GIT_REPO: jckGitRepo,
+                    CUSTOMIZED_SDK_URL: params.CUSTOMIZED_SDK_URL ?: '',
+                    JDK_VERSIONS: jobJdkVersion,
+                    PARALLEL: parallel,
+                    NUM_MACHINES: numMachines,
+                    PLATFORMS: platform,
+                    PIPELINE_DISPLAY_NAME: displayName,
+                    APPLICATION_OPTIONS: appOptions,
+                    LABEL_ADDITION: labelAddition,
+                    AUTO_AQA_GEN: autoAqaGen,
+                    RERUN_ITERATIONS: rerunIterations,
+                    RERUN_FAILURE: rerunFailure,
+                    EXTRA_OPTIONS: extraOptions,
+                    SETUP_JCK_RUN: setupJckRun,
+                    VARIANT: 'temurin'
+                ]
+                if (label) {
+                    rerunParams.LABEL = label
+                }
+                
+                def queryString = rerunParams.collect { k, v ->
+                    "${URLEncoder.encode(k, 'UTF-8')}=${URLEncoder.encode(v.toString(), 'UTF-8')}"
+                }.join('&')
+                def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
+                
+                currentBuild.description += """
+                    <p>${displayName} : ${target} - ${remoteJobResult}:
+                    <a href="${remoteJobUrl}" target="_blank">
+                        <img src="${remoteBadgeUrl}" />
+                    </a>
+                    <a href="${rerunUrl}" target="_blank" style="margin-left: 10px; font-size: 11px;">[rerun]</a>
+                    </p>
+                """
                 
                 // Update build result to worst status
-                updateBuildResult(handle.getBuildResult().toString())
+                updateBuildResult(remoteJobResult)
             }
         }
     }
@@ -798,4 +848,110 @@ def loadJCKConfig(jdkVersion) {
     }
     
     return jckConfig
+}
+
+def remoteTriggerTemurinJCKDirect() {
+    // Direct trigger using predefined parameters (rerun scenario)
+    // All parameters come from job invocation
+    echo "Direct trigger mode - using parameters from job invocation"
+    
+    def jobJdkVersion = params.JDK_VERSIONS
+    def platform = params.PLATFORMS
+    
+    TARGETS.each { target ->
+        int jobNum = JOBS.size() + 1
+        def jobName = "JCK_jdk${jobJdkVersion}_${platform}_${target}_${jobNum}"
+        
+        JOBS[jobName] = {
+            def displayName = params.PIPELINE_DISPLAY_NAME ?: "Rerun: jdk${jobJdkVersion} : ${platform} : ${target}"
+            
+            echo "Triggering ${target} on ${platform} with JDK ${jobJdkVersion} (Direct mode)"
+            
+            // Build parameter list from job parameters
+            def paramList = [
+                MapParameter(name: 'SDK_RESOURCE', value: params.SDK_RESOURCE ?: 'customized'),
+                MapParameter(name: 'TARGETS', value: target),
+                MapParameter(name: 'JCK_GIT_REPO', value: params.JCK_GIT_REPO ?: ''),
+                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL ?: ''),
+                MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion),
+                MapParameter(name: 'PARALLEL', value: params.PARALLEL ?: 'None'),
+                MapParameter(name: 'NUM_MACHINES', value: params.NUM_MACHINES ?: '1'),
+                MapParameter(name: 'PLATFORMS', value: platform),
+                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName),
+                MapParameter(name: 'APPLICATION_OPTIONS', value: params.APPLICATION_OPTIONS ?: ''),
+                MapParameter(name: 'LABEL_ADDITION', value: params.LABEL_ADDITION ?: ''),
+                MapParameter(name: 'AUTO_AQA_GEN', value: params.AUTO_AQA_GEN ?: 'false'),
+                MapParameter(name: 'RERUN_ITERATIONS', value: params.RERUN_ITERATIONS ?: '1'),
+                MapParameter(name: 'RERUN_FAILURE', value: params.RERUN_FAILURE ?: 'true'),
+                MapParameter(name: 'EXTRA_OPTIONS', value: params.EXTRA_OPTIONS ?: ''),
+                MapParameter(name: 'SETUP_JCK_RUN', value: params.SETUP_JCK_RUN ?: 'false')
+            ]
+            
+            // Add LABEL if specified
+            if (params.LABEL) {
+                paramList.add(MapParameter(name: 'LABEL', value: params.LABEL))
+            }
+            
+            // Trigger remote job
+            def handle = triggerRemoteJob abortTriggeredJob: true,
+                blockBuildUntilComplete: true,
+                pollInterval: 240,
+                job: 'AQA_Test_Pipeline',
+                parameters: MapParameters(parameters: paramList),
+                remoteJenkinsName: 'temurin-compliance',
+                shouldNotFailBuild: true,
+                token: 'RemoteTrigger',
+                useCrumbCache: true,
+                useJobInfoCache: true
+                
+            def remoteJobResult = handle.getBuildResult().toString()
+            echo "Remote job ${displayName} Status: ${remoteJobResult}"
+            
+            // Get remote job details and add to build description
+            def remoteBuildNumber = handle.getBuildNumber()
+            def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
+            def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+            
+            // Build rerun URL
+            def rerunParams = [
+                SDK_RESOURCE: params.SDK_RESOURCE ?: 'customized',
+                TARGETS: target,
+                JCK_GIT_REPO: params.JCK_GIT_REPO ?: '',
+                CUSTOMIZED_SDK_URL: params.CUSTOMIZED_SDK_URL ?: '',
+                JDK_VERSIONS: jobJdkVersion,
+                PARALLEL: params.PARALLEL ?: 'None',
+                NUM_MACHINES: params.NUM_MACHINES ?: '1',
+                PLATFORMS: platform,
+                PIPELINE_DISPLAY_NAME: displayName,
+                APPLICATION_OPTIONS: params.APPLICATION_OPTIONS ?: '',
+                LABEL_ADDITION: params.LABEL_ADDITION ?: '',
+                AUTO_AQA_GEN: params.AUTO_AQA_GEN ?: 'false',
+                RERUN_ITERATIONS: params.RERUN_ITERATIONS ?: '1',
+                RERUN_FAILURE: params.RERUN_FAILURE ?: 'true',
+                EXTRA_OPTIONS: params.EXTRA_OPTIONS ?: '',
+                SETUP_JCK_RUN: params.SETUP_JCK_RUN ?: 'false',
+                VARIANT: 'temurin'
+            ]
+            if (params.LABEL) {
+                rerunParams.LABEL = params.LABEL
+            }
+            
+            def queryString = rerunParams.collect { k, v ->
+                "${URLEncoder.encode(k, 'UTF-8')}=${URLEncoder.encode(v.toString(), 'UTF-8')}"
+            }.join('&')
+            def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
+            
+            currentBuild.description += """
+                <p>${target} on ${platform} (JDK${jobJdkVersion}) - ${remoteJobResult}:
+                <a href="${remoteJobUrl}" target="_blank">
+                    <img src="${remoteBadgeUrl}" />
+                </a>
+                <a href="${rerunUrl}" target="_blank" style="margin-left: 10px; font-size: 11px;">[rerun]</a>
+                </p>
+            """
+            
+            // Update build result to worst status
+            updateBuildResult(remoteJobResult)
+        }
+    }
 }
