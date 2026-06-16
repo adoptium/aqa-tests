@@ -149,6 +149,10 @@
 				<version>19+</version>
 				<impl>openj9</impl>
 			</disable>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/pull/7193#issuecomment-4720263829</comment>
+				<version>8</version>
+			</disable>
 		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
@@ -2797,7 +2801,6 @@
 			<feature>OpenJCEPlus:nonapplicable</feature>
 		</features>
 	</test>
-
 	<test>
 		<testCaseName>jdk_native_sanity</testCaseName>
 		<variations>
