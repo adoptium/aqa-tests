@@ -364,6 +364,24 @@ The output of the code above is :
 
 ## Exclude a test target
 
+#### Automatically exclude OpenJDK test cases from ProblemList files
+You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
+
+```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
+
+`<...>` indicates required parameters, while `[...]` indicates optional parameters.
+Use test paths (or comma-separated test paths) for `<testcases>`. For valid `<platform>` values, refer to: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
+
+Examples:
+
+```/exclude java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.org/browse/JDK-8173082 macosx-all```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11,17,21```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11 impl=openj9```
+
+Only the issue author or project committers can trigger `/exclude`.
+
 #### Automatically exclude a test target
 Instead of having to manually create a PR to disable test targets, they can now be automatically disabled via Github workflow (see autoTestPR.yml). In the issue that describes the test failure, add a comment with the following format:
 
@@ -417,24 +435,6 @@ To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` a
 ```auto exclude test jdk_test_1 impl=openj9 vendor=eclipse ver=8 plat=.*windows.* testflag=AOT```
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
-
-#### Automatically exclude OpenJDK test cases from ProblemList files
-You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
-
-```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
-
-`<...>` indicates required parameters, while `[...]` indicates optional parameters.
-Use test paths (or comma-separated test paths) for `<testcases>`. For valid `<platform>` values, refer to: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
-
-Examples:
-
-```/exclude java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.org/browse/JDK-8173082 macosx-all```
-
-```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11,17,21```
-
-```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11 impl=openj9```
-
-Only the issue author or project committers can trigger `/exclude`.
 
 #### Manually exclude a test target
 Search the test name to find its playlist.xml file. Add a ```<disables>``` element after ```<testCaseName>``` element. The ```<disables>``` element is used to capsulate all ```<disable>``` elements. The ```<disable>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url). Comments that are not URLs must begin with a hash.
