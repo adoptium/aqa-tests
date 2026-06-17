@@ -133,7 +133,8 @@ class Disable(RawDisable):
         for url_node in issue_url_nodes:
             text = (url_node.text or '').strip()
             if "\n" in text or "\r" in text:
-                raise DisableNodeProcessingException(f'disable node has a forbidden new line character inside the comment tag.')
+                LOG.error('disable node has a forbidden new line character inside the comment tag.')
+                sys.exit(1)
             if not text:
                 continue
             issue_urls.append(text)
@@ -205,6 +206,7 @@ def parse_test(raw_test: RawTest) -> List[Disable]:
             disables.append(disable)
         except DisableNodeProcessingException as e:
             LOG.error(f'{raw_test.playlist_file.path}:{raw_disable.node.sourceline} : {e}')
+            sys.exit(1)
     return disables
 
 
@@ -218,6 +220,7 @@ def parse_file(playlist_path: str) -> List[Disable]:
             disables_from_file.extend(disables)
         except TestNodeProcessingException as e:
             LOG.error(f'{playlist_path}:{test.node.sourceline} : {e}')
+            sys.exit(1)
     return disables_from_file
 
 
@@ -229,9 +232,11 @@ def parse_all_files(playlist_files: Iterable[str]) -> List[Disable]:
             disables = parse_file(playlist_path)
         except Exception as e:
             LOG.error(f'Uncaught exception while processing {playlist_path!r} : {e}')
+            sys.exit(1)
         else:
             all_disables.extend(disables)
             LOG.info(f"Processed {playlist_path!r} : n_disables={len(disables)}")
+            sys.exit(1)
     return all_disables
 
 
