@@ -4,8 +4,10 @@ import groovy.transform.Field
 
 def JDK_VERSIONS = params.JDK_VERSIONS.trim().split("\\s*,\\s*")
 def PLATFORMS = params.PLATFORMS ? params.PLATFORMS.trim().split("\\s*,\\s*") : ""
-def TARGETS = params.TARGETS ?: "Grinder"
-TARGETS = TARGETS.trim().split("\\s*,\\s*")
+
+@Field String[] TARGETS
+TARGETS = (params.TARGETS ?: "Grinder").trim().split("\\s*,\\s*")
+
 def TEST_FLAG = (params.TEST_FLAG) ?: ""
 
 def PARALLEL = params.PARALLEL ? params.PARALLEL : "Dynamic"
@@ -756,7 +758,8 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     RERUN_FAILURE: rerunFailure,
                     EXTRA_OPTIONS: extraOptions,
                     SETUP_JCK_RUN: setupJckRun,
-                    VARIANT: 'temurin'
+                    VARIANT: 'temurin',
+                    BUILD_TYPE: params.BUILD_TYPE
                 ]
                 if (label) {
                     rerunParams.LABEL = label
@@ -868,28 +871,29 @@ def remoteTriggerTemurinJCKDirect() {
             echo "Triggering ${target} on ${platform} with JDK ${jobJdkVersion} (Direct mode)"
             
             // Build parameter list from job parameters
+            // Convert all values to String to avoid Boolean cast errors
             def paramList = [
-                MapParameter(name: 'SDK_RESOURCE', value: params.SDK_RESOURCE ?: 'customized'),
-                MapParameter(name: 'TARGETS', value: target),
-                MapParameter(name: 'JCK_GIT_REPO', value: params.JCK_GIT_REPO ?: ''),
-                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: params.CUSTOMIZED_SDK_URL ?: ''),
-                MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion),
-                MapParameter(name: 'PARALLEL', value: params.PARALLEL ?: 'None'),
-                MapParameter(name: 'NUM_MACHINES', value: params.NUM_MACHINES ?: '1'),
-                MapParameter(name: 'PLATFORMS', value: platform),
-                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName),
-                MapParameter(name: 'APPLICATION_OPTIONS', value: params.APPLICATION_OPTIONS ?: ''),
-                MapParameter(name: 'LABEL_ADDITION', value: params.LABEL_ADDITION ?: ''),
-                MapParameter(name: 'AUTO_AQA_GEN', value: params.AUTO_AQA_GEN ?: 'false'),
-                MapParameter(name: 'RERUN_ITERATIONS', value: params.RERUN_ITERATIONS ?: '1'),
-                MapParameter(name: 'RERUN_FAILURE', value: params.RERUN_FAILURE ?: 'true'),
-                MapParameter(name: 'EXTRA_OPTIONS', value: params.EXTRA_OPTIONS ?: ''),
-                MapParameter(name: 'SETUP_JCK_RUN', value: params.SETUP_JCK_RUN ?: 'false')
+                MapParameter(name: 'SDK_RESOURCE', value: (params.SDK_RESOURCE ?: 'customized').toString()),
+                MapParameter(name: 'TARGETS', value: target.toString()),
+                MapParameter(name: 'JCK_GIT_REPO', value: (params.JCK_GIT_REPO ?: '').toString()),
+                MapParameter(name: 'CUSTOMIZED_SDK_URL', value: (params.CUSTOMIZED_SDK_URL ?: '').toString()),
+                MapParameter(name: 'JDK_VERSIONS', value: jobJdkVersion.toString()),
+                MapParameter(name: 'PARALLEL', value: (params.PARALLEL ?: 'None').toString()),
+                MapParameter(name: 'NUM_MACHINES', value: (params.NUM_MACHINES ?: '1').toString()),
+                MapParameter(name: 'PLATFORMS', value: platform.toString()),
+                MapParameter(name: 'PIPELINE_DISPLAY_NAME', value: displayName.toString()),
+                MapParameter(name: 'APPLICATION_OPTIONS', value: (params.APPLICATION_OPTIONS ?: '').toString()),
+                MapParameter(name: 'LABEL_ADDITION', value: (params.LABEL_ADDITION ?: '').toString()),
+                MapParameter(name: 'AUTO_AQA_GEN', value: (params.AUTO_AQA_GEN ?: 'false').toString()),
+                MapParameter(name: 'RERUN_ITERATIONS', value: (params.RERUN_ITERATIONS ?: '1').toString()),
+                MapParameter(name: 'RERUN_FAILURE', value: (params.RERUN_FAILURE ?: 'true').toString()),
+                MapParameter(name: 'EXTRA_OPTIONS', value: (params.EXTRA_OPTIONS ?: '').toString()),
+                MapParameter(name: 'SETUP_JCK_RUN', value: (params.SETUP_JCK_RUN ?: 'false').toString())
             ]
             
             // Add LABEL if specified
             if (params.LABEL) {
-                paramList.add(MapParameter(name: 'LABEL', value: params.LABEL))
+                paramList.add(MapParameter(name: 'LABEL', value: params.LABEL.toString()))
             }
             
             // Trigger remote job
@@ -930,7 +934,8 @@ def remoteTriggerTemurinJCKDirect() {
                 RERUN_FAILURE: params.RERUN_FAILURE ?: 'true',
                 EXTRA_OPTIONS: params.EXTRA_OPTIONS ?: '',
                 SETUP_JCK_RUN: params.SETUP_JCK_RUN ?: 'false',
-                VARIANT: 'temurin'
+                VARIANT: 'temurin',
+                BUILD_TYPE: params.BUILD_TYPE
             ]
             if (params.LABEL) {
                 rerunParams.LABEL = params.LABEL
