@@ -362,7 +362,7 @@ The output of the code above is :
 
 
 
-## Exclude a test target
+## Exclude a test case or test target
 
 #### Automatically exclude OpenJDK test cases from ProblemList files
 You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
