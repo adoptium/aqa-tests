@@ -331,7 +331,7 @@ def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Sc
     for issue in issues:
         possible_urls_list = issue["ISSUE_TRACKER"].replace(","," ").split()
         for possible_url in possible_urls_list:
-            if possible_url.startswith("http"):
+            if possible_url.startswith("http://", "https://"):
                 url = possible_url
                 if url.endswith("."):
                     url = url[:-1]
