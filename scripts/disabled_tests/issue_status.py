@@ -465,7 +465,8 @@ def minimal_issues_check(issues: List[models.Scheme], auth, output_json):
             LOG.error(f'Uncaught exception while processing {playlist_path!r} : {e}')
             return_code = 1
 
-    if getattr(output_json, 'name', '<unknown>') == '<unknown>':
+    if not getattr(output_json, 'name', '<unknown>') in ['<unknown>', '<stdout>']:
+        LOG.info(f"Outputting JSON to {getattr(output_json, 'name', '<unknown>')}")
         json.dump(
             obj=output_json_contents,
             fp=output_json,
