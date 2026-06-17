@@ -418,7 +418,7 @@ To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` a
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
-#### Automatically exclude OpenJDK tests from ProblemList files
+#### Automatically exclude OpenJDK test cases from ProblemList files
 You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
 
 ```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
