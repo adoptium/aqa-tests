@@ -443,20 +443,26 @@ def minimal_issues_check(issues: List[models.Scheme], auth, output_json):
             continue
 
         # If this url does not match a known url format, test it directly.
-        session = requests.Session()
-        if url.startswith("https://github.com/"):
-            resp = session.head(url, allow_redirects=True, auth=auth)
-        else:
-            resp = session.head(url)
-        acceptable_return_codes = [405, 429]
-        if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
-            message = f"{url!r} exists. Status code {resp.status_code}"
-            LOG.info(message)
-            output_json_contents.append(message)
-        else:
-            message = f"{url!r} cannot be found. Status code {resp.status_code}"
-            LOG.error(message)
-            output_json_contents.append("ERROR: " + message)
+        try:
+            session = requests.Session()
+            if url.startswith("https://github.com/"):
+                resp = session.head(url, allow_redirects=True, auth=auth)
+            else:
+                resp = session.head(url)
+
+            acceptable_return_codes = [405, 429]
+            if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
+                message = f"{url!r} exists. Status code {resp.status_code}"
+                LOG.info(message)
+                output_json_contents.append(message)
+            else:
+                message = f"{url!r} cannot be found. Status code {resp.status_code}"
+                LOG.error(message)
+                output_json_contents.append("ERROR: " + message)
+                return_code = 1
+
+        except RequestException as re:
+            LOG.error(f'Uncaught exception while processing {playlist_path!r} : {e}')
             return_code = 1
 
     json.dump(
