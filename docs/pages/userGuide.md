@@ -418,6 +418,21 @@ To exclude the 2nd variation listed which is assigned suffix_1 ```-Xmx1024m``` a
 
 After the comment is left, there will be a auto PR created with the exclude change in the playlist.xml. The PR will be linked to issue. If the testName can not be found in the repo, no PR will be created and there will be a comment left in the issue linking to the failed workflow run for more details. In the case where the parameter contains space separated values, use single quotes to group the parameter.
 
+#### Automatically exclude OpenJDK tests from ProblemList files
+You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
+
+```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
+
+Examples:
+
+```/exclude java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.org/browse/JDK-8173082 macosx-all```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11,17,21```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11 impl=openj9```
+
+Only the issue author or project committers can trigger `/exclude`.
+
 #### Manually exclude a test target
 Search the test name to find its playlist.xml file. Add a ```<disables>``` element after ```<testCaseName>``` element. The ```<disables>``` element is used to capsulate all ```<disable>``` elements. The ```<disable>``` element should always contain a ```<comment>``` element to specify the related issue url (or issue comment url). Comments that are not URLs must begin with a hash.
 
@@ -602,3 +617,15 @@ Or remove ```<impl>``` element to exclude test against all implementations:
   </disables>
   ...
 ```
+
+## Cherry-pick a merged PR to a release branch
+
+For a merged pull request, you can trigger a cherry-pick PR by commenting:
+
+```/cherry-pick <target-release-branch>```
+
+Example:
+
+```/cherry-pick v0.9.9-release```
+
+Only the original PR author, reviewers, or the user who merged the PR can trigger `/cherry-pick`.
