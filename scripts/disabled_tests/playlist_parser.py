@@ -132,10 +132,12 @@ class Disable(RawDisable):
         issue_urls: List[str] = []
         for url_node in issue_url_nodes:
             text = (url_node.text or '').strip()
-            if not text or text.startswith('#'):
+            if "\n" in text or "\r" in text:
+                raise DisableNodeProcessingException(f'disable node has a forbidden new line character inside the comment tag.')
+            if not text:
                 continue
             issue_urls.append(text)
-        issue_url = ",".join(issue_urls) if issue_urls else "# No URLs are associated with this disable node."
+        issue_url = ",".join(issue_urls) if issue_urls else "No URLs are associated with this disable node."
 
         test_name = raw_disable.parent_test.name
         custom_target = test_name + cls.get_suffix(raw_disable)
