@@ -236,7 +236,6 @@ def parse_all_files(playlist_files: Iterable[str]) -> List[Disable]:
         else:
             all_disables.extend(disables)
             LOG.info(f"Processed {playlist_path!r} : n_disables={len(disables)}")
-            sys.exit(1)
     return all_disables
 
 
