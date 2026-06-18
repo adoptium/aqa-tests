@@ -512,17 +512,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
 
                 int jobNum = JOBS.size() + 1
                 JOBS["${TEST_JOB_NAME}_${jobNum}"] = {
-                    // Log all parameters being passed to the child job
-                    echo "=========================================="
-                    echo "Triggering Job: ${TEST_JOB_NAME}"
-                    echo "Parameters:"
-                    childParams.each { param ->
-                        if (param.hasProperty('name') && param.hasProperty('value')) {
-                            echo "  ${param.name}: ${param.value}"
-                        }
-                    }
-                    echo "=========================================="
-                    
                     def downstreamJob = build job: TEST_JOB_NAME, parameters: childParams, propagate: false, wait: true
                     def downstreamJobResult = downstreamJob.getResult()
                     echo "${TEST_JOB_NAME} result is ${downstreamJobResult}"
