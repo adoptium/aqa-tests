@@ -592,7 +592,7 @@ def runTest() {
             sh "cat ${javaSecurityFile}"
         }
         jenkinsfile = load "${WORKSPACE}/aqa-tests/buildenv/jenkins/JenkinsfileBase"
-        if (NODE_LABELS.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure')) {
+        if (NODE_LABELS.contains('ci.agent.dynamic') && CLOUD_PROVIDER.equals('azure') && !SPEC.contains('win')) {
             // Set dockerimage for azure agent. Fyre has stencil to setup the right environment
             docker.image('ghcr.io/adoptium/test-containers:ubi10').pull()
             docker.image('ghcr.io/adoptium/test-containers:ubi10').inside {
