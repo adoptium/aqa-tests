@@ -362,7 +362,25 @@ The output of the code above is :
 
 
 
-## Exclude a test target
+## Exclude a test case or test target
+
+#### Automatically exclude OpenJDK test cases from ProblemList files
+You can also use the `/exclude` issue comment command to create exclusions in `openjdk/excludes/ProblemList*.txt` files:
+
+```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
+
+`<...>` indicates required parameters, while `[...]` indicates optional parameters.
+Use test paths (or comma-separated test paths) for `<testcases>`. For valid `<platform>` values, refer to: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
+
+Examples:
+
+```/exclude java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.org/browse/JDK-8173082 macosx-all```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11,17,21```
+
+```/exclude test.java https://bugs.openjdk.org/browse/JDK-8173082 linux-x64 jdk=11 impl=openj9```
+
+Only the issue author or project committers can trigger `/exclude`.
 
 #### Automatically exclude a test target
 Instead of having to manually create a PR to disable test targets, they can now be automatically disabled via Github workflow (see autoTestPR.yml). In the issue that describes the test failure, add a comment with the following format:
@@ -602,3 +620,15 @@ Or remove ```<impl>``` element to exclude test against all implementations:
   </disables>
   ...
 ```
+
+## Cherry-pick a merged PR to a release branch
+
+For a merged pull request, you can trigger a cherry-pick PR by commenting:
+
+```/cherry-pick <target-release-branch>```
+
+Example:
+
+```/cherry-pick v0.9.9-release```
+
+Only the original PR author, reviewers, or the user who merged the PR can trigger `/cherry-pick`.
