@@ -432,10 +432,12 @@ timestamps{
                                     // Cycle between Azure Windows templates if configured
                                     if (CLOUD_PROVIDER == 'azure' && PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]) {
                                         def templates = PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]
-                                        def selectedTemplate = templates[currentBuild.number % templates.size()]
+                                        def jobIdentifier = "${env.JOB_NAME}_${currentBuild.number}"
+                                        def templateIndex = Math.abs(jobIdentifier.hashCode()) % templates.size()
+                                        def selectedTemplate = templates[templateIndex]
                                         LABEL = LABEL.minus("sw.os.windows")
                                         LABEL += selectedTemplate
-                                        println "Selected Azure template: ${selectedTemplate} (build #${currentBuild.number} % ${templates.size()})"
+                                        println "Selected Azure template: ${selectedTemplate} (hash of '${jobIdentifier}' → index ${templateIndex})"
                                     }
                                     
                                     // Combine Static & Dynamic selection
