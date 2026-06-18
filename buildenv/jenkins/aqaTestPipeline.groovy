@@ -97,64 +97,70 @@ timestamps {
                         
                         echo "Reading Level 2 config from ${level2File}..."
                         def level2Array = readJSON(file: level2File)
-                        def level2Config = level2Array[0] // Extract first element from array
                         
-                        // Merge: Level 2 overrides Level 1
+                        // Merge Level 1 with EACH element of Level 2 array
+                        configJson = []
                         if (baseConfig && baseConfig.size() > 0) {
                             echo "Merging configurations: Level 2 overrides Level 1..."
-                            // Inline deep merge to avoid DSL method resolution issues
-                            def merged = [:]
-                            baseConfig.each { k, v ->
-                                if (v instanceof Map) {
-                                    merged[k] = [:]
-                                    v.each { k2, v2 ->
-                                        if (v2 instanceof Map) {
-                                            merged[k][k2] = [:]
-                                            v2.each { k3, v3 -> merged[k][k2][k3] = v3 }
-                                        } else {
-                                            merged[k][k2] = v2
+                            level2Array.eachWithIndex { level2Config, index ->
+                                // Inline deep merge to avoid DSL method resolution issues
+                                def merged = [:]
+                                baseConfig.each { k, v ->
+                                    if (v instanceof Map) {
+                                        merged[k] = [:]
+                                        v.each { k2, v2 ->
+                                            if (v2 instanceof Map) {
+                                                merged[k][k2] = [:]
+                                                v2.each { k3, v3 -> merged[k][k2][k3] = v3 }
+                                            } else {
+                                                merged[k][k2] = v2
+                                            }
                                         }
+                                    } else if (v instanceof List) {
+                                        merged[k] = v.clone()
+                                    } else {
+                                        merged[k] = v
                                     }
-                                } else if (v instanceof List) {
-                                    merged[k] = v.clone()
-                                } else {
-                                    merged[k] = v
                                 }
-                            }
-                            echo "DEBUG: level2Config keys: ${level2Config.keySet()}"
-                            level2Config.each { key, value ->
-                                echo "DEBUG: Processing key '${key}', value type: ${value.getClass().simpleName}"
-                                if (value instanceof List) {
-                                    // Lists override completely
-                                    echo "DEBUG: Adding List '${key}'"
-                                    merged[key] = value
-                                } else if (value instanceof Map && merged[key] instanceof Map) {
-                                    // Merge nested maps
-                                    echo "DEBUG: Merging Map '${key}'"
-                                    value.each { k2, v2 ->
-                                        if (v2 instanceof Map && merged[key][k2] instanceof Map) {
-                                            // Merge 2 levels deep
-                                            v2.each { k3, v3 -> merged[key][k2][k3] = v3 }
-                                        } else {
-                                            merged[key][k2] = v2
+                                
+                                level2Config.each { key, value ->
+                                    if (value instanceof List) {
+                                        // Lists override completely
+                                        merged[key] = value
+                                    } else if (value instanceof Map && merged[key] instanceof Map) {
+                                        // Merge nested maps
+                                        value.each { k2, v2 ->
+                                            if (v2 instanceof Map && merged[key][k2] instanceof Map) {
+                                                // Merge 2 levels deep
+                                                v2.each { k3, v3 -> merged[key][k2][k3] = v3 }
+                                            } else {
+                                                merged[key][k2] = v2
+                                            }
                                         }
+                                    } else {
+                                        merged[key] = value
                                     }
-                                } else {
-                                    echo "DEBUG: Adding/overriding '${key}'"
-                                    merged[key] = value
                                 }
-                            }
-                            configJson = [merged]
-                            echo "DEBUG: Merged config keys: ${merged.keySet()}"
-                            if (merged.PLATFORM_TARGETS) {
-                                echo "DEBUG: PLATFORM_TARGETS found: ${merged.PLATFORM_TARGETS}"
-                            } else {
-                                echo "DEBUG: PLATFORM_TARGETS is missing!"
+                                
+                                configJson << merged
+                                echo "=========================================="
+                                echo "Merged Configuration #${index + 1} (Level 1 + Level 2):"
+                                echo "TEST_FLAG: ${merged.TEST_FLAG ?: 'NONE'}"
+                                echo "=========================================="
+                                echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(merged))
+                                echo "=========================================="
                             }
                         } else {
-                            // If no Level 1 config, use Level 2 only (backward compatibility)
-                            configJson = [level2Config]
-                            echo "DEBUG: Using Level 2 only, keys: ${level2Config.keySet()}"
+                            // If no Level 1 config, use Level 2 array as-is (backward compatibility)
+                            configJson = level2Array
+                            level2Array.eachWithIndex { level2Config, index ->
+                                echo "=========================================="
+                                echo "Configuration #${index + 1} (Level 2 only - no Level 1 found):"
+                                echo "TEST_FLAG: ${level2Config.TEST_FLAG ?: 'NONE'}"
+                                echo "=========================================="
+                                echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(level2Config))
+                                echo "=========================================="
+                            }
                         }
                     }
                 }
