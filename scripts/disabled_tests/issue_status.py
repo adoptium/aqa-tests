@@ -329,18 +329,19 @@ def augment_with_status(issues, issue_status):
 def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Scheme]]:
     url_to_issues = defaultdict(list)
     for issue in issues:
-        if issue["ISSUE_TRACKER"].startswith("#"):
-            url_to_issues[issue["ISSUE_TRACKER"].strip()].append(issue)
-        else: 
-            urls_list = issue["ISSUE_TRACKER"].split(",")
-            for url in urls_list:
+        possible_urls_list = issue["ISSUE_TRACKER"].replace(","," ").split()
+        for possible_url in possible_urls_list:
+            if possible_url.startswith(("http://", "https://")):
+                url = possible_url
+                if url.endswith("."):
+                    url = url[:-1]
                 url_to_issues[url.strip()].append(issue)
     return url_to_issues
 
 
 def should_exclude(url) -> Tuple[bool, str]:
-    if url.startswith("#"):
-        return True, "Ignoring non-url comment that starts with a hash."
+    if not url.startswith("http"):
+        return True, "Ignoring non-url."
     for exception in EXCEPTIONS:
         if exception in url:
             return True, exception
@@ -423,38 +424,54 @@ def is_known_url_format(url: str):
     return False
 
 
-def minimal_issues_check(issues: List[models.Scheme], auth):
+def minimal_issues_check(issues: List[models.Scheme], auth, output_json):
     global return_code
+    output_json_contents = []
 
     raw_url_to_issues = group_issues_by_url(issues)
 
     for url, issues in raw_url_to_issues.items():
         # Ignore urls that are actually comments.
-        if url.startswith("#"):
-            continue
-
         if not url.startswith("http"):
-            LOG.error(f"\"{url!r}\" is not a valid url.")
-            return_code = 1
             continue
 
         # If a url has a known format, only check syntax to save time.
         if is_known_url_format(url):
-            LOG.info(f"{url!r} uses a known url format.")
+            message = f"{url!r} uses a known url format."
+            LOG.info(message)
+            output_json_contents.append(message)
             continue
 
         # If this url does not match a known url format, test it directly.
-        session = requests.Session()
-        if url.startswith("https://github.com/"):
-            resp = session.head(url, allow_redirects=True, auth=auth)
-        else:
-            resp = session.head(url)
-        acceptable_return_codes = [405, 429]
-        if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
-            LOG.info(f"{url!r} exists. Status code {resp.status_code}")
-        else:
-            LOG.error(f"{url!r} cannot be found. Status code {resp.status_code}")
+        try:
+            session = requests.Session()
+            if url.startswith("https://github.com/"):
+                resp = session.head(url, allow_redirects=True, auth=auth)
+            else:
+                resp = session.head(url)
+
+            acceptable_return_codes = [405, 429]
+            if resp.status_code < 404 or resp.status_code in acceptable_return_codes:
+                message = f"{url!r} exists. Status code {resp.status_code}"
+                LOG.info(message)
+                output_json_contents.append(message)
+            else:
+                message = f"{url!r} cannot be found. Status code {resp.status_code}"
+                LOG.error(message)
+                output_json_contents.append("ERROR: " + message)
+                return_code = 1
+
+        except RequestException as re:
+            LOG.error(f'Uncaught exception while processing {playlist_path!r} : {e}')
             return_code = 1
+
+    if not getattr(output_json, 'name', '<unknown>') in ['<unknown>', '<stdout>']:
+        LOG.info(f"Outputting JSON to {getattr(output_json, 'name', '<unknown>')}")
+        json.dump(
+            obj=output_json_contents,
+            fp=output_json,
+            indent=2,
+        )
 
 
 def main():
@@ -502,7 +519,7 @@ def main():
         auth = None
         if all([args.github_user, args.github_token]):
             auth = requests.auth.HTTPBasicAuth(username=args.github_user, password=args.github_token)
-        minimal_issues_check(issues, auth)
+        minimal_issues_check(issues, auth, args.outfile)
         LOG.info("Script complete.")
         return return_code
 
