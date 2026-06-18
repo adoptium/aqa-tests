@@ -117,6 +117,8 @@ def PLATFORM_MAP = [
     'x86-64_windows' : [
         'SPEC' : 'win_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
+        'DynamicAgents' : ['azure'],
+        'AzureTemplates' : ['sw.os.windows.11', 'sw.os.windows.2022', 'sw.os.windows.2025']
     ],
 ]
 
@@ -426,6 +428,16 @@ timestamps{
                                 //       probably a specific node etc, so do not augment ci.agent.dynamic as user is being specific..
                                 if (LABEL.contains("ci.role.test&&")) {
                                     LABEL = LABEL.minus("ci.role.test&&")
+                                    
+                                    // Cycle between Azure Windows templates if configured
+                                    if (CLOUD_PROVIDER == 'azure' && PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]) {
+                                        def templates = PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]
+                                        def selectedTemplate = templates[currentBuild.number % templates.size()]
+                                        LABEL = LABEL.minus("sw.os.windows")
+                                        LABEL += selectedTemplate
+                                        println "Selected Azure template: ${selectedTemplate} (build #${currentBuild.number} % ${templates.size()})"
+                                    }
+                                    
                                     // Combine Static & Dynamic selection
                                     LABEL += '&&(ci.role.test||ci.agent.dynamic)'
                                     println "Added dynamic agent, nodeLabel: '${LABEL}', dynamicLabel: '${CLOUD_PROVIDER}'"
