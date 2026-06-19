@@ -111,7 +111,15 @@ timestamps {
                                         v.each { k2, v2 ->
                                             if (v2 instanceof Map) {
                                                 merged[k][k2] = [:]
-                                                v2.each { k3, v3 -> merged[k][k2][k3] = v3 }
+                                                v2.each { k3, v3 ->
+                                                    if (v3 instanceof Map) {
+                                                        // Handle 3rd level (e.g., TARGET_SPECIFIC_CONFIG -> "extended.functional.FIPS" -> BUILD_LIST)
+                                                        merged[k][k2][k3] = [:]
+                                                        v3.each { k4, v4 -> merged[k][k2][k3][k4] = v4 }
+                                                    } else {
+                                                        merged[k][k2][k3] = v3
+                                                    }
+                                                }
                                             } else {
                                                 merged[k][k2] = v2
                                             }
@@ -132,7 +140,14 @@ timestamps {
                                         value.each { k2, v2 ->
                                             if (v2 instanceof Map && merged[key][k2] instanceof Map) {
                                                 // Merge 2 levels deep
-                                                v2.each { k3, v3 -> merged[key][k2][k3] = v3 }
+                                                v2.each { k3, v3 ->
+                                                    if (v3 instanceof Map && merged[key][k2][k3] instanceof Map) {
+                                                        // Merge 3 levels deep
+                                                        v3.each { k4, v4 -> merged[key][k2][k3][k4] = v4 }
+                                                    } else {
+                                                        merged[key][k2][k3] = v3
+                                                    }
+                                                }
                                             } else {
                                                 merged[key][k2] = v2
                                             }
@@ -298,14 +313,28 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 }
                 
                 // Check for target + test flag combination (e.g., "extended.functional.FIPS")
+                echo "DEBUG: TARGET='${TARGET}', jobTestFlag='${jobTestFlag}'"
+                echo "DEBUG: targetSpecificConfig keys = ${targetSpecificConfig.keySet()}"
                 // First try exact match
                 if (jobTestFlag && targetSpecificConfig.containsKey("${TARGET}.${jobTestFlag}")) {
+                    echo "DEBUG: Exact match '${TARGET}.${jobTestFlag}' found"
                     mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.${jobTestFlag}"])
                 } else if (jobTestFlag) { // Then try with generic FIPS/OpenJCEPlus suffix for variants
                     // Check for TARGET.FIPS when jobTestFlag contains FIPS (e.g., FIPS140_2, FIPS140_3_OpenJCEPlusFIPS)
-                    if (jobTestFlag.contains("FIPS") && targetSpecificConfig.containsKey("${TARGET}.FIPS")) {
-                        mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.FIPS"])
+                    if (jobTestFlag.contains("FIPS")) {
+                        def targetFipsKey = "${TARGET}.FIPS"
+                        echo "DEBUG: jobTestFlag contains FIPS, checking for '${targetFipsKey}'"
+                        echo "DEBUG: targetSpecificConfig type = ${targetSpecificConfig.getClass().getName()}"
+                        echo "DEBUG: containsKey result = ${targetSpecificConfig.containsKey(targetFipsKey)}"
+                        echo "DEBUG: direct access result = ${targetSpecificConfig[targetFipsKey]}"
+                        if (targetSpecificConfig[targetFipsKey]) {
+                            echo "DEBUG: Found '${targetFipsKey}', applying BUILD_LIST config"
+                            mergeConfig(buildConfig, targetSpecificConfig[targetFipsKey])
+                        } else {
+                            echo "DEBUG: '${targetFipsKey}' NOT FOUND in targetSpecificConfig"
+                        }
                     } else if (jobTestFlag.contains("OpenJCEPlus") && targetSpecificConfig.containsKey("${TARGET}.OpenJCEPlus")) {
+                        echo "DEBUG: Found '${TARGET}.OpenJCEPlus'"
                         mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.OpenJCEPlus"])
                     }
                 }
