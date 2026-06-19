@@ -56,161 +56,201 @@ timestamps {
     JDK_VERSIONS.each { JDK_VERSION ->
         if ( params.MODE != 'RELAY' && (params.BUILD_TYPE == "release" || params.BUILD_TYPE == "nightly" || params.BUILD_TYPE == "weekly" )) {
             def configJson = []
-            if (params.CONFIG_JSON) {
-                echo "Read JSON from CONFIG_JSON parameter..."
-                configJson = readJSON text: "${params.CONFIG_JSON}"
-            } else {
-                node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
-                    checkout scm
-                    dir (env.WORKSPACE) {
-                        // 2-Level Configuration Hierarchy:
-                        // Level 1: config/{variant}/default.json (variant-wide base)
-                        // Level 2: config/{variant}/{build_type}/jdk{version}.json OR
-                        //          config/{variant}/{build_type}/default.json (fallback)
+            
+            // Always load config from repo files first
+            node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+                checkout scm
+                dir (env.WORKSPACE) {
+                    // 2-Level Configuration Hierarchy:
+                    // Level 1: config/{variant}/default.json (variant-wide base)
+                    // Level 2: config/{variant}/{build_type}/jdk{version}.json OR
+                    //          config/{variant}/{build_type}/default.json (fallback)
+                    
+                    def variantDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
+                    
+                    // Fallback: if variant is 'ibm' and config doesn't exist, use 'openj9' config
+                    if (params.VARIANT == "ibm" && !fileExists("${variantDir}default.json")) {
+                        echo "Config for variant 'ibm' not found, falling back to 'openj9' config..."
+                        variantDir = "./aqa-tests/buildenv/jenkins/config/openj9/"
+                    }
+                    
+                    def buildTypeDir = "${variantDir}${params.BUILD_TYPE}/"
+                    
+                    // Level 1: Read variant-wide base configuration
+                    def level1File = "${variantDir}default.json"
+                    def baseConfig = [:]
+                    if (fileExists(level1File)) {
+                        echo "Reading Level 1 config from ${level1File}..."
+                        def level1Array = readJSON(file: level1File)
+                        baseConfig = level1Array[0] // Extract first element from array
+                    } else {
+                        echo "Warning: Level 1 config file not found: ${level1File}"
+                    }
+                    
+                    // Level 2: Try version-specific file first, fallback to build-type default
+                    def level2File = "${buildTypeDir}jdk${JDK_VERSION}.json"
+                    if (!fileExists(level2File)) {
+                        level2File = "${buildTypeDir}default.json"
+                    }
+                    
+                    echo "Reading Level 2 config from ${level2File}..."
+                    def level2Array = readJSON(file: level2File)
                         
-                        def variantDir = "./aqa-tests/buildenv/jenkins/config/${params.VARIANT}/"
-                        
-                        // Fallback: if variant is 'ibm' and config doesn't exist, use 'openj9' config
-                        if (params.VARIANT == "ibm" && !fileExists("${variantDir}default.json")) {
-                            echo "Config for variant 'ibm' not found, falling back to 'openj9' config..."
-                            variantDir = "./aqa-tests/buildenv/jenkins/config/openj9/"
-                        }
-                        
-                        def buildTypeDir = "${variantDir}${params.BUILD_TYPE}/"
-                        
-                        // Level 1: Read variant-wide base configuration
-                        def level1File = "${variantDir}default.json"
-                        def baseConfig = [:]
-                        if (fileExists(level1File)) {
-                            echo "Reading Level 1 config from ${level1File}..."
-                            def level1Array = readJSON(file: level1File)
-                            baseConfig = level1Array[0] // Extract first element from array
-                        } else {
-                            echo "Warning: Level 1 config file not found: ${level1File}"
-                        }
-                        
-                        // Level 2: Try version-specific file first, fallback to build-type default
-                        def level2File = "${buildTypeDir}jdk${JDK_VERSION}.json"
-                        if (!fileExists(level2File)) {
-                            level2File = "${buildTypeDir}default.json"
-                        }
-                        
-                        echo "Reading Level 2 config from ${level2File}..."
-                        def level2Array = readJSON(file: level2File)
-                        
-                        // Merge Level 1 with EACH element of Level 2 array
-                        configJson = []
-                        if (baseConfig && baseConfig.size() > 0) {
-                            echo "Merging configurations: Level 2 overrides Level 1..."
-                            level2Array.eachWithIndex { level2Config, index ->
-                                // Inline deep merge to avoid DSL method resolution issues
-                                def merged = [:]
-                                baseConfig.each { k, v ->
-                                    if (v instanceof Map) {
-                                        merged[k] = [:]
-                                        v.each { k2, v2 ->
-                                            if (v2 instanceof Map) {
-                                                merged[k][k2] = [:]
-                                                v2.each { k3, v3 ->
-                                                    if (v3 instanceof Map) {
-                                                        // Handle 3rd level (e.g., TARGET_SPECIFIC_CONFIG -> "extended.functional.FIPS" -> BUILD_LIST)
-                                                        merged[k][k2][k3] = [:]
-                                                        v3.each { k4, v4 -> merged[k][k2][k3][k4] = v4 }
-                                                    } else {
-                                                        merged[k][k2][k3] = v3
-                                                    }
+                    // Merge Level 1 with EACH element of Level 2 array
+                    configJson = []
+                    if (baseConfig && baseConfig.size() > 0) {
+                        echo "Merging configurations: Level 2 overrides Level 1..."
+                        level2Array.eachWithIndex { level2Config, index ->
+                            // Inline deep merge to avoid DSL method resolution issues
+                            def merged = [:]
+                            baseConfig.each { k, v ->
+                                if (v instanceof Map) {
+                                    merged[k] = [:]
+                                    v.each { k2, v2 ->
+                                        if (v2 instanceof Map) {
+                                            merged[k][k2] = [:]
+                                            v2.each { k3, v3 ->
+                                                if (v3 instanceof Map) {
+                                                    // Handle 3rd level (e.g., TARGET_SPECIFIC_CONFIG -> "extended.functional.FIPS" -> BUILD_LIST)
+                                                    merged[k][k2][k3] = [:]
+                                                    v3.each { k4, v4 -> merged[k][k2][k3][k4] = v4 }
+                                                } else {
+                                                    merged[k][k2][k3] = v3
                                                 }
-                                            } else {
-                                                merged[k][k2] = v2
                                             }
+                                        } else {
+                                            merged[k][k2] = v2
                                         }
-                                    } else if (v instanceof List) {
-                                        merged[k] = v.clone()
-                                    } else {
-                                        merged[k] = v
                                     }
+                                } else if (v instanceof List) {
+                                    merged[k] = v.clone()
+                                } else {
+                                    merged[k] = v
                                 }
-                                
-                                level2Config.each { key, value ->
-                                    if (value instanceof List) {
-                                        // Lists override completely
-                                        merged[key] = value
-                                    } else if (value instanceof Map && merged[key] instanceof Map) {
-                                        // Merge nested maps
-                                        value.each { k2, v2 ->
-                                            if (v2 instanceof Map && merged[key][k2] instanceof Map) {
-                                                // Merge 2 levels deep
-                                                v2.each { k3, v3 ->
-                                                    if (v3 instanceof Map && merged[key][k2][k3] instanceof Map) {
-                                                        // Merge 3 levels deep
-                                                        v3.each { k4, v4 -> merged[key][k2][k3][k4] = v4 }
-                                                    } else {
-                                                        merged[key][k2][k3] = v3
-                                                    }
+                            }
+                            
+                            level2Config.each { key, value ->
+                                if (value instanceof List) {
+                                    // Lists override completely
+                                    merged[key] = value
+                                } else if (value instanceof Map && merged[key] instanceof Map) {
+                                    // Merge nested maps
+                                    value.each { k2, v2 ->
+                                        if (v2 instanceof Map && merged[key][k2] instanceof Map) {
+                                            // Merge 2 levels deep
+                                            v2.each { k3, v3 ->
+                                                if (v3 instanceof Map && merged[key][k2][k3] instanceof Map) {
+                                                    // Merge 3 levels deep
+                                                    v3.each { k4, v4 -> merged[key][k2][k3][k4] = v4 }
+                                                } else {
+                                                    merged[key][k2][k3] = v3
                                                 }
-                                            } else {
-                                                merged[key][k2] = v2
                                             }
+                                        } else {
+                                            merged[key][k2] = v2
                                         }
-                                    } else {
-                                        merged[key] = value
                                     }
+                                } else {
+                                    merged[key] = value
                                 }
+                            }
                                 
-                                configJson << merged
-                                echo "=========================================="
-                                echo "Merged Configuration #${index + 1} (Level 1 + Level 2):"
-                                echo "TEST_FLAG: ${merged.TEST_FLAG ?: 'NONE'}"
-                                echo "=========================================="
-                                echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(merged))
-                                echo "=========================================="
-                            }
-                        } else {
-                            // If no Level 1 config, use Level 2 array as-is (backward compatibility)
-                            configJson = level2Array
-                            level2Array.eachWithIndex { level2Config, index ->
-                                echo "=========================================="
-                                echo "Configuration #${index + 1} (Level 2 only - no Level 1 found):"
-                                echo "TEST_FLAG: ${level2Config.TEST_FLAG ?: 'NONE'}"
-                                echo "=========================================="
-                                echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(level2Config))
-                                echo "=========================================="
-                            }
+                            configJson << merged
+                            echo "=========================================="
+                            echo "Merged Configuration #${index + 1} (Level 1 + Level 2):"
+                            echo "TEST_FLAG: ${merged.TEST_FLAG ?: 'NONE'}"
+                            echo "=========================================="
+                            echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(merged))
+                            echo "=========================================="
+                        }
+                    } else {
+                        // If no Level 1 config, use Level 2 array as-is (backward compatibility)
+                        configJson = level2Array
+                        level2Array.eachWithIndex { level2Config, index ->
+                            echo "=========================================="
+                            echo "Configuration #${index + 1} (Level 2 only - no Level 1 found):"
+                            echo "TEST_FLAG: ${level2Config.TEST_FLAG ?: 'NONE'}"
+                            echo "=========================================="
+                            echo groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(level2Config))
+                            echo "=========================================="
                         }
                     }
                 }
-            }
+            
+                // If CONFIG_JSON parameter is provided, use it to filter and override PLATFORM_TARGETS
+                if (params.CONFIG_JSON) {
+                    echo "=========================================="
+                    echo "CONFIG_JSON parameter provided - filtering TEST_FLAGs and overriding PLATFORM_TARGETS"
+                    echo "=========================================="
+                    
+                    def overrideConfig = readJSON text: "${params.CONFIG_JSON}"
+                    
+                    // Build a map of TEST_FLAG -> PLATFORM_TARGETS from the override config
+                    def overrideMap = [:]
+                    overrideConfig.each { item ->
+                        if (item.TEST_FLAG && item.PLATFORM_TARGETS) {
+                            overrideMap[item.TEST_FLAG] = item.PLATFORM_TARGETS
+                        }
+                    }
+                    
+                    echo "Override config contains TEST_FLAGs: ${overrideMap.keySet()}"
+                    
+                    // Filter configJson to only include TEST_FLAGs present in override config
+                    // and replace their PLATFORM_TARGETS
+                    def filteredConfig = []
+                    configJson.each { config ->
+                        def testFlag = config.TEST_FLAG ?: 'NONE'
+                        if (overrideMap.containsKey(testFlag)) {
+                            echo "Keeping TEST_FLAG '${testFlag}' and overriding PLATFORM_TARGETS"
+                            config.PLATFORM_TARGETS = overrideMap[testFlag]
+                            filteredConfig << config
+                        } else {
+                            echo "Removing TEST_FLAG '${testFlag}' (not in CONFIG_JSON)"
+                        }
+                    }
+                    
+                    configJson = filteredConfig
+                    
+                    echo "=========================================="
+                    echo "Final filtered configuration (${configJson.size()} TEST_FLAG(s)):"
+                    configJson.each { config ->
+                        echo "  - TEST_FLAG: ${config.TEST_FLAG ?: 'NONE'}"
+                        echo "    PLATFORM_TARGETS: ${config.PLATFORM_TARGETS}"
+                    }
+                    echo "=========================================="
+                }
 
-            configJson.each { item ->
-                def releaseTestFlag = item.TEST_FLAG
-                def globalBuildConfig = item.GLOBAL_BUILD_CONFIG ?: [:]
-                def targetSpecificConfig = item.TARGET_SPECIFIC_CONFIG ?: [:]
-                def platformSpecificConfig = item.PLATFORM_SPECIFIC_CONFIG ?: [:]
-                def platformAdditionalTestLabels = item.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
-                def platformAdditionalTestParams = item.PLATFORM_ADDITIONAL_TEST_PARAMS ?: [:]
-                
-                // Load default test targets from config
-                if (item.DEFAULT_TEST_TARGETS) {
-                    defaultTestTargets = item.DEFAULT_TEST_TARGETS
-                }
-                if (item.DEFAULT_FIPS_TEST_TARGETS) {
-                    defaultFipsTestTargets = item.DEFAULT_FIPS_TEST_TARGETS
-                }
-                if (item.DEFAULT_FIPS140_2_TEST_TARGETS) {
-                    defaultFips140_2TestTargets = item.DEFAULT_FIPS140_2_TEST_TARGETS
-                }
-                
-                item.PLATFORM_TARGETS.each { pt ->
-                    pt.each { p, t ->
-                        // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
-                        // if params.PLATFORMS is set, only trigger testing for the platform that is specified
-                        if (params.PLATFORMS) {
-                            if (params.PLATFORMS.contains(p)) {
-                                echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+                configJson.each { item ->
+                    def releaseTestFlag = item.TEST_FLAG
+                    def globalBuildConfig = item.GLOBAL_BUILD_CONFIG ?: [:]
+                    def targetSpecificConfig = item.TARGET_SPECIFIC_CONFIG ?: [:]
+                    def platformSpecificConfig = item.PLATFORM_SPECIFIC_CONFIG ?: [:]
+                    def platformAdditionalTestLabels = item.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
+                    def platformAdditionalTestParams = item.PLATFORM_ADDITIONAL_TEST_PARAMS ?: [:]
+                    
+                    // Load default test targets from config
+                    if (item.DEFAULT_TEST_TARGETS) {
+                        defaultTestTargets = item.DEFAULT_TEST_TARGETS
+                    }
+                    if (item.DEFAULT_FIPS_TEST_TARGETS) {
+                        defaultFipsTestTargets = item.DEFAULT_FIPS_TEST_TARGETS
+                    }
+                    if (item.DEFAULT_FIPS140_2_TEST_TARGETS) {
+                        defaultFips140_2TestTargets = item.DEFAULT_FIPS140_2_TEST_TARGETS
+                    }
+                    
+                    item.PLATFORM_TARGETS.each { pt ->
+                        pt.each { p, t ->
+                            // When the AQA Test Pipeline is triggered by an upstream pipeline at runtime, we only receive the SDK URL for a single platform at a time.
+                            // if params.PLATFORMS is set, only trigger testing for the platform that is specified
+                            if (params.PLATFORMS) {
+                                if (params.PLATFORMS.contains(p)) {
+                                    echo "Only triggering test builds specified in PLATFORMS: ${params.PLATFORMS}..."
+                                    generateJobs(JDK_VERSION, releaseTestFlag, p, t, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
+                                }
+                            } else {
                                 generateJobs(JDK_VERSION, releaseTestFlag, p, t, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                             }
-                        } else {
-                            generateJobs(JDK_VERSION, releaseTestFlag, p, t, globalBuildConfig, targetSpecificConfig, platformSpecificConfig, platformAdditionalTestLabels, platformAdditionalTestParams)
                         }
                     }
                 }
@@ -313,29 +353,29 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 }
                 
                 // Check for target + test flag combination (e.g., "extended.functional.FIPS")
-                echo "DEBUG: TARGET='${TARGET}', jobTestFlag='${jobTestFlag}'"
-                echo "DEBUG: targetSpecificConfig keys = ${targetSpecificConfig.keySet()}"
-                // First try exact match
-                if (jobTestFlag && targetSpecificConfig.containsKey("${TARGET}.${jobTestFlag}")) {
-                    echo "DEBUG: Exact match '${TARGET}.${jobTestFlag}' found"
-                    mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.${jobTestFlag}"])
-                } else if (jobTestFlag) { // Then try with generic FIPS/OpenJCEPlus suffix for variants
-                    // Check for TARGET.FIPS when jobTestFlag contains FIPS (e.g., FIPS140_2, FIPS140_3_OpenJCEPlusFIPS)
-                    if (jobTestFlag.contains("FIPS")) {
-                        def targetFipsKey = "${TARGET}.FIPS"
-                        echo "DEBUG: jobTestFlag contains FIPS, checking for '${targetFipsKey}'"
-                        echo "DEBUG: targetSpecificConfig type = ${targetSpecificConfig.getClass().getName()}"
-                        echo "DEBUG: containsKey result = ${targetSpecificConfig.containsKey(targetFipsKey)}"
-                        echo "DEBUG: direct access result = ${targetSpecificConfig[targetFipsKey]}"
-                        if (targetSpecificConfig[targetFipsKey]) {
-                            echo "DEBUG: Found '${targetFipsKey}', applying BUILD_LIST config"
-                            mergeConfig(buildConfig, targetSpecificConfig[targetFipsKey])
-                        } else {
-                            echo "DEBUG: '${targetFipsKey}' NOT FOUND in targetSpecificConfig"
+                // Note: net.sf.json.JSONObject.containsKey() doesn't work with keys containing dots,
+                // so we use direct access instead
+                if (jobTestFlag) {
+                    // First try exact match (e.g., "extended.functional.FIPS140_3_OpenJCEPlusFIPS")
+                    def exactKey = "${TARGET}.${jobTestFlag}"
+                    if (targetSpecificConfig[exactKey]) {
+                        mergeConfig(buildConfig, targetSpecificConfig[exactKey])
+                    } else {
+                        // Then try with generic FIPS/OpenJCEPlus suffix for variants
+                        // Check for TARGET.FIPS when jobTestFlag contains FIPS (e.g., FIPS140_2, FIPS140_3_OpenJCEPlusFIPS)
+                        if (jobTestFlag.contains("FIPS")) {
+                            def targetFipsKey = "${TARGET}.FIPS"
+                            if (targetSpecificConfig[targetFipsKey]) {
+                                mergeConfig(buildConfig, targetSpecificConfig[targetFipsKey])
+                            }
                         }
-                    } else if (jobTestFlag.contains("OpenJCEPlus") && targetSpecificConfig.containsKey("${TARGET}.OpenJCEPlus")) {
-                        echo "DEBUG: Found '${TARGET}.OpenJCEPlus'"
-                        mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.OpenJCEPlus"])
+                        // Check for TARGET.OpenJCEPlus when jobTestFlag contains OpenJCEPlus
+                        if (jobTestFlag.contains("OpenJCEPlus")) {
+                            def targetOpenJCEPlusKey = "${TARGET}.OpenJCEPlus"
+                            if (targetSpecificConfig[targetOpenJCEPlusKey]) {
+                                mergeConfig(buildConfig, targetSpecificConfig[targetOpenJCEPlusKey])
+                            }
+                        }
                     }
                 }
                 
@@ -414,9 +454,26 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
             } else {
                 def suffix = ""
                 if (jobTestFlag) {
-                    // Convert TEST_FLAG to lowercase for job name suffix
-                    // The original jobTestFlag is passed unchanged to tests via TEST_FLAG parameter
-                    suffix = "_" + jobTestFlag.toLowerCase().trim()
+                    // Use abbreviated FIPS suffixes in job names to keep naming consistent
+                    // across platforms while still passing the original jobTestFlag unchanged
+                    // to the tests via the TEST_FLAG child parameter.
+                    if (jobTestFlag.contains("FIPS")) {
+                        if (jobTestFlag == "FIPS140_2") {
+                            suffix = "_f2"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced") {
+                            suffix = "_f3_strong"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJCEPlusFIPS.FIPS140-3") {
+                            suffix = "_f3_strict"
+                        } else if (jobTestFlag == "FIPS140_3_OpenJCEPlusFIPS") {
+                            suffix = "_f3_weak"
+                        } else {
+                            // For any other FIPS variant, use lowercase
+                            suffix = "_" + jobTestFlag.toLowerCase().trim()
+                        }
+                    } else {
+                        // For non-FIPS test flags (e.g., OpenJCEPlus), use lowercase
+                        suffix = "_" + jobTestFlag.toLowerCase().trim()
+                    }
                 }
                 TEST_JOB_NAME = "Test_openjdk${jobJdkVersion}_${short_name}_${TARGET}_${PLATFORM}${suffix}"
             }
