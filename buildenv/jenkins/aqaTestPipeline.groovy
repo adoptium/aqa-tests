@@ -297,9 +297,17 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                     mergeConfig(buildConfig, targetSpecificConfig[jobTestFlag])
                 }
                 
-                // Check for target + test flag combination (e.g., "functional.FIPS")
+                // Check for target + test flag combination (e.g., "extended.functional.FIPS")
+                // First try exact match
                 if (jobTestFlag && targetSpecificConfig.containsKey("${TARGET}.${jobTestFlag}")) {
                     mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.${jobTestFlag}"])
+                } else if (jobTestFlag) { // Then try with generic FIPS/OpenJCEPlus suffix for variants
+                    // Check for TARGET.FIPS when jobTestFlag contains FIPS (e.g., FIPS140_2, FIPS140_3_OpenJCEPlusFIPS)
+                    if (jobTestFlag.contains("FIPS") && targetSpecificConfig.containsKey("${TARGET}.FIPS")) {
+                        mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.FIPS"])
+                    } else if (jobTestFlag.contains("OpenJCEPlus") && targetSpecificConfig.containsKey("${TARGET}.OpenJCEPlus")) {
+                        mergeConfig(buildConfig, targetSpecificConfig["${TARGET}.OpenJCEPlus"])
+                    }
                 }
                 
                 // Apply configs in hierarchical order: base configs first, then specific overrides
