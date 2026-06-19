@@ -118,7 +118,7 @@ def PLATFORM_MAP = [
         'SPEC' : 'win_x86-64',
         'LABEL' : 'ci.role.test&&hw.arch.x86&&sw.os.windows',
         'DynamicAgents' : ['azure'],
-        'AzureTemplates' : ['sw.os.windows.11', 'sw.os.windows.2022', 'sw.os.windows.2025']
+        'azureTemplates' : ['sw.os.windows.11', 'sw.os.windows.2022', 'sw.os.windows.2025']
     ],
 ]
 
@@ -429,15 +429,9 @@ timestamps{
                                 if (LABEL.contains("ci.role.test&&")) {
                                     LABEL = LABEL.minus("ci.role.test&&")
                                     
-                                    // Cycle between Azure Windows templates if configured
-                                    if (CLOUD_PROVIDER == 'azure' && PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]) {
-                                        def templates = PLATFORM_MAP[params.PLATFORM]["AzureTemplates"]
-                                        def jobIdentifier = "${env.JOB_NAME}_${currentBuild.number}"
-                                        def templateIndex = Math.abs(jobIdentifier.hashCode()) % templates.size()
-                                        def selectedTemplate = templates[templateIndex]
-                                        LABEL = LABEL.minus("sw.os.windows")
-                                        LABEL += selectedTemplate
-                                        println "Selected Azure template: ${selectedTemplate} (hash of '${jobIdentifier}' → index ${templateIndex})"
+                                    // Cycle between cloud provider templates if configured
+                                    if (CLOUD_PROVIDER && PLATFORM_MAP[params.PLATFORM]["DynamicAgents"]?.contains(CLOUD_PROVIDER)) {
+                                        LABEL = selectCloudProviderTemplate(CLOUD_PROVIDER, PLATFORM_MAP[params.PLATFORM], LABEL)
                                     }
                                     
                                     // Combine Static & Dynamic selection
@@ -823,4 +817,101 @@ def freeEBCNode() {
                 println("Warning: Exception when triggering EBC_Delete_Node. This does not affect test build result.")
                 println(e.toString())
         }
+}
+
+/**
+ * Select a cloud provider template using hash-based cycling
+ *
+ * This method supports the convention-based approach where cloud provider templates
+ * are defined as {cloudProvider}Templates in the platform configuration.
+ *
+ * Templates should follow the label schema pattern (e.g., sw.os.windows.11).
+ * The method automatically detects the base label to replace by finding the longest
+ * common prefix between the current label and template labels.
+ *
+ * Handles complex label patterns including:
+ * - Simple labels: sw.os.windows
+ * - OR conditions: (sw.os.osx||sw.os.mac)
+ * - Multiple label types: hw.arch.x86&&sw.os.linux
+ *
+ * @param cloudProvider The cloud provider name (e.g., 'azure', 'fyre', 'gha')
+ * @param platform The platform configuration from PLATFORM_MAP
+ * @param currentLabel The current label string to modify
+ * @return Modified label with selected template, or original label if no templates configured
+ *
+ * Example usage:
+ *   Platform config: 'azureTemplates' : ['sw.os.windows.11', 'sw.os.windows.2022', 'sw.os.windows.2025']
+ *   Current label: 'ci.role.test&&hw.arch.x86&&sw.os.windows'
+ *   Result: 'hw.arch.x86&&sw.os.windows.2022&&(ci.role.test||ci.agent.dynamic)' (for example)
+ */
+def selectCloudProviderTemplate(cloudProvider, platform, currentLabel) {
+    // Use convention: {cloudProvider}Templates (e.g., azureTemplates, fyreTemplates, ghaTemplates)
+    def templatesKey = "${cloudProvider}Templates"
+    def templates = platform[templatesKey]
+    
+    if (!templates || templates.size() == 0) {
+        println "No templates configured for ${cloudProvider} (looking for '${templatesKey}')"
+        return currentLabel
+    }
+    
+    // Use job name + build number hash for deterministic but distributed selection
+    def jobIdentifier = "${env.JOB_NAME}_${currentBuild.number}"
+    def templateIndex = Math.abs(jobIdentifier.hashCode()) % templates.size()
+    def selectedTemplate = templates[templateIndex]
+    
+    // Auto-detect the label to replace by finding the base pattern in the template
+    // Templates follow schema: sw.category.base.variant (e.g., sw.os.windows.2022)
+    // We need to find and replace sw.category.base (e.g., sw.os.windows) in the current label
+    def labelToReplace = null
+    def replacementPattern = null
+    
+    // Extract the base pattern from the template (everything before the last dot)
+    def templateParts = selectedTemplate.tokenize('.')
+    if (templateParts.size() >= 3) {
+        // Build base pattern: sw.category.base (e.g., sw.os.windows)
+        def basePattern = templateParts[0..templateParts.size()-2].join('.')
+        
+        // Check for simple match: sw.os.windows
+        if (currentLabel.contains(basePattern)) {
+            labelToReplace = basePattern
+            replacementPattern = basePattern
+        }
+        // Check for OR condition match: (sw.os.osx||sw.os.mac)
+        else {
+            def orPattern = ~/\(([^)]*\|\|[^)]*)\)/
+            def matcher = currentLabel =~ orPattern
+            if (matcher.find()) {
+                def orClause = matcher.group(1)
+                // Check if any option in the OR clause matches our base pattern prefix
+                def templatePrefix = templateParts[0..1].join('.')
+                if (orClause.contains(templatePrefix)) {
+                    labelToReplace = "(${orClause})"
+                    replacementPattern = labelToReplace
+                }
+            }
+        }
+    }
+    
+    // If we couldn't auto-detect, try to find any matching label pattern
+    if (!labelToReplace) {
+        // Look for labels that match the template's prefix pattern
+        def templatePrefix = selectedTemplate.tokenize('.')[0..1].join('.')
+        def labelPattern = currentLabel.findAll(/\b${templatePrefix}\.\w+\b/)
+        if (labelPattern) {
+            labelToReplace = labelPattern[0]
+            replacementPattern = labelToReplace
+        }
+    }
+    
+    def modifiedLabel = currentLabel
+    if (labelToReplace && replacementPattern) {
+        modifiedLabel = currentLabel.replace(replacementPattern, selectedTemplate)
+        println "Selected ${cloudProvider} template: ${selectedTemplate} (replaced '${labelToReplace}', hash of '${jobIdentifier}' → index ${templateIndex}/${templates.size()})"
+    } else {
+        // If we can't find what to replace, just append the template
+        modifiedLabel += "&&${selectedTemplate}"
+        println "Selected ${cloudProvider} template: ${selectedTemplate} (appended, hash of '${jobIdentifier}' → index ${templateIndex}/${templates.size()})"
+    }
+    
+    return modifiedLabel
 }
