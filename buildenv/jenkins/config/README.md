@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains JSON configuration files that define test execution parameters for different variants (temurin, openj9, ibm) and build types (nightly, weekly, release).
+This directory contains JSON configuration files that define test execution parameters for different variants (temurin, openj9, dragonwell) and build types (nightly, weekly, release).
 
 ## Purpose
 
@@ -38,7 +38,7 @@ config/
 │   │   └── default.json
 │   └── release/
 │       └── default.json
-└── ibm/
+└── dragonwell/
     └── (similar structure)
 ```
 

@@ -677,14 +677,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
     
     // Determine if this is a release build (for SETUP_JCK_RUN)
     def isReleaseBuild = (params.BUILD_TYPE == "release")
-    
-    def globalConfig = jckConfig.GLOBAL_BUILD_CONFIG ?: [:]
-    def targetSpecificConfig = jckConfig.TARGET_SPECIFIC_CONFIG ?: [:]
-    def platformSpecificConfig = jckConfig.PLATFORM_SPECIFIC_CONFIG ?: [:]
-    def platformApplicationOptions = jckConfig.PLATFORM_APPLICATION_OPTIONS ?: [:]
-    def platformAdditionalTestLabels = jckConfig.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
-    def jckGitRepoTemplate = jckConfig.JCK_GIT_REPO_TEMPLATE ?: "git@github.com:temurin-compliance/JCK\${JDK_VERSION}-unzipped.git"
-    
+   
     // Get platform targets from config to determine which tests run on which platforms
     def platformTargets = jckConfig.PLATFORM_TARGETS ?: []
     
