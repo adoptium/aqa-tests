@@ -19,6 +19,9 @@ limitations under the License.
         </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
+	
+	<!-- Import getDependencies.xml to enable downloading Unicode test data -->
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/codepoint" />
@@ -50,7 +53,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,copyData" description="generate the distribution">
+	<target name="dist" depends="compile,copyData,extractUnicodeData" description="generate the distribution">
 		<jar jarfile="${DEST}/codepoint.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../resources/" />
@@ -61,8 +64,151 @@ limitations under the License.
 			<fileset dir="${src}/../" includes="expected.txt" />
 			<fileset dir="../tools/" includes="*" />
 		</copy>
+	</target>
+	
+	<!--
+	Extract Unicode test data from downloaded ZIPs.
+	
+	DESIGN DECISION: Extract ALL Unicode versions (10.0.0 through 17.0.0)
+	
+	REASONING:
+	1. Maintains backward compatibility - matches previous behavior where all versions
+	   were present in the git repository
+	2. Supports testing with any JDK version - tests use UnicodeVers.properties at
+	   runtime to select the appropriate version for the current JDK
+	3. Simpler implementation - no conditional logic or JDK version detection needed
+	4. Handles edge cases - all versions available regardless of build environment
+	
+	ALTERNATIVE CONSIDERED: Extract only the version needed for current JDK
+	- Would require JDK version detection in build.xml
+	- Would break if tests need multiple versions
+	- More complex with minimal benefit (disk space savings negligible)
+	
+	This target downloads ZIPs from unicode.org via getDependencies.pl and extracts
+	the required files to ${DEST}/data/, replacing the previous approach of copying
+	from git-stored files.
+	-->
+	<target name="extractUnicodeData" depends="getDependentLibs,init">
+		<mkdir dir="${DEST}/data"/>
+		
+		<!-- Extract UnicodeData.txt from all 9 Unicode versions (10.0.0 - 17.0.0) -->
+		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-10.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-11.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-11.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-13.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-13.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-14.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-14.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-16.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-16.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-17.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-17.0.0.txt"/>
+		</unzip>
+		
+		<!-- Extract Unihan_IRGSources.txt from all 9 Unicode versions -->
+		<unzip src="${LIB_DIR}/Unihan-10.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-10.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-11.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-11.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-12.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-12.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-13.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-13.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-14.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-14.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-15.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-15.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-15.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-15.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-16.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-16.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/Unihan-17.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Unihan_IRGSources.txt"/>
+			</patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-17.0.0.txt"/>
+		</unzip>
+		
+		<!-- Copy GB18030-2022 mapping file -->
+		<copy file="${LIB_DIR}/GB18030-2022.txt" todir="${DEST}/data"/>
+		
+		<!-- Copy special test files that remain in git (not from unicode.org) -->
 		<copy todir="${DEST}/data">
-			<fileset dir="${src}/../data/" />
+			<fileset dir="${src}/../data/" includes="u32FF"/>
 		</copy>
 	</target>
 

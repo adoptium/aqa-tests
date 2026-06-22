@@ -18,6 +18,9 @@ limitations under the License.
     </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
+	
+	<!-- Import getDependencies.xml to enable downloading ICU4J dependencies -->
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/CLDR_11" />
@@ -43,7 +46,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,copyData" description="generate the distribution">
+	<target name="dist" depends="compile,copyData,copyIcu4jDependencies" description="generate the distribution">
 		<jar jarfile="${DEST}/CLDR_11.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}" includes="*.properties" />
@@ -57,9 +60,30 @@ limitations under the License.
 			<fileset dir="../tools/" includes="*" />
 			<fileset dir="${src}/../win/" includes="*.log" />
 		</copy>
-		<copy todir="${DEST}/ext">
-			<fileset dir="ext/" includes="*.jar" />
-		</copy>
+	</target>
+	
+	<!--
+	Copy ICU4J dependencies from downloaded files.
+	
+	DESIGN DECISION: Copy ICU4J JARs from ${LIB_DIR} instead of git
+	
+	REASONING:
+	1. Maintains backward compatibility - same JARs available as before
+	2. Treats binary dependencies properly - JARs downloaded from Maven Central
+	   via getDependencies.pl instead of stored in git
+	3. Simpler implementation - direct copy, no extraction needed
+	4. Follows established pattern - similar to how other tests handle JAR dependencies
+	
+	This target downloads ICU4J JARs from Maven Central via getDependencies.pl and
+	copies them to ${DEST}/ext/, replacing the previous approach of copying from
+	git-stored files.
+	-->
+	<target name="copyIcu4jDependencies" depends="getDependentLibs,init">
+		<mkdir dir="${DEST}/ext"/>
+		
+		<!-- Copy ICU4J JARs from ${LIB_DIR} -->
+		<copy file="${LIB_DIR}/icu4j-61_1.jar" todir="${DEST}/ext"/>
+		<copy file="${LIB_DIR}/icu4j-localespi-61_1.jar" todir="${DEST}/ext"/>
 	</target>
 
 	<target name="clean" depends="dist" description="clean up">
