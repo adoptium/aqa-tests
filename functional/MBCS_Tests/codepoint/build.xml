@@ -147,61 +147,16 @@ limitations under the License.
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-17.0.0.txt"/>
 		</unzip>
 		
-		<!-- Extract Unihan_IRGSources.txt from all 9 Unicode versions -->
-		<unzip src="${LIB_DIR}/Unihan-10.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-10.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-11.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-11.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-12.1.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-12.1.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-13.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-13.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-14.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-14.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-15.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-15.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-15.1.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-15.1.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-16.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-16.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-17.0.0.zip" dest="${DEST}/data">
-			<patternset>
-				<include name="Unihan_IRGSources.txt"/>
-			</patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-17.0.0.txt"/>
-		</unzip>
+		<!-- Copy Unihan_IRGSources.txt from all 9 Unicode versions (optimized: individual files instead of ZIPs) -->
+		<copy file="${LIB_DIR}/Unihan_IRGSources-10.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-10.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-11.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-11.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-12.1.0.txt" tofile="${DEST}/data/Unihan_IRGSources-12.1.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-13.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-13.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-14.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-14.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-15.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-15.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-15.1.0.txt" tofile="${DEST}/data/Unihan_IRGSources-15.1.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-16.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-16.0.0.txt"/>
+		<copy file="${LIB_DIR}/Unihan_IRGSources-17.0.0.txt" tofile="${DEST}/data/Unihan_IRGSources-17.0.0.txt"/>
 		
 		<!-- Copy GB18030-2022 mapping file -->
 		<copy file="${LIB_DIR}/GB18030-2022.txt" todir="${DEST}/data"/>
