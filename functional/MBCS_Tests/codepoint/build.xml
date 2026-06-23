@@ -76,16 +76,13 @@ limitations under the License.
 		<!-- Calculate version code (JDK 11 -> 11000000) -->
 		<property name="jdk.version.code" value="${JDK_VERSION}000000"/>
 		
-		<!-- Get Unicode version for this JDK -->
-		<property name="unicode.mapping" value="${unicode.${jdk.version.code}}"/>
+		<!-- Get Unicode version for this JDK using propertycopy (Ant doesn't support nested ${}) -->
+		<propertycopy name="unicode.mapping" from="unicode.${jdk.version.code}" silent="false"/>
 		
 		<!-- Validate mapping exists -->
 		<fail message="No Unicode version mapping found for JDK ${JDK_VERSION} (code: ${jdk.version.code}). Please update UnicodeVers.properties.">
 			<condition>
-				<or>
-					<not><isset property="unicode.mapping"/></not>
-					<equals arg1="${unicode.mapping}" arg2="$${unicode.${jdk.version.code}}"/>
-				</or>
+				<not><isset property="unicode.mapping"/></not>
 			</condition>
 		</fail>
 		
