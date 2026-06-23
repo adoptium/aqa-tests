@@ -1,0 +1,23 @@
+[
+    {
+        "COMMENT": "JDK 21 and earlier specific JCK configuration overrides. For JDK 8, 11, 17, 21 - Windows does NOT need -Djava.awt.headless=false (only JDK 24+ needs it due to JDK-8185862). AIX uses sw.os.aix.7_2 instead of 7_2TL5.",
+        "PLATFORM_SPECIFIC_CONFIG": {
+            "jck": {
+                "x86-64_windows": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "EXTRA_OPTIONS": " -Xmx512m"
+                    }
+                },
+                "aarch64_windows": {
+                    "ADDITIONAL_TEST_PARAMS": {
+                        "EXTRA_OPTIONS": " -Xmx512m"
+                    }
+                }
+            }
+        },
+        "PLATFORM_ADDITIONAL_TEST_LABELS": {
+            "x86-64_linux": "!sw.tool.glibc.2_12",
+            "ppc64_aix": "sw.os.aix.7_2"
+        }
+    }
+]
