@@ -295,15 +295,17 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
         if (os.contains("windows")) {
             filter = "*.zip"
         }
-        def short_name = "hs"
+        def short_name = params.VARIANT
         def jdk_impl = "hotspot"
         if (params.VARIANT == "openj9") {
             short_name = "j9"
             jdk_impl = params.VARIANT
         } else if (params.VARIANT == "ibm") {
-            short_name = "ibm"
             jdk_impl = params.VARIANT
-        }
+        } else if (params.VARIANT == "temurin") {
+            short_name = "hs"
+        } 
+        
         def download_url = params.CUSTOMIZED_SDK_URL ? params.CUSTOMIZED_SDK_URL : ""
         def sdk_resource_value = SDK_RESOURCE
 
