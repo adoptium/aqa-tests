@@ -62,26 +62,8 @@ limitations under the License.
 		</copy>
 	</target>
 	
-	<!--
-	Copy ICU4J dependencies from downloaded files.
-	
-	DESIGN DECISION: Copy ICU4J JARs from ${LIB_DIR} instead of git
-	
-	REASONING:
-	1. Maintains backward compatibility - same JARs available as before
-	2. Treats binary dependencies properly - JARs downloaded from Maven Central
-	   via getDependencies.pl instead of stored in git
-	3. Simpler implementation - direct copy, no extraction needed
-	4. Follows established pattern - similar to how other tests handle JAR dependencies
-	
-	This target downloads ICU4J JARs from Maven Central via getDependencies.pl and
-	copies them to ${DEST}/ext/, replacing the previous approach of copying from
-	git-stored files.
-	-->
 	<target name="copyIcu4jDependencies" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/ext"/>
-		
-		<!-- Copy ICU4J JARs from ${LIB_DIR} -->
 		<copy file="${LIB_DIR}/icu4j-61_1.jar" todir="${DEST}/ext"/>
 		<copy file="${LIB_DIR}/icu4j-localespi-61_1.jar" todir="${DEST}/ext"/>
 	</target>

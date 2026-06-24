@@ -57,40 +57,10 @@ limitations under the License.
 		</copy>
 	</target>
 	
-	<!-- Extract Unicode data: uses existing UnicodeVers.properties mapping -->
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 		
-		<!-- Load JDK-to-Unicode version mapping -->
-		<property file="${TEST_ROOT}/functional/MBCS_Tests/codepoint/resources/UnicodeVers.properties" prefix="unicode"/>
-		
-		<!-- Calculate version code (JDK 11 -> 11000000) -->
-		<property name="jdk.version.code" value="${JDK_VERSION}000000"/>
-		
-		<!-- Get Unicode version for this JDK using propertycopy (Ant doesn't support nested ${}) -->
-		<propertycopy name="unicode.mapping" from="unicode.${jdk.version.code}" silent="false"/>
-		
-		<!-- Validate mapping exists -->
-		<fail message="No Unicode version mapping found for JDK ${JDK_VERSION} (code: ${jdk.version.code}). Please update UnicodeVers.properties.">
-			<condition>
-				<not><isset property="unicode.mapping"/></not>
-			</condition>
-		</fail>
-		
-		<!-- Extract version number (before comma) -->
-		<loadresource property="unicode.version">
-			<string value="${unicode.mapping}"/>
-			<filterchain>
-				<tokenfilter>
-					<replaceregex pattern=",.*" replace=""/>
-				</tokenfilter>
-			</filterchain>
-		</loadresource>
-		
-		<echo message="JDK ${JDK_VERSION} → Unicode ${unicode.version}"/>
-		
-		<!-- Extract 5 files for this version only -->
-		<unzip src="${LIB_DIR}/UCD-${unicode.version}.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
 			<patternset>
 				<include name="Blocks.txt"/>
 				<include name="NormalizationTest.txt"/>
@@ -98,11 +68,100 @@ limitations under the License.
 				<include name="Scripts.txt"/>
 				<include name="UnicodeData.txt"/>
 			</patternset>
-			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-${unicode.version}.txt"/>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-10.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-11.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-11.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-12.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-12.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-12.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-13.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-13.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-14.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-14.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-15.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.1.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-15.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-16.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-16.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-17.0.0.zip" dest="${DEST}/data">
+			<patternset>
+				<include name="Blocks.txt"/>
+				<include name="NormalizationTest.txt"/>
+				<include name="PropertyValueAliases.txt"/>
+				<include name="Scripts.txt"/>
+				<include name="UnicodeData.txt"/>
+			</patternset>
+			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-17.0.0.txt"/>
 		</unzip>
 		
-		<!-- Copy special test files that remain in git (not from unicode.org) -->
-		<copy todir="${DEST}/data">
+		<copy todir="${DEST}/data" failonerror="false">
 			<fileset dir="${src}/../data/">
 				<include name="README.txt"/>
 				<include name="UnicodeData-GB18030-2022.txt"/>

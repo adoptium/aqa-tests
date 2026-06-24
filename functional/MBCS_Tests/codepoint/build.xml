@@ -70,52 +70,56 @@ limitations under the License.
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 		
-		<!-- Load JDK-to-Unicode version mapping -->
-		<property file="${src}/../resources/UnicodeVers.properties" prefix="unicode"/>
-		
-		<!-- Calculate version code (JDK 11 -> 11000000) -->
-		<property name="jdk.version.code" value="${JDK_VERSION}000000"/>
-		
-		<!-- Get Unicode version for this JDK using propertycopy (Ant doesn't support nested ${}) -->
-		<propertycopy name="unicode.mapping" from="unicode.${jdk.version.code}" silent="false"/>
-		
-		<!-- Validate mapping exists -->
-		<fail message="No Unicode version mapping found for JDK ${JDK_VERSION} (code: ${jdk.version.code}). Please update UnicodeVers.properties.">
-			<condition>
-				<not><isset property="unicode.mapping"/></not>
-			</condition>
-		</fail>
-		
-		<!-- Extract version number (before comma) -->
-		<loadresource property="unicode.version">
-			<string value="${unicode.mapping}"/>
-			<filterchain>
-				<tokenfilter>
-					<replaceregex pattern=",.*" replace=""/>
-				</tokenfilter>
-			</filterchain>
-		</loadresource>
-		
-		<echo message="JDK ${JDK_VERSION} → Unicode ${unicode.version}"/>
-		
-		<!-- Extract UnicodeData.txt for this version only -->
-		<unzip src="${LIB_DIR}/UCD-${unicode.version}.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-${unicode.version}.txt"/>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-10.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-11.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-11.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-12.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-13.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-13.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-14.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-14.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-15.1.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.1.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-16.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-16.0.0.txt"/>
+		</unzip>
+		<unzip src="${LIB_DIR}/UCD-17.0.0.zip" dest="${DEST}/data">
+			<patternset><include name="UnicodeData.txt"/></patternset>
+			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-17.0.0.txt"/>
 		</unzip>
 		
-		<!-- Copy Unihan file for this version only -->
-		<copy file="${LIB_DIR}/Unihan_IRGSources-${unicode.version}.txt"
-		      tofile="${DEST}/data/Unihan_IRGSources-${unicode.version}.txt"/>
-		
-		<!-- Copy GB18030 if in mapping (JDK 11.0.20+) -->
-		<condition property="has.gb18030">
-			<contains string="${unicode.mapping}" substring="GB18030"/>
-		</condition>
-		<copy file="${LIB_DIR}/GB18030-2022.txt" todir="${DEST}/data" if:set="has.gb18030"/>
-		
-		<!-- Copy special test files that remain in git (not from unicode.org) -->
 		<copy todir="${DEST}/data">
+			<fileset dir="${LIB_DIR}">
+				<include name="Unihan_IRGSources-*.txt"/>
+			</fileset>
+		</copy>
+		
+		<copy file="${LIB_DIR}/GB18030-2022.txt" todir="${DEST}/data" failonerror="false"/>
+		
+		<copy todir="${DEST}/data" failonerror="false">
 			<fileset dir="${src}/../data/" includes="u32FF"/>
 		</copy>
 	</target>
