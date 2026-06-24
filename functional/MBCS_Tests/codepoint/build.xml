@@ -70,54 +70,55 @@ limitations under the License.
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 		
-		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-10.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-10.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-11.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-11.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-11.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-12.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-12.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-12.1.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.1.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-13.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-13.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-13.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-14.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-14.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-14.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-15.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-15.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-15.1.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-15.1.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.1.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-16.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-16.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-16.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-17.0.0.zip" dest="${DEST}/data">
+		<unzip src="${LIB_DIR}/UCD-17.0.0-v2.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-17.0.0.txt"/>
 		</unzip>
 		
 		<copy todir="${DEST}/data">
 			<fileset dir="${LIB_DIR}">
-				<include name="Unihan_IRGSources-*.txt"/>
+				<include name="Unihan_IRGSources-*-v2.txt"/>
 			</fileset>
+			<mapper type="regexp" from="^(.+)-v2\.txt$$" to="\1.txt"/>
 		</copy>
 		
-		<copy file="${LIB_DIR}/GB18030-2022.txt" todir="${DEST}/data" failonerror="false"/>
+		<copy file="${LIB_DIR}/GB18030-2022-v2.txt" tofile="${DEST}/data/GB18030-2022.txt" failonerror="false"/>
 		
 		<copy todir="${DEST}/data" failonerror="false">
 			<fileset dir="${src}/../data/" includes="u32FF"/>
