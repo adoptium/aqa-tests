@@ -64,8 +64,8 @@ limitations under the License.
 	
 	<target name="copyIcu4jDependencies" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/ext"/>
-		<copy file="${LIB_DIR}/icu4j-61_1-v2.jar" tofile="${DEST}/ext/icu4j-61_1.jar"/>
-		<copy file="${LIB_DIR}/icu4j-localespi-61_1-v2.jar" tofile="${DEST}/ext/icu4j-localespi-61_1.jar"/>
+		<copy file="${LIB_DIR}/icu4j-61_1.jar" tofile="${DEST}/ext/icu4j-61_1.jar"/>
+		<copy file="${LIB_DIR}/icu4j-localespi-61_1.jar" tofile="${DEST}/ext/icu4j-localespi-61_1.jar"/>
 	</target>
 
 	<target name="clean" depends="dist" description="clean up">
