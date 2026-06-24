@@ -1,0 +1,1104 @@
+ 
+export TEST_JDK_HOME=/tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11
+export EXTRA_DOCKER_ARGS=-v /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11:/opt/java/openjdk ;
+export BUILD_LIST=external/lucene-solr ;
+export EXTERNAL_AQA_IMAGE=fedora:40;
+make compile
+make _lucene_solr_nightly_smoketest_OpenJ9
+
+JAVA_HOME is set to /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/autoGenEnv.mk
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/utils.mk
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+    [javac] Note: /home/jvanek/git/aqa-tests/TKG/src/org/openj9/envInfo/MachineInfo.java uses or overrides a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+dist:
+      [jar] Building jar: /home/jvanek/git/aqa-tests/TKG/bin/TestKitGen.jar
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+0
+/tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11/bin/java -cp ./bin/TestKitGen.jar org.openj9.envInfo.EnvDetector
+Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!
+microArchOutput: model name	: 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz
+****************************** MACHINE INFO ******************************
+File path : /home/jvanek/git/aqa-tests/TKG
+Free Physical Memory Size : 13947269120
+Free space (bytes) : 292820299776
+Total Physical Memory Size : 67106488320
+Total space (bytes) : 632976211968
+Usable space (bytes) : 260591689728
+antVersion : Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+cpuCores : 16
+curlVersion : 
+	curl 8.2.1 (x86_64-redhat-linux-gnu) libcurl/8.2.1 OpenSSL/3.1.4 zlib/1.2.13 libidn2/2.3.7 nghttp2/1.55.1
+	Release-Date: 2023-07-26
+	Protocols: file ftp ftps http https
+	Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz SPNEGO SSL threadsafe UnixSockets
+docker : not on docker
+gcc version : 13
+gclibc version : ldd (GNU libc) 2.38
+gdb version : GNU gdb (Fedora Linux) 15.1-1.fc39
+lldb version : Command could not be executed
+makeVersion : 
+	GNU Make 4.4.1
+	Built for x86_64-redhat-linux-gnu
+	Copyright (C) 1988-2023 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+perlVersion : 
+	
+	This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-thread-multi
+	(with 15 registered patches, see perl -V for more detail)
+	
+	Copyright 1987-2023, Larry Wall
+	
+	Perl may be copied only under the terms of either the Artistic License or the
+	GNU General Public License, which may be found in the Perl 5 source kit.
+	
+	Complete documentation for Perl, including FAQ lists, should be found on
+	this system using "man perl" or "perldoc perl".  If you have access to the
+	Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+	
+procArch : unknown
+sysArch : x86_64
+sysOS : Linux
+ulimit : 
+	real-time non-blocking time  (microseconds, -R) unlimited
+	core file size              (blocks, -c) unlimited
+	data seg size               (kbytes, -d) unlimited
+	scheduling priority                 (-e) 0
+	file size                   (blocks, -f) unlimited
+	pending signals                     (-i) 255386
+	max locked memory           (kbytes, -l) 8192
+	max memory size             (kbytes, -m) unlimited
+	open files                          (-n) 524288
+	pipe size                (512 bytes, -p) 8
+	POSIX message queues         (bytes, -q) 819200
+	real-time priority                  (-r) 0
+	stack size                  (kbytes, -s) 8192
+	cpu time                   (seconds, -t) unlimited
+	max user processes                  (-u) 255386
+	virtual memory              (kbytes, -v) unlimited
+	file locks                          (-x) unlimited
+uname : Linux fedora 6.11.6-100.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Nov  1 16:07:59 UTC 2024 x86_64 GNU/Linux
+vmVendor : Oracle Corporation
+vmVersion : 17.0.13+11
+xlc version : bash: line 1: xlC: command not found
+**************************************************************************
+
+System.getProperty('java.vm.name')=OpenJDK 64-Bit Server VM
+
+System.getProperty('java.vendor')=Eclipse Adoptium
+
+System.getProperty('os.name')=Linux
+
+System.getProperty('os.arch')=amd64
+
+System.getProperty('java.fullversion')=null
+
+System.getProperty('sun.arch.data.model')=64
+
+make -f clean.mk cleanBuild
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../../jvmtest
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f compile.mk compile
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f scripts/build_test.xml -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DBUILD_ROOT=/home/jvanek/git/aqa-tests/TKG/../../jvmtest -DJDK_VERSION=17 -DJDK_IMPL=hotspot -DJDK_VENDOR=eclipse -DJCL_VERSION=latest -DBUILD_LIST=external/lucene-solr -DRESOURCES_DIR=/home/jvanek/git/aqa-tests/TKG/../../jvmtest/TestConfig/resources -DSPEC=linux_x86-64 -DTEST_JDK_HOME=/tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11 -DJVM_VERSION=openjdk17 -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib  2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_test.xml
+     [echo]  build.list is TestConfig/build.xml,external/lucene-solr/build.xml 
+
+-create_test_directory:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest
+
+stage_test_material:
+     [copy] Copying 1209 files to /home/jvanek/git/jvmtest
+     [copy] Copied 357 empty directories to 145 empty directories under /home/jvanek/git/jvmtest
+
+build:
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest/TestConfig
+
+build:
+     [copy] Copying 22 files to /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copied 9 empty directories to 4 empty directories under /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/TestConfig
+
+build:
+
+move_scripts:
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/external/lucene-solr
+     [copy] Copying 9 files to /home/jvanek/git/jvmtest/external
+
+clean_image:
+     [echo] Executing external.sh --clean --dir lucene-solr --tag nightly --version 17 --impl hotspot 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is lucene-solr
+     [exec] The directory in the external.sh is lucene-solr
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] Error: invalid reference format
+     [exec] Result: 125
+
+build_image:
+     [echo] Executing external.sh --build --dir lucene-solr --tag nightly --version 17 --impl hotspot --platform linux_x86-64 --docker_args -v /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11:/opt/java/openjdk 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is lucene-solr
+     [exec] The directory in the external.sh is lucene-solr
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] build_image.sh lucene-solr 17 hotspot ubuntu jdk full linux_x86-64 default 0 
+     [exec] /home/jvanek/git/jvmtest/external
+     [exec] 
+     [exec] Writing /home/jvanek/git/jvmtest/external/lucene-solr/dockerfile/17/jdk/ubuntu/Dockerfile.hotspot.full ... fedora
+     [exec] done
+     [exec] 
+     [exec] The test in the build_image() function is lucene-solr
+     [exec] #####################################################
+     [exec] INFO:  podman build  --no-cache -t adoptopenjdk-lucene-solr-test:17-jdk-ubuntu-hotspot-full -f /home/jvanek/git/jvmtest/external/lucene-solr/dockerfile/17/jdk/ubuntu/Dockerfile.hotspot.full /home/jvanek/git/jvmtest/external/
+     [exec] #####################################################
+     [exec] STEP 1/21: FROM fedora:40
+     [exec] STEP 2/21: ENV RESULT_COMMENT="IN CONTAINER(not-as-root/podman)"
+     [exec] --> f6ffc4d48b49
+     [exec] STEP 3/21: ARG LUCENE_SOLR_TAG=releases/lucene-solr/8.11.1
+     [exec] --> 164475832e34
+     [exec] STEP 4/21: RUN dnf install -y  ivy git wget tar  	&& dnf clean all
+     [exec] Fedora 40 - x86_64                               15 MB/s |  20 MB     00:01    
+     [exec] Fedora 40 openh264 (From Cisco) - x86_64        1.4 kB/s | 1.4 kB     00:01    
+     [exec] Fedora 40 - x86_64 - Updates                     13 MB/s |  11 MB     00:00    
+     [exec] Package tar-2:1.35-3.fc40.x86_64 is already installed.
+     [exec] Dependencies resolved.
+     [exec] ================================================================================
+     [exec]  Package                     Arch   Version                       Repo     Size
+     [exec] ================================================================================
+     [exec] Installing:
+     [exec]  apache-ivy                  noarch 2.5.2-6.fc40                  updates 1.2 M
+     [exec]  git                         x86_64 2.47.1-1.fc40                 updates  51 k
+     [exec]  wget2-wget                  x86_64 2.2.0-1.fc40                  updates 9.4 k
+     [exec] Upgrading:
+     [exec]  gnutls                      x86_64 3.8.6-1.fc40                  updates 1.1 M
+     [exec]  libblkid                    x86_64 2.40.2-1.fc40                 updates 124 k
+     [exec]  libmount                    x86_64 2.40.2-1.fc40                 updates 155 k
+     [exec]  libsmartcols                x86_64 2.40.2-1.fc40                 updates  83 k
+     [exec]  libuuid                     x86_64 2.40.2-1.fc40                 updates  29 k
+     [exec] Installing dependencies:
+     [exec]  abattis-cantarell-vf-fonts  noarch 0.301-12.fc40                 fedora  120 k
+     [exec]  avahi-libs                  x86_64 0.8-26.fc40                   fedora   67 k
+     [exec]  cairo                       x86_64 1.18.0-3.fc40                 fedora  709 k
+     [exec]  copy-jdk-configs            noarch 4.1-5.fc40                    fedora   28 k
+     [exec]  cpio                        x86_64 2.15-1.fc40                   fedora  292 k
+     [exec]  crypto-policies-scripts     noarch 20240201-2.git9f501f3.fc40    fedora  117 k
+     [exec]  cryptsetup-libs             x86_64 2.7.5-1.fc40                  updates 532 k
+     [exec]  cups-filesystem             noarch 1:2.4.11-8.fc40               updates  14 k
+     [exec]  cups-libs                   x86_64 1:2.4.11-8.fc40               updates 262 k
+     [exec]  dbus                        x86_64 1:1.14.10-3.fc40              fedora  8.0 k
+     [exec]  dbus-broker                 x86_64 36-2.fc40                     updates 171 k
+     [exec]  dbus-common                 noarch 1:1.14.10-3.fc40              fedora   15 k
+     [exec]  dbus-libs                   x86_64 1:1.14.10-3.fc40              fedora  156 k
+     [exec]  default-fonts-core-sans     noarch 4.0-13.fc40                   updates  31 k
+     [exec]  device-mapper               x86_64 1.02.199-1.fc40               updates 136 k
+     [exec]  device-mapper-libs          x86_64 1.02.199-1.fc40               updates 176 k
+     [exec]  dracut                      x86_64 102-2.fc40                    updates 466 k
+     [exec]  file                        x86_64 5.45-4.fc40                   fedora   49 k
+     [exec]  fontconfig                  x86_64 2.15.0-6.fc40                 updates 270 k
+     [exec]  fonts-filesystem            noarch 1:2.0.5-14.fc40               fedora  8.2 k
+     [exec]  freetype                    x86_64 2.13.2-5.fc40                 fedora  410 k
+     [exec]  fuse-libs                   x86_64 2.9.9-21.fc40                 fedora   96 k
+     [exec]  gettext-envsubst            x86_64 0.22.5-4.fc40                 updates  38 k
+     [exec]  gettext-libs                x86_64 0.22.5-4.fc40                 updates 666 k
+     [exec]  gettext-runtime             x86_64 0.22.5-4.fc40                 updates 121 k
+     [exec]  git-core                    x86_64 2.47.1-1.fc40                 updates 4.8 M
+     [exec]  git-core-doc                noarch 2.47.1-1.fc40                 updates 3.0 M
+     [exec]  gnutls-dane                 x86_64 3.8.6-1.fc40                  updates  39 k
+     [exec]  google-noto-fonts-common    noarch 20240301-2.fc40               fedora   17 k
+     [exec]  google-noto-sans-vf-fonts   noarch 20240301-2.fc40               fedora  593 k
+     [exec]  gpgme                       x86_64 1.23.2-3.fc40                 fedora  211 k
+     [exec]  graphite2                   x86_64 1.3.14-15.fc40                fedora   95 k
+     [exec]  groff-base                  x86_64 1.23.0-6.fc40                 fedora  1.1 M
+     [exec]  grub2-common                noarch 1:2.06-123.fc40               updates 919 k
+     [exec]  grub2-tools                 x86_64 1:2.06-123.fc40               updates 1.8 M
+     [exec]  grub2-tools-minimal         x86_64 1:2.06-123.fc40               updates 615 k
+     [exec]  harfbuzz                    x86_64 8.5.0-1.fc40                  updates 1.0 M
+     [exec]  java-1.8.0-openjdk-headless x86_64 1:1.8.0.432.b06-3.fc40        updates  33 M
+     [exec]  javapackages-filesystem     noarch 6.2.0-9.fc40                  fedora   12 k
+     [exec]  kbd                         x86_64 2.6.4-3.fc40                  fedora  415 k
+     [exec]  kbd-legacy                  noarch 2.6.4-3.fc40                  fedora  574 k
+     [exec]  kbd-misc                    noarch 2.6.4-3.fc40                  fedora  1.7 M
+     [exec]  kmod                        x86_64 31-5.fc40                     fedora  122 k
+     [exec]  kmod-libs                   x86_64 31-5.fc40                     fedora   68 k
+     [exec]  less                        x86_64 643-6.fc40                    updates 175 k
+     [exec]  libX11                      x86_64 1.8.10-2.fc40                 updates 650 k
+     [exec]  libX11-common               noarch 1.8.10-2.fc40                 updates 176 k
+     [exec]  libXau                      x86_64 1.0.11-6.fc40                 fedora   32 k
+     [exec]  libXext                     x86_64 1.3.6-1.fc40                  fedora   39 k
+     [exec]  libXrender                  x86_64 0.9.11-6.fc40                 fedora   27 k
+     [exec]  libcbor                     x86_64 0.11.0-1.fc40                 fedora   33 k
+     [exec]  libedit                     x86_64 3.1-53.20240808cvs.fc40       updates 105 k
+     [exec]  libfdisk                    x86_64 2.40.2-1.fc40                 updates 159 k
+     [exec]  libfido2                    x86_64 1.14.0-4.fc40                 fedora   98 k
+     [exec]  libkcapi                    x86_64 1.5.0-4.fc40                  updates  46 k
+     [exec]  libkcapi-hasher             x86_64 1.5.0-4.fc40                  updates  26 k
+     [exec]  libkcapi-hmaccalc           x86_64 1.5.0-4.fc40                  updates 9.1 k
+     [exec]  libpng                      x86_64 2:1.6.40-3.fc40               fedora  120 k
+     [exec]  libseccomp                  x86_64 2.5.5-1.fc40                  updates  70 k
+     [exec]  libtextstyle                x86_64 0.22.5-4.fc40                 updates  88 k
+     [exec]  libutempter                 x86_64 1.2.1-13.fc40                 fedora   26 k
+     [exec]  libxcb                      x86_64 1.17.0-2.fc40                 updates 240 k
+     [exec]  lksctp-tools                x86_64 1.0.19-6.fc40                 fedora   92 k
+     [exec]  lua                         x86_64 5.4.6-5.fc40                  fedora  191 k
+     [exec]  lua-posix                   x86_64 36.2.1-6.fc40                 fedora  142 k
+     [exec]  ncurses                     x86_64 6.4-12.20240127.fc40          fedora  421 k
+     [exec]  nspr                        x86_64 4.36.0-1.fc40                 updates 137 k
+     [exec]  nss                         x86_64 3.106.0-1.fc40                updates 711 k
+     [exec]  nss-softokn                 x86_64 3.106.0-1.fc40                updates 414 k
+     [exec]  nss-softokn-freebl          x86_64 3.106.0-1.fc40                updates 331 k
+     [exec]  nss-sysinit                 x86_64 3.106.0-1.fc40                updates  19 k
+     [exec]  nss-util                    x86_64 3.106.0-1.fc40                updates  88 k
+     [exec]  openssh                     x86_64 9.6p1-1.fc40.4                updates 425 k
+     [exec]  openssh-clients             x86_64 9.6p1-1.fc40.4                updates 748 k
+     [exec]  os-prober                   x86_64 1.81-6.fc40                   fedora   51 k
+     [exec]  perl-AutoLoader             noarch 5.74-506.fc40                 fedora   22 k
+     [exec]  perl-B                      x86_64 1.88-506.fc40                 fedora  176 k
+     [exec]  perl-Carp                   noarch 1.54-502.fc40                 fedora   29 k
+     [exec]  perl-Class-Struct           noarch 0.68-506.fc40                 fedora   23 k
+     [exec]  perl-Data-Dumper            x86_64 2.188-503.fc40                fedora   56 k
+     [exec]  perl-Digest                 noarch 1.20-502.fc40                 fedora   25 k
+     [exec]  perl-Digest-MD5             x86_64 2.59-3.fc40                   fedora   36 k
+     [exec]  perl-DynaLoader             x86_64 1.54-506.fc40                 fedora   26 k
+     [exec]  perl-Encode                 x86_64 4:3.21-505.fc40               fedora  1.1 M
+     [exec]  perl-Errno                  x86_64 1.37-506.fc40                 fedora   15 k
+     [exec]  perl-Error                  noarch 1:0.17029-15.fc40             fedora   40 k
+     [exec]  perl-Exporter               noarch 5.78-3.fc40                   fedora   31 k
+     [exec]  perl-Fcntl                  x86_64 1.15-506.fc40                 fedora   21 k
+     [exec]  perl-File-Basename          noarch 2.86-506.fc40                 fedora   18 k
+     [exec]  perl-File-Find              noarch 1.43-506.fc40                 fedora   26 k
+     [exec]  perl-File-Path              noarch 2.18-503.fc40                 fedora   35 k
+     [exec]  perl-File-Temp              noarch 1:0.231.100-503.fc40          fedora   59 k
+     [exec]  perl-File-stat              noarch 1.13-506.fc40                 fedora   18 k
+     [exec]  perl-FileHandle             noarch 2.05-506.fc40                 fedora   16 k
+     [exec]  perl-Getopt-Long            noarch 1:2.57-4.fc40                 updates  63 k
+     [exec]  perl-Getopt-Std             noarch 1.13-506.fc40                 fedora   16 k
+     [exec]  perl-Git                    noarch 2.47.1-1.fc40                 updates  38 k
+     [exec]  perl-HTTP-Tiny              noarch 0.088-5.fc40                  fedora   56 k
+     [exec]  perl-IO                     x86_64 1.52-506.fc40                 fedora   83 k
+     [exec]  perl-IO-Socket-IP           noarch 0.42-2.fc40                   fedora   42 k
+     [exec]  perl-IO-Socket-SSL          noarch 2.085-1.fc40                  fedora  229 k
+     [exec]  perl-IPC-Open3              noarch 1.22-506.fc40                 fedora   22 k
+     [exec]  perl-MIME-Base64            x86_64 3.16-503.fc40                 fedora   30 k
+     [exec]  perl-Mozilla-CA             noarch 20231213-3.fc40               fedora   14 k
+     [exec]  perl-Net-SSLeay             x86_64 1.94-3.fc40                   fedora  385 k
+     [exec]  perl-POSIX                  x86_64 2.13-506.fc40                 fedora   97 k
+     [exec]  perl-PathTools              x86_64 3.89-502.fc40                 fedora   87 k
+     [exec]  perl-Pod-Escapes            noarch 1:1.07-503.fc40               fedora   20 k
+     [exec]  perl-Pod-Perldoc            noarch 3.28.01-503.fc40              fedora   86 k
+     [exec]  perl-Pod-Simple             noarch 1:3.45-6.fc40                 fedora  219 k
+     [exec]  perl-Pod-Usage              noarch 4:2.03-504.fc40               updates  40 k
+     [exec]  perl-Scalar-List-Utils      x86_64 5:1.63-503.fc40               fedora   73 k
+     [exec]  perl-SelectSaver            noarch 1.02-506.fc40                 fedora   12 k
+     [exec]  perl-Socket                 x86_64 4:2.038-1.fc40                updates  55 k
+     [exec]  perl-Storable               x86_64 1:3.32-502.fc40               fedora   98 k
+     [exec]  perl-Symbol                 noarch 1.09-506.fc40                 fedora   15 k
+     [exec]  perl-Term-ANSIColor         noarch 5.01-504.fc40                 fedora   48 k
+     [exec]  perl-Term-Cap               noarch 1.18-503.fc40                 fedora   22 k
+     [exec]  perl-TermReadKey            x86_64 2.38-21.fc40                  fedora   35 k
+     [exec]  perl-Text-ParseWords        noarch 3.31-502.fc40                 fedora   16 k
+     [exec]  perl-Text-Tabs+Wrap         noarch 2024.001-1.fc40               fedora   22 k
+     [exec]  perl-Time-Local             noarch 2:1.350-5.fc40                fedora   34 k
+     [exec]  perl-URI                    noarch 5.28-1.fc40                   updates 133 k
+     [exec]  perl-base                   noarch 2.27-506.fc40                 fedora   17 k
+     [exec]  perl-constant               noarch 1.33-503.fc40                 fedora   23 k
+     [exec]  perl-if                     noarch 0.61.000-506.fc40             fedora   14 k
+     [exec]  perl-interpreter            x86_64 4:5.38.2-506.fc40             fedora   72 k
+     [exec]  perl-lib                    x86_64 0.65-506.fc40                 fedora   15 k
+     [exec]  perl-libnet                 noarch 3.15-503.fc40                 fedora  129 k
+     [exec]  perl-libs                   x86_64 4:5.38.2-506.fc40             fedora  2.3 M
+     [exec]  perl-locale                 noarch 1.10-506.fc40                 fedora   14 k
+     [exec]  perl-mro                    x86_64 1.28-506.fc40                 fedora   29 k
+     [exec]  perl-overload               noarch 1.37-506.fc40                 fedora   46 k
+     [exec]  perl-overloading            noarch 0.02-506.fc40                 fedora   13 k
+     [exec]  perl-parent                 noarch 1:0.241-502.fc40              fedora   15 k
+     [exec]  perl-podlators              noarch 1:5.01-502.fc40               fedora  126 k
+     [exec]  perl-vars                   noarch 1.05-506.fc40                 fedora   13 k
+     [exec]  pixman                      x86_64 0.43.4-1.fc40                 updates 293 k
+     [exec]  procps-ng                   x86_64 4.0.4-3.fc40                  fedora  367 k
+     [exec]  protobuf-c                  x86_64 1.5.0-3.fc40                  fedora   32 k
+     [exec]  systemd                     x86_64 255.15-1.fc40                 updates 5.3 M
+     [exec]  systemd-libs                x86_64 255.15-1.fc40                 updates 707 k
+     [exec]  systemd-pam                 x86_64 255.15-1.fc40                 updates 382 k
+     [exec]  systemd-udev                x86_64 255.15-1.fc40                 updates 2.3 M
+     [exec]  tpm2-tss-fapi               x86_64 4.0.1-7.fc40                  fedora  317 k
+     [exec]  tzdata-java                 noarch 2024a-5.fc40                  updates  47 k
+     [exec]  unbound-libs                x86_64 1.21.1-3.fc40                 updates 543 k
+     [exec]  util-linux                  x86_64 2.40.2-1.fc40                 updates 1.2 M
+     [exec]  util-linux-core             x86_64 2.40.2-1.fc40                 updates 537 k
+     [exec]  wget2                       x86_64 2.2.0-1.fc40                  updates 279 k
+     [exec]  wget2-libs                  x86_64 2.2.0-1.fc40                  updates 148 k
+     [exec]  xkeyboard-config            noarch 2.41-1.fc40                   fedora  976 k
+     [exec]  xml-common                  noarch 0.6.3-63.fc40                 fedora   31 k
+     [exec] Installing weak dependencies:
+     [exec]  diffutils                   x86_64 3.10-5.fc40                   fedora  406 k
+     [exec]  grubby                      x86_64 8.40-75.fc40                  fedora   26 k
+     [exec]  kpartx                      x86_64 0.9.7-7.fc40                  fedora   49 k
+     [exec]  libbpf                      x86_64 2:1.2.3-1.fc40                updates 165 k
+     [exec]  libxkbcommon                x86_64 1.6.0-2.fc40                  fedora  142 k
+     [exec]  memstrack                   x86_64 0.2.5-4.fc40                  fedora   49 k
+     [exec]  perl-NDBM_File              x86_64 1.16-506.fc40                 fedora   23 k
+     [exec]  pigz                        x86_64 2.8-4.fc40                    fedora   95 k
+     [exec]  qrencode-libs               x86_64 4.1.1-7.fc40                  fedora   61 k
+     [exec]  systemd-networkd            x86_64 255.15-1.fc40                 updates 673 k
+     [exec]  systemd-resolved            x86_64 255.15-1.fc40                 updates 295 k
+     [exec]  tpm2-tools                  x86_64 5.7-1.fc40                    updates 810 k
+     [exec]  unbound-anchor              x86_64 1.21.1-3.fc40                 updates  36 k
+     [exec] 
+     [exec] Transaction Summary
+     [exec] ================================================================================
+     [exec] Install  169 Packages
+     [exec] Upgrade    5 Packages
+     [exec] 
+     [exec] Total download size: 86 M
+     [exec] Downloading Packages:
+     [exec] (1/174): avahi-libs-0.8-26.fc40.x86_64.rpm      2.7 MB/s |  67 kB     00:00    
+     [exec] (2/174): copy-jdk-configs-4.1-5.fc40.noarch.rpm 5.4 MB/s |  28 kB     00:00    
+     [exec] (3/174): abattis-cantarell-vf-fonts-0.301-12.fc 3.5 MB/s | 120 kB     00:00    
+     [exec] (4/174): crypto-policies-scripts-20240201-2.git 8.0 MB/s | 117 kB     00:00    
+     [exec] (5/174): dbus-1.14.10-3.fc40.x86_64.rpm         1.6 MB/s | 8.0 kB     00:00    
+     [exec] (6/174): cpio-2.15-1.fc40.x86_64.rpm            9.8 MB/s | 292 kB     00:00    
+     [exec] (7/174): dbus-common-1.14.10-3.fc40.noarch.rpm  2.7 MB/s |  15 kB     00:00    
+     [exec] (8/174): cairo-1.18.0-3.fc40.x86_64.rpm         9.7 MB/s | 709 kB     00:00    
+     [exec] (9/174): dbus-libs-1.14.10-3.fc40.x86_64.rpm     11 MB/s | 156 kB     00:00    
+     [exec] (10/174): file-5.45-4.fc40.x86_64.rpm           9.6 MB/s |  49 kB     00:00    
+     [exec] (11/174): fonts-filesystem-2.0.5-14.fc40.noarch 1.7 MB/s | 8.2 kB     00:00    
+     [exec] (12/174): diffutils-3.10-5.fc40.x86_64.rpm       17 MB/s | 406 kB     00:00    
+     [exec] (13/174): fuse-libs-2.9.9-21.fc40.x86_64.rpm     17 MB/s |  96 kB     00:00    
+     [exec] (14/174): google-noto-fonts-common-20240301-2.f 3.6 MB/s |  17 kB     00:00    
+     [exec] (15/174): freetype-2.13.2-5.fc40.x86_64.rpm      21 MB/s | 410 kB     00:00    
+     [exec] (16/174): gpgme-1.23.2-3.fc40.x86_64.rpm         20 MB/s | 211 kB     00:00    
+     [exec] (17/174): graphite2-1.3.14-15.fc40.x86_64.rpm    17 MB/s |  95 kB     00:00    
+     [exec] (18/174): grubby-8.40-75.fc40.x86_64.rpm        5.0 MB/s |  26 kB     00:00    
+     [exec] (19/174): javapackages-filesystem-6.2.0-9.fc40. 2.5 MB/s |  12 kB     00:00    
+     [exec] (20/174): google-noto-sans-vf-fonts-20240301-2.  20 MB/s | 593 kB     00:00    
+     [exec] (21/174): kbd-2.6.4-3.fc40.x86_64.rpm            21 MB/s | 415 kB     00:00    
+     [exec] (22/174): kbd-legacy-2.6.4-3.fc40.noarch.rpm     19 MB/s | 574 kB     00:00    
+     [exec] (23/174): groff-base-1.23.0-6.fc40.x86_64.rpm    22 MB/s | 1.1 MB     00:00    
+     [exec] (24/174): kmod-31-5.fc40.x86_64.rpm              13 MB/s | 122 kB     00:00    
+     [exec] (25/174): kmod-libs-31-5.fc40.x86_64.rpm         13 MB/s |  68 kB     00:00    
+     [exec] (26/174): kpartx-0.9.7-7.fc40.x86_64.rpm        9.6 MB/s |  49 kB     00:00    
+     [exec] (27/174): libXau-1.0.11-6.fc40.x86_64.rpm       6.4 MB/s |  32 kB     00:00    
+     [exec] (28/174): libXext-1.3.6-1.fc40.x86_64.rpm       7.7 MB/s |  39 kB     00:00    
+     [exec] (29/174): libXrender-0.9.11-6.fc40.x86_64.rpm   5.5 MB/s |  27 kB     00:00    
+     [exec] (30/174): libcbor-0.11.0-1.fc40.x86_64.rpm      6.6 MB/s |  33 kB     00:00    
+     [exec] (31/174): libfido2-1.14.0-4.fc40.x86_64.rpm      17 MB/s |  98 kB     00:00    
+     [exec] (32/174): libutempter-1.2.1-13.fc40.x86_64.rpm  5.2 MB/s |  26 kB     00:00    
+     [exec] (33/174): libpng-1.6.40-3.fc40.x86_64.rpm        13 MB/s | 120 kB     00:00    
+     [exec] (34/174): lksctp-tools-1.0.19-6.fc40.x86_64.rpm  16 MB/s |  92 kB     00:00    
+     [exec] (35/174): libxkbcommon-1.6.0-2.fc40.x86_64.rpm   14 MB/s | 142 kB     00:00    
+     [exec] (36/174): lua-5.4.6-5.fc40.x86_64.rpm            18 MB/s | 191 kB     00:00    
+     [exec] (37/174): lua-posix-36.2.1-6.fc40.x86_64.rpm     14 MB/s | 142 kB     00:00    
+     [exec] (38/174): memstrack-0.2.5-4.fc40.x86_64.rpm     9.6 MB/s |  49 kB     00:00    
+     [exec] (39/174): kbd-misc-2.6.4-3.fc40.noarch.rpm       23 MB/s | 1.7 MB     00:00    
+     [exec] (40/174): os-prober-1.81-6.fc40.x86_64.rpm      8.1 MB/s |  51 kB     00:00    
+     [exec] (41/174): perl-AutoLoader-5.74-506.fc40.noarch. 4.5 MB/s |  22 kB     00:00    
+     [exec] (42/174): ncurses-6.4-12.20240127.fc40.x86_64.r  21 MB/s | 421 kB     00:00    
+     [exec] (43/174): perl-Carp-1.54-502.fc40.noarch.rpm    5.5 MB/s |  29 kB     00:00    
+     [exec] (44/174): perl-B-1.88-506.fc40.x86_64.rpm        17 MB/s | 176 kB     00:00    
+     [exec] (45/174): perl-Class-Struct-0.68-506.fc40.noarc 4.6 MB/s |  23 kB     00:00    
+     [exec] (46/174): perl-Data-Dumper-2.188-503.fc40.x86_6  11 MB/s |  56 kB     00:00    
+     [exec] (47/174): perl-Digest-1.20-502.fc40.noarch.rpm  4.9 MB/s |  25 kB     00:00    
+     [exec] (48/174): perl-Digest-MD5-2.59-3.fc40.x86_64.rp 7.2 MB/s |  36 kB     00:00    
+     [exec] (49/174): perl-DynaLoader-1.54-506.fc40.x86_64. 5.4 MB/s |  26 kB     00:00    
+     [exec] (50/174): perl-Errno-1.37-506.fc40.x86_64.rpm   3.2 MB/s |  15 kB     00:00    
+     [exec] (51/174): perl-Error-0.17029-15.fc40.noarch.rpm 7.5 MB/s |  40 kB     00:00    
+     [exec] (52/174): perl-Exporter-5.78-3.fc40.noarch.rpm  6.1 MB/s |  31 kB     00:00    
+     [exec] (53/174): perl-Fcntl-1.15-506.fc40.x86_64.rpm   4.1 MB/s |  21 kB     00:00    
+     [exec] (54/174): perl-File-Basename-2.86-506.fc40.noar 3.5 MB/s |  18 kB     00:00    
+     [exec] (55/174): perl-File-Find-1.43-506.fc40.noarch.r 5.2 MB/s |  26 kB     00:00    
+     [exec] (56/174): perl-File-Path-2.18-503.fc40.noarch.r 6.9 MB/s |  35 kB     00:00    
+     [exec] (57/174): perl-File-Temp-0.231.100-503.fc40.noa  11 MB/s |  59 kB     00:00    
+     [exec] (58/174): perl-File-stat-1.13-506.fc40.noarch.r 3.6 MB/s |  18 kB     00:00    
+     [exec] (59/174): perl-FileHandle-2.05-506.fc40.noarch. 3.3 MB/s |  16 kB     00:00    
+     [exec] (60/174): perl-Getopt-Std-1.13-506.fc40.noarch. 3.3 MB/s |  16 kB     00:00    
+     [exec] (61/174): perl-HTTP-Tiny-0.088-5.fc40.noarch.rp  11 MB/s |  56 kB     00:00    
+     [exec] (62/174): perl-IO-1.52-506.fc40.x86_64.rpm       15 MB/s |  83 kB     00:00    
+     [exec] (63/174): perl-IO-Socket-IP-0.42-2.fc40.noarch. 7.6 MB/s |  42 kB     00:00    
+     [exec] (64/174): perl-IPC-Open3-1.22-506.fc40.noarch.r 4.5 MB/s |  22 kB     00:00    
+     [exec] (65/174): perl-Encode-3.21-505.fc40.x86_64.rpm   22 MB/s | 1.1 MB     00:00    
+     [exec] (66/174): perl-IO-Socket-SSL-2.085-1.fc40.noarc  22 MB/s | 229 kB     00:00    
+     [exec] (67/174): perl-MIME-Base64-3.16-503.fc40.x86_64 5.9 MB/s |  30 kB     00:00    
+     [exec] (68/174): perl-Mozilla-CA-20231213-3.fc40.noarc 2.9 MB/s |  14 kB     00:00    
+     [exec] (69/174): perl-NDBM_File-1.16-506.fc40.x86_64.r 4.7 MB/s |  23 kB     00:00    
+     [exec] (70/174): perl-POSIX-2.13-506.fc40.x86_64.rpm    17 MB/s |  97 kB     00:00    
+     [exec] (71/174): perl-PathTools-3.89-502.fc40.x86_64.r  15 MB/s |  87 kB     00:00    
+     [exec] (72/174): perl-Pod-Escapes-1.07-503.fc40.noarch 3.9 MB/s |  20 kB     00:00    
+     [exec] (73/174): perl-Pod-Perldoc-3.28.01-503.fc40.noa  15 MB/s |  86 kB     00:00    
+     [exec] (74/174): perl-Net-SSLeay-1.94-3.fc40.x86_64.rp  19 MB/s | 385 kB     00:00    
+     [exec] (75/174): perl-Scalar-List-Utils-1.63-503.fc40.  13 MB/s |  73 kB     00:00    
+     [exec] (76/174): perl-Pod-Simple-3.45-6.fc40.noarch.rp  21 MB/s | 219 kB     00:00    
+     [exec] (77/174): perl-SelectSaver-1.02-506.fc40.noarch 2.5 MB/s |  12 kB     00:00    
+     [exec] (78/174): perl-Storable-3.32-502.fc40.x86_64.rp  17 MB/s |  98 kB     00:00    
+     [exec] (79/174): perl-Symbol-1.09-506.fc40.noarch.rpm  3.1 MB/s |  15 kB     00:00    
+     [exec] (80/174): perl-Term-ANSIColor-5.01-504.fc40.noa 9.4 MB/s |  48 kB     00:00    
+     [exec] (81/174): perl-Term-Cap-1.18-503.fc40.noarch.rp 4.4 MB/s |  22 kB     00:00    
+     [exec] (82/174): perl-TermReadKey-2.38-21.fc40.x86_64. 7.1 MB/s |  35 kB     00:00    
+     [exec] (83/174): perl-Text-ParseWords-3.31-502.fc40.no 3.4 MB/s |  16 kB     00:00    
+     [exec] (84/174): perl-Text-Tabs+Wrap-2024.001-1.fc40.n 4.4 MB/s |  22 kB     00:00    
+     [exec] (85/174): perl-Time-Local-1.350-5.fc40.noarch.r 6.7 MB/s |  34 kB     00:00    
+     [exec] (86/174): perl-base-2.27-506.fc40.noarch.rpm    3.4 MB/s |  17 kB     00:00    
+     [exec] (87/174): perl-constant-1.33-503.fc40.noarch.rp 4.6 MB/s |  23 kB     00:00    
+     [exec] (88/174): perl-if-0.61.000-506.fc40.noarch.rpm  3.0 MB/s |  14 kB     00:00    
+     [exec] (89/174): perl-interpreter-5.38.2-506.fc40.x86_  14 MB/s |  72 kB     00:00    
+     [exec] (90/174): perl-lib-0.65-506.fc40.x86_64.rpm     3.2 MB/s |  15 kB     00:00    
+     [exec] (91/174): perl-locale-1.10-506.fc40.noarch.rpm  2.8 MB/s |  14 kB     00:00    
+     [exec] (92/174): perl-libnet-3.15-503.fc40.noarch.rpm   13 MB/s | 129 kB     00:00    
+     [exec] (93/174): perl-mro-1.28-506.fc40.x86_64.rpm     5.9 MB/s |  29 kB     00:00    
+     [exec] (94/174): perl-overload-1.37-506.fc40.noarch.rp 9.1 MB/s |  46 kB     00:00    
+     [exec] (95/174): perl-overloading-0.02-506.fc40.noarch 2.8 MB/s |  13 kB     00:00    
+     [exec] (96/174): perl-parent-0.241-502.fc40.noarch.rpm 3.1 MB/s |  15 kB     00:00    
+     [exec] (97/174): perl-podlators-5.01-502.fc40.noarch.r  21 MB/s | 126 kB     00:00    
+     [exec] (98/174): perl-vars-1.05-506.fc40.noarch.rpm    2.5 MB/s |  13 kB     00:00    
+     [exec] (99/174): pigz-2.8-4.fc40.x86_64.rpm             17 MB/s |  95 kB     00:00    
+     [exec] (100/174): protobuf-c-1.5.0-3.fc40.x86_64.rpm   6.3 MB/s |  32 kB     00:00    
+     [exec] (101/174): procps-ng-4.0.4-3.fc40.x86_64.rpm     23 MB/s | 367 kB     00:00    
+     [exec] (102/174): qrencode-libs-4.1.1-7.fc40.x86_64.rp  11 MB/s |  61 kB     00:00    
+     [exec] (103/174): tpm2-tss-fapi-4.0.1-7.fc40.x86_64.rp  22 MB/s | 317 kB     00:00    
+     [exec] (104/174): xml-common-0.6.3-63.fc40.noarch.rpm  6.2 MB/s |  31 kB     00:00    
+     [exec] (105/174): xkeyboard-config-2.41-1.fc40.noarch.  17 MB/s | 976 kB     00:00    
+     [exec] (106/174): perl-libs-5.38.2-506.fc40.x86_64.rpm  22 MB/s | 2.3 MB     00:00    
+     [exec] (107/174): cryptsetup-libs-2.7.5-1.fc40.x86_64.  29 MB/s | 532 kB     00:00    
+     [exec] (108/174): cups-filesystem-2.4.11-8.fc40.noarch 1.0 MB/s |  14 kB     00:00    
+     [exec] (109/174): dbus-broker-36-2.fc40.x86_64.rpm      26 MB/s | 171 kB     00:00    
+     [exec] (110/174): cups-libs-2.4.11-8.fc40.x86_64.rpm    17 MB/s | 262 kB     00:00    
+     [exec] (111/174): apache-ivy-2.5.2-6.fc40.noarch.rpm    17 MB/s | 1.2 MB     00:00    
+     [exec] (112/174): default-fonts-core-sans-4.0-13.fc40. 6.3 MB/s |  31 kB     00:00    
+     [exec] (113/174): device-mapper-1.02.199-1.fc40.x86_64  23 MB/s | 136 kB     00:00    
+     [exec] (114/174): device-mapper-libs-1.02.199-1.fc40.x  27 MB/s | 176 kB     00:00    
+     [exec] (115/174): gettext-envsubst-0.22.5-4.fc40.x86_6 7.2 MB/s |  38 kB     00:00    
+     [exec] (116/174): fontconfig-2.15.0-6.fc40.x86_64.rpm   27 MB/s | 270 kB     00:00    
+     [exec] (117/174): dracut-102-2.fc40.x86_64.rpm          29 MB/s | 466 kB     00:00    
+     [exec] (118/174): gettext-runtime-0.22.5-4.fc40.x86_64  21 MB/s | 121 kB     00:00    
+     [exec] (119/174): git-2.47.1-1.fc40.x86_64.rpm         9.7 MB/s |  51 kB     00:00    
+     [exec] (120/174): gettext-libs-0.22.5-4.fc40.x86_64.rp  31 MB/s | 666 kB     00:00    
+     [exec] (121/174): gnutls-dane-3.8.6-1.fc40.x86_64.rpm  2.7 MB/s |  39 kB     00:00    
+     [exec] (122/174): grub2-common-2.06-123.fc40.noarch.rp  35 MB/s | 919 kB     00:00    
+     [exec] (123/174): git-core-doc-2.47.1-1.fc40.noarch.rp  33 MB/s | 3.0 MB     00:00    
+     [exec] (124/174): grub2-tools-2.06-123.fc40.x86_64.rpm  35 MB/s | 1.8 MB     00:00    
+     [exec] (125/174): grub2-tools-minimal-2.06-123.fc40.x8  31 MB/s | 615 kB     00:00    
+     [exec] (126/174): git-core-2.47.1-1.fc40.x86_64.rpm     30 MB/s | 4.8 MB     00:00    
+     [exec] (127/174): harfbuzz-8.5.0-1.fc40.x86_64.rpm      18 MB/s | 1.0 MB     00:00    
+     [exec] (128/174): less-643-6.fc40.x86_64.rpm           6.0 MB/s | 175 kB     00:00    
+     [exec] (129/174): libX11-common-1.8.10-2.fc40.noarch.r  23 MB/s | 176 kB     00:00    
+     [exec] (130/174): libX11-1.8.10-2.fc40.x86_64.rpm       16 MB/s | 650 kB     00:00    
+     [exec] (131/174): libbpf-1.2.3-1.fc40.x86_64.rpm        26 MB/s | 165 kB     00:00    
+     [exec] (132/174): libedit-3.1-53.20240808cvs.fc40.x86_  18 MB/s | 105 kB     00:00    
+     [exec] (133/174): libfdisk-2.40.2-1.fc40.x86_64.rpm     24 MB/s | 159 kB     00:00    
+     [exec] (134/174): libkcapi-1.5.0-4.fc40.x86_64.rpm     8.7 MB/s |  46 kB     00:00    
+     [exec] (135/174): libkcapi-hasher-1.5.0-4.fc40.x86_64. 5.1 MB/s |  26 kB     00:00    
+     [exec] (136/174): libkcapi-hmaccalc-1.5.0-4.fc40.x86_6 1.9 MB/s | 9.1 kB     00:00    
+     [exec] (137/174): libseccomp-2.5.5-1.fc40.x86_64.rpm   9.7 MB/s |  70 kB     00:00    
+     [exec] (138/174): libtextstyle-0.22.5-4.fc40.x86_64.rp  14 MB/s |  88 kB     00:00    
+     [exec] (139/174): libxcb-1.17.0-2.fc40.x86_64.rpm       32 MB/s | 240 kB     00:00    
+     [exec] (140/174): nspr-4.36.0-1.fc40.x86_64.rpm         18 MB/s | 137 kB     00:00    
+     [exec] (141/174): nss-softokn-3.106.0-1.fc40.x86_64.rp  23 MB/s | 414 kB     00:00    
+     [exec] (142/174): nss-3.106.0-1.fc40.x86_64.rpm         33 MB/s | 711 kB     00:00    
+     [exec] (143/174): nss-softokn-freebl-3.106.0-1.fc40.x8  39 MB/s | 331 kB     00:00    
+     [exec] (144/174): nss-sysinit-3.106.0-1.fc40.x86_64.rp 2.5 MB/s |  19 kB     00:00    
+     [exec] (145/174): nss-util-3.106.0-1.fc40.x86_64.rpm    16 MB/s |  88 kB     00:00    
+     [exec] (146/174): openssh-9.6p1-1.fc40.4.x86_64.rpm     26 MB/s | 425 kB     00:00    
+     [exec] (147/174): perl-Getopt-Long-2.57-4.fc40.noarch. 8.6 MB/s |  63 kB     00:00    
+     [exec] (148/174): openssh-clients-9.6p1-1.fc40.4.x86_6  35 MB/s | 748 kB     00:00    
+     [exec] (149/174): perl-Git-2.47.1-1.fc40.noarch.rpm    7.5 MB/s |  38 kB     00:00    
+     [exec] (150/174): perl-Pod-Usage-2.03-504.fc40.noarch. 7.5 MB/s |  40 kB     00:00    
+     [exec] (151/174): perl-Socket-2.038-1.fc40.x86_64.rpm   10 MB/s |  55 kB     00:00    
+     [exec] (152/174): perl-URI-5.28-1.fc40.noarch.rpm       21 MB/s | 133 kB     00:00    
+     [exec] (153/174): pixman-0.43.4-1.fc40.x86_64.rpm       36 MB/s | 293 kB     00:00    
+     [exec] (154/174): systemd-libs-255.15-1.fc40.x86_64.rp  33 MB/s | 707 kB     00:00    
+     [exec] (155/174): systemd-networkd-255.15-1.fc40.x86_6  32 MB/s | 673 kB     00:00    
+     [exec] (156/174): systemd-pam-255.15-1.fc40.x86_64.rpm  33 MB/s | 382 kB     00:00    
+     [exec] (157/174): systemd-resolved-255.15-1.fc40.x86_6  27 MB/s | 295 kB     00:00    
+     [exec] (158/174): systemd-udev-255.15-1.fc40.x86_64.rp  34 MB/s | 2.3 MB     00:00    
+     [exec] (159/174): systemd-255.15-1.fc40.x86_64.rpm      37 MB/s | 5.3 MB     00:00    
+     [exec] (160/174): tzdata-java-2024a-5.fc40.noarch.rpm  5.6 MB/s |  47 kB     00:00    
+     [exec] (161/174): tpm2-tools-5.7-1.fc40.x86_64.rpm      43 MB/s | 810 kB     00:00    
+     [exec] (162/174): unbound-anchor-1.21.1-3.fc40.x86_64. 5.9 MB/s |  36 kB     00:00    
+     [exec] (163/174): unbound-libs-1.21.1-3.fc40.x86_64.rp  30 MB/s | 543 kB     00:00    
+     [exec] (164/174): util-linux-core-2.40.2-1.fc40.x86_64  39 MB/s | 537 kB     00:00    
+     [exec] (165/174): wget2-2.2.0-1.fc40.x86_64.rpm         37 MB/s | 279 kB     00:00    
+     [exec] (166/174): util-linux-2.40.2-1.fc40.x86_64.rpm   31 MB/s | 1.2 MB     00:00    
+     [exec] (167/174): wget2-libs-2.2.0-1.fc40.x86_64.rpm    24 MB/s | 148 kB     00:00    
+     [exec] (168/174): wget2-wget-2.2.0-1.fc40.x86_64.rpm   1.8 MB/s | 9.4 kB     00:00    
+     [exec] (169/174): libblkid-2.40.2-1.fc40.x86_64.rpm     12 MB/s | 124 kB     00:00    
+     [exec] (170/174): libmount-2.40.2-1.fc40.x86_64.rpm     19 MB/s | 155 kB     00:00    
+     [exec] (171/174): gnutls-3.8.6-1.fc40.x86_64.rpm        49 MB/s | 1.1 MB     00:00    
+     [exec] (172/174): libsmartcols-2.40.2-1.fc40.x86_64.rp  15 MB/s |  83 kB     00:00    
+     [exec] (173/174): libuuid-2.40.2-1.fc40.x86_64.rpm     4.8 MB/s |  29 kB     00:00    
+     [exec] (174/174): java-1.8.0-openjdk-headless-1.8.0.43  40 MB/s |  33 MB     00:00    
+     [exec] --------------------------------------------------------------------------------
+     [exec] Total                                            36 MB/s |  86 MB     00:02     
+     [exec] Running transaction check
+     [exec] Transaction check succeeded.
+     [exec] Running transaction test
+     [exec] Transaction test succeeded.
+     [exec] Running transaction
+     [exec]   Running scriptlet: copy-jdk-configs-4.1-5.fc40.noarch                     1/1 
+     [exec]   Running scriptlet: java-1.8.0-openjdk-headless-1:1.8.0.432.b06-3.fc40.x   1/1 
+     [exec]   Preparing        :                                                        1/1 
+     [exec]   Installing       : systemd-libs-255.15-1.fc40.x86_64                    1/179 
+     [exec]   Upgrading        : libuuid-2.40.2-1.fc40.x86_64                         2/179 
+     [exec]   Upgrading        : libblkid-2.40.2-1.fc40.x86_64                        3/179 
+     [exec]   Installing       : nspr-4.36.0-1.fc40.x86_64                            4/179 
+     [exec]   Installing       : nss-util-3.106.0-1.fc40.x86_64                       5/179 
+     [exec]   Installing       : libfdisk-2.40.2-1.fc40.x86_64                        6/179 
+     [exec]   Upgrading        : libmount-2.40.2-1.fc40.x86_64                        7/179 
+     [exec]   Upgrading        : gnutls-3.8.6-1.fc40.x86_64                           8/179 
+     [exec]   Installing       : kmod-libs-31-5.fc40.x86_64                           9/179 
+     [exec]   Installing       : kmod-31-5.fc40.x86_64                               10/179 
+     [exec]   Installing       : fonts-filesystem-1:2.0.5-14.fc40.noarch             11/179 
+     [exec]   Upgrading        : libsmartcols-2.40.2-1.fc40.x86_64                   12/179 
+     [exec]   Installing       : util-linux-core-2.40.2-1.fc40.x86_64                13/179 
+     [exec]   Installing       : grub2-common-1:2.06-123.fc40.noarch                 14/179 
+     [exec]   Installing       : libpng-2:1.6.40-3.fc40.x86_64                       15/179 
+     [exec]   Installing       : javapackages-filesystem-6.2.0-9.fc40.noarch         16/179 
+     [exec]   Installing       : gpgme-1.23.2-3.fc40.x86_64                          17/179 
+     [exec]   Installing       : abattis-cantarell-vf-fonts-0.301-12.fc40.noarch     18/179 
+     [exec]   Installing       : nss-softokn-freebl-3.106.0-1.fc40.x86_64            19/179 
+     [exec]   Installing       : nss-softokn-3.106.0-1.fc40.x86_64                   20/179 
+     [exec]   Installing       : tpm2-tss-fapi-4.0.1-7.fc40.x86_64                   21/179 
+     [exec]   Installing       : tpm2-tools-5.7-1.fc40.x86_64                        22/179 
+     [exec]   Installing       : dbus-libs-1:1.14.10-3.fc40.x86_64                   23/179 
+     [exec]   Installing       : avahi-libs-0.8-26.fc40.x86_64                       24/179 
+     [exec]   Installing       : procps-ng-4.0.4-3.fc40.x86_64                       25/179 
+     [exec]   Installing       : tzdata-java-2024a-5.fc40.noarch                     26/179 
+     [exec]   Installing       : pixman-0.43.4-1.fc40.x86_64                         27/179 
+     [exec]   Installing       : libtextstyle-0.22.5-4.fc40.x86_64                   28/179 
+     [exec]   Installing       : gettext-libs-0.22.5-4.fc40.x86_64                   29/179 
+     [exec]   Installing       : libseccomp-2.5.5-1.fc40.x86_64                      30/179 
+     [exec]   Installing       : libedit-3.1-53.20240808cvs.fc40.x86_64              31/179 
+     [exec]   Installing       : libbpf-2:1.2.3-1.fc40.x86_64                        32/179 
+     [exec]   Installing       : libX11-common-1.8.10-2.fc40.noarch                  33/179 
+     [exec]   Installing       : less-643-6.fc40.x86_64                              34/179 
+     [exec]   Installing       : gettext-envsubst-0.22.5-4.fc40.x86_64               35/179 
+     [exec]   Installing       : gettext-runtime-0.22.5-4.fc40.x86_64                36/179 
+     [exec]   Running scriptlet: xml-common-0.6.3-63.fc40.noarch                     37/179 
+     [exec]   Installing       : xml-common-0.6.3-63.fc40.noarch                     37/179 
+     [exec]   Installing       : xkeyboard-config-2.41-1.fc40.noarch                 38/179 
+     [exec]   Installing       : libxkbcommon-1.6.0-2.fc40.x86_64                    39/179 
+     [exec]   Installing       : qrencode-libs-4.1.1-7.fc40.x86_64                   40/179 
+     [exec]   Installing       : protobuf-c-1.5.0-3.fc40.x86_64                      41/179 
+     [exec]   Installing       : unbound-anchor-1.21.1-3.fc40.x86_64                 42/179 
+     [exec]   Running scriptlet: unbound-anchor-1.21.1-3.fc40.x86_64                 42/179 
+     [exec]   Running scriptlet: unbound-libs-1.21.1-3.fc40.x86_64                   43/179 
+     [exec]   Installing       : unbound-libs-1.21.1-3.fc40.x86_64                   43/179 
+     [exec]   Installing       : gnutls-dane-3.8.6-1.fc40.x86_64                     44/179 
+     [exec]   Installing       : wget2-libs-2.2.0-1.fc40.x86_64                      45/179 
+     [exec]   Installing       : wget2-2.2.0-1.fc40.x86_64                           46/179 
+     [exec]   Installing       : pigz-2.8-4.fc40.x86_64                              47/179 
+     [exec]   Installing       : ncurses-6.4-12.20240127.fc40.x86_64                 48/179 
+     [exec]   Installing       : memstrack-0.2.5-4.fc40.x86_64                       49/179 
+     [exec]   Installing       : lua-posix-36.2.1-6.fc40.x86_64                      50/179 
+     [exec]   Installing       : lua-5.4.6-5.fc40.x86_64                             51/179 
+     [exec]   Installing       : copy-jdk-configs-4.1-5.fc40.noarch                  52/179 
+     [exec]   Installing       : lksctp-tools-1.0.19-6.fc40.x86_64                   53/179 
+     [exec]   Installing       : libcbor-0.11.0-1.fc40.x86_64                        54/179 
+     [exec]   Installing       : libfido2-1.14.0-4.fc40.x86_64                       55/179 
+     [exec]   Installing       : libXau-1.0.11-6.fc40.x86_64                         56/179 
+     [exec]   Installing       : libxcb-1.17.0-2.fc40.x86_64                         57/179 
+     [exec]   Installing       : libX11-1.8.10-2.fc40.x86_64                         58/179 
+     [exec]   Installing       : libXext-1.3.6-1.fc40.x86_64                         59/179 
+     [exec]   Installing       : libXrender-0.9.11-6.fc40.x86_64                     60/179 
+     [exec]   Installing       : kbd-misc-2.6.4-3.fc40.noarch                        61/179 
+     [exec]   Installing       : kbd-legacy-2.6.4-3.fc40.noarch                      62/179 
+     [exec]   Installing       : kbd-2.6.4-3.fc40.x86_64                             63/179 
+     [exec]   Running scriptlet: groff-base-1.23.0-6.fc40.x86_64                     64/179 
+     [exec]   Installing       : groff-base-1.23.0-6.fc40.x86_64                     64/179 
+     [exec]   Running scriptlet: groff-base-1.23.0-6.fc40.x86_64                     64/179 
+     [exec]   Installing       : perl-Digest-1.20-502.fc40.noarch                    65/179 
+     [exec]   Installing       : perl-Digest-MD5-2.59-3.fc40.x86_64                  66/179 
+     [exec]   Installing       : perl-B-1.88-506.fc40.x86_64                         67/179 
+     [exec]   Installing       : perl-FileHandle-2.05-506.fc40.noarch                68/179 
+     [exec]   Installing       : perl-Data-Dumper-2.188-503.fc40.x86_64              69/179 
+     [exec]   Installing       : perl-libnet-3.15-503.fc40.noarch                    70/179 
+     [exec]   Installing       : perl-AutoLoader-5.74-506.fc40.noarch                71/179 
+     [exec]   Installing       : perl-URI-5.28-1.fc40.noarch                         72/179 
+     [exec]   Installing       : perl-Text-Tabs+Wrap-2024.001-1.fc40.noarch          73/179 
+     [exec]   Installing       : perl-Mozilla-CA-20231213-3.fc40.noarch              74/179 
+     [exec]   Installing       : perl-if-0.61.000-506.fc40.noarch                    75/179 
+     [exec]   Installing       : perl-locale-1.10-506.fc40.noarch                    76/179 
+     [exec]   Installing       : perl-Time-Local-2:1.350-5.fc40.noarch               77/179 
+     [exec]   Installing       : perl-File-Path-2.18-503.fc40.noarch                 78/179 
+     [exec]   Installing       : perl-Pod-Escapes-1:1.07-503.fc40.noarch             79/179 
+     [exec]   Installing       : perl-IO-Socket-IP-0.42-2.fc40.noarch                80/179 
+     [exec]   Installing       : perl-Net-SSLeay-1.94-3.fc40.x86_64                  81/179 
+     [exec]   Installing       : perl-IO-Socket-SSL-2.085-1.fc40.noarch              82/179 
+     [exec]   Installing       : perl-Class-Struct-0.68-506.fc40.noarch              83/179 
+     [exec]   Installing       : perl-Term-ANSIColor-5.01-504.fc40.noarch            84/179 
+     [exec]   Installing       : perl-POSIX-2.13-506.fc40.x86_64                     85/179 
+     [exec]   Installing       : perl-Term-Cap-1.18-503.fc40.noarch                  86/179 
+     [exec]   Installing       : perl-File-Temp-1:0.231.100-503.fc40.noarch          87/179 
+     [exec]   Installing       : perl-IPC-Open3-1.22-506.fc40.noarch                 88/179 
+     [exec]   Installing       : perl-HTTP-Tiny-0.088-5.fc40.noarch                  89/179 
+     [exec]   Installing       : perl-Pod-Simple-1:3.45-6.fc40.noarch                90/179 
+     [exec]   Installing       : perl-SelectSaver-1.02-506.fc40.noarch               91/179 
+     [exec]   Installing       : perl-Symbol-1.09-506.fc40.noarch                    92/179 
+     [exec]   Installing       : perl-File-stat-1.13-506.fc40.noarch                 93/179 
+     [exec]   Installing       : perl-Socket-4:2.038-1.fc40.x86_64                   94/179 
+     [exec]   Installing       : perl-podlators-1:5.01-502.fc40.noarch               95/179 
+     [exec]   Installing       : perl-Pod-Perldoc-3.28.01-503.fc40.noarch            96/179 
+     [exec]   Installing       : perl-Fcntl-1.15-506.fc40.x86_64                     97/179 
+     [exec]   Installing       : perl-Text-ParseWords-3.31-502.fc40.noarch           98/179 
+     [exec]   Installing       : perl-base-2.27-506.fc40.noarch                      99/179 
+     [exec]   Installing       : perl-mro-1.28-506.fc40.x86_64                      100/179 
+     [exec]   Installing       : perl-overloading-0.02-506.fc40.noarch              101/179 
+     [exec]   Installing       : perl-IO-1.52-506.fc40.x86_64                       102/179 
+     [exec]   Installing       : perl-Pod-Usage-4:2.03-504.fc40.noarch              103/179 
+     [exec]   Installing       : perl-Errno-1.37-506.fc40.x86_64                    104/179 
+     [exec]   Installing       : perl-File-Basename-2.86-506.fc40.noarch            105/179 
+     [exec]   Installing       : perl-Getopt-Std-1.13-506.fc40.noarch               106/179 
+     [exec]   Installing       : perl-MIME-Base64-3.16-503.fc40.x86_64              107/179 
+     [exec]   Installing       : perl-Scalar-List-Utils-5:1.63-503.fc40.x86_64      108/179 
+     [exec]   Installing       : perl-constant-1.33-503.fc40.noarch                 109/179 
+     [exec]   Installing       : perl-overload-1.37-506.fc40.noarch                 110/179 
+     [exec]   Installing       : perl-parent-1:0.241-502.fc40.noarch                111/179 
+     [exec]   Installing       : perl-vars-1.05-506.fc40.noarch                     112/179 
+     [exec]   Installing       : perl-Storable-1:3.32-502.fc40.x86_64               113/179 
+     [exec]   Installing       : perl-Getopt-Long-1:2.57-4.fc40.noarch              114/179 
+     [exec]   Installing       : perl-Carp-1.54-502.fc40.noarch                     115/179 
+     [exec]   Installing       : perl-Exporter-5.78-3.fc40.noarch                   116/179 
+     [exec]   Installing       : perl-NDBM_File-1.16-506.fc40.x86_64                117/179 
+     [exec]   Installing       : perl-PathTools-3.89-502.fc40.x86_64                118/179 
+     [exec]   Installing       : perl-DynaLoader-1.54-506.fc40.x86_64               119/179 
+     [exec]   Installing       : perl-Encode-4:3.21-505.fc40.x86_64                 120/179 
+     [exec]   Installing       : perl-libs-4:5.38.2-506.fc40.x86_64                 121/179 
+     [exec]   Installing       : perl-interpreter-4:5.38.2-506.fc40.x86_64          122/179 
+     [exec]   Installing       : perl-Error-1:0.17029-15.fc40.noarch                123/179 
+     [exec]   Installing       : perl-File-Find-1.43-506.fc40.noarch                124/179 
+     [exec]   Installing       : perl-TermReadKey-2.38-21.fc40.x86_64               125/179 
+     [exec]   Installing       : perl-lib-0.65-506.fc40.x86_64                      126/179 
+     [exec]   Installing       : graphite2-1.3.14-15.fc40.x86_64                    127/179 
+     [exec]   Installing       : google-noto-fonts-common-20240301-2.fc40.noarch    128/179 
+     [exec]   Installing       : google-noto-sans-vf-fonts-20240301-2.fc40.noarch   129/179 
+     [exec]   Installing       : default-fonts-core-sans-4.0-13.fc40.noarch         130/179 
+     [exec]   Installing       : cairo-1.18.0-3.fc40.x86_64                         131/179 
+     [exec]   Installing       : harfbuzz-8.5.0-1.fc40.x86_64                       132/179 
+     [exec]   Installing       : freetype-2.13.2-5.fc40.x86_64                      133/179 
+     [exec]   Installing       : fontconfig-2.15.0-6.fc40.x86_64                    134/179 
+     [exec]   Running scriptlet: fontconfig-2.15.0-6.fc40.x86_64                    134/179 
+     [exec]   Installing       : fuse-libs-2.9.9-21.fc40.x86_64                     135/179 
+     [exec]   Installing       : file-5.45-4.fc40.x86_64                            136/179 
+     [exec]   Installing       : diffutils-3.10-5.fc40.x86_64                       137/179 
+     [exec]   Installing       : dbus-common-1:1.14.10-3.fc40.noarch                138/179 
+     [exec]   Running scriptlet: dbus-common-1:1.14.10-3.fc40.noarch                138/179 
+     [exec]   Running scriptlet: dbus-broker-36-2.fc40.x86_64                       139/179 
+     [exec]   Installing       : dbus-broker-36-2.fc40.x86_64                       139/179 
+     [exec]   Running scriptlet: dbus-broker-36-2.fc40.x86_64                       139/179 
+     [exec]   Installing       : dbus-1:1.14.10-3.fc40.x86_64                       140/179 
+     [exec]   Installing       : cpio-2.15-1.fc40.x86_64                            141/179 
+     [exec]   Installing       : libkcapi-1.5.0-4.fc40.x86_64                       142/179 
+     [exec]   Installing       : libkcapi-hasher-1.5.0-4.fc40.x86_64                143/179 
+     [exec]   Installing       : libkcapi-hmaccalc-1.5.0-4.fc40.x86_64              144/179 
+     [exec]   Running scriptlet: libutempter-1.2.1-13.fc40.x86_64                   145/179 
+     [exec]   Installing       : libutempter-1.2.1-13.fc40.x86_64                   145/179 
+     [exec]   Installing       : kpartx-0.9.7-7.fc40.x86_64                         146/179 
+     [exec]   Installing       : grub2-tools-minimal-1:2.06-123.fc40.x86_64         147/179 
+     [exec]   Installing       : device-mapper-1.02.199-1.fc40.x86_64               148/179 
+     [exec]   Installing       : device-mapper-libs-1.02.199-1.fc40.x86_64          149/179 
+     [exec]   Installing       : cryptsetup-libs-2.7.5-1.fc40.x86_64                150/179 
+     [exec]   Installing       : systemd-pam-255.15-1.fc40.x86_64                   151/179 
+     [exec]   Installing       : systemd-resolved-255.15-1.fc40.x86_64              152/179 
+     [exec]   Running scriptlet: systemd-resolved-255.15-1.fc40.x86_64              152/179 
+     [exec]   Installing       : util-linux-2.40.2-1.fc40.x86_64                    153/179 
+     [exec]   Running scriptlet: util-linux-2.40.2-1.fc40.x86_64                    153/179 
+     [exec]   Installing       : systemd-networkd-255.15-1.fc40.x86_64              154/179 
+     [exec]   Running scriptlet: systemd-networkd-255.15-1.fc40.x86_64              154/179 
+     [exec]   Installing       : systemd-255.15-1.fc40.x86_64                       155/179 
+     [exec]   Running scriptlet: systemd-255.15-1.fc40.x86_64                       155/179 
+     [exec] Creating group 'input' with GID 104.
+     [exec] Creating group 'kvm' with GID 36.
+     [exec] Creating group 'render' with GID 105.
+     [exec] Creating group 'sgx' with GID 106.
+     [exec] Creating group 'systemd-journal' with GID 190.
+     [exec] Creating group 'systemd-network' with GID 192.
+     [exec] Creating user 'systemd-network' (systemd Network Management) with UID 192 and GID 192.
+     [exec] Creating group 'systemd-oom' with GID 998.
+     [exec] Creating user 'systemd-oom' (systemd Userspace OOM Killer) with UID 998 and GID 998.
+     [exec] Creating group 'systemd-resolve' with GID 193.
+     [exec] Creating user 'systemd-resolve' (systemd Resolver) with UID 193 and GID 193.
+     [exec] 
+     [exec]   Installing       : os-prober-1.81-6.fc40.x86_64                       156/179 
+     [exec]   Installing       : grubby-8.40-75.fc40.x86_64                         157/179 
+     [exec]   Running scriptlet: grubby-8.40-75.fc40.x86_64                         157/179 
+     [exec]   Installing       : systemd-udev-255.15-1.fc40.x86_64                  158/179 
+     [exec]   Running scriptlet: systemd-udev-255.15-1.fc40.x86_64                  158/179 
+     [exec] Created symlink /etc/systemd/system/dbus-org.freedesktop.home1.service → /usr/lib/systemd/system/systemd-homed.service.
+     [exec] Created symlink /etc/systemd/system/multi-user.target.wants/systemd-homed.service → /usr/lib/systemd/system/systemd-homed.service.
+     [exec] Created symlink /etc/systemd/system/systemd-homed.service.wants/systemd-homed-activate.service → /usr/lib/systemd/system/systemd-homed-activate.service.
+     [exec] Created symlink /etc/systemd/system/dbus-org.freedesktop.oom1.service → /usr/lib/systemd/system/systemd-oomd.service.
+     [exec] Created symlink /etc/systemd/system/multi-user.target.wants/systemd-oomd.service → /usr/lib/systemd/system/systemd-oomd.service.
+     [exec] Created symlink /etc/systemd/system/sysinit.target.wants/systemd-pstore.service → /usr/lib/systemd/system/systemd-pstore.service.
+     [exec] Created symlink /etc/systemd/system/multi-user.target.wants/remote-cryptsetup.target → /usr/lib/systemd/system/remote-cryptsetup.target.
+     [exec] 
+     [exec]   Installing       : dracut-102-2.fc40.x86_64                           159/179 
+     [exec]   Running scriptlet: grub2-tools-1:2.06-123.fc40.x86_64                 160/179 
+     [exec]   Installing       : grub2-tools-1:2.06-123.fc40.x86_64                 160/179 
+     [exec]   Running scriptlet: grub2-tools-1:2.06-123.fc40.x86_64                 160/179 
+     [exec] Created symlink /etc/systemd/user/timers.target.wants/grub-boot-success.timer → /usr/lib/systemd/user/grub-boot-success.timer.
+     [exec] 
+     [exec]   Installing       : crypto-policies-scripts-20240201-2.git9f501f3.fc   161/179 
+     [exec]   Installing       : nss-sysinit-3.106.0-1.fc40.x86_64                  162/179 
+     [exec]   Installing       : nss-3.106.0-1.fc40.x86_64                          163/179 
+     [exec]   Running scriptlet: nss-3.106.0-1.fc40.x86_64                          163/179 
+     [exec]   Installing       : cups-filesystem-1:2.4.11-8.fc40.noarch             164/179 
+     [exec]   Installing       : cups-libs-1:2.4.11-8.fc40.x86_64                   165/179 
+     [exec]   Installing       : java-1.8.0-openjdk-headless-1:1.8.0.432.b06-3.fc   166/179 
+     [exec]   Running scriptlet: java-1.8.0-openjdk-headless-1:1.8.0.432.b06-3.fc   166/179 
+     [exec] dnf 5 is printing bash only to logs
+     [exec] The java-1.8.0-openjdk package is deprecated and may no longer receive updates. Since f42 install adoptium-temurin-java-repository and install temurin-8-jre
+     [exec] https://fedoraproject.org/wiki/Changes/ThirdPartyLegacyJdks#adoptium-temurin-java-repository
+     [exec] It currently lacks rpm-based debuginfo, fastdebugs and slowdebugs and headless subpackage. It also lacks offline javadocs and jdk duplicates jre
+     [exec] 
+     [exec]   Installing       : openssh-9.6p1-1.fc40.4.x86_64                      167/179 
+     [exec]   Installing       : openssh-clients-9.6p1-1.fc40.4.x86_64              168/179 
+     [exec]   Running scriptlet: openssh-clients-9.6p1-1.fc40.4.x86_64              168/179 
+     [exec]   Installing       : git-core-2.47.1-1.fc40.x86_64                      169/179 
+     [exec]   Installing       : git-core-doc-2.47.1-1.fc40.noarch                  170/179 
+     [exec]   Installing       : perl-Git-2.47.1-1.fc40.noarch                      171/179 
+     [exec]   Installing       : git-2.47.1-1.fc40.x86_64                           172/179 
+     [exec]   Installing       : apache-ivy-2.5.2-6.fc40.noarch                     173/179 
+     [exec]   Installing       : wget2-wget-2.2.0-1.fc40.x86_64                     174/179 
+     [exec]   Cleanup          : libmount-2.40-13.fc40.x86_64                       175/179 
+     [exec]   Cleanup          : libblkid-2.40-13.fc40.x86_64                       176/179 
+     [exec]   Cleanup          : libuuid-2.40-13.fc40.x86_64                        177/179 
+     [exec]   Cleanup          : libsmartcols-2.40-13.fc40.x86_64                   178/179 
+     [exec]   Cleanup          : gnutls-3.8.5-1.fc40.x86_64                         179/179 
+     [exec]   Running scriptlet: grub2-common-1:2.06-123.fc40.noarch                179/179 
+     [exec]   Running scriptlet: copy-jdk-configs-4.1-5.fc40.noarch                 179/179 
+     [exec]   Running scriptlet: fontconfig-2.15.0-6.fc40.x86_64                    179/179 
+     [exec]   Running scriptlet: systemd-resolved-255.15-1.fc40.x86_64              179/179 
+     [exec]   Running scriptlet: crypto-policies-scripts-20240201-2.git9f501f3.fc   179/179 
+     [exec]   Running scriptlet: nss-3.106.0-1.fc40.x86_64                          179/179 
+     [exec]   Running scriptlet: java-1.8.0-openjdk-headless-1:1.8.0.432.b06-3.fc   179/179 
+     [exec]   Running scriptlet: gnutls-3.8.5-1.fc40.x86_64                         179/179 
+     [exec] Creating group 'systemd-coredump' with GID 997.
+     [exec] Creating user 'systemd-coredump' (systemd Core Dumper) with UID 997 and GID 997.
+     [exec] Creating group 'systemd-timesync' with GID 996.
+     [exec] Creating user 'systemd-timesync' (systemd Time Synchronization) with UID 996 and GID 996.
+     [exec] 
+     [exec] 
+     [exec] Upgraded:
+     [exec]   gnutls-3.8.6-1.fc40.x86_64           libblkid-2.40.2-1.fc40.x86_64           
+     [exec]   libmount-2.40.2-1.fc40.x86_64        libsmartcols-2.40.2-1.fc40.x86_64       
+     [exec]   libuuid-2.40.2-1.fc40.x86_64        
+     [exec] Installed:
+     [exec]   abattis-cantarell-vf-fonts-0.301-12.fc40.noarch                               
+     [exec]   apache-ivy-2.5.2-6.fc40.noarch                                                
+     [exec]   avahi-libs-0.8-26.fc40.x86_64                                                 
+     [exec]   cairo-1.18.0-3.fc40.x86_64                                                    
+     [exec]   copy-jdk-configs-4.1-5.fc40.noarch                                            
+     [exec]   cpio-2.15-1.fc40.x86_64                                                       
+     [exec]   crypto-policies-scripts-20240201-2.git9f501f3.fc40.noarch                     
+     [exec]   cryptsetup-libs-2.7.5-1.fc40.x86_64                                           
+     [exec]   cups-filesystem-1:2.4.11-8.fc40.noarch                                        
+     [exec]   cups-libs-1:2.4.11-8.fc40.x86_64                                              
+     [exec]   dbus-1:1.14.10-3.fc40.x86_64                                                  
+     [exec]   dbus-broker-36-2.fc40.x86_64                                                  
+     [exec]   dbus-common-1:1.14.10-3.fc40.noarch                                           
+     [exec]   dbus-libs-1:1.14.10-3.fc40.x86_64                                             
+     [exec]   default-fonts-core-sans-4.0-13.fc40.noarch                                    
+     [exec]   device-mapper-1.02.199-1.fc40.x86_64                                          
+     [exec]   device-mapper-libs-1.02.199-1.fc40.x86_64                                     
+     [exec]   diffutils-3.10-5.fc40.x86_64                                                  
+     [exec]   dracut-102-2.fc40.x86_64                                                      
+     [exec]   file-5.45-4.fc40.x86_64                                                       
+     [exec]   fontconfig-2.15.0-6.fc40.x86_64                                               
+     [exec]   fonts-filesystem-1:2.0.5-14.fc40.noarch                                       
+     [exec]   freetype-2.13.2-5.fc40.x86_64                                                 
+     [exec]   fuse-libs-2.9.9-21.fc40.x86_64                                                
+     [exec]   gettext-envsubst-0.22.5-4.fc40.x86_64                                         
+     [exec]   gettext-libs-0.22.5-4.fc40.x86_64                                             
+     [exec]   gettext-runtime-0.22.5-4.fc40.x86_64                                          
+     [exec]   git-2.47.1-1.fc40.x86_64                                                      
+     [exec]   git-core-2.47.1-1.fc40.x86_64                                                 
+     [exec]   git-core-doc-2.47.1-1.fc40.noarch                                             
+     [exec]   gnutls-dane-3.8.6-1.fc40.x86_64                                               
+     [exec]   google-noto-fonts-common-20240301-2.fc40.noarch                               
+     [exec]   google-noto-sans-vf-fonts-20240301-2.fc40.noarch                              
+     [exec]   gpgme-1.23.2-3.fc40.x86_64                                                    
+     [exec]   graphite2-1.3.14-15.fc40.x86_64                                               
+     [exec]   groff-base-1.23.0-6.fc40.x86_64                                               
+     [exec]   grub2-common-1:2.06-123.fc40.noarch                                           
+     [exec]   grub2-tools-1:2.06-123.fc40.x86_64                                            
+     [exec]   grub2-tools-minimal-1:2.06-123.fc40.x86_64                                    
+     [exec]   grubby-8.40-75.fc40.x86_64                                                    
+     [exec]   harfbuzz-8.5.0-1.fc40.x86_64                                                  
+     [exec]   java-1.8.0-openjdk-headless-1:1.8.0.432.b06-3.fc40.x86_64                     
+     [exec]   javapackages-filesystem-6.2.0-9.fc40.noarch                                   
+     [exec]   kbd-2.6.4-3.fc40.x86_64                                                       
+     [exec]   kbd-legacy-2.6.4-3.fc40.noarch                                                
+     [exec]   kbd-misc-2.6.4-3.fc40.noarch                                                  
+     [exec]   kmod-31-5.fc40.x86_64                                                         
+     [exec]   kmod-libs-31-5.fc40.x86_64                                                    
+     [exec]   kpartx-0.9.7-7.fc40.x86_64                                                    
+     [exec]   less-643-6.fc40.x86_64                                                        
+     [exec]   libX11-1.8.10-2.fc40.x86_64                                                   
+     [exec]   libX11-common-1.8.10-2.fc40.noarch                                            
+     [exec]   libXau-1.0.11-6.fc40.x86_64                                                   
+     [exec]   libXext-1.3.6-1.fc40.x86_64                                                   
+     [exec]   libXrender-0.9.11-6.fc40.x86_64                                               
+     [exec]   libbpf-2:1.2.3-1.fc40.x86_64                                                  
+     [exec]   libcbor-0.11.0-1.fc40.x86_64                                                  
+     [exec]   libedit-3.1-53.20240808cvs.fc40.x86_64                                        
+     [exec]   libfdisk-2.40.2-1.fc40.x86_64                                                 
+     [exec]   libfido2-1.14.0-4.fc40.x86_64                                                 
+     [exec]   libkcapi-1.5.0-4.fc40.x86_64                                                  
+     [exec]   libkcapi-hasher-1.5.0-4.fc40.x86_64                                           
+     [exec]   libkcapi-hmaccalc-1.5.0-4.fc40.x86_64                                         
+     [exec]   libpng-2:1.6.40-3.fc40.x86_64                                                 
+     [exec]   libseccomp-2.5.5-1.fc40.x86_64                                                
+     [exec]   libtextstyle-0.22.5-4.fc40.x86_64                                             
+     [exec]   libutempter-1.2.1-13.fc40.x86_64                                              
+     [exec]   libxcb-1.17.0-2.fc40.x86_64                                                   
+     [exec]   libxkbcommon-1.6.0-2.fc40.x86_64                                              
+     [exec]   lksctp-tools-1.0.19-6.fc40.x86_64                                             
+     [exec]   lua-5.4.6-5.fc40.x86_64                                                       
+     [exec]   lua-posix-36.2.1-6.fc40.x86_64                                                
+     [exec]   memstrack-0.2.5-4.fc40.x86_64                                                 
+     [exec]   ncurses-6.4-12.20240127.fc40.x86_64                                           
+     [exec]   nspr-4.36.0-1.fc40.x86_64                                                     
+     [exec]   nss-3.106.0-1.fc40.x86_64                                                     
+     [exec]   nss-softokn-3.106.0-1.fc40.x86_64                                             
+     [exec]   nss-softokn-freebl-3.106.0-1.fc40.x86_64                                      
+     [exec]   nss-sysinit-3.106.0-1.fc40.x86_64                                             
+     [exec]   nss-util-3.106.0-1.fc40.x86_64                                                
+     [exec]   openssh-9.6p1-1.fc40.4.x86_64                                                 
+     [exec]   openssh-clients-9.6p1-1.fc40.4.x86_64                                         
+     [exec]   os-prober-1.81-6.fc40.x86_64                                                  
+     [exec]   perl-AutoLoader-5.74-506.fc40.noarch                                          
+     [exec]   perl-B-1.88-506.fc40.x86_64                                                   
+     [exec]   perl-Carp-1.54-502.fc40.noarch                                                
+     [exec]   perl-Class-Struct-0.68-506.fc40.noarch                                        
+     [exec]   perl-Data-Dumper-2.188-503.fc40.x86_64                                        
+     [exec]   perl-Digest-1.20-502.fc40.noarch                                              
+     [exec]   perl-Digest-MD5-2.59-3.fc40.x86_64                                            
+     [exec]   perl-DynaLoader-1.54-506.fc40.x86_64                                          
+     [exec]   perl-Encode-4:3.21-505.fc40.x86_64                                            
+     [exec]   perl-Errno-1.37-506.fc40.x86_64                                               
+     [exec]   perl-Error-1:0.17029-15.fc40.noarch                                           
+     [exec]   perl-Exporter-5.78-3.fc40.noarch                                              
+     [exec]   perl-Fcntl-1.15-506.fc40.x86_64                                               
+     [exec]   perl-File-Basename-2.86-506.fc40.noarch                                       
+     [exec]   perl-File-Find-1.43-506.fc40.noarch                                           
+     [exec]   perl-File-Path-2.18-503.fc40.noarch                                           
+     [exec]   perl-File-Temp-1:0.231.100-503.fc40.noarch                                    
+     [exec]   perl-File-stat-1.13-506.fc40.noarch                                           
+     [exec]   perl-FileHandle-2.05-506.fc40.noarch                                          
+     [exec]   perl-Getopt-Long-1:2.57-4.fc40.noarch                                         
+     [exec]   perl-Getopt-Std-1.13-506.fc40.noarch                                          
+     [exec]   perl-Git-2.47.1-1.fc40.noarch                                                 
+     [exec]   perl-HTTP-Tiny-0.088-5.fc40.noarch                                            
+     [exec]   perl-IO-1.52-506.fc40.x86_64                                                  
+     [exec]   perl-IO-Socket-IP-0.42-2.fc40.noarch                                          
+     [exec]   perl-IO-Socket-SSL-2.085-1.fc40.noarch                                        
+     [exec]   perl-IPC-Open3-1.22-506.fc40.noarch                                           
+     [exec]   perl-MIME-Base64-3.16-503.fc40.x86_64                                         
+     [exec]   perl-Mozilla-CA-20231213-3.fc40.noarch                                        
+     [exec]   perl-NDBM_File-1.16-506.fc40.x86_64                                           
+     [exec]   perl-Net-SSLeay-1.94-3.fc40.x86_64                                            
+     [exec]   perl-POSIX-2.13-506.fc40.x86_64                                               
+     [exec]   perl-PathTools-3.89-502.fc40.x86_64                                           
+     [exec]   perl-Pod-Escapes-1:1.07-503.fc40.noarch                                       
+     [exec]   perl-Pod-Perldoc-3.28.01-503.fc40.noarch                                      
+     [exec]   perl-Pod-Simple-1:3.45-6.fc40.noarch                                          
+     [exec]   perl-Pod-Usage-4:2.03-504.fc40.noarch                                         
+     [exec]   perl-Scalar-List-Utils-5:1.63-503.fc40.x86_64                                 
+     [exec]   perl-SelectSaver-1.02-506.fc40.noarch                                         
+     [exec]   perl-Socket-4:2.038-1.fc40.x86_64                                             
+     [exec]   perl-Storable-1:3.32-502.fc40.x86_64                                          
+     [exec]   perl-Symbol-1.09-506.fc40.noarch                                              
+     [exec]   perl-Term-ANSIColor-5.01-504.fc40.noarch                                      
+     [exec]   perl-Term-Cap-1.18-503.fc40.noarch                                            
+     [exec]   perl-TermReadKey-2.38-21.fc40.x86_64                                          
+     [exec]   perl-Text-ParseWords-3.31-502.fc40.noarch                                     
+     [exec]   perl-Text-Tabs+Wrap-2024.001-1.fc40.noarch                                    
+     [exec]   perl-Time-Local-2:1.350-5.fc40.noarch                                         
+     [exec]   perl-URI-5.28-1.fc40.noarch                                                   
+     [exec]   perl-base-2.27-506.fc40.noarch                                                
+     [exec]   perl-constant-1.33-503.fc40.noarch                                            
+     [exec]   perl-if-0.61.000-506.fc40.noarch                                              
+     [exec]   perl-interpreter-4:5.38.2-506.fc40.x86_64                                     
+     [exec]   perl-lib-0.65-506.fc40.x86_64                                                 
+     [exec]   perl-libnet-3.15-503.fc40.noarch                                              
+     [exec]   perl-libs-4:5.38.2-506.fc40.x86_64                                            
+     [exec]   perl-locale-1.10-506.fc40.noarch                                              
+     [exec]   perl-mro-1.28-506.fc40.x86_64                                                 
+     [exec]   perl-overload-1.37-506.fc40.noarch                                            
+     [exec]   perl-overloading-0.02-506.fc40.noarch                                         
+     [exec]   perl-parent-1:0.241-502.fc40.noarch                                           
+     [exec]   perl-podlators-1:5.01-502.fc40.noarch                                         
+     [exec]   perl-vars-1.05-506.fc40.noarch                                                
+     [exec]   pigz-2.8-4.fc40.x86_64                                                        
+     [exec]   pixman-0.43.4-1.fc40.x86_64                                                   
+     [exec]   procps-ng-4.0.4-3.fc40.x86_64                                                 
+     [exec]   protobuf-c-1.5.0-3.fc40.x86_64                                                
+     [exec]   qrencode-libs-4.1.1-7.fc40.x86_64                                             
+     [exec]   systemd-255.15-1.fc40.x86_64                                                  
+     [exec]   systemd-libs-255.15-1.fc40.x86_64                                             
+     [exec]   systemd-networkd-255.15-1.fc40.x86_64                                         
+     [exec]   systemd-pam-255.15-1.fc40.x86_64                                              
+     [exec]   systemd-resolved-255.15-1.fc40.x86_64                                         
+     [exec]   systemd-udev-255.15-1.fc40.x86_64                                             
+     [exec]   tpm2-tools-5.7-1.fc40.x86_64                                                  
+     [exec]   tpm2-tss-fapi-4.0.1-7.fc40.x86_64                                             
+     [exec]   tzdata-java-2024a-5.fc40.noarch                                               
+     [exec]   unbound-anchor-1.21.1-3.fc40.x86_64                                           
+     [exec]   unbound-libs-1.21.1-3.fc40.x86_64                                             
+     [exec]   util-linux-2.40.2-1.fc40.x86_64                                               
+     [exec]   util-linux-core-2.40.2-1.fc40.x86_64                                          
+     [exec]   wget2-2.2.0-1.fc40.x86_64                                                     
+     [exec]   wget2-libs-2.2.0-1.fc40.x86_64                                                
+     [exec]   wget2-wget-2.2.0-1.fc40.x86_64                                                
+     [exec]   xkeyboard-config-2.41-1.fc40.noarch                                           
+     [exec]   xml-common-0.6.3-63.fc40.noarch                                               
+     [exec] 
+     [exec] Complete!
+     [exec] dnf 5 is printing lua only to stdout, but may skip first and last line
+     [exec] The java-1.8.0-openjdk package is deprecated and may no longer receive updates. Since f42 install adoptium-temurin-java-repository and install temurin-8-jre
+     [exec] https://fedoraproject.org/wiki/Changes/ThirdPartyLegacyJdks#adoptium-temurin-java-repository
+     [exec] It currently lacks rpm-based debuginfo, fastdebugs and slowdebugs and headless subpackage. It also lacks offline javadocs and jdk duplicates jre
+     [exec] dnf 5 is printing lua only to stdout, but may skip first and last line
+     [exec] 17 files removed
+     [exec] --> 82e18c93f3ce
+     [exec] STEP 5/21: ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+     [exec] --> ee7ef93fd52b
+     [exec] STEP 6/21: ENV JAVA_TOOL_OPTIONS=" -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom"
+     [exec] --> 649b0c1180f4
+     [exec] STEP 7/21: ENV TEST_HOME /lucene-solr
+     [exec] --> ca83d8c12b82
+     [exec] STEP 8/21: ENV APPLICATION_NAME=lucene-solr
+     [exec] --> 78eac368ecfe
+     [exec] STEP 9/21: ENV APPLICATION_TAG=releases/lucene-solr/8.11.1
+     [exec] --> 6cf43692cb94
+     [exec] STEP 10/21: ENV OS_TAG=fedora
+     [exec] --> 932a16b16d61
+     [exec] STEP 11/21: ENV JDK_VERSION=17
+     [exec] --> 9da3b7e9dafc
+     [exec] STEP 12/21: ENV JDK_IMPL=hotspot
+     [exec] --> dcec81a76d24
+     [exec] STEP 13/21: ENV LUCENE_SOLR_TAG=$LUCENE_SOLR_TAG
+     [exec] --> bc9aadfcb5af
+     [exec] STEP 14/21: RUN git clone https://github.com/apache/lucene-solr.git
+     [exec] /bin/sh: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+     [exec] Cloning into 'lucene-solr'...
+     [exec] --> 40d719306178
+     [exec] STEP 15/21: WORKDIR /lucene-solr/
+     [exec] --> cfc59039c47f
+     [exec] STEP 16/21: RUN git checkout $LUCENE_SOLR_TAG
+     [exec] /bin/sh: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+     [exec] Note: switching to 'releases/lucene-solr/8.11.1'.
+     [exec] 
+     [exec] You are in 'detached HEAD' state. You can look around, make experimental
+     [exec] changes and commit them, and you can discard any commits you make in this
+     [exec] state without impacting any branches by switching back to a branch.
+     [exec] 
+     [exec] If you want to create a new branch to retain commits you create, you may
+     [exec] do so (now or later) by using -c with the switch command. Example:
+     [exec] 
+     [exec]   git switch -c <new-branch-name>
+     [exec] 
+     [exec] Or undo this operation with:
+     [exec] 
+     [exec]   git switch -
+     [exec] 
+     [exec] Turn off this advice by setting config variable advice.detachedHead to false
+     [exec] 
+     [exec] HEAD is now at 0b002b11819 SOLR-15848 BadApple ScheduledTriggerIntegrationTest
+     [exec] --> c14c93d72294
+     [exec] STEP 17/21: WORKDIR /
+     [exec] --> a6e1b375f9f6
+     [exec] STEP 18/21: COPY lucene-solr/test.sh /test.sh
+     [exec] --> 0df0f91d1bfe
+     [exec] STEP 19/21: COPY test_base_functions.sh test_base_functions.sh
+     [exec] --> b3bc61533858
+     [exec] STEP 20/21: WORKDIR ${TEST_HOME}
+     [exec] --> 92d0846c8f00
+     [exec] STEP 21/21: ENTRYPOINT ["/bin/bash", "/test.sh"]
+     [exec] COMMIT adoptopenjdk-lucene-solr-test:17-jdk-ubuntu-hotspot-full
+     [exec] --> 57f023ade2c4
+     [exec] Successfully tagged localhost/adoptopenjdk-lucene-solr-test:17-jdk-ubuntu-hotspot-full
+     [exec] 57f023ade2c40d961772c8d2554d4c4271efcc96f1f9bed517bb2ac4dd2b2e03
+
+dist:
+     [copy] Copying 3 files to /home/jvanek/git/jvmtest/external/lucene-solr
+
+BUILD SUCCESSFUL
+Total time: 1 minute 2 seconds
+0
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+JAVA_HOME is set to /tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=lucene_solr_nightly_smoketest_OpenJ9 TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.pyHOlv4KeZ/jdk-17.0.13+11/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec=linux_x86-64 --microArch="" --osLabel="" --jdkVersion=17 --impl=hotspot --vendor="eclipse" --buildList=external/lucene-solr --iterations=1 --aotIterations= --testFlag= --testTarget=lucene_solr_nightly_smoketest_OpenJ9 --testList= --numOfMachines= --testTime= --TRSSURL= 
+Modes data parsed from resources/modes.xml and resources/ottawa.csv.
+
+Starting to generate test make files.
+
+Parsing /home/jvanek/git/aqa-tests/TKG/../external/lucene-solr/playlist.xml
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/utils.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/rerun.mk
+
+Make files are generated successfully.
+
+Error: cannot find the following tests: lucene_solr_nightly_smoketest_OpenJ9 (note: group target such as sanity is not accepted inside testList)
+
+make[1]: *** [makeGen.mk:45: autogen] Error 1
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:60: _lucene_solr_nightly_smoketest_OpenJ9] Error 2
+compilation: 0
+runtime: 2
