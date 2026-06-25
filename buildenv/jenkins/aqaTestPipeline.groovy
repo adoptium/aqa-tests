@@ -677,7 +677,16 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
     
     // Determine if this is a release build (for SETUP_JCK_RUN)
     def isReleaseBuild = (params.BUILD_TYPE == "release")
-   
+    
+    // Required: extract config sections into local variables so the JOBS closure below can capture them.
+    // Do NOT remove these — they are not defaults, they are the only way the closure accesses jckConfig.
+    def globalConfig              = jckConfig.GLOBAL_BUILD_CONFIG ?: [:]
+    def targetSpecificConfig      = jckConfig.TARGET_SPECIFIC_CONFIG ?: [:]
+    def platformSpecificConfig    = jckConfig.PLATFORM_SPECIFIC_CONFIG ?: [:]
+    def platformApplicationOptions   = jckConfig.PLATFORM_APPLICATION_OPTIONS ?: [:]
+    def platformAdditionalTestLabels = jckConfig.PLATFORM_ADDITIONAL_TEST_LABELS ?: [:]
+    def jckGitRepoTemplate        = jckConfig.JCK_GIT_REPO_TEMPLATE
+    
     // Get platform targets from config to determine which tests run on which platforms
     def platformTargets = jckConfig.PLATFORM_TARGETS ?: []
     
@@ -693,9 +702,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
         
         targetsForPlatform.each { target ->
             // Create a unique job name for this JDK version+platform+target combination
-            int jobNum = JOBS.size() + 1
-            def jobName = "JCK_jdk${jobJdkVersion}_${platform}_${target}_${jobNum}"
-            
+            def jobName = "Test_openjdk${jobJdkVersion}_hs_${target}_${platform}"
             JOBS[jobName] = {
                 // Build configuration by merging: global -> target-specific -> platform-specific
                 def config = [:]
