@@ -146,12 +146,9 @@ limitations under the License.
 			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-17.0.0.txt"/>
 		</unzip>
 		
-		<!-- Copy GB18030 mapping file -->
-		<copy file="${LIB_DIR}/GB18030-2022.txt" tofile="${DEST}/data/UnicodeData-GB18030-2022.txt" failonerror="false"/>
-		
 		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
 		<copy todir="${DEST}/data" failonerror="false">
-			<fileset dir="${src}/../data/" includes="UnicodeData-u32FF*.txt"/>
+			<fileset dir="${src}/../data/" includes="UnicodeData-u32FF*.txt,UnicodeData-GB18030-2022.txt"/>
 		</copy>
 	</target>
 
