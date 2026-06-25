@@ -79,10 +79,6 @@ limitations under the License.
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-11.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/UCD-12.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.0.0.txt"/>
-		</unzip>
 		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
 			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.1.0.txt"/>
@@ -121,10 +117,6 @@ limitations under the License.
 			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
 			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-11.0.0.txt"/>
 		</unzip>
-		<unzip src="${LIB_DIR}/Unihan-12.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
-			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-12.0.0.txt"/>
-		</unzip>
 		<unzip src="${LIB_DIR}/Unihan-12.1.0.zip" dest="${DEST}/data">
 			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
 			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-12.1.0.txt"/>
@@ -155,10 +147,9 @@ limitations under the License.
 		</unzip>
 		
 		<!-- Copy GB18030 mapping file -->
-		<copy file="${LIB_DIR}/GB18030-2022.txt" tofile="${DEST}/data/GB18030-2022.txt" failonerror="false"/>
+		<copy file="${LIB_DIR}/GB18030-2022.txt" tofile="${DEST}/data/UnicodeData-GB18030-2022.txt" failonerror="false"/>
 		
-		<!-- Copy supplementary Unicode data files from git (JDK-specific additions not in official Unicode releases) -->
-		<!-- These files contain characters added to JDK updates that aren't in the base Unicode version -->
+		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
 		<copy todir="${DEST}/data" failonerror="false">
 			<fileset dir="${src}/../data/" includes="UnicodeData-u32FF*.txt"/>
 		</copy>
