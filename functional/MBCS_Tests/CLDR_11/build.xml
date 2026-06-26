@@ -18,6 +18,7 @@ limitations under the License.
     </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/CLDR_11" />
@@ -43,7 +44,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,copyData" description="generate the distribution">
+	<target name="dist" depends="compile,copyData,copyIcu4jDependencies" description="generate the distribution">
 		<jar jarfile="${DEST}/CLDR_11.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}" includes="*.properties" />
@@ -57,9 +58,12 @@ limitations under the License.
 			<fileset dir="../tools/" includes="*" />
 			<fileset dir="${src}/../win/" includes="*.log" />
 		</copy>
-		<copy todir="${DEST}/ext">
-			<fileset dir="ext/" includes="*.jar" />
-		</copy>
+	</target>
+	
+	<target name="copyIcu4jDependencies" depends="getDependentLibs,init">
+		<mkdir dir="${DEST}/ext"/>
+		<copy file="${LIB_DIR}/icu4j-61_1.jar" tofile="${DEST}/ext/icu4j-61_1.jar"/>
+		<copy file="${LIB_DIR}/icu4j-localespi-61_1.jar" tofile="${DEST}/ext/icu4j-localespi-61_1.jar"/>
 	</target>
 
 	<target name="clean" depends="dist" description="clean up">
