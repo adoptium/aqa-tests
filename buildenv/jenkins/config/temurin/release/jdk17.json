@@ -1,0 +1,24 @@
+[
+    {
+        "TEST_FLAG": "NONE",
+        "COMMENT": "JDK 8-21 configuration - only differences from base. Uses sw.os.aix.7_2 (not 7_2TL5)",
+        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf",
+        "PLATFORM_TARGETS": [
+            { "aarch64_linux": "defaultTestTargets" },
+            { "aarch64_mac": "defaultTestTargets,special.openjdk,dev.functional,dev.system" },
+            { "ppc64_aix": "defaultTestTargets" },
+            { "ppc64le_linux": "defaultTestTargets" },
+            { "s390x_linux": "defaultTestTargets" },
+            { "x86-64_linux": "defaultTestTargets,dev.openjdk" },
+            { "x86-64_mac": "defaultTestTargets" },
+            { "x86-64_windows": "defaultTestTargets,special.openjdk,dev.system" },
+            { "arm_linux": "defaultTestTargets" },
+            { "x86-64_alpine-linux": "defaultTestTargets" },
+            { "riscv64_linux": "defaultTestTargets" }
+        ],
+        "PLATFORM_ADDITIONAL_TEST_LABELS": {
+            "x86-64_linux": "!sw.tool.glibc.2_12",
+            "ppc64_aix": "sw.os.aix.7_2"
+        }
+    }
+]
