@@ -13,14 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="MBCS_Tests/codepoint" default="build" basedir="." xmlns:if="ant:if">
+<project name="MBCS_Tests/codepoint" default="build" basedir=".">
 	<description>
 	MBCS_Tests/codepoint
         </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
-	
-	<!-- Import getDependencies.xml to enable downloading Unicode test data -->
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -66,10 +64,9 @@ limitations under the License.
 		</copy>
 	</target>
 	
-	<!-- Extract Unicode data: uses existing UnicodeVers.properties mapping -->
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
-		
+
 		<!-- Extract UnicodeData.txt from UCD ZIP archives -->
 		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
 			<patternset><include name="UnicodeData.txt"/></patternset>
@@ -147,7 +144,7 @@ limitations under the License.
 		</unzip>
 		
 		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
-		<copy todir="${DEST}/data" failonerror="false">
+		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/" includes="UnicodeData-u32FF*.txt,UnicodeData-GB18030-2022.txt"/>
 		</copy>
 	</target>

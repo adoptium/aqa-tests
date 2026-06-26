@@ -13,12 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project name="MBCS_Tests/unicode" default="build" basedir="." xmlns:if="ant:if">
+<project name="MBCS_Tests/unicode" default="build" basedir=".">
 	<description>
 	MBCS_Tests/unicode
         </description>
 
-	<!-- Import getDependencies.xml to enable downloading Unicode test data -->
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -153,7 +152,7 @@ limitations under the License.
 		</unzip>
 		
 		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
-		<copy todir="${DEST}/data" failonerror="false">
+		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/">
 				<include name="README.txt"/>
 				<include name="UnicodeData-GB18030-2022.txt"/>
