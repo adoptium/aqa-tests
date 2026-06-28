@@ -67,44 +67,11 @@ limitations under the License.
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 
-		<!-- Extract UnicodeData.txt from UCD ZIP archives -->
-		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-10.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-11.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-11.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-12.1.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-12.1.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-13.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-13.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-14.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-14.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-15.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-15.1.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-15.1.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-16.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-16.0.0.txt"/>
-		</unzip>
-		<unzip src="${LIB_DIR}/UCD-17.0.0.zip" dest="${DEST}/data">
-			<patternset><include name="UnicodeData.txt"/></patternset>
-			<mapper type="glob" from="UnicodeData.txt" to="UnicodeData-17.0.0.txt"/>
-		</unzip>
-		
+		<!-- Copy UnicodeData files downloaded directly from unicode.org -->
+		<copy todir="${DEST}/data">
+			<fileset dir="${LIB_DIR}" includes="UnicodeData-*.txt"/>
+		</copy>
+
 		<!-- Extract Unihan_IRGSources.txt from Unihan ZIP archives -->
 		<unzip src="${LIB_DIR}/Unihan-10.0.0.zip" dest="${DEST}/data">
 			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
