@@ -67,7 +67,6 @@ limitations under the License.
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 
-		<!-- Copy UnicodeData files downloaded directly from unicode.org -->
 		<copy todir="${DEST}/data">
 			<fileset dir="${LIB_DIR}" includes="UnicodeData-*.txt"/>
 		</copy>
@@ -109,7 +108,7 @@ limitations under the License.
 			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
 			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-17.0.0.txt"/>
 		</unzip>
-		
+
 		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
 		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/" includes="UnicodeData-u32FF*.txt,UnicodeData-GB18030-2022.txt"/>

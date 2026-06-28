@@ -58,7 +58,7 @@ limitations under the License.
 	
 	<target name="extractUnicodeData" depends="getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
-		
+
 		<!-- Extract Unicode data files from UCD ZIP archives -->
 		<unzip src="${LIB_DIR}/UCD-10.0.0.zip" dest="${DEST}/data">
 			<patternset>
@@ -150,15 +150,10 @@ limitations under the License.
 			</patternset>
 			<mapper type="regexp" from="^(.*)\.txt$$" to="\1-17.0.0.txt"/>
 		</unzip>
-		
+
 		<!-- Copy JDK-specific supplementary files from git (not in official Unicode releases) -->
 		<copy todir="${DEST}/data">
-			<fileset dir="${src}/../data/">
-				<include name="README.txt"/>
-				<include name="UnicodeData-GB18030-2022.txt"/>
-				<include name="UnicodeData-u32FF.txt"/>
-				<include name="UnicodeData-u32FF-jdk12.txt"/>
-			</fileset>
+			<fileset dir="${src}/../data/" includes="README.txt,UnicodeData-GB18030-2022.txt,UnicodeData-u32FF.txt,UnicodeData-u32FF-jdk12.txt"/>
 		</copy>
 	</target>
 
