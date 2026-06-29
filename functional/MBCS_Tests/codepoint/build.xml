@@ -72,7 +72,6 @@ limitations under the License.
 			<fileset dir="${LIB_DIR}" includes="UnicodeData-*.txt"/>
 		</copy>
 
-		<!-- Extract Unihan_IRGSources.txt from Unihan ZIP archives -->
 		<unzip src="${LIB_DIR}/Unihan-10.0.0.zip" dest="${DEST}/data">
 			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
 			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-10.0.0.txt"/>
