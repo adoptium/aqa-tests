@@ -12,7 +12,7 @@ jobs:
     if: startsWith(github.event.comment.body, 'auto exclude test')
     steps:
       - name: Set up Python 3.14
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: 3.14
       - name: check python version
@@ -136,7 +136,7 @@ jobs:
             -f "body=@${COMMENTER} 🔧 Processing OpenJDK test exclusion for: \`${TESTCASES}\`..."
             
       - name: Set up Python 3.14
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: 3.14
           
