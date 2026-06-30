@@ -18,13 +18,16 @@ limitations under the License.
 	MBCS_Tests/unicode
         </description>
 
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
+
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/unicode" />
 
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
-	
+	<property name="LIB" value="unicode_ucd_unicodedata_10_0_0,unicode_ucd_unicodedata_11_0_0,unicode_ucd_unicodedata_12_1_0,unicode_ucd_unicodedata_13_0_0,unicode_ucd_unicodedata_14_0_0,unicode_ucd_unicodedata_15_0_0,unicode_ucd_unicodedata_15_1_0,unicode_ucd_unicodedata_16_0_0,unicode_ucd_unicodedata_17_0_0,unicode_ucd_blocks_10_0_0,unicode_ucd_blocks_11_0_0,unicode_ucd_blocks_12_1_0,unicode_ucd_blocks_13_0_0,unicode_ucd_blocks_14_0_0,unicode_ucd_blocks_15_0_0,unicode_ucd_blocks_15_1_0,unicode_ucd_blocks_16_0_0,unicode_ucd_blocks_17_0_0,unicode_ucd_scripts_10_0_0,unicode_ucd_scripts_11_0_0,unicode_ucd_scripts_12_1_0,unicode_ucd_scripts_13_0_0,unicode_ucd_scripts_14_0_0,unicode_ucd_scripts_15_0_0,unicode_ucd_scripts_15_1_0,unicode_ucd_scripts_16_0_0,unicode_ucd_scripts_17_0_0,unicode_ucd_normalization_10_0_0,unicode_ucd_normalization_11_0_0,unicode_ucd_normalization_12_1_0,unicode_ucd_normalization_13_0_0,unicode_ucd_normalization_14_0_0,unicode_ucd_normalization_15_0_0,unicode_ucd_normalization_15_1_0,unicode_ucd_normalization_16_0_0,unicode_ucd_normalization_17_0_0,unicode_ucd_propvalaliases_10_0_0,unicode_ucd_propvalaliases_11_0_0,unicode_ucd_propvalaliases_12_1_0,unicode_ucd_propvalaliases_13_0_0,unicode_ucd_propvalaliases_14_0_0,unicode_ucd_propvalaliases_15_0_0,unicode_ucd_propvalaliases_15_1_0,unicode_ucd_propvalaliases_16_0_0,unicode_ucd_propvalaliases_17_0_0"/>
+
 	<target name="init">
 		<mkdir dir="${DEST}" />
 		<mkdir dir="${build}" />
@@ -42,7 +45,7 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile" description="generate the distribution">
+	<target name="dist" depends="compile,extractUnicodeData" description="generate the distribution">
 		<jar jarfile="${DEST}/unicode.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../resources/" />
@@ -52,6 +55,15 @@ limitations under the License.
 			<fileset dir="${src}/../" includes="*.bat" />
 			<fileset dir="../tools/" includes="*" />
 		</copy>
+	</target>
+	
+	<target name="extractUnicodeData" depends="getDependentLibs,init">
+		<mkdir dir="${DEST}/data"/>
+
+		<copy todir="${DEST}/data">
+			<fileset dir="${LIB_DIR}" includes="UnicodeData-*.txt,Blocks-*.txt,Scripts-*.txt,NormalizationTest-*.txt,PropertyValueAliases-*.txt"/>
+		</copy>
+
 		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/" />
 		</copy>
