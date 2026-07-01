@@ -51,9 +51,10 @@ def updateBuildResult(newResult) {
     }
 }
 
-// Helper function to get a public badge URL for a given build result status.
-// Uses shields.io so the badge is accessible without credentials.
-// Status text and colors match the Jenkins embeddable-build-status-plugin conventions.
+// Helper function to get a badge URL for a given build result status.
+// Uses the local Jenkins embeddable-build-status-plugin endpoint so the badge
+// is served from "this" Jenkins instance (no remote credentials required).
+// Status text and colors match the embeddable-build-status-plugin conventions.
 def getResultBadgeUrl(result) {
     def statusMap = [
         'SUCCESS'   : [text: 'passing',  color: 'brightgreen'],
@@ -63,7 +64,7 @@ def getResultBadgeUrl(result) {
         'NOT_BUILT' : [text: 'not_run',  color: 'lightgrey']
     ]
     def entry = statusMap[result] ?: [text: 'unknown', color: 'lightgrey']
-    return "https://img.shields.io/badge/build-${entry.text}-${entry.color}"
+    return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
 }
 
 timestamps {
