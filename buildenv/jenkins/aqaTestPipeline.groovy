@@ -878,7 +878,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
                 
                 currentBuild.description += """
-                    <p>${displayName} : ${target} - ${remoteJobResult}:
+                    <p>${displayName} : ${target}:
                     <a href="${remoteJobUrl}" target="_blank">
                         <img src="${remoteBadgeUrl}" />
                     </a>
@@ -1054,7 +1054,7 @@ def remoteTriggerTemurinJCKDirect() {
             def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
             
             currentBuild.description += """
-                <p>${target} on ${platform} (JDK${jobJdkVersion}) - ${remoteJobResult}:
+                <p>${target} on ${platform} (JDK${jobJdkVersion}):
                 <a href="${remoteJobUrl}" target="_blank">
                     <img src="${remoteBadgeUrl}" />
                 </a>
