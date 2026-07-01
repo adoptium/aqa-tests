@@ -51,6 +51,22 @@ def updateBuildResult(newResult) {
     }
 }
 
+// Helper function to get a public badge URL for a given build result status.
+// Uses shields.io so the badge is accessible without credentials.
+def getResultBadgeUrl(result) {
+    def colorMap = [
+        'SUCCESS'   : 'brightgreen',
+        'UNSTABLE'  : 'yellow',
+        'FAILURE'   : 'red',
+        'ABORTED'   : 'lightgrey',
+        'NOT_BUILT' : 'lightgrey'
+    ]
+    def color = colorMap[result] ?: 'lightgrey'
+    // Encode underscores so shields.io renders them as underscores (not spaces)
+    def encodedResult = result.replace('_', '__')
+    return "https://img.shields.io/badge/build-${encodedResult}-${color}"
+}
+
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -829,7 +845,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 // Get remote job details and add to build description
                 def remoteBuildNumber = handle.getBuildNumber()
                 def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
-                def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+                def remoteBadgeUrl = getResultBadgeUrl(remoteJobResult)
                 
                 // Build rerun URL
                 def rerunParams = [
@@ -1005,7 +1021,7 @@ def remoteTriggerTemurinJCKDirect() {
             // Get remote job details and add to build description
             def remoteBuildNumber = handle.getBuildNumber()
             def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
-            def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+            def remoteBadgeUrl = getResultBadgeUrl(remoteJobResult)
             
             // Build rerun URL
             def rerunParams = [
