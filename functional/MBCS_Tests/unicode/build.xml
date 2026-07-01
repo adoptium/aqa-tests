@@ -26,7 +26,30 @@ limitations under the License.
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
-	<property name="LIB" value="unicode_ucd_unicodedata_10_0_0,unicode_ucd_unicodedata_11_0_0,unicode_ucd_unicodedata_12_1_0,unicode_ucd_unicodedata_13_0_0,unicode_ucd_unicodedata_14_0_0,unicode_ucd_unicodedata_15_0_0,unicode_ucd_unicodedata_15_1_0,unicode_ucd_unicodedata_16_0_0,unicode_ucd_unicodedata_17_0_0,unicode_ucd_blocks_10_0_0,unicode_ucd_blocks_11_0_0,unicode_ucd_blocks_12_1_0,unicode_ucd_blocks_13_0_0,unicode_ucd_blocks_14_0_0,unicode_ucd_blocks_15_0_0,unicode_ucd_blocks_15_1_0,unicode_ucd_blocks_16_0_0,unicode_ucd_blocks_17_0_0,unicode_ucd_scripts_10_0_0,unicode_ucd_scripts_11_0_0,unicode_ucd_scripts_12_1_0,unicode_ucd_scripts_13_0_0,unicode_ucd_scripts_14_0_0,unicode_ucd_scripts_15_0_0,unicode_ucd_scripts_15_1_0,unicode_ucd_scripts_16_0_0,unicode_ucd_scripts_17_0_0,unicode_ucd_normalization_10_0_0,unicode_ucd_normalization_11_0_0,unicode_ucd_normalization_12_1_0,unicode_ucd_normalization_13_0_0,unicode_ucd_normalization_14_0_0,unicode_ucd_normalization_15_0_0,unicode_ucd_normalization_15_1_0,unicode_ucd_normalization_16_0_0,unicode_ucd_normalization_17_0_0,unicode_ucd_propvalaliases_10_0_0,unicode_ucd_propvalaliases_11_0_0,unicode_ucd_propvalaliases_12_1_0,unicode_ucd_propvalaliases_13_0_0,unicode_ucd_propvalaliases_14_0_0,unicode_ucd_propvalaliases_15_0_0,unicode_ucd_propvalaliases_15_1_0,unicode_ucd_propvalaliases_16_0_0,unicode_ucd_propvalaliases_17_0_0"/>
+
+	<macrodef name="resolve-unicode-version">
+		<attribute name="jdk-version"/>
+		<sequential>
+			<condition property="unicode.ver" value="17.0.0"><matches string="@{jdk-version}" pattern="^(2[6-9]|[3-9][0-9])$"/></condition>
+			<condition property="unicode.ver" value="16.0.0"><matches string="@{jdk-version}" pattern="^2[4-5]$"/></condition>
+			<condition property="unicode.ver" value="15.1.0"><matches string="@{jdk-version}" pattern="^2[2-3]$"/></condition>
+			<condition property="unicode.ver" value="15.0.0"><matches string="@{jdk-version}" pattern="^2[0-1]$"/></condition>
+			<condition property="unicode.ver" value="14.0.0"><matches string="@{jdk-version}" pattern="^19$"/></condition>
+			<condition property="unicode.ver" value="13.0.0"><matches string="@{jdk-version}" pattern="^1[5-8]$"/></condition>
+			<condition property="unicode.ver" value="12.1.0"><matches string="@{jdk-version}" pattern="^1[3-4]$"/></condition>
+			<condition property="unicode.ver" value="11.0.0"><matches string="@{jdk-version}" pattern="^12$"/></condition>
+			<property name="unicode.ver" value="10.0.0"/>
+			<condition property="unicode.ver.key" value="17_0_0"><equals arg1="${unicode.ver}" arg2="17.0.0"/></condition>
+			<condition property="unicode.ver.key" value="16_0_0"><equals arg1="${unicode.ver}" arg2="16.0.0"/></condition>
+			<condition property="unicode.ver.key" value="15_1_0"><equals arg1="${unicode.ver}" arg2="15.1.0"/></condition>
+			<condition property="unicode.ver.key" value="15_0_0"><equals arg1="${unicode.ver}" arg2="15.0.0"/></condition>
+			<condition property="unicode.ver.key" value="14_0_0"><equals arg1="${unicode.ver}" arg2="14.0.0"/></condition>
+			<condition property="unicode.ver.key" value="13_0_0"><equals arg1="${unicode.ver}" arg2="13.0.0"/></condition>
+			<condition property="unicode.ver.key" value="12_1_0"><equals arg1="${unicode.ver}" arg2="12.1.0"/></condition>
+			<condition property="unicode.ver.key" value="11_0_0"><equals arg1="${unicode.ver}" arg2="11.0.0"/></condition>
+			<property name="unicode.ver.key" value="10_0_0"/>
+		</sequential>
+	</macrodef>
 
 	<target name="init">
 		<mkdir dir="${DEST}" />
@@ -45,6 +68,11 @@ limitations under the License.
 		</javac>
 	</target>
 
+	<target name="setUnicodeVersion">
+		<resolve-unicode-version jdk-version="${JDK_VERSION}"/>
+		<property name="LIB" value="unicode_ucd_unicodedata_${unicode.ver.key},unicode_ucd_blocks_${unicode.ver.key},unicode_ucd_scripts_${unicode.ver.key},unicode_ucd_normalization_${unicode.ver.key},unicode_ucd_propvalaliases_${unicode.ver.key}"/>
+	</target>
+
 	<target name="dist" depends="compile,extractUnicodeData" description="generate the distribution">
 		<jar jarfile="${DEST}/unicode.jar" filesonly="true">
 			<fileset dir="${build}" />
@@ -56,12 +84,12 @@ limitations under the License.
 			<fileset dir="../tools/" includes="*" />
 		</copy>
 	</target>
-	
-	<target name="extractUnicodeData" depends="getDependentLibs,init">
+
+	<target name="extractUnicodeData" depends="setUnicodeVersion,getDependentLibs,init">
 		<mkdir dir="${DEST}/data"/>
 
 		<copy todir="${DEST}/data">
-			<fileset dir="${LIB_DIR}" includes="UnicodeData-*.txt,Blocks-*.txt,Scripts-*.txt,NormalizationTest-*.txt,PropertyValueAliases-*.txt"/>
+			<fileset dir="${LIB_DIR}" includes="UnicodeData-${unicode.ver}.txt,Blocks-${unicode.ver}.txt,Scripts-${unicode.ver}.txt,NormalizationTest-${unicode.ver}.txt,PropertyValueAliases-${unicode.ver}.txt"/>
 		</copy>
 
 		<copy todir="${DEST}/data">
