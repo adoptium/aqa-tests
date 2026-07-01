@@ -22,7 +22,7 @@ def MODE = params.MODE ? params.MODE : "ENTRYPOINT"
 SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
 TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
 AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
-LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT ?: true
+LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT != null ? params.LIGHT_WEIGHT_CHECKOUT.toBoolean() : true
 
 // Use BUILD_USER_ID if set and jdk-JDK_VERSIONS
 def DEFAULT_SUFFIX = (env.BUILD_USER_ID) ? "${env.BUILD_USER_ID} - jdk-${params.JDK_VERSIONS}" : "jdk-${params.JDK_VERSIONS}"
@@ -523,7 +523,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 def childParams = []
                 // loop through all the params and change the parameters if needed
                 params.each { param ->
-                    if ( param.key == "PLATFORMS" || param.key == "TARGETS" || param.key == "TOP_LEVEL_SDK_URL" 
+                    if ( param.key == "PLATFORMS" || param.key == "TARGETS" || param.key == "TOP_LEVEL_SDK_URL"
                     || param.key == "AUTO_AQA_GEN" || param.key == "JDK_VERSIONS" || param.key == "VARIANT" || param.key == "PIPELINE_DISPLAY_NAME") {
                         // do not need to pass the param to child jobs
                     } else if (param.key == "SDK_RESOURCE") {
@@ -538,6 +538,10 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                         childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                     } else if (param.key == "TIME_LIMIT") {
                         childParams << string(name: param.key, value: TIME_LIMIT.toString())
+                    } else if (param.key == "USE_TESTENV_PROPERTIES") {
+                        // Pipeline parameter true always wins; otherwise fall back to JSON config value.
+                        def useTestEnv = params.USE_TESTENV_PROPERTIES ? true : (buildConfig.USE_TESTENV_PROPERTIES != null ? buildConfig.USE_TESTENV_PROPERTIES.toBoolean() : false)
+                        childParams << booleanParam(name: param.key, value: useTestEnv)
                     } else {
                         def value = param.value.toString()
                         if (value == "true" || value == "false") {
@@ -580,9 +584,6 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
                 }
                 if (buildConfig.ACTIVE_NODE_TIMEOUT) {
                     childParams << string(name: "ACTIVE_NODE_TIMEOUT", value: buildConfig.ACTIVE_NODE_TIMEOUT.toString())
-                }
-                if (buildConfig.USE_TESTENV_PROPERTIES != null) {
-                    childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: buildConfig.USE_TESTENV_PROPERTIES.toBoolean())
                 }
                 if (buildConfig.ADOPTOPENJDK_BRANCH) {
                     childParams << string(name: "ADOPTOPENJDK_BRANCH", value: buildConfig.ADOPTOPENJDK_BRANCH)
