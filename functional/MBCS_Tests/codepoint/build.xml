@@ -19,6 +19,7 @@ limitations under the License.
         </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/unicodeVers.xml"/>
 	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
@@ -27,30 +28,6 @@ limitations under the License.
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
-
-	<macrodef name="resolve-unicode-version">
-		<attribute name="jdk-version"/>
-		<sequential>
-			<condition property="unicode.ver" value="17.0.0"><matches string="@{jdk-version}" pattern="^(2[6-9]|[3-9][0-9])$"/></condition>
-			<condition property="unicode.ver" value="16.0.0"><matches string="@{jdk-version}" pattern="^2[4-5]$"/></condition>
-			<condition property="unicode.ver" value="15.1.0"><matches string="@{jdk-version}" pattern="^2[2-3]$"/></condition>
-			<condition property="unicode.ver" value="15.0.0"><matches string="@{jdk-version}" pattern="^2[0-1]$"/></condition>
-			<condition property="unicode.ver" value="14.0.0"><matches string="@{jdk-version}" pattern="^19$"/></condition>
-			<condition property="unicode.ver" value="13.0.0"><matches string="@{jdk-version}" pattern="^1[5-8]$"/></condition>
-			<condition property="unicode.ver" value="12.1.0"><matches string="@{jdk-version}" pattern="^1[3-4]$"/></condition>
-			<condition property="unicode.ver" value="11.0.0"><matches string="@{jdk-version}" pattern="^12$"/></condition>
-			<property name="unicode.ver" value="10.0.0"/>
-			<condition property="unicode.ver.key" value="17_0_0"><equals arg1="${unicode.ver}" arg2="17.0.0"/></condition>
-			<condition property="unicode.ver.key" value="16_0_0"><equals arg1="${unicode.ver}" arg2="16.0.0"/></condition>
-			<condition property="unicode.ver.key" value="15_1_0"><equals arg1="${unicode.ver}" arg2="15.1.0"/></condition>
-			<condition property="unicode.ver.key" value="15_0_0"><equals arg1="${unicode.ver}" arg2="15.0.0"/></condition>
-			<condition property="unicode.ver.key" value="14_0_0"><equals arg1="${unicode.ver}" arg2="14.0.0"/></condition>
-			<condition property="unicode.ver.key" value="13_0_0"><equals arg1="${unicode.ver}" arg2="13.0.0"/></condition>
-			<condition property="unicode.ver.key" value="12_1_0"><equals arg1="${unicode.ver}" arg2="12.1.0"/></condition>
-			<condition property="unicode.ver.key" value="11_0_0"><equals arg1="${unicode.ver}" arg2="11.0.0"/></condition>
-			<property name="unicode.ver.key" value="10_0_0"/>
-		</sequential>
-	</macrodef>
 
 	<condition property="jdk8above" value="true">
 		<not>
