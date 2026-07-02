@@ -51,6 +51,22 @@ def updateBuildResult(newResult) {
     }
 }
 
+// Helper function to get a badge URL for a given build result status.
+// Uses the local Jenkins embeddable-build-status-plugin endpoint so the badge
+// is served from "this" Jenkins instance (no remote credentials required).
+// Status text and colors match the embeddable-build-status-plugin conventions.
+def getResultBadgeUrl(result) {
+    def statusMap = [
+        'SUCCESS'   : [text: 'passing',  color: 'brightgreen'],
+        'UNSTABLE'  : [text: 'unstable', color: 'yellow'],
+        'FAILURE'   : [text: 'failing',  color: 'red'],
+        'ABORTED'   : [text: 'aborted',  color: 'lightgrey'],
+        'NOT_BUILT' : [text: 'not_run',  color: 'lightgrey']
+    ]
+    def entry = statusMap[result] ?: [text: 'unknown', color: 'lightgrey']
+    return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
+}
+
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -830,7 +846,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 // Get remote job details and add to build description
                 def remoteBuildNumber = handle.getBuildNumber()
                 def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
-                def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+                def remoteBadgeUrl = getResultBadgeUrl(remoteJobResult)
                 
                 // Build rerun URL
                 def rerunParams = [
@@ -863,7 +879,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
                 
                 currentBuild.description += """
-                    <p>${displayName} : ${target} - ${remoteJobResult}:
+                    <p>${displayName} : ${target}:
                     <a href="${remoteJobUrl}" target="_blank">
                         <img src="${remoteBadgeUrl}" />
                     </a>
@@ -1006,7 +1022,7 @@ def remoteTriggerTemurinJCKDirect() {
             // Get remote job details and add to build description
             def remoteBuildNumber = handle.getBuildNumber()
             def remoteJobUrl = "https://ci.eclipse.org/temurin-compliance/job/AQA_Test_Pipeline/${remoteBuildNumber}/"
-            def remoteBadgeUrl = "${remoteJobUrl}badge/icon"
+            def remoteBadgeUrl = getResultBadgeUrl(remoteJobResult)
             
             // Build rerun URL
             def rerunParams = [
@@ -1039,7 +1055,7 @@ def remoteTriggerTemurinJCKDirect() {
             def rerunUrl = "${env.JENKINS_URL}job/AQA_Test_Pipeline_JCK/parambuild?${queryString}&MODE=RELAY"
             
             currentBuild.description += """
-                <p>${target} on ${platform} (JDK${jobJdkVersion}) - ${remoteJobResult}:
+                <p>${target} on ${platform} (JDK${jobJdkVersion}):
                 <a href="${remoteJobUrl}" target="_blank">
                     <img src="${remoteBadgeUrl}" />
                 </a>
