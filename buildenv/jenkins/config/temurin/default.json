@@ -57,10 +57,16 @@
                 }
             },
             "dev.system": {
-                "LABEL_ADDITION": "ci.role.test.repro",
                 "VENDOR_TEST_REPOS": "https://github.com/adoptium/temurin-build",
                 "VENDOR_TEST_BRANCHES": "master",
                 "VENDOR_TEST_DIRS": "/test/system"
+            }
+        },
+        "PLATFORM_SPECIFIC_CONFIG": {
+            "special.system": {
+                "x86-64_mac": {
+                    "LABEL": "ci.role.test.repro&&hw.arch.aarch64&&(sw.os.osx||sw.os.mac)"
+                }
             }
         },
         "PLATFORM_ADDITIONAL_TEST_LABELS": {
