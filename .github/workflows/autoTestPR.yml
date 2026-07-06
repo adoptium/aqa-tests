@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.event.comment.body, 'auto exclude test')
     steps:
-      - name: Set up Python 3.8
+      - name: Set up Python 3.14
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: 3.8
+          python-version: 3.14
       - name: check python version
         run: |
           python -V
@@ -135,10 +135,10 @@ jobs:
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
             -f "body=@${COMMENTER} 🔧 Processing OpenJDK test exclusion for: \`${TESTCASES}\`..."
             
-      - name: Set up Python 3.8
+      - name: Set up Python 3.14
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: 3.8
+          python-version: 3.14
           
       - name: Checkout current repo
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3

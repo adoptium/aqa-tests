@@ -126,10 +126,19 @@ class Disable(RawDisable):
 
     @classmethod
     def from_raw_disable(cls, raw_disable: RawDisable) -> 'Disable':
-        issue_url_node = raw_disable.node.find(f'.//{cls.ISSUE_TAG}')
-        if issue_url_node is None:
+        issue_url_nodes = raw_disable.node.findall(f'.//{cls.ISSUE_TAG}')
+        if issue_url_nodes is None or not issue_url_nodes:
             raise DisableNodeProcessingException(f'disable node has no {cls.ISSUE_TAG!r} child; skipping node')
-        issue_url = issue_url_node.text
+        issue_urls: List[str] = []
+        for url_node in issue_url_nodes:
+            text = (url_node.text or '').strip()
+            if "\n" in text or "\r" in text:
+                LOG.error('disable node has a forbidden new line character inside the comment tag.')
+                sys.exit(1)
+            if not text:
+                continue
+            issue_urls.append(text)
+        issue_url = ",".join(issue_urls) if issue_urls else "No URLs are associated with this disable node."
 
         test_name = raw_disable.parent_test.name
         custom_target = test_name + cls.get_suffix(raw_disable)
@@ -197,6 +206,7 @@ def parse_test(raw_test: RawTest) -> List[Disable]:
             disables.append(disable)
         except DisableNodeProcessingException as e:
             LOG.error(f'{raw_test.playlist_file.path}:{raw_disable.node.sourceline} : {e}')
+            sys.exit(1)
     return disables
 
 
@@ -210,6 +220,7 @@ def parse_file(playlist_path: str) -> List[Disable]:
             disables_from_file.extend(disables)
         except TestNodeProcessingException as e:
             LOG.error(f'{playlist_path}:{test.node.sourceline} : {e}')
+            sys.exit(1)
     return disables_from_file
 
 
@@ -221,6 +232,7 @@ def parse_all_files(playlist_files: Iterable[str]) -> List[Disable]:
             disables = parse_file(playlist_path)
         except Exception as e:
             LOG.error(f'Uncaught exception while processing {playlist_path!r} : {e}')
+            sys.exit(1)
         else:
             all_disables.extend(disables)
             LOG.info(f"Processed {playlist_path!r} : n_disables={len(disables)}")
