@@ -1,0 +1,109 @@
+name: Update Parent Release Issue
+
+on:
+  issues:
+    types: [closed, assigned]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  update-checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update parent issue checklist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          EVENT_ACTION: ${{ github.event.action }}
+          ASSIGNEE: ${{ github.event.assignee.login }}
+        run: |
+          set -euo pipefail
+
+          # Skip if this is a parent issue (contains "Release AQAvit Activities")
+          if [[ "$ISSUE_TITLE" == *"Release AQAvit Activities"* ]]; then
+            echo "This is a parent issue, skipping..."
+            exit 0
+          fi
+
+          # Get labels from the closed issue
+          labels=$(gh issue view "$ISSUE_NUMBER" --json labels --jq '.labels[].name' --repo "$GITHUB_REPOSITORY")
+          
+          if [[ -z "$labels" ]]; then
+            echo "No labels found on issue, cannot find parent"
+            exit 0
+          fi
+
+          # Find parent issue with same label and "Release AQAvit Activities" in title
+          parent_issue=""
+          for label in $labels; do
+            # Search for parent issue with this label
+            parent_search=$(gh issue list \
+              --label "$label" \
+              --state open \
+              --search "Release AQAvit Activities in:title" \
+              --json number,title,body \
+              --limit 10 \
+              --repo "$GITHUB_REPOSITORY")
+            
+            if [[ -n "$parent_search" && "$parent_search" != "[]" ]]; then
+              # Check if parent body contains a link to this sub-issue
+              parent_count=$(echo "$parent_search" | jq 'length')
+              for ((i=0; i<parent_count; i++)); do
+                parent_number=$(echo "$parent_search" | jq -r ".[$i].number")
+                parent_body=$(echo "$parent_search" | jq -r ".[$i].body")
+                
+                # Check if parent body contains link to the closed sub-issue
+                if echo "$parent_body" | grep -q "$ISSUE_URL"; then
+                  echo "Found parent issue #$parent_number"
+                  parent_issue="$parent_number"
+                  break 2
+                fi
+              done
+            fi
+          done
+
+          if [[ -z "$parent_issue" ]]; then
+            echo "No parent issue found for sub-issue #$ISSUE_NUMBER"
+            exit 0
+          fi
+
+          # Get current parent issue body
+          current_body=$(gh issue view "$parent_issue" --json body --jq '.body' --repo "$GITHUB_REPOSITORY")
+
+          # Update the checklist based on the event action
+          if [[ "$EVENT_ACTION" == "closed" ]]; then
+            # Mark the checklist item as complete
+            updated_body=$(echo "$current_body" | sed "s|- \[ \] \(.*$ISSUE_URL.*\)|- [x] \1|g")
+            action_message="closed sub-issue #$ISSUE_NUMBER"
+          elif [[ "$EVENT_ACTION" == "assigned" ]]; then
+            # Add assignee name to the checklist item
+            # Match the line with the issue URL and add assignee if not already present
+            if echo "$current_body" | grep "$ISSUE_URL" | grep -q "@$ASSIGNEE"; then
+              echo "Assignee already shown in checklist"
+              exit 0
+            fi
+            
+            # Add assignee after the issue link, before the closing parenthesis or bracket
+            updated_body=$(echo "$current_body" | sed "s|\(.*$ISSUE_URL\)\(.*\)|\1 (@$ASSIGNEE)\2|g")
+            action_message="assigned sub-issue #$ISSUE_NUMBER to @$ASSIGNEE"
+          else
+            echo "Unhandled event action: $EVENT_ACTION"
+            exit 0
+          fi
+
+          # Check if anything changed
+          if [[ "$current_body" == "$updated_body" ]]; then
+            echo "Checklist item was already updated or not found"
+            exit 0
+          fi
+
+          # Update the parent issue with the new body
+          gh issue edit "$parent_issue" \
+            --body "$updated_body" \
+            --repo "$GITHUB_REPOSITORY"
+
+          echo "✓ Updated checklist in parent issue #$parent_issue for $action_message"
