@@ -70,7 +70,7 @@ jobs:
             TITLE_PREFIX="Dry-run: "
           fi
 
-          # Returns the URL of an existing open issue with the given title, or empty string if none.
+          # Returns the URL of an existing open issue with the given title, or nothing if none found.
           find_existing_issue() {
             local title="$1"
             gh issue list \
