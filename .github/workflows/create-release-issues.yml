@@ -25,10 +25,6 @@ on:
         description: "Release date (Month and Year, e.g. 'July 2025')"
         required: true
         type: string
-      matrixInt:
-        description: "Which variant of matrix coverage to apply"
-        required: false
-        type: number
       pipelineUrl:
         description: "Optional URL of the release pipeline, if available"
         required: false
@@ -55,7 +51,6 @@ jobs:
           GH_TOKEN: ${{ secrets.TEMURIN_ISSUES_TOKEN || secrets.GITHUB_TOKEN }}
           VERSION: "JDK${{ inputs.version || github.event.client_payload.version }}"
           RELEASE_DATE: ${{ inputs.releaseDate || github.event.client_payload.releaseDate }}
-          MATRIX_INT: ${{ inputs.matrixInt || github.event.client_payload.matrixInt }}
           PRIMARY_PLATFORMS: "aarch64_linux,aarch64_mac,x86-64_linux,x86-64_mac,x86-64_windows"
           SECONDARY_PLATFORMS: "aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
           SKIP_INTERACTIVES: "true"
@@ -68,6 +63,18 @@ jobs:
           TITLE_PREFIX=""
           if [[ "$DRY_RUN" == "true" ]]; then
             TITLE_PREFIX="Dry-run: "
+          fi
+
+          release_date_lc="${RELEASE_DATE,,}"
+          if [[ "$release_date_lc" == *mar* || "$release_date_lc" == *sep* ]]; then
+            MATRIX_INT="0"
+          elif [[ "$release_date_lc" == *jan* || "$release_date_lc" == *jul* ]]; then
+            MATRIX_INT="1"
+          elif [[ "$release_date_lc" == *apr* || "$release_date_lc" == *oct* ]]; then
+            MATRIX_INT="2"
+          else
+            echo "Expected month containing Mar/Sep, Jan/Jul, or Apr/Oct.  Interim release with RELEASE_DATE: $RELEASE_DATE"
+            MATRIX_INT="3"
           fi
 
           # Returns the URL of an existing open issue with the given title, or nothing if none found.
