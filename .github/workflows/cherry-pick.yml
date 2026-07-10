@@ -59,7 +59,7 @@ jobs:
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body="@${COMMENTER} ❌ Could not verify permissions. Please contact a repository administrator if this persists."
+              -f body="@${COMMENTER} ⛔ Could not verify permissions. Please contact a repository administrator if this persists."
             exit 1
           fi
 
