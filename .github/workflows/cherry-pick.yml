@@ -44,6 +44,7 @@ jobs:
             exit 0
           fi
 
+          PERMISSION="none"
           PERMISSION_RESPONSE=$(gh api \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" 2>&1)
@@ -58,7 +59,7 @@ jobs:
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body="@${COMMENTER} ❌ Could not verify permissions due to a temporary error. Please retry the command."
+              -f body="@${COMMENTER} ❌ Could not verify permissions. Please contact a repository administrator if this persists."
             exit 1
           fi
 
