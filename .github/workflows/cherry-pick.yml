@@ -37,20 +37,29 @@ jobs:
         run: |
           PR_DATA=$(gh pr view "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
-            --json author,reviews,mergedBy)
+            --json author)
 
-          if ! echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '
-            .author.login == $user or
-            (.mergedBy.login // "") == $user or
-            ([ .reviews[].author.login ] | index($user)) != null
-          ' > /dev/null; then
-            gh api \
-              --method POST \
-              -H "Accept: application/vnd.github+json" \
-              "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author, reviewers, or the person who merged the PR can use this command."
-            exit 1
+          if echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '.author.login == $user' > /dev/null; then
+            echo "✅ Commenter is the PR author"
+            exit 0
           fi
+
+          PERMISSION=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
+            --jq '.permission' 2>/dev/null || echo "none")
+
+          if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "maintain" ] || [ "$PERMISSION" = "write" ]; then
+            echo "✅ Commenter is a project committer with $PERMISSION permission"
+            exit 0
+          fi
+
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author or project committers can use this command."
+          exit 1
 
       - name: Parse command
         id: parse
