@@ -44,15 +44,30 @@ jobs:
             exit 0
           fi
 
-          PERMISSION=$(gh api \
+          PERMISSION_RESPONSE=$(gh api \
             -H "Accept: application/vnd.github+json" \
-            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
-            --jq '.permission' 2>/dev/null || echo "none")
+            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" 2>&1)
+          API_STATUS=$?
 
-          if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "maintain" ] || [ "$PERMISSION" = "write" ]; then
+          if [ "$API_STATUS" -eq 0 ]; then
+            PERMISSION=$(echo "$PERMISSION_RESPONSE" | jq -r '.permission // "none"')
+          elif echo "$PERMISSION_RESPONSE" | grep -qi "not found"; then
+            PERMISSION="none"
+          else
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+              -f body="@${COMMENTER} ❌ Could not verify permissions due to a temporary error. Please retry the command."
+            exit 1
+          fi
+
+          case "$PERMISSION" in
+          admin|maintain|write)
             echo "✅ Commenter is a project committer with $PERMISSION permission"
             exit 0
-          fi
+            ;;
+          esac
 
           gh api \
             --method POST \
