@@ -51,7 +51,7 @@ jobs:
           API_STATUS=$?
 
           if [ "$API_STATUS" -eq 0 ]; then
-            PERMISSION=$(echo "$PERMISSION_RESPONSE" | jq -r '.permission // "none"')
+            PERMISSION=$(echo "$PERMISSION_RESPONSE" | jq -er '.permission // "none"' 2>/dev/null || echo "none")
           elif echo "$PERMISSION_RESPONSE" | grep -qi "not found"; then
             PERMISSION="none"
           else
@@ -69,6 +69,7 @@ jobs:
             exit 0
             ;;
           *)
+            echo "ℹ️ Commenter permission '$PERMISSION' is not sufficient to trigger cherry-pick"
             ;;
           esac
 
