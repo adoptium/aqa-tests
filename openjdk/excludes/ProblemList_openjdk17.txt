@@ -29,8 +29,7 @@ java/beans/PropertyEditor/TestFontClassNull.java https://bugs.openjdk.java.net/b
 java/beans/PropertyEditor/TestFontClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
 java/beans/XMLEncoder/java_awt_CardLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/java_awt_GridBagLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-# java/beans/XMLEncoder/java_awt_ScrollPane.java failure on mac is tracked by https://github.com/adoptium/aqa-tests/issues/2848
-java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all,macosx-all,windows-all
+java/beans/XMLEncoder/java_awt_ScrollPane.java	https://github.com/adoptium/aqa-tests/issues/2848,https://github.com/adoptium/aqa-tests/issues/2810	aix-all,macosx-all,windows-all
 java/beans/XMLEncoder/javax_swing_Box.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_BoxLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_Box_Filler.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
@@ -38,7 +37,6 @@ java/beans/XMLEncoder/javax_swing_DefaultCellEditor.java https://github.com/adop
 java/beans/XMLEncoder/javax_swing_JButton.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JLayeredPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_JSplitPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-# java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_OverlayLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_border_TitledBorder.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_plaf_BorderUIResource_TitledBorderUIResource.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
@@ -63,10 +61,7 @@ com/sun/management/OperatingSystemMXBean/TestTotalSwap.java https://bugs.openjdk
 sun/management/jmxremote/startstop/JMXStartStopTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusPerfCountersTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
 sun/management/jmxremote/startstop/JMXStatusTest.java https://github.com/adoptium/aqa-tests/issues/2808 linux-ppc64le
-# sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-# sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 sun/management/jdp/JdpOffTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
-# sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/aqa-tests/issues/2809 aix-all
 
 ############################################################################
 
@@ -80,9 +75,8 @@ sun/management/jdp/JdpOffTest.java https://github.com/adoptium/aqa-tests/issues/
 
 # jdk_other
 
-# com/sun/jndi/dns/ConfigTests/Timeout.java https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
 com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
-com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
+com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876,https://bugs.openjdk.org/browse/JDK-8282993	generic-all
 
 ############################################################################
 
@@ -117,20 +111,13 @@ java/net/MulticastSocket/B6427403.java https://github.com/adoptium/aqa-tests/iss
 java/net/MulticastSocket/NoLoopbackPackets.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/SetLoopbackMode.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,aix-all
 java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-# java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-# java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/MulticastAddresses.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-# java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
-# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
-java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.com/adoptium/aqa-tests/issues/1016,https://github.com/adoptium/infrastructure/issues/699,https://github.com/adoptium/aqa-tests/issues/1267	macosx-all,linux-s390x
+java/nio/channels/DatagramChannel/Promiscuous.java	https://github.com/adoptium/aqa-tests/issues/602,https://github.com/adoptium/infrastructure/issues/699	linux-s390x,macosx-all
 java/nio/file/spi/SetDefaultProvider.java https://github.com/adoptium/aqa-tests/issues/2871 linux-arm,windows-x86
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
-# java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/infrastructure/issues/2645 windows-all
-java/nio/file/Files/probeContentType/Basic.java https://github.com/adoptium/aqa-tests/issues/2789 aix-ppc64,windows-all
+java/nio/file/Files/probeContentType/Basic.java	https://github.com/adoptium/infrastructure/issues/2645,https://github.com/adoptium/aqa-tests/issues/2789	aix-ppc64,windows-all
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
 java/net/DatagramSocket/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/3820 aix-all
 sun/net/www/http/KeepAliveCache/KeepAliveProperty.java https://bugs.openjdk.org/browse/JDK-8285836 linux-ppc64le
@@ -141,8 +128,7 @@ java/net/Socket/B8312065.java https://github.com/adoptium/aqa-tests/issues/7043 
 ############################################################################
 
 # jdk_io
-#java/io/File/GetXSpace.java https://bugs.openjdk.org/browse/JDK-8251017 linux-arm,aix-all
-java/io/File/GetXSpace.java https://bugs.openjdk.java.net/browse/JDK-8251466 windows-all,linux-arm,aix-all
+java/io/File/GetXSpace.java	https://bugs.openjdk.org/browse/JDK-8251017,https://bugs.openjdk.java.net/browse/JDK-8251466	windows-all,linux-arm,aix-all
 
 ############################################################################
 
@@ -171,8 +157,7 @@ java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.n
 java/nio/channels/AsynchronousSocketChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/adoptium/aqa-tests/issues/602 macosx-all,linux-ppc64le
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/nio/channels/FileChannel/Transfer2GPlus.java https://bugs.openjdk.java.net/browse/JDK-8272095 linux-arm,windows-all
-# java/nio/channels/FileChannel/Transfer2GPlus.java https://github.com/adoptium/aqa-tests/issues/3690 windows-all
+java/nio/channels/FileChannel/Transfer2GPlus.java	https://github.com/adoptium/aqa-tests/issues/3690,https://bugs.openjdk.java.net/browse/JDK-8272095	linux-arm,windows-all
 java/nio/channels/FileChannel/LoopingTruncate.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/channels/FileChannel/Transfer4GBFile.java https://github.com/adoptium/aqa-tests/issues/3686 windows-all
 java/nio/Buffer/DirectBufferAllocTest.java https://github.com/adoptium/aqa-tests/issues/3086 aix-ppc64
@@ -321,8 +306,7 @@ java/util/zip/DeInflate.java https://bugs.openjdk.org/browse/JDK-8299748 linux-s
 
 java/foreign/valist/VaListTest.java https://bugs.openjdk.org/browse/JDK-8295290 windows-aarch64
 java/foreign/malloc/TestMixedMallocFree.java https://bugs.openjdk.org/browse/JDK-8295290 windows-aarch64
-# java/foreign/TestNative.java https://bugs.openjdk.org/browse/JDK-8295290 windows-aarch64
-java/foreign/TestNative.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
+java/foreign/TestNative.java	https://bugs.openjdk.org/browse/JDK-8295290,https://github.com/adoptium/aqa-tests/issues/1920	generic-all
 java/foreign/TestVarArgs.java https://bugs.openjdk.org/browse/JDK-8295290 windows-aarch64
 java/foreign/StdLibTest.java https://bugs.openjdk.org/browse/JDK-8295290 windows-aarch64
 
@@ -472,17 +456,13 @@ gc/shenandoah/jni/CriticalNativeStress.java https://github.com/adoptium/aqa-test
 # hotspot_runtime
 
 runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-#runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5671 windows-x86
-runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-x86
+runtime/cds/TestCDSVMCrash.java	https://github.com/adoptium/aqa-tests/issues/5671,https://github.com/adoptium/aqa-tests/issues/5645	macosx-all,windows-x86
 runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-#runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
-runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86,macosx-x64
+runtime/cds/appcds/LambdaEagerInit.java	https://github.com/adoptium/adoptium-support/issues/937,https://github.com/adoptium/aqa-tests/issues/5378	windows-x86,macosx-x64
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-#runtime/cds/appcds/applications/JavacBench.java#dynamic https://github.com/adoptium/adoptium-support/issues/937 macosx-x64
-runtime/cds/appcds/applications/JavacBench.java#dynamic https://github.com/adoptium/aqa-tests/issues/5869 windows-x86,macosx-x64
-#runtime/jni/nativeStack/TestNativeStack.java https://bugs.openjdk.org/browse/JDK-8311092 linux-arm
-runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all,linux-arm
+runtime/cds/appcds/applications/JavacBench.java#dynamic	https://github.com/adoptium/adoptium-support/issues/937,https://github.com/adoptium/aqa-tests/issues/5869	macosx-x64,windows-x86
+runtime/jni/nativeStack/TestNativeStack.java	https://bugs.openjdk.org/browse/JDK-8311092,https://github.com/adoptium/aqa-tests/issues/5384	aix-all,linux-arm
 runtime/logging/loadLibraryTest/LoadLibraryTest.java https://github.com/adoptium/aqa-tests/issues/5378  windows-x86
 runtime/Nestmates/protectionDomain/TestDifferentProtectionDomains.java https://bugs.openjdk.java.net/browse/JDK-8269135 windows-x86
 runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
@@ -491,9 +471,7 @@ runtime/os/TestTracePageSizes.java#with-G1 https://bugs.openjdk.org/browse/JDK-8
 runtime/os/TestTracePageSizes.java#with-Parallel https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#with-Serial https://bugs.openjdk.org/browse/JDK-8337555 linux-all
 runtime/os/TestTracePageSizes.java#compiler-options https://bugs.openjdk.org/browse/JDK-8337555 linux-all
-# runtime/ErrorHandling/MachCodeFramesInErrorFile.java https://bugs.openjdk.org/browse/JDK-8313315 windows-aarch64
-# runtime/ErrorHandling/MachCodeFramesInErrorFile.java https://github.com/adoptium/aqa-tests/issues/6197 aix-ppc64
-runtime/ErrorHandling/MachCodeFramesInErrorFile.java https://bugs.openjdk.org/browse/JDK-8347908 linux-arm,windows-aarch64,aix-ppc64
+runtime/ErrorHandling/MachCodeFramesInErrorFile.java	https://bugs.openjdk.org/browse/JDK-8313315,https://github.com/adoptium/aqa-tests/issues/6197,https://bugs.openjdk.org/browse/JDK-8347908	linux-arm,windows-aarch64,aix-ppc64
 runtime/ErrorHandling/CreateCoredumpOnCrash.java https://bugs.openjdk.org/browse/JDK-8348862 windows-aarch64
 
 ############################################################################
@@ -549,11 +527,11 @@ runtime/DefineClass/NullClassBytesTest.java https://github.com/adoptium/aqa-test
 # Uncomment duplicates above if any of these lines are removed.
 
 gc/z/TestUncommit.java https://github.com/adoptium/aqa-tests/issues/6424 linux-x64
-java/beans/XMLEncoder/javax_swing_JTree.java https://github.com/adoptium/infrastructure/issues/4243 linux-s390x,aix-all
-java/net/DatagramSocket/DatagramSocketExample.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
-java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+java/beans/XMLEncoder/javax_swing_JTree.java	https://github.com/adoptium/aqa-tests/issues/2810,https://github.com/adoptium/infrastructure/issues/4243	linux-s390x,aix-all
+java/net/DatagramSocket/DatagramSocketExample.java	https://github.com/adoptium/aqa-tests/issues/2246,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all
+java/net/DatagramSocket/DatagramSocketMulticasting.java	https://github.com/adoptium/aqa-tests/issues/2246,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all
 java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
-sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
-sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
-sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
-java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+sun/management/jdp/JdpDefaultsTest.java	https://github.com/adoptium/aqa-tests/issues/2809,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all
+sun/management/jdp/JdpJmxRemoteDynamicPortTest.java	https://github.com/adoptium/aqa-tests/issues/2809,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all
+sun/management/jdp/JdpSpecificAddressTest.java	https://github.com/adoptium/aqa-tests/issues/2809,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all
+java/nio/channels/DatagramChannel/AdaptorMulticasting.java	https://github.com/adoptium/aqa-tests/issues/2246,https://github.com/adoptium/infrastructure/issues/3189	linux-s390x,aix-all

@@ -82,9 +82,8 @@ sun/security/krb5/auto/rcache_usemd5.sh https://bugs.openjdk.java.net/browse/JDK
 
 # jdk_other
 
-# com/sun/jndi/dns/ConfigTests/Timeout.java https://github.com/adoptium/aqa-tests/issues/2876 linux-s390x
 com/sun/jndi/ldap/LdapPoolTimeoutTest.java https://github.com/adoptium/aqa-tests/issues/3619 linux-ppc64le,windows-all
-com/sun/jndi/dns/ConfigTests/Timeout.java https://bugs.openjdk.org/browse/JDK-8282993 generic-all
+com/sun/jndi/dns/ConfigTests/Timeout.java	https://github.com/adoptium/aqa-tests/issues/2876,https://bugs.openjdk.org/browse/JDK-8282993	generic-all
 
 ############################################################################
 
@@ -135,11 +134,8 @@ com/sun/jdi/OnJcmdTest.java https://github.com/adoptium/aqa-tests/issues/2837 wi
 java/nio/channels/AsyncCloseAndInterrupt.java https://github.com/adoptium/aqa-tests/issues/1597 linux-all,aix-all
 java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
 java/nio/channels/AsynchronousSocketChannel/Basic.java https://bugs.openjdk.java.net/browse/JDK-7052549 windows-all
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
-# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
-java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.com/adoptium/aqa-tests/issues/1016,https://github.com/adoptium/infrastructure/issues/699,https://github.com/adoptium/aqa-tests/issues/1267	macosx-all,linux-s390x
+java/nio/channels/DatagramChannel/Promiscuous.java	https://github.com/adoptium/aqa-tests/issues/602,https://github.com/adoptium/infrastructure/issues/699	linux-s390x,macosx-all
 java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all,linux-aarch64,linux-arm
 java/nio/file/Files/InputStreamTest.java https://github.com/adoptium/aqa-tests/issues/2789 generic-all
 jdk/nio/zipfs/ZipFSTester.java https://github.com/adoptium/aqa-tests/issues/602 macosx-all,linux-ppc64le
@@ -202,8 +198,7 @@ java/time/tck/java/time/format/TCKDateTimeFormatterBuilder.java https://github.c
 
 # jdk_tools
 
-#sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/5871 windows-all
-sun/tools/jhsdb/JShellHeapDumpTest.java https://github.com/adoptium/aqa-tests/issues/4155 windows-all
+sun/tools/jhsdb/JShellHeapDumpTest.java	https://github.com/adoptium/aqa-tests/issues/5871,https://github.com/adoptium/aqa-tests/issues/4155	windows-all
 sun/tools/jstatd/TestJstatdExternalRegistry.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPort.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
 sun/tools/jstatd/TestJstatdPortAndServer.java https://bugs.openjdk.java.net/browse/JDK-8081569 linux-all
@@ -311,7 +306,6 @@ compiler/loopopts/TestRemoveEmptyLoop.java https://github.com/adoptium/aqa-tests
 
 # jdk_imageio
 
-# javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/aqa-tests/issues/2814 aix-all
 
 ############################################################################
 
@@ -343,8 +337,7 @@ runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tes
 runtime/cds/appcds/LambdaEagerInit.java https://github.com/adoptium/aqa-tests/issues/5378 windows-x86
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
-#runtime/jni/nativeStack/TestNativeStack.java https://bugs.openjdk.org/browse/JDK-8311092 linux-arm
-runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all,linux-arm
+runtime/jni/nativeStack/TestNativeStack.java	https://bugs.openjdk.org/browse/JDK-8311092,https://github.com/adoptium/aqa-tests/issues/5384	aix-all,linux-arm
 runtime/logging/loadLibraryTest/LoadLibraryTest.java https://github.com/adoptium/aqa-tests/issues/5378 windows-x86
 runtime/NMT/HugeArenaTracking.java https://github.com/adoptium/aqa-tests/issues/5384 aix-all
 runtime/NMT/SafepointPollingPages.java https://github.com/adoptium/aqa-tests/issues/5900 linux-arm
@@ -428,11 +421,11 @@ vmTestbase/gc/gctests/HeapUsageTest/HeapUsageTest.java https://bugs.openjdk.org/
 vmTestbase/gc/gctests/InterruptGC/InterruptGC.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
 vmTestbase/gc/gctests/JumbleGC/JumbleGC.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
 vmTestbase/gc/gctests/JumbleGC002/JumbleGC002.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
-vmTestbase/gc/gctests/LargeObjects/large001/large001.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
-vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
-vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
-vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
-vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
+vmTestbase/gc/gctests/LargeObjects/large001/large001.java	https://github.com/adoptium/aqa-tests/issues/6621,https://bugs.openjdk.org/browse/JDK-8380951	generic-all
+vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java	https://github.com/adoptium/aqa-tests/issues/6621,https://bugs.openjdk.org/browse/JDK-8380951	generic-all
+vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java	https://github.com/adoptium/aqa-tests/issues/6621,https://bugs.openjdk.org/browse/JDK-8380951	generic-all
+vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java	https://github.com/adoptium/aqa-tests/issues/6621,https://bugs.openjdk.org/browse/JDK-8380951	generic-all
+vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java	https://github.com/adoptium/aqa-tests/issues/6621,https://bugs.openjdk.org/browse/JDK-8380951	generic-all
 vmTestbase/gc/gctests/LoadUnloadGC/LoadUnloadGC.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
 vmTestbase/gc/gctests/MatrixJuggleGC/MatrixJuggleGC.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
 vmTestbase/gc/gctests/MemoryEater/TestDescription.java https://bugs.openjdk.org/browse/JDK-8380951 generic-all
@@ -604,11 +597,6 @@ vmTestbase/vm/gc/containers/TreeSet_String/TestDescription.java https://bugs.ope
 
 # Note: When the big list above is deleted, uncomment the entries below and do not delete them.
 # They appear unrelated to https://bugs.openjdk.org/browse/JDK-8380951
-# vmTestbase/gc/gctests/LargeObjects/large001/large001.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
-# vmTestbase/gc/gctests/LargeObjects/large002/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
-# vmTestbase/gc/gctests/LargeObjects/large003/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
-# vmTestbase/gc/gctests/LargeObjects/large004/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
-# vmTestbase/gc/gctests/LargeObjects/large005/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6621  windows-x86
 
 ############################################################################
 
@@ -631,7 +619,7 @@ java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/ado
 java/net/httpclient/http2/ConnectionReuseTest.java https://github.com/adoptium/aqa-tests/issues/6887 linux-s390x
 java/net/httpclient/StreamingBody.java https://github.com/adoptium/infrastructure/issues/3523 aix-all
 java/net/MulticastSocket/SetLoopbackModeIPv4.java https://github.com/adoptium/aqa-tests/issues/6888 linux-s390x
-javax/imageio/plugins/shared/ImageWriterCompressionTest.java https://github.com/adoptium/infrastructure/issues/4243 linux-s390x,aix-all
+javax/imageio/plugins/shared/ImageWriterCompressionTest.java	https://github.com/adoptium/aqa-tests/issues/2814,https://github.com/adoptium/infrastructure/issues/4243	linux-s390x,aix-all
 tools/jmod/hashes/HashesOrderTest.java https://github.com/adoptium/aqa-tests/issues/6886 linux-aarch64,macosx-x64
 sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x
 sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x

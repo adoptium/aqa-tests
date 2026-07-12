@@ -27,8 +27,7 @@
 # jdk_lang
 
 java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
-#java/lang/Class/GetPackageBootLoaderChildLayer.java is also excluded for the issue https://github.com/adoptium/aqa-tests/issues/1267
-java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
+java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/adoptium/aqa-tests/issues/1267,https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
 java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse-openj9/openj9/issues/5225	generic-all
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse-openj9/openj9/issues/6668	macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
@@ -156,8 +155,7 @@ java/lang/management/MemoryMXBean/MemoryManagementConcMarkSweepGC.sh https://git
 java/lang/management/MemoryMXBean/MemoryManagementParallelGC.sh https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/management/MemoryMXBean/MemoryManagementSerialGC.sh https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/management/MemoryMXBean/MemoryTestAllGC.sh https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-java/lang/management/MemoryMXBean/MemoryTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
-java/lang/management/MemoryMXBean/MemoryTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+java/lang/management/MemoryMXBean/MemoryTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
 java/lang/management/MemoryMXBean/LowMemoryTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 javax/management/Introspector/ClassLeakTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/lang/management/MemoryMXBean/MemoryTestZGC.sh https://github.com/adoptium/aqa-tests/issues/1297 generic-all
@@ -174,8 +172,7 @@ com/sun/management/DiagnosticCommandMBean/DcmdMBeanTest.java https://github.com/
 
 # jdk_math
 
-java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://bugs.openjdk.java.net/browse/JDK-8241097 generic-all
-java/math/BigInteger/largeMemory/SymmetricRangeTests.java https://github.com/eclipse-openj9/openj9/issues/8728 generic-all
+java/math/BigInteger/largeMemory/SymmetricRangeTests.java	https://bugs.openjdk.java.net/browse/JDK-8241097,https://github.com/eclipse-openj9/openj9/issues/8728	generic-all
 
 ############################################################################
 
@@ -225,11 +222,8 @@ java/nio/channels/AsynchronousFileChannel/Basic.java https://bugs.openjdk.java.n
 java/nio/channels/AsynchronousSocketChannel/Basic.java	https://bugs.openjdk.java.net/browse/JDK-7052549	windows-all
 java/nio/channels/DatagramChannel/AfterDisconnect.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
 java/nio/channels/DatagramChannel/ChangingAddress.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/1153 windows-all
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x,windows-all
-# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669
-java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.com/adoptium/infrastructure/issues/699,https://github.com/adoptium/infrastructure/issues/1153,https://github.com/adoptium/aqa-tests/issues/1267	macosx-all,linux-s390x,windows-all
+java/nio/channels/DatagramChannel/Promiscuous.java	https://github.com/eclipse-openj9/openj9/issues/6669,https://github.com/adoptium/infrastructure/issues/699	linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
 java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java https://github.com/eclipse-openj9/openj9/issues/8796 macosx-all

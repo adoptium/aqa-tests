@@ -33,8 +33,7 @@ javax/imageio/stream/DeleteOnExitTest.sh https://github.com/eclipse-openj9/openj
 # jdk_lang
 
 java/lang/Class/GetModuleTest.java	https://github.com/adoptium/aqa-tests/issues/1297	generic-all
-#java/lang/Class/GetPackageBootLoaderChildLayer.java is also excluded for the issue https://github.com/adoptium/aqa-tests/issues/1267
-java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
+java/lang/Class/GetPackageBootLoaderChildLayer.java	https://github.com/adoptium/aqa-tests/issues/1267,https://github.com/eclipse-openj9/openj9/issues/5274	generic-all
 java/lang/Class/forName/NonJavaNames.sh	https://github.com/eclipse-openj9/openj9/issues/5225	generic-all
 java/lang/ClassLoader/Assert.java	https://github.com/eclipse-openj9/openj9/issues/6668	macosx-x64
 java/lang/ClassLoader/EndorsedDirs.java	https://github.com/eclipse-openj9/openj9/issues/3055	generic-all
@@ -155,14 +154,13 @@ java/lang/reflect/exeCallerAccessTest/CallerAccessTest.java https://github.com/a
 jdk/modules/etc/DefaultModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 jdk/modules/incubator/ImageModules.java	https://github.com/adoptium/aqa-tests/issues/1267	macosx-all
 vm/JniInvocationTest.java	https://github.com/adoptium/temurin-build/issues/248	macosx-all
-jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
+jdk/internal/loader/NativeLibraries/Main.java	https://github.com/adoptium/aqa-tests/issues/1920,https://github.com/eclipse-openj9/openj9/issues/9018	generic-all
 java/lang/invoke/lambda/superProtectedMethod/SuperMethodTest.java https://github.com/eclipse-openj9/openj9/issues/11783 generic-all
 java/lang/invoke/MethodHandles/publicLookup/Driver.java https://github.com/eclipse-openj9/openj9/issues/10648 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 ############################################################################
 
 # jdk_internal
-jdk/internal/loader/NativeLibraries/Main.java  https://github.com/eclipse-openj9/openj9/issues/9018  generic-all
 
 ############################################################################
 
@@ -273,11 +271,8 @@ java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/ec
 java/nio/channels/DatagramChannel/AfterDisconnect.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
 java/nio/channels/DatagramChannel/ChangingAddress.java https://github.com/adoptium/aqa-tests/issues/1650 aix-all
 java/nio/channels/DatagramChannel/Loopback.java https://github.com/eclipse-openj9/openj9/issues/13018 windows-all
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
-#java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue	https://github.com/eclipse-openj9/openj9/issues/6669
-java/nio/channels/DatagramChannel/Promiscuous.java              https://github.com/adoptium/infrastructure/issues/699    linux-s390x,macosx-all
+java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java	https://github.com/adoptium/aqa-tests/issues/1016,https://github.com/adoptium/infrastructure/issues/699,https://github.com/adoptium/aqa-tests/issues/1267	macosx-all,linux-s390x
+java/nio/channels/DatagramChannel/Promiscuous.java	https://github.com/eclipse-openj9/openj9/issues/6669,https://github.com/adoptium/infrastructure/issues/699	linux-s390x,macosx-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java	https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 java/nio/channels/DatagramChannel/SendReceiveMaxSize.java https://github.com/adoptium/aqa-tests/issues/2535 aix-all
 java/nio/channels/SocketChannel/AdaptSocket.java https://github.com/eclipse-openj9/openj9/issues/4317 macosx-all
