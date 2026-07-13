@@ -8,9 +8,10 @@ def makeTest(testParam) {
 	// Note: keyword source cannot be used in Jenkins script. Therefore, using "." instead.
     // When DYNAMIC_COMPILE=false, do not source testenvSettings.sh (to avoid calling it twice). Only
     // source the settings when env.DYNAMIC_COMPILE is true.
-	String makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests/TKG; \$MAKE $testParam"
+	String maybeUnsetJvmOptions = env.JVM_OPTIONS?.trim() ? "" : "unset JVM_OPTIONS; "
+	String makeTestCmd = "$RESOLVED_MAKE;${maybeUnsetJvmOptions}cd ./aqa-tests/TKG; \$MAKE $testParam"
 	if (env.DYNAMIC_COMPILE) {
-		makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
+		makeTestCmd = "$RESOLVED_MAKE;${maybeUnsetJvmOptions}cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
 	}
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
