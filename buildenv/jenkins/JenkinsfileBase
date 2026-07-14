@@ -12,6 +12,9 @@ def makeTest(testParam) {
 	if (env.DYNAMIC_COMPILE) {
 		makeTestCmd = "$RESOLVED_MAKE;cd ./aqa-tests; . ./scripts/testenv/testenvSettings.sh;cd ./TKG; \$MAKE $testParam"
 	}
+	if (!env.JVM_OPTIONS?.trim()) {
+		makeTestCmd = "unset JVM_OPTIONS; $makeTestCmd"
+	}
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
@@ -375,11 +378,15 @@ def setupParallelEnv() {
 // NUM_LIST can be different than numOfMachines.
 def genParallelList(PARALLEL_OPTIONS) {
 	String unsetLLP = ""
+	String unsetJvmOptions = ""
+	if (!env.JVM_OPTIONS?.trim()) {
+		unsetJvmOptions = "unset JVM_OPTIONS;"
+	}
 	//unset LD_LIBRARY_PATH workaround for issue https://github.com/adoptium/infrastructure/issues/2934
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		unsetLLP = "unset LD_LIBRARY_PATH;"
 	}
-	sh "cd ./aqa-tests/TKG; $RESOLVED_MAKE; ${unsetLLP} \$MAKE genParallelList ${PARALLEL_OPTIONS}"
+	sh "cd ./aqa-tests/TKG; $RESOLVED_MAKE; ${unsetJvmOptions} ${unsetLLP} \$MAKE genParallelList ${PARALLEL_OPTIONS}"
 	def parallelList = "aqa-tests/TKG/parallelList.mk"
 	int NUM_LIST = -1
 	if (fileExists("${parallelList}")) {
