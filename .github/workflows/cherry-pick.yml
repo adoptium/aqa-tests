@@ -37,20 +37,48 @@ jobs:
         run: |
           PR_DATA=$(gh pr view "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
-            --json author,reviews,mergedBy)
+            --json author)
 
-          if ! echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '
-            .author.login == $user or
-            (.mergedBy.login // "") == $user or
-            ([ .reviews[].author.login ] | index($user)) != null
-          ' > /dev/null; then
+          if echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '.author.login == $user' > /dev/null; then
+            echo "✅ Commenter is the PR author"
+            exit 0
+          fi
+
+          PERMISSION="none"
+          PERMISSION_RESPONSE=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" 2>&1)
+          API_STATUS=$?
+
+          if [ "$API_STATUS" -eq 0 ]; then
+            PERMISSION=$(echo "$PERMISSION_RESPONSE" | jq -er '.permission // "none"' 2>/dev/null || echo "none")
+          elif echo "$PERMISSION_RESPONSE" | grep -qi "not found"; then
+            PERMISSION="none"
+          else
             gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author, reviewers, or the person who merged the PR can use this command."
+              -f body="@${COMMENTER} ⛔ Could not verify permissions. Please contact a repository administrator if this persists."
             exit 1
           fi
+
+          case "$PERMISSION" in
+          admin|maintain|write)
+            echo "✅ Commenter is a project committer with $PERMISSION permission"
+            exit 0
+            ;;
+          *)
+            echo "ℹ️ Commenter permission '$PERMISSION' is not sufficient to trigger cherry-pick"
+            ;;
+          esac
+
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author or project committers can use this command."
+          exit 1
 
       - name: Parse command
         id: parse
