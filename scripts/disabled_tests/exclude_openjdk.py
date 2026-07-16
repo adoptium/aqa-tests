@@ -239,6 +239,45 @@ def check_exclusion_exists(file_path: str, testcase: str, platform: str) -> bool
     return False
 
 
+def find_insertion_index(lines: List[str], testcase: str) -> int:
+    """
+    Find the best line index to insert the new testcase based on directory structure.
+    
+    Args:
+        lines: List of lines in the ProblemList file
+        testcase: Test case name
+        
+    Returns:
+        Index where the new testcase should be inserted
+    """
+    parts = testcase.split('/')
+    
+    # Try matching progressively shorter directory prefixes
+    for depth in range(len(parts) - 1, 0, -1):
+        prefix = '/'.join(parts[:depth]) + '/'
+        
+        last_match_idx = -1
+        for i, line in enumerate(lines):
+            line_str = line.strip()
+            if not line_str:
+                continue
+                
+            tc = None
+            if not line_str.startswith('#'):
+                tc = line_str.split()[0]
+            elif line_str.startswith('# ') and len(line_str.split()) >= 2:
+                tc = line_str.split()[1]
+                
+            if tc and tc.startswith(prefix):
+                last_match_idx = i
+                
+        if last_match_idx != -1:
+            return last_match_idx + 1
+            
+    # Fallback to appending to the end
+    return len(lines)
+
+
 def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platform: str) -> bool:
     """
     Add an exclusion entry to a ProblemList file.
@@ -261,14 +300,20 @@ def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platfor
     with open(file_path, 'r') as f:
         lines = f.readlines()
     
-    # Add the exclusion at the end of the file
     exclusion_line = f"{testcase} {issue_url} {platform}\n"
     
-    # Ensure file ends with newline before adding
-    if lines and not lines[-1].endswith('\n'):
-        lines[-1] += '\n'
+    insert_idx = find_insertion_index(lines, testcase)
     
-    lines.append(exclusion_line)
+    if insert_idx == len(lines):
+        # Ensure file ends with newline before adding
+        if lines and not lines[-1].endswith('\n'):
+            lines[-1] += '\n'
+        lines.append(exclusion_line)
+    else:
+        # Ensure the previous line has a newline
+        if insert_idx > 0 and not lines[insert_idx - 1].endswith('\n'):
+            lines[insert_idx - 1] += '\n'
+        lines.insert(insert_idx, exclusion_line)
     
     # Write back to file
     with open(file_path, 'w') as f:
