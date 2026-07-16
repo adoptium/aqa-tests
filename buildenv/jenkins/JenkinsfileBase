@@ -999,8 +999,8 @@ def writeSummary() {
 	}
 
 	// Choose icon based on test results
-	def svg = failedTests != 0 ? "symbol-warning-outline plugin-ionicons-api" : "symbol-checkmark-circle-outline plugin-ionicons-api"
-	def summary = createBadgeSummary(svg)
+	def icon = failedTests != 0 ? "symbol-warning-outline plugin-ionicons-api" : "symbol-checkmark-circle-outline plugin-ionicons-api"
+	def summary = createBadgeSummary(icon)
 
 	// Add iteration count to header if multiple iterations ran
 	def header = iterCount > 1
