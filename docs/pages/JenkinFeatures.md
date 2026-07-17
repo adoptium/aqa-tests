@@ -58,7 +58,7 @@ Choose which platform to run tests on and optionally specify the machine label t
 | `DOCKERIMAGE_TAG`      | Optional. Used by the external test group to specify a specific Docker image tag.                        |
 | `EXTRA_DOCKER_ARGS`    | Optional. Extra Docker arguments for the external test group.                                           |
 | `SSH_AGENT_CREDENTIAL` | Optional. Set if needed to fetch images from a secure registry.                                         |
-| `ACTIVE_NODE_TIMEOUT`  | Optional. Timeout in minutes to wait for the label-matching node to become active.                       |
+| `ACTIVE_NODE_TIMEOUT`  | Optional. Timeout in minutes to wait for the label-matching node to become active. Not applied when `ci.agent.dynamic` is in the label (dynamic agents are provisioned on-demand and may take longer). |
 
 ### JDK Selection Parameters
 Specify where to pick up JDK from and provide extra details if taking from upstream or customized.

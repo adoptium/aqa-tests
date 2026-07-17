@@ -466,7 +466,11 @@ timestamps{
                 // They could come online either through:
                 //   - Admin brings a "static" node online
                 //   - "Cloud" provider dynamic "plugin" provisions a node
-                if (!areNodesWithLabelOnline(LABEL)) {
+                // Note: Skip ACTIVE_NODE_TIMEOUT check for dynamic agents (ci.agent.dynamic), as they are
+                //   provisioned on-demand by the cloud provider and there may be no "online" nodes initially.
+                //   Azure dynamic agent pools are shared across architectures so wait times can be hours
+                //   when the pool is exhausted by concurrent pipelines.
+                if (!LABEL.contains("ci.agent.dynamic") && !areNodesWithLabelOnline(LABEL)) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
                     timeout(ACTIVE_NODE_TIMEOUT) {
                         // If there is available node before timeout
