@@ -49,6 +49,7 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Running tomcat tests"
 	#Run tests
 	ant test
+	set +e
 else
 	echo "Building tomcat" && \
 	ant
