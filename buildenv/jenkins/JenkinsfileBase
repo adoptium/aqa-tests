@@ -2,6 +2,7 @@
 import org.tap4j.consumer.TapConsumer;
 import org.tap4j.consumer.TapConsumerFactory;
 import org.tap4j.model.TestSet;
+import groovy.transform.Field
 
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
@@ -904,30 +905,42 @@ def runTest( ) {
 		if (env.ITER_COUNT.toInteger() == 0) {
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
-			def summary = createBadgeSummary("error.svg")
+			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
 			appendSummaryText(summary,"TEST BUILD FAILURE!")
 		} 
 	}
 }
 
+// Maps Badge Plugin 3.x Ionicons symbol names to the legacy .svg icon names used by 1.x and 2.x
+// Assisted by IBM Bob
+@Field static final Map ICON_LEGACY_FALLBACK = [
+	'symbol-close-circle-outline plugin-ionicons-api'     : 'error.svg',
+	'symbol-warning-outline plugin-ionicons-api'          : 'warning.svg',
+	'symbol-checkmark-circle-outline plugin-ionicons-api' : 'accept.svg',
+	'symbol-folder-open-outline plugin-ionicons-api'      : 'folder-delete.svg',
+]
+
 def createBadgeSummary(iconName) {
-	// Try new method first (badge plugin v3.583+), fallback to deprecated method for older versions
-	def summary = null
+	// Badge Plugin 3.x: addSummary is a Pipeline DSL step — no manager.* prefix, named parameters
+	// Assisted by IBM Bob
 	try {
-		summary = manager.addSummary(iconName)
+		return addSummary(icon: iconName, text: '')
 	} catch (Exception e) {
-		echo "addSummary failed, trying deprecated createSummary method: ${e.message}"
+		echo "Badge Plugin 3.x addSummary step unavailable, trying 2.x manager.addSummary: ${e.message}"
+		def legacyIcon = ICON_LEGACY_FALLBACK.getOrDefault(iconName, iconName)
+		// Badge Plugin 2.x: addSummary is a method on the manager object
 		try {
-			summary = manager.createSummary(iconName)
+			return manager.addSummary(legacyIcon)
 		} catch (Exception e2) {
-			echo "Both addSummary and createSummary failed: ${e2.message}"
-			throw e2
+			echo "Badge Plugin 2.x manager.addSummary unavailable, trying 1.x manager.createSummary: ${e2.message}"
+			// Badge Plugin 1.x: createSummary is the original Groovy Postbuild API
+			return manager.createSummary(legacyIcon)
 		}
 	}
-	return summary
 }
 
 def appendSummaryText(summary, text) {
+	// Assisted by IBM Bob
 	try {
 		def currentText = summary.getText() ?: ""
 		summary.setText(currentText + text)
@@ -954,7 +967,7 @@ def checkTestResults(results) {
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
-		summary = createBadgeSummary("folder-delete.svg")
+		summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
 		appendSummaryText(summary, "NO TEST FOUND!")
 		return
 	}
@@ -980,14 +993,14 @@ def writeSummary() {
 
 	// Handle case where no tests were found
 	if (totalTests == 0) {
-		def summary = createBadgeSummary("folder-delete.svg")
+		def summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
 		appendSummaryText(summary,"NO TEST FOUND!")
 		return
 	}
 
 	// Choose icon based on test results
-	def svg = failedTests != 0 ? "warning.svg" : "accept.svg"
-	def summary = createBadgeSummary(svg)
+	def icon = failedTests != 0 ? "symbol-warning-outline plugin-ionicons-api" : "symbol-checkmark-circle-outline plugin-ionicons-api"
+	def summary = createBadgeSummary(icon)
 
 	// Add iteration count to header if multiple iterations ran
 	def header = iterCount > 1

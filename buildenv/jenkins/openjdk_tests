@@ -466,7 +466,11 @@ timestamps{
                 // They could come online either through:
                 //   - Admin brings a "static" node online
                 //   - "Cloud" provider dynamic "plugin" provisions a node
-                if (!areNodesWithLabelOnline(LABEL)) {
+                // Note: Skip ACTIVE_NODE_TIMEOUT check for dynamic agents (ci.agent.dynamic), as they are
+                //   provisioned on-demand by the cloud provider and there may be no "online" nodes initially.
+                //   Azure dynamic agent pools are shared across architectures so wait times can be hours
+                //   when the pool is exhausted by concurrent pipelines.
+                if (!LABEL.contains("ci.agent.dynamic") && !areNodesWithLabelOnline(LABEL)) {
                     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT.toInteger() : 15
                     timeout(ACTIVE_NODE_TIMEOUT) {
                         // If there is available node before timeout
@@ -790,17 +794,74 @@ def generateJobViaAutoGen(testJobName) {
 
 def getEBCNode() {
     def expectedNodeLifespan = params.TIME_LIMIT ?: 1
-    def wait = true
-    def result = build job: 'EBC/EBC_Create_Node',
-    propagate: false,
-    wait: true,
-    parameters: [
-        string(name: 'PLATFORM', value: params.PLATFORM),
-        string(name: 'NODE_TYPE', value: 'testmachine'),
-        string(name: 'TIME_LIMIT', value: expectedNodeLifespan.toString()),
-        string(name: 'GROUP_LABEL', value: UUID.randomUUID().toString()),
-        booleanParam(name: 'WAIT', value: wait),
+
+    // Translate PLATFORM (e.g. 'x86-64_linux', 'ppc64le_linux', 'aarch64_linux', 'ppc64_aix', 's390x_zos')
+    // into the OS and ARCH parameters required by the new EBC_Create_Node pipeline.
+    //
+    // PLATFORM format: {arch}_{os}  (split on first underscore)
+    //
+    // ARCH mapping (EBC canonical values: x86-64 | p9 | s390x | aarch64):
+    //   x86-64  → x86-64   (unchanged)
+    //   x86-32  → x86-64   (no 32-bit EBC target; best-effort fallback)
+    //   aarch64 → aarch64
+    //   ppc64le → p9
+    //   ppc64   → p9
+    //   s390x   → s390x
+    //   s390    → s390x
+    //   arm     → aarch64
+    //
+    // EBC supports: OS ∈ {linux, windows, aix}, ARCH ∈ {x86-64, p9, s390x, aarch64}
+    // Platforms outside that set (zos, mac/osx, alpine-linux, riscv64, sparcv9) are
+    // not EBC-capable and should never reach this function (they must not have 'EBC'
+    // in their DynamicAgents entry).
+    def platformStr   = params.PLATFORM ?: ''
+    def underscoreIdx = platformStr.indexOf('_')
+    def rawArch = underscoreIdx > 0 ? platformStr.substring(0, underscoreIdx) : platformStr
+    def rawOs   = underscoreIdx > 0 ? platformStr.substring(underscoreIdx + 1) : ''
+
+    def archMap = [
+        'x86-64'  : 'x86-64',
+        'x86-32'  : 'x86-64',
+        'aarch64' : 'aarch64',
+        'arm'     : 'aarch64',
+        'ppc64le' : 'p9',
+        'ppc64'   : 'p9',
+        'ppc32'   : 'p9',
+        's390x'   : 's390x',
+        's390'    : 's390x',
     ]
+    def osMap = [
+        'linux'   : 'linux',
+        'aix'     : 'aix',
+        'windows' : 'windows',
+    ]
+
+    def ebcArch = archMap[rawArch]
+    def ebcOs   = osMap[rawOs]
+
+    if (!ebcArch || !ebcOs) {
+        error "PLATFORM '${platformStr}' is not supported by EBC (unsupported arch='${rawArch}' or os='${rawOs}')"
+    }
+
+    echo "EBC node request: PLATFORM=${platformStr} → OS=${ebcOs}, ARCH=${ebcArch}"
+
+    def result = build job: 'EBC/EBC_Create_Node',
+        propagate: false,
+        wait: true,
+        parameters: [
+            string(name: 'GROUP_LABEL',  value: UUID.randomUUID().toString()),
+            string(name: 'NODE_TYPE',    value: 'aqa'),
+            string(name: 'TYPE_USAGE',   value: 'test'),
+            string(name: 'OS',           value: ebcOs),
+            string(name: 'ARCH',         value: ebcArch),
+            string(name: 'DISTRO',       value: ''),
+            string(name: 'NUM_MACHINES', value: '1'),
+            string(name: 'TIME_LIMIT',   value: expectedNodeLifespan.toString()),
+            booleanParam(name: 'WAIT',   value: true),
+        ]
+    if (result.result != 'SUCCESS') {
+        error "EBC_Create_Node failed with status: ${result.result}"
+    }
     return result.buildVariables.group_label
 }
 

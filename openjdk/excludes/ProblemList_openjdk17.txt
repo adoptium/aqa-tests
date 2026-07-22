@@ -29,7 +29,7 @@ java/beans/PropertyEditor/TestFontClassNull.java https://bugs.openjdk.java.net/b
 java/beans/PropertyEditor/TestFontClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all,windows-all
 java/beans/XMLEncoder/java_awt_CardLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/java_awt_GridBagLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
-# java/beans/XMLEncoder/java_awt_ScrollPane.java failure on mac is tracked by https://github.com/adoptium/aqa-tests/issues/2848
+# java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2848 macosx-all
 java/beans/XMLEncoder/java_awt_ScrollPane.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all,macosx-all,windows-all
 java/beans/XMLEncoder/javax_swing_Box.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
 java/beans/XMLEncoder/javax_swing_BoxLayout.java https://github.com/adoptium/aqa-tests/issues/2810 aix-all
@@ -122,10 +122,10 @@ java/net/MulticastSocket/SetOutgoingIf.java https://github.com/adoptium/aqa-test
 java/net/MulticastSocket/JoinLeave.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 java/net/MulticastSocket/MulticastAddresses.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
 # java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/aqa-tests/issues/2246 aix-all
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1016 macosx-all
 # java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
-# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
+# java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/aqa-tests/issues/602 macosx-all
 java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all
 java/nio/file/spi/SetDefaultProvider.java https://github.com/adoptium/aqa-tests/issues/2871 linux-arm,windows-x86
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
@@ -305,7 +305,8 @@ com/sun/jdi/OnJcmdTest.java https://github.com/adoptium/aqa-tests/issues/2837 wi
 
 java/util/regex/NegativeArraySize.java https://github.com/adoptium/aqa-tests/issues/3818 generic-all
 java/util/BitSet/HugeToString.java https://github.com/adoptium/aqa-tests/issues/3818 generic-all
-java/util/zip/DeInflate.java https://bugs.openjdk.org/browse/JDK-8299748 linux-s390x
+# linux-riscv64 excluded against https://bugs.openjdk.org/browse/JDK-8388548
+java/util/zip/DeInflate.java https://bugs.openjdk.org/browse/JDK-8299748 linux-s390x,linux-riscv64
 
 ############################################################################
 
@@ -557,3 +558,9 @@ sun/management/jdp/JdpDefaultsTest.java https://github.com/adoptium/infrastructu
 sun/management/jdp/JdpJmxRemoteDynamicPortTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
 sun/management/jdp/JdpSpecificAddressTest.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
 java/nio/channels/DatagramChannel/AdaptorMulticasting.java https://github.com/adoptium/infrastructure/issues/3189 linux-s390x,aix-all
+gc/g1/TestGreyReclaimedHumongousObjects.java https://bugs.openjdk.org/browse/JDK-8388548 linux-riscv64
+serviceability/tmtools/jstack/JstackThreadTest.java https://bugs.openjdk.org/browse/JDK-8388548 linux-riscv64
+java/util/Locale/LocaleCmdOverrides.java https://bugs.openjdk.org/browse/JDK-8388548 linux-riscv64
+compiler/c1/TestConcurrentPatching.java https://bugs.openjdk.org/browse/JDK-8388548 linux-riscv64
+serviceability/jvmti/RedefineClasses/RedefineAddLambdaExpression.java https://bugs.openjdk.org/browse/JDK-8388550 linux-riscv64
+jdk/jshell/VariablesTest.java https://bugs.openjdk.org/browse/JDK-8388547 linux-riscv64
