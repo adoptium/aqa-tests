@@ -106,7 +106,10 @@ Platform and target-specific overrides:
     },
     "dev.jck": {
         "x86-64_windows": {
-            "LABEL": "ci.role.test.interactive"
+            "LABEL_ADDITION": "ci.role.test.interactive"
+        },
+        "aarch64_windows": {
+            "LABEL_ADDITION": "ci.role.test.interactive"
         }
     }
 }
