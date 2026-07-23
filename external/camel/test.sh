@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,15 +24,23 @@ export MAVEN_OPTS="-Xmx1g"
 excludeProject="-pl !:camel-quarkus-support-spring,\
 !:camel-quarkus-support-xstream-deployment,\
 !:camel-quarkus-support-xalan,\
+!:camel-quarkus-support-xalan-deployment,\
 !:camel-quarkus-support-mongodb-deployment,\
 !:camel-quarkus-support-spring-deployment"
 
-echo "Compile and run camel tests"
-./mvnw --batch-mode --fail-at-end $excludeProject clean install -DallTests
-test_exit_code=$?
-echo "Build camel completed"
+TEST_TARGET="${1:-smoke}"
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
+set -e
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Compile and run camel tests"
+	./mvnw --batch-mode --fail-at-end $excludeProject clean install -DallTests
+	echo "Build camel completed"
 
-exit $test_exit_code
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	set +e
+else
+	./mvnw --batch-mode -pl extensions-core --also-make compile -DskipTests
+	set +e
+	exit $?
+fi

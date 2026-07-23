@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -15,12 +15,13 @@
 source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the elasticsearch test
 echo_setup
-TEST_OPTIONS=$1
 
-# Initial command to trigger the execution of elasticsearch test 
+TEST_TARGET="${1:-smoke}"
+
+# Initial command to trigger the execution of elasticsearch test
 set -e
-echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
-./gradlew -q -g /tmp assemble \
+echo "Building elasticsearch using gradlew \"gradlew assemble\"" && \
+./gradlew -q -g /tmp :distribution:archives:linux-tar:assemble \
 --exclude-task :distribution:docker:buildAarch64CloudDockerImage \
 --exclude-task :distribution:docker:buildAarch64CloudEssDockerImage \
 --exclude-task :distribution:docker:buildAarch64DockerImage \
@@ -34,13 +35,17 @@ echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
 
 set +e
 echo "Elasticsearch Build - Successful"
-echo "================================"
-echo ""
-echo "Running elasticsearch tests :"
 
-echo $TEST_OPTIONS
-
-./gradlew -q -g /tmp test -Dtests.haltonfailure=false $TEST_OPTIONS
-test_exit_code=$?
-find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
-exit $test_exit_code
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Running elasticsearch tests :"
+	./gradlew -q -g /tmp test -Dtests.haltonfailure=false
+	test_exit_code=$?
+	find ./ -type d -name 'testJunit' -exec cp -r "{}" /testResults \;
+	exit $test_exit_code
+else
+	es_tar=$(find distribution/archives/linux-tar/build/distributions -name 'elasticsearch-*.tar.gz' | head -1)
+	tar -xzf "${es_tar}" -C /tmp
+	es_home=$(find /tmp -maxdepth 1 -type d -name 'elasticsearch-*' | head -1)
+	ES_JAVA_HOME="${JAVA_HOME}" "${es_home}/bin/elasticsearch" --version
+	exit $?
+fi

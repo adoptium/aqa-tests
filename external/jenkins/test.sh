@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -19,14 +19,21 @@ echo_setup
 export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
 #begin jenkins test
 
+TEST_TARGET="${1:-smoke}"
+
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
 mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
 set +e
 echo "Building jenkins completed"
 
-echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
-mvn --batch-mode surefire:test -Denforcer.fail=false
-test_exit_code=$?
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-exit $test_exit_code
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
+	mvn --batch-mode surefire:test -Denforcer.fail=false
+	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	exit $test_exit_code
+else
+	java -jar war/target/jenkins.war --help
+	exit $?
+fi
