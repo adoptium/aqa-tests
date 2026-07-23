@@ -49,9 +49,7 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Running tomcat tests"
 	#Run tests
 	ant test
-	test_exit_code=$?
 	set +e
-	exit $test_exit_code
 else
 	echo "Building tomcat"
 	ant
