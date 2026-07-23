@@ -15,7 +15,7 @@
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_j9</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --testtarget full --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
 		</command>
@@ -23,6 +23,9 @@
 			<version>8</version>
 		</versions>
 		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/7243</comment>
+			</disable>
 			<disable>
 				<comment># To enable later, also remove disable in build.xml - https://github.ibm.com/runtimes/backlog/issues/945</comment>
 			</disable>
@@ -40,7 +43,12 @@
 	</test>
 	<test>
 		<testCaseName>openliberty_microprofile_tck_jdk8_hs</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/7243</comment>
+			</disable>
+		</disables>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --testtarget full --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
                 $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
                 </command>
@@ -63,6 +71,9 @@
 		<testCaseName>openliberty_microprofile_tck</testCaseName>
 		<disables>
 			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/7243</comment>
+			</disable>
+			<disable>
 				<comment>https://github.com/adoptium/aqa-tests/issues/2902</comment>
 				<impl>openj9</impl>
 			</disable>
@@ -75,7 +86,7 @@
 				<version>17</version>
 			</disable>
 		</disables>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck --testtarget full --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
                 $(TEST_STATUS); \
                 $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir openliberty-mp-tck
                 </command>

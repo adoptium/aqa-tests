@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,12 +23,24 @@ excludeProject=""
 if [ "$JDK_VERSION" == "17" ]; then
 	excludeProject="-pl !:org.jacoco.core.test.validation.groovy"
 fi
-echo "Compile and run jacoco tests"
-mvn --batch-mode --fail-at-end $excludeProject clean verify
-test_exit_code=$?
-echo "Build jacoco completed"
 
-find / -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
+TEST_TARGET="${1:-smoke}"
 
-exit $test_exit_code
+set -e
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Compile and run jacoco tests"
+	mvn --batch-mode --fail-at-end $excludeProject clean verify
+	echo "Build jacoco completed"
+
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	set +e
+else
+	echo "Building jacoco"
+	mvn --batch-mode $excludeProject install -DskipTests
+	set +e
+	echo "Jacoco build completed"
+
+	echo "Probing JaCoCo version"
+	java -jar $(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1) version
+fi

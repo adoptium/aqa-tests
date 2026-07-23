@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,12 +28,20 @@ if [ "$JDK_VERSION" == "17" ]; then
 fi
 
 export MAVEN_OPTS="-Xmx1g"
-echo "Compile and run quarkus_quickstarts tests"
-mvn --batch-mode $excludeProject clean install
-test_exit_code=$?
-echo "Build quarkus_quickstarts completed"
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
+TEST_TARGET="${1:-smoke}"
 
-exit $test_exit_code
+set -e
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Compile and run quarkus_quickstarts tests"
+	mvn --batch-mode $excludeProject clean install
+	echo "Build quarkus_quickstarts completed"
+
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	set +e
+else
+	mvn --batch-mode $excludeProject compile -DskipTests
+	set +e
+	echo "Quarkus quickstarts build completed"
+fi

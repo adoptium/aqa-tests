@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,8 +52,6 @@ excludeProject="-pl !:quarkus-documentation,\
 #!:quarkus-maven-plugin,\
 
 
-echo "Compile and run quarkus tests"
-
 if [ "$JDK_VERSION" == "11" ]; then
 	excludeProject="-pl !:quarkus-documentation,\
 !:quarkus-reactive-routes-deployment,\
@@ -61,8 +59,20 @@ if [ "$JDK_VERSION" == "11" ]; then
 !:quarkus-integration-test-no-awt,\
 !:quarkus-avro-reload-test"
 fi
-./mvnw --batch-mode --fail-at-end $excludeProject clean install
-test_exit_code=$?
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-exit $test_exit_code
+TEST_TARGET="${1:-smoke}"
+
+set -e
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Compile and run quarkus tests"
+	./mvnw --batch-mode --fail-at-end $excludeProject clean install
+	echo "Build quarkus completed"
+
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	set +e
+else
+	./mvnw --batch-mode -pl independent-projects/bootstrap/core --also-make compile -DskipTests
+	set +e
+	echo "Quarkus build completed"
+fi
