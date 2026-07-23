@@ -43,17 +43,18 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "test.openssl.path=/dev/null/openssl" >> build.properties
 	echo "test.apr.loc=${TEST_HOME}/tmp/tomcat-native-build/lib" >> build.properties
 
-	echo "Building tomcat" && \
-	ant && \
+	echo "Building tomcat"
+	ant
 
 	echo "Running tomcat tests"
 	#Run tests
 	ant test
+	test_exit_code=$?
 	set +e
+	exit $test_exit_code
 else
-	echo "Building tomcat" && \
+	echo "Building tomcat"
 	ant
-	set +e
 
 	TOMCAT_BUILD_DIR="${TEST_HOME}/output/build"
 
@@ -65,6 +66,7 @@ else
 	echo "Starting Tomcat"
 	cd "${TOMCAT_BUILD_DIR}"
 	bin/catalina.sh start
+	set +e
 
 	echo "Waiting for Tomcat to respond at ${TOMCAT_URL:-http://localhost:8080/}"
 	if timeout "${STARTUP_TIMEOUT:-120}" bash -c "until curl -sf '${TOMCAT_URL:-http://localhost:8080/}' >/dev/null; do sleep 2; done"; then

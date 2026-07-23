@@ -29,9 +29,14 @@ export CLASSPATH="${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:${tstjardir}
 TEST_TARGET="${1:-smoke}"
 
 set -e
+java -jar "${TEST_HOME}/jars/sane/derbyrun.jar" sysinfo
+set +e
+
 if [ "$TEST_TARGET" = "full" ]; then
 	#Run all tests
 	ant -Dderby.tests.basePort=1690 -Dderby.system.durability=test -DderbyTesting.oldReleasePath=${TEST_HOME}/jars junit-all
-else
-	java -jar "${TEST_HOME}/jars/sane/derbyrun.jar" sysinfo
+	test_exit_code=$?
+	#Run only derbylang suite
+	#java -Dverbose=true -cp ${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:$tstjardir/junit.jar org.apache.derbyTesting.functionTests.harness.RunSuite #derbylang
+	exit $test_exit_code
 fi
