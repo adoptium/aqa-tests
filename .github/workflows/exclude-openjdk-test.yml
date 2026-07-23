@@ -1,0 +1,181 @@
+name: "Exclude OpenJDK Test"
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+jobs:
+  exclude-openjdk-test:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.comment.body, '/exclude ')
+    steps:
+      - name: Check permission
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          # Allow if commenter is the issue author
+          if [ "$COMMENTER" = "$ISSUE_AUTHOR" ]; then
+            echo "✅ Commenter is the issue author"
+            exit 0
+          fi
+          
+          # Allow if commenter is a project committer (write/admin permission)
+          PERMISSION=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
+            --jq '.permission' 2>/dev/null || echo "none")
+          
+          if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "write" ]; then
+            echo "✅ Commenter is a project committer with $PERMISSION permission"
+            exit 0
+          fi
+          
+          # Deny if neither condition is met
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger test exclusions. Only the issue author or project committers can use this command."
+          exit 1
+          
+      - name: Parse exclude command
+        id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+        run: |
+          # Extract command components
+          echo "commenter=$COMMENTER" >> "$GITHUB_OUTPUT"
+          
+          # Basic validation - check format (minimum 3 required parameters + optional parameters)
+          # Format: /exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]
+          if ! echo "$COMMENT_BODY" | grep -qE '^/exclude [^ ]+ [^ ]+ [^ ]+'; then
+            echo "❌ Invalid command format"
+            echo "Expected: /exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]"
+            echo ""
+            echo "Examples:"
+            echo "  /exclude java/beans/PropertyEditor/TestColorClassValue.java https://bugs.openjdk.java.net/browse/JDK-8173082 macosx-all"
+            echo "  /exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 linux-x64 jdk=11,17,21"
+            echo "  /exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 linux-x64 jdk=11 impl=openj9"
+            echo "  /exclude test.java https://bugs.openjdk.java.net/browse/JDK-8173082 linux-x64 variant=alpine"
+            echo ""
+            echo "Note: When jdk= is omitted, defaults to LTS versions (8,11,17,21,25) + latest (26)"
+            exit 1
+          fi
+          
+          # Extract testcases (second word)
+          TESTCASES=$(echo "$COMMENT_BODY" | awk '{print $2}')
+          echo "testcases=$TESTCASES" >> "$GITHUB_OUTPUT"
+          
+      - name: Post acknowledgement comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TESTCASES: ${{ steps.parse.outputs.testcases }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} 🔧 Processing OpenJDK test exclusion for: \`${TESTCASES}\`..."
+            
+      - name: Set up Python 3.14
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: 3.14
+          
+      - name: Checkout current repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: 'tests'
+          
+      - name: Run exclude script
+        id: exclude
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_URL: ${{ github.event.comment.html_url }}
+        run: |
+          cd tests
+          python scripts/disabled_tests/exclude_openjdk.py \
+            -m "$COMMENT_BODY" \
+            -c "$COMMENT_URL" \
+            -d "$GITHUB_WORKSPACE/tests"
+            
+      - name: Script failed
+        if: failure() && steps.exclude.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} ❌ Failed to process exclusion. Please check the [action run](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}) for details."
+            
+      - name: Create Pull Request
+        id: create-pr
+        if: success()
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          path: 'tests'
+          title: 'Exclude OpenJDK test: ${{ steps.parse.outputs.testcases }}'
+          body: |
+            **OpenJDK Test Exclusion**
+            
+            - **Test(s)**: `${{ steps.parse.outputs.testcases }}`
+            - **Triggered by**: @${{ steps.parse.outputs.commenter }}
+            - **Related**: ${{ github.event.comment.html_url }}
+            
+            This PR excludes the specified test(s) from ProblemList files.
+            
+            See the commit for details on which ProblemList files were modified.
+          commit-message: |
+            Exclude OpenJDK test: ${{ steps.parse.outputs.testcases }}
+            
+            Related: ${{ github.event.comment.html_url }}
+          branch: 'exclude-openjdk-test'
+          branch-suffix: 'random'
+          signoff: 'true'
+          
+      - name: Add label
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels" \
+            -f "labels[]=test excluded"
+            
+      - name: Comment success
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TESTCASES: ${{ steps.parse.outputs.testcases }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} ✅ Successfully created PR to exclude OpenJDK test(s): \`${TESTCASES}\`. Check the PR for details on which ProblemList files were modified."
+
+      - name: Comment no changes
+        if: success() && steps.create-pr.outputs.pull-request-number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGETS: ${{ steps.parse.outputs.targets }}
+          TESTCASE: ${{ steps.parse.outputs.testcase }}
+          COMMENTER: ${{ steps.parse.outputs.commenter }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f "body=@${COMMENTER} ℹ️ No changes were made — \`${TESTCASE}\` may already be excluded for targets: \`${TARGETS}\`"
