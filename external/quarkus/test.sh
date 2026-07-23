@@ -66,14 +66,13 @@ set -e
 if [ "$TEST_TARGET" = "full" ]; then
 	echo "Compile and run quarkus tests"
 	./mvnw --batch-mode --fail-at-end $excludeProject clean install
-	test_exit_code=$?
+	echo "Build quarkus completed"
 
-	set +e
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-	exit $test_exit_code
+	echo "Test results copied"
+	set +e
 else
 	./mvnw --batch-mode -pl independent-projects/bootstrap/core --also-make compile -DskipTests
-	test_exit_code=$?
 	set +e
-	exit $test_exit_code
+	echo "Quarkus build completed"
 fi

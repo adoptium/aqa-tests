@@ -19,9 +19,8 @@ echo_setup
 TEST_TARGET="${1:-smoke}"
 
 set -e
-echo "Building wildfly using maven, by invoking build.sh" && \
+echo "Building wildfly using maven, by invoking build.sh"
 ./build.sh
-
 echo "Wildfly Build - Completed"
 
 if [ "$TEST_TARGET" = "full" ]; then

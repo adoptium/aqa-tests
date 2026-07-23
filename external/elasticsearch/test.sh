@@ -20,7 +20,7 @@ TEST_TARGET="${1:-smoke}"
 
 # Initial command to trigger the execution of elasticsearch test
 set -e
-echo "Building elasticsearch using gradlew \"gradlew assemble\"" && \
+echo "Building elasticsearch using gradlew \"gradlew assemble\""
 ./gradlew -q -g /tmp :distribution:archives:linux-tar:assemble \
 --exclude-task :distribution:docker:buildAarch64CloudDockerImage \
 --exclude-task :distribution:docker:buildAarch64CloudEssDockerImage \
@@ -32,7 +32,6 @@ echo "Building elasticsearch using gradlew \"gradlew assemble\"" && \
 --exclude-task :distribution:docker:buildUbiDockerImage \
 --exclude-task :distribution:docker:buildAarch64IronBankDockerImage \
 --exclude-task :distribution:docker:buildIronBankDockerImage
-
 set +e
 echo "Elasticsearch Build - Successful"
 

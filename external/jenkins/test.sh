@@ -22,13 +22,13 @@ export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
 TEST_TARGET="${1:-smoke}"
 
 set -e
-echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\"" && \
+echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\""
 mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
-set +e
 echo "Building jenkins completed"
+set +e
 
 if [ "$TEST_TARGET" = "full" ]; then
-	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\"" && \
+	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\""
 	mvn --batch-mode surefire:test -Denforcer.fail=false
 	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

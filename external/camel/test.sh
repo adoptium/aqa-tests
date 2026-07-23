@@ -42,5 +42,5 @@ if [ "$TEST_TARGET" = "full" ]; then
 else
 	./mvnw --batch-mode -pl extensions-core --also-make compile -DskipTests
 	set +e
-	exit $?
+	echo "Camel build completed"
 fi
