@@ -44,16 +44,15 @@ jobs:
             exit 0
           fi
 
-          PERMISSION="none"
-          PERMISSION_RESPONSE=$(gh api \
+          TEAM_MEMBERSHIP_RESPONSE=$(gh api \
             -H "Accept: application/vnd.github+json" \
-            "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" 2>&1)
+            "/orgs/adoptium/teams/adoptium-aqavit-committers/memberships/$COMMENTER" 2>&1)
           API_STATUS=$?
 
           if [ "$API_STATUS" -eq 0 ]; then
-            PERMISSION=$(echo "$PERMISSION_RESPONSE" | jq -er '.permission // "none"' 2>/dev/null || echo "none")
-          elif echo "$PERMISSION_RESPONSE" | grep -qi "not found"; then
-            PERMISSION="none"
+            TEAM_STATE=$(echo "$TEAM_MEMBERSHIP_RESPONSE" | jq -r '.state // "none"')
+          elif echo "$TEAM_MEMBERSHIP_RESPONSE" | grep -qi "not found"; then
+            TEAM_STATE="none"
           else
             gh api \
               --method POST \
@@ -63,13 +62,13 @@ jobs:
             exit 1
           fi
 
-          case "$PERMISSION" in
-          admin|maintain|write)
-            echo "✅ Commenter is a project committer with $PERMISSION permission"
+          case "$TEAM_STATE" in
+          active)
+            echo "✅ Commenter is in adoptium-aqavit-committers"
             exit 0
             ;;
           *)
-            echo "ℹ️ Commenter permission '$PERMISSION' is not sufficient to trigger cherry-pick"
+            echo "ℹ️ Commenter is not in adoptium-aqavit-committers"
             ;;
           esac
 
@@ -77,7 +76,7 @@ jobs:
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author or project committers can use this command."
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author or members of \`adoptium-aqavit-committers\` can use this command."
           exit 1
 
       - name: Parse command
