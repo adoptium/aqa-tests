@@ -18,14 +18,13 @@ echo_setup
 
 cd dev
 
+TEST_TARGET="${1:-smoke}"
+
 set -e
 #Build all projects and create the open-liberty image
 ./gradlew -q cnf:initialize
 ./gradlew -q releaseNeeded
-set +e
 echo "Build projects and create images done"
-
-TEST_TARGET="${1:-smoke}"
 
 if [ "$TEST_TARGET" = "full" ]; then
 	#Following are not enabled tests, may need to enable later
@@ -56,9 +55,9 @@ if [ "$TEST_TARGET" = "full" ]; then
 	./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:clean
 	./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
 
-	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-	exit $test_exit_code
+	echo "Test results copied"
+	set +e
 else
 	LIBERTY_HOME="build.image/wlp"
 
