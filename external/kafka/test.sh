@@ -34,7 +34,9 @@ else
 	echo "Probing Kafka"
 	bin/kafka-run-class.sh kafka.Kafka
 	test_exit_code=$?
-	# kafka.Kafka exits 1 without a config file - class loaded successfully
+	# kafka.Kafka exits 1 when invoked without a config file — this is expected
+	# and confirms the class loaded and the JVM ran successfully.
+	# Any other non-zero exit code is a genuine failure.
 	[ $test_exit_code -eq 1 ] && exit 0
 	exit $test_exit_code
 fi
