@@ -46,6 +46,7 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	test_exit_code=$?
+	# build succeeded (set -e would have exited on failure)
+	test_exit_code=0
 	exit $test_exit_code
 fi
