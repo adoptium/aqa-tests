@@ -32,16 +32,20 @@ export MAVEN_OPTS="-Xmx1g"
 TEST_TARGET="${1:-smoke}"
 
 set -e
+echo "Building quarkus_quickstarts"
+mvn --batch-mode $excludeProject compile -DskipTests
+set +e
+echo "Quarkus quickstarts build completed"
+
 if [ "$TEST_TARGET" = "full" ]; then
 	echo "Compile and run quarkus_quickstarts tests"
 	mvn --batch-mode $excludeProject clean install
+	test_exit_code=$?
 	echo "Build quarkus_quickstarts completed"
-
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	set +e
+	exit $test_exit_code
 else
-	mvn --batch-mode $excludeProject compile -DskipTests
-	set +e
-	echo "Quarkus quickstarts build completed"
+	test_exit_code=$?
+	exit $test_exit_code
 fi

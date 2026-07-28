@@ -21,6 +21,7 @@ TEST_TARGET="${1:-smoke}"
 set -e
 echo "Building wildfly using maven, by invoking build.sh"
 ./build.sh
+set +e
 echo "Wildfly Build - Completed"
 
 if [ "$TEST_TARGET" = "full" ]; then
@@ -43,8 +44,9 @@ if [ "$TEST_TARGET" = "full" ]; then
 		excludeProject="-pl !:wildfly-iiop-openjdk"
 	fi
 
-	set +e
 	./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests
+	test_exit_code=$?
+	exit $test_exit_code
 else
 	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs dirname | xargs dirname)
 
@@ -59,10 +61,11 @@ else
 	echo "Waiting for WildFly to respond at ${WILDFLY_URL:-http://localhost:9990/}"
 	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf '${WILDFLY_URL:-http://localhost:9990/}' >/dev/null; do sleep 3; done"; then
 		echo "WildFly startup verification PASSED"
-		exit 0
+		test_exit_code=0
 	else
 		echo "WildFly startup verification FAILED"
 		find "${WILDFLY_HOME}/standalone/log" -name '*.log' -exec tail -n 100 {} \; || true
-		exit 1
+		test_exit_code=1
 	fi
+	exit $test_exit_code
 fi

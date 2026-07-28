@@ -24,6 +24,7 @@ set -e
 #Build all projects and create the open-liberty image
 ./gradlew -q cnf:initialize
 ./gradlew -q releaseNeeded
+set +e
 echo "Build projects and create images done"
 
 if [ "$TEST_TARGET" = "full" ]; then
@@ -55,9 +56,10 @@ if [ "$TEST_TARGET" = "full" ]; then
 	./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:clean
 	./gradlew -q com.ibm.ws.microprofile.openapi_fat_tck:buildandrun
 
+	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	set +e
+	exit $test_exit_code
 else
 	LIBERTY_HOME="build.image/wlp"
 
@@ -72,10 +74,11 @@ else
 	echo "Waiting for OpenLiberty to respond at http://localhost:9080/"
 	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf 'http://localhost:9080/' >/dev/null; do sleep 3; done"; then
 		echo "OpenLiberty startup verification PASSED"
-		exit 0
+		test_exit_code=0
 	else
 		echo "OpenLiberty startup verification FAILED"
 		find "${LIBERTY_HOME}/usr/servers/defaultServer/logs" -name '*.log' -exec tail -n 100 {} \; || true
-		exit 1
+		test_exit_code=1
 	fi
+	exit $test_exit_code
 fi

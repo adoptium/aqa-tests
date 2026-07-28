@@ -31,16 +31,20 @@ excludeProject="-pl !:camel-quarkus-support-spring,\
 TEST_TARGET="${1:-smoke}"
 
 set -e
+echo "Building camel"
+./mvnw --batch-mode -pl extensions-core --also-make compile -DskipTests
+set +e
+echo "Camel build completed"
+
 if [ "$TEST_TARGET" = "full" ]; then
 	echo "Compile and run camel tests"
 	./mvnw --batch-mode --fail-at-end $excludeProject clean install -DallTests
+	test_exit_code=$?
 	echo "Build camel completed"
-
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	set +e
+	exit $test_exit_code
 else
-	./mvnw --batch-mode -pl extensions-core --also-make compile -DskipTests
-	set +e
-	echo "Camel build completed"
+	test_exit_code=$?
+	exit $test_exit_code
 fi

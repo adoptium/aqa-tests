@@ -20,21 +20,23 @@ testList="-Dtest=!org.apache.zookeeper.server.quorum.QuorumPeerMainTest,!org.apa
 TEST_TARGET="${1:-smoke}"
 
 set -e
+echo "Building zookeeper"
+mvn package -DskipTests --batch-mode
+set +e
+echo "Zookeeper build completed"
+
 if [ "$TEST_TARGET" = "full" ]; then
 	echo "Compile and run zookeeper tests"
 	echo mvn test --batch-mode --fail-at-end $testList
 	mvn test --batch-mode --fail-at-end $testList
-	echo "Build zookeeper completed"
-
+	test_exit_code=$?
+	echo "Zookeeper tests completed"
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	set +e
+	exit $test_exit_code
 else
-	echo "Building zookeeper"
-	mvn package -DskipTests --batch-mode
-	set +e
-	echo "Zookeeper build completed"
-
 	echo "Probing Zookeeper version"
 	bin/zkServer.sh version
+	test_exit_code=$?
+	exit $test_exit_code
 fi

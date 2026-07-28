@@ -27,20 +27,22 @@ fi
 TEST_TARGET="${1:-smoke}"
 
 set -e
+echo "Building jacoco"
+mvn --batch-mode $excludeProject install -DskipTests
+set +e
+echo "Jacoco build completed"
+
 if [ "$TEST_TARGET" = "full" ]; then
 	echo "Compile and run jacoco tests"
 	mvn --batch-mode --fail-at-end $excludeProject clean verify
+	test_exit_code=$?
 	echo "Build jacoco completed"
-
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	set +e
+	exit $test_exit_code
 else
-	echo "Building jacoco"
-	mvn --batch-mode $excludeProject install -DskipTests
-	set +e
-	echo "Jacoco build completed"
-
 	echo "Probing JaCoCo version"
 	java -jar $(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1) version
+	test_exit_code=$?
+	exit $test_exit_code
 fi
