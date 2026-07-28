@@ -20,7 +20,18 @@ TEST_OPTIONS=$1
 # Initial command to trigger the execution of elasticsearch test 
 set -e
 echo "Building elasticsearch  using gradlew \"gradlew assemble\"" && \
-./gradlew -q -g /tmp assemble --exclude-task :distribution:docker:buildDockerImage --exclude-task :distribution:docker:buildOssDockerImage -exclude-task :distribution:docker:docker-export:exportDockerImage -exclude-task :distribution:docker:oss-docker-export:exportOssDockerImage
+./gradlew -q -g /tmp assemble \
+--exclude-task :distribution:docker:buildAarch64CloudDockerImage \
+--exclude-task :distribution:docker:buildAarch64CloudEssDockerImage \
+--exclude-task :distribution:docker:buildAarch64DockerImage \
+--exclude-task :distribution:docker:buildAarch64UbiDockerImage \
+--exclude-task :distribution:docker:buildCloudDockerImage \
+--exclude-task :distribution:docker:buildCloudEssDockerImage \
+--exclude-task :distribution:docker:buildDockerImage \
+--exclude-task :distribution:docker:buildUbiDockerImage \
+--exclude-task :distribution:docker:buildAarch64IronBankDockerImage \
+--exclude-task :distribution:docker:buildIronBankDockerImage
+
 set +e
 echo "Elasticsearch Build - Successful"
 echo "================================"
