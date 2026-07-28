@@ -35,5 +35,6 @@ if [ "$TEST_TARGET" = "full" ]; then
 	exit $test_exit_code
 else
 	java -jar war/target/jenkins.war --help
-	exit $?
+	test_exit_code=$?
+	exit $test_exit_code
 fi

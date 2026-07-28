@@ -46,5 +46,6 @@ else
 	tar -xzf "${es_tar}" -C /tmp
 	es_home=$(find /tmp -maxdepth 1 -type d -name 'elasticsearch-*' | head -1)
 	ES_JAVA_HOME="${JAVA_HOME}" "${es_home}/bin/elasticsearch" --version
-	exit $?
+	test_exit_code=$?
+	exit $test_exit_code
 fi
