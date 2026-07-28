@@ -32,7 +32,11 @@ if [ "$TEST_TARGET" = "full" ]; then
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 else
-	TOMEE_HOME=$(find . -maxdepth 3 -name 'catalina.sh' | head -1 | xargs dirname | xargs dirname)
+	TOMEE_HOME=$(find . -name 'catalina.sh' | head -1 | xargs -I{} dirname "{}" | xargs -I{} dirname "{}")
+	if [ -z "${TOMEE_HOME}" ]; then
+		echo "ERROR: Could not locate TomEE home directory (catalina.sh not found after build)"
+		exit 1
+	fi
 
 	cleanup() {
 		"${TOMEE_HOME}/bin/shutdown.sh" || true
