@@ -16,16 +16,40 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomee test
 echo_setup
 
-#begin tomee test
+TEST_TARGET="${1:-smoke}"
+
 set -e
 echo "Build TomEE without running test"
 mvn --batch-mode -Pquick -Dsurefire.useFile=false -DdisableXmlReport=true -DuniqueVersion=false -ff -Dassemble -DskipTests -DfailIfNoTests=false clean install
 set +e
 echo "Build TomEE completed"
 
-echo "Run Microprofile TCK"
-cd tck/microprofile-tck
-mvn --batch-mode test -Denforcer.fail=false
-test_exit_code=$?
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-exit $test_exit_code
+if [ "$TEST_TARGET" = "full" ]; then
+	echo "Run Microprofile TCK"
+	cd tck/microprofile-tck
+	mvn --batch-mode test -Denforcer.fail=false
+	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	exit $test_exit_code
+else
+	TOMEE_HOME=$(find . -maxdepth 3 -name 'catalina.sh' | head -1 | xargs dirname | xargs dirname)
+
+	cleanup() {
+		"${TOMEE_HOME}/bin/shutdown.sh" || true
+	}
+	trap cleanup EXIT
+
+	echo "Starting TomEE"
+	"${TOMEE_HOME}/bin/startup.sh"
+
+	echo "Waiting for TomEE to respond at http://localhost:8080/"
+	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf 'http://localhost:8080/' >/dev/null; do sleep 3; done"; then
+		echo "TomEE startup verification PASSED"
+		test_exit_code=0
+	else
+		echo "TomEE startup verification FAILED"
+		find "${TOMEE_HOME}/logs" -name '*.log' -exec tail -n 100 {} \; || true
+		test_exit_code=1
+	fi
+	exit $test_exit_code
+fi
