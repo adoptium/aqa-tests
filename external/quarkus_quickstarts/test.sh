@@ -46,7 +46,25 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	# build succeeded (set -e would have exited on failure)
-	test_exit_code=0
+	echo "Building getting-started quickstart"
+	mvn --batch-mode -pl getting-started package -DskipTests
+
+	cleanup() {
+		kill "${probe_pid}" 2>/dev/null || true
+	}
+	trap cleanup EXIT
+
+	echo "Starting getting-started quickstart"
+	java -jar getting-started/target/quarkus-app/quarkus-run.jar &
+	probe_pid=$!
+
+	echo "Waiting for getting-started to respond at http://localhost:8080/hello"
+	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf 'http://localhost:8080/hello' >/dev/null; do sleep 2; done"; then
+		echo "Quarkus quickstarts startup verification PASSED"
+		test_exit_code=0
+	else
+		echo "Quarkus quickstarts startup verification FAILED"
+		test_exit_code=1
+	fi
 	exit $test_exit_code
 fi

@@ -17,6 +17,7 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 # Initial command to trigger the execution of elasticsearch test
 set -e
