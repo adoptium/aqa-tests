@@ -1,0 +1,1355 @@
+ 
+export TEST_JDK_HOME=/tmp/tmp.svcCMPocrN/jdk-21.0.5+11
+export EXTRA_DOCKER_ARGS=-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk ;
+export BUILD_LIST=external/system-test ;
+export EXTERNAL_AQA_IMAGE=;
+make compile
+make _sanity_system
+
+JAVA_HOME is set to /tmp/tmp.svcCMPocrN/jdk-21.0.5+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml -DTEST_JDK_HOME=/tmp/tmp.svcCMPocrN/jdk-21.0.5+11 -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib 2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/autoGenEnv.mk
+   [delete] Deleting: /home/jvanek/git/aqa-tests/TKG/utils.mk
+   [delete] Deleting directory /home/jvanek/git/aqa-tests/TKG/bin
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] --------------------------------------------
+     [exec] path is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+     [exec] /home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar exists with correct hash, not downloading
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /home/jvanek/git/aqa-tests/TKG/bin
+    [javac] Note: Some input files use or override a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+dist:
+      [jar] Building jar: /home/jvanek/git/aqa-tests/TKG/bin/TestKitGen.jar
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+0
+/tmp/tmp.svcCMPocrN/jdk-21.0.5+11/bin/java -cp ./bin/TestKitGen.jar org.openj9.envInfo.EnvDetector
+Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!
+microArchOutput: model name	: 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz
+****************************** MACHINE INFO ******************************
+File path : /home/jvanek/git/aqa-tests/TKG
+Free Physical Memory Size : 10771562496
+Free space (bytes) : 288550883328
+Total Physical Memory Size : 67106488320
+Total space (bytes) : 632976211968
+Usable space (bytes) : 256322273280
+antVersion : Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+cpuCores : 16
+curlVersion : 
+	curl 8.2.1 (x86_64-redhat-linux-gnu) libcurl/8.2.1 OpenSSL/3.1.4 zlib/1.2.13 libidn2/2.3.7 nghttp2/1.55.1
+	Release-Date: 2023-07-26
+	Protocols: file ftp ftps http https
+	Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz SPNEGO SSL threadsafe UnixSockets
+docker : not on docker
+gcc version : 13
+gclibc version : ldd (GNU libc) 2.38
+gdb version : GNU gdb (Fedora Linux) 15.1-1.fc39
+lldb version : Command could not be executed
+makeVersion : 
+	GNU Make 4.4.1
+	Built for x86_64-redhat-linux-gnu
+	Copyright (C) 1988-2023 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+perlVersion : 
+	
+	This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-thread-multi
+	(with 15 registered patches, see perl -V for more detail)
+	
+	Copyright 1987-2023, Larry Wall
+	
+	Perl may be copied only under the terms of either the Artistic License or the
+	GNU General Public License, which may be found in the Perl 5 source kit.
+	
+	Complete documentation for Perl, including FAQ lists, should be found on
+	this system using "man perl" or "perldoc perl".  If you have access to the
+	Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+	
+procArch : unknown
+sysArch : x86_64
+sysOS : Linux
+ulimit : 
+	real-time non-blocking time  (microseconds, -R) unlimited
+	core file size              (blocks, -c) unlimited
+	data seg size               (kbytes, -d) unlimited
+	scheduling priority                 (-e) 0
+	file size                   (blocks, -f) unlimited
+	pending signals                     (-i) 255386
+	max locked memory           (kbytes, -l) 8192
+	max memory size             (kbytes, -m) unlimited
+	open files                          (-n) 524288
+	pipe size                (512 bytes, -p) 8
+	POSIX message queues         (bytes, -q) 819200
+	real-time priority                  (-r) 0
+	stack size                  (kbytes, -s) 8192
+	cpu time                   (seconds, -t) unlimited
+	max user processes                  (-u) 255386
+	virtual memory              (kbytes, -v) unlimited
+	file locks                          (-x) unlimited
+uname : Linux fedora 6.11.6-100.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Nov  1 16:07:59 UTC 2024 x86_64 GNU/Linux
+vmVendor : Oracle Corporation
+vmVersion : 21.0.5+11-LTS
+xlc version : bash: line 1: xlC: command not found
+**************************************************************************
+
+System.getProperty('java.vm.name')=OpenJDK 64-Bit Server VM
+
+System.getProperty('java.vendor')=Eclipse Adoptium
+
+System.getProperty('os.name')=Linux
+
+System.getProperty('os.arch')=amd64
+
+System.getProperty('java.fullversion')=null
+
+System.getProperty('sun.arch.data.model')=64
+
+make -f clean.mk cleanBuild
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../../jvmtest
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f compile.mk compile
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+rm -f -r /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f scripts/build_test.xml -DTEST_ROOT=/home/jvanek/git/aqa-tests/TKG/.. -DBUILD_ROOT=/home/jvanek/git/aqa-tests/TKG/../../jvmtest -DJDK_VERSION=21 -DJDK_IMPL=hotspot -DJDK_VENDOR=eclipse -DJCL_VERSION=latest -DBUILD_LIST=external/system-test -DRESOURCES_DIR=/home/jvanek/git/aqa-tests/TKG/../../jvmtest/TestConfig/resources -DSPEC=linux_x86-64 -DTEST_JDK_HOME=/tmp/tmp.svcCMPocrN/jdk-21.0.5+11 -DJVM_VERSION=openjdk21 -DLIB_DIR=/home/jvanek/git/aqa-tests/TKG/../TKG/lib  2>&1; echo $? ) | tee "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/home/jvanek/git/aqa-tests/TKG/.."; false; else rm -f -r "/home/jvanek/git/aqa-tests/TKG/../TKG/output_compilation"; fi
+Buildfile: /home/jvanek/git/aqa-tests/TKG/scripts/build_test.xml
+     [echo]  build.list is TestConfig/build.xml,external/system-test/build.xml 
+
+-create_test_directory:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest
+
+stage_test_material:
+     [copy] Copying 1264 files to /home/jvanek/git/jvmtest
+     [copy] Copied 458 empty directories to 190 empty directories under /home/jvanek/git/jvmtest
+
+build:
+
+init:
+    [mkdir] Created dir: /home/jvanek/git/jvmtest/TestConfig
+
+build:
+     [copy] Copying 22 files to /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copied 9 empty directories to 4 empty directories under /home/jvanek/git/jvmtest/TestConfig
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/TestConfig
+
+build:
+
+move_scripts:
+     [copy] Copying 2 files to /home/jvanek/git/jvmtest/external/system-test
+     [copy] Copying 9 files to /home/jvanek/git/jvmtest/external
+
+clean_image:
+     [echo] Executing external.sh --clean --dir system-test --tag nightly --version 21 --impl hotspot 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.svcCMPocrN/jdk-21.0.5+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is system-test
+     [exec] The directory in the external.sh is system-test
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] Error: invalid reference format
+     [exec] Result: 125
+
+build_image:
+     [echo] Executing external.sh --build --dir system-test --tag nightly --version 21 --impl hotspot --platform linux_x86-64 --docker_args -v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk 
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk"                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec]    # TEST_JDK_HOME of /tmp/tmp.svcCMPocrN/jdk-21.0.5+11 is used in EXTRA_DOCKER_ARGS                                #
+     [exec]    # =================== Info =================== Info =================== Info =================== #
+     [exec] The test here is system-test
+     [exec] The directory in the external.sh is system-test
+     [exec] DOCKERIMAGE_TAG nightly has been recognized.
+     [exec] build_image.sh system-test 21 hotspot ubuntu jdk full linux_x86-64 default 0 
+     [exec] /home/jvanek/git/jvmtest/external
+     [exec] 
+     [exec] Writing /home/jvanek/git/jvmtest/external/system-test/dockerfile/21/jdk/ubuntu/Dockerfile.hotspot.full ... ubuntu
+     [exec] done
+     [exec] 
+     [exec] The test in the build_image() function is system-test
+     [exec] #####################################################
+     [exec] INFO:  podman build  --no-cache -t adoptopenjdk-system-test-test:21-jdk-ubuntu-hotspot-full -f /home/jvanek/git/jvmtest/external/system-test/dockerfile/21/jdk/ubuntu/Dockerfile.hotspot.full /home/jvanek/git/jvmtest/external/
+     [exec] #####################################################
+     [exec] STEP 1/21: FROM docker.io/library/eclipse-temurin:21-jdk
+     [exec] STEP 2/21: ENV RESULT_COMMENT="IN CONTAINER(not-as-root/podman)"
+     [exec] --> 95619919e6af
+     [exec] STEP 3/21: ARG SYSTEM_TEST_TAG=
+     [exec] --> b9e9e91d51e3
+     [exec] STEP 4/21: RUN apt-get update 	&& apt-get install -qq -y --no-install-recommends software-properties-common 	&& apt-get install -qq -y --no-install-recommends gnupg 	&& add-apt-repository ppa:ubuntu-toolchain-r/test 	&& apt-get update 	&& apt-get install -y --no-install-recommends  git ant wget unzip make  ant-contrib 	&& rm -rf /var/lib/apt/lists/*
+     [exec] Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+     [exec] Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+     [exec] Get:3 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [728 kB]
+     [exec] Get:4 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [15.3 kB]
+     [exec] Get:5 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [630 kB]
+     [exec] Get:6 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [609 kB]
+     [exec] Get:7 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+     [exec] Get:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+     [exec] Get:9 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+     [exec] Get:10 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+     [exec] Get:11 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+     [exec] Get:12 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+     [exec] Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [891 kB]
+     [exec] Get:14 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [679 kB]
+     [exec] Get:15 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [944 kB]
+     [exec] Get:16 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [19.7 kB]
+     [exec] Get:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [11.9 kB]
+     [exec] Fetched 26.7 MB in 2s (11.4 MB/s)
+     [exec] Reading package lists...
+     [exec] debconf: delaying package configuration, since apt-utils is not installed
+     [exec] Selecting previously unselected package libpython3.12-minimal:amd64.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6862 files and directories currently installed.)Preparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3.12-minimal.
+     [exec] Preparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking python3.12-minimal (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libpython3.12-minimal:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up python3.12-minimal (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3-minimal.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7173 files and directories currently installed.)Preparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking python3-minimal (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package media-types.
+     [exec] Preparing to unpack .../1-media-types_10.1.0_all.deb ...
+     [exec] Unpacking media-types (10.1.0) ...
+     [exec] Selecting previously unselected package netbase.
+     [exec] Preparing to unpack .../2-netbase_6.4_all.deb ...
+     [exec] Unpacking netbase (6.4) ...
+     [exec] Selecting previously unselected package libpython3.12-stdlib:amd64.
+     [exec] Preparing to unpack .../3-libpython3.12-stdlib_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package python3.12.
+     [exec] Preparing to unpack .../4-python3.12_3.12.3-1ubuntu0.3_amd64.deb ...
+     [exec] Unpacking python3.12 (3.12.3-1ubuntu0.3) ...
+     [exec] Selecting previously unselected package libpython3-stdlib:amd64.
+     [exec] Preparing to unpack .../5-libpython3-stdlib_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking libpython3-stdlib:amd64 (3.12.3-0ubuntu2) ...
+     [exec] Setting up python3-minimal (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package python3.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7614 files and directories currently installed.)Preparing to unpack .../00-python3_3.12.3-0ubuntu2_amd64.deb ...
+     [exec] Unpacking python3 (3.12.3-0ubuntu2) ...
+     [exec] Selecting previously unselected package libapparmor1:amd64.
+     [exec] Preparing to unpack .../01-libapparmor1_4.0.1really4.0.1-0ubuntu0.24.04.3_amd64.deb ...
+     [exec] Unpacking libapparmor1:amd64 (4.0.1really4.0.1-0ubuntu0.24.04.3) ...
+     [exec] Selecting previously unselected package libargon2-1:amd64.
+     [exec] Preparing to unpack .../02-libargon2-1_0~20190702+dfsg-4build1_amd64.deb ...
+     [exec] Unpacking libargon2-1:amd64 (0~20190702+dfsg-4build1) ...
+     [exec] Selecting previously unselected package libdevmapper1.02.1:amd64.
+     [exec] Preparing to unpack .../03-libdevmapper1.02.1_2%3a1.02.185-3ubuntu3.1_amd64.deb ...
+     [exec] Unpacking libdevmapper1.02.1:amd64 (2:1.02.185-3ubuntu3.1) ...
+     [exec] Selecting previously unselected package libjson-c5:amd64.
+     [exec] Preparing to unpack .../04-libjson-c5_0.17-1build1_amd64.deb ...
+     [exec] Unpacking libjson-c5:amd64 (0.17-1build1) ...
+     [exec] Selecting previously unselected package libcryptsetup12:amd64.
+     [exec] Preparing to unpack .../05-libcryptsetup12_2%3a2.7.0-1ubuntu4.1_amd64.deb ...
+     [exec] Unpacking libcryptsetup12:amd64 (2:2.7.0-1ubuntu4.1) ...
+     [exec] Selecting previously unselected package libfdisk1:amd64.
+     [exec] Preparing to unpack .../06-libfdisk1_2.39.3-9ubuntu6.1_amd64.deb ...
+     [exec] Unpacking libfdisk1:amd64 (2.39.3-9ubuntu6.1) ...
+     [exec] Selecting previously unselected package libkmod2:amd64.
+     [exec] Preparing to unpack .../07-libkmod2_31+20240202-2ubuntu7_amd64.deb ...
+     [exec] Unpacking libkmod2:amd64 (31+20240202-2ubuntu7) ...
+     [exec] Selecting previously unselected package libsystemd-shared:amd64.
+     [exec] Preparing to unpack .../08-libsystemd-shared_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking libsystemd-shared:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package systemd-dev.
+     [exec] Preparing to unpack .../09-systemd-dev_255.4-1ubuntu8.4_all.deb ...
+     [exec] Unpacking systemd-dev (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package systemd.
+     [exec] Preparing to unpack .../10-systemd_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking systemd (255.4-1ubuntu8.4) ...
+     [exec] Setting up libapparmor1:amd64 (4.0.1really4.0.1-0ubuntu0.24.04.3) ...
+     [exec] Setting up libargon2-1:amd64 (0~20190702+dfsg-4build1) ...
+     [exec] Setting up libdevmapper1.02.1:amd64 (2:1.02.185-3ubuntu3.1) ...
+     [exec] Setting up libjson-c5:amd64 (0.17-1build1) ...
+     [exec] Setting up libcryptsetup12:amd64 (2:2.7.0-1ubuntu4.1) ...
+     [exec] Setting up libfdisk1:amd64 (2.39.3-9ubuntu6.1) ...
+     [exec] Setting up libkmod2:amd64 (31+20240202-2ubuntu7) ...
+     [exec] Setting up libsystemd-shared:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Setting up systemd-dev (255.4-1ubuntu8.4) ...
+     [exec] Setting up systemd (255.4-1ubuntu8.4) ...
+     [exec] Created symlink /etc/systemd/system/getty.target.wants/getty@tty1.service → /usr/lib/systemd/system/getty@.service.
+     [exec] Created symlink /etc/systemd/system/multi-user.target.wants/remote-fs.target → /usr/lib/systemd/system/remote-fs.target.
+     [exec] Created symlink /etc/systemd/system/sysinit.target.wants/systemd-pstore.service → /usr/lib/systemd/system/systemd-pstore.service.
+     [exec] Initializing machine ID from random generator.
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:10: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:11: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:12: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd-network.conf:13: Failed to resolve user 'systemd-network': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:22: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:23: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:28: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:29: Failed to resolve group 'systemd-journal': No such process
+     [exec] /usr/lib/tmpfiles.d/systemd.conf:30: Failed to resolve group 'systemd-journal': No such process
+     [exec] Creating group 'systemd-journal' with GID 999.
+     [exec] Creating group 'systemd-network' with GID 998.
+     [exec] Creating user 'systemd-network' (systemd Network Management) with UID 998 and GID 998.
+     [exec] Selecting previously unselected package systemd-sysv.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 8661 files and directories currently installed.)Preparing to unpack .../00-systemd-sysv_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking systemd-sysv (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package sgml-base.
+     [exec] Preparing to unpack .../01-sgml-base_1.31_all.deb ...
+     [exec] Unpacking sgml-base (1.31) ...
+     [exec] Selecting previously unselected package libdbus-1-3:amd64.
+     [exec] Preparing to unpack .../02-libdbus-1-3_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking libdbus-1-3:amd64 (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-bin.
+     [exec] Preparing to unpack .../03-dbus-bin_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus-bin (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-session-bus-common.
+     [exec] Preparing to unpack .../04-dbus-session-bus-common_1.14.10-4ubuntu4.1_all.deb ...
+     [exec] Unpacking dbus-session-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-daemon.
+     [exec] Preparing to unpack .../05-dbus-daemon_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus-daemon (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus-system-bus-common.
+     [exec] Preparing to unpack .../06-dbus-system-bus-common_1.14.10-4ubuntu4.1_all.deb ...
+     [exec] Unpacking dbus-system-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package dbus.
+     [exec] Preparing to unpack .../07-dbus_1.14.10-4ubuntu4.1_amd64.deb ...
+     [exec] Unpacking dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Selecting previously unselected package distro-info-data.
+     [exec] Preparing to unpack .../08-distro-info-data_0.60ubuntu0.2_all.deb ...
+     [exec] Unpacking distro-info-data (0.60ubuntu0.2) ...
+     [exec] Selecting previously unselected package libglib2.0-0t64:amd64.
+     [exec] Preparing to unpack .../09-libglib2.0-0t64_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package gir1.2-glib-2.0:amd64.
+     [exec] Preparing to unpack .../10-gir1.2-glib-2.0_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libgirepository-1.0-1:amd64.
+     [exec] Preparing to unpack .../11-libgirepository-1.0-1_1.80.1-1_amd64.deb ...
+     [exec] Unpacking libgirepository-1.0-1:amd64 (1.80.1-1) ...
+     [exec] Selecting previously unselected package gir1.2-girepository-2.0:amd64.
+     [exec] Preparing to unpack .../12-gir1.2-girepository-2.0_1.80.1-1_amd64.deb ...
+     [exec] Unpacking gir1.2-girepository-2.0:amd64 (1.80.1-1) ...
+     [exec] Selecting previously unselected package iso-codes.
+     [exec] Preparing to unpack .../13-iso-codes_4.16.0-1_all.deb ...
+     [exec] Unpacking iso-codes (4.16.0-1) ...
+     [exec] Selecting previously unselected package libcap2-bin.
+     [exec] Preparing to unpack .../14-libcap2-bin_1%3a2.66-5ubuntu2_amd64.deb ...
+     [exec] Unpacking libcap2-bin (1:2.66-5ubuntu2) ...
+     [exec] Selecting previously unselected package libelf1t64:amd64.
+     [exec] Preparing to unpack .../15-libelf1t64_0.190-1.1build4_amd64.deb ...
+     [exec] Unpacking libelf1t64:amd64 (0.190-1.1build4) ...
+     [exec] Selecting previously unselected package libglib2.0-data.
+     [exec] Preparing to unpack .../16-libglib2.0-data_2.80.0-6ubuntu3.2_all.deb ...
+     [exec] Unpacking libglib2.0-data (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libicu74:amd64.
+     [exec] Preparing to unpack .../17-libicu74_74.2-1ubuntu3.1_amd64.deb ...
+     [exec] Unpacking libicu74:amd64 (74.2-1ubuntu3.1) ...
+     [exec] Selecting previously unselected package libpam-systemd:amd64.
+     [exec] Preparing to unpack .../18-libpam-systemd_255.4-1ubuntu8.4_amd64.deb ...
+     [exec] Unpacking libpam-systemd:amd64 (255.4-1ubuntu8.4) ...
+     [exec] Selecting previously unselected package libxml2:amd64.
+     [exec] Preparing to unpack .../19-libxml2_2.9.14+dfsg-1.3ubuntu3_amd64.deb ...
+     [exec] Unpacking libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3) ...
+     [exec] Selecting previously unselected package libyaml-0-2:amd64.
+     [exec] Preparing to unpack .../20-libyaml-0-2_0.2.5-1build1_amd64.deb ...
+     [exec] Unpacking libyaml-0-2:amd64 (0.2.5-1build1) ...
+     [exec] Selecting previously unselected package lsb-release.
+     [exec] Preparing to unpack .../21-lsb-release_12.0-2_all.deb ...
+     [exec] Unpacking lsb-release (12.0-2) ...
+     [exec] Selecting previously unselected package python-apt-common.
+     [exec] Preparing to unpack .../22-python-apt-common_2.7.7ubuntu3_all.deb ...
+     [exec] Unpacking python-apt-common (2.7.7ubuntu3) ...
+     [exec] Selecting previously unselected package python3-apt.
+     [exec] Preparing to unpack .../23-python3-apt_2.7.7ubuntu3_amd64.deb ...
+     [exec] Unpacking python3-apt (2.7.7ubuntu3) ...
+     [exec] Selecting previously unselected package python3-cffi-backend:amd64.
+     [exec] Preparing to unpack .../24-python3-cffi-backend_1.16.0-2build1_amd64.deb ...
+     [exec] Unpacking python3-cffi-backend:amd64 (1.16.0-2build1) ...
+     [exec] Selecting previously unselected package python3-dbus.
+     [exec] Preparing to unpack .../25-python3-dbus_1.3.2-5build3_amd64.deb ...
+     [exec] Unpacking python3-dbus (1.3.2-5build3) ...
+     [exec] Selecting previously unselected package python3-gi.
+     [exec] Preparing to unpack .../26-python3-gi_3.48.2-1_amd64.deb ...
+     [exec] Unpacking python3-gi (3.48.2-1) ...
+     [exec] Selecting previously unselected package python3-pkg-resources.
+     [exec] Preparing to unpack .../27-python3-pkg-resources_68.1.2-2ubuntu1.1_all.deb ...
+     [exec] Unpacking python3-pkg-resources (68.1.2-2ubuntu1.1) ...
+     [exec] Selecting previously unselected package libpackagekit-glib2-18:amd64.
+     [exec] Preparing to unpack .../28-libpackagekit-glib2-18_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking libpackagekit-glib2-18:amd64 (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package gir1.2-packagekitglib-1.0.
+     [exec] Preparing to unpack .../29-gir1.2-packagekitglib-1.0_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking gir1.2-packagekitglib-1.0 (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package libcurl3t64-gnutls:amd64.
+     [exec] Preparing to unpack .../30-libcurl3t64-gnutls_8.5.0-2ubuntu10.5_amd64.deb ...
+     [exec] Unpacking libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.5) ...
+     [exec] Selecting previously unselected package libstemmer0d:amd64.
+     [exec] Preparing to unpack .../31-libstemmer0d_2.2.0-4build1_amd64.deb ...
+     [exec] Unpacking libstemmer0d:amd64 (2.2.0-4build1) ...
+     [exec] Selecting previously unselected package libxmlb2:amd64.
+     [exec] Preparing to unpack .../32-libxmlb2_0.3.18-1_amd64.deb ...
+     [exec] Unpacking libxmlb2:amd64 (0.3.18-1) ...
+     [exec] Selecting previously unselected package libappstream5:amd64.
+     [exec] Preparing to unpack .../33-libappstream5_1.0.2-1build6_amd64.deb ...
+     [exec] Unpacking libappstream5:amd64 (1.0.2-1build6) ...
+     [exec] Selecting previously unselected package libduktape207:amd64.
+     [exec] Preparing to unpack .../34-libduktape207_2.7.0+tests-0ubuntu3_amd64.deb ...
+     [exec] Unpacking libduktape207:amd64 (2.7.0+tests-0ubuntu3) ...
+     [exec] Selecting previously unselected package libdw1t64:amd64.
+     [exec] Preparing to unpack .../35-libdw1t64_0.190-1.1build4_amd64.deb ...
+     [exec] Unpacking libdw1t64:amd64 (0.190-1.1build4) ...
+     [exec] Selecting previously unselected package libglib2.0-bin.
+     [exec] Preparing to unpack .../36-libglib2.0-bin_2.80.0-6ubuntu3.2_amd64.deb ...
+     [exec] Unpacking libglib2.0-bin (2.80.0-6ubuntu3.2) ...
+     [exec] Selecting previously unselected package libunwind8:amd64.
+     [exec] Preparing to unpack .../37-libunwind8_1.6.2-3build1_amd64.deb ...
+     [exec] Unpacking libunwind8:amd64 (1.6.2-3build1) ...
+     [exec] Selecting previously unselected package libgstreamer1.0-0:amd64.
+     [exec] Preparing to unpack .../38-libgstreamer1.0-0_1.24.2-1_amd64.deb ...
+     [exec] Unpacking libgstreamer1.0-0:amd64 (1.24.2-1) ...
+     [exec] Selecting previously unselected package libpolkit-gobject-1-0:amd64.
+     [exec] Preparing to unpack .../39-libpolkit-gobject-1-0_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking libpolkit-gobject-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package libpolkit-agent-1-0:amd64.
+     [exec] Preparing to unpack .../40-libpolkit-agent-1-0_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking libpolkit-agent-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package xml-core.
+     [exec] Preparing to unpack .../41-xml-core_0.19_all.deb ...
+     [exec] Unpacking xml-core (0.19) ...
+     [exec] Selecting previously unselected package polkitd.
+     [exec] Preparing to unpack .../42-polkitd_124-2ubuntu1_amd64.deb ...
+     [exec] Unpacking polkitd (124-2ubuntu1) ...
+     [exec] Selecting previously unselected package python3-blinker.
+     [exec] Preparing to unpack .../43-python3-blinker_1.7.0-1_all.deb ...
+     [exec] Unpacking python3-blinker (1.7.0-1) ...
+     [exec] Selecting previously unselected package python3-cryptography.
+     [exec] Preparing to unpack .../44-python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb ...
+     [exec] Unpacking python3-cryptography (41.0.7-4ubuntu0.1) ...
+     [exec] Selecting previously unselected package python3-pyparsing.
+     [exec] Preparing to unpack .../45-python3-pyparsing_3.1.1-1_all.deb ...
+     [exec] Unpacking python3-pyparsing (3.1.1-1) ...
+     [exec] Selecting previously unselected package python3-httplib2.
+     [exec] Preparing to unpack .../46-python3-httplib2_0.20.4-3_all.deb ...
+     [exec] Unpacking python3-httplib2 (0.20.4-3) ...
+     [exec] Selecting previously unselected package python3-jwt.
+     [exec] Preparing to unpack .../47-python3-jwt_2.7.0-1_all.deb ...
+     [exec] Unpacking python3-jwt (2.7.0-1) ...
+     [exec] Selecting previously unselected package python3-lazr.uri.
+     [exec] Preparing to unpack .../48-python3-lazr.uri_1.0.6-3_all.deb ...
+     [exec] Unpacking python3-lazr.uri (1.0.6-3) ...
+     [exec] Selecting previously unselected package python3-wadllib.
+     [exec] Preparing to unpack .../49-python3-wadllib_1.3.6-5_all.deb ...
+     [exec] Unpacking python3-wadllib (1.3.6-5) ...
+     [exec] Selecting previously unselected package python3-distro.
+     [exec] Preparing to unpack .../50-python3-distro_1.9.0-1_all.deb ...
+     [exec] Unpacking python3-distro (1.9.0-1) ...
+     [exec] Selecting previously unselected package python3-oauthlib.
+     [exec] Preparing to unpack .../51-python3-oauthlib_3.2.2-1_all.deb ...
+     [exec] Unpacking python3-oauthlib (3.2.2-1) ...
+     [exec] Selecting previously unselected package python3-lazr.restfulclient.
+     [exec] Preparing to unpack .../52-python3-lazr.restfulclient_0.14.6-1_all.deb ...
+     [exec] Unpacking python3-lazr.restfulclient (0.14.6-1) ...
+     [exec] Selecting previously unselected package python3-six.
+     [exec] Preparing to unpack .../53-python3-six_1.16.0-4_all.deb ...
+     [exec] Unpacking python3-six (1.16.0-4) ...
+     [exec] Selecting previously unselected package python3-launchpadlib.
+     [exec] Preparing to unpack .../54-python3-launchpadlib_1.11.0-6_all.deb ...
+     [exec] Unpacking python3-launchpadlib (1.11.0-6) ...
+     [exec] Selecting previously unselected package python3-software-properties.
+     [exec] Preparing to unpack .../55-python3-software-properties_0.99.49.1_all.deb ...
+     [exec] Unpacking python3-software-properties (0.99.49.1) ...
+     [exec] Selecting previously unselected package packagekit.
+     [exec] Preparing to unpack .../56-packagekit_1.2.8-2build3_amd64.deb ...
+     [exec] Unpacking packagekit (1.2.8-2build3) ...
+     [exec] Selecting previously unselected package software-properties-common.
+     [exec] Preparing to unpack .../57-software-properties-common_0.99.49.1_all.deb ...
+     [exec] Unpacking software-properties-common (0.99.49.1) ...
+     [exec] Setting up media-types (10.1.0) ...
+     [exec] Setting up systemd-sysv (255.4-1ubuntu8.4) ...
+     [exec] Setting up libyaml-0-2:amd64 (0.2.5-1build1) ...
+     [exec] Setting up distro-info-data (0.60ubuntu0.2) ...
+     [exec] Setting up libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.5) ...
+     [exec] Setting up libunwind8:amd64 (1.6.2-3build1) ...
+     [exec] Setting up libelf1t64:amd64 (0.190-1.1build4) ...
+     [exec] Setting up libdw1t64:amd64 (0.190-1.1build4) ...
+     [exec] Setting up libcap2-bin (1:2.66-5ubuntu2) ...
+     [exec] Setting up libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] No schema files found: doing nothing.
+     [exec] Setting up libglib2.0-data (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up libdbus-1-3:amd64 (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up libicu74:amd64 (74.2-1ubuntu3.1) ...
+     [exec] Setting up python-apt-common (2.7.7ubuntu3) ...
+     [exec] Setting up libduktape207:amd64 (2.7.0+tests-0ubuntu3) ...
+     [exec] Setting up dbus-session-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libgirepository-1.0-1:amd64 (1.80.1-1) ...
+     [exec] Setting up netbase (6.4) ...
+     [exec] Setting up sgml-base (1.31) ...
+     [exec] Setting up libstemmer0d:amd64 (2.2.0-4build1) ...
+     [exec] Setting up lsb-release (12.0-2) ...
+     [exec] Setting up dbus-system-bus-common (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3) ...
+     [exec] Setting up iso-codes (4.16.0-1) ...
+     [exec] Setting up dbus-bin (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up libpolkit-gobject-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Setting up libgstreamer1.0-0:amd64 (1.24.2-1) ...
+     [exec] Setcap worked! gst-ptp-helper is not suid!
+     [exec] Setting up libpython3.12-stdlib:amd64 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libxmlb2:amd64 (0.3.18-1) ...
+     [exec] Setting up python3.12 (3.12.3-1ubuntu0.3) ...
+     [exec] Setting up libglib2.0-bin (2.80.0-6ubuntu3.2) ...
+     [exec] Setting up libpackagekit-glib2-18:amd64 (1.2.8-2build3) ...
+     [exec] Setting up libappstream5:amd64 (1.0.2-1build6) ...
+     [exec] Setting up dbus-daemon (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up gir1.2-packagekitglib-1.0 (1.2.8-2build3) ...
+     [exec] Setting up gir1.2-girepository-2.0:amd64 (1.80.1-1) ...
+     [exec] Setting up dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Setting up xml-core (0.19) ...
+     [exec] Setting up libpam-systemd:amd64 (255.4-1ubuntu8.4) ...
+     [exec] debconf: unable to initialize frontend: Dialog
+     [exec] debconf: (TERM is not set, so the dialog frontend is not usable.)
+     [exec] debconf: falling back to frontend: Readline
+     [exec] debconf: unable to initialize frontend: Readline
+     [exec] debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.38.2 /usr/local/share/perl/5.38.2 /usr/lib/x86_64-linux-gnu/perl5/5.38 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.38 /usr/share/perl/5.38 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8.)
+     [exec] debconf: falling back to frontend: Teletype
+     [exec] Setting up libpolkit-agent-1-0:amd64 (124-2ubuntu1) ...
+     [exec] Setting up libpython3-stdlib:amd64 (3.12.3-0ubuntu2) ...
+     [exec] Setting up python3 (3.12.3-0ubuntu2) ...
+     [exec] running python rtupdate hooks for python3.12...
+     [exec] running python post-rtupdate hooks for python3.12...
+     [exec] Setting up python3-six (1.16.0-4) ...
+     [exec] Setting up python3-pyparsing (3.1.1-1) ...
+     [exec] Setting up python3-gi (3.48.2-1) ...
+     [exec] Setting up python3-httplib2 (0.20.4-3) ...
+     [exec] Setting up python3-cffi-backend:amd64 (1.16.0-2build1) ...
+     [exec] Setting up python3-blinker (1.7.0-1) ...
+     [exec] Setting up python3-pkg-resources (68.1.2-2ubuntu1.1) ...
+     [exec] Setting up python3-dbus (1.3.2-5build3) ...
+     [exec] Setting up python3-distro (1.9.0-1) ...
+     [exec] Setting up python3-jwt (2.7.0-1) ...
+     [exec] Setting up python3-apt (2.7.7ubuntu3) ...
+     [exec] Setting up python3-lazr.uri (1.0.6-3) ...
+     [exec] Setting up python3-cryptography (41.0.7-4ubuntu0.1) ...
+     [exec] Setting up python3-wadllib (1.3.6-5) ...
+     [exec] Setting up python3-oauthlib (3.2.2-1) ...
+     [exec] Setting up python3-lazr.restfulclient (0.14.6-1) ...
+     [exec] Setting up python3-launchpadlib (1.11.0-6) ...
+     [exec] Created symlink /etc/systemd/user/timers.target.wants/launchpadlib-cache-clean.timer → /usr/lib/systemd/user/launchpadlib-cache-clean.timer.
+     [exec] Setting up python3-software-properties (0.99.49.1) ...
+     [exec] Processing triggers for libc-bin (2.39-0ubuntu8.3) ...
+     [exec] Processing triggers for sgml-base (1.31) ...
+     [exec] Setting up polkitd (124-2ubuntu1) ...
+     [exec] Creating group 'polkitd' with GID 997.
+     [exec] Creating user 'polkitd' (User for polkitd) with UID 997 and GID 997.
+     [exec] invoke-rc.d: could not determine current runlevel
+     [exec] invoke-rc.d: policy-rc.d denied execution of reload.
+     [exec] start-stop-daemon: unable to stat /usr/libexec/polkitd (No such file or directory)
+     [exec] Setting up packagekit (1.2.8-2build3) ...
+     [exec] invoke-rc.d: could not determine current runlevel
+     [exec] invoke-rc.d: policy-rc.d denied execution of force-reload.
+     [exec] Failed to open connection to "system" message bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+     [exec] Created symlink /etc/systemd/user/sockets.target.wants/pk-debconf-helper.socket → /usr/lib/systemd/user/pk-debconf-helper.socket.
+     [exec] Setting up software-properties-common (0.99.49.1) ...
+     [exec] Processing triggers for dbus (1.14.10-4ubuntu4.1) ...
+     [exec] Hit:1 http://security.ubuntu.com/ubuntu noble-security InRelease
+     [exec] Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+     [exec] Hit:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+     [exec] Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+     [exec] Get:5 https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu noble InRelease [24.4 kB]
+     [exec] Fetched 24.4 kB in 3s (9,217 B/s)
+     [exec] Reading package lists...
+     [exec] PPA publishes dbgsym, you may need to include 'main/debug' component
+     [exec] Repository: 'Types: deb
+     [exec] URIs: https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu/
+     [exec] Suites: noble
+     [exec] Components: main
+     [exec] '
+     [exec] Description:
+     [exec] Toolchain test builds; see https://wiki.ubuntu.com/ToolChain
+     [exec] 
+     [exec] More info: https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+     [exec] Adding repository.
+     [exec] Hit:1 https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu noble InRelease
+     [exec] Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+     [exec] Hit:3 http://security.ubuntu.com/ubuntu noble-security InRelease
+     [exec] Hit:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+     [exec] Hit:5 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+     [exec] Reading package lists...
+     [exec] Reading package lists...
+     [exec] Building dependency tree...
+     [exec] Reading state information...
+     [exec] wget is already the newest version (1.21.4-1ubuntu4.1).
+     [exec] The following additional packages will be installed:
+     [exec]   ca-certificates-java default-jre-headless git-man java-common liberror-perl
+     [exec]   libgdbm-compat4t64 libgdbm6t64 libjpeg-turbo8 libjpeg8 liblcms2-2 libnspr4
+     [exec]   libnss3 libpcsclite1 libperl5.38t64 openjdk-21-jre-headless perl
+     [exec]   perl-modules-5.38
+     [exec] Suggested packages:
+     [exec]   ant-doc default-jdk | java-compiler | java-sdk ivy libbcel-java
+     [exec]   libcommons-httpclient-java default-jre gettext-base git-daemon-run
+     [exec]   | git-daemon-sysvinit git-doc git-email git-gui gitk gitweb git-cvs
+     [exec]   git-mediawiki git-svn gdbm-l10n liblcms2-utils pcscd make-doc libnss-mdns
+     [exec]   fonts-dejavu-extra fonts-ipafont-gothic fonts-ipafont-mincho
+     [exec]   fonts-wqy-microhei | fonts-wqy-zenhei fonts-indic perl-doc
+     [exec]   libterm-readline-gnu-perl | libterm-readline-perl-perl
+     [exec]   libtap-harness-archive-perl zip
+     [exec] Recommended packages:
+     [exec]   ant-optional patch less ssh-client libcups2t64 libharfbuzz0b libasound2t64
+     [exec] The following NEW packages will be installed:
+     [exec]   ant ant-contrib ca-certificates-java default-jre-headless git git-man
+     [exec]   java-common liberror-perl libgdbm-compat4t64 libgdbm6t64 libjpeg-turbo8
+     [exec]   libjpeg8 liblcms2-2 libnspr4 libnss3 libpcsclite1 libperl5.38t64 make
+     [exec]   openjdk-21-jre-headless perl perl-modules-5.38 unzip
+     [exec] 0 upgraded, 22 newly installed, 0 to remove and 1 not upgraded.
+     [exec] Need to get 64.1 MB of archives.
+     [exec] After this operation, 287 MB of additional disk space will be used.
+     [exec] Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 perl-modules-5.38 all 5.38.2-3.2build2 [3,110 kB]
+     [exec] Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 libgdbm6t64 amd64 1.23-5.1build1 [34.4 kB]
+     [exec] Get:3 http://archive.ubuntu.com/ubuntu noble/main amd64 libgdbm-compat4t64 amd64 1.23-5.1build1 [6,710 B]
+     [exec] Get:4 http://archive.ubuntu.com/ubuntu noble/main amd64 libperl5.38t64 amd64 5.38.2-3.2build2 [4,873 kB]
+     [exec] Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 perl amd64 5.38.2-3.2build2 [231 kB]
+     [exec] Get:6 http://archive.ubuntu.com/ubuntu noble/main amd64 ca-certificates-java all 20240118 [11.6 kB]
+     [exec] Get:7 http://archive.ubuntu.com/ubuntu noble/main amd64 java-common all 0.75+exp1 [6,798 B]
+     [exec] Get:8 http://archive.ubuntu.com/ubuntu noble/main amd64 liblcms2-2 amd64 2.14-2build1 [161 kB]
+     [exec] Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 libjpeg-turbo8 amd64 2.1.5-2ubuntu2 [150 kB]
+     [exec] Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 libjpeg8 amd64 8c-2ubuntu11 [2,148 B]
+     [exec] Get:11 http://archive.ubuntu.com/ubuntu noble/main amd64 libnspr4 amd64 2:4.35-1.1build1 [117 kB]
+     [exec] Get:12 http://archive.ubuntu.com/ubuntu noble/main amd64 libnss3 amd64 2:3.98-1build1 [1,445 kB]
+     [exec] Get:13 http://archive.ubuntu.com/ubuntu noble/main amd64 libpcsclite1 amd64 2.0.3-1build1 [21.4 kB]
+     [exec] Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 openjdk-21-jre-headless amd64 21.0.5+11-1ubuntu1~24.04 [46.4 MB]
+     [exec] Get:15 http://archive.ubuntu.com/ubuntu noble/main amd64 default-jre-headless amd64 2:1.21-75+exp1 [3,094 B]
+     [exec] Get:16 http://archive.ubuntu.com/ubuntu noble/universe amd64 ant all 1.10.14-1 [2,147 kB]
+     [exec] Get:17 http://archive.ubuntu.com/ubuntu noble/main amd64 liberror-perl all 0.17029-2 [25.6 kB]
+     [exec] Get:18 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git-man all 1:2.43.0-1ubuntu7.1 [1,100 kB]
+     [exec] Get:19 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git amd64 1:2.43.0-1ubuntu7.1 [3,679 kB]
+     [exec] Get:20 http://archive.ubuntu.com/ubuntu noble/main amd64 make amd64 4.3-4.1build2 [180 kB]
+     [exec] Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 unzip amd64 6.0-28ubuntu4.1 [174 kB]
+     [exec] Get:22 http://archive.ubuntu.com/ubuntu noble/universe amd64 ant-contrib all 1.0~b3+svn177-12 [262 kB]
+     [exec] debconf: delaying package configuration, since apt-utils is not installed
+     [exec] Fetched 64.1 MB in 3s (25.1 MB/s)
+     [exec] Selecting previously unselected package perl-modules-5.38.
+     [exec] (Reading database ... 
+     [exec] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 11252 files and directories currently installed.)Preparing to unpack .../00-perl-modules-5.38_5.38.2-3.2build2_all.deb ...
+     [exec] Unpacking perl-modules-5.38 (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package libgdbm6t64:amd64.
+     [exec] Preparing to unpack .../01-libgdbm6t64_1.23-5.1build1_amd64.deb ...
+     [exec] Unpacking libgdbm6t64:amd64 (1.23-5.1build1) ...
+     [exec] Selecting previously unselected package libgdbm-compat4t64:amd64.
+     [exec] Preparing to unpack .../02-libgdbm-compat4t64_1.23-5.1build1_amd64.deb ...
+     [exec] Unpacking libgdbm-compat4t64:amd64 (1.23-5.1build1) ...
+     [exec] Selecting previously unselected package libperl5.38t64:amd64.
+     [exec] Preparing to unpack .../03-libperl5.38t64_5.38.2-3.2build2_amd64.deb ...
+     [exec] Unpacking libperl5.38t64:amd64 (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package perl.
+     [exec] Preparing to unpack .../04-perl_5.38.2-3.2build2_amd64.deb ...
+     [exec] Unpacking perl (5.38.2-3.2build2) ...
+     [exec] Selecting previously unselected package ca-certificates-java.
+     [exec] Preparing to unpack .../05-ca-certificates-java_20240118_all.deb ...
+     [exec] Unpacking ca-certificates-java (20240118) ...
+     [exec] Selecting previously unselected package java-common.
+     [exec] Preparing to unpack .../06-java-common_0.75+exp1_all.deb ...
+     [exec] Unpacking java-common (0.75+exp1) ...
+     [exec] Selecting previously unselected package liblcms2-2:amd64.
+     [exec] Preparing to unpack .../07-liblcms2-2_2.14-2build1_amd64.deb ...
+     [exec] Unpacking liblcms2-2:amd64 (2.14-2build1) ...
+     [exec] Selecting previously unselected package libjpeg-turbo8:amd64.
+     [exec] Preparing to unpack .../08-libjpeg-turbo8_2.1.5-2ubuntu2_amd64.deb ...
+     [exec] Unpacking libjpeg-turbo8:amd64 (2.1.5-2ubuntu2) ...
+     [exec] Selecting previously unselected package libjpeg8:amd64.
+     [exec] Preparing to unpack .../09-libjpeg8_8c-2ubuntu11_amd64.deb ...
+     [exec] Unpacking libjpeg8:amd64 (8c-2ubuntu11) ...
+     [exec] Selecting previously unselected package libnspr4:amd64.
+     [exec] Preparing to unpack .../10-libnspr4_2%3a4.35-1.1build1_amd64.deb ...
+     [exec] Unpacking libnspr4:amd64 (2:4.35-1.1build1) ...
+     [exec] Selecting previously unselected package libnss3:amd64.
+     [exec] Preparing to unpack .../11-libnss3_2%3a3.98-1build1_amd64.deb ...
+     [exec] Unpacking libnss3:amd64 (2:3.98-1build1) ...
+     [exec] Selecting previously unselected package libpcsclite1:amd64.
+     [exec] Preparing to unpack .../12-libpcsclite1_2.0.3-1build1_amd64.deb ...
+     [exec] Unpacking libpcsclite1:amd64 (2.0.3-1build1) ...
+     [exec] Selecting previously unselected package openjdk-21-jre-headless:amd64.
+     [exec] Preparing to unpack .../13-openjdk-21-jre-headless_21.0.5+11-1ubuntu1~24.04_amd64.deb ...
+     [exec] Unpacking openjdk-21-jre-headless:amd64 (21.0.5+11-1ubuntu1~24.04) ...
+     [exec] Selecting previously unselected package default-jre-headless.
+     [exec] Preparing to unpack .../14-default-jre-headless_2%3a1.21-75+exp1_amd64.deb ...
+     [exec] Unpacking default-jre-headless (2:1.21-75+exp1) ...
+     [exec] Selecting previously unselected package ant.
+     [exec] Preparing to unpack .../15-ant_1.10.14-1_all.deb ...
+     [exec] Unpacking ant (1.10.14-1) ...
+     [exec] Selecting previously unselected package liberror-perl.
+     [exec] Preparing to unpack .../16-liberror-perl_0.17029-2_all.deb ...
+     [exec] Unpacking liberror-perl (0.17029-2) ...
+     [exec] Selecting previously unselected package git-man.
+     [exec] Preparing to unpack .../17-git-man_1%3a2.43.0-1ubuntu7.1_all.deb ...
+     [exec] Unpacking git-man (1:2.43.0-1ubuntu7.1) ...
+     [exec] Selecting previously unselected package git.
+     [exec] Preparing to unpack .../18-git_1%3a2.43.0-1ubuntu7.1_amd64.deb ...
+     [exec] Unpacking git (1:2.43.0-1ubuntu7.1) ...
+     [exec] Selecting previously unselected package make.
+     [exec] Preparing to unpack .../19-make_4.3-4.1build2_amd64.deb ...
+     [exec] Unpacking make (4.3-4.1build2) ...
+     [exec] Selecting previously unselected package unzip.
+     [exec] Preparing to unpack .../20-unzip_6.0-28ubuntu4.1_amd64.deb ...
+     [exec] Unpacking unzip (6.0-28ubuntu4.1) ...
+     [exec] Selecting previously unselected package ant-contrib.
+     [exec] Preparing to unpack .../21-ant-contrib_1.0~b3+svn177-12_all.deb ...
+     [exec] Unpacking ant-contrib (1.0~b3+svn177-12) ...
+     [exec] Setting up liblcms2-2:amd64 (2.14-2build1) ...
+     [exec] Setting up libgdbm6t64:amd64 (1.23-5.1build1) ...
+     [exec] Setting up java-common (0.75+exp1) ...
+     [exec] Setting up libgdbm-compat4t64:amd64 (1.23-5.1build1) ...
+     [exec] Setting up unzip (6.0-28ubuntu4.1) ...
+     [exec] Setting up make (4.3-4.1build2) ...
+     [exec] Setting up libnspr4:amd64 (2:4.35-1.1build1) ...
+     [exec] Setting up perl-modules-5.38 (5.38.2-3.2build2) ...
+     [exec] Setting up libpcsclite1:amd64 (2.0.3-1build1) ...
+     [exec] Setting up libjpeg-turbo8:amd64 (2.1.5-2ubuntu2) ...
+     [exec] Setting up git-man (1:2.43.0-1ubuntu7.1) ...
+     [exec] Setting up libperl5.38t64:amd64 (5.38.2-3.2build2) ...
+     [exec] Setting up ca-certificates-java (20240118) ...
+     [exec] No JRE found. Skipping Java certificates setup.
+     [exec] Setting up libjpeg8:amd64 (8c-2ubuntu11) ...
+     [exec] Setting up libnss3:amd64 (2:3.98-1build1) ...
+     [exec] Setting up perl (5.38.2-3.2build2) ...
+     [exec] Setting up openjdk-21-jre-headless:amd64 (21.0.5+11-1ubuntu1~24.04) ...
+     [exec] update-alternatives: using /usr/lib/jvm/java-21-openjdk-amd64/bin/java to provide /usr/bin/java (java) in auto mode
+     [exec] update-alternatives: using /usr/lib/jvm/java-21-openjdk-amd64/bin/jpackage to provide /usr/bin/jpackage (jpackage) in auto mode
+     [exec] update-alternatives: using /usr/lib/jvm/java-21-openjdk-amd64/bin/keytool to provide /usr/bin/keytool (keytool) in auto mode
+     [exec] update-alternatives: using /usr/lib/jvm/java-21-openjdk-amd64/bin/rmiregistry to provide /usr/bin/rmiregistry (rmiregistry) in auto mode
+     [exec] update-alternatives: using /usr/lib/jvm/java-21-openjdk-amd64/lib/jexec to provide /usr/bin/jexec (jexec) in auto mode
+     [exec] Setting up liberror-perl (0.17029-2) ...
+     [exec] Setting up git (1:2.43.0-1ubuntu7.1) ...
+     [exec] Processing triggers for libc-bin (2.39-0ubuntu8.3) ...
+     [exec] Processing triggers for ca-certificates-java (20240118) ...
+     [exec] Adding debian:ACCVRAIZ1.pem
+     [exec] Adding debian:AC_RAIZ_FNMT-RCM.pem
+     [exec] Adding debian:AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.pem
+     [exec] Adding debian:Actalis_Authentication_Root_CA.pem
+     [exec] Adding debian:AffirmTrust_Commercial.pem
+     [exec] Adding debian:AffirmTrust_Networking.pem
+     [exec] Adding debian:AffirmTrust_Premium_ECC.pem
+     [exec] Adding debian:AffirmTrust_Premium.pem
+     [exec] Adding debian:Amazon_Root_CA_1.pem
+     [exec] Adding debian:Amazon_Root_CA_2.pem
+     [exec] Adding debian:Amazon_Root_CA_3.pem
+     [exec] Adding debian:Amazon_Root_CA_4.pem
+     [exec] Adding debian:ANF_Secure_Server_Root_CA.pem
+     [exec] Adding debian:Atos_TrustedRoot_2011.pem
+     [exec] Adding debian:Atos_TrustedRoot_Root_CA_ECC_TLS_2021.pem
+     [exec] Adding debian:Atos_TrustedRoot_Root_CA_RSA_TLS_2021.pem
+     [exec] Adding debian:Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
+     [exec] Adding debian:Baltimore_CyberTrust_Root.pem
+     [exec] Adding debian:BJCA_Global_Root_CA1.pem
+     [exec] Adding debian:BJCA_Global_Root_CA2.pem
+     [exec] Adding debian:Buypass_Class_2_Root_CA.pem
+     [exec] Adding debian:Buypass_Class_3_Root_CA.pem
+     [exec] Adding debian:CA_Disig_Root_R2.pem
+     [exec] Adding debian:Certainly_Root_E1.pem
+     [exec] Adding debian:Certainly_Root_R1.pem
+     [exec] Adding debian:Certigna.pem
+     [exec] Adding debian:Certigna_Root_CA.pem
+     [exec] Adding debian:certSIGN_Root_CA_G2.pem
+     [exec] Adding debian:certSIGN_ROOT_CA.pem
+     [exec] Adding debian:Certum_EC-384_CA.pem
+     [exec] Adding debian:Certum_Trusted_Network_CA_2.pem
+     [exec] Adding debian:Certum_Trusted_Network_CA.pem
+     [exec] Adding debian:Certum_Trusted_Root_CA.pem
+     [exec] Adding debian:CFCA_EV_ROOT.pem
+     [exec] Adding debian:CommScope_Public_Trust_ECC_Root-01.pem
+     [exec] Adding debian:CommScope_Public_Trust_ECC_Root-02.pem
+     [exec] Adding debian:CommScope_Public_Trust_RSA_Root-01.pem
+     [exec] Adding debian:CommScope_Public_Trust_RSA_Root-02.pem
+     [exec] Adding debian:Comodo_AAA_Services_root.pem
+     [exec] Adding debian:COMODO_Certification_Authority.pem
+     [exec] Adding debian:COMODO_ECC_Certification_Authority.pem
+     [exec] Adding debian:COMODO_RSA_Certification_Authority.pem
+     [exec] Adding debian:DigiCert_Assured_ID_Root_CA.pem
+     [exec] Adding debian:DigiCert_Assured_ID_Root_G2.pem
+     [exec] Adding debian:DigiCert_Assured_ID_Root_G3.pem
+     [exec] Adding debian:DigiCert_Global_Root_CA.pem
+     [exec] Adding debian:DigiCert_Global_Root_G2.pem
+     [exec] Adding debian:DigiCert_Global_Root_G3.pem
+     [exec] Adding debian:DigiCert_High_Assurance_EV_Root_CA.pem
+     [exec] Adding debian:DigiCert_TLS_ECC_P384_Root_G5.pem
+     [exec] Adding debian:DigiCert_TLS_RSA4096_Root_G5.pem
+     [exec] Adding debian:DigiCert_Trusted_Root_G4.pem
+     [exec] Adding debian:D-TRUST_BR_Root_CA_1_2020.pem
+     [exec] Adding debian:D-TRUST_EV_Root_CA_1_2020.pem
+     [exec] Adding debian:D-TRUST_Root_Class_3_CA_2_2009.pem
+     [exec] Adding debian:D-TRUST_Root_Class_3_CA_2_EV_2009.pem
+     [exec] Adding debian:emSign_ECC_Root_CA_-_C3.pem
+     [exec] Adding debian:emSign_ECC_Root_CA_-_G3.pem
+     [exec] Adding debian:emSign_Root_CA_-_C1.pem
+     [exec] Adding debian:emSign_Root_CA_-_G1.pem
+     [exec] Adding debian:Entrust.net_Premium_2048_Secure_Server_CA.pem
+     [exec] Adding debian:Entrust_Root_Certification_Authority_-_EC1.pem
+     [exec] Adding debian:Entrust_Root_Certification_Authority_-_G2.pem
+     [exec] Adding debian:Entrust_Root_Certification_Authority_-_G4.pem
+     [exec] Adding debian:Entrust_Root_Certification_Authority.pem
+     [exec] Adding debian:ePKI_Root_Certification_Authority.pem
+     [exec] Adding debian:e-Szigno_Root_CA_2017.pem
+     [exec] Adding debian:GDCA_TrustAUTH_R5_ROOT.pem
+     [exec] Adding debian:GlobalSign_ECC_Root_CA_-_R4.pem
+     [exec] Adding debian:GlobalSign_ECC_Root_CA_-_R5.pem
+     [exec] Adding debian:GlobalSign_Root_CA.pem
+     [exec] Adding debian:GlobalSign_Root_CA_-_R3.pem
+     [exec] Adding debian:GlobalSign_Root_CA_-_R6.pem
+     [exec] Adding debian:GlobalSign_Root_E46.pem
+     [exec] Adding debian:GlobalSign_Root_R46.pem
+     [exec] Adding debian:GLOBALTRUST_2020.pem
+     [exec] Adding debian:Go_Daddy_Class_2_CA.pem
+     [exec] Adding debian:Go_Daddy_Root_Certificate_Authority_-_G2.pem
+     [exec] Adding debian:GTS_Root_R1.pem
+     [exec] Adding debian:GTS_Root_R2.pem
+     [exec] Adding debian:GTS_Root_R3.pem
+     [exec] Adding debian:GTS_Root_R4.pem
+     [exec] Adding debian:HARICA_TLS_ECC_Root_CA_2021.pem
+     [exec] Adding debian:HARICA_TLS_RSA_Root_CA_2021.pem
+     [exec] Adding debian:Hellenic_Academic_and_Research_Institutions_ECC_RootCA_2015.pem
+     [exec] Adding debian:Hellenic_Academic_and_Research_Institutions_RootCA_2015.pem
+     [exec] Adding debian:HiPKI_Root_CA_-_G1.pem
+     [exec] Adding debian:Hongkong_Post_Root_CA_3.pem
+     [exec] Adding debian:IdenTrust_Commercial_Root_CA_1.pem
+     [exec] Adding debian:IdenTrust_Public_Sector_Root_CA_1.pem
+     [exec] Adding debian:ISRG_Root_X1.pem
+     [exec] Adding debian:ISRG_Root_X2.pem
+     [exec] Adding debian:Izenpe.com.pem
+     [exec] Adding debian:Microsec_e-Szigno_Root_CA_2009.pem
+     [exec] Adding debian:Microsoft_ECC_Root_Certificate_Authority_2017.pem
+     [exec] Adding debian:Microsoft_RSA_Root_Certificate_Authority_2017.pem
+     [exec] Adding debian:NAVER_Global_Root_Certification_Authority.pem
+     [exec] Adding debian:NetLock_Arany_=Class_Gold=_Főtanúsítvány.pem
+     [exec] Adding debian:OISTE_WISeKey_Global_Root_GB_CA.pem
+     [exec] Adding debian:OISTE_WISeKey_Global_Root_GC_CA.pem
+     [exec] Adding debian:QuoVadis_Root_CA_1_G3.pem
+     [exec] Adding debian:QuoVadis_Root_CA_2_G3.pem
+     [exec] Adding debian:QuoVadis_Root_CA_2.pem
+     [exec] Adding debian:QuoVadis_Root_CA_3_G3.pem
+     [exec] Adding debian:QuoVadis_Root_CA_3.pem
+     [exec] Adding debian:Sectigo_Public_Server_Authentication_Root_E46.pem
+     [exec] Adding debian:Sectigo_Public_Server_Authentication_Root_R46.pem
+     [exec] Adding debian:Secure_Global_CA.pem
+     [exec] Adding debian:SecureSign_RootCA11.pem
+     [exec] Adding debian:SecureTrust_CA.pem
+     [exec] Adding debian:Security_Communication_ECC_RootCA1.pem
+     [exec] Adding debian:Security_Communication_RootCA2.pem
+     [exec] Adding debian:Security_Communication_RootCA3.pem
+     [exec] Adding debian:Security_Communication_Root_CA.pem
+     [exec] Adding debian:SSL.com_EV_Root_Certification_Authority_ECC.pem
+     [exec] Adding debian:SSL.com_EV_Root_Certification_Authority_RSA_R2.pem
+     [exec] Adding debian:SSL.com_Root_Certification_Authority_ECC.pem
+     [exec] Adding debian:SSL.com_Root_Certification_Authority_RSA.pem
+     [exec] Adding debian:SSL.com_TLS_ECC_Root_CA_2022.pem
+     [exec] Adding debian:SSL.com_TLS_RSA_Root_CA_2022.pem
+     [exec] Adding debian:Starfield_Class_2_CA.pem
+     [exec] Adding debian:Starfield_Root_Certificate_Authority_-_G2.pem
+     [exec] Adding debian:Starfield_Services_Root_Certificate_Authority_-_G2.pem
+     [exec] Adding debian:SwissSign_Gold_CA_-_G2.pem
+     [exec] Adding debian:SwissSign_Silver_CA_-_G2.pem
+     [exec] Adding debian:SZAFIR_ROOT_CA2.pem
+     [exec] Adding debian:Telia_Root_CA_v2.pem
+     [exec] Adding debian:TeliaSonera_Root_CA_v1.pem
+     [exec] Adding debian:TrustAsia_Global_Root_CA_G3.pem
+     [exec] Adding debian:TrustAsia_Global_Root_CA_G4.pem
+     [exec] Adding debian:Trustwave_Global_Certification_Authority.pem
+     [exec] Adding debian:Trustwave_Global_ECC_P256_Certification_Authority.pem
+     [exec] Adding debian:Trustwave_Global_ECC_P384_Certification_Authority.pem
+     [exec] Adding debian:T-TeleSec_GlobalRoot_Class_2.pem
+     [exec] Adding debian:T-TeleSec_GlobalRoot_Class_3.pem
+     [exec] Adding debian:TUBITAK_Kamu_SM_SSL_Kok_Sertifikasi_-_Surum_1.pem
+     [exec] Adding debian:TunTrust_Root_CA.pem
+     [exec] Adding debian:TWCA_Global_Root_CA.pem
+     [exec] Adding debian:TWCA_Root_Certification_Authority.pem
+     [exec] Adding debian:UCA_Extended_Validation_Root.pem
+     [exec] Adding debian:UCA_Global_G2_Root.pem
+     [exec] Adding debian:USERTrust_ECC_Certification_Authority.pem
+     [exec] Adding debian:USERTrust_RSA_Certification_Authority.pem
+     [exec] Adding debian:vTrus_ECC_Root_CA.pem
+     [exec] Adding debian:vTrus_Root_CA.pem
+     [exec] Adding debian:XRamp_Global_CA_Root.pem
+     [exec] done.
+     [exec] Setting up default-jre-headless (2:1.21-75+exp1) ...
+     [exec] Setting up ant (1.10.14-1) ...
+     [exec] Setting up ant-contrib (1.0~b3+svn177-12) ...
+     [exec] --> 1ee1e98e7f95
+     [exec] STEP 5/21: ENV JAVA_TOOL_OPTIONS=" -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom"
+     [exec] --> 50d92903bc39
+     [exec] STEP 6/21: RUN mkdir testResults
+     [exec] --> ac3f6c44b793
+     [exec] STEP 7/21: ENV TEST_HOME /aqa-tests
+     [exec] --> 5ca088d71138
+     [exec] STEP 8/21: ENV APPLICATION_NAME=system-test
+     [exec] --> 4438972dc833
+     [exec] STEP 9/21: ENV APPLICATION_TAG=ubuntu
+     [exec] --> fe37a5238b74
+     [exec] STEP 10/21: ENV OS_TAG=21
+     [exec] --> aeabef86fa06
+     [exec] STEP 11/21: ENV JDK_VERSION=hotspot
+     [exec] --> 6f698d20844b
+     [exec] STEP 12/21: ENV JDK_IMPL=
+     [exec] --> b4cf6116ca07
+     [exec] STEP 13/21: ENV SYSTEM_TEST_TAG=$SYSTEM_TEST_TAG
+     [exec] --> f7fb2dabf02a
+     [exec] STEP 14/21: RUN git clone https://github.com/adoptium/aqa-tests.git
+     [exec] Cloning into 'aqa-tests'...
+     [exec] --> f09155fe90ac
+     [exec] STEP 15/21: WORKDIR /aqa-tests/
+     [exec] --> bc831387fd21
+     [exec] STEP 16/21: RUN git checkout master
+     [exec] Your branch is up to date with 'origin/master'.
+     [exec] Already on 'master'
+     [exec] --> 710f9095e4dd
+     [exec] STEP 17/21: WORKDIR /
+     [exec] --> 888b86afa442
+     [exec] STEP 18/21: COPY system-test/test.sh /test.sh
+     [exec] --> 8632bf53c046
+     [exec] STEP 19/21: COPY test_base_functions.sh test_base_functions.sh
+     [exec] --> ae852a80a54a
+     [exec] STEP 20/21: WORKDIR ${TEST_HOME}
+     [exec] --> 678ce14a2599
+     [exec] STEP 21/21: ENTRYPOINT ["/bin/bash", "/test.sh"]
+     [exec] COMMIT adoptopenjdk-system-test-test:21-jdk-ubuntu-hotspot-full
+     [exec] --> 583559889bb4
+     [exec] Successfully tagged localhost/adoptopenjdk-system-test-test:21-jdk-ubuntu-hotspot-full
+     [exec] 583559889bb478ef89c866895cfe319bdab61f87b627b2dd28b3e58652b0625a
+
+dist:
+     [copy] Copying 3 files to /home/jvanek/git/jvmtest/external/system-test
+
+BUILD SUCCESSFUL
+Total time: 40 seconds
+0
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+JAVA_HOME is set to /tmp/tmp.svcCMPocrN/jdk-21.0.5+11
+LIB_DIR is set to /home/jvanek/git/aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=sanity_system TESTLIST=
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+perl scripts/configure.pl
+/tmp/tmp.svcCMPocrN/jdk-21.0.5+11/bin/java -cp "./bin/TestKitGen.jar:/home/jvanek/git/aqa-tests/TKG/../TKG/lib/json-simple.jar" org.testKitGen.MainRunner --mode=tests --spec=linux_x86-64 --microArch="" --osLabel="" --jdkVersion=21 --impl=hotspot --vendor="eclipse" --buildList=external/system-test --iterations=1 --aotIterations= --testFlag= --testTarget=sanity_system --testList= --numOfMachines= --testTime= --TRSSURL= 
+Modes data parsed from resources/modes.xml and resources/ottawa.csv.
+
+Starting to generate test make files.
+
+Parsing /home/jvanek/git/aqa-tests/TKG/../external/system-test/playlist.xml
+Generated /home/jvanek/git/aqa-tests/TKG/../external/system-test/autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../external/autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../autoGen.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/utils.mk
+
+Generated /home/jvanek/git/aqa-tests/TKG/../TKG/rerun.mk
+
+Make files are generated successfully.
+
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make -f runtest.mk _sanity_system
+make[1]: Entering directory '/home/jvanek/git/aqa-tests/TKG'
+
+Running make 4.4.1
+set TEST_ROOT to /home/jvanek/git/aqa-tests/TKG/..
+set JDK_VERSION to 21
+set JDK_IMPL to hotspot
+set JVM_VERSION to openjdk21
+set JCL_VERSION to latest
+set JAVA_HOME to /tmp/tmp.svcCMPocrN/jdk-21.0.5+11
+set SPEC to linux_x86-64
+set TEST_FLAG to
+Running sanity_system ...
+There are 1 test targets in sanity_system
+"/tmp/tmp.svcCMPocrN/jdk-21.0.5+11/bin/java" -version
+openjdk version "21.0.5" 2024-10-15 LTS
+OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sharing)
+make[2]: Entering directory '/home/jvanek/git/aqa-tests'
+make[3]: Entering directory '/home/jvanek/git/aqa-tests/external'
+make[4]: Entering directory '/home/jvanek/git/aqa-tests/external/system-test'
+
+===============================================
+Running test sanity_system_0 ...
+===============================================
+sanity_system_0 Start Time: Wed Dec 11 21:00:37 2024 Epoch Time (ms): 1733947237514
+variation: NoOptions
+JVM_OPTIONS:  
+{ \
+echo "";	echo "TEST SETUP:"; \
+echo "Nothing to be done for setup."; \
+mkdir -p "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/sanity_system_0"; \
+cd "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/sanity_system_0"; \
+echo "";	echo "TESTING:"; \
+/home/jvanek/git/aqa-tests/TKG/../external/external.sh --run --tag "" --dir system-test --testtarget _sanity.system --reportdst "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/sanity_system_0" --docker_args "-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk" ; \
+	if [ $? -eq 0 ]; then echo "-----------------------------------"; echo "sanity_system_0""_PASSED"; echo "-----------------------------------"; cd /home/jvanek/git/aqa-tests/TKG/..;  else echo "-----------------------------------"; echo "sanity_system_0""_FAILED"; echo "-----------------------------------"; fi; \
+	/home/jvanek/git/aqa-tests/TKG/../external/external.sh --clean --tag "" --dir system-test; \
+echo "";	echo "TEST TEARDOWN:"; \
+echo "Nothing to be done for teardown."; \
+ } 2>&1 | tee -a "/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/TestTargetResult";
+
+TEST SETUP:
+Nothing to be done for setup.
+
+TESTING:
+   # =================== Info =================== Info =================== Info =================== #
+   # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk"                                #
+   # =================== Info =================== Info =================== Info =================== #
+   # =================== Info =================== Info =================== Info =================== #
+   # TEST_JDK_HOME of /tmp/tmp.svcCMPocrN/jdk-21.0.5+11 is used in EXTRA_DOCKER_ARGS                                #
+   # =================== Info =================== Info =================== Info =================== #
+No DOCKERIMAGE_TAG set, tag as default 'nightly'
+DOCKERIMAGE_TAG nightly has been recognized.
+The test here is system-test
+The directory in the external.sh is system-test
+ podman run --privileged  -v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk  --name system-test-test --rm adoptopenjdk-system-test-test:21-jdk-ubuntu-hotspot-full _sanity.system
+time="2024-12-11T21:00:37+01:00" level=warning msg="Error validating CNI config file /home/jvanek/.config/cni/net.d/87-podman.conflist: [failed to find plugin \"bridge\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"portmap\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"firewall\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin] failed to find plugin \"tuning\" in path [/usr/local/libexec/cni /usr/libexec/cni /usr/local/lib/cni /usr/lib/cni /opt/cni/bin]]"
+APPLICATION_NAME=system-test
+APPLICATION_TAG=ubuntu
+OS_TAG=21
+Using /opt mounted Java
+JAVA_BIN is: /opt/java/openjdk/bin
+=JAVA VERSION OUTPUT BEGIN=
+Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+openjdk version "21.0.5" 2024-10-15 LTS
+OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sharing)
+=JAVA VERSION OUTPUT END=
+TEST_JDK_HOME is : /opt/java/openjdk
+TESTDIR: /aqa-tests
+get testKitGen...
+git clone -q https://github.com/adoptium/TKG.git
+git rev-parse master
+git checkout -q -f 7aa981fdbadc507fe0bdede063ff38dcc27958f3
+check adoptium repo and TKG repo SHA
+/aqa-tests/TKG/scripts/getSHA.sh --repo_dir /aqa-tests --output_file /aqa-tests/TKG/SHA.txt
+Check sha in /aqa-tests and store the info in /aqa-tests/TKG/SHA.txt
+touch /aqa-tests/TKG/SHA.txt
+================================================
+timestamp: 20241211-200038
+repo dir: /aqa-tests
+git repo: 
+  Fetch URL: https://github.com/adoptium/aqa-tests.git
+sha:
+d17275c7a3dc20749aa30f9844615e4990b30b66
+/aqa-tests/TKG/scripts/getTestenvProperties.sh --repo_dir /aqa-tests --output_file /aqa-tests/testenv/testenv.properties --repo_name ADOPTOPENJDK
+Check sha in /aqa-tests and store the info in /aqa-tests/testenv/testenv.properties
+ADOPTOPENJDK_REPO=https://github.com/adoptium/aqa-tests.git
+ADOPTOPENJDK_BRANCH=d17275c7a3dc20749aa30f9844615e4990b30b66
+/aqa-tests/TKG/scripts/getSHA.sh --repo_dir /aqa-tests/TKG --output_file /aqa-tests/TKG/SHA.txt
+Check sha in /aqa-tests/TKG and store the info in /aqa-tests/TKG/SHA.txt
+================================================
+timestamp: 20241211-200038
+repo dir: /aqa-tests/TKG
+git repo: 
+  Fetch URL: https://github.com/adoptium/TKG.git
+sha:
+7aa981fdbadc507fe0bdede063ff38dcc27958f3
+/aqa-tests/TKG/scripts/getTestenvProperties.sh --repo_dir /aqa-tests/TKG --output_file /aqa-tests/testenv/testenv.properties --repo_name TKG
+Check sha in /aqa-tests/TKG and store the info in /aqa-tests/testenv/testenv.properties
+TKG_REPO=https://github.com/adoptium/TKG.git
+TKG_BRANCH=7aa981fdbadc507fe0bdede063ff38dcc27958f3
+get functional test material...
+git clone --depth 1 --reference-if-able /root/openjdk_cache  https://github.com/eclipse-openj9/openj9.git
+Cloning into 'openj9'...
+info: Could not add alternate for '/root/openjdk_cache': reference repository '/root/openjdk_cache' is not a local repository.
+check OpenJ9 Repo sha
+/aqa-tests/TKG/scripts/getSHA.sh --repo_dir /aqa-tests/openj9 --output_file /aqa-tests/TKG/SHA.txt
+Check sha in /aqa-tests/openj9 and store the info in /aqa-tests/TKG/SHA.txt
+================================================
+timestamp: 20241211-200044
+repo dir: /aqa-tests/openj9
+git repo: 
+  Fetch URL: https://github.com/eclipse-openj9/openj9.git
+sha:
+e8324772e813ab1018610952cf7d627874b45e47
+/aqa-tests/TKG/scripts/getTestenvProperties.sh --repo_dir /aqa-tests/openj9 --output_file /aqa-tests/testenv/testenv.properties --repo_name OPENJ9
+Check sha in /aqa-tests/openj9 and store the info in /aqa-tests/testenv/testenv.properties
+OPENJ9_REPO=https://github.com/eclipse-openj9/openj9.git
+OPENJ9_SHA=e8324772e813ab1018610952cf7d627874b45e47
+total 128
+drwxr-xr-x  4 root root  4096 Dec 11 20:00 buildenv
+-rwxr-xr-x  1 root root   339 Dec 11 20:00 compile.sh
+-rw-r--r--  1 root root  4665 Dec 11 20:00 Contributing.md
+drwxr-xr-x  4 root root  4096 Dec 11 20:00 doc
+drwxr-xr-x  5 root root  4096 Dec 11 20:00 docs
+drwxr-xr-x 33 root root  4096 Dec 11 20:00 external
+drwxr-xr-x  8 root root  4096 Dec 11 20:00 functional
+-rwxr-xr-x  1 root root 28914 Dec 11 20:00 get.sh
+drwxr-xr-x 19 root root  4096 Dec 11 20:00 jck
+-rw-r--r--  1 root root 11360 Dec 11 20:00 LICENSE
+-rw-r--r--  1 root root    65 Dec 11 20:00 NOTICE
+drwxr-xr-x 14 root root  4096 Dec 11 20:00 openj9
+drwxr-xr-x  3 root root  4096 Dec 11 20:00 openjdk
+drwxr-xr-x  8 root root  4096 Dec 11 20:00 perf
+-rw-r--r--  1 root root  8335 Dec 11 20:00 README.md
+drwxr-xr-x  4 root root  4096 Dec 11 20:00 scripts
+drwxr-xr-x 13 root root  4096 Dec 11 20:00 system
+-rwxr-xr-x  1 root root  3827 Dec 11 20:00 terminateTestProcesses.sh
+drwxr-xr-x  2 root root  4096 Dec 11 20:00 testenv
+drwxr-xr-x  8 root root  4096 Dec 11 20:00 TKG
+JAVA_HOME is set to /opt/java/openjdk
+UNAME_OS is Linux
+LIB_DIR is set to /aqa-tests/TKG/../TKG/lib
+rm -f -r /aqa-tests/TKG/../TKG/output_compilation; \
+mkdir -p /aqa-tests/TKG/../TKG/output_compilation; \
+(ant -f ./scripts/build_tools.xml "-DTEST_JDK_HOME=/opt/java/openjdk" "-DTEST_ROOT=/aqa-tests/TKG/.." "-DLIB_DIR=/aqa-tests/TKG/../TKG/lib" 2>&1; echo $? ) | tee "/aqa-tests/TKG/../TKG/output_compilation/compilation.log"; \
+if [ -z "$(tail -1 /aqa-tests/TKG/../TKG/output_compilation/compilation.log | grep 0)" ]; then perl scripts/moveDmp.pl --compileLogPath="/aqa-tests/TKG/../TKG/output_compilation/compilation.log" --testRoot="/aqa-tests/TKG/.."; false; else rm -f -r "/aqa-tests/TKG/../TKG/output_compilation"; fi
+Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+Buildfile: /aqa-tests/TKG/scripts/build_tools.xml
+
+build:
+
+clean:
+
+init:
+    [mkdir] Created dir: /aqa-tests/TKG/bin
+
+getDependentLibs:
+     [exec] /aqa-tests/TKG/../TKG/lib does not exist, creating one.
+     [exec] mkdir /aqa-tests/TKG/../TKG/lib
+     [exec] --------------------------------------------
+     [exec] path is set to /aqa-tests/TKG/../TKG/lib
+     [exec] task is set to default
+     [exec] dependencyList is set to json_simple
+     [exec] --------------------------------------------
+     [exec] Starting download third party dependent jars
+     [exec] --------------------------------------------
+     [exec] downloading dependent third party jars to /aqa-tests/TKG/../TKG/lib
+     [exec] downloading https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar
+     [exec] --> file downloaded to /aqa-tests/TKG/../TKG/lib/json-simple.jar
+     [exec] downloaded dependent third party jars successfully
+
+compile:
+     [echo] Ant version is Apache Ant(TM) version 1.10.14 compiled on September 25 2023
+     [echo] ============COMPILER SETTINGS============
+     [echo] ===fork:                         yes
+     [echo] ===debug:                        on
+    [javac] Compiling 27 source files to /aqa-tests/TKG/bin
+    [javac] Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+    [javac] Note: Some input files use or override a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+dist:
+      [jar] Building jar: /aqa-tests/TKG/bin/TestKitGen.jar
+
+BUILD SUCCESSFUL
+Total time: 1 second
+0
+/opt/java/openjdk/bin/java -cp ./bin/TestKitGen.jar org.openj9.envInfo.EnvDetector
+Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+Unfamiliar microArch detected in TKG. It will not be added in TKG microArch!
+microArchOutput: model name	: 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz
+****************************** MACHINE INFO ******************************
+File path : /aqa-tests/TKG
+Free Physical Memory Size : 9562959872
+Free space (bytes) : 287792029696
+Total Physical Memory Size : 67106488320
+Total space (bytes) : 632976211968
+Usable space (bytes) : 255563419648
+antVersion : 
+	Picked up JAVA_TOOL_OPTIONS:  -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom
+	Apache Ant(TM) version 1.10.14 compiled on September 25 2023
+bashVersion : 
+	GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+	Copyright (C) 2022 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+	
+	This is free software; you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+cpuCores : 16
+curlVersion : 
+	curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.7
+	Release-Date: 2023-12-06, security patched: 8.5.0-2ubuntu10.5
+	Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp
+	Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
+dockerVersion : bash: line 1: docker: command not found
+gcc version : Command could not be executed
+gclibc version : ldd (Ubuntu GLIBC 2.39-0ubuntu8.3) 2.39
+gdb version : bash: line 1: gdb: command not found
+lldb version : Command could not be executed
+makeVersion : 
+	GNU Make 4.3
+	Built for x86_64-pc-linux-gnu
+	Copyright (C) 1988-2020 Free Software Foundation, Inc.
+	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
+mavenVersion : bash: line 1: mvn: command not found
+osInfo : 
+	PRETTY_NAME="Ubuntu 24.04.1 LTS"
+	NAME="Ubuntu"
+	VERSION_ID="24.04"
+	VERSION="24.04.1 LTS (Noble Numbat)"
+	VERSION_CODENAME=noble
+	ID=ubuntu
+	ID_LIKE=debian
+	HOME_URL="https://www.ubuntu.com/"
+	SUPPORT_URL="https://help.ubuntu.com/"
+	BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+	PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+	UBUNTU_CODENAME=noble
+	LOGO=ubuntu-logo
+osLabel : ubuntu.24
+perlVersion : 
+	
+	This is perl 5, version 38, subversion 2 (v5.38.2) built for x86_64-linux-gnu-thread-multi
+	(with 44 registered patches, see perl -V for more detail)
+	
+	Copyright 1987-2023, Larry Wall
+	
+	Perl may be copied only under the terms of either the Artistic License or the
+	GNU General Public License, which may be found in the Perl 5 source kit.
+	
+	Complete documentation for Perl, including FAQ lists, should be found on
+	this system using "man perl" or "perldoc perl".  If you have access to the
+	Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+	
+podmanVersion : bash: line 1: podman: command not found
+procArch : x86_64
+sysArch : x86_64
+sysOS : Linux
+ulimit : 
+	real-time non-blocking time  (microseconds, -R) unlimited
+	core file size              (blocks, -c) unlimited
+	data seg size               (kbytes, -d) unlimited
+	scheduling priority                 (-e) 0
+	file size                   (blocks, -f) unlimited
+	pending signals                     (-i) 255386
+	max locked memory           (kbytes, -l) 8192
+	max memory size             (kbytes, -m) unlimited
+	open files                          (-n) 524288
+	pipe size                (512 bytes, -p) 8
+	POSIX message queues         (bytes, -q) 819200
+	real-time priority                  (-r) 0
+	stack size                  (kbytes, -s) 8192
+	cpu time                   (seconds, -t) unlimited
+	max user processes                  (-u) 255386
+	virtual memory              (kbytes, -v) unlimited
+	file locks                          (-x) unlimited
+uname : Linux 82fa34bc9796 6.11.6-100.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Nov  1 16:07:59 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+vmVendor : Oracle Corporation
+vmVersion : 21.0.5+11-LTS
+xlc version : bash: line 1: xlC: command not found
+**************************************************************************
+
+System.getProperty('java.vm.name')=OpenJDK 64-Bit Server VM
+
+System.getProperty('java.vendor')=Eclipse Adoptium
+
+System.getProperty('os.name')=Linux
+
+System.getProperty('os.arch')=amd64
+
+System.getProperty('java.fullversion')=null
+
+System.getProperty('sun.arch.data.model')=64
+
+make -f clean.mk cleanBuild
+make[1]: Entering directory '/aqa-tests/TKG'
+make[1]: Leaving directory '/aqa-tests/TKG'
+/aqa-tests/TKG/../TKG/envSettings.mk:34: *** DETECTED_JDK_VERSION value is 21, settled JDK_VERSION value is hotspot. JDK_VERSION value does not match. Please reset or unset JDK_VERSION.  Stop.
+make: *** [makefile:86: compile] Error 2
+JAVA_HOME is set to /opt/java/openjdk
+UNAME_OS is Linux
+LIB_DIR is set to /aqa-tests/TKG/../TKG/lib
+make -f makeGen.mk AUTO_DETECT= MODE=tests TESTTARGET=sanity.system TESTLIST=
+make[1]: Entering directory '/aqa-tests/TKG'
+/aqa-tests/TKG/envSettings.mk:34: *** DETECTED_JDK_VERSION value is 21, settled JDK_VERSION value is hotspot. JDK_VERSION value does not match. Please reset or unset JDK_VERSION.  Stop.
+make[1]: Leaving directory '/aqa-tests/TKG'
+make: *** [makefile:69: _sanity.system] Error 2
+-----------------------------------
+sanity_system_0_FAILED
+-----------------------------------
+   # =================== Info =================== Info =================== Info =================== #
+   # EXTRA_DOCKER_ARGS set as "-v /tmp/tmp.svcCMPocrN/jdk-21.0.5+11:/opt/java/openjdk"                                #
+   # =================== Info =================== Info =================== Info =================== #
+   # =================== Info =================== Info =================== Info =================== #
+   # TEST_JDK_HOME of /tmp/tmp.svcCMPocrN/jdk-21.0.5+11 is used in EXTRA_DOCKER_ARGS                                #
+   # =================== Info =================== Info =================== Info =================== #
+No DOCKERIMAGE_TAG set, tag as default 'nightly'
+DOCKERIMAGE_TAG nightly has been recognized.
+The test here is system-test
+The directory in the external.sh is system-test
+Untagged: localhost/adoptopenjdk-system-test-test:21-jdk-ubuntu-hotspot-full
+Deleted: 583559889bb478ef89c866895cfe319bdab61f87b627b2dd28b3e58652b0625a
+Deleted: 678ce14a2599c533374d1eeec4523852a62997cd6f5129c9be3d581c914ced63
+Deleted: ae852a80a54a9b4693dbf17569f5fb9c911ebfaf6a7e7a93996beb5529bf7ffb
+Deleted: 8632bf53c046e8ac356bf4eebea35af5a6ddf9cdf90a230a1488a1639adcbc26
+Deleted: 888b86afa4428a5fa8d2e450f4e69ce48d51a64d533073667e1ef5d1579c4a40
+Deleted: 710f9095e4dd52dbedb63e4accc544f2d5c7b8885b341221bb9a44d1daa8493f
+Deleted: bc831387fd217227e04c5ba22d6bcae120053284532e28aba0ac228c6d36212d
+Deleted: f09155fe90acdb715703a00155916575f56f7095952b06a8051b29f6c3b2a06e
+Deleted: f7fb2dabf02aa8d34af2d85cb236c550c9260c6f56515255ffd6e8d57684c0cb
+Deleted: b4cf6116ca07591927b9204e0362fed5cf84f0f844cd1d16e47f21c443f4462b
+Deleted: 6f698d20844be6b3163e3f85e34b73bf09f21e58b719381492e61787a887df69
+Deleted: aeabef86fa06b5aa10347cc1cc70b33e36907f08907d65ff8e0fe2bf65f06a5f
+Deleted: fe37a5238b744bd560153440c127edcee8ad2692427fee1cbbf43e59486348cd
+Deleted: 4438972dc833062a9c3b6408b41045791d0da0768d48ab831c221ca752b1f67c
+Deleted: 5ca088d71138be0c5fd2705c994de004d5b891b1f8ec2c8ccfcecb71a4d877e2
+Deleted: ac3f6c44b7936f4f99222400a566c318f2588b44e4cdfa295bc8b827e80987ed
+Deleted: 50d92903bc39a3697d33614eb49d57e0ddfbc54611341d5fa0577bcc28b9cff8
+Deleted: 1ee1e98e7f95783559507d1a3ed7d8f3262e7b8521116c43949c4e88c08ba516
+Deleted: b9e9e91d51e333ff8e5833336ba997b4b26dddf7a83cec945d104c296f7d2809
+Deleted: 95619919e6afe79d5bdd8650545048f09c1bd1621737c239d9f7d93d1c44b1e7
+Error: invalid reference format
+
+TEST TEARDOWN:
+Nothing to be done for teardown.
+sanity_system_0 Finish Time: Wed Dec 11 21:00:47 2024 Epoch Time (ms): 1733947247046
+make[4]: Leaving directory '/home/jvanek/git/aqa-tests/external/system-test'
+make[3]: Leaving directory '/home/jvanek/git/aqa-tests/external'
+make[2]: Leaving directory '/home/jvanek/git/aqa-tests'
+
+
+All tests finished, run result summary:
+cd "/home/jvanek/git/aqa-tests/TKG/../TKG/scripts"; \
+perl "resultsSum.pl" --failuremk="/home/jvanek/git/aqa-tests/TKG/../TKG/failedtargets.mk" --resultFile="/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/TestTargetResult" --platFile="/home/jvanek/git/aqa-tests/TKG/../TKG/resources/buildPlatformMap.properties" --diagnostic=failure --jdkVersion=21 --jdkImpl=hotspot --jdkVendor="eclipse" --spec=linux_x86-64 --buildList=external/system-test --customTarget="" --testTarget=sanity_system --tapPath=/home/jvanek/git/aqa-tests/TKG/../TKG/output_17339472374082/ --tapName= --comment=""
+
+
+TEST TARGETS SUMMARY
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+FAILED test targets:
+	sanity_system_0
+
+TOTAL: 1   EXECUTED: 1   PASSED: 0   FAILED: 1   DISABLED: 0   SKIPPED: 0
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+To rebuild the failed test in a jenkins job, copy the following link and fill out the <Jenkins URL> and <FAILED test target>:
+<Jenkins URL>/parambuild/?JDK_VERSION=21&JDK_IMPL=hotspot&JDK_VENDOR=eclipse&BUILD_LIST=external/system-test&PLATFORM=x86-64_linux&TARGET=<FAILED test target>
+
+For example, to rebuild the failed tests in <Jenkins URL>=https://ci.adoptium.net/job/Grinder, use the following links:
+https://ci.adoptium.net/job/Grinder/parambuild/?JDK_VERSION=21&JDK_IMPL=hotspot&JDK_VENDOR=eclipse&BUILD_LIST=external/system-test&PLATFORM=x86-64_linux&TARGET=sanity_system_0
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+make[1]: *** [settings.mk:446: resultsSummary] Error 2
+make[1]: Leaving directory '/home/jvanek/git/aqa-tests/TKG'
+make: *** [makefile:61: _sanity_system] Error 2
+compilation: 0
+runtime: 2
