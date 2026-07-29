@@ -60,7 +60,7 @@ if [ "$JDK_VERSION" == "11" ]; then
 !:quarkus-avro-reload-test"
 fi
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building quarkus"
@@ -68,7 +68,11 @@ echo "Building quarkus"
 set +e
 echo "Quarkus build completed"
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ -z "$TEST_OPTIONS" ]; then
+	# build succeeded (set -e would have exited on failure)
+	test_exit_code=0
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Compile and run quarkus tests"
 	./mvnw --batch-mode --fail-at-end $excludeProject clean install
 	test_exit_code=$?
@@ -77,7 +81,8 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	# build succeeded (set -e would have exited on failure)
-	test_exit_code=0
+	./mvnw --batch-mode --fail-at-end $excludeProject clean install $TEST_OPTIONS
+	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

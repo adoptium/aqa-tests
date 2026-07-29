@@ -29,7 +29,7 @@ fi
 
 export MAVEN_OPTS="-Xmx1g"
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building quarkus_quickstarts"
@@ -37,15 +37,7 @@ mvn --batch-mode $excludeProject compile -DskipTests
 set +e
 echo "Quarkus quickstarts build completed"
 
-if [ "$TEST_TARGET" = "full" ]; then
-	echo "Compile and run quarkus_quickstarts tests"
-	mvn --batch-mode $excludeProject clean install
-	test_exit_code=$?
-	echo "Build quarkus_quickstarts completed"
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-	echo "Test results copied"
-	exit $test_exit_code
-else
+if [ -z "$TEST_OPTIONS" ]; then
 	echo "Building getting-started quickstart"
 	mvn --batch-mode -pl getting-started package -DskipTests
 
@@ -66,5 +58,18 @@ else
 		echo "Quarkus quickstarts startup verification FAILED"
 		test_exit_code=1
 	fi
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
+	echo "Compile and run quarkus_quickstarts tests"
+	mvn --batch-mode $excludeProject clean install
+	test_exit_code=$?
+	echo "Build quarkus_quickstarts completed"
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	exit $test_exit_code
+else
+	mvn --batch-mode $excludeProject clean install $TEST_OPTIONS
+	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

@@ -16,7 +16,7 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the kafka test
 echo_setup
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building kafka using gradle"
@@ -24,13 +24,7 @@ echo "Building kafka using gradle"
 echo "Kafka Build - Completed"
 set +e
 
-if [ "$TEST_TARGET" = "full" ]; then
-	echo "Running (ALL) Kafka tests :"
-	./gradlew -q test
-	test_exit_code=$?
-	echo "Kafka tests - Completed"
-	exit $test_exit_code
-else
+if [ -z "$TEST_OPTIONS" ]; then
 	echo "Probing Kafka"
 	bin/kafka-run-class.sh kafka.Kafka
 	test_exit_code=$?
@@ -38,5 +32,15 @@ else
 	# and confirms the class loaded and the JVM ran successfully.
 	# Any other non-zero exit code is a genuine failure.
 	[ $test_exit_code -eq 1 ] && exit 0
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
+	echo "Running (ALL) Kafka tests :"
+	./gradlew -q test
+	test_exit_code=$?
+	echo "Kafka tests - Completed"
+	exit $test_exit_code
+else
+	./gradlew -q test $TEST_OPTIONS
+	test_exit_code=$?
 	exit $test_exit_code
 fi

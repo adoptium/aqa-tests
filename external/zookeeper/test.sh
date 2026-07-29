@@ -17,7 +17,7 @@ echo_setup
 
 testList="-Dtest=!org.apache.zookeeper.server.quorum.QuorumPeerMainTest,!org.apache.zookeeper.server.quorum.QuorumPeerMainMultiAddressTest,!org.apache.zookeeper.ZKUtilTest,!org.apache.zookeeper.server.util.RequestPathMetricsCollectorTest,!org.apache.zookeeper.test.ReadOnlyModeTest,!org.apache.zookeeper.server.NettyServerCnxnTest,!org.apache.zookeeper.server.ZooKeeperServerMainTest,!org.apache.zookeeper.server.quorum.EagerACLFilterTest,!org.apache.zookeeper.server.quorum.Zab1_0Test,!org.apache.zookeeper.server.quorum.UnifiedServerSocketTest,!org.apache.zookeeper.server.quorum.CommitProcessorConcurrencyTest,!org.apache.zookeeper.server.util.JvmPauseMonitorTest"
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building zookeeper"
@@ -25,7 +25,12 @@ mvn package -DskipTests --batch-mode
 set +e
 echo "Zookeeper build completed"
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ -z "$TEST_OPTIONS" ]; then
+	echo "Probing Zookeeper version"
+	bin/zkServer.sh version
+	test_exit_code=$?
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Compile and run zookeeper tests"
 	echo mvn test --batch-mode --fail-at-end $testList
 	mvn test --batch-mode --fail-at-end $testList
@@ -35,8 +40,8 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	echo "Probing Zookeeper version"
-	bin/zkServer.sh version
+	mvn test --batch-mode --fail-at-end $TEST_OPTIONS
 	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

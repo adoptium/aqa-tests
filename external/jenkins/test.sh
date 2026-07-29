@@ -19,7 +19,7 @@ echo_setup
 export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
 #begin jenkins test
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\""
@@ -27,14 +27,19 @@ mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
 echo "Building jenkins completed"
 set +e
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ -z "$TEST_OPTIONS" ]; then
+	java -jar war/target/jenkins.war --help
+	test_exit_code=$?
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\""
 	mvn --batch-mode surefire:test -Denforcer.fail=false
 	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 else
-	java -jar war/target/jenkins.war --help
+	mvn --batch-mode surefire:test -Denforcer.fail=false $TEST_OPTIONS
 	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

@@ -24,7 +24,7 @@ if [ "$JDK_VERSION" == "17" ]; then
 	excludeProject="-pl !:org.jacoco.core.test.validation.groovy"
 fi
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building jacoco"
@@ -32,7 +32,12 @@ mvn --batch-mode $excludeProject install -DskipTests
 set +e
 echo "Jacoco build completed"
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ -z "$TEST_OPTIONS" ]; then
+	echo "Probing JaCoCo version"
+	java -jar $(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1) version
+	test_exit_code=$?
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Compile and run jacoco tests"
 	mvn --batch-mode --fail-at-end $excludeProject clean verify
 	test_exit_code=$?
@@ -41,8 +46,8 @@ if [ "$TEST_TARGET" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	echo "Probing JaCoCo version"
-	java -jar $(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1) version
+	mvn --batch-mode --fail-at-end $excludeProject clean verify $TEST_OPTIONS
 	test_exit_code=$?
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

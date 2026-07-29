@@ -16,7 +16,7 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the wildfly test
 echo_setup
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
 
 set -e
 echo "Building wildfly using maven, by invoking build.sh"
@@ -24,7 +24,28 @@ echo "Building wildfly using maven, by invoking build.sh"
 set +e
 echo "Wildfly Build - Completed"
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ -z "$TEST_OPTIONS" ]; then
+	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs dirname | xargs dirname)
+
+	cleanup() {
+		"${WILDFLY_HOME}/bin/jboss-cli.sh" --connect command=:shutdown || true
+	}
+	trap cleanup EXIT
+
+	echo "Starting WildFly"
+	"${WILDFLY_HOME}/bin/standalone.sh" &
+
+	echo "Waiting for WildFly to respond at ${WILDFLY_URL:-http://localhost:9990/}"
+	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf '${WILDFLY_URL:-http://localhost:9990/}' >/dev/null; do sleep 3; done"; then
+		echo "WildFly startup verification PASSED"
+		test_exit_code=0
+	else
+		echo "WildFly startup verification FAILED"
+		find "${WILDFLY_HOME}/standalone/log" -name '*.log' -exec tail -n 100 {} \; || true
+		test_exit_code=1
+	fi
+	exit $test_exit_code
+elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Running (ALL) wildfly tests :"
 
 	echo "Setting user to blank"
@@ -48,24 +69,7 @@ if [ "$TEST_TARGET" = "full" ]; then
 	test_exit_code=$?
 	exit $test_exit_code
 else
-	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs dirname | xargs dirname)
-
-	cleanup() {
-		"${WILDFLY_HOME}/bin/jboss-cli.sh" --connect command=:shutdown || true
-	}
-	trap cleanup EXIT
-
-	echo "Starting WildFly"
-	"${WILDFLY_HOME}/bin/standalone.sh" &
-
-	echo "Waiting for WildFly to respond at ${WILDFLY_URL:-http://localhost:9990/}"
-	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf '${WILDFLY_URL:-http://localhost:9990/}' >/dev/null; do sleep 3; done"; then
-		echo "WildFly startup verification PASSED"
-		test_exit_code=0
-	else
-		echo "WildFly startup verification FAILED"
-		find "${WILDFLY_HOME}/standalone/log" -name '*.log' -exec tail -n 100 {} \; || true
-		test_exit_code=1
-	fi
+	./mvnw --batch-mode --fail-at-end install -DallTests $TEST_OPTIONS
+	test_exit_code=$?
 	exit $test_exit_code
 fi
