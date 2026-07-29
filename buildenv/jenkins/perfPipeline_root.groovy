@@ -22,6 +22,7 @@ if (params.PERFCONFIG_JSON) {
                                 def statusCode = -1
                                 sshagent (credentials: ["$params.USER_CREDENTIALS_ID"], ignoreMissing: true) {
                                         statusCode =  sh returnStatus: true, script: """
+                                        rm -rf ${vendorRepoDir}
                                         git clone -q --depth 1 -b ${params.VENDOR_TEST_BRANCHES} ${params.VENDOR_TEST_REPOS} ${vendorRepoDir}
                                         """
                                 }
