@@ -201,7 +201,7 @@ def setupParallelEnv() {
 					copyArtifacts fingerprintArtifacts: true, projectName: "getTRSSOutput", selector: lastSuccessful(), target: 'aqa-tests/TKG/resources/TRSS'
 					sh "cd ./aqa-tests/TKG/resources/TRSS; gzip -cd TRSSOutput.tar.gz | tar xof -; rm TRSSOutput.tar.gz"
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				echo 'Exception: ' + e.toString()
 				echo 'Cannot get cached TRSS JSON data. Skipping copyArtifacts...'
 			}
@@ -221,7 +221,7 @@ def setupParallelEnv() {
 					}
 					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				echo 'Exception: ' + e.toString()
 				echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
 			}
@@ -666,7 +666,7 @@ def buildTest() {
 				timeout(time: 1, unit: 'HOURS') {
 					copyArtifacts fingerprintArtifacts: true, projectName: params.UPSTREAM_TEST_JOB_NAME, selector: specific(params.UPSTREAM_TEST_JOB_NUMBER), filter: "**/parallelList.mk", target: './aqa-tests/TKG/'
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				echo 'Exception: ' + e.toString()
 				echo "Cannot run copyArtifacts from ${params.UPSTREAM_TEST_JOB_NAME} ${params.UPSTREAM_TEST_JOB_NUMBER}. Skipping copyArtifacts..."
 			}
@@ -687,7 +687,7 @@ def buildTest() {
 					}
 					sh "perl ./aqa-tests/TKG/scripts/getDependencies.pl -path ${env.LIB_DIR} -task default -customUrl ${customUrl}"
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 					echo 'Exception: ' + e.toString()
 					echo "Cannot pre-stage test libs from ${env.LIB_DIR} on the machine. Skipping..."
 			}
@@ -698,7 +698,7 @@ def buildTest() {
 					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("2"), target: 'aqa-tests/external/criu/'
 					copyArtifacts fingerprintArtifacts: true, projectName: "UploadFileOnJenkins", selector: specific("3"), target: 'aqa-tests/external/criu/'
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				echo 'Exception: ' + e.toString()
 				echo 'Cannot run copyArtifacts from UploadFileOnJenkins. Skipping copyArtifacts...'
 			}
@@ -983,7 +983,7 @@ def post(output_name) {
 
 		try {
 			junit allowEmptyResults: true, keepLongStdio: true, testResults: '**/work/**/*.jtr.xml, **/result/**/*.jtr.xml, **/junitreports/**/*.xml, **/external_test_reports/**/*.xml'
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			echo "Caught exception: ${e.message}"
 		}
 	}
@@ -1441,7 +1441,7 @@ def generateJob (newJobs, childTest, testJobName) {
 			def JobHelper = library(identifier: 'openjdk-jenkins-helper@master').JobHelper
 			jobIsRunnable = JobHelper.jobIsRunnable("${testJobName}")
 			echo "${testJobName} jobIsRunnable: ${jobIsRunnable}"
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			echo "Cannot call jobIsRunnable() from openjdk-jenkins-helper@master. Skipping..."
 		}
 		if (!jobIsRunnable) {
@@ -1570,7 +1570,7 @@ def archiveChildJobTap(childJobs) {
 						if (!name.contains("_rerun")) {
 							buildPaths += "${name}/${buildId}/,"
 						}
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						echo 'Exception: ' + e.toString()
 						echo "Cannot copy *.tap or AQACert.log from ${name} with buildid ${buildId} . Skipping copyArtifacts..."
 					}
@@ -1654,7 +1654,7 @@ def getGitRepoBranch(ownerBranch, defaultOwnerBranch, repo) {
 def forceCleanWS() {
 	try {
 		cleanWs disableDeferredWipeout: true, deleteDirs: true
-	} catch (Exception e) {
+	} catch (Throwable e) {
 		echo 'Exception: ' + e.toString()
 		//cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
 		//cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
