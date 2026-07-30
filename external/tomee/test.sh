@@ -24,7 +24,7 @@ mvn --batch-mode -Pquick -Dsurefire.useFile=false -DdisableXmlReport=true -Duniq
 set +e
 echo "Build TomEE completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	TOMEE_HOME=$(find . -name 'catalina.sh' | head -1 | xargs -I{} dirname "{}" | xargs -I{} dirname "{}")
 	if [ -z "${TOMEE_HOME}" ]; then
 		echo "ERROR: Could not locate TomEE home directory (catalina.sh not found after build)"
@@ -49,14 +49,8 @@ if [ -z "$TEST_OPTIONS" ]; then
 		test_exit_code=1
 	fi
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
-	echo "Run Microprofile TCK"
-	cd tck/microprofile-tck
-	mvn --batch-mode test -Denforcer.fail=false
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-	exit $test_exit_code
 else
+	echo "Run Microprofile TCK"
 	cd tck/microprofile-tck
 	mvn --batch-mode test -Denforcer.fail=false $TEST_OPTIONS
 	test_exit_code=$?

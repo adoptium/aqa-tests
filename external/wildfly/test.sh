@@ -24,7 +24,7 @@ echo "Building wildfly using maven, by invoking build.sh"
 set +e
 echo "Wildfly Build - Completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs -I{} dirname "{}" | xargs -I{} dirname "{}")
 	if [ -z "${WILDFLY_HOME}" ] || [ "${WILDFLY_HOME}" = "." ]; then
 		echo "ERROR: Could not locate WildFly home directory (standalone.sh not found after build)"
@@ -49,7 +49,7 @@ if [ -z "$TEST_OPTIONS" ]; then
 		test_exit_code=1
 	fi
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
+else
 	echo "Running (ALL) wildfly tests :"
 
 	echo "Setting user to blank"
@@ -58,21 +58,6 @@ elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Printing Environment Variables"
 	printenv
 
-	#jdk8,11
-	excludeProject="-pl !:wildfly-ts-integ-elytron"
-
-	if [ "$JDK_VERSION" == "11" ]; then
-		excludeProject+=",!:wildfly-ts-integ-basic"
-	fi
-
-	if [ "$JDK_VERSION" == "17" ]; then
-		excludeProject="-pl !:wildfly-iiop-openjdk"
-	fi
-
-	./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests
-	test_exit_code=$?
-	exit $test_exit_code
-else
 	#jdk8,11
 	excludeProject="-pl !:wildfly-ts-integ-elytron"
 

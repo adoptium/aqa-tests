@@ -32,7 +32,7 @@ mvn --batch-mode $excludeProject install -DskipTests
 set +e
 echo "Jacoco build completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	echo "Probing JaCoCo version"
 	JACOCO_CLI_JAR=$(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1)
 	if [ -z "$JACOCO_CLI_JAR" ]; then
@@ -42,17 +42,12 @@ if [ -z "$TEST_OPTIONS" ]; then
 	java -jar "$JACOCO_CLI_JAR" version
 	test_exit_code=$?
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
+else
 	echo "Compile and run jacoco tests"
-	mvn --batch-mode --fail-at-end $excludeProject clean verify
+	mvn --batch-mode --fail-at-end $excludeProject clean verify $TEST_OPTIONS
 	test_exit_code=$?
 	echo "Build jacoco completed"
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	exit $test_exit_code
-else
-	mvn --batch-mode --fail-at-end $excludeProject clean verify $TEST_OPTIONS
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

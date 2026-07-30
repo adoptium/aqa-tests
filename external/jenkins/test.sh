@@ -27,17 +27,12 @@ mvn --batch-mode clean install -pl war -am -DskipTests -Denforcer.fail=false
 echo "Building jenkins completed"
 set +e
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	java -jar war/target/jenkins.war --help
 	test_exit_code=$?
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
-	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\""
-	mvn --batch-mode surefire:test -Denforcer.fail=false
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-	exit $test_exit_code
 else
+	echo "Run jenkins test phase alone with cmd: \"mvn surefire:test\""
 	mvn --batch-mode surefire:test -Denforcer.fail=false $TEST_OPTIONS
 	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;

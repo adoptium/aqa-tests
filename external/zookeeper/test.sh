@@ -25,23 +25,17 @@ mvn package -DskipTests --batch-mode
 set +e
 echo "Zookeeper build completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	echo "Probing Zookeeper version"
 	bin/zkServer.sh version
 	test_exit_code=$?
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
+else
 	echo "Compile and run zookeeper tests"
-	echo mvn test --batch-mode --fail-at-end $testList
-	mvn test --batch-mode --fail-at-end $testList
+	mvn test --batch-mode --fail-at-end $testList $TEST_OPTIONS
 	test_exit_code=$?
 	echo "Zookeeper tests completed"
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	exit $test_exit_code
-else
-	mvn test --batch-mode --fail-at-end $testList $TEST_OPTIONS
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

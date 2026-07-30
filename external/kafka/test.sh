@@ -24,7 +24,7 @@ echo "Building kafka using gradle"
 echo "Kafka Build - Completed"
 set +e
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	echo "Probing Kafka"
 	bin/kafka-run-class.sh kafka.Kafka
 	test_exit_code=$?
@@ -33,14 +33,10 @@ if [ -z "$TEST_OPTIONS" ]; then
 	# Any other non-zero exit code is a genuine failure.
 	[ $test_exit_code -eq 1 ] && exit 0
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
-	echo "Running (ALL) Kafka tests :"
-	./gradlew -q test
-	test_exit_code=$?
-	echo "Kafka tests - Completed"
-	exit $test_exit_code
 else
+	echo "Running (ALL) Kafka tests :"
 	./gradlew -q test $TEST_OPTIONS
 	test_exit_code=$?
+	echo "Kafka tests - Completed"
 	exit $test_exit_code
 fi

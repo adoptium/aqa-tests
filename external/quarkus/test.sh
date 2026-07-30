@@ -72,21 +72,15 @@ echo "Building quarkus"
 set +e
 echo "Quarkus build completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	# build succeeded (set -e would have exited on failure)
-	test_exit_code=0
-	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
+	exit 0
+else
 	echo "Compile and run quarkus tests"
-	./mvnw --batch-mode --fail-at-end $excludeProject clean install
+	./mvnw --batch-mode --fail-at-end $excludeProject clean install $TEST_OPTIONS
 	test_exit_code=$?
 	echo "Build quarkus completed"
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	exit $test_exit_code
-else
-	./mvnw --batch-mode --fail-at-end $excludeProject clean install $TEST_OPTIONS
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi

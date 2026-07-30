@@ -37,7 +37,7 @@ mvn --batch-mode $excludeProject compile -DskipTests
 set +e
 echo "Quarkus quickstarts build completed"
 
-if [ -z "$TEST_OPTIONS" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
 	echo "Building getting-started quickstart"
 	mvn --batch-mode -pl getting-started package -DskipTests
 	if [ $? -ne 0 ]; then
@@ -64,17 +64,12 @@ if [ -z "$TEST_OPTIONS" ]; then
 		test_exit_code=1
 	fi
 	exit $test_exit_code
-elif [ "$TEST_OPTIONS" = "full" ]; then
+else
 	echo "Compile and run quarkus_quickstarts tests"
-	mvn --batch-mode $excludeProject clean install
+	mvn --batch-mode $excludeProject clean install $TEST_OPTIONS
 	test_exit_code=$?
 	echo "Build quarkus_quickstarts completed"
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	echo "Test results copied"
-	exit $test_exit_code
-else
-	mvn --batch-mode $excludeProject clean install $TEST_OPTIONS
-	test_exit_code=$?
-	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code
 fi
