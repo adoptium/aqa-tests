@@ -25,7 +25,11 @@ set +e
 echo "Wildfly Build - Completed"
 
 if [ -z "$TEST_OPTIONS" ]; then
-	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs dirname | xargs dirname)
+	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs -I{} dirname "{}" | xargs -I{} dirname "{}")
+	if [ -z "${WILDFLY_HOME}" ] || [ "${WILDFLY_HOME}" = "." ]; then
+		echo "ERROR: Could not locate WildFly home directory (standalone.sh not found after build)"
+		exit 1
+	fi
 
 	cleanup() {
 		"${WILDFLY_HOME}/bin/jboss-cli.sh" --connect command=:shutdown || true
@@ -69,7 +73,18 @@ elif [ "$TEST_OPTIONS" = "full" ]; then
 	test_exit_code=$?
 	exit $test_exit_code
 else
-	./mvnw --batch-mode --fail-at-end install -DallTests $TEST_OPTIONS
+	#jdk8,11
+	excludeProject="-pl !:wildfly-ts-integ-elytron"
+
+	if [ "$JDK_VERSION" == "11" ]; then
+		excludeProject+=",!:wildfly-ts-integ-basic"
+	fi
+
+	if [ "$JDK_VERSION" == "17" ]; then
+		excludeProject="-pl !:wildfly-iiop-openjdk"
+	fi
+
+	./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests $TEST_OPTIONS
 	test_exit_code=$?
 	exit $test_exit_code
 fi

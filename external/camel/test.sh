@@ -20,7 +20,10 @@ echo_setup
 # for advise to set MAVEN_OPTS to avoid https://cwiki.apache.org/confluence/display/MAVEN/OutOfMemoryError
 export MAVEN_OPTS="-Xmx1g"
 
-#jdk17
+# Smoke build scope: extensions-core only.
+# The following modules are excluded from the smoke build because they pull in
+# Quarkus deployment-time processors that fail to compile on JDK 17+ and require
+# external services (MongoDB) not available in CI. The full suite re-enables them.
 excludeProject="-pl !:camel-quarkus-support-spring,\
 !:camel-quarkus-support-xstream-deployment,\
 !:camel-quarkus-support-xalan,\

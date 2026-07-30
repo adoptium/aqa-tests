@@ -22,6 +22,10 @@ export MAVEN_OPTS="-Xmx1g"
 
 export OPENJ9_JAVA_OPTIONS="-Xmx1g"
 
+# Smoke build scope: independent-projects/bootstrap/core only.
+# quarkus-documentation: no Java sources, doc-only module.
+# quarkus-openshift-deployment: requires OpenShift SDK not available in CI.
+# The full suite re-enables all modules via excludeProject below.
 excludeProject="-pl !:quarkus-documentation,\
 !:quarkus-openshift-deployment"
 

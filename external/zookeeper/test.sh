@@ -40,7 +40,7 @@ elif [ "$TEST_OPTIONS" = "full" ]; then
 	echo "Test results copied"
 	exit $test_exit_code
 else
-	mvn test --batch-mode --fail-at-end $TEST_OPTIONS
+	mvn test --batch-mode --fail-at-end $testList $TEST_OPTIONS
 	test_exit_code=$?
 	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
 	exit $test_exit_code

@@ -40,7 +40,12 @@ echo "Quarkus quickstarts build completed"
 if [ -z "$TEST_OPTIONS" ]; then
 	echo "Building getting-started quickstart"
 	mvn --batch-mode -pl getting-started package -DskipTests
+	if [ $? -ne 0 ]; then
+		echo "ERROR: getting-started package step failed"
+		exit 1
+	fi
 
+	probe_pid=""
 	cleanup() {
 		kill "${probe_pid}" 2>/dev/null || true
 	}

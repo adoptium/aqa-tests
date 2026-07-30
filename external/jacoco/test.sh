@@ -34,7 +34,12 @@ echo "Jacoco build completed"
 
 if [ -z "$TEST_OPTIONS" ]; then
 	echo "Probing JaCoCo version"
-	java -jar $(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1) version
+	JACOCO_CLI_JAR=$(find ../org.jacoco.cli/target -name 'org.jacoco.cli-*-nodeps.jar' | head -1)
+	if [ -z "$JACOCO_CLI_JAR" ]; then
+		echo "ERROR: Could not locate org.jacoco.cli-*-nodeps.jar under ../org.jacoco.cli/target"
+		exit 1
+	fi
+	java -jar "$JACOCO_CLI_JAR" version
 	test_exit_code=$?
 	exit $test_exit_code
 elif [ "$TEST_OPTIONS" = "full" ]; then
