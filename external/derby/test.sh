@@ -27,6 +27,7 @@ export tstjardir="${TEST_HOME}/tools/java"
 export CLASSPATH="${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:${tstjardir}/junit.jar"
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 java -jar "${TEST_HOME}/jars/sane/derbyrun.jar" sysinfo

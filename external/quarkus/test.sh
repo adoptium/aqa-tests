@@ -65,6 +65,7 @@ if [ "$JDK_VERSION" == "11" ]; then
 fi
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Building quarkus"

@@ -20,6 +20,7 @@ export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8"
 #begin jenkins test
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Build jenkins by using mvn \"mvn clean install -pl war -am -DskipTests\""

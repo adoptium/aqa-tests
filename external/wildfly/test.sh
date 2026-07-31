@@ -17,6 +17,7 @@ source $(dirname "$0")/test_base_functions.sh
 echo_setup
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Building wildfly using maven, by invoking build.sh"

@@ -25,6 +25,7 @@ if [ "$JDK_VERSION" == "17" ]; then
 fi
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Building jacoco"

@@ -32,6 +32,7 @@ excludeProject="-pl !:camel-quarkus-support-spring,\
 !:camel-quarkus-support-spring-deployment"
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Building camel"

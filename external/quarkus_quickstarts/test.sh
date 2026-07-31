@@ -30,6 +30,7 @@ fi
 export MAVEN_OPTS="-Xmx1g"
 
 TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 echo "Building quarkus_quickstarts"
