@@ -17,6 +17,8 @@ def PLATFORM_MAP = [
     'aarch64_windows' : [
         'SPEC' : 'windows_aarch64',
         'LABEL' : 'ci.role.test&&sw.os.windows&&hw.arch.aarch64',
+        'DynamicAgents' : ['azure'],
+        'azureTemplates' : ['sw.os.windows.11']
     ],
     'aarch64_alpine-linux' : [
         'SPEC' : 'alpine-linux_aarch64',
