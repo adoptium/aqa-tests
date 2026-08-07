@@ -70,6 +70,7 @@ endif
 
 ifndef SYSTEM_LIB_DIR
   SYSTEM_LIB_DIR=$(SYSTEMTEST_RESROOT)/systemtest_prereqs
+  $(shell mkdir -p $(SYSTEMTEST_RESROOT)/systemtest_prereqs)
 endif
 
 define SYSTEMTEST_CMD_TEMPLATE
