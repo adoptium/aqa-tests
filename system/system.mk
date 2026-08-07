@@ -69,8 +69,8 @@ ifdef JVM_OPTIONS
 endif
 
 ifndef SYSTEM_LIB_DIR
-  SYSTEM_LIB_DIR=$(SYSTEMTEST_RESROOT)/systemtest_prereqs
-  $(shell mkdir -p $(SYSTEMTEST_RESROOT)/systemtest_prereqs)
+  SYSTEM_LIB_DIR=$(TEST_ROOT)/systemtest_prereqs
+  $(shell mkdir -p $(TEST_ROOT)/systemtest_prereqs)
 endif
 
 define SYSTEMTEST_CMD_TEMPLATE
