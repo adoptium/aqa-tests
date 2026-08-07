@@ -18,21 +18,22 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (such as JDK8 or JDK21)"
+        description: "Release version (such as 8 or 21)"
         required: true
         type: string
       releaseDate:
         description: "Release date (Month and Year, e.g. 'July 2025')"
         required: true
         type: string
-      matrixInt:
-        description: "Which variant of matrix coverage to apply"
-        required: false
-        type: number
       pipelineUrl:
         description: "Optional URL of the release pipeline, if available"
         required: false
         type: string
+      dryRun:
+        description: "Dry run mode: when true, prefix all issue titles with 'Dry-run:'"
+        required: false
+        type: boolean
+        default: false
   repository_dispatch:
     types: [custom_event]
     
@@ -50,14 +51,42 @@ jobs:
           GH_TOKEN: ${{ secrets.TEMURIN_ISSUES_TOKEN || secrets.GITHUB_TOKEN }}
           VERSION: "JDK${{ inputs.version || github.event.client_payload.version }}"
           RELEASE_DATE: ${{ inputs.releaseDate || github.event.client_payload.releaseDate }}
-          MATRIX_INT: ${{ inputs.matrixInt || github.event.client_payload.matrixInt }}
           PRIMARY_PLATFORMS: "aarch64_linux,aarch64_mac,x86-64_linux,x86-64_mac,x86-64_windows"
           SECONDARY_PLATFORMS: "aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
           SKIP_INTERACTIVES: "true"
           HEADLESS_PLATFORMS: "aarch64_alpine-linux,riscv64_linux,x86-64_alpine-linux"
           PIPELINE_URL: ${{ inputs.pipelineUrl || github.event.client_payload.pipelineUrl }}
+          DRY_RUN: ${{ inputs.dryRun || github.event.client_payload.dryRun || false }}
         run: |
           set -euo pipefail
+
+          TITLE_PREFIX=""
+          if [[ "$DRY_RUN" == "true" ]]; then
+            TITLE_PREFIX="Dry-run: "
+          fi
+
+          release_date_lc="${RELEASE_DATE,,}"
+          if [[ "$release_date_lc" == *mar* || "$release_date_lc" == *sep* ]]; then
+            MATRIX_INT="0"
+          elif [[ "$release_date_lc" == *jan* || "$release_date_lc" == *jul* ]]; then
+            MATRIX_INT="1"
+          elif [[ "$release_date_lc" == *apr* || "$release_date_lc" == *oct* ]]; then
+            MATRIX_INT="2"
+          else
+            echo "Expected month containing Mar/Sep, Jan/Jul, or Apr/Oct.  Interim release with RELEASE_DATE: $RELEASE_DATE"
+            MATRIX_INT="3"
+          fi
+
+          # Returns the URL of an existing open issue with the given title, or nothing if none found.
+          find_existing_issue() {
+            local title="$1"
+            gh issue list \
+              --state open \
+              --search "\"$title\" in:title" \
+              --json url,title \
+              --jq ".[] | select(.title == \"$title\") | .url" \
+              --repo "$GITHUB_REPOSITORY" | head -1
+          }
 
           version_label="$VERSION"
 
@@ -97,11 +126,18 @@ jobs:
               done
             fi
 
-            sub_url=$(gh issue create \
-              --title "Triage Automated Tests for $RELEASE_DATE $VERSION - $platform" \
-              --body "$sub_body" \
-              --label "$version_label" \
-              --repo "$GITHUB_REPOSITORY")
+            sub_title="${TITLE_PREFIX}Triage Automated Tests for $RELEASE_DATE $VERSION - $platform"
+            existing_url=$(find_existing_issue "$sub_title")
+            if [[ -n "$existing_url" ]]; then
+              echo "Issue already exists, skipping: $sub_title ($existing_url)"
+              sub_url="$existing_url"
+            else
+              sub_url=$(gh issue create \
+                --title "$sub_title" \
+                --body "$sub_body" \
+                --label "$version_label" \
+                --repo "$GITHUB_REPOSITORY")
+            fi
 
             tasks+="- [ ] $sub_url"$'\n'
           done
@@ -125,19 +161,32 @@ jobs:
               done
             fi
 
-            sub_url=$(gh issue create \
-              --title "Triage Automated Tests for $RELEASE_DATE $VERSION - $platform" \
-              --body "$sub_body" \
-              --label "$version_label" \
-              --repo "$GITHUB_REPOSITORY")
+            sub_title="${TITLE_PREFIX}Triage Automated Tests for $RELEASE_DATE $VERSION - $platform"
+            existing_url=$(find_existing_issue "$sub_title")
+            if [[ -n "$existing_url" ]]; then
+              echo "Issue already exists, skipping: $sub_title ($existing_url)"
+              sub_url="$existing_url"
+            else
+              sub_url=$(gh issue create \
+                --title "$sub_title" \
+                --body "$sub_body" \
+                --label "$version_label" \
+                --repo "$GITHUB_REPOSITORY")
+            fi
 
             secondary_tasks+="- [ ] $sub_url"$'\n'
           done
 
           parent_body=$(printf 'Pipeline URL: %s\nVersion: %s\nPrimary Platforms: %s\nSecondary Platforms: %s\n\n### Primary Tasks\n\n%s\n### Secondary Tasks\n\n%s\n' "$PIPELINE_URL" "$VERSION" "$PRIMARY_PLATFORMS" "$SECONDARY_PLATFORMS" "$tasks" "$secondary_tasks")
 
-          gh issue create \
-            --title "$RELEASE_DATE Release AQAvit Activities - $VERSION" \
-            --body "$parent_body" \
-            --label "$version_label" \
-            --repo "$GITHUB_REPOSITORY"
+          parent_title="${TITLE_PREFIX}$RELEASE_DATE Release AQAvit Activities - $VERSION"
+          existing_parent=$(find_existing_issue "$parent_title")
+          if [[ -n "$existing_parent" ]]; then
+            echo "Parent issue already exists, skipping: $parent_title ($existing_parent)"
+          else
+            gh issue create \
+              --title "$parent_title" \
+              --body "$parent_body" \
+              --label "$version_label" \
+              --repo "$GITHUB_REPOSITORY"
+          fi

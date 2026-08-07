@@ -18,7 +18,7 @@
 		<testCaseName>jdk_valhalla_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) \
@@ -54,7 +54,7 @@
 		<testCaseName>hotspot_valhalla_runtime_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) \
@@ -91,7 +91,7 @@
 		<testCaseName>serviceability_valhalla_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) \
@@ -2326,6 +2326,62 @@
 		</groups>
 	</test>
 	<test>
+		<testCaseName>jdk_jfr_J9</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) \
+	-vmoptions:$(Q)-Xmx768m -XX:+EnableOpenJ9ExperimentalFlightRecording -Xshare:off $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jfr$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>17</version>
+		</versions>
+		<levels>
+			<level>extended</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>ibm</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
+		<testCaseName>jdk_jfr_sanity_J9</testCaseName>
+		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
+	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) \
+	-vmoptions:$(Q)-Xmx768m -XX:+EnableOpenJ9ExperimentalFlightRecording -Xshare:off $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
+	-w $(Q)$(REPORTDIR)$(D)work$(Q) \
+	-r $(Q)$(REPORTDIR)$(D)report$(Q) \
+	-jdk:$(Q)$(TEST_JDK_HOME)$(Q) \
+	-exclude:$(Q)$(JTREG_JDK_TEST_DIR)$(D)ProblemList.txt$(Q) \
+	-exclude:$(Q)$(TEST_RESROOT)$(D)$(PROBLEM_LIST_FILE)$(Q) \
+	${FEATURE_PROBLEM_LIST_FILE} \
+	${VENDOR_PROBLEM_LIST_FILE} \
+	$(Q)$(JTREG_JDK_TEST_DIR):jdk_jfr_sanity$(Q); \
+	$(TEST_STATUS)</command>
+		<versions>
+			<version>17</version>
+		</versions>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>openjdk</group>
+		</groups>
+		<impls>
+			<impl>ibm</impl>
+			<impl>openj9</impl>
+		</impls>
+	</test>
+	<test>
 		<testCaseName>jdk_foreign</testCaseName>
 		<variations>
 			<variation>Mode150</variation>
@@ -3128,6 +3184,12 @@
 		<variations>
 			<variation>-Xjit:{*FloatVector128Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -3284,6 +3346,12 @@
 		<variations>
 			<variation>-Xjit:{*IntVector128Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -3356,6 +3424,12 @@
 		<variations>
 			<variation>-Xjit:{*ShortVector128Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -3428,6 +3502,12 @@
 		<variations>
 			<variation>-Xjit:{*ByteVector128Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -3500,6 +3580,12 @@
 		<variations>
 			<variation>-Xjit:{*LongVector128Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \
@@ -3572,6 +3658,12 @@
 		<variations>
 			<variation>-Xjit:{*ByteVector64Tests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
+		<disables>
+			<disable>
+				<comment>https://github.com/eclipse-openj9/openj9/issues/24360</comment>
+				<version>27+</version>				
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 	$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) -vmoptions:$(Q)-Xmx512m $(JVM_OPTIONS) $(VMOPTION_HEADLESS)$(Q) \
 	$(TIMEOUT_HANDLER) \

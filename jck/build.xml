@@ -86,7 +86,7 @@
 	<condition property="vcvarsall_bits_arg" value="arm64">
 		<equals arg1="${os.arch}" arg2="aarch64" trim="true"/>
 	</condition>
-	<condition property="vcvarsall_bits_arg" value="amd64" else="">
+	<condition property="vcvarsall_bits_arg" value="amd64" else="x86">
 		<and>
 			<equals arg1="${sun.arch.data.model}" arg2="64" trim="true"/>
 			<not>

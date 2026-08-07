@@ -72,6 +72,9 @@ java/lang/invoke/VarHandles/VarHandleTestByteArrayAsInt.java https://github.com/
 java/lang/invoke/VarHandles/VarHandleTestByteArrayAsLong.java https://github.com/eclipse-openj9/openj9/issues/13368 generic-all
 java/lang/invoke/VarHandles/VarHandleTestByteArrayAsShort.java https://github.com/eclipse-openj9/openj9/issues/13368 generic-all
 java/lang/invoke/VarHandles/VarHandleTestMethodHandleAccessString.java https://github.com/eclipse-openj9/openj9/issues/13368 generic-all
+java/lang/IO/IO.java https://github.com/eclipse-openj9/openj9/issues/23292 generic-all
+java/lang/LazyConstant/LazyConstantClassUnloading.java https://github.com/eclipse-openj9/openj9/issues/18049 generic-all
+java/lang/LazyConstant/ThrowablesClassUnloading.java https://github.com/eclipse-openj9/openj9/issues/18049 generic-all
 java/lang/ModuleLayer/BasicLayerTest.java https://github.com/eclipse-openj9/openj9/issues/6462 generic-all
 java/lang/ProcessBuilder/checkHandles/CheckHandles.java https://github.com/adoptium/aqa-tests/issues/1920 windows-all
 java/lang/ProcessBuilder/SkipTest.java https://github.com/eclipse-openj9/openj9/issues/4124 windows-all
@@ -303,13 +306,13 @@ java/nio/channels/DatagramChannel/EmptyBuffer.java https://github.ibm.com/runtim
 java/nio/channels/DatagramChannel/IsBound.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/DatagramChannel/IsConnected.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
 java/nio/channels/DatagramChannel/Loopback.java https://github.ibm.com/runtimes/backlog/issues/655 linux-s390x,windows-all
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1016 macosx-all
 #java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
-#java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.ibm.com/runtimes/backlog/issues/783 generic-all
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 generic-all
 java/nio/channels/DatagramChannel/NotBound.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
-#java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/eclipse-openj9/openj9/issues/6669
-#java/nio/channels/DatagramChannel/Promiscuous.java is excluded for all platforms and java levels due to issue https://github.ibm.com/runtimes/backlog/issues/783
+# java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/eclipse-openj9/openj9/issues/6669 macosx-all
+# java/nio/channels/DatagramChannel/Promiscuous.java https://github.ibm.com/runtimes/backlog/issues/783 generic-all
 java/nio/channels/DatagramChannel/Promiscuous.java  https://github.com/adoptium/infrastructure/issues/699   generic-all
 java/nio/channels/DatagramChannel/PromiscuousIPv6.java https://github.com/adoptium/infrastructure/issues/699    linux-s390x
 java/nio/channels/DatagramChannel/ReceiveISA.java https://github.ibm.com/runtimes/backlog/issues/741 generic-all
@@ -485,6 +488,7 @@ java/util/logging/LogManager/TestLoggerNames.java https://github.com/eclipse-ope
 java/util/logging/TestLoggerWeakRefLeak.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 java/util/Random/RandomTestBsi1999.java https://github.com/eclipse-openj9/openj9/issues/13202 generic-all
 java/util/Random/RandomTestChiSquared.java https://github.com/eclipse-openj9/openj9/issues/13202 generic-all
+java/util/ServiceLoader/LinkageErrorsTest.java https://github.com/eclipse-openj9/openj9/issues/24462 generic-all
 java/util/Spliterator/SpliteratorCollisions.java https://github.com/eclipse-openj9/openj9/issues/7090 generic-all
 java/util/stream/boottest/java.base/java/util/stream/NodeTest.java https://github.com/eclipse-openj9/openj9/issues/4129 macosx-all
 java/util/stream/test/org/openjdk/tests/java/util/SplittableRandomTest.java https://github.com/eclipse-openj9/openj9/issues/4613 generic-all
@@ -540,6 +544,7 @@ vm/verifier/VerifyProtectedConstructor.java https://github.com/eclipse-openj9/op
 
 # jdk_foreign
 
+java/foreign/capturecallstate/TestCaptureCallState.java https://github.com/eclipse-openj9/openj9/issues/24463 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#default_gc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#shenandoah https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
 java/foreign/stackwalk/TestAsyncStackWalk.java#zgc https://github.com/eclipse-openj9/openj9/issues/13993 generic-all
@@ -554,6 +559,7 @@ java/foreign/TestUnsupportedPlatform.java https://github.com/eclipse-openj9/open
 java/foreign/TestUpcallAsync.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
 java/foreign/TestUpcallScope.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
 java/foreign/TestUpcallStack.java https://github.com/eclipse-openj9/openj9/issues/22403 aix-all
+java/foreign/TestUpcallStress.java https://github.com/eclipse-openj9/openj9/issues/24464 generic-all
 java/foreign/upcalldeopt/TestUpcallDeopt.java https://github.com/eclipse-openj9/openj9/issues/13157 generic-all
 java/foreign/valist/VaListTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 

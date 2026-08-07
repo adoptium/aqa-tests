@@ -30,13 +30,36 @@ if [ "$OS" = "Windows_NT" ]; then
 
   if [ $count -gt 0 ]; then
       echo Windows rogue processes detected, attempting to stop them..
-      powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
-      powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}).Terminate()"
-      echo Sleeping for 10 seconds...
-      sleep 10
-      count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+      
+      # First pass: Terminate matching processes (newest first) to reduce respawn races
+      echo "Pass 1: Terminating matching processes (newest first)..."
+      powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | Sort-Object -Property CreationDate -Descending | ForEach-Object { \$pid = \$_.ProcessId; try { \$_.Terminate() } catch { Write-Host ('Terminate failed for PID {0}: {1}' -f \$pid, \$_.Exception.Message) } } | Out-Null"
+      sleep 1
+      
+      # Retry up to 3 times to catch newly spawned processes
+      for attempt in 1 2 3; do
+        echo "Attempt $attempt: Checking for remaining processes..."
+        powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}}"
+        powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | ForEach-Object { \$pid = \$_.ProcessId; try { \$_.Terminate() } catch { Write-Host ('Terminate failed for PID {0}: {1}' -f \$pid, \$_.Exception.Message) } } | Out-Null"
+        sleep 2
+        count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+        if [ $count -eq 0 ]; then
+          break
+        fi
+      done
+      
+      # Final attempt: Force kill with taskkill for stubborn processes
+      if [ $count -gt 0 ]; then
+        echo "Standard termination failed, attempting force kill with taskkill..."
+        powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | ForEach-Object { taskkill /PID \$_.ProcessId /T /F 2>&1 | Out-Null }"
+        sleep 2
+        count=`powershell -c "(Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | measure).count" | tr -d "\\\\r"`
+      fi
+      
       if [ $count -gt 0 ]; then
         echo "Cleanup failed, ${count} processes still remain..."
+        # List remaining processes for debugging
+        powershell -c "Get-WmiObject Win32_Process -Filter {${ignore_str} and ${match_str}} | Select-Object ProcessId,ProcessName,CommandLine"
         exit 127
       fi
       echo "Processes stopped successfully"

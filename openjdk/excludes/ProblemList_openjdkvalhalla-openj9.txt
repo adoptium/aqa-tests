@@ -19,9 +19,6 @@
 # jdk_valhalla_j9 - valhalla
 
 ############################################################################
-valhalla/valuetypes/ValueClassPreviewTest.java https://github.com/eclipse-openj9/openj9/issues/24086 generic-all
-valhalla/valuetypes/ValueObjectMethodsTest.java https://github.com/eclipse-openj9/openj9/issues/24087 generic-all
-valhalla/valuetypes/MethodHandleTest.java https://github.com/eclipse-openj9/openj9/issues/24155 generic-all
 
 ############################################################################
 
@@ -45,8 +42,6 @@ com/sun/jdi/valhalla/ValueClassTypeTest.java https://github.com/adoptium/aqa-tes
 # hotspot_valhalla_runtime_j9 - runtime/valhalla
 
 ############################################################################
-runtime/valhalla/inlinetypes/InlineTypesTest.java#force-non-tearable https://github.com/eclipse-openj9/openj9/issues/24089 generic-all
-runtime/valhalla/inlinetypes/InlineWithJni.java https://github.com/eclipse-openj9/openj9/issues/24013 generic-all
 runtime/valhalla/inlinetypes/TestInheritedInlineTypeFields.java https://github.com/eclipse-openj9/openj9/issues/23952 generic-all
 
 ############################################################################
@@ -55,9 +50,14 @@ runtime/valhalla/inlinetypes/TestInheritedInlineTypeFields.java https://github.c
 
 ############################################################################
 serviceability/jvmti/valhalla/Heapwalking/ValueHeapwalkingTest.java https://github.com/eclipse-openj9/openj9/issues/24133 generic-all
+
+############################################################################
+
+# Tests with known failures that are unrelated to Valhalla.
+
+############################################################################
 serviceability/jvmti/valhalla/SampledObjectAllocValue/SampledObjectAllocValue.java https://github.com/eclipse-openj9/openj9/issues/23993 generic-all
-serviceability/jvmti/valhalla/SetTag/ValueTagMapTest.java https://github.com/eclipse-openj9/openj9/issues/24134 generic-all
-serviceability/jvmti/valhalla/VMObjectAllocValue/VMObjectAllocValueTest.java https://github.com/eclipse-openj9/openj9/issues/23992 generic-all
+serviceability/jvmti/valhalla/VMObjectAllocValue/VMObjectAllocValueTest.java https://github.com/eclipse-openj9/openj9/issues/15994 generic-all
 
 ############################################################################
 
@@ -153,6 +153,7 @@ runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id0 https://github
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id1 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/TestFlatArrayElementMaxOops.java#id2 https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/TestFlatteningBudget.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
+runtime/valhalla/inlinetypes/TestFinalizableValues.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/ValuePreloadTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 runtime/valhalla/inlinetypes/VolatileTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
 valhalla/valuetypes/SubstitutabilityTest.java https://github.com/adoptium/aqa-tests/issues/1297 generic-all
