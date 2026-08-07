@@ -16,10 +16,36 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the tomcat test
 echo_setup
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
-if [ "$TEST_TARGET" = "full" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	echo "Building tomcat"
+	ant
+
+	TOMCAT_BUILD_DIR="${TEST_HOME}/output/build"
+
+	cleanup() {
+		"${TOMCAT_BUILD_DIR}/bin/catalina.sh" stop || true
+	}
+	trap cleanup EXIT
+
+	echo "Starting Tomcat"
+	cd "${TOMCAT_BUILD_DIR}"
+	bin/catalina.sh start
+	set +e
+
+	echo "Waiting for Tomcat to respond at ${TOMCAT_URL:-http://localhost:8080/}"
+	if timeout "${STARTUP_TIMEOUT:-120}" bash -c "until curl -sf '${TOMCAT_URL:-http://localhost:8080/}' >/dev/null; do sleep 2; done"; then
+		echo "Tomcat startup verification PASSED"
+		exit 0
+	else
+		echo "Tomcat startup verification FAILED"
+		tail -n 200 logs/catalina.out || true
+		exit 1
+	fi
+else
 	git clone -q -b 1.6.x --single-branch https://github.com/apache/apr.git "${TEST_HOME}/tmp/apr"
 	cd "${TEST_HOME}/tmp/apr"
 	./buildconf
@@ -48,31 +74,6 @@ if [ "$TEST_TARGET" = "full" ]; then
 
 	echo "Running tomcat tests"
 	#Run tests
-	ant test
+	ant test $TEST_OPTIONS
 	set +e
-else
-	echo "Building tomcat"
-	ant
-
-	TOMCAT_BUILD_DIR="${TEST_HOME}/output/build"
-
-	cleanup() {
-		"${TOMCAT_BUILD_DIR}/bin/catalina.sh" stop || true
-	}
-	trap cleanup EXIT
-
-	echo "Starting Tomcat"
-	cd "${TOMCAT_BUILD_DIR}"
-	bin/catalina.sh start
-	set +e
-
-	echo "Waiting for Tomcat to respond at ${TOMCAT_URL:-http://localhost:8080/}"
-	if timeout "${STARTUP_TIMEOUT:-120}" bash -c "until curl -sf '${TOMCAT_URL:-http://localhost:8080/}' >/dev/null; do sleep 2; done"; then
-		echo "Tomcat startup verification PASSED"
-		exit 0
-	else
-		echo "Tomcat startup verification FAILED"
-		tail -n 200 logs/catalina.out || true
-		exit 1
-	fi
 fi

@@ -26,16 +26,19 @@ export jardir="${TEST_HOME}/jars/sane"
 export tstjardir="${TEST_HOME}/tools/java"
 export CLASSPATH="${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:${tstjardir}/junit.jar"
 
-TEST_TARGET="${1:-smoke}"
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
 set -e
 java -jar "${TEST_HOME}/jars/sane/derbyrun.jar" sysinfo
 set +e
 
-if [ "$TEST_TARGET" = "full" ]; then
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	:
+else
 	set -e
 	#Run all tests
-	ant -Dderby.tests.basePort=1690 -Dderby.system.durability=test -DderbyTesting.oldReleasePath=${TEST_HOME}/jars junit-all
+	ant -Dderby.tests.basePort=1690 -Dderby.system.durability=test -DderbyTesting.oldReleasePath=${TEST_HOME}/jars junit-all $TEST_OPTIONS
 	#Run only derbylang suite
 	#java -Dverbose=true -cp ${jardir}/derbyrun.jar:${jardir}/derbyTesting.jar:$tstjardir/junit.jar org.apache.derbyTesting.functionTests.harness.RunSuite #derbylang
 	set +e

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,31 +16,61 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the wildfly test
 echo_setup
 
-# Replace the following with the initial command lines that trigger execution of your test
-set -e
-echo "Building wildfly  using maven , by invoking build.sh" && \
-./build.sh
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
+set -e
+echo "Building wildfly using maven, by invoking build.sh"
+./build.sh
+set +e
 echo "Wildfly Build - Completed"
 
-echo "Running (ALL) wildfly tests :"
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	WILDFLY_HOME=$(find . -name 'standalone.sh' | head -1 | xargs -I{} dirname "{}" | xargs -I{} dirname "{}")
+	if [ -z "${WILDFLY_HOME}" ] || [ "${WILDFLY_HOME}" = "." ]; then
+		echo "ERROR: Could not locate WildFly home directory (standalone.sh not found after build)"
+		exit 1
+	fi
 
-echo "Setting user to blank"
-printenv
-export USER=""
-echo "Printing Environment Variables"
-printenv
+	cleanup() {
+		"${WILDFLY_HOME}/bin/jboss-cli.sh" --connect command=:shutdown || true
+	}
+	trap cleanup EXIT
 
-#jdk8,11
-excludeProject="-pl !:wildfly-ts-integ-elytron"
+	echo "Starting WildFly"
+	"${WILDFLY_HOME}/bin/standalone.sh" &
 
-if [ "$JDK_VERSION" == "11" ]; then
-	excludeProject+=",!:wildfly-ts-integ-basic"
+	echo "Waiting for WildFly to respond at ${WILDFLY_URL:-http://localhost:9990/}"
+	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf '${WILDFLY_URL:-http://localhost:9990/}' >/dev/null; do sleep 3; done"; then
+		echo "WildFly startup verification PASSED"
+		test_exit_code=0
+	else
+		echo "WildFly startup verification FAILED"
+		find "${WILDFLY_HOME}/standalone/log" -name '*.log' -exec tail -n 100 {} \; || true
+		test_exit_code=1
+	fi
+	exit $test_exit_code
+else
+	echo "Running (ALL) wildfly tests :"
+
+	echo "Setting user to blank"
+	printenv
+	export USER=""
+	echo "Printing Environment Variables"
+	printenv
+
+	#jdk8,11
+	excludeProject="-pl !:wildfly-ts-integ-elytron"
+
+	if [ "$JDK_VERSION" == "11" ]; then
+		excludeProject+=",!:wildfly-ts-integ-basic"
+	fi
+
+	if [ "$JDK_VERSION" == "17" ]; then
+		excludeProject="-pl !:wildfly-iiop-openjdk"
+	fi
+
+	./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests $TEST_OPTIONS
+	test_exit_code=$?
+	exit $test_exit_code
 fi
-
-if [ "$JDK_VERSION" == "17" ]; then
-	excludeProject="-pl !:wildfly-iiop-openjdk"
-fi
-
-./mvnw --batch-mode --fail-at-end $excludeProject install -DallTests
-set +e
