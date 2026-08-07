@@ -11,6 +11,7 @@ from exclude_openjdk import (
     check_exclusion_exists,
     add_exclusion_to_file,
     ExcludeCommandError,
+    find_insertion_index,
 )
 
 
@@ -258,6 +259,71 @@ test3.java https://bugs.openjdk.java.net/browse/JDK-9012 windows-x64
     def test_exclusion_different_platform(self):
         result = check_exclusion_exists(self.temp_file.name, 'test1.java', 'linux-x64')
         self.assertFalse(result)
+
+
+class TestFindInsertionIndex(TestCase):
+    """Test finding insertion index for new testcase exclusions."""
+    
+    def test_find_insertion_index_exact_dir_match(self):
+        lines = [
+            "#############################################################################\n",
+            "\n",
+            "# jdk_beans\n",
+            "\n",
+            "java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "java/beans/PropertyEditor/TestFontClass.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "\n",
+            "#############################################################################\n",
+            "\n",
+            "# jdk_awt\n"
+        ]
+        
+        idx = find_insertion_index(lines, "java/beans/PropertyEditor/TestColorClassValue.java")
+        # Should insert right after TestFontClass.java
+        self.assertEqual(idx, 6)
+
+    def test_find_insertion_index_parent_dir_match(self):
+        lines = [
+            "#############################################################################\n",
+            "\n",
+            "# jdk_beans\n",
+            "\n",
+            "java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "java/beans/XMLEncoder/Test.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "\n",
+            "#############################################################################\n"
+        ]
+        
+        idx = find_insertion_index(lines, "java/beans/Introspector/Test.java")
+        # Matches up to java/beans/, last match is Test.java
+        self.assertEqual(idx, 6)
+
+    def test_find_insertion_index_no_match(self):
+        lines = [
+            "#############################################################################\n",
+            "\n",
+            "# jdk_awt\n",
+            "\n",
+            "java/awt/Component/Test.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n"
+        ]
+        
+        idx = find_insertion_index(lines, "java/beans/PropertyEditor/TestColorClassValue.java")
+        # No match, so it should be at the end of the file
+        self.assertEqual(idx, 5)
+
+    def test_find_insertion_index_match_commented_out(self):
+        lines = [
+            "#############################################################################\n",
+            "\n",
+            "# jdk_beans\n",
+            "\n",
+            "# java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "\n"
+        ]
+        
+        idx = find_insertion_index(lines, "java/beans/PropertyEditor/TestColorClassValue.java")
+        # Matches the commented out testcase
+        self.assertEqual(idx, 5)
 
 
 class TestAddExclusionToFile(TestCase):
