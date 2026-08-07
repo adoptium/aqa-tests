@@ -631,4 +631,4 @@ Example:
 
 ```/cherry-pick v0.9.9-release```
 
-Only the original PR author, reviewers, or the user who merged the PR can trigger `/cherry-pick`.
+Only the original PR author or members of the `adoptium-aqavit-committers` team can trigger `/cherry-pick`.

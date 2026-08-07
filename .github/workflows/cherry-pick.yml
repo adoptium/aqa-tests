@@ -37,20 +37,47 @@ jobs:
         run: |
           PR_DATA=$(gh pr view "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
-            --json author,reviews,mergedBy)
+            --json author)
 
-          if ! echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '
-            .author.login == $user or
-            (.mergedBy.login // "") == $user or
-            ([ .reviews[].author.login ] | index($user)) != null
-          ' > /dev/null; then
+          if echo "$PR_DATA" | jq -e --arg user "$COMMENTER" '.author.login == $user' > /dev/null; then
+            echo "✅ Commenter is the PR author"
+            exit 0
+          fi
+
+          TEAM_MEMBERSHIP_RESPONSE=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/orgs/adoptium/teams/adoptium-aqavit-committers/memberships/$COMMENTER" 2>&1)
+          API_STATUS=$?
+
+          if [ "$API_STATUS" -eq 0 ]; then
+            TEAM_STATE=$(echo "$TEAM_MEMBERSHIP_RESPONSE" | jq -r '.state // "none"')
+          elif echo "$TEAM_MEMBERSHIP_RESPONSE" | grep -qi "not found"; then
+            TEAM_STATE="none"
+          else
             gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author, reviewers, or the person who merged the PR can use this command."
+              -f body="@${COMMENTER} ⛔ Could not verify permissions. Please contact a repository administrator if this persists."
             exit 1
           fi
+
+          case "$TEAM_STATE" in
+          active)
+            echo "✅ Commenter is in adoptium-aqavit-committers"
+            exit 0
+            ;;
+          *)
+            echo "ℹ️ Commenter is not in adoptium-aqavit-committers"
+            ;;
+          esac
+
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger a cherry-pick. Only the PR author or members of \`adoptium-aqavit-committers\` can use this command."
+          exit 1
 
       - name: Parse command
         id: parse
