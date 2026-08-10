@@ -831,7 +831,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 // Trigger remote job
                 def handle = triggerRemoteJob abortTriggeredJob: true,
                     blockBuildUntilComplete: true,
-                    pollInterval: 600,
+                    pollInterval: 240,
                     job: 'AQA_Test_Pipeline',
                     parameters: MapParameters(parameters: paramList),
                     remoteJenkinsName: 'temurin-compliance',
@@ -1007,7 +1007,7 @@ def remoteTriggerTemurinJCKDirect() {
             // Trigger remote job
             def handle = triggerRemoteJob abortTriggeredJob: true,
                 blockBuildUntilComplete: true,
-                pollInterval: 600,
+                pollInterval: 240,
                 job: 'AQA_Test_Pipeline',
                 parameters: MapParameters(parameters: paramList),
                 remoteJenkinsName: 'temurin-compliance',
