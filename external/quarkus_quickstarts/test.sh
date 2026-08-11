@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,12 +28,49 @@ if [ "$JDK_VERSION" == "17" ]; then
 fi
 
 export MAVEN_OPTS="-Xmx1g"
-echo "Compile and run quarkus_quickstarts tests"
-mvn --batch-mode $excludeProject clean install
-test_exit_code=$?
-echo "Build quarkus_quickstarts completed"
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
-exit $test_exit_code
+set -e
+echo "Building quarkus_quickstarts"
+mvn --batch-mode $excludeProject compile -DskipTests
+set +e
+echo "Quarkus quickstarts build completed"
+
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	echo "Building getting-started quickstart"
+	mvn --batch-mode -pl getting-started package -DskipTests
+	if [ $? -ne 0 ]; then
+		echo "ERROR: getting-started package step failed"
+		exit 1
+	fi
+
+	probe_pid=""
+	cleanup() {
+		kill "${probe_pid}" 2>/dev/null || true
+	}
+	trap cleanup EXIT
+
+	echo "Starting getting-started quickstart"
+	java -jar getting-started/target/quarkus-app/quarkus-run.jar &
+	probe_pid=$!
+
+	echo "Waiting for getting-started to respond at http://localhost:8080/hello"
+	if timeout "${STARTUP_TIMEOUT:-180}" bash -c "until curl -sf 'http://localhost:8080/hello' >/dev/null; do sleep 2; done"; then
+		echo "Quarkus quickstarts startup verification PASSED"
+		test_exit_code=0
+	else
+		echo "Quarkus quickstarts startup verification FAILED"
+		test_exit_code=1
+	fi
+	exit $test_exit_code
+else
+	echo "Compile and run quarkus_quickstarts tests"
+	mvn --batch-mode $excludeProject clean install $TEST_OPTIONS
+	test_exit_code=$?
+	echo "Build quarkus_quickstarts completed"
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	exit $test_exit_code
+fi
