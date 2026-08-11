@@ -90,21 +90,21 @@ class BaseHandler(abc.ABC):
         timeout_s = 30
         is_github_api = url.startswith("https://api.github.com/")
         is_github_web = url.startswith("https://github.com/")
+        auth = None
+        if all([self.user, self.token]):
+            auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
+
+        headers = None
+        if is_github_api:
+            headers = self.PARAMS
+
+        adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
+        session: requests.Session = requests.Session()
+        session.mount("https://", adapter)
         if is_github_api or is_github_web:
-            auth = None
-            if all([self.user, self.token]):
-                auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
-
-            headers = None
-            if is_github_api:
-                headers = self.PARAMS
-
-            adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
-            session: requests.Session = requests.Session()
-            session.mount("https://", adapter)
             resp = session.get(url, params=headers, auth=auth, timeout=timeout_s)
         else:
-            resp = requests.get(url, timeout=timeout_s)
+            resp = session.get(url, params=headers, timeout=timeout_s)
         resp.raise_for_status()
         return resp
 
