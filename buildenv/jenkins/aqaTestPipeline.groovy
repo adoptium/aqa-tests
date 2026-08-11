@@ -505,7 +505,7 @@ def generateJobs(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBui
             def VENDOR_TEST_REPOS = params.VENDOR_TEST_REPOS ?: (buildConfig.VENDOR_TEST_REPOS ?: '')
             def VENDOR_TEST_BRANCHES = params.VENDOR_TEST_BRANCHES ?: (buildConfig.VENDOR_TEST_BRANCHES ?: '')
             def VENDOR_TEST_DIRS = params.VENDOR_TEST_DIRS ?: (buildConfig.VENDOR_TEST_DIRS ?: '')
-            int rerunIterations = buildConfig.RERUN_ITERATIONS ? buildConfig.RERUN_ITERATIONS.toString().toInteger() : 0
+            int rerunIterations = (params.RERUN_ITERATIONS ?: (buildConfig.RERUN_ITERATIONS ?: '0')).toString().toInteger()
             def buildList = buildConfig.BUILD_LIST ?: ""
             def testLabel = buildConfig.LABEL ?: ""
             def additionalTestLabel = buildConfig.LABEL_ADDITION ?: ""
