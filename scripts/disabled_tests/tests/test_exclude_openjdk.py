@@ -325,6 +325,21 @@ class TestFindInsertionIndex(TestCase):
         # Matches the commented out testcase
         self.assertEqual(idx, 5)
 
+    def test_find_insertion_index_match_commented_no_space(self):
+        """Test that #java/... (no space after #) is also recognised as a commented-out testcase."""
+        lines = [
+            "#############################################################################\n",
+            "\n",
+            "# jdk_beans\n",
+            "\n",
+            "#java/beans/PropertyEditor/TestColorClass.java https://bugs.openjdk.java.net/browse/JDK-1 macosx-all\n",
+            "\n"
+        ]
+
+        idx = find_insertion_index(lines, "java/beans/PropertyEditor/TestColorClassValue.java")
+        # Should match the #java/... entry (no space), index 5
+        self.assertEqual(idx, 5)
+
 
 class TestAddExclusionToFile(TestCase):
     """Test adding exclusion to file."""

@@ -15,31 +15,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENTER: ${{ github.event.comment.user.login }}
-          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
         run: |
-          # Allow if commenter is the issue author
-          if [ "$COMMENTER" = "$ISSUE_AUTHOR" ]; then
-            echo "✅ Commenter is the issue author"
-            exit 0
-          fi
-          
-          # Allow if commenter is a project committer (write/admin permission)
+          # Allow only AQAvit committers (write/admin permission)
           PERMISSION=$(gh api \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/collaborators/$COMMENTER/permission" \
             --jq '.permission' 2>/dev/null || echo "none")
           
           if [ "$PERMISSION" = "admin" ] || [ "$PERMISSION" = "write" ]; then
-            echo "✅ Commenter is a project committer with $PERMISSION permission"
+            echo "✅ Commenter is an AQAvit committer with $PERMISSION permission"
             exit 0
           fi
           
-          # Deny if neither condition is met
+          # Deny if not a committer
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="@${COMMENTER} ⛔ You don't have permission to trigger test exclusions. Only the issue author or project committers can use this command."
+            -f body="@${COMMENTER} ⛔ You don't have permission to trigger test exclusions. Only AQAvit committers can use this command."
           exit 1
           
       - name: Parse exclude command
@@ -170,12 +163,11 @@ jobs:
         if: success() && steps.create-pr.outputs.pull-request-number == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TARGETS: ${{ steps.parse.outputs.targets }}
-          TESTCASE: ${{ steps.parse.outputs.testcase }}
+          TESTCASES: ${{ steps.parse.outputs.testcases }}
           COMMENTER: ${{ steps.parse.outputs.commenter }}
         run: |
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f "body=@${COMMENTER} ℹ️ No changes were made — \`${TESTCASE}\` may already be excluded for targets: \`${TARGETS}\`"
+            -f "body=@${COMMENTER} ℹ️ No changes were made — \`${TESTCASES}\` may already be excluded."

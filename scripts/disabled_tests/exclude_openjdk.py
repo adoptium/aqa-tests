@@ -263,10 +263,13 @@ def find_insertion_index(lines: List[str], testcase: str) -> int:
                 continue
                 
             tc = None
-            if not line_str.startswith('#'):
+            if line_str.startswith('#'):
+                # Handle both `#java/...` and `# java/...` commented-out entries
+                uncommented = line_str[1:].lstrip()
+                if uncommented:
+                    tc = uncommented.split()[0]
+            else:
                 tc = line_str.split()[0]
-            elif line_str.startswith('# ') and len(line_str.split()) >= 2:
-                tc = line_str.split()[1]
                 
             if tc and tc.startswith(prefix):
                 last_match_idx = i
