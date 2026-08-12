@@ -363,11 +363,11 @@ def _handle_completed_future(future, log_prefix, url, url_to_issues) -> List[mod
     except Exception as e:
         if "Unauthorized for url" in str(e):
             # Ignore "Unauthorized for url" errors as this is currently permitted.
-            LOG.debug(f"{log_prefix} Ignoring access denial when handling {url!r}: {e}")
+            LOG.warning(f"{log_prefix} Ignoring access denial when handling {url!r}: {e}")
         elif "too many 403 error responses" in str(e):
             # Ignoring intermittent 403 return codes as "forbidden" errors are to be 
             # expected when making multiple, rapid calls against the same api.
-            LOG.debug(f"{log_prefix} Ignoring 403 error response while handling {url!r}: {e}")
+            LOG.warning(f"{log_prefix} Ignoring 403 error response while handling {url!r}: {e}")
         else:
             LOG.error(f"{log_prefix} Uncaught exception for {url!r}: {e}")
             return_code = 1
