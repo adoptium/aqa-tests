@@ -63,7 +63,7 @@ JCK has four test targets with different parallelization strategies:
 - `sanity.jck` - Serial execution (1 machine)
 - `extended.jck` - Parallel on primary platforms (x86-64_linux, x86-64_windows, x86-64_mac)
 - `special.jck` - Serial execution (1 machine)
-- `dev.jck` - Serial execution, uses explicit LABEL with interactive role on Windows
+- `dev.jck` - Serial execution, requires interactive label on Windows instead of normal test label
 
 ## Configuration Sections
 
