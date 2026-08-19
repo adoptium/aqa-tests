@@ -106,7 +106,7 @@ Platform and target-specific overrides:
     },
     "dev.jck": {
         "x86-64_windows": {
-            "LABEL": "sw.os.windows&&hw.arch.x86-64&&ci.role.test.interactive"
+            "LABEL": "sw.os.windows&&hw.arch.x86&&ci.role.test.interactive"
         },
         "aarch64_windows": {
             "LABEL": "sw.os.windows&&hw.arch.aarch64&&ci.role.test.interactive"
