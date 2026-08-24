@@ -310,15 +310,14 @@ def resolvePlatformVars(PLATFORM) {
     else if (params.VARIANT == "ibm")    { jdk_impl = params.VARIANT }
     else if (params.VARIANT == "temurin"){ short_name = "hs" }
 
-    def download_url      = params.CUSTOMIZED_SDK_URL ?: ""
-    def sdk_resource_value = SDK_RESOURCE
+    def download_url = params.CUSTOMIZED_SDK_URL ?: ""
     if (SDK_RESOURCE == "customized" && params.TOP_LEVEL_SDK_URL) {
         def url = params.TOP_LEVEL_SDK_URL.endsWith("/") ? params.TOP_LEVEL_SDK_URL : "${params.TOP_LEVEL_SDK_URL}/"
         download_url = "${url}artifact/target/${os}/${arch}/${params.VARIANT}/${filter}/*zip*/${params.VARIANT}.zip"
     }
     echo "download_url: ${download_url}"
     return [os: os, arch: arch, filter: filter, short_name: short_name, jdk_impl: jdk_impl,
-            download_url: download_url, sdk_resource_value: sdk_resource_value]
+            download_url: download_url]
 }
 
 // Fire the downstream job and collect TAP artifacts
@@ -371,7 +370,7 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
             updateBuildResult(downstreamJobResult)
         }
     } else {
-        println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, pelase set AUTO_AQA_GEN = true"
+        println "Requested test job that does not exist or is disabled: ${TEST_JOB_NAME}. \n To generate the job, please set AUTO_AQA_GEN = true"
         updateBuildResult("FAILURE")
     }
 }
@@ -381,10 +380,9 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
 // All params are forwarded to the child job as-is; DEFAULTS are used only when a param is absent.
 def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
     def DEFAULTS = [
-        PARALLEL               : "Dynamic",
-        NUM_MACHINES           : "",
         DYNAMIC_COMPILE        : false,
         KEEP_REPORTDIR         : false,
+        RERUN_FAILURE          : false,
         RERUN_ITERATIONS       : "0",
         USE_TESTENV_PROPERTIES : false,
     ]
@@ -416,36 +414,29 @@ def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets)
                                   "JDK_VERSIONS", "VARIANT", "PIPELINE_DISPLAY_NAME"]) {
                     // do not pass to child jobs
                 } else if (param.key == "SDK_RESOURCE") {
-                    childParams << string(name: param.key, value: pv.sdk_resource_value)
+                    childParams << string(name: param.key, value: SDK_RESOURCE)
                 } else if (param.key == "CUSTOMIZED_SDK_URL") {
                     childParams << string(name: param.key, value: pv.download_url)
-                } else if (param.key == "PARALLEL") {
-                    childParams << string(name: param.key, value: params.PARALLEL ?: DEFAULTS.PARALLEL)
-                } else if (param.key == "NUM_MACHINES") {
-                    childParams << string(name: param.key, value: params.NUM_MACHINES ?: DEFAULTS.NUM_MACHINES)
-                } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
-                    childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
-                } else if (param.key == "TIME_LIMIT") {
-                    childParams << string(name: param.key, value: TIME_LIMIT.toString())
-                } else if (param.key == "USE_TESTENV_PROPERTIES") {
-                    childParams << booleanParam(name: param.key, value: params.USE_TESTENV_PROPERTIES ? params.USE_TESTENV_PROPERTIES.toBoolean() : DEFAULTS.USE_TESTENV_PROPERTIES)
                 } else {
                     def value = param.value.toString()
                     childParams << (value in ["true", "false"] ? booleanParam(name: param.key, value: value.toBoolean()) : string(name: param.key, value: value))
                 }
             }
-            // Always-present params not covered by the params.each loop
-            childParams << booleanParam(name: "DYNAMIC_COMPILE",  value: (params.DYNAMIC_COMPILE  ?: DEFAULTS.DYNAMIC_COMPILE).toBoolean())
-            childParams << booleanParam(name: "KEEP_REPORTDIR",   value: (params.KEEP_REPORTDIR   ?: DEFAULTS.KEEP_REPORTDIR).toBoolean())
-            childParams << booleanParam(name: "GENERATE_JOBS",    value: AUTO_AQA_GEN.toBoolean())
-            childParams << string(name: "JDK_IMPL",               value: pv.jdk_impl)
-            childParams << string(name: "JDK_VERSION",            value: jobJdkVersion)
-            childParams << string(name: "PLATFORM",               value: PLATFORM)
-            childParams << string(name: "RERUN_ITERATIONS",       value: (params.RERUN_ITERATIONS ?: DEFAULTS.RERUN_ITERATIONS).toString())
-            childParams << string(name: "TEST_FLAG",              value: jobTestFlag)
-            childParams << string(name: "VENDOR_TEST_BRANCHES",   value: params.VENDOR_TEST_BRANCHES ?: '')
-            childParams << string(name: "VENDOR_TEST_DIRS",       value: params.VENDOR_TEST_DIRS     ?: '')
-            childParams << string(name: "VENDOR_TEST_REPOS",      value: params.VENDOR_TEST_REPOS    ?: '')
+            // Add params that may not be defined on the private Jenkins job — ensure child always receives them
+            if (!params.containsKey("DYNAMIC_COMPILE"))        childParams << booleanParam(name: "DYNAMIC_COMPILE",        value: DEFAULTS.DYNAMIC_COMPILE)
+            if (!params.containsKey("KEEP_REPORTDIR"))         childParams << booleanParam(name: "KEEP_REPORTDIR",         value: DEFAULTS.KEEP_REPORTDIR)
+            if (!params.containsKey("RERUN_FAILURE"))          childParams << booleanParam(name: "RERUN_FAILURE",          value: DEFAULTS.RERUN_FAILURE)
+            if (!params.containsKey("USE_TESTENV_PROPERTIES")) childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: DEFAULTS.USE_TESTENV_PROPERTIES)
+            if (!params.containsKey("RERUN_ITERATIONS"))       childParams << string(name: "RERUN_ITERATIONS",             value: DEFAULTS.RERUN_ITERATIONS)
+            if (!params.containsKey("VENDOR_TEST_BRANCHES"))   childParams << string(name: "VENDOR_TEST_BRANCHES",         value: '')
+            if (!params.containsKey("VENDOR_TEST_DIRS"))       childParams << string(name: "VENDOR_TEST_DIRS",             value: '')
+            if (!params.containsKey("VENDOR_TEST_REPOS"))      childParams << string(name: "VENDOR_TEST_REPOS",            value: '')
+            // Always override — computed values that are never pipeline params
+            childParams << booleanParam(name: "GENERATE_JOBS", value: AUTO_AQA_GEN.toBoolean())
+            childParams << string(name: "JDK_IMPL",            value: pv.jdk_impl)
+            childParams << string(name: "JDK_VERSION",         value: jobJdkVersion)
+            childParams << string(name: "PLATFORM",            value: PLATFORM)
+            childParams << string(name: "TEST_FLAG",           value: jobTestFlag)
 
             triggerChildJob(TEST_JOB_NAME, childParams)
         }
@@ -592,36 +583,37 @@ def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets,
                                   "JDK_VERSIONS", "VARIANT", "PIPELINE_DISPLAY_NAME"]) {
                     // do not pass to child jobs
                 } else if (param.key == "SDK_RESOURCE") {
-                    childParams << string(name: param.key, value: pv.sdk_resource_value)
+                    childParams << string(name: param.key, value: SDK_RESOURCE)
                 } else if (param.key == "CUSTOMIZED_SDK_URL") {
                     childParams << string(name: param.key, value: pv.download_url)
                 } else if (param.key == "PARALLEL") {
-                    childParams << string(name: param.key, value: buildConfig.PARALLEL ?: "Dynamic")
+                    childParams << string(name: param.key, value: buildConfig.PARALLEL ?: PARALLEL)
                 } else if (param.key == "NUM_MACHINES") {
-                    childParams << string(name: param.key, value: buildConfig.NUM_MACHINES ?: "")
+                    childParams << string(name: param.key, value: buildConfig.NUM_MACHINES ?: params.NUM_MACHINES ?: "")
                 } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
                     childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
                 } else if (param.key == "TIME_LIMIT") {
                     childParams << string(name: param.key, value: TIME_LIMIT.toString())
-                } else if (param.key == "USE_TESTENV_PROPERTIES") {
-                    def useTestEnv = params.USE_TESTENV_PROPERTIES ? true : (buildConfig.USE_TESTENV_PROPERTIES != null ? buildConfig.USE_TESTENV_PROPERTIES.toBoolean() : false)
-                    childParams << booleanParam(name: param.key, value: useTestEnv)
                 } else {
                     def value = param.value.toString()
                     childParams << (value in ["true", "false"] ? booleanParam(name: param.key, value: value.toBoolean()) : string(name: param.key, value: value))
                 }
             }
+            // buildConfig-driven values — always set explicitly (config is authoritative)
             childParams << booleanParam(name: "DYNAMIC_COMPILE", value: DYNAMIC_COMPILE.toBoolean())
-            childParams << booleanParam(name: "GENERATE_JOBS",   value: AUTO_AQA_GEN.toBoolean())
             childParams << booleanParam(name: "KEEP_REPORTDIR",  value: keep_reportdir.toBoolean())
+            // Computed values — never pipeline params, always safe to set explicitly
+            childParams << booleanParam(name: "GENERATE_JOBS",   value: AUTO_AQA_GEN.toBoolean())
             childParams << string(name: "JDK_IMPL",              value: pv.jdk_impl)
             childParams << string(name: "JDK_VERSION",           value: jobJdkVersion)
             childParams << string(name: "PLATFORM",              value: PLATFORM)
-            childParams << string(name: "RERUN_ITERATIONS",      value: rerunIterations.toString())
             childParams << string(name: "TEST_FLAG",             value: jobTestFlag)
-            childParams << string(name: "VENDOR_TEST_BRANCHES",  value: VENDOR_TEST_BRANCHES)
-            childParams << string(name: "VENDOR_TEST_DIRS",      value: VENDOR_TEST_DIRS)
-            childParams << string(name: "VENDOR_TEST_REPOS",     value: VENDOR_TEST_REPOS)
+            // only add if not already passed through the loop — avoids duplicates
+            if (!params.containsKey("USE_TESTENV_PROPERTIES")) childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: buildConfig.USE_TESTENV_PROPERTIES != null ? buildConfig.USE_TESTENV_PROPERTIES.toBoolean() : false)
+            if (!params.containsKey("RERUN_ITERATIONS"))       childParams << string(name: "RERUN_ITERATIONS",             value: rerunIterations.toString())
+            if (!params.containsKey("VENDOR_TEST_BRANCHES"))   childParams << string(name: "VENDOR_TEST_BRANCHES",         value: VENDOR_TEST_BRANCHES)
+            if (!params.containsKey("VENDOR_TEST_DIRS"))       childParams << string(name: "VENDOR_TEST_DIRS",             value: VENDOR_TEST_DIRS)
+            if (!params.containsKey("VENDOR_TEST_REPOS"))      childParams << string(name: "VENDOR_TEST_REPOS",            value: VENDOR_TEST_REPOS)
             if (buildConfig.JDK_REPO) {
                 childParams << string(name: "JDK_REPO",   value: buildConfig.JDK_REPO.toString().replace('${JDK_VERSION}', jobJdkVersion))
             }
@@ -759,7 +751,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def rerunFailure = config.RERUN_FAILURE ? "true" : "false"
                 // SETUP_JCK_RUN is true for release builds
                 def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
-                def autoAqaGen = config.AUTO_AQA_GEN ? "true" : "false"
+                def autoAqaGen = AUTO_AQA_GEN ? "true" : "false"
                 
                 // Build display name
                 def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} : jdk${jobJdkVersion} : ${platform} : ${target}"
