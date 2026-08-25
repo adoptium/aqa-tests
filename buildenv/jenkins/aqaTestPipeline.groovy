@@ -791,7 +791,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 def rerunFailure = config.RERUN_FAILURE ? "true" : "false"
                 // SETUP_JCK_RUN is true for release builds
                 def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
-                def autoAqaGen = config.AUTO_AQA_GEN ? "true" : "false"
+                def autoAqaGen = AUTO_AQA_GEN ? "true" : "false"
                 
                 // Build display name
                 def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} : jdk${jobJdkVersion} : ${platform} : ${target}"
