@@ -603,6 +603,11 @@ def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets,
             childParams << booleanParam(name: "GENERATE_JOBS",         value: AUTO_AQA_GEN.toBoolean())
             childParams << string(name: "ADOPTOPENJDK_REPO",   value: params.ADOPTOPENJDK_REPO   ?: "https://github.com/adoptium/aqa-tests.git")
             childParams << string(name: "ADOPTOPENJDK_BRANCH", value: params.ADOPTOPENJDK_BRANCH ?: "master")
+            // Credential IDs — only present on some Jenkins instances; pass through only when non-empty
+            ["DOCKER_REGISTRY_URL_CREDENTIAL_ID", "BASE_DOCKER_REGISTRY_CREDENTIAL_ID",
+             "SSH_AGENT_CREDENTIAL", "USER_CREDENTIALS_ID", "CUSTOMIZED_SDK_URL_CREDENTIAL_ID", "DOCKER_REGISTRY_URL", "TRSS_URL"].each { credKey ->
+                if (params[credKey]) childParams << string(name: credKey, value: params[credKey])
+            }
 
             triggerChildJob(TEST_JOB_NAME, childParams)
         }
