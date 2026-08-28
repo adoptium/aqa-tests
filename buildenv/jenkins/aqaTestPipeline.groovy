@@ -377,16 +377,8 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
 
 // Params pass-through — used for manual/Grinder runs and private relay.
 // Pipeline params are authoritative. No JSON config is consulted.
-// All params are forwarded to the child job as-is; DEFAULTS are used only when a param is absent.
+// All params are forwarded to the child job as-is; empty params are skipped.
 def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
-    def DEFAULTS = [
-        DYNAMIC_COMPILE        : false,
-        KEEP_REPORTDIR         : false,
-        RERUN_FAILURE          : false,
-        RERUN_ITERATIONS       : "0",
-        USE_TESTENV_PROPERTIES : false,
-    ]
-
     if (jobTargets instanceof String) {
         jobTargets = jobTargets.replace("defaultFipsTestTargets", "${defaultFipsTestTargets}")
         jobTargets = jobTargets.replace("defaultFips140_2TestTargets", "${defaultFips140_2TestTargets}")
@@ -407,7 +399,7 @@ def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets)
                 : "Test_openjdk${jobJdkVersion}_${pv.short_name}_${TARGET}_${PLATFORM}${buildTestFlagSuffix(jobTestFlag)}"
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
 
-            // Build childParams purely from pipeline params — params win, DEFAULTS are last resort
+            // Build childParams purely from pipeline params — empty params are skipped
             def childParams = []
             params.each { param ->
                 if (param.key in ["PLATFORMS", "TARGETS", "TOP_LEVEL_SDK_URL", "AUTO_AQA_GEN",
@@ -421,23 +413,16 @@ def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets)
                     childParams << string(name: param.key, value: TIME_LIMIT.toString())
                 } else {
                     def value = param.value.toString()
+                    if (value == "") return  // skip empty params — child job uses its own default
                     childParams << (value in ["true", "false"] ? booleanParam(name: param.key, value: value.toBoolean()) : string(name: param.key, value: value))
                 }
             }
-            // Add params that may not be defined on the private Jenkins job — ensure child always receives them
-            if (!params.containsKey("DYNAMIC_COMPILE"))        childParams << booleanParam(name: "DYNAMIC_COMPILE",        value: DEFAULTS.DYNAMIC_COMPILE)
-            if (!params.containsKey("KEEP_REPORTDIR"))         childParams << booleanParam(name: "KEEP_REPORTDIR",         value: DEFAULTS.KEEP_REPORTDIR)
-            if (!params.containsKey("RERUN_FAILURE"))          childParams << booleanParam(name: "RERUN_FAILURE",          value: DEFAULTS.RERUN_FAILURE)
-            if (!params.containsKey("USE_TESTENV_PROPERTIES")) childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: DEFAULTS.USE_TESTENV_PROPERTIES)
-            if (!params.containsKey("RERUN_ITERATIONS"))       childParams << string(name: "RERUN_ITERATIONS",             value: DEFAULTS.RERUN_ITERATIONS)
-            if (!params.containsKey("VENDOR_TEST_BRANCHES"))   childParams << string(name: "VENDOR_TEST_BRANCHES",         value: '')
-            if (!params.containsKey("VENDOR_TEST_DIRS"))       childParams << string(name: "VENDOR_TEST_DIRS",             value: '')
-            if (!params.containsKey("VENDOR_TEST_REPOS"))      childParams << string(name: "VENDOR_TEST_REPOS",            value: '')
             // Always override — computed values that are never pipeline params
             childParams << booleanParam(name: "GENERATE_JOBS", value: AUTO_AQA_GEN.toBoolean())
             childParams << string(name: "JDK_IMPL",            value: pv.jdk_impl)
             childParams << string(name: "JDK_VERSION",         value: jobJdkVersion)
             childParams << string(name: "PLATFORM",            value: PLATFORM)
+            childParams << string(name: "TARGET",            value: TARGET)
             childParams << string(name: "TEST_FLAG",           value: jobTestFlag)
 
             triggerChildJob(TEST_JOB_NAME, childParams)
@@ -599,6 +584,7 @@ def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets,
             childParams << string(name: "JDK_VERSION",                 value: jobJdkVersion)
             childParams << string(name: "JDK_IMPL",                    value: pv.jdk_impl)
             childParams << string(name: "PLATFORM",                    value: PLATFORM)
+            childParams << string(name: "TARGET",                      value: TARGET)
             childParams << string(name: "TEST_FLAG",                   value: jobTestFlag)
             childParams << booleanParam(name: "GENERATE_JOBS",         value: AUTO_AQA_GEN.toBoolean())
             childParams << string(name: "ADOPTOPENJDK_REPO",   value: params.ADOPTOPENJDK_REPO   ?: "https://github.com/adoptium/aqa-tests.git")
