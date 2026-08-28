@@ -20,7 +20,7 @@ def MODE = params.MODE ? params.MODE : "ENTRYPOINT"
 @Field Boolean LIGHT_WEIGHT_CHECKOUT
 
 SDK_RESOURCE = params.SDK_RESOURCE ? params.SDK_RESOURCE : "releases"
-TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10
+TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT : 10 
 AUTO_AQA_GEN = params.AUTO_AQA_GEN ? params.AUTO_AQA_GEN.toBoolean() : false
 LIGHT_WEIGHT_CHECKOUT = params.LIGHT_WEIGHT_CHECKOUT != null ? params.LIGHT_WEIGHT_CHECKOUT.toBoolean() : true
 
@@ -375,7 +375,7 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
     }
 }
 
-// Scenario 3: params pass-through — used for manual/Grinder runs and private relay.
+// Params pass-through — used for manual/Grinder runs and private relay.
 // Pipeline params are authoritative. No JSON config is consulted.
 // All params are forwarded to the child job as-is; DEFAULTS are used only when a param is absent.
 def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets) {
@@ -417,6 +417,8 @@ def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets)
                     childParams << string(name: param.key, value: SDK_RESOURCE)
                 } else if (param.key == "CUSTOMIZED_SDK_URL") {
                     childParams << string(name: param.key, value: pv.download_url)
+                } else if (param.key == "TIME_LIMIT") {
+                    childParams << string(name: param.key, value: TIME_LIMIT.toString())
                 } else {
                     def value = param.value.toString()
                     childParams << (value in ["true", "false"] ? booleanParam(name: param.key, value: value.toBoolean()) : string(name: param.key, value: value))
@@ -443,7 +445,7 @@ def generateJobsFromParams(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets)
     }
 }
 
-// Scenario 1: config-driven — used for release/nightly/weekly builds.
+// Config-driven — used for release/nightly/weekly builds.
 // JSON buildConfig is authoritative. Pipeline params are not consulted for config values.
 def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets, globalBuildConfig = [:], targetSpecificConfig = [:], platformSpecificConfig = [:], platformAdditionalTestLabels = [:], platformAdditionalTestParams = [:]) {
     if (jobTargets instanceof String) {
@@ -542,22 +544,11 @@ def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets,
             echo "TEST_JOB_NAME: ${TEST_JOB_NAME}"
             echo "Applied buildConfig: ${buildConfig}"
 
-            // Resolve all effective values from buildConfig; DEFAULTS are last resort
-            def keep_reportdir  = buildConfig.KEEP_REPORTDIR  ? buildConfig.KEEP_REPORTDIR.toBoolean()  : false
-            def DYNAMIC_COMPILE = buildConfig.DYNAMIC_COMPILE ? buildConfig.DYNAMIC_COMPILE.toBoolean() : false
-            def VENDOR_TEST_REPOS    = params.VENDOR_TEST_REPOS    ?: (buildConfig.VENDOR_TEST_REPOS    ?: '')
-            def VENDOR_TEST_BRANCHES = params.VENDOR_TEST_BRANCHES ?: (buildConfig.VENDOR_TEST_BRANCHES ?: '')
-            def VENDOR_TEST_DIRS     = params.VENDOR_TEST_DIRS     ?: (buildConfig.VENDOR_TEST_DIRS     ?: '')
-            int rerunIterations = (params.RERUN_ITERATIONS ?: (buildConfig.RERUN_ITERATIONS ?: '0')).toString().toInteger()
-            def buildList           = buildConfig.BUILD_LIST      ?: ""
-            def testLabel           = buildConfig.LABEL           ?: ""
-            def additionalTestLabel = buildConfig.LABEL_ADDITION  ?: ""
-
             // Apply variant-specific logic for special cases not covered by config
             if (params.VARIANT == "openj9" || params.VARIANT == "ibm") {
                 if (TARGET.contains('functional') && !jobTestFlag.contains("FIPS")) {
                     if (params.ADOPTOPENJDK_REPO && params.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
-                        VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
+                        buildConfig.VENDOR_TEST_BRANCHES = params.ADOPTOPENJDK_BRANCH ?: 'master'
                     }
                 }
             }
@@ -576,63 +567,42 @@ def generateJobsWithConfig(jobJdkVersion, jobTestFlag, jobPlatforms, jobTargets,
                 ], propagate: true
             }
 
-            // Assemble childParams — config is authoritative for all overridable values
+            // Build childParams by iterating buildConfig — skip non-param keys and nested maps,
+            // apply type coercion, then append computed/pipeline-sourced params that are not in config.
+            // Keys that need special handling are intercepted before the generic coercion.
+            def CONFIG_META_KEYS = ["ADDITIONAL_TEST_PARAMS"] as Set  // nested Maps handled separately below
             def childParams = []
-            params.each { param ->
-                if (param.key in ["PLATFORMS", "TARGETS", "TOP_LEVEL_SDK_URL", "AUTO_AQA_GEN",
-                                  "JDK_VERSIONS", "VARIANT", "PIPELINE_DISPLAY_NAME"]) {
-                    // do not pass to child jobs
-                } else if (param.key == "SDK_RESOURCE") {
-                    childParams << string(name: param.key, value: SDK_RESOURCE)
-                } else if (param.key == "CUSTOMIZED_SDK_URL") {
-                    childParams << string(name: param.key, value: pv.download_url)
-                } else if (param.key == "PARALLEL") {
-                    childParams << string(name: param.key, value: buildConfig.PARALLEL ?: PARALLEL)
-                } else if (param.key == "NUM_MACHINES") {
-                    childParams << string(name: param.key, value: buildConfig.NUM_MACHINES ?: params.NUM_MACHINES ?: "")
-                } else if (param.key == "LIGHT_WEIGHT_CHECKOUT") {
-                    childParams << booleanParam(name: param.key, value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
-                } else if (param.key == "TIME_LIMIT") {
-                    childParams << string(name: param.key, value: TIME_LIMIT.toString())
+            buildConfig.each { key, value ->
+                if (value == null || value == "" || CONFIG_META_KEYS.contains(key)) return
+                if (key in ["JDK_REPO", "JDK_BRANCH"]) {
+                    // substitute ${JDK_VERSION} placeholder
+                    childParams << string(name: key, value: value.toString().replace('${JDK_VERSION}', jobJdkVersion))
+                } else if (value instanceof Boolean) {
+                    childParams << booleanParam(name: key, value: value)
                 } else {
-                    def value = param.value.toString()
-                    childParams << (value in ["true", "false"] ? booleanParam(name: param.key, value: value.toBoolean()) : string(name: param.key, value: value))
+                    childParams << string(name: key, value: value.toString())
                 }
             }
-            // buildConfig-driven values — always set explicitly (config is authoritative)
-            childParams << booleanParam(name: "DYNAMIC_COMPILE", value: DYNAMIC_COMPILE.toBoolean())
-            childParams << booleanParam(name: "KEEP_REPORTDIR",  value: keep_reportdir.toBoolean())
-            // Computed values — never pipeline params, always safe to set explicitly
-            childParams << booleanParam(name: "GENERATE_JOBS",   value: AUTO_AQA_GEN.toBoolean())
-            childParams << string(name: "JDK_IMPL",              value: pv.jdk_impl)
-            childParams << string(name: "JDK_VERSION",           value: jobJdkVersion)
-            childParams << string(name: "PLATFORM",              value: PLATFORM)
-            childParams << string(name: "TEST_FLAG",             value: jobTestFlag)
-            // only add if not already passed through the loop — avoids duplicates
-            if (!params.containsKey("USE_TESTENV_PROPERTIES")) childParams << booleanParam(name: "USE_TESTENV_PROPERTIES", value: buildConfig.USE_TESTENV_PROPERTIES != null ? buildConfig.USE_TESTENV_PROPERTIES.toBoolean() : false)
-            if (!params.containsKey("RERUN_ITERATIONS"))       childParams << string(name: "RERUN_ITERATIONS",             value: rerunIterations.toString())
-            if (!params.containsKey("VENDOR_TEST_BRANCHES"))   childParams << string(name: "VENDOR_TEST_BRANCHES",         value: VENDOR_TEST_BRANCHES)
-            if (!params.containsKey("VENDOR_TEST_DIRS"))       childParams << string(name: "VENDOR_TEST_DIRS",             value: VENDOR_TEST_DIRS)
-            if (!params.containsKey("VENDOR_TEST_REPOS"))      childParams << string(name: "VENDOR_TEST_REPOS",            value: VENDOR_TEST_REPOS)
-            if (buildConfig.JDK_REPO) {
-                childParams << string(name: "JDK_REPO",   value: buildConfig.JDK_REPO.toString().replace('${JDK_VERSION}', jobJdkVersion))
-            }
-            if (buildConfig.JDK_BRANCH) {
-                childParams << string(name: "JDK_BRANCH", value: buildConfig.JDK_BRANCH.toString().replace('${JDK_VERSION}', jobJdkVersion))
-            }
-            if (buildConfig.OPENJ9_BRANCH)       childParams << string(name: "OPENJ9_BRANCH",       value: buildConfig.OPENJ9_BRANCH)
-            if (testLabel)                        childParams << string(name: "LABEL",               value: testLabel)
-            if (additionalTestLabel)              childParams << string(name: "LABEL_ADDITION",      value: additionalTestLabel)
-            if (buildConfig.ACTIVE_NODE_TIMEOUT)  childParams << string(name: "ACTIVE_NODE_TIMEOUT", value: buildConfig.ACTIVE_NODE_TIMEOUT.toString())
-            if (buildConfig.ADOPTOPENJDK_BRANCH)  childParams << string(name: "ADOPTOPENJDK_BRANCH", value: buildConfig.ADOPTOPENJDK_BRANCH)
-            if (buildConfig.RERUN_FAILURE != null) childParams << booleanParam(name: "RERUN_FAILURE", value: buildConfig.RERUN_FAILURE.toBoolean())
-            if (buildList)                        childParams << string(name: "BUILD_LIST",          value: buildList)
+            // Flatten ADDITIONAL_TEST_PARAMS map entries as individual child params
             if (buildConfig.ADDITIONAL_TEST_PARAMS instanceof Map) {
                 buildConfig.ADDITIONAL_TEST_PARAMS.each { key, value ->
-                    def valueStr = value.toString()
-                    childParams << (valueStr in ["true", "false"] ? booleanParam(name: key, value: valueStr.toBoolean()) : string(name: key, value: valueStr))
+                    if (value != null && value != "") {
+                        def valueStr = value.toString()
+                        childParams << (valueStr in ["true", "false"] ? booleanParam(name: key, value: valueStr.toBoolean()) : string(name: key, value: valueStr))
+                    }
                 }
             }
+            // Params not present in buildConfig — computed or sourced from pipeline globals
+            childParams << string(name: "SDK_RESOURCE",                value: SDK_RESOURCE)
+            childParams << string(name: "CUSTOMIZED_SDK_URL",          value: pv.download_url)
+            childParams << booleanParam(name: "LIGHT_WEIGHT_CHECKOUT", value: LIGHT_WEIGHT_CHECKOUT.toBoolean())
+            childParams << string(name: "JDK_VERSION",                 value: jobJdkVersion)
+            childParams << string(name: "JDK_IMPL",                    value: pv.jdk_impl)
+            childParams << string(name: "PLATFORM",                    value: PLATFORM)
+            childParams << string(name: "TEST_FLAG",                   value: jobTestFlag)
+            childParams << booleanParam(name: "GENERATE_JOBS",         value: AUTO_AQA_GEN.toBoolean())
+            childParams << string(name: "ADOPTOPENJDK_REPO",   value: params.ADOPTOPENJDK_REPO   ?: "https://github.com/adoptium/aqa-tests.git")
+            childParams << string(name: "ADOPTOPENJDK_BRANCH", value: params.ADOPTOPENJDK_BRANCH ?: "master")
 
             triggerChildJob(TEST_JOB_NAME, childParams)
         }
