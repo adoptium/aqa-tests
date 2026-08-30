@@ -262,9 +262,9 @@ public class DateFormatTest {
 		{
 			TimeZone tz = calendar.getTimeZone();
 			if (followingCount >= 3) {
-				buffer.append(tz.getDisplayName(tz.inDaylightTime(new Date()), TimeZone.LONG));
+				buffer.append(tz.getDisplayName(tz.inDaylightTime(calendar.getTime()), TimeZone.LONG));
 			}else{
-				buffer.append(tz.getDisplayName(tz.inDaylightTime(new Date()), TimeZone.SHORT));
+				buffer.append(tz.getDisplayName(tz.inDaylightTime(calendar.getTime()), TimeZone.SHORT));
 			}
 			break;
 		}
