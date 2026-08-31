@@ -687,14 +687,22 @@ def makeCompileTest(){
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
-	dir('aqa-tests') {
-		if (!env.SPEC.startsWith('zos')) {
-			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+	try {
+		dir('aqa-tests') {
+			if (!env.SPEC.startsWith('zos')) {
+				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+					sh "$makeTestCmd";
+				}
+			} else {
 				sh "$makeTestCmd";
 			}
-		} else {
-			sh "$makeTestCmd";
 		}
+	} catch (e) {
+		// moveDmp.pl exits `false` after moving core/JIT/snap dumps to output_compilation/.
+		// At this point env.jobStatus is still SUCCESS so the FAILURE branch in post() is
+		// never reached, and cleanWs would wipe the dumps. Archive them here before re-throwing.
+		archiveArtifacts artifacts: "aqa-tests/TKG/output_compilation/**/*.dmp,aqa-tests/TKG/output_compilation/**/*.trc", allowEmptyArchive: true
+		throw e
 	}
 }
 
