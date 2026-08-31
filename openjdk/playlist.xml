@@ -3217,12 +3217,6 @@
 	</test>
 	<test>
 		<testCaseName>jdk_double128vector_j9</testCaseName>
-		<disables>
-			<disable>
-				<comment>https://github.com/eclipse-openj9/openj9/issues/20389</comment>
-				<platform>aarch64_linux</platform>
-			</disable>
-		</disables>
 		<variations>
 			<variation>-Xjit:{*Double128VectorTests*}(count=1,enforceVectorAPIExpansion),disableAsyncCompilation,dontApplyLogFileNameSuffix,verbose={vectorAPI}</variation>
 		</variations>
