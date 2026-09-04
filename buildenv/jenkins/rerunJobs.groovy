@@ -3,11 +3,9 @@
  * rerunJobs.groovy
  *
  * Standalone pipeline that triggers a rerun of the last build of a given Jenkins
- * job, mirroring the rerun logic in JenkinsfileBase (triggerRerunJob /
- * addFailedTestsGrinderLink).
+ * job.
  *
- * Uses the Jenkins REST API (JSON) to inspect builds — no Jenkins.instance calls,
- * fully compatible with the script security sandbox.
+ * Uses the Jenkins REST API (JSON) to inspect builds
  *
  * Parameters
  * ----------
@@ -32,11 +30,10 @@
  *   • SCM_REFERENCE set but does not match CUSTOMIZED_SDK_URL → FAILURE, log and stop.
  *   • Last build result is SUCCESS → SUCCESS, log "passed, no rerun needed" and stop.
  *
- * Rerun rules — always re-triggers <JOB_NAME> itself, never a separate _rerun job
+ * Rerun rules 
  * ----------------------------------------------------------------------------------
  *   FAILURE / ABORTED  → re-trigger <JOB_NAME> with identical parameters (full rebuild).
- *   UNSTABLE           → parse the build description for rerun links produced by
- *                        addFailedTestsGrinderLink(). TARGET and CUSTOM_TARGET are
+ *   UNSTABLE           → parse the build description for rerun links. TARGET and CUSTOM_TARGET are
  *                        extracted from the parambuild URL and used to re-trigger
  *                        <JOB_NAME> with overridden parameters:
  *                          • _custom links present → re-trigger once per _custom link
@@ -187,9 +184,13 @@ pipeline {
 
                     echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
                     def rerunResults = parallel rerunTasks
-                    // Set this pipeline's result to the worst status among all rerun jobs.
+                    // Each closure returns [result: '...', description: '...'].
+                    // Aggregate descriptions and compute worst result in the main thread.
                     rerunResults.each { key, res ->
-                        setWorstResult(res?.toString())
+                        if (res?.description) {
+                            currentBuild.description = (currentBuild.description ?: '') + res.description.toString()
+                        }
+                        setWorstResult(res?.result?.toString())
                     }
                 }
             }
@@ -332,6 +333,12 @@ def buildRerunTasks(String jobName, def buildInfo, String result) {
         }
     }
 
+    if (tasks.isEmpty()) {
+        // Catch-all for non-standard results (e.g. NOT_BUILT, UNKNOWN) not handled
+        // by the branches above — fall back to a full rebuild rather than failing.
+        echo "No rerun tasks produced for result '${result}' — falling back to full rebuild."
+        tasks["${jobName}_rebuild"] = makeRerunClosure(jobName, originalParams, null, null)
+    }
     return tasks
 }
 
@@ -366,8 +373,13 @@ def rerunTasksFromLinks(String jobName, List originalParams, String description)
 // ---------------------------------------------------------------------------
 
 /**
- * Re-triggers jobName with overridden TARGET/CUSTOM_TARGET (null = keep original)
- * and PARALLEL/NUM_MACHINES/TEST_TIME reset.
+ * Re-triggers jobName with the given parameters.
+ * When target is non-null (targeted rerun): TARGET/CUSTOM_TARGET are overridden and
+ * PARALLEL/NUM_MACHINES/TEST_TIME are reset to defaults as JenkinsfileBase does.
+ * When target is null (full rebuild): all original parameters are passed through
+ * unchanged — the build is an identical repeat of the last run.
+ * Returns a structured map [result: String, description: String] so the caller
+ * can safely aggregate results and descriptions in the main thread after parallel().
  */
 def makeRerunClosure(String jobName, List baseParams, String target, String customTarget) {
     return {
@@ -380,11 +392,10 @@ def makeRerunClosure(String jobName, List baseParams, String target, String cust
         def rerunBuildNum   = downstreamBuild.getNumber()
 
         echo "${jobName} #${rerunBuildNum} → ${rerunResult}"
-        currentBuild.description = (currentBuild.description ?: '') +
-            "<br><a href='${env.JENKINS_URL}job/${jobName.replace('/', '/job/')}/${rerunBuildNum}'>" +
+        def descEntry = "<br><a href='${env.JENKINS_URL}job/${jobName.replace('/', '/job/')}/${rerunBuildNum}'>" +
             "${jobName} #${rerunBuildNum}: ${rerunResult}</a>"
 
-        setWorstResult(rerunResult)
+        return [result: rerunResult, description: descEntry]
     }
 }
 
@@ -393,15 +404,29 @@ def makeRerunClosure(String jobName, List baseParams, String target, String cust
 // ---------------------------------------------------------------------------
 
 /**
- * Clone baseParams (plain maps), overriding TARGET / CUSTOM_TARGET (when non-null)
- * and resetting PARALLEL / NUM_MACHINES / TEST_TIME as JenkinsfileBase does.
+ * Clone baseParams (plain maps) applying the appropriate overrides:
+ *
+ * Targeted rerun (target != null):
+ *   - TARGET and CUSTOM_TARGET are replaced with the provided values.
+ *   - PARALLEL / NUM_MACHINES / TEST_TIME are reset to defaults, mirroring
+ *     the behaviour of JenkinsfileBase triggerRerunJob().
+ *
+ * Full rebuild (target == null):
+ *   - All parameters are passed through unchanged so the rerun is identical
+ *     to the original build.
+ *
  * Returns a list of plain maps; call toJenkinsParams() before passing to `build`.
  */
 def overrideParams(List baseParams, String target, String customTarget) {
+    // Full rebuild — return params unchanged.
+    if (target == null) {
+        return baseParams
+    }
+    // Targeted rerun — override TARGET/CUSTOM_TARGET and reset parallel settings.
     def result = []
     baseParams.each { p ->
         def key = p.name
-        if (key == 'TARGET' && target != null) {
+        if (key == 'TARGET') {
             result << [name: 'TARGET', value: target, type: 'string']
         } else if (key == 'CUSTOM_TARGET' && customTarget != null) {
             result << [name: 'CUSTOM_TARGET', value: customTarget, type: 'string']
@@ -471,18 +496,22 @@ def parseRerunLinks(String description) {
  * only for child jobs whose name contains '_testList_' AND ends with '_rerun'
  * (e.g. Test_openjdk25_hs_..._testList_2_rerun).
  * Plain _testList_N jobs and plain _rerun jobs are both ignored.
- * Looks for badge-icon links: /job/<childName>/<buildNum>/badge/icon
+ *
+ * Supports folder-style job paths: /job/folder/job/child/<buildNum>/badge/icon
+ * is normalized to folder/child by replacing /job/ separators with /.
+ *
  * Returns a Map of childJobName → buildNumber (int). Empty map if none found.
  */
 def parseRerunChildJobEntries(String description) {
     def entries = [:]
     if (!description) return entries
 
-    def m = (description =~ /\/job\/([A-Za-z0-9_.\-]+)\/(\d+)\/badge\/icon/)
+    def m = (description =~ /\/job\/(.+?)\/(\d+)\/badge\/icon/)
     m.each {
-        def childName = it[1]
+        def childName = it[1].replaceAll('/job/', '/')
+        def buildNum  = it[2].toInteger()
         if (childName.contains('_testList_') && childName.endsWith('_rerun')) {
-            entries[childName] = it[2].toInteger()
+            entries[childName] = buildNum
         }
     }
     return entries
