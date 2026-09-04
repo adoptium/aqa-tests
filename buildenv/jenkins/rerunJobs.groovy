@@ -88,6 +88,9 @@ pipeline {
                     if (!jobName) {
                         error "JOB_NAME parameter must be set."
                     }
+                    if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
+                        error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
+                    }
 
                     // --- RELAY mode: forward to remote private Jenkins ---
                     if (mode == 'RELAY') {
