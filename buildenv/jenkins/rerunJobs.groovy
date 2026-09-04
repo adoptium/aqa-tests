@@ -108,12 +108,25 @@ pipeline {
                             useCrumbCache:          true,
                             useJobInfoCache:        true
                         )
-                        def remoteResult = handle.getBuildResult().toString()
+                        def remoteResult   = handle.getBuildResult().toString()
                         def remoteBuildNum = handle.getBuildNumber()
                         echo "Remote rerunJobs #${remoteBuildNum} result: ${remoteResult}"
-                        currentBuild.description = (currentBuild.description ?: '') +
-                            "<br><a href='https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}'>" +
-                            "Remote rerunJobs #${remoteBuildNum}: ${remoteResult}</a>"
+
+                        // Fetch the remote rerunJobs build description to extract
+                        // the triggered job names and their statuses.
+                        def remoteApiUrl  = "https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}/api/json?tree=description"
+                        def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}")
+                        def remoteJobDesc = remoteInfo?.description ?: ''
+
+                        def desc = "<br>rerunJobs #${remoteBuildNum}: ${remoteResult}"
+                        if (remoteJobDesc) {
+                            // remoteJobDesc contains lines like:
+                            //   <br><a href='...'>JobName #N: RESULT</a>
+                            // Strip the anchor tags, keep only the text.
+                            def plainEntries = remoteJobDesc.replaceAll(/<a [^>]*>/, '').replaceAll(/<\/a>/, '')
+                            desc += plainEntries
+                        }
+                        currentBuild.description = (currentBuild.description ?: '') + desc
                         setWorstResult(remoteResult)
                         return
                     }
