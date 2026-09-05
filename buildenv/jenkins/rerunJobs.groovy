@@ -520,14 +520,19 @@ def parseRerunChildJobEntries(String description) {
 
 /**
  * Update this pipeline's result to the worst of its current result and newResult.
- * Priority: ABORTED > FAILURE > UNSTABLE > SUCCESS.
+ * Priority: ABORTED > FAILURE/NOT_BUILT > UNSTABLE > SUCCESS.
  */
 def setWorstResult(String newResult) {
     if (!newResult) return
-     def normalized = newResult.toString()
-     def priority = ['SUCCESS': 1, 'UNSTABLE': 2, 'FAILURE': 3, 'ABORTED': 4, 'NOT_BUILT': 3, 'UNKNOWN': 3]
-     def current  = (currentBuild.result ?: 'SUCCESS').toString()
-     if ((priority[normalized] ?: 3) > (priority[current] ?: 3)) {
-         currentBuild.result = normalized
+
+    def normalized = newResult.toString()
+    if (!(normalized in ['SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED', 'NOT_BUILT'])) {
+        normalized = 'FAILURE'
+    }
+
+    def priority = ['SUCCESS': 1, 'UNSTABLE': 2, 'FAILURE': 3, 'NOT_BUILT': 3, 'ABORTED': 4]
+    def current  = (currentBuild.result ?: 'SUCCESS').toString()
+    if ((priority[normalized] ?: 3) > (priority[current] ?: 3)) {
+        currentBuild.result = normalized
     }
 }
