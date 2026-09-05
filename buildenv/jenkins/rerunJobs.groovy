@@ -1,4 +1,4 @@
-#!/usr/bin/env groovy
+#!groovy
 /*
  * rerunJobs.groovy
  *
@@ -84,6 +84,9 @@ pipeline {
 
                     if (!jobName) {
                         error "JOB_NAME parameter must be set."
+                    }
+                    if (jobName.contains('..')) {
+                        error "JOB_NAME must not contain '..' path segments."
                     }
                     if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
                         error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
@@ -175,12 +178,6 @@ pipeline {
 
                     // --- Build and run rerun tasks ---
                     def rerunTasks = buildRerunTasks(jobName, buildInfo, result)
-
-                    if (rerunTasks.isEmpty()) {
-                        echo "Nothing to rerun for '${jobName}' (result: ${result})."
-                        currentBuild.result = 'FAILURE'
-                        return
-                    }
 
                     echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
                     def rerunResults = parallel rerunTasks
@@ -527,9 +524,10 @@ def parseRerunChildJobEntries(String description) {
  */
 def setWorstResult(String newResult) {
     if (!newResult) return
-    def priority = ['SUCCESS': 1, 'UNSTABLE': 2, 'FAILURE': 3, 'ABORTED': 4]
-    def current  = currentBuild.result ?: 'SUCCESS'
-    if ((priority[newResult] ?: 0) > (priority[current] ?: 0)) {
-        currentBuild.result = newResult
+     def normalized = newResult.toString()
+     def priority = ['SUCCESS': 1, 'UNSTABLE': 2, 'FAILURE': 3, 'ABORTED': 4, 'NOT_BUILT': 3, 'UNKNOWN': 3]
+     def current  = (currentBuild.result ?: 'SUCCESS').toString()
+     if ((priority[normalized] ?: 3) > (priority[current] ?: 3)) {
+         currentBuild.result = normalized
     }
 }
