@@ -29,6 +29,7 @@ def identify_fixed_tests(issues: List[models.SchemeWithStatus]):
                 url_to_issues[url.strip()].append(issue)
     return url_to_issues
 
+def test_script_works()
 
 def main():
     global return_code
@@ -54,7 +55,7 @@ def main():
     identify_fixed_tests(issues)
 
     test_script_works()
-    
+
     return return_code
 
 
