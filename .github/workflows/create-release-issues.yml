@@ -97,6 +97,9 @@ jobs:
             SECONDARY_PLATFORMS="x86-64_alpine-linux,arm_linux,ppc64le_linux,s390x_linux,ppc64_aix"
           elif [[ "$VERSION" == "JDK17" ]]; then
             SECONDARY_PLATFORMS="riscv64_linux,x86-64_alpine-linux,arm_linux,ppc64le_linux,s390x_linux,ppc64_aix"
+          elif [[ "${VERSION#JDK}" -ge 27 ]] 2>/dev/null; then
+            PRIMARY_PLATFORMS="aarch64_linux,aarch64_mac,x86-64_linux,x86-64_windows"
+            SECONDARY_PLATFORMS="aarch64_alpine-linux,riscv64_linux,x86-64_alpine-linux,aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
           else
             SECONDARY_PLATFORMS="aarch64_alpine-linux,riscv64_linux,x86-64_alpine-linux,aarch64_windows,ppc64le_linux,s390x_linux,ppc64_aix"
           fi
