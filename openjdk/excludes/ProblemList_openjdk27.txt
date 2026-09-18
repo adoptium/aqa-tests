@@ -176,6 +176,7 @@ com/sun/net/httpserver/simpleserver/StressDirListings.java https://github.com/ad
 java/net/vthread/HttpALot.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/InterruptHttp.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 jdk/net/ExtendedSocketOption/DontFragmentTest.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
+java/net/SocketOption/OptionsTest.java https://github.com/adoptium/aqa-tests/issues/7684 windows-aarch64
 java/net/vthread/BlockingSocketOps.java#direct-register https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/BlockingSocketOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/nio/channels/vthread/BlockingChannelOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
@@ -429,7 +430,8 @@ runtime/ErrorHandling/UncaughtNativeExceptionTest.java https://github.com/adopti
 runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
 #runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
 runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
-runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all windows-aarch64
+runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 #runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
@@ -487,12 +489,19 @@ vmTestbase/jit/misctests/fpustack/GraphApplet.java https://github.com/adoptium/i
 # hotspot_vmTestbase_vm_mlvm
 
 vmTestbase/vm/mlvm/mixed/stress/java/findDeadlock/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6715 aix-all
+vmTestbase/vm/mlvm/hiddenloader/stress/byteMutation/Test.java https://github.com/adoptium/aqa-tests/issues/7024 windows-aarch64
 
 ############################################################################
 
 # hotspot_vmTestbase_vm_gc
 
 vmTestbase/gc/gctests/MTLinkedListGC/MTLinkedListGC.java https://github.com/adoptium/aqa-tests/issues/6849 aix-ppc64
+
+############################################################################
+
+# hotspot_tier1_compiler
+
+compiler/c2/aarch64/TestTrampoline.java https://bugs.openjdk.org/browse/JDK-8378892 windows-aarch64
 
 ############################################################################
 
