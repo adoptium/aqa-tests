@@ -1,0 +1,27 @@
+{
+    "commonLabelBase": "sw.tool.podman&&sw.tool.container.criu",
+    "platforms": {
+        "x86-64_linux": [
+            "sw.os.ubuntu.22&&hw.arch.x86.broadwell",
+            "sw.os.ubuntu.22&&hw.arch.x86.amd",
+            "sw.os.rhel.8&&hw.arch.x86.broadwell",
+            "sw.os.rhel.8&&hw.arch.x86.amd",
+            "sw.os.rhel.8&&hw.arch.x86.skylake",
+            "sw.os.rhel.9&&hw.arch.x86.amd",
+            "sw.os.rhel.9&&hw.arch.x86.broadwell"
+        ],
+        "aarch64_linux": [
+            "sw.os.ubuntu.22",
+            "sw.os.rhel.8",
+            "sw.os.rhel.9"
+        ],
+        "s390x_linux": [
+            "hw.arch.s390x.z13",
+            "hw.arch.s390x.z14"
+        ],
+        "ppc64le_linux": [
+            "hw.arch.ppc64le.p10&&!sw.os.ubuntu.24",
+            "hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"
+        ]
+    }
+}
