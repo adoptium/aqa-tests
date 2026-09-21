@@ -666,7 +666,7 @@ def get_sources_with_authentication() {
 			// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
 			// which creates a socket under MINGW's /tmp/ namespace. The build shell
 			// is Cygwin bash, whose ssh binary looks for SSH_AUTH_SOCK in Cygwin's
-			// /tmp/ — a different namespace. Convert the path with cygpath so Cygwin
+			// /tmp/ - a different namespace. Convert the path with cygpath so Cygwin
 			// ssh can reach the agent socket regardless of which ssh-agent was started.
 			// If the path is already a valid Cygwin path, cygpath returns it unchanged.
 			// See: https://github.com/jenkinsci/ssh-agent-plugin/pull/316
@@ -709,7 +709,7 @@ def makeCompileTest(){
 						// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
 						// (e.g. C:\Program Files\Git\usr\bin\ssh-agent) which creates a socket
 						// under MINGW's /tmp/ namespace. The build shell is Cygwin bash, whose
-						// ssh binary looks for SSH_AUTH_SOCK in Cygwin's /tmp/ — a different
+						// ssh binary looks for SSH_AUTH_SOCK in Cygwin's /tmp/ - a different
 						// namespace. Convert the path with cygpath so Cygwin ssh can reach the
 						// agent socket regardless of which ssh-agent was started. If the path
 						// is already a valid Cygwin path, cygpath returns it unchanged.
