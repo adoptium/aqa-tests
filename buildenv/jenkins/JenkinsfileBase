@@ -668,7 +668,12 @@ def getJobProperties() {
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/316 (regression)
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/320 (fix)
 def findCygwinSshAgentExe() {
-	def path = sh(script: 'cygpath -w $(which ssh-agent) 2>/dev/null || true', returnStdout: true).replaceAll('[\r\n]', '').trim()
+	// Use cygpath -m (mixed mode: Windows absolute path with forward slashes) so that
+	// the Jenkins controller (Linux/macOS) can parse the filename correctly via
+	// java.io.File.getName() which only recognises '/' as a path separator.
+	// cygpath -w (backslashes) causes getName() to return the full path instead of
+	// just the filename, failing the plugin's ssh-agent(.exe) validation.
+	def path = sh(script: 'cygpath -m $(which ssh-agent) 2>/dev/null || true', returnStdout: true).replaceAll('[\r\n]', '').trim()
 	return path ?: null
 }
 
