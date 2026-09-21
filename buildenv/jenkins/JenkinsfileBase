@@ -660,21 +660,29 @@ def getJobProperties() {
 	}
 }
 
+// On Windows, the Jenkins SSH Agent plugin auto-selects a MINGW ssh-agent whose
+// socket is invisible to Cygwin ssh/ssh-add (different /tmp/ namespace). Work around
+// this by explicitly pointing the plugin at the Cygwin ssh-agent binary so that
+// ssh-agent, ssh-add, and ssh all use the same Cygwin socket namespace.
+// This workaround can be removed once the plugin correctly detects Cygwin ssh-agent:
+// https://github.com/jenkinsci/ssh-agent-plugin/pull/316
+def findCygwinSshAgentExe() {
+	def path = sh(script: 'cygpath -w $(which ssh-agent) 2>/dev/null || true', returnStdout: true).trim()
+	return path ?: null
+}
+
 def get_sources_with_authentication() {
-	sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
-		if (PLATFORM.contains("windows")) {
-			// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
-			// which creates a socket under MINGW's /tmp/ namespace. The build shell
-			// is Cygwin bash, whose ssh binary looks for SSH_AUTH_SOCK in Cygwin's
-			// /tmp/ - a different namespace. Convert the path with cygpath so Cygwin
-			// ssh can reach the agent socket regardless of which ssh-agent was started.
-			// If the path is already a valid Cygwin path, cygpath returns it unchanged.
-			// See: https://github.com/jenkinsci/ssh-agent-plugin/pull/316
-			def convertedSock = sh(script: "cygpath \"\$SSH_AUTH_SOCK\" 2>/dev/null || echo \"\$SSH_AUTH_SOCK\"", returnStdout: true).trim()
-			withEnv(["SSH_AUTH_SOCK=${convertedSock}"]) {
-				get_sources()
-			}
-		} else {
+	if (PLATFORM.contains("windows")) {
+		def sshAgentExe = findCygwinSshAgentExe()
+		def agentArgs = [credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true]
+		if (sshAgentExe) {
+			agentArgs['executable'] = sshAgentExe
+		}
+		sshagent(agentArgs) {
+			get_sources()
+		}
+	} else {
+		sshagent(credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
 			get_sources()
 		}
 	}
@@ -704,20 +712,17 @@ def makeCompileTest(){
 	try {
 		dir('aqa-tests') {
 			if (!env.SPEC.startsWith('zos')) {
-				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-					if (PLATFORM.contains("windows")) {
-						// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
-						// which creates a socket under MINGW's /tmp/ namespace. The build shell
-						// is Cygwin bash, whose ssh binary looks for SSH_AUTH_SOCK in Cygwin's
-						// /tmp/ - a different namespace. Convert the path with cygpath so Cygwin
-						// ssh can reach the agent socket regardless of which ssh-agent was started.
-						// If the path is already a valid Cygwin path, cygpath returns it unchanged.
-						// See: https://github.com/jenkinsci/ssh-agent-plugin/pull/316
-						def convertedSock = sh(script: "cygpath \"\$SSH_AUTH_SOCK\" 2>/dev/null || echo \"\$SSH_AUTH_SOCK\"", returnStdout: true).trim()
-						withEnv(["SSH_AUTH_SOCK=${convertedSock}"]) {
-							sh "$makeTestCmd"
-						}
-					} else {
+				if (PLATFORM.contains("windows")) {
+					def sshAgentExe = findCygwinSshAgentExe()
+					def agentArgs = [credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true]
+					if (sshAgentExe) {
+						agentArgs['executable'] = sshAgentExe
+					}
+					sshagent(agentArgs) {
+						sh "$makeTestCmd"
+					}
+				} else {
+					sshagent(credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
 						sh "$makeTestCmd"
 					}
 				}
