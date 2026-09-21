@@ -684,14 +684,23 @@ def withWindowsSshAgent(String credentialsId, Closure body) {
 def get_sources_with_authentication() {
 	if (PLATFORM.contains("windows")) {
 		withWindowsSshAgent("${params.USER_CREDENTIALS_ID}") {
-			// Start a Cygwin ssh-agent, load the key, run get.sh, then kill the agent.
-			// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
+			// Start a Cygwin ssh-agent and load the key. Capture SSH_AUTH_SOCK so it
+			// can be passed into get_sources() via withEnv (scoped, no leakage).
+			// trap ensures the agent is killed on any exit (success or failure).
 			// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
-			sh """
-eval \$(ssh-agent -s)
-trap 'ssh-agent -k || true' EXIT
-ssh-add \$(cygpath "\$SSH_KEY_FILE")
-${GET_SH_CMD}
+			def sshAuthSock = sh(script: """
+				eval \$(ssh-agent -s)
+				trap 'ssh-agent -k || true' EXIT
+				ssh-add \$(cygpath "\$SSH_KEY_FILE")
+				echo \$SSH_AUTH_SOCK
+			""", returnStdout: true).trim()
+			try {
+				withEnv(["SSH_AUTH_SOCK=${sshAuthSock}"]) {
+					get_sources()
+				}
+			} finally {
+				sh 'ssh-agent -k || true'
+			}
 		}
 	} else {
 		sshagent(credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
@@ -725,17 +734,18 @@ def makeCompileTest(){
 		dir('aqa-tests') {
 			if (!env.SPEC.startsWith('zos')) {
 				if (PLATFORM.contains("windows")) {
-					withWindowsSshAgent("$params.SSH_AGENT_CREDENTIAL") {
-						// Start a Cygwin ssh-agent, load the key, run compile, then kill the agent.
-						// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
-						// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
-						sh """
-							eval \$(ssh-agent -s)
-							ssh-add \$(cygpath "\$SSH_KEY_FILE")
-							${makeTestCmd}
-							ssh-agent -k || true
-						"""
-					}
+						withWindowsSshAgent("$params.SSH_AGENT_CREDENTIAL") {
+							// Start a Cygwin ssh-agent, load the key, run compile, then kill the agent.
+							// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
+							// trap ensures the agent is killed on any exit (success or failure).
+							// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
+							sh """
+								eval \$(ssh-agent -s)
+								trap 'ssh-agent -k || true' EXIT
+								ssh-add \$(cygpath "\$SSH_KEY_FILE")
+								${makeTestCmd}
+							"""
+						}
 				} else {
 					sshagent(credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
 						sh "$makeTestCmd"
