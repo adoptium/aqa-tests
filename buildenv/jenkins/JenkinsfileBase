@@ -668,7 +668,7 @@ def getJobProperties() {
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/316 (regression)
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/320 (fix)
 def findCygwinSshAgentExe() {
-	def path = sh(script: 'cygpath -w $(which ssh-agent) 2>/dev/null || true', returnStdout: true).trim()
+	def path = sh(script: 'cygpath -w $(which ssh-agent) 2>/dev/null || true', returnStdout: true).replaceAll('[\r\n]', '').trim()
 	return path ?: null
 }
 
