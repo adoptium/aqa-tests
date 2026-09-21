@@ -684,22 +684,25 @@ def withWindowsSshAgent(String credentialsId, Closure body) {
 def get_sources_with_authentication() {
 	if (PLATFORM.contains("windows")) {
 		withWindowsSshAgent("${params.USER_CREDENTIALS_ID}") {
-			// Start a Cygwin ssh-agent and load the key. Capture SSH_AUTH_SOCK so it
-			// can be passed into get_sources() via withEnv (scoped, no leakage).
-			// trap ensures the agent is killed on any exit (success or failure).
+			// Start a Cygwin ssh-agent and load the key. Capture SSH_AUTH_SOCK and
+			// SSH_AGENT_PID so they can be passed into get_sources() via withEnv
+			// (scoped, no leakage). No trap here — the agent must stay alive across
+			// sh steps; it is killed explicitly in the finally block.
 			// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
-			def sshAuthSock = sh(script: """
+			def agentOutput = sh(script: """
 				eval \$(ssh-agent -s)
-				trap 'ssh-agent -k || true' EXIT
 				ssh-add \$(cygpath "\$SSH_KEY_FILE")
-				echo \$SSH_AUTH_SOCK
+				echo "SSH_AUTH_SOCK=\$SSH_AUTH_SOCK"
+				echo "SSH_AGENT_PID=\$SSH_AGENT_PID"
 			""", returnStdout: true).trim()
+			def sshAuthSock = (agentOutput =~ /SSH_AUTH_SOCK=(.+)/)[0][1]
+			def sshAgentPid = (agentOutput =~ /SSH_AGENT_PID=(.+)/)[0][1]
 			try {
-				withEnv(["SSH_AUTH_SOCK=${sshAuthSock}"]) {
+				withEnv(["SSH_AUTH_SOCK=${sshAuthSock}", "SSH_AGENT_PID=${sshAgentPid}"]) {
 					get_sources()
 				}
 			} finally {
-				sh 'ssh-agent -k || true'
+				sh "kill ${sshAgentPid} || true"
 			}
 		}
 	} else {
