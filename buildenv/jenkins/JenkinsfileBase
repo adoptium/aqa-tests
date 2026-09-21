@@ -662,7 +662,21 @@ def getJobProperties() {
 
 def get_sources_with_authentication() {
 	sshagent(credentials:["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
-		get_sources()
+		if (PLATFORM.contains("windows")) {
+			// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
+			// which creates a socket under MINGW's /tmp/ namespace. The build shell
+			// is Cygwin bash, whose ssh binary looks for SSH_AUTH_SOCK in Cygwin's
+			// /tmp/ — a different namespace. Convert the path with cygpath so Cygwin
+			// ssh can reach the agent socket regardless of which ssh-agent was started.
+			// If the path is already a valid Cygwin path, cygpath returns it unchanged.
+			// See: https://github.com/jenkinsci/ssh-agent-plugin/pull/316
+			def convertedSock = sh(script: "cygpath \"\$SSH_AUTH_SOCK\" 2>/dev/null || echo \"\$SSH_AUTH_SOCK\"", returnStdout: true).trim()
+			withEnv(["SSH_AUTH_SOCK=${convertedSock}"]) {
+				get_sources()
+			}
+		} else {
+			get_sources()
+		}
 	}
 }
 
@@ -691,7 +705,22 @@ def makeCompileTest(){
 		dir('aqa-tests') {
 			if (!env.SPEC.startsWith('zos')) {
 				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
-					sh "$makeTestCmd";
+					if (PLATFORM.contains("windows")) {
+						// On Windows, the Jenkins SSH Agent plugin may start a MINGW ssh-agent
+						// (e.g. C:\Program Files\Git\usr\bin\ssh-agent) which creates a socket
+						// under MINGW's /tmp/ namespace. The build shell is Cygwin bash, whose
+						// ssh binary looks for SSH_AUTH_SOCK in Cygwin's /tmp/ — a different
+						// namespace. Convert the path with cygpath so Cygwin ssh can reach the
+						// agent socket regardless of which ssh-agent was started. If the path
+						// is already a valid Cygwin path, cygpath returns it unchanged.
+						// See: https://github.com/jenkinsci/ssh-agent-plugin/pull/316
+						def convertedSock = sh(script: "cygpath \"\$SSH_AUTH_SOCK\" 2>/dev/null || echo \"\$SSH_AUTH_SOCK\"", returnStdout: true).trim()
+						withEnv(["SSH_AUTH_SOCK=${convertedSock}"]) {
+							sh "$makeTestCmd"
+						}
+					} else {
+						sh "$makeTestCmd"
+					}
 				}
 			} else {
 				sh "$makeTestCmd";
