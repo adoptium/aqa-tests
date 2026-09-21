@@ -662,30 +662,37 @@ def getJobProperties() {
 
 // On Windows, the Jenkins SSH Agent plugin (since pull/316) auto-selects a MINGW
 // ssh-agent whose socket is invisible to Cygwin ssh/ssh-add (different /tmp/ namespace).
-// Work around this by explicitly pointing the plugin at the Cygwin ssh-agent binary so
-// that ssh-agent, ssh-add, and ssh all use the same Cygwin socket namespace.
-// This workaround can be removed once pull/320 is merged and the plugin updated:
+// Additionally, an incompatible Jenkins Cygpath plugin wraps every process launch,
+// causing the SSH Agent plugin's internal launcher to crash with NoClassDefFoundError.
+// Work around both issues by bypassing the sshagent step entirely on Windows: start a
+// Cygwin ssh-agent ourselves within a single sh step so all SSH tools share the same
+// Cygwin socket namespace without going through the SSH Agent plugin's launcher.
+// This workaround can be removed once pull/320 is merged, the plugin updated, and the
+// incompatible Cygpath plugin is removed:
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/316 (regression)
 // https://github.com/jenkinsci/ssh-agent-plugin/pull/320 (fix)
-def findCygwinSshAgentExe() {
-	// Use cygpath -m (mixed mode: Windows absolute path with forward slashes) so that
-	// the Jenkins controller (Linux/macOS) can parse the filename correctly via
-	// java.io.File.getName() which only recognises '/' as a path separator.
-	// cygpath -w (backslashes) causes getName() to return the full path instead of
-	// just the filename, failing the plugin's ssh-agent(.exe) validation.
-	def path = sh(script: 'cygpath -m $(which ssh-agent) 2>/dev/null || true', returnStdout: true).replaceAll('[\r\n]', '').trim()
-	return path ?: null
+def withWindowsSshAgent(String credentialsId, Closure body) {
+	if (credentialsId) {
+		withCredentials([sshUserPrivateKey(credentialsId: credentialsId, keyFileVariable: 'SSH_KEY_FILE')]) {
+			body()
+		}
+	} else {
+		body()
+	}
 }
 
 def get_sources_with_authentication() {
 	if (PLATFORM.contains("windows")) {
-		def sshAgentExe = findCygwinSshAgentExe()
-		def agentArgs = [credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true]
-		if (sshAgentExe) {
-			agentArgs['executable'] = sshAgentExe
-		}
-		sshagent(agentArgs) {
-			get_sources()
+		withWindowsSshAgent("${params.USER_CREDENTIALS_ID}") {
+			// Start a Cygwin ssh-agent, load the key, run get.sh, then kill the agent.
+			// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
+			// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
+			sh """
+				eval \$(ssh-agent -s)
+				ssh-add \$(cygpath "\$SSH_KEY_FILE")
+				${GET_SH_CMD}
+				ssh-agent -k || true
+			"""
 		}
 	} else {
 		sshagent(credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
@@ -719,13 +726,16 @@ def makeCompileTest(){
 		dir('aqa-tests') {
 			if (!env.SPEC.startsWith('zos')) {
 				if (PLATFORM.contains("windows")) {
-					def sshAgentExe = findCygwinSshAgentExe()
-					def agentArgs = [credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true]
-					if (sshAgentExe) {
-						agentArgs['executable'] = sshAgentExe
-					}
-					sshagent(agentArgs) {
-						sh "$makeTestCmd"
+					withWindowsSshAgent("$params.SSH_AGENT_CREDENTIAL") {
+						// Start a Cygwin ssh-agent, load the key, run compile, then kill the agent.
+						// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
+						// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
+						sh """
+							eval \$(ssh-agent -s)
+							ssh-add \$(cygpath "\$SSH_KEY_FILE")
+							${makeTestCmd}
+							ssh-agent -k || true
+						"""
 					}
 				} else {
 					sshagent(credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
