@@ -660,12 +660,13 @@ def getJobProperties() {
 	}
 }
 
-// On Windows, the Jenkins SSH Agent plugin auto-selects a MINGW ssh-agent whose
-// socket is invisible to Cygwin ssh/ssh-add (different /tmp/ namespace). Work around
-// this by explicitly pointing the plugin at the Cygwin ssh-agent binary so that
-// ssh-agent, ssh-add, and ssh all use the same Cygwin socket namespace.
-// This workaround can be removed once the plugin correctly detects Cygwin ssh-agent:
-// https://github.com/jenkinsci/ssh-agent-plugin/pull/316
+// On Windows, the Jenkins SSH Agent plugin (since pull/316) auto-selects a MINGW
+// ssh-agent whose socket is invisible to Cygwin ssh/ssh-add (different /tmp/ namespace).
+// Work around this by explicitly pointing the plugin at the Cygwin ssh-agent binary so
+// that ssh-agent, ssh-add, and ssh all use the same Cygwin socket namespace.
+// This workaround can be removed once pull/320 is merged and the plugin updated:
+// https://github.com/jenkinsci/ssh-agent-plugin/pull/316 (regression)
+// https://github.com/jenkinsci/ssh-agent-plugin/pull/320 (fix)
 def findCygwinSshAgentExe() {
 	def path = sh(script: 'cygpath -w $(which ssh-agent) 2>/dev/null || true', returnStdout: true).trim()
 	return path ?: null
