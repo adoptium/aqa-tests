@@ -688,11 +688,10 @@ def get_sources_with_authentication() {
 			// All within a single sh call so SSH_AUTH_SOCK is inherited throughout.
 			// cygpath converts the Jenkins-written Windows key path to a Cygwin path.
 			sh """
-				eval \$(ssh-agent -s)
-				ssh-add \$(cygpath "\$SSH_KEY_FILE")
-				${GET_SH_CMD}
-				ssh-agent -k || true
-			"""
+eval \$(ssh-agent -s)
+trap 'ssh-agent -k || true' EXIT
+ssh-add \$(cygpath "\$SSH_KEY_FILE")
+${GET_SH_CMD}
 		}
 	} else {
 		sshagent(credentials: ["${params.USER_CREDENTIALS_ID}"], ignoreMissing: true) {
