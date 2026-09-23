@@ -522,6 +522,11 @@
 				<platform>ppc64_aix|x86-64_windows|x86-32_windows|aarch64_windows|s390x_linux</platform>
                                 <impl>hotspot</impl>
                         </disable>
+			<disable>
+				<comment># Disabled on macos/aarch64 due to layout issues making Robot to fail - https://github.com/adoptium/aqa-tests/issues/7717 </comment>
+				<platform>aarch64_mac</platform>
+				<impl>hotspot</impl>
+			</disable>
                 </disables>
                 <variations>
                         <variation>NoOptions</variation>
