@@ -78,3 +78,5 @@ public class ResourceBundleTest_27_zh_TW extends ListResourceBundle {
       {"PM","\u4E0B\u5348"},
    };
 }
+
+// Made with Bob
