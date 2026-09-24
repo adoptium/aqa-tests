@@ -370,7 +370,7 @@ You can also use the `/exclude` issue comment command to create exclusions in `o
 ```/exclude <testcases> <issue_url> <platform> [jdk=<versions>] [impl=<impl>] [variant=<variant>]```
 
 `<...>` indicates required parameters, while `[...]` indicates optional parameters.
-Use test paths (or comma-separated test paths) for `<testcases>`. For valid `<platform>` values, refer to: https://github.com/adoptium/aqa-tests/blob/master/buildenv/jenkins/openjdk_tests
+Use test paths (or comma-separated test paths) for `<testcases>`. For valid `<platform>` values, refer to: https://github.com/adoptium/aqa-tests/blob/master/openjdk/README.md#exclude-a-testcase
 
 Examples:
 
