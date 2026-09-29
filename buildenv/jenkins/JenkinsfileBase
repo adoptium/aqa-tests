@@ -36,6 +36,7 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
+		env.testStatus = 'UNSTABLE'
 		env.jobStatus = 'UNSTABLE'
 	} finally {
 		sh "$tearDownCmd"
@@ -133,6 +134,7 @@ def setupEnv() {
 	env.PARALLEL = env.PARALLEL ? params.PARALLEL : "None"
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
+	env.testStatus = 'SUCCESS'
 	env.jobStatus = 'SUCCESS'
 
 	if (JOB_NAME.contains("Grinder")) {
@@ -911,6 +913,7 @@ def runTest( ) {
 		}
 		// Check if any iterations ran and accumulated results
 		if (env.ITER_COUNT.toInteger() == 0) {
+			env.testStatus = 'FAILURE'
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
@@ -973,6 +976,7 @@ def checkTestResults(results) {
 	env.ITER_SKIPPED = (env.ITER_SKIPPED.toInteger() + (results["SKIPPED"] ?: 0)).toString()
 
 	if (results["TOTAL"] == 0) {
+		env.testStatus = 'FAILURE'
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
 		summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
@@ -981,6 +985,7 @@ def checkTestResults(results) {
 	}
 
 	if (results["FAILED"] != 0) {
+		env.testStatus = 'UNSTABLE'
 		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, current build status is UNSTABLE.'
 	}
@@ -1590,7 +1595,7 @@ def mergeTestCasesWithoutDup(String knownTestCases, String newTestCases) {
 }
 
 def addFailedTestsGrinderLink(paths="") {
-	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
+	if (env.testStatus == 'UNSTABLE' || env.testStatus == 'FAILURE' || env.testStatus == 'ABORTED') {
 		def customizedTestCases = getFailedAndCustomizedTest(paths)
 		String url = env.RERUN_LINK
 		// Add rerun FailedTests link only if there are targets other than _custom as it's duplicate with rerun customized link
@@ -1643,6 +1648,9 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to failed test(s) - RERUN_ITERATIONS > 0 and list of failed test target(s) (i.e., env.FAILED_TESTS cannot be empty)
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
+ * originalStatus must be env.testStatus (test-only outcome). currentBuild.result is set to env.jobStatus
+ * (worst of test + infra) so that infrastructure failures are visible but rerun decisions are driven
+ * purely by test outcomes.
 */
 def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
@@ -1724,20 +1732,20 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
-						currentBuild.result = originalStatus
+						currentBuild.result = env.jobStatus
 					} else if ( originalStatus == 'ABORTED') {
 						// Set job status to the worst result among its parallel branches including rerun branch.
-						currentBuild.result = originalStatus
+						currentBuild.result = env.jobStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
 					}
 				}
 			}
 		} else {
-			currentBuild.result = originalStatus
+			currentBuild.result = env.jobStatus
 		}
 	} else {
-		currentBuild.result = originalStatus
+		currentBuild.result = env.jobStatus
 	}
 }
 
@@ -1768,6 +1776,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
 		def childTestJobParams = [:]
 		def currentStatus = 'SUCCESS';
+		def currentTestStatus = 'SUCCESS';
 		forceCleanWS()
 		try {
 			def buildPaths = ""
@@ -1779,13 +1788,18 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					def buildId = cjob.getNumber()
 					def name = cjob.getProjectName()
 					def childResult = cjob.getCurrentResult()
-					echo "${name} #${buildId} completed with status ${childResult}"
-					// track FAILURE job childTestJobParams if it's rerun stage
-					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) {
+					// Read the child's test-only outcome; fall back to childResult if not set
+					def childTestResult = cjob.getBuildVariables()["testStatus"] ?: childResult
+					echo "${name} #${buildId} completed with job status ${childResult}, test status ${childTestResult}"
+					// track FAILURE job childTestJobParams if its test outcome was FAILURE (not just infra)
+					if ( originalStatus == "SUCCESS" && childTestResult == "FAILURE" ) {
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
 					if (isWorseThan( childResult, currentStatus)) {
 						currentStatus = childResult
+					}
+					if (isWorseThan( childTestResult, currentTestStatus)) {
+						currentTestStatus = childTestResult
 					}
 					try {
 						timeout(time: 1, unit: 'HOURS') {
@@ -1822,10 +1836,14 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
 			}
+			if ( originalStatus != "SUCCESS" && isWorseThan( currentTestStatus, originalStatus)) {
+				currentTestStatus = originalStatus
+			}
 
 			archiveAQAvitFiles()
+			env.testStatus = currentTestStatus
 			env.jobStatus = currentStatus
-			if (currentStatus != "SUCCESS") {
+			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {
 					if ( originalStatus == "SUCCESS" ) {
 						getFailedAndCustomizedTest(buildPaths[0..-2])
@@ -1847,7 +1865,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		} finally {
 			forceCleanWS()
 		}
-		return [jobStatus: currentStatus, jobParams: childTestJobParams]
+		return [jobStatus: currentStatus, testStatus: currentTestStatus, jobParams: childTestJobParams]
 	}
 }
 
