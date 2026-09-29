@@ -25,7 +25,10 @@ permissions:
 jobs:
   delete-branch:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'cherry-pick-')
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login == 'github-actions[bot]' &&
+      startsWith(github.head_ref, 'cherry-pick-')
     steps:
       - name: Delete cherry-pick head branch
         env:
@@ -33,4 +36,4 @@ jobs:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           echo "PR closed/merged. Deleting branch: ${HEAD_BRANCH}"
-          gh api --method DELETE "/repos/${{ github.repository }}/git/refs/heads/${HEAD_BRANCH}" || true
+          gh api --method DELETE "/repos/${{ github.repository }}/git/refs/heads/${HEAD_BRANCH}"
