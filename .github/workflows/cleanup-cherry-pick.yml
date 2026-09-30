@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   delete-branch:
@@ -35,8 +36,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.head_ref }}
           EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          echo "PR closed/merged. Checking branch: ${HEAD_BRANCH} (expected SHA: ${EXPECTED_SHA})"
+          echo "PR #${PR_NUMBER} closed/merged event received. Checking current PR state..."
+
+          # Query live PR state
+          if ! PR_STATE=$(gh api "/repos/${{ github.repository }}/pulls/${PR_NUMBER}" --jq '.state' 2>&1); then
+            echo "::error::Failed to query PR #${PR_NUMBER} state: $PR_STATE"
+            exit 1
+          fi
+
+          if [ "$PR_STATE" != "closed" ]; then
+            echo "PR #${PR_NUMBER} is currently in state '${PR_STATE}', not 'closed'. Skipping branch deletion."
+            exit 0
+          fi
+
+          echo "PR #${PR_NUMBER} is closed. Checking branch: ${HEAD_BRANCH} (expected SHA: ${EXPECTED_SHA})"
 
           # Fetch current SHA of the branch ref
           if ! CURRENT_SHA=$(gh api "/repos/${{ github.repository }}/git/ref/heads/${HEAD_BRANCH}" --jq '.object.sha' 2>&1); then
