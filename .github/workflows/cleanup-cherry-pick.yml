@@ -69,5 +69,17 @@ jobs:
             exit 0
           fi
 
+          # A closed PR is not necessarily the last PR using this head branch.
+          if ! OPEN_PRS=$(gh api --method GET --paginate "/repos/${{ github.repository }}/pulls" \
+            -f state=open -f "head=${{ github.repository_owner }}:${HEAD_BRANCH}" \
+            --jq '.[].number' 2>&1); then
+            echo "::error::Failed to check open PRs for ${HEAD_BRANCH}: $OPEN_PRS"
+            exit 1
+          fi
+          if [ -n "$OPEN_PRS" ]; then
+            echo "Branch ${HEAD_BRANCH} is still used by open PR(s): $OPEN_PRS. Skipping deletion."
+            exit 0
+          fi
+
           echo "Deleting cherry-pick branch: ${HEAD_BRANCH}"
           gh api --method DELETE "/repos/${{ github.repository }}/git/refs/heads/${HEAD_BRANCH}"
