@@ -34,6 +34,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.head_ref }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "PR closed/merged. Deleting branch: ${HEAD_BRANCH}"
+          echo "PR closed/merged. Checking branch: ${HEAD_BRANCH} (expected SHA: ${EXPECTED_SHA})"
+
+          # Fetch current SHA of the branch ref
+          if ! CURRENT_SHA=$(gh api "/repos/${{ github.repository }}/git/ref/heads/${HEAD_BRANCH}" --jq '.object.sha' 2>&1); then
+            if echo "$CURRENT_SHA" | grep -q "Not Found"; then
+              echo "Branch ${HEAD_BRANCH} does not exist (already deleted), nothing to do."
+              exit 0
+            fi
+            echo "::error::Failed to inspect ref ${HEAD_BRANCH}: $CURRENT_SHA"
+            exit 1
+          fi
+
+          # If the branch has moved to a new commit (e.g. recreated by a newer cherry-pick), do not delete it
+          if [ "$CURRENT_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Branch ${HEAD_BRANCH} SHA ($CURRENT_SHA) does not match closed PR head SHA ($EXPECTED_SHA). Skipping deletion to prevent removing an active/recreated branch."
+            exit 0
+          fi
+
+          echo "Deleting cherry-pick branch: ${HEAD_BRANCH}"
           gh api --method DELETE "/repos/${{ github.repository }}/git/refs/heads/${HEAD_BRANCH}"
