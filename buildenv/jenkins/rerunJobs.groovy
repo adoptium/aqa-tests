@@ -161,12 +161,19 @@ pipeline {
                     // --- Optional SCM_REFERENCE filter check against CUSTOMIZED_SDK_URL ---
                     if (scmReference) {
                         def sdkUrl = getBuildParamFromInfo(buildInfo, 'CUSTOMIZED_SDK_URL') ?: ''
-                        if (!sdkUrl.contains(scmReference)) {
-                            echo "CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}'. No rerun triggered."
+                        // Normalise scmReference to match the artifact filename convention:
+                        //   '+' → '_'  (e.g. 26.0.2.1+1 → 26.0.2.1_1)
+                        //   leading '8u…' form: remove '-'  (e.g. 8u482-b08 → 8u482b08)
+                        def normalizedRef = scmReference.replace('+', '_')
+                        if (normalizedRef.startsWith('8u')) {
+                            normalizedRef = normalizedRef.replace('-', '')
+                        }
+                        if (!sdkUrl.contains(normalizedRef)) {
+                            echo "CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}'). No rerun triggered."
                             currentBuild.result = 'FAILURE'
                             return
                         }
-                        echo "CUSTOMIZED_SDK_URL matches SCM_REFERENCE — proceeding."
+                        echo "CUSTOMIZED_SDK_URL matches SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}') — proceeding."
                     }
 
                     // --- Check result ---
