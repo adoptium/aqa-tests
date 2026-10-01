@@ -178,7 +178,8 @@ fi
 # Echo ARCTIC_JDK version
 echo "Using ARCTIC_JDK=${ARCTIC_JDK}"
 echo "##############################"
-$ARCTIC_JDK -version
+$ARCTIC_JDK -version &> arctic_jdk.info
+cat arctic_jdk.info
 echo "##############################"
 
 if [[ $TEST_GROUP =~ "custom" ]]; then
