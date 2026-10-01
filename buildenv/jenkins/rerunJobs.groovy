@@ -30,9 +30,11 @@
  *   • SCM_REFERENCE set but does not match CUSTOMIZED_SDK_URL → FAILURE, log and stop.
  *   • Last build result is SUCCESS → SUCCESS, log "passed, no rerun needed" and stop.
  *
- * Rerun rules 
+ * Rerun rules
  * ----------------------------------------------------------------------------------
- *   FAILURE / ABORTED  → re-trigger <JOB_NAME> with identical parameters (full rebuild).
+ *   FAILURE / ABORTED  → re-trigger <JOB_NAME> with all original parameters preserved,
+ *                        except any explicitly supplied ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH
+ *                        overrides which replace the corresponding originals (full rebuild).
  *   UNSTABLE           → parse the build description for rerun links. TARGET and CUSTOM_TARGET are
  *                        extracted from the parambuild URL and used to re-trigger
  *                        <JOB_NAME> with overridden parameters:
@@ -108,8 +110,10 @@ pipeline {
                     if (mode == 'RELAY') {
                         echo "=== rerunJobs RELAY: forwarding rerun of '${jobName}' to temurin-compliance ==="
                         def remoteParamList = [
-                            MapParameter(name: 'JOB_NAME',      value: jobName),
-                            MapParameter(name: 'SCM_REFERENCE', value: scmReference)
+                            MapParameter(name: 'JOB_NAME',           value: jobName),
+                            MapParameter(name: 'SCM_REFERENCE',       value: scmReference),
+                            MapParameter(name: 'ADOPTOPENJDK_REPO',   value: adoptopenjdkRepo),
+                            MapParameter(name: 'ADOPTOPENJDK_BRANCH', value: adoptopenjdkBranch)
                         ]
                         def handle = triggerRemoteJob(
                             abortTriggeredJob:      true,
@@ -385,8 +389,9 @@ def rerunTasksFromLinks(String jobName, List originalParams, String description,
  * Re-triggers jobName with the given parameters.
  * When target is non-null (targeted rerun): TARGET/CUSTOM_TARGET are overridden and
  * PARALLEL/NUM_MACHINES/TEST_TIME are reset to defaults as JenkinsfileBase does.
- * When target is null (full rebuild): all original parameters are passed through
- * unchanged — the build is an identical repeat of the last run.
+ * When target is null (full rebuild): all original parameters are preserved except any
+ * explicitly supplied ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH overrides, which replace
+ * the corresponding originals.
  * Returns a structured map [result: String, description: String] so the caller
  * can safely aggregate results and descriptions in the main thread after parallel().
  */
@@ -421,8 +426,9 @@ def makeRerunClosure(String jobName, List baseParams, String target, String cust
  *     the behaviour of JenkinsfileBase triggerRerunJob().
  *
  * Full rebuild (target == null):
- *   - All parameters are passed through unchanged so the rerun is identical
- *     to the original build.
+ *   - All parameters are passed through unchanged, except that any non-empty
+ *     adoptopenjdkRepo / adoptopenjdkBranch arguments replace the corresponding
+ *     original ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH values.
  *
  * Returns a list of plain maps; call toJenkinsParams() before passing to `build`.
  */
