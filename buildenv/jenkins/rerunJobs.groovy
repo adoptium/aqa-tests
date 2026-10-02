@@ -30,9 +30,11 @@
  *   • SCM_REFERENCE set but does not match CUSTOMIZED_SDK_URL → FAILURE, log and stop.
  *   • Last build result is SUCCESS → SUCCESS, log "passed, no rerun needed" and stop.
  *
- * Rerun rules 
+ * Rerun rules
  * ----------------------------------------------------------------------------------
- *   FAILURE / ABORTED  → re-trigger <JOB_NAME> with identical parameters (full rebuild).
+ *   FAILURE / ABORTED  → re-trigger <JOB_NAME> with all original parameters preserved,
+ *                        except any explicitly supplied ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH
+ *                        overrides which replace the corresponding originals (full rebuild).
  *   UNSTABLE           → parse the build description for rerun links. TARGET and CUSTOM_TARGET are
  *                        extracted from the parambuild URL and used to re-trigger
  *                        <JOB_NAME> with overridden parameters:
@@ -67,6 +69,16 @@ pipeline {
             description: '(Optional) Set to RELAY to forward the rerun request to the remote private Jenkins ' +
                          '(temurin-compliance) instead of running locally.'
         )
+        string(
+            name: 'ADOPTOPENJDK_REPO',
+            description: '(Optional) Override the ADOPTOPENJDK_REPO parameter on the rerun build. ' +
+                         'When empty, the original build\'s value is used.'
+        )
+        string(
+            name: 'ADOPTOPENJDK_BRANCH',
+            description: '(Optional) Override the ADOPTOPENJDK_BRANCH parameter on the rerun build. ' +
+                         'When empty, the original build\'s value is used.'
+        )
     }
 
     options {
@@ -78,9 +90,11 @@ pipeline {
         stage('Rerun') {
             steps {
                 script {
-                    def jobName      = params.JOB_NAME?.trim()
-                    def scmReference = params.SCM_REFERENCE?.trim() ?: ''
-                    def mode         = params.MODE?.trim() ?: ''
+                    def jobName             = params.JOB_NAME?.trim()
+                    def scmReference        = params.SCM_REFERENCE?.trim() ?: ''
+                    def mode                = params.MODE?.trim() ?: ''
+                    def adoptopenjdkRepo    = params.ADOPTOPENJDK_REPO?.trim() ?: ''
+                    def adoptopenjdkBranch  = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
 
                     if (!jobName) {
                         error "JOB_NAME parameter must be set."
@@ -96,8 +110,10 @@ pipeline {
                     if (mode == 'RELAY') {
                         echo "=== rerunJobs RELAY: forwarding rerun of '${jobName}' to temurin-compliance ==="
                         def remoteParamList = [
-                            MapParameter(name: 'JOB_NAME',      value: jobName),
-                            MapParameter(name: 'SCM_REFERENCE', value: scmReference)
+                            MapParameter(name: 'JOB_NAME',           value: jobName),
+                            MapParameter(name: 'SCM_REFERENCE',       value: scmReference),
+                            MapParameter(name: 'ADOPTOPENJDK_REPO',   value: adoptopenjdkRepo),
+                            MapParameter(name: 'ADOPTOPENJDK_BRANCH', value: adoptopenjdkBranch)
                         ]
                         def handle = triggerRemoteJob(
                             abortTriggeredJob:      true,
@@ -184,7 +200,7 @@ pipeline {
                     }
 
                     // --- Build and run rerun tasks ---
-                    def rerunTasks = buildRerunTasks(jobName, buildInfo, result)
+                    def rerunTasks = buildRerunTasks(jobName, buildInfo, result, adoptopenjdkRepo, adoptopenjdkBranch)
 
                     echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
                     def rerunResults = parallel rerunTasks
@@ -300,13 +316,13 @@ def toJenkinsParams(List paramMaps) {
  * rerun link in their own description).
  * Regular _testList_ children are ignored.
  */
-def buildRerunTasks(String jobName, def buildInfo, String result) {
+def buildRerunTasks(String jobName, def buildInfo, String result, String adoptopenjdkRepo, String adoptopenjdkBranch) {
     def tasks          = [:]
     def originalParams = collectParamsFromInfo(buildInfo)
 
     if (result == 'FAILURE' || result == 'ABORTED') {
         // Re-trigger the same job with identical parameters (full rebuild).
-        tasks[jobName] = makeRerunClosure(jobName, originalParams, null, null)
+        tasks[jobName] = makeRerunClosure(jobName, originalParams, null, null, adoptopenjdkRepo, adoptopenjdkBranch)
         return tasks
     }
 
@@ -314,7 +330,7 @@ def buildRerunTasks(String jobName, def buildInfo, String result) {
         def description = buildInfo?.description ?: ''
 
         // Parse rerun links from the top-level description.
-        def topTasks = rerunTasksFromLinks(jobName, originalParams, description)
+        def topTasks = rerunTasksFromLinks(jobName, originalParams, description, adoptopenjdkRepo, adoptopenjdkBranch)
         tasks.putAll(topTasks)
 
         // Also inspect any _rerun child jobs found in the description.
@@ -328,11 +344,11 @@ def buildRerunTasks(String jobName, def buildInfo, String result) {
             echo "  _rerun child '${childName}' #${childBuildNum}: ${childResult}"
             if (childResult == 'UNSTABLE') {
                 def childParams = collectParamsFromInfo(childInfo)
-                def childTasks  = rerunTasksFromLinks(childName, childParams, childInfo?.description ?: '')
+                def childTasks  = rerunTasksFromLinks(childName, childParams, childInfo?.description ?: '', adoptopenjdkRepo, adoptopenjdkBranch)
                 tasks.putAll(childTasks)
             } else if (childResult == 'FAILURE' || childResult == 'ABORTED') {
                 def childParams = collectParamsFromInfo(childInfo)
-                tasks[childName] = makeRerunClosure(childName, childParams, null, null)
+                tasks[childName] = makeRerunClosure(childName, childParams, null, null, adoptopenjdkRepo, adoptopenjdkBranch)
             }
         }
     }
@@ -341,7 +357,7 @@ def buildRerunTasks(String jobName, def buildInfo, String result) {
         // Catch-all for non-standard results (e.g. NOT_BUILT, UNKNOWN) not handled
         // by the branches above — fall back to a full rebuild rather than failing.
         echo "No rerun tasks produced for result '${result}' — falling back to full rebuild."
-        tasks["${jobName}_rebuild"] = makeRerunClosure(jobName, originalParams, null, null)
+        tasks["${jobName}_rebuild"] = makeRerunClosure(jobName, originalParams, null, null, adoptopenjdkRepo, adoptopenjdkBranch)
     }
     return tasks
 }
@@ -353,13 +369,13 @@ def buildRerunTasks(String jobName, def buildInfo, String result) {
  *   - Only "failed targets"   → trigger jobName once with TARGET override only.
  *   - No links found          → fall back to full rebuild of jobName.
  */
-def rerunTasksFromLinks(String jobName, List originalParams, String description) {
+def rerunTasksFromLinks(String jobName, List originalParams, String description, String adoptopenjdkRepo, String adoptopenjdkBranch) {
     def tasks    = [:]
     def allLinks = parseRerunLinks(description)
 
     if (allLinks.isEmpty()) {
         // No links — fall back to full rebuild of the same job.
-        tasks["${jobName}_rebuild"] = makeRerunClosure(jobName, originalParams, null, null)
+        tasks["${jobName}_rebuild"] = makeRerunClosure(jobName, originalParams, null, null, adoptopenjdkRepo, adoptopenjdkBranch)
         return tasks
     }
 
@@ -367,7 +383,7 @@ def rerunTasksFromLinks(String jobName, List originalParams, String description)
     def activeLinks = customLinks ?: allLinks   // prefer _custom; fall back to failed-targets
 
     activeLinks.eachWithIndex { entry, idx ->
-        tasks["${jobName}_${idx}"] = makeRerunClosure(jobName, originalParams, entry.target, entry.customTarget)
+        tasks["${jobName}_${idx}"] = makeRerunClosure(jobName, originalParams, entry.target, entry.customTarget, adoptopenjdkRepo, adoptopenjdkBranch)
     }
     return tasks
 }
@@ -380,17 +396,18 @@ def rerunTasksFromLinks(String jobName, List originalParams, String description)
  * Re-triggers jobName with the given parameters.
  * When target is non-null (targeted rerun): TARGET/CUSTOM_TARGET are overridden and
  * PARALLEL/NUM_MACHINES/TEST_TIME are reset to defaults as JenkinsfileBase does.
- * When target is null (full rebuild): all original parameters are passed through
- * unchanged — the build is an identical repeat of the last run.
+ * When target is null (full rebuild): all original parameters are preserved except any
+ * explicitly supplied ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH overrides, which replace
+ * the corresponding originals.
  * Returns a structured map [result: String, description: String] so the caller
  * can safely aggregate results and descriptions in the main thread after parallel().
  */
-def makeRerunClosure(String jobName, List baseParams, String target, String customTarget) {
+def makeRerunClosure(String jobName, List baseParams, String target, String customTarget, String adoptopenjdkRepo, String adoptopenjdkBranch) {
     return {
         def label = target ? "TARGET=${target}" : "(full rebuild)"
         echo "--- Triggering: ${jobName} ${label} ---"
 
-        def jobParams       = toJenkinsParams(overrideParams(baseParams, target, customTarget))
+        def jobParams       = toJenkinsParams(overrideParams(baseParams, target, customTarget, adoptopenjdkRepo, adoptopenjdkBranch))
         def downstreamBuild = build job: jobName, parameters: jobParams, propagate: false, wait: true
         def rerunResult     = downstreamBuild.getResult()?.toString() ?: 'UNKNOWN'
         def rerunBuildNum   = downstreamBuild.getNumber()
@@ -416,21 +433,24 @@ def makeRerunClosure(String jobName, List baseParams, String target, String cust
  *     the behaviour of JenkinsfileBase triggerRerunJob().
  *
  * Full rebuild (target == null):
- *   - All parameters are passed through unchanged so the rerun is identical
- *     to the original build.
+ *   - All parameters are passed through unchanged, except that any non-empty
+ *     adoptopenjdkRepo / adoptopenjdkBranch arguments replace the corresponding
+ *     original ADOPTOPENJDK_REPO / ADOPTOPENJDK_BRANCH values.
  *
  * Returns a list of plain maps; call toJenkinsParams() before passing to `build`.
  */
-def overrideParams(List baseParams, String target, String customTarget) {
-    // Full rebuild — return params unchanged.
-    if (target == null) {
-        return baseParams
-    }
-    // Targeted rerun — override TARGET/CUSTOM_TARGET and reset parallel settings.
+def overrideParams(List baseParams, String target, String customTarget, String adoptopenjdkRepo, String adoptopenjdkBranch) {
     def result = []
     baseParams.each { p ->
         def key = p.name
-        if (key == 'TARGET') {
+        if (key == 'ADOPTOPENJDK_REPO' && adoptopenjdkRepo) {
+            result << [name: 'ADOPTOPENJDK_REPO', value: adoptopenjdkRepo, type: 'string']
+        } else if (key == 'ADOPTOPENJDK_BRANCH' && adoptopenjdkBranch) {
+            result << [name: 'ADOPTOPENJDK_BRANCH', value: adoptopenjdkBranch, type: 'string']
+        } else if (target == null) {
+            // Full rebuild — pass all other params through unchanged.
+            result << p
+        } else if (key == 'TARGET') {
             result << [name: 'TARGET', value: target, type: 'string']
         } else if (key == 'CUSTOM_TARGET' && customTarget != null) {
             result << [name: 'CUSTOM_TARGET', value: customTarget, type: 'string']
