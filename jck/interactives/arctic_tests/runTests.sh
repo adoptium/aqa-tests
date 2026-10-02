@@ -157,6 +157,7 @@ fi
 
 OSNAME="Unknown"
 ARCTIC_BACKEND_OPTIONS=""
+ARCTIC_TESTCASE_OPTIONS=""
 if [[ $SPEC =~ osx.* ]]; then
     OSNAME="mac"
     JENKINS_HOME_DIR="/Users/jenkins"
@@ -170,6 +171,7 @@ elif [[ $SPEC =~ linux.* ]]; then
 elif [[ $SPEC =~ win.* ]]; then
     OSNAME="windows"
     ARCTIC_BACKEND_OPTIONS="-Djava.awt.headless=false"
+    ARCTIC_TESTCASE_OPTIONS="-Djava.awt.headless=false"
     JENKINS_HOME_DIR="c:/Users/jenkins"
     PPROP_LINE='s#arctic.common.repository.json.path.*$#arctic.common.repository.json.path = c:/Users/jenkins/jck_run/arctic/windows/arctic_tests#g'
     setupWindowsEnv
@@ -320,11 +322,11 @@ for ARCTIC_GROUP in $ARCTIC_GROUPS; do
             echo "         JCK class: ${TEST_CLASS}"
 
             if [ $OSNAME = "windows" ]; then
-                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dmultitest.testcaseOrder=sorted -classpath '\";${JCK_MATERIAL}/classes;\"' ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java ${ARCTIC_TESTCASE_OPTIONS} -Dmultitest.testcaseOrder=sorted -classpath '\";${JCK_MATERIAL}/classes;\"' ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
             elif [ $OSNAME = "mac" ]; then
-                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java ${ARCTIC_TESTCASE_OPTIONS} -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
             else
-                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
+                TEST_CMDLINE="${TEST_JDK_HOME}/bin/java ${ARCTIC_TESTCASE_OPTIONS} -Dmultitest.testcaseOrder=sorted -classpath :${JCK_MATERIAL}/classes: ${TEST_CLASS} -TestDirURL file:${JCK_MATERIAL}/tests/${ARCTIC_GROUP}/${JCK_TESTCASE} -TestCaseID ${JCK_TEST}"
             fi
 
             # Certain tests require extra options
