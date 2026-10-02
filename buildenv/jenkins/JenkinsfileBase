@@ -364,9 +364,7 @@ def setupParallelEnv() {
 			parallelTestParams[TEST_JOB_NAME] = childParams
 		}
 
-		if (create_jobs) {
-			parallel create_jobs
-		}
+		runJobDslSequentially(create_jobs)
 		return NUM_LIST
 		// return to top level pipeline file in order to exit node block before running tests in parallel
 	}
@@ -1615,6 +1613,12 @@ def addFailedTestsGrinderLink(paths="") {
 	}
 }
 
+// Executes a map of jobDsl closures sequentially to avoid
+// GeneratedObjectsRunAction concurrent-mutation races in the Job DSL plugin.
+def runJobDslSequentially(jobs) {
+	jobs.each { _name, closure -> closure() }
+}
+
 def generateJob (newJobs, childTest, testJobName) {
 	// If GENERATE_JOBS is set to true, force generate the child job. Otherwise, only generate the child job if it does not exist
 	if (env.GENERATE_JOBS == 'true') {
@@ -1658,7 +1662,7 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 						def childParams = []
 						echo "Generating rerun ${rerunJobName} job for running failed test(s) ..."
 						generateJob(newJobs, rerunJobName, rerunJobName)
-						parallel newJobs
+						runJobDslSequentially(newJobs)
 
 						// loop through all the params and change the parameters if needed
 						params.each { param ->
@@ -1714,9 +1718,7 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 								}
 						}
 						// generate the new rerun job
-						if (newRerunJobs) {
-							parallel newRerunJobs
-						}
+						runJobDslSequentially(newRerunJobs)
 					}
 				}
 				if (rerunTestJobs) {
