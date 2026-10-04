@@ -514,9 +514,11 @@ timestamps{
                     jenkinsfile.triggerRerunJob(parallelResults.testStatus, parallelResults.jobParams)
                 } else {
                     currentBuild.result = env.jobStatus
+                    jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
                 }
             } else {
                 currentBuild.result = env.jobStatus
+                jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
             }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
@@ -617,11 +619,31 @@ def runTest() {
     } catch (Exception e) {
         println("Exception: " + e.toString())
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
-        // if there is an exception, set currentBuild.result to ABORTED/FAILURE
+        // For abort/timeout always propagate that directly.
+        // For other exceptions (e.g. cleanWs, git clone), use env.jobStatus so that a post-test
+        // infrastructure failure does not override a clean test outcome. env.jobStatus is already
+        // set to worst(env.testStatus, infra) by the pipeline stages that ran before the exception.
         if (e.toString().contains("FlowInterruptedException")) {
             currentBuild.result = 'ABORTED'
+            env.jobStatus = 'ABORTED'
         } else {
-            currentBuild.result = 'FAILURE'
+            def infraStatus = 'FAILURE'
+            // Degrade env.jobStatus to at least FAILURE due to the uncaught exception,
+            // but preserve env.testStatus so callers can distinguish infra vs test failures.
+            def jenkinsfileSeverity = [ 'SUCCESS': 0, 'UNSTABLE': 1, 'FAILURE': 2, 'ABORTED': 3 ]
+            if ((jenkinsfileSeverity[infraStatus] ?: 0) > (jenkinsfileSeverity[env.jobStatus] ?: 0)) {
+                env.jobStatus = infraStatus
+            }
+            currentBuild.result = env.jobStatus
+            // Annotate the build when infra degraded the job status past the test outcome,
+            // so it is visible on the build page that tests themselves were not the cause.
+            if (env.testStatus && jenkinsfile != null) {
+                try {
+                    jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
+                } catch (Exception annotateEx) {
+                    println("Warning: could not annotate infra failure: ${annotateEx}")
+                }
+            }
         }
 
     } finally {
