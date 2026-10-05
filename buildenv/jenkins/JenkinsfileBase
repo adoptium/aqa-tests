@@ -1029,6 +1029,7 @@ def writeSummary() {
 		appendSummaryText(summary,"<li><b>DISABLED</b> : ${env.ITER_DISABLED}</li>")
 	}
 	appendSummaryText(summary,"<li><b>SKIPPED</b> : ${env.ITER_SKIPPED}</li>")
+	appendSummaryText(summary,"<li><b>TEST STATUS</b> : ${env.testStatus}</li>")
 	appendSummaryText(summary,"</ul>")
 }
 
