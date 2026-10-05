@@ -156,7 +156,7 @@ Parameters applied to all test jobs unless overridden:
 |-----------|-------------|---------|
 | `JDK_REPO` | JDK source repository URL | `"https://github.com/adoptium/temurin-build"` |
 | `JDK_BRANCH` | JDK source branch | `"master"` |
-| `OPENJ9_BRANCH` | OpenJ9 branch (for openj9 variant) | `"main"` |
+| `OPENJ9_BRANCH` | OpenJ9 branch (for openj9 variant) | `"master"` |
 | `VENDOR_TEST_REPOS` | Vendor-specific test repository | `"git@github.ibm.com:runtimes/test.git"` |
 | `VENDOR_TEST_BRANCHES` | Vendor test branch | `"master"` |
 | `VENDOR_TEST_DIRS` | Vendor test directories | `"functional"` |

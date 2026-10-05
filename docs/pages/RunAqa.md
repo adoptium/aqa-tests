@@ -129,7 +129,7 @@ GitHub repository and branch of the OpenJ9 to use.
 
 The format is `<repository>:<branch>`.
 
-The default value is `eclipse-openj9/openj9:main`.
+The default value is `eclipse-openj9/openj9:master`.
 
 This option is unavailable in `openj9` repositories because it will always use the head repo and branch of the PR instead.
 
