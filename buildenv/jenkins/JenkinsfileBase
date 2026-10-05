@@ -1032,11 +1032,26 @@ def writeSummary() {
 	appendSummaryText(summary,"</ul>")
 }
 
+// Returns a badge image URL for a given build result status.
+// Uses the embeddable-build-status-plugin endpoint on this Jenkins instance.
+def getResultBadgeUrl(result) {
+	def statusMap = [
+		'SUCCESS'  : [text: 'passing',  color: 'brightgreen'],
+		'UNSTABLE' : [text: 'unstable', color: 'yellow'],
+		'FAILURE'  : [text: 'failing',  color: 'red'],
+		'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
+		'NOT_BUILT': [text: 'not_run',  color: 'lightgrey'],
+	]
+	def entry = statusMap[result] ?: [text: 'unknown', color: 'lightgrey']
+	return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
+}
+
 def post(output_name) {
 	stage('Post') {
-		// Prepend TEST STATUS to the build description so it appears before TARGET/LABEL/node lines
+		// Prepend TEST STATUS badge to the build description so it appears before TARGET/LABEL/node lines
 		if (env.testStatus) {
-			currentBuild.description = "TEST STATUS: ${env.testStatus}<br/>" + (currentBuild.description ?: "")
+			def badgeUrl = getResultBadgeUrl(env.testStatus)
+			currentBuild.description = "TEST STATUS: <img src=\"${badgeUrl}\" /><br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
