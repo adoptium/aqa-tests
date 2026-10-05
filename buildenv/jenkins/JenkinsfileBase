@@ -1053,9 +1053,9 @@ def getTestStatusBadge(status) {
 
 def post(output_name) {
 	stage('Post') {
-		// Append TEST STATUS badge right after TARGET/LABEL/node, before artifact/rerun links
+		// Prepend TEST STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
 		if (env.testStatus) {
-			currentBuild.description = (currentBuild.description ?: "") + "<br/>TEST STATUS: ${getTestStatusBadge(env.testStatus)}"
+			currentBuild.description = "TEST STATUS: ${getTestStatusBadge(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
