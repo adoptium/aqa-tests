@@ -619,30 +619,25 @@ def runTest() {
     } catch (Exception e) {
         println("Exception: " + e.toString())
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
-        // For abort/timeout always propagate that directly.
-        // For other exceptions (e.g. cleanWs, git clone), use env.jobStatus so that a post-test
-        // infrastructure failure does not override a clean test outcome. env.jobStatus is already
-        // set to worst(env.testStatus, infra) by the pipeline stages that ran before the exception.
-        if (e.toString().contains("FlowInterruptedException")) {
-            currentBuild.result = 'ABORTED'
-            env.jobStatus = 'ABORTED'
-        } else {
-            def infraStatus = 'FAILURE'
-            // Degrade env.jobStatus to at least FAILURE due to the uncaught exception,
-            // but preserve env.testStatus so callers can distinguish infra vs test failures.
-            def jenkinsfileSeverity = [ 'SUCCESS': 0, 'UNSTABLE': 1, 'FAILURE': 2, 'ABORTED': 3 ]
-            if ((jenkinsfileSeverity[infraStatus] ?: 0) > (jenkinsfileSeverity[env.jobStatus] ?: 0)) {
-                env.jobStatus = infraStatus
-            }
-            currentBuild.result = env.jobStatus
-            // Annotate the build when infra degraded the job status past the test outcome,
-            // so it is visible on the build page that tests themselves were not the cause.
-            if (env.testStatus && jenkinsfile != null) {
-                try {
-                    jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
-                } catch (Exception annotateEx) {
-                    println("Warning: could not annotate infra failure: ${annotateEx}")
-                }
+        // For any exception (abort, timeout, cleanWs, git clone, etc.), degrade env.jobStatus but
+        // preserve env.testStatus. annotateInfraFailure() will only fire a badge when
+        // jobStatus is worse than testStatus, so only genuine infra-after-tests cases are annotated.
+        // Guard: if no test results were collected at all (ITER_COUNT == 0), the 'SUCCESS' value of
+        // testStatus is just the initialisation default — null it so no badge falsely claims tests passed.
+        if ((env.ITER_COUNT ?: '0').toInteger() == 0 && env.testStatus == 'SUCCESS') {
+            env.testStatus = null
+        }
+        def infraStatus = e.toString().contains("FlowInterruptedException") ? 'ABORTED' : 'FAILURE'
+        def jenkinsfileSeverity = [ 'SUCCESS': 0, 'UNSTABLE': 1, 'FAILURE': 2, 'ABORTED': 3 ]
+        if ((jenkinsfileSeverity[infraStatus] ?: 0) > (jenkinsfileSeverity[env.jobStatus] ?: 0)) {
+            env.jobStatus = infraStatus
+        }
+        currentBuild.result = env.jobStatus
+        if (env.testStatus && jenkinsfile != null) {
+            try {
+                jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
+            } catch (Exception annotateEx) {
+                println("Warning: could not annotate infra failure: ${annotateEx}")
             }
         }
 
