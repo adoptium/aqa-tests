@@ -1033,24 +1033,24 @@ def writeSummary() {
 }
 
 // Returns coloured bold text for TEST STATUS in the build description.
-// Jenkins strips data: URIs and most attributes from currentBuild.description,
-// so plain <font color> is the safe approach for visible status emphasis.
+// Uses <font color> and <big> — safe HTML that Jenkins allows in descriptions.
+// Icon prefix: ✔ green, ⚠ yellow, ✘ red, ⊘ grey.
 def getTestStatusLabel(status) {
-	def colorMap = [
-		'SUCCESS'  : 'green',
-		'UNSTABLE' : '#b8860b',
-		'FAILURE'  : 'red',
-		'ABORTED'  : 'grey',
+	def styleMap = [
+		'SUCCESS'  : [color: 'green',   icon: '✔'],
+		'UNSTABLE' : [color: '#b8860b', icon: '⚠'],
+		'FAILURE'  : [color: 'red',     icon: '✘'],
+		'ABORTED'  : [color: 'grey',    icon: '⊘'],
 	]
-	def color = colorMap[status] ?: 'grey'
-	return "<font color='${color}'><b>${status}</b></font>"
+	def s = styleMap[status] ?: [color: 'grey', icon: '?']
+	return "<font color='${s.color}'><big><b>${s.icon} ${status}</b></big></font>"
 }
 
 def post(output_name) {
 	stage('Post') {
 		// Prepend TEST STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
 		if (env.testStatus) {
-			currentBuild.description = "<b>TEST STATUS: ${getTestStatusLabel(env.testStatus)}</b><br/><br/>" + (currentBuild.description ?: "")
+			currentBuild.description = "TEST STATUS: ${getTestStatusLabel(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
@@ -1844,11 +1844,12 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						def seconds = ((int)(totalMillis / 1000)) % 60
 						duration = "${hours}h ${minutes}m ${seconds}s"
 					}
+					def infraNote = isWorseThan(childResult, childTestResult) ? "<br/><font color='grey'><small>⚠ job degraded to ${childResult}</small></font>" : ""
 					childJobStatus += """
 							<tr>
 								<td>${name}/${buildId}</td>
 								<td><a href="${childBuildUrl}"><img src="${badgeUrl}" /></a></td>
-								<td>${getTestStatusLabel(childTestResult)}</td>
+								<td>${getTestStatusLabel(childTestResult)}${infraNote}</td>
 								<td>${duration}</td>
 							</tr>
 						"""
@@ -1866,7 +1867,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			env.testStatus = currentTestStatus
 
 			// Prepend TEST STATUS at the top of the parent description, now that currentTestStatus is finalised
-			def testStatusHeader = "<b>TEST STATUS: ${getTestStatusLabel(currentTestStatus)}</b><br/><br/>"
+			def testStatusHeader = "TEST STATUS: ${getTestStatusLabel(currentTestStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
 			env.jobStatus = currentStatus
 			if (currentTestStatus != "SUCCESS") {
@@ -1908,7 +1909,7 @@ def isWorseThan(String resultA, String resultB) {
 def annotateInfraFailure(String testStatus, String jobStatus) {
 	if (isWorseThan(jobStatus, testStatus)) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
-		appendSummaryText(summary, "TEST STATUS: ${testStatus} (job status degraded to ${jobStatus} due to infrastructure issue)")
+		appendSummaryText(summary, "TEST STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
 	}
 }
