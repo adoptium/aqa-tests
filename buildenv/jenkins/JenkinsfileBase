@@ -1032,26 +1032,30 @@ def writeSummary() {
 	appendSummaryText(summary,"</ul>")
 }
 
-// Returns a badge image URL for a given build result status.
-// Uses the embeddable-build-status-plugin endpoint on this Jenkins instance.
-def getResultBadgeUrl(result) {
-	def statusMap = [
-		'SUCCESS'  : [text: 'passing',  color: 'brightgreen'],
-		'UNSTABLE' : [text: 'unstable', color: 'yellow'],
-		'FAILURE'  : [text: 'failing',  color: 'red'],
-		'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
-		'NOT_BUILT': [text: 'not_run',  color: 'lightgrey'],
+// Returns an inline SVG data-URI badge showing only the coloured value pill
+// (no grey label section) for TEST STATUS in the build description.
+def getTestStatusBadge(status) {
+	def colorMap = [
+		'SUCCESS'  : '#4c1',
+		'UNSTABLE' : '#e6b800',
+		'FAILURE'  : '#e05d44',
+		'ABORTED'  : '#9f9f9f',
 	]
-	def entry = statusMap[result] ?: [text: 'unknown', color: 'lightgrey']
-	return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
+	def color = colorMap[status] ?: '#9f9f9f'
+	def value = status.toLowerCase()
+	// Width: approx 7px per char + 16px padding
+	def w = value.length() * 7 + 16
+	def mid = w / 2
+	def svg = """<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='20'><rect rx='3' width='${w}' height='20' fill='${color}'/><g fill='#fff' text-anchor='middle' font-family='DejaVu Sans,Verdana,Geneva,sans-serif' font-size='11'><text x='${mid}' y='15' fill='#010101' fill-opacity='.3'>${value}</text><text x='${mid}' y='14'>${value}</text></g></svg>"""
+	def encoded = svg.bytes.encodeBase64().toString()
+	return "<img src='data:image/svg+xml;base64,${encoded}' />"
 }
 
 def post(output_name) {
 	stage('Post') {
 		// Prepend TEST STATUS badge to the build description so it appears before TARGET/LABEL/node lines
 		if (env.testStatus) {
-			def badgeUrl = getResultBadgeUrl(env.testStatus)
-			currentBuild.description = "TEST STATUS: <img src=\"${badgeUrl}\" /><br/>" + (currentBuild.description ?: "")
+			currentBuild.description = "TESTS STATUS: ${getTestStatusBadge(env.testStatus)}<br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
