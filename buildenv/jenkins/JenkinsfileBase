@@ -554,7 +554,7 @@ def setup() {
 			env.ADOPTOPENJDK_SYSTEMTEST_REPO = adoptSystemTest[0]
 			env.ADOPTOPENJDK_SYSTEMTEST_BRANCH = adoptSystemTest[1]
 
-			String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:main", "openj9-systemtest")
+			String[] openj9SystemTest = getGitRepoBranch(params.OPENJ9_SYSTEMTEST_OWNER_BRANCH, "eclipse:master", "openj9-systemtest")
 			env.OPENJ9_SYSTEMTEST_REPO = openj9SystemTest[0]
 			env.OPENJ9_SYSTEMTEST_BRANCH = openj9SystemTest[1]
 
