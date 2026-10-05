@@ -1029,12 +1029,15 @@ def writeSummary() {
 		appendSummaryText(summary,"<li><b>DISABLED</b> : ${env.ITER_DISABLED}</li>")
 	}
 	appendSummaryText(summary,"<li><b>SKIPPED</b> : ${env.ITER_SKIPPED}</li>")
-	appendSummaryText(summary,"<li><b>TEST STATUS</b> : ${env.testStatus}</li>")
 	appendSummaryText(summary,"</ul>")
 }
 
 def post(output_name) {
 	stage('Post') {
+		// Prepend TEST STATUS to the build description so it appears before TARGET/LABEL/node lines
+		if (env.testStatus) {
+			currentBuild.description = "TEST STATUS: ${env.testStatus}<br/>" + (currentBuild.description ?: "")
+		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
 		}
