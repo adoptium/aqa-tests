@@ -1055,7 +1055,7 @@ def post(output_name) {
 	stage('Post') {
 		// Prepend TEST STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
 		if (env.testStatus) {
-			currentBuild.description = "<b style='font-size:1.1em'>TEST STATUS: ${getTestStatusBadge(env.testStatus)}</b><br/><br/>" + (currentBuild.description ?: "")
+			currentBuild.description = "<b>TEST STATUS: ${getTestStatusBadge(env.testStatus)}</b><br/><br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
@@ -1859,10 +1859,6 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						"""
 			}
 			childJobStatus += "</table>"
-			// Prepend the parent's own TEST STATUS at the top before the child table
-			def testStatusHeader = env.testStatus ? "<b style='font-size:1.1em'>TEST STATUS: ${getTestStatusBadge(env.testStatus)}</b><br/><br/>" : ""
-			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
-
 			// In case rerun job status be worse than original job status
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
@@ -1873,6 +1869,10 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 
 			archiveAQAvitFiles()
 			env.testStatus = currentTestStatus
+
+			// Prepend TEST STATUS at the top of the parent description, now that currentTestStatus is finalised
+			def testStatusHeader = "<b>TEST STATUS: ${getTestStatusBadge(currentTestStatus)}</b><br/><br/>"
+			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
 			env.jobStatus = currentStatus
 			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {
