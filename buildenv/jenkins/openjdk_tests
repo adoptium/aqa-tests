@@ -527,6 +527,9 @@ timestamps{
 }
 
 def runTest() {
+    // Initialize testStatus early so that even jobs that fail before setupEnv()
+    // (e.g. git clone timeout) export a defined testStatus via build variables.
+    env.testStatus = 'NOT_BUILT'
     try {
         def retry_count = 0
         def sleep_time = 180
@@ -622,8 +625,10 @@ def runTest() {
         // For any exception (abort, timeout, cleanWs, git clone, etc.), degrade env.jobStatus but
         // preserve env.testStatus. annotateInfraFailure() will only fire a badge when
         // jobStatus is worse than testStatus, so only genuine infra-after-tests cases are annotated.
-        // Guard: if no test results were collected at all (ITER_COUNT == 0), the 'SUCCESS' value of
-        // testStatus is just the initialisation default — null it so no badge falsely claims tests passed.
+        // Guard: if setupEnv() ran (testStatus='SUCCESS') but no test results were collected
+        // (ITER_COUNT == 0), null testStatus so no badge falsely claims tests passed.
+        // Note: if runTest() fails before setupEnv() testStatus stays 'NOT_BUILT' (set at entry),
+        // which is not in severityOrder so isWorseThan() returns false and no badge fires.
         if ((env.ITER_COUNT ?: '0').toInteger() == 0 && env.testStatus == 'SUCCESS') {
             env.testStatus = null
         }
@@ -633,6 +638,20 @@ def runTest() {
             env.jobStatus = infraStatus
         }
         currentBuild.result = env.jobStatus
+        // Write TEST STATUS to the build description when post() was never reached
+        // (e.g. git clone timeout, early abort before testExecution()).
+        // Guard against double-write: post() runs in testExecution()'s finally so if
+        // cleanWs throws *after* post() the header is already present.
+        if (env.testStatus && !(currentBuild.description?.contains('TEST STATUS:'))) {
+            try {
+                def label = (jenkinsfile != null)
+                    ? jenkinsfile.getTestStatusLabel(env.testStatus)
+                    : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
+                currentBuild.description = "TEST STATUS: ${label}<br/><br/>" + (currentBuild.description ?: "")
+            } catch (Exception descEx) {
+                println("Warning: could not set TEST STATUS description: ${descEx}")
+            }
+        }
         if (env.testStatus && jenkinsfile != null) {
             try {
                 jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
