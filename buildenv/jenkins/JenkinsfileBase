@@ -1826,9 +1826,11 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 					def buildId = cjob.getNumber()
 					def name = cjob.getProjectName()
 					def childResult = cjob.getCurrentResult() ?: 'NOT_BUILT'
-					// Read the child's test-only outcome; fall back to NOT_BUILT if not set
-					// (avoids null when the child failed before setupEnv() exported testStatus)
-					def childTestResult = cjob.getBuildVariables()["testStatus"] ?: 'NOT_BUILT'
+					// Read the child's test-only outcome; fall back to NOT_BUILT if not set.
+					// Also guard against the literal string "null" — Jenkins env vars are always
+					// strings so assigning null to env.testStatus produces "null" not null.
+					def rawChildTestResult = cjob.getBuildVariables()["testStatus"]
+					def childTestResult = (rawChildTestResult && rawChildTestResult != 'null') ? rawChildTestResult : 'NOT_BUILT'
 					echo "${name} #${buildId} completed with job status ${childResult}, test status ${childTestResult}"
 					// track FAILURE job childTestJobParams if its test outcome was FAILURE (not just infra)
 					if ( originalStatus == "SUCCESS" && childTestResult == "FAILURE" ) {

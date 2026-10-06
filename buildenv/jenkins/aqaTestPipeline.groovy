@@ -348,7 +348,10 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
             // testStatus is set by JenkinsfileBase and reflects test-only outcome.
             // Fall back to 'NOT_BUILT' (not the job result) so the tests badge is
             // never silently inflated by an infra failure on the downstream job.
-            def childTestStatus = downstreamJob.getBuildVariables()["testStatus"] ?: 'NOT_BUILT'
+            // Note: Jenkins env vars are always strings; guard against the literal
+            // string "null" that results from assigning null to an env var.
+            def rawTestStatus = downstreamJob.getBuildVariables()["testStatus"]
+            def childTestStatus = (rawTestStatus && rawTestStatus != 'null') ? rawTestStatus : 'NOT_BUILT'
             def testBadgeUrl = getTestStatusBadgeUrl(childTestStatus)
             currentBuild.description += """
                 <p>${TEST_JOB_NAME}/${buildId}:

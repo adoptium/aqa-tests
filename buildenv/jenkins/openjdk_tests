@@ -626,11 +626,12 @@ def runTest() {
         // preserve env.testStatus. annotateInfraFailure() will only fire a badge when
         // jobStatus is worse than testStatus, so only genuine infra-after-tests cases are annotated.
         // Guard: if setupEnv() ran (testStatus='SUCCESS') but no test results were collected
-        // (ITER_COUNT == 0), null testStatus so no badge falsely claims tests passed.
-        // Note: if runTest() fails before setupEnv() testStatus stays 'NOT_BUILT' (set at entry),
-        // which is not in severityOrder so isWorseThan() returns false and no badge fires.
+        // (ITER_COUNT == 0), reset to NOT_BUILT so no badge falsely claims tests passed.
+        // env variables are always strings in Jenkins — never assign null or it becomes
+        // the literal string "null", which passes the `if (env.testStatus)` truthiness
+        // check and renders as '? null' in getTestStatusLabel().
         if ((env.ITER_COUNT ?: '0').toInteger() == 0 && env.testStatus == 'SUCCESS') {
-            env.testStatus = null
+            env.testStatus = 'NOT_BUILT'
         }
         def infraStatus = e.toString().contains("FlowInterruptedException") ? 'ABORTED' : 'FAILURE'
         def jenkinsfileSeverity = [ 'SUCCESS': 0, 'UNSTABLE': 1, 'FAILURE': 2, 'ABORTED': 3 ]
