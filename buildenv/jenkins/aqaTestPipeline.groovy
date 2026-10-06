@@ -762,7 +762,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     useJobInfoCache: true
                     
                 def remoteJobResult = handle.getBuildResult().toString()
-                echo "Remote job ${displayName} Status: ${remoteJobResult}"
+                echo "Remote job ${displayName} Target: ${target} Status: ${remoteJobResult}"
                 
                 // Get remote job details and add to build description
                 def remoteBuildNumber = handle.getBuildNumber()
@@ -938,7 +938,7 @@ def remoteTriggerTemurinJCKDirect() {
                 useJobInfoCache: true
                 
             def remoteJobResult = handle.getBuildResult().toString()
-            echo "Remote job ${displayName} Status: ${remoteJobResult}"
+            echo "Remote job ${displayName} Target: ${target} Status: ${remoteJobResult}"
             
             // Get remote job details and add to build description
             def remoteBuildNumber = handle.getBuildNumber()
