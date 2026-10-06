@@ -54,7 +54,7 @@ limitations under the License.
 
 	<target name="setUnicodeVersion">
 		<resolve-unicode-version jdk-version="${JDK_VERSION}"/>
-		<property name="LIB" value="unicode_gb18030_2022,unicode_unihan_${unicode.ver.key},unicode_ucd_unicodedata_${unicode.ver.key}"/>
+		<property name="LIB" value="unicode_unihan_${unicode.ver.key},unicode_ucd_unicodedata_${unicode.ver.key}"/>
 	</target>
 
 	<target name="dist" depends="compile,copyData,extractUnicodeData" description="generate the distribution">
