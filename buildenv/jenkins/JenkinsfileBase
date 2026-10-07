@@ -1037,14 +1037,14 @@ def writeSummary() {
 // Icon prefix: ✔ green, ⚠ yellow, ✘ red, ⊘ grey.
 def getTestStatusLabel(status) {
 	def styleMap = [
-		'SUCCESS'  : [color: 'green',   icon: '✔'],
-		'UNSTABLE' : [color: '#b8860b', icon: '⚠'],
-		'FAILURE'  : [color: 'red',     icon: '✘'],
-		'ABORTED'  : [color: 'grey',    icon: '⊘'],
-		'NOT_BUILT': [color: 'grey',    icon: '—'],
+		'SUCCESS'  : [color: 'green',   icon: '✔', label: 'SUCCESS'],
+		'UNSTABLE' : [color: '#b8860b', icon: '⚠', label: 'UNSTABLE'],
+		'FAILURE'  : [color: 'red',     icon: '✘', label: 'FAILURE'],
+		'ABORTED'  : [color: 'grey',    icon: '⊘', label: 'ABORTED'],
+		'NOT_BUILT': [color: 'grey',    icon: '—', label: 'not_run'],
 	]
-	def s = styleMap[status] ?: [color: 'grey', icon: '?']
-	return "<font color='${s.color}'><big><b>${s.icon} ${status}</b></big></font>"
+	def s = styleMap[status] ?: [color: 'grey', icon: '?', label: status]
+	return "<font color='${s.color}'><big><b>${s.icon} ${s.label}</b></big></font>"
 }
 
 // Returns a badge URL for test-only status using the embeddable-build-status
