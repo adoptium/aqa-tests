@@ -1032,7 +1032,7 @@ def writeSummary() {
 	appendSummaryText(summary,"</ul>")
 }
 
-// Returns coloured bold text for TEST STATUS in the build description.
+// Returns coloured bold text for TEST STATUS — used in summary badges (annotateInfraFailure).
 // Uses <font color> and <big> — safe HTML that Jenkins allows in descriptions.
 // Icon prefix: ✔ green, ⚠ yellow, ✘ red, ⊘ grey.
 def getTestStatusLabel(status) {
@@ -1061,11 +1061,19 @@ def getTestStatusBadgeUrl(status) {
 	return "${env.JENKINS_URL}buildStatus/icon?subject=tests&status=${entry.text}&color=${entry.color}"
 }
 
+// Returns the TEST STATUS line for currentBuild.description: a coloured pill badge
+// image followed by the bold text label — same visual style as the aqaTestPipeline view.
+def getTestStatusDescription(status) {
+	def badgeUrl = getTestStatusBadgeUrl(status)
+	def label    = getTestStatusLabel(status)
+	return "<img src='${badgeUrl}' /> ${label}"
+}
+
 def post(output_name) {
 	stage('Post') {
 		// Prepend TEST STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
 		if (env.testStatus) {
-			currentBuild.description = "TEST STATUS: ${getTestStatusLabel(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
+			currentBuild.description = "TEST STATUS: ${getTestStatusDescription(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
@@ -1886,7 +1894,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			env.testStatus = currentTestStatus
 
 			// Prepend TEST STATUS at the top of the parent description, now that currentTestStatus is finalised
-			def testStatusHeader = "TEST STATUS: ${getTestStatusLabel(currentTestStatus)}<br/><br/>"
+			def testStatusHeader = "TEST STATUS: ${getTestStatusDescription(currentTestStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
 			env.jobStatus = currentStatus
 			if (currentTestStatus != "SUCCESS") {

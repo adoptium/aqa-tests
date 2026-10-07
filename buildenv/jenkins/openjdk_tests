@@ -645,10 +645,10 @@ def runTest() {
         // cleanWs throws *after* post() the header is already present.
         if (env.testStatus && !(currentBuild.description?.contains('TEST STATUS:'))) {
             try {
-                def label = (jenkinsfile != null)
-                    ? jenkinsfile.getTestStatusLabel(env.testStatus)
+                def desc = (jenkinsfile != null)
+                    ? jenkinsfile.getTestStatusDescription(env.testStatus)
                     : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
-                currentBuild.description = "TEST STATUS: ${label}<br/><br/>" + (currentBuild.description ?: "")
+                currentBuild.description = "TEST STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
             } catch (Exception descEx) {
                 println("Warning: could not set TEST STATUS description: ${descEx}")
             }
