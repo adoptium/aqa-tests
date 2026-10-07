@@ -1061,12 +1061,12 @@ def getTestStatusBadgeUrl(status) {
 	return "${env.JENKINS_URL}buildStatus/icon?subject=tests&status=${entry.text}&color=${entry.color}"
 }
 
-// Returns the TEST STATUS line for currentBuild.description: a coloured pill badge
-// image followed by the bold text label — same visual style as the aqaTestPipeline view.
+// Returns the TEST STATUS line for currentBuild.description: the pill badge image only,
+// matching the aqaTestPipeline view. The badge text (e.g. "tests | unstable") is
+// self-explanatory so no additional text label is needed.
 def getTestStatusDescription(status) {
 	def badgeUrl = getTestStatusBadgeUrl(status)
-	def label    = getTestStatusLabel(status)
-	return "<img src='${badgeUrl}' /> ${label}"
+	return "<img src='${badgeUrl}' />"
 }
 
 def post(output_name) {
