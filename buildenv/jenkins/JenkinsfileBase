@@ -1948,13 +1948,16 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
-		// Patch the description: replace the badge-only TEST EXECUTE STATUS line with one
-		// that includes the inline warning. Only acts if post() already wrote the header.
+		// Patch the description: append the inline warning immediately after the <img> badge
+		// that post() wrote on the TEST EXECUTE STATUS line.
+		// Anchor the regex to the 'TEST EXECUTE STATUS:' prefix so we only touch that line
+		// and are insensitive to quote-style or whitespace Jenkins may normalise.
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
-		def oldBadge = getTestStatusDescription(testStatus)
-		def newBadge = getTestStatusDescription(testStatus) + warning
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
-			currentBuild.description = currentBuild.description.replace(oldBadge, newBadge)
+			currentBuild.description = currentBuild.description.replaceFirst(
+				/(TEST EXECUTE STATUS:\s*)(<img\b[^>]*\/>)/,
+				"\$1\$2${warning}"
+			)
 		}
 	}
 }
