@@ -1075,8 +1075,11 @@ def getTestStatusDescription(status, jobStatus = null) {
 def post(output_name) {
 	stage('Post') {
 		// Prepend TEST EXECUTE STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
+		// Note: env.jobStatus here reflects only test-outcome degradation; infra degradation
+		// (cleanWs, timeout) is applied later in openjdk_tests' catch block which then patches
+		// the description via annotateInfraFailure().
 		if (env.testStatus) {
-			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(env.testStatus, env.jobStatus)}<br/><br/>" + (currentBuild.description ?: "")
+			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
 			echo "TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})"
 		}
 		if (env.DISPLAY != null) {
@@ -1830,7 +1833,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		forceCleanWS()
 		try {
 			def buildPaths = ""
-			def childJobStatus = "<table><tr><th><b>Child Job</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Test Execute Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Jenkins Job Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Duration</b></th></tr>"
+			def childJobStatus = "<table><tr><th><b>Child Job</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Test Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Job Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Duration</b></th></tr>"
 			def jobList = childJobs.values().toList()
 			sortByProjectName(jobList)
 			jobList.each {
@@ -1938,11 +1941,21 @@ def isWorseThan(String resultA, String resultB) {
 // Called when an infrastructure issue (cleanWs, timeout, git clone, etc.) caused
 // env.jobStatus to be degraded beyond what tests determined (env.testStatus).
 // Adds a visible badge on the build page so it is clear tests were not the cause.
+// Also patches the existing TEST EXECUTE STATUS line in currentBuild.description to append
+// the inline warning, since post() runs before the infra failure is known.
 def annotateInfraFailure(String testStatus, String jobStatus) {
 	if (isWorseThan(jobStatus, testStatus)) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
+		// Patch the description: replace the badge-only TEST EXECUTE STATUS line with one
+		// that includes the inline warning. Only acts if post() already wrote the header.
+		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
+		def oldBadge = getTestStatusDescription(testStatus)
+		def newBadge = getTestStatusDescription(testStatus) + warning
+		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
+			currentBuild.description = currentBuild.description.replace(oldBadge, newBadge)
+		}
 	}
 }
 
