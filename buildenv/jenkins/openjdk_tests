@@ -639,18 +639,18 @@ def runTest() {
             env.jobStatus = infraStatus
         }
         currentBuild.result = env.jobStatus
-        // Write TEST STATUS to the build description when post() was never reached
+        // Write TEST EXECUTE STATUS to the build description when post() was never reached
         // (e.g. git clone timeout, early abort before testExecution()).
         // Guard against double-write: post() runs in testExecution()'s finally so if
         // cleanWs throws *after* post() the header is already present.
-        if (env.testStatus && !(currentBuild.description?.contains('TEST STATUS:'))) {
+        if (env.testStatus && !(currentBuild.description?.contains('TEST EXECUTE STATUS:'))) {
             try {
                 def desc = (jenkinsfile != null)
-                    ? jenkinsfile.getTestStatusDescription(env.testStatus)
+                    ? jenkinsfile.getTestStatusDescription(env.testStatus, env.jobStatus)
                     : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
-                currentBuild.description = "TEST STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
+                currentBuild.description = "TEST EXECUTE STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
             } catch (Exception descEx) {
-                println("Warning: could not set TEST STATUS description: ${descEx}")
+                println("Warning: could not set TEST EXECUTE STATUS description: ${descEx}")
             }
         }
         if (env.testStatus && jenkinsfile != null) {
