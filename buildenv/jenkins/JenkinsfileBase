@@ -1954,8 +1954,9 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		// and are insensitive to quote-style or whitespace Jenkins may normalise.
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
+			// Match <img ...> or <img .../> — Jenkins may normalise the self-closing slash
 			currentBuild.description = currentBuild.description.replaceFirst(
-				/(TEST EXECUTE STATUS:\s*)(<img\b[^>]*\/>)/,
+				/(TEST EXECUTE STATUS:\s*)(<img\b[^>]*\/?>)/,
 				"\$1\$2${warning}"
 			)
 		}

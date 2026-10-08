@@ -641,12 +641,15 @@ def runTest() {
         currentBuild.result = env.jobStatus
         // Write TEST EXECUTE STATUS to the build description when post() was never reached
         // (e.g. git clone timeout, early abort before testExecution()).
+        // Do NOT pass jobStatus here — the inline warning is always added by
+        // annotateInfraFailure() below, which is the single source for it in both
+        // the early-failure path and the post()-ran-then-cleanWs-threw path.
         // Guard against double-write: post() runs in testExecution()'s finally so if
         // cleanWs throws *after* post() the header is already present.
         if (env.testStatus && !(currentBuild.description?.contains('TEST EXECUTE STATUS:'))) {
             try {
                 def desc = (jenkinsfile != null)
-                    ? jenkinsfile.getTestStatusDescription(env.testStatus, env.jobStatus)
+                    ? jenkinsfile.getTestStatusDescription(env.testStatus)
                     : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
                 currentBuild.description = "TEST EXECUTE STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
                 println("TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})")
