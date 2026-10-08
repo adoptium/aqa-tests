@@ -1943,8 +1943,9 @@ def isWorseThan(String resultA, String resultB) {
 // Adds a visible badge on the build page so it is clear tests were not the cause.
 // Also patches the existing TEST EXECUTE STATUS line in currentBuild.description to append
 // the inline warning, since post() runs before the infra failure is known.
+// NOT_BUILT means tests never ran — there is nothing to degrade from, so we skip.
 def annotateInfraFailure(String testStatus, String jobStatus) {
-	if (isWorseThan(jobStatus, testStatus)) {
+	if (testStatus != 'NOT_BUILT' && isWorseThan(jobStatus, testStatus)) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
