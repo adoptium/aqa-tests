@@ -1077,6 +1077,7 @@ def post(output_name) {
 		// Prepend TEST EXECUTE STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
 		if (env.testStatus) {
 			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(env.testStatus, env.jobStatus)}<br/><br/>" + (currentBuild.description ?: "")
+			echo "TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})"
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
@@ -1899,6 +1900,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised
 			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
+			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentStatus})"
 			env.jobStatus = currentStatus
 			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {

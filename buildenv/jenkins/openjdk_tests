@@ -649,6 +649,7 @@ def runTest() {
                     ? jenkinsfile.getTestStatusDescription(env.testStatus, env.jobStatus)
                     : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
                 currentBuild.description = "TEST EXECUTE STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
+                println("TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})")
             } catch (Exception descEx) {
                 println("Warning: could not set TEST EXECUTE STATUS description: ${descEx}")
             }
