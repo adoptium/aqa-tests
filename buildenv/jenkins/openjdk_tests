@@ -327,6 +327,11 @@ timestamps{
 
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+            // Initialize testStatus/jobStatus here — before any node acquisition — so the
+            // catch block always has valid values even if the job is aborted in the queue
+            // before runTest() (which also sets them) is ever entered.
+            env.testStatus = 'NOT_BUILT'
+            env.jobStatus  = 'SUCCESS'
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             env.SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
