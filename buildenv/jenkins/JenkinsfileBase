@@ -1078,9 +1078,15 @@ def post(output_name) {
 		// Note: env.jobStatus here reflects only test-outcome degradation; infra degradation
 		// (cleanWs, timeout) is applied later in openjdk_tests' catch block which then patches
 		// the description via annotateInfraFailure().
-		if (env.testStatus) {
-			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(env.testStatus)}<br/><br/>" + (currentBuild.description ?: "")
-			echo "TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})"
+		// If setupEnv() set testStatus='SUCCESS' but no test results were collected
+		// (ITER_COUNT == 0), treat it as NOT_BUILT — tests never actually ran.
+		def displayStatus = env.testStatus
+		if (displayStatus == 'SUCCESS' && (env.ITER_COUNT ?: '0').toInteger() == 0) {
+			displayStatus = 'NOT_BUILT'
+		}
+		if (displayStatus) {
+			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus)}<br/><br/>" + (currentBuild.description ?: "")
+			echo "TEST EXECUTE STATUS: ${displayStatus} (job status: ${env.jobStatus})"
 		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
