@@ -67,6 +67,20 @@ def getResultBadgeUrl(result) {
     return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
 }
 
+// Returns a badge URL for test-only status using the same embeddable-build-status
+// pill style as getResultBadgeUrl(), but with label 'tests' instead of 'build'.
+def getTestStatusBadgeUrl(status) {
+    def statusMap = [
+        'SUCCESS'  : [text: 'passing',  color: 'brightgreen'],
+        'UNSTABLE' : [text: 'unstable', color: 'yellow'],
+        'FAILURE'  : [text: 'failing',  color: 'red'],
+        'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
+        'NOT_BUILT': [text: 'not_run',  color: 'lightgrey'],
+    ]
+    def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']
+    return "${env.JENKINS_URL}buildStatus/icon?subject=tests&status=${entry.text}&color=${entry.color}"
+}
+
 timestamps {
     currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" : ""
     JDK_VERSIONS.each { JDK_VERSION ->
@@ -332,11 +346,18 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
             def buildId      = downstreamJob.getNumber()
             def childBuildUrl = "${env.JENKINS_URL}job/${TEST_JOB_NAME}/${buildId}"
             def badgeUrl     = "${childBuildUrl}/badge/icon"
+            // testStatus is set by JenkinsfileBase and reflects test-only outcome.
+            // Fall back to 'NOT_BUILT' (not the job result) so the tests badge is
+            // never silently inflated by an infra failure on the downstream job.
+            // Note: Jenkins env vars are always strings; guard against the literal
+            // string "null" that results from assigning null to an env var.
+            def rawTestStatus = downstreamJob.getBuildVariables()["testStatus"]
+            def childTestStatus = (rawTestStatus && rawTestStatus != 'null') ? rawTestStatus : 'NOT_BUILT'
+            def testBadgeUrl = getTestStatusBadgeUrl(childTestStatus)
             currentBuild.description += """
                 <p>${TEST_JOB_NAME}/${buildId}:
-                <a href="${childBuildUrl}">
-                    <img src="${badgeUrl}" />
-                </a>
+                <a href="${childBuildUrl}"><img src="${testBadgeUrl}" /></a>
+                <a href="${childBuildUrl}"><img src="${badgeUrl}" /></a>
                 </p>
             """
             if (downstreamJobResult == 'SUCCESS' || downstreamJobResult == 'UNSTABLE') {

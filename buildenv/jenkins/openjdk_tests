@@ -327,6 +327,11 @@ timestamps{
 
     } else {
         if (PLATFORM_MAP.containsKey(params.PLATFORM)) {
+            // Initialize testStatus/jobStatus here — before any node acquisition — so the
+            // catch block always has valid values even if the job is aborted in the queue
+            // before runTest() (which also sets them) is ever entered.
+            env.testStatus = 'NOT_BUILT'
+            env.jobStatus  = 'SUCCESS'
             env.EXTRA_OPTIONS = params.EXTRA_OPTIONS ? params.EXTRA_OPTIONS : ""
             env.BUILD_LIST = params.BUILD_LIST ? params.BUILD_LIST : ""
             env.SPEC = PLATFORM_MAP[params.PLATFORM]["SPEC"]
@@ -506,17 +511,19 @@ timestamps{
                 }
             }
             env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
-            if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
-                jenkinsfile.triggerRerunJob(env.jobStatus)
-            } else if ( env.PARALLEL != 'None' && currentBuild.result != 'FAILURE') {
+            if (env.PARALLEL == 'None' && env.testStatus == 'UNSTABLE') {
+                jenkinsfile.triggerRerunJob(env.testStatus)
+            } else if ( env.PARALLEL != 'None' && env.testStatus != 'FAILURE') {
                 def parallelResults = jenkinsfile.runParallelTests()
-                if ( parallelResults.jobStatus != 'SUCCESS' ) {
-					jenkinsfile.triggerRerunJob(parallelResults.jobStatus, parallelResults.jobParams)
+                if ( parallelResults.testStatus != 'SUCCESS' ) {
+                    jenkinsfile.triggerRerunJob(parallelResults.testStatus, parallelResults.jobParams)
                 } else {
-                    currentBuild.result = 'SUCCESS'
+                    currentBuild.result = env.jobStatus
+                    jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
                 }
             } else {
                 currentBuild.result = env.jobStatus
+                jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
             }
         } else {
             assert false : "Cannot find key PLATFORM: ${params.PLATFORM} in PLATFORM_MAP: ${PLATFORM_MAP}."
@@ -525,6 +532,9 @@ timestamps{
 }
 
 def runTest() {
+    // Initialize testStatus early so that even jobs that fail before setupEnv()
+    // (e.g. git clone timeout) export a defined testStatus via build variables.
+    env.testStatus = 'NOT_BUILT'
     try {
         def retry_count = 0
         def sleep_time = 180
@@ -617,11 +627,55 @@ def runTest() {
     } catch (Exception e) {
         println("Exception: " + e.toString())
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
-        // if there is an exception, set currentBuild.result to ABORTED/FAILURE
-        if (e.toString().contains("FlowInterruptedException")) {
-            currentBuild.result = 'ABORTED'
-        } else {
-            currentBuild.result = 'FAILURE'
+        // For any exception (abort, timeout, cleanWs, git clone, etc.), degrade env.jobStatus but
+        // preserve env.testStatus. annotateInfraFailure() will only fire a badge when
+        // jobStatus is worse than testStatus, so only genuine infra-after-tests cases are annotated.
+        // Guard: if setupEnv() ran (testStatus='SUCCESS') but no test results were collected
+        // (ITER_COUNT == 0), reset to NOT_BUILT so no badge falsely claims tests passed.
+        // env variables are always strings in Jenkins — never assign null or it becomes
+        // the literal string "null", which passes the `if (env.testStatus)` truthiness
+        // check and renders as '? null' in getTestStatusLabel().
+        if ((env.ITER_COUNT ?: '0').toInteger() == 0 && env.testStatus == 'SUCCESS') {
+            env.testStatus = 'NOT_BUILT'
+        }
+        def infraStatus = e.toString().contains("FlowInterruptedException") ? 'ABORTED' : 'FAILURE'
+        def jenkinsfileSeverity = [ 'SUCCESS': 0, 'UNSTABLE': 1, 'FAILURE': 2, 'ABORTED': 3 ]
+        if ((jenkinsfileSeverity[infraStatus] ?: 0) > (jenkinsfileSeverity[env.jobStatus] ?: 0)) {
+            env.jobStatus = infraStatus
+        }
+        currentBuild.result = env.jobStatus
+        // Case B promotion: if testStatus is not SUCCESS or UNSTABLE (tests did not run
+        // meaningfully), update it to match jobStatus so getBuildVariables()["testStatus"]
+        // reflects the actual outcome. This must happen here — not only in annotateInfraFailure
+        // — because annotateInfraFailure is skipped when jenkinsfile is null (e.g. git clone
+        // failed before JenkinsfileBase was loaded).
+        if (env.testStatus != 'SUCCESS' && env.testStatus != 'UNSTABLE') {
+            env.testStatus = env.jobStatus
+        }
+        // Write TEST EXECUTE STATUS to the build description when post() was never reached
+        // (e.g. git clone timeout, early abort before testExecution()).
+        // Do NOT pass jobStatus here — the inline warning is always added by
+        // annotateInfraFailure() below, which is the single source for it in both
+        // the early-failure path and the post()-ran-then-cleanWs-threw path.
+        // Guard against double-write: post() runs in testExecution()'s finally so if
+        // cleanWs throws *after* post() the header is already present.
+        if (env.testStatus && !(currentBuild.description?.contains('TEST EXECUTE STATUS:'))) {
+            try {
+                def desc = (jenkinsfile != null)
+                    ? jenkinsfile.getTestStatusDescription(env.testStatus)
+                    : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
+                currentBuild.description = "TEST EXECUTE STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
+                println("TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})")
+            } catch (Exception descEx) {
+                println("Warning: could not set TEST EXECUTE STATUS description: ${descEx}")
+            }
+        }
+        if (env.testStatus && jenkinsfile != null) {
+            try {
+                jenkinsfile.annotateInfraFailure(env.testStatus, env.jobStatus)
+            } catch (Exception annotateEx) {
+                println("Warning: could not annotate infra failure: ${annotateEx}")
+            }
         }
 
     } finally {

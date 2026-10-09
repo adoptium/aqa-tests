@@ -36,6 +36,7 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
+		env.testStatus = 'UNSTABLE'
 		env.jobStatus = 'UNSTABLE'
 	} finally {
 		sh "$tearDownCmd"
@@ -133,6 +134,7 @@ def setupEnv() {
 	env.PARALLEL = env.PARALLEL ? params.PARALLEL : "None"
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
+	env.testStatus = 'SUCCESS'
 	env.jobStatus = 'SUCCESS'
 
 	if (JOB_NAME.contains("Grinder")) {
@@ -911,6 +913,7 @@ def runTest( ) {
 		}
 		// Check if any iterations ran and accumulated results
 		if (env.ITER_COUNT.toInteger() == 0) {
+			env.testStatus = 'FAILURE'
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
@@ -973,6 +976,7 @@ def checkTestResults(results) {
 	env.ITER_SKIPPED = (env.ITER_SKIPPED.toInteger() + (results["SKIPPED"] ?: 0)).toString()
 
 	if (results["TOTAL"] == 0) {
+		env.testStatus = 'FAILURE'
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
 		summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
@@ -981,6 +985,7 @@ def checkTestResults(results) {
 	}
 
 	if (results["FAILED"] != 0) {
+		env.testStatus = 'UNSTABLE'
 		env.jobStatus = 'UNSTABLE'
 		echo 'There were test failures, current build status is UNSTABLE.'
 	}
@@ -1027,8 +1032,62 @@ def writeSummary() {
 	appendSummaryText(summary,"</ul>")
 }
 
+// Returns coloured bold text for TEST EXECUTE STATUS — used in summary badges (annotateInfraFailure).
+// Uses <font color> and <big> — safe HTML that Jenkins allows in descriptions.
+// Icon prefix: ✔ green, ⚠ yellow, ✘ red, ⊘ grey.
+def getTestStatusLabel(status) {
+	def styleMap = [
+		'SUCCESS'  : [color: 'green',   icon: '✔', label: 'SUCCESS'],
+		'UNSTABLE' : [color: '#b8860b', icon: '⚠', label: 'UNSTABLE'],
+		'FAILURE'  : [color: 'red',     icon: '✘', label: 'FAILURE'],
+		'ABORTED'  : [color: 'grey',    icon: '⊘', label: 'ABORTED'],
+		'NOT_BUILT': [color: 'grey',    icon: '—', label: 'not_run'],
+	]
+	def s = styleMap[status] ?: [color: 'grey', icon: '?', label: status]
+	return "<font color='${s.color}'><big><b>${s.icon} ${s.label}</b></big></font>"
+}
+
+// Returns a badge URL for test-only status using the embeddable-build-status
+// pill style (tests|passing), matching the style used in aqaTestPipeline.
+def getTestStatusBadgeUrl(status) {
+	def statusMap = [
+		'SUCCESS'  : [text: 'passing',  color: 'brightgreen'],
+		'UNSTABLE' : [text: 'unstable', color: 'yellow'],
+		'FAILURE'  : [text: 'failing',  color: 'red'],
+		'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
+		'NOT_BUILT': [text: 'not_run',  color: 'lightgrey'],
+	]
+	def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']
+	return "${env.JENKINS_URL}buildStatus/icon?subject=tests&status=${entry.text}&color=${entry.color}"
+}
+
+// Returns the TEST EXECUTE STATUS line for currentBuild.description: the pill badge image,
+// optionally followed by an infra-degradation warning when jobStatus is worse than testStatus.
+def getTestStatusDescription(status, jobStatus = null) {
+	def badgeUrl = getTestStatusBadgeUrl(status)
+	def html = "<img src='${badgeUrl}' />"
+	if (jobStatus && isWorseThan(jobStatus, status)) {
+		html += " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
+	}
+	return html
+}
+
 def post(output_name) {
 	stage('Post') {
+		// Prepend TEST EXECUTE STATUS badge at the top of the description, separated from TARGET/LABEL/node by a blank line
+		// Note: env.jobStatus here reflects only test-outcome degradation; infra degradation
+		// (cleanWs, timeout) is applied later in openjdk_tests' catch block which then patches
+		// the description via annotateInfraFailure().
+		// If setupEnv() set testStatus='SUCCESS' but no test results were collected
+		// (ITER_COUNT == 0), treat it as NOT_BUILT — tests never actually ran.
+		def displayStatus = env.testStatus
+		if (displayStatus == 'SUCCESS' && (env.ITER_COUNT ?: '0').toInteger() == 0) {
+			displayStatus = 'NOT_BUILT'
+		}
+		if (displayStatus) {
+			currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus)}<br/><br/>" + (currentBuild.description ?: "")
+			echo "TEST EXECUTE STATUS: ${displayStatus} (job status: ${env.jobStatus})"
+		}
 		if (env.DISPLAY != null) {
 			env.DISPLAY = ""
 		}
@@ -1156,6 +1215,7 @@ def post(output_name) {
 		} catch (Exception e) {
 			echo "Caught exception: ${e.message}"
 		}
+
 	}
 }
 
@@ -1589,7 +1649,7 @@ def mergeTestCasesWithoutDup(String knownTestCases, String newTestCases) {
 }
 
 def addFailedTestsGrinderLink(paths="") {
-	if (env.jobStatus == 'UNSTABLE' || env.jobStatus == 'FAILURE' || env.jobStatus == 'ABORTED') {
+	if (env.testStatus == 'UNSTABLE' || env.testStatus == 'FAILURE' || env.testStatus == 'ABORTED') {
 		def customizedTestCases = getFailedAndCustomizedTest(paths)
 		String url = env.RERUN_LINK
 		// Add rerun FailedTests link only if there are targets other than _custom as it's duplicate with rerun customized link
@@ -1641,6 +1701,9 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to failed test(s) - RERUN_ITERATIONS > 0 and list of failed test target(s) (i.e., env.FAILED_TESTS cannot be empty)
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
+ * originalStatus must be env.testStatus (test-only outcome). currentBuild.result is set to env.jobStatus
+ * (worst of test + infra) so that infrastructure failures are visible but rerun decisions are driven
+ * purely by test outcomes.
 */
 def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 	if (!JOB_NAME.contains("_rerun") && !JOB_NAME.contains("_testList_") && !JOB_NAME.contains("_iteration_")) {
@@ -1722,20 +1785,24 @@ def triggerRerunJob (String originalStatus, Map rerunTestJobParams = null) {
 					def childJobs = parallel rerunTestJobs
 					def rerunResults = archiveChildJobTap(childJobs, originalStatus)
 					if (env.JDK_IMPL == "openj9" || env.JDK_IMPL == "ibm") {
-						currentBuild.result = originalStatus
+						currentBuild.result = env.jobStatus
 					} else if ( originalStatus == 'ABORTED') {
 						// Set job status to the worst result among its parallel branches including rerun branch.
-						currentBuild.result = originalStatus
+						currentBuild.result = env.jobStatus
 					} else {
 						currentBuild.result = rerunResults.jobStatus
 					}
+					// Annotate if any rerun child had infra degrade its result past its test outcome
+					annotateInfraFailure(rerunResults.testStatus ?: env.testStatus, currentBuild.result)
 				}
 			}
 		} else {
-			currentBuild.result = originalStatus
+			currentBuild.result = env.jobStatus
+			annotateInfraFailure(env.testStatus, env.jobStatus)
 		}
 	} else {
-		currentBuild.result = originalStatus
+		currentBuild.result = env.jobStatus
+		annotateInfraFailure(env.testStatus, env.jobStatus)
 	}
 }
 
@@ -1766,24 +1833,33 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 	node (env.SETUP_LABEL) {
 		def childTestJobParams = [:]
 		def currentStatus = 'SUCCESS';
+		def currentTestStatus = 'SUCCESS';
 		forceCleanWS()
 		try {
 			def buildPaths = ""
-			def childJobStatus = "<table><tr><th>Child Job</th><th>Status</th><th>Duration</th></tr>"
+			def childJobStatus = "<table><tr><th><b>Child Job</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Test Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Job Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Duration</b></th></tr>"
 			def jobList = childJobs.values().toList()
 			sortByProjectName(jobList)
 			jobList.each {
 				cjob ->
 					def buildId = cjob.getNumber()
 					def name = cjob.getProjectName()
-					def childResult = cjob.getCurrentResult()
-					echo "${name} #${buildId} completed with status ${childResult}"
-					// track FAILURE job childTestJobParams if it's rerun stage
-					if ( originalStatus == "SUCCESS" && childResult == "FAILURE" ) {
+					def childResult = cjob.getCurrentResult() ?: 'NOT_BUILT'
+					// Read the child's test-only outcome; fall back to NOT_BUILT if not set.
+					// Also guard against the literal string "null" — Jenkins env vars are always
+					// strings so assigning null to env.testStatus produces "null" not null.
+					def rawChildTestResult = cjob.getBuildVariables()["testStatus"]
+					def childTestResult = (rawChildTestResult && rawChildTestResult != 'null') ? rawChildTestResult : 'NOT_BUILT'
+					echo "${name} #${buildId} completed with job status ${childResult}, test status ${childTestResult}"
+					// track FAILURE job childTestJobParams if its test outcome was FAILURE (not just infra)
+					if ( originalStatus == "SUCCESS" && childTestResult == "FAILURE" ) {
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
 					if (isWorseThan( childResult, currentStatus)) {
 						currentStatus = childResult
+					}
+					if (isWorseThan( childTestResult, currentTestStatus)) {
+						currentTestStatus = childTestResult
 					}
 					try {
 						timeout(time: 1, unit: 'HOURS') {
@@ -1805,25 +1881,38 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 						def seconds = ((int)(totalMillis / 1000)) % 60
 						duration = "${hours}h ${minutes}m ${seconds}s"
 					}
+					def testBadgeUrl = getTestStatusBadgeUrl(childTestResult)
+					def infraNote = isWorseThan(childResult, childTestResult) ? "<br/><font color='grey'><small>⚠ job degraded to ${childResult}</small></font>" : ""
 					childJobStatus += """
-						<tr>
-							<td>${name}/${buildId}</td>
-							<td><a href="${childBuildUrl}"><img src="${badgeUrl}" /></a></td>
-							<td>${duration}</td>
-						</tr>
-					"""
+							<tr>
+								<td>${name}/${buildId}</td>
+								<td><a href="${childBuildUrl}"><img src="${testBadgeUrl}" /></a>${infraNote}</td>
+								<td><a href="${childBuildUrl}"><img src="${badgeUrl}" /></a></td>
+								<td>${duration}</td>
+							</tr>
+						"""
 			}
 			childJobStatus += "</table>"
-			currentBuild.description = (currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus
-
 			// In case rerun job status be worse than original job status
 			if ( originalStatus != "SUCCESS" && isWorseThan( currentStatus, originalStatus)) {
 				currentStatus = originalStatus
 			}
+			if ( originalStatus != "SUCCESS" && isWorseThan( currentTestStatus, originalStatus)) {
+				currentTestStatus = originalStatus
+			}
 
 			archiveAQAvitFiles()
+			env.testStatus = currentTestStatus
+
+			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised.
+			// Do NOT pass currentStatus here — annotateInfraFailure() is the single source for the
+			// inline ⚠ warning, called below after jobStatus is assigned. Passing it here would cause
+			// a duplicate warning because annotateInfraFailure() patches the same line.
+			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus)}<br/><br/>"
+			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
+			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentStatus})"
 			env.jobStatus = currentStatus
-			if (currentStatus != "SUCCESS") {
+			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {
 					if ( originalStatus == "SUCCESS" ) {
 						getFailedAndCustomizedTest(buildPaths[0..-2])
@@ -1845,7 +1934,7 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 		} finally {
 			forceCleanWS()
 		}
-		return [jobStatus: currentStatus, jobParams: childTestJobParams]
+		return [jobStatus: currentStatus, testStatus: currentTestStatus, jobParams: childTestJobParams]
 	}
 }
 
@@ -1854,6 +1943,57 @@ def isWorseThan(String resultA, String resultB) {
 	def indexA = severityOrder.indexOf(resultA)
 	def indexB = severityOrder.indexOf(resultB)
 	return indexA > indexB
+}
+
+// Called when an infrastructure issue (cleanWs, timeout, git clone, etc.) caused
+// env.jobStatus to be degraded beyond what tests determined (env.testStatus).
+//
+// Two distinct cases:
+//
+// Case A — testStatus is SUCCESS or UNSTABLE (tests ran and produced a result):
+//   - The infra event made the job worse than the tests showed.
+//   - Show summary badge + inline "⚠ job degraded to X" warning.
+//   - env.testStatus preserved.
+//
+// Case B — testStatus is FAILURE, ABORTED, or NOT_BUILT (tests did not complete usefully):
+//   - Tests never produced a meaningful result; jobStatus is the true outcome.
+//   - Rewrite description badge to show jobStatus — no degradation warning needed.
+//   - env.testStatus updated to jobStatus.
+def annotateInfraFailure(String testStatus, String jobStatus) {
+	def testsRanMeaningfully = (testStatus == 'SUCCESS' || testStatus == 'UNSTABLE')
+	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED' ]
+	def testIdx = severityOrder.indexOf(testStatus)
+	def jobIdx  = severityOrder.indexOf(jobStatus)
+
+	if (testsRanMeaningfully && jobIdx > testIdx) {
+		// Case A: tests ran, infra degraded the job — show summary badge and inline warning.
+		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
+		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
+		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue."
+		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
+		// Idempotency: check only the header line itself for 'job degraded to', not the
+		// whole description (child table rows also contain that text and would block the guard).
+		// Jenkins sanitizer normalises <br/> -> <br> so match both forms.
+		def headerLine = currentBuild.description?.find(/TEST EXECUTE STATUS:.*?<br\/?>/)
+		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')
+				&& !headerLine?.contains('job degraded to')) {
+			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}<br/><br/>"
+			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br\\/?>\\s*<br\\/?>', '')
+			currentBuild.description = newHeader + stripped
+		}
+	} else if (!testsRanMeaningfully) {
+		// Case B: tests never ran meaningfully — update testStatus to match jobStatus,
+		// rewrite description badge to show the actual job outcome, no warning needed.
+		if (env.testStatus == testStatus) {
+			env.testStatus = jobStatus
+		}
+		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
+			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus)}<br/><br/>"
+			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br\\/?>\\s*<br\\/?>', '')
+			currentBuild.description = newHeader + stripped
+		}
+		echo "TEST EXECUTE STATUS: updated to ${jobStatus} (tests did not run meaningfully)"
+	}
 }
 
 def runParallelTests() {
