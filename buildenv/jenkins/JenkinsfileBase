@@ -1975,11 +1975,12 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
 		// Idempotency: check only the header line itself for 'job degraded to', not the
 		// whole description (child table rows also contain that text and would block the guard).
-		def headerLine = currentBuild.description?.find(/TEST EXECUTE STATUS:.*?<br\/>/)
+		// Jenkins sanitizer normalises <br/> -> <br> so match both forms.
+		def headerLine = currentBuild.description?.find(/TEST EXECUTE STATUS:.*?<br\/?>/)
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')
 				&& !headerLine?.contains('job degraded to')) {
 			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}<br/><br/>"
-			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br/>\\s*<br/>', '')
+			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br\\/?>\\s*<br\\/?>', '')
 			currentBuild.description = newHeader + stripped
 		}
 	} else if (!testsRanMeaningfully) {
@@ -1990,7 +1991,7 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		}
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
 			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus)}<br/><br/>"
-			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br/>\\s*<br/>', '')
+			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br\\/?>\\s*<br\\/?>', '')
 			currentBuild.description = newHeader + stripped
 		}
 		echo "TEST EXECUTE STATUS: updated to ${jobStatus} (tests did not run meaningfully)"
