@@ -1900,8 +1900,11 @@ def archiveChildJobTap(childJobs, originalStatus = 'SUCCESS') {
 			archiveAQAvitFiles()
 			env.testStatus = currentTestStatus
 
-			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised
-			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentStatus)}<br/><br/>"
+			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised.
+			// Do NOT pass currentStatus here — annotateInfraFailure() is the single source for the
+			// inline ⚠ warning, called below after jobStatus is assigned. Passing it here would cause
+			// a duplicate warning because annotateInfraFailure() patches the same line.
+			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
 			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentStatus})"
 			env.jobStatus = currentStatus
