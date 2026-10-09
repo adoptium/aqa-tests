@@ -644,6 +644,14 @@ def runTest() {
             env.jobStatus = infraStatus
         }
         currentBuild.result = env.jobStatus
+        // Case B promotion: if testStatus is not SUCCESS or UNSTABLE (tests did not run
+        // meaningfully), update it to match jobStatus so getBuildVariables()["testStatus"]
+        // reflects the actual outcome. This must happen here — not only in annotateInfraFailure
+        // — because annotateInfraFailure is skipped when jenkinsfile is null (e.g. git clone
+        // failed before JenkinsfileBase was loaded).
+        if (env.testStatus != 'SUCCESS' && env.testStatus != 'UNSTABLE') {
+            env.testStatus = env.jobStatus
+        }
         // Write TEST EXECUTE STATUS to the build description when post() was never reached
         // (e.g. git clone timeout, early abort before testExecution()).
         // Do NOT pass jobStatus here — the inline warning is always added by
