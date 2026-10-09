@@ -1952,17 +1952,18 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
-		// Patch the description: append the inline warning immediately after the <img> badge
-		// that post() wrote on the TEST EXECUTE STATUS line.
-		// Anchor the regex to the 'TEST EXECUTE STATUS:' prefix so we only touch that line
-		// and are insensitive to quote-style or whitespace Jenkins may normalise.
+		// Rewrite the TEST EXECUTE STATUS header to include the inline warning.
+		// We regenerate the badge URL rather than patching the stored HTML, since
+		// Jenkins' XSS sanitizer may normalise <img> attributes unpredictably.
+		// Guard with 'job degraded to' so the call is idempotent.
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
-		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
-			// Match <img ...> or <img .../> — Jenkins may normalise the self-closing slash
-			currentBuild.description = currentBuild.description.replaceFirst(
-				/(TEST EXECUTE STATUS:\s*)(<img\b[^>]*\/?>)/,
-				"\$1\$2${warning}"
-			)
+		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')
+				&& !currentBuild.description.contains('job degraded to')) {
+			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}<br/><br/>"
+			// Strip the old header line (everything up to and including its <br/><br/>)
+			// then prepend the new one. Use DOTALL so . matches across any whitespace.
+			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br/>\\s*<br/>', '')
+			currentBuild.description = newHeader + stripped
 		}
 	}
 }
