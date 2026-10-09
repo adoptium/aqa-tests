@@ -1944,24 +1944,34 @@ def isWorseThan(String resultA, String resultB) {
 // Called when an infrastructure issue (cleanWs, timeout, git clone, etc.) caused
 // env.jobStatus to be degraded beyond what tests determined (env.testStatus).
 // Adds a visible badge on the build page so it is clear tests were not the cause.
-// Also patches the existing TEST EXECUTE STATUS line in currentBuild.description to append
+// Also rewrites the TEST EXECUTE STATUS header in currentBuild.description to include
 // the inline warning, since post() runs before the infra failure is known.
-// NOT_BUILT means tests never ran — there is nothing to degrade from, so we skip.
 def annotateInfraFailure(String testStatus, String jobStatus) {
-	if (testStatus != 'NOT_BUILT' && isWorseThan(jobStatus, testStatus)) {
+	// isWorseThan returns true for any known status vs NOT_BUILT (index -1),
+	// so we check both severityOrder membership and magnitude.
+	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED' ]
+	def testIdx = severityOrder.indexOf(testStatus)
+	def jobIdx  = severityOrder.indexOf(jobStatus)
+	def infraDegraded = (jobIdx > testIdx) && (testIdx >= 0 || jobIdx >= 0)
+
+	// Summary badge: only when tests actually ran (testStatus is a known result).
+	// NOT_BUILT means no tests ran so there is nothing to contrast against.
+	if (testIdx >= 0 && jobIdx > testIdx) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue (e.g. cleanWs, timeout, git clone)."
-		// Rewrite the TEST EXECUTE STATUS header to include the inline warning.
-		// We regenerate the badge URL rather than patching the stored HTML, since
-		// Jenkins' XSS sanitizer may normalise <img> attributes unpredictably.
-		// Guard with 'job degraded to' so the call is idempotent.
+	}
+
+	// Description inline warning: show whenever job status is worse than test status,
+	// including NOT_BUILT (tests never ran but job was still aborted/failed by infra).
+	if (infraDegraded) {
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')
 				&& !currentBuild.description.contains('job degraded to')) {
+			// Rewrite the header: regenerate badge URL + append warning.
+			// Use DOTALL regex to strip the old header regardless of what the
+			// sanitizer did to the stored <img> tag.
 			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}<br/><br/>"
-			// Strip the old header line (everything up to and including its <br/><br/>)
-			// then prepend the new one. Use DOTALL so . matches across any whitespace.
 			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br/>\\s*<br/>', '')
 			currentBuild.description = newHeader + stripped
 		}
