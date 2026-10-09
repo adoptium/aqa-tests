@@ -1952,6 +1952,10 @@ def isWorseThan(String resultA, String resultB) {
 // Adds a visible badge on the build page so it is clear tests were not the cause.
 // Also rewrites the TEST EXECUTE STATUS header in currentBuild.description to include
 // the inline warning, since post() runs before the infra failure is known.
+//
+// testStatus promotion rule: if testStatus is not SUCCESS or UNSTABLE (i.e. tests did
+// not complete with a meaningful result), env.testStatus is updated to jobStatus so the
+// displayed status reflects the actual final outcome rather than a partial test state.
 def annotateInfraFailure(String testStatus, String jobStatus) {
 	// isWorseThan returns true for any known status vs NOT_BUILT (index -1),
 	// so we check both severityOrder membership and magnitude.
@@ -1960,8 +1964,19 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 	def jobIdx  = severityOrder.indexOf(jobStatus)
 	def infraDegraded = (jobIdx > testIdx) && (testIdx >= 0 || jobIdx >= 0)
 
-	// Summary badge: only when tests actually ran (testStatus is a known result).
-	// NOT_BUILT means no tests ran so there is nothing to contrast against.
+	// Promote testStatus to jobStatus when tests did not produce a meaningful result.
+	// SUCCESS and UNSTABLE mean tests actually ran — preserve those distinctions.
+	// FAILURE, ABORTED, NOT_BUILT mean tests did not complete usefully — reflect jobStatus.
+	def effectiveTestStatus = testStatus
+	if (testStatus != 'SUCCESS' && testStatus != 'UNSTABLE') {
+		effectiveTestStatus = jobStatus
+		if (env.testStatus == testStatus) {
+			env.testStatus = jobStatus
+		}
+	}
+
+	// Summary badge: only when tests actually ran (effectiveTestStatus is a known result
+	// that differs from the job outcome — i.e. infra made it worse than tests showed).
 	if (testIdx >= 0 && jobIdx > testIdx) {
 		def summary = createBadgeSummary("symbol-warning-outline plugin-ionicons-api")
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
@@ -1974,10 +1989,9 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
 		if (currentBuild.description?.contains('TEST EXECUTE STATUS:')
 				&& !currentBuild.description.contains('job degraded to')) {
-			// Rewrite the header: regenerate badge URL + append warning.
-			// Use DOTALL regex to strip the old header regardless of what the
-			// sanitizer did to the stored <img> tag.
-			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}<br/><br/>"
+			// Rewrite the header using effectiveTestStatus so the badge reflects the
+			// actual outcome, not the partial test state.
+			def newHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(effectiveTestStatus)}${warning}<br/><br/>"
 			def stripped = currentBuild.description.replaceFirst('(?s)TEST EXECUTE STATUS:.*?<br/>\\s*<br/>', '')
 			currentBuild.description = newHeader + stripped
 		}
