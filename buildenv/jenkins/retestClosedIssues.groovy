@@ -422,16 +422,77 @@ stage('Launch Grinder jobs') {
         def parallelKey = entry['_parallelKey'].toString()
         def recordKey   = entry['_recordKey'].toString()
 
+        // --- Fields from output.json that pass through to Grinder --------------
+        // Fields that are pipeline-internal or unknown to Grinder are excluded.
+        // ISSUE_TRACKED_FIXED_JDKS — pipeline-internal (version filter metadata)
+        // EXCLUDE_FILE             — pipeline-internal (used by remove_exclusions.py)
+        // _complex_status          — pipeline-internal (caught by k.startsWith('_'))
+        def SKIP_FIELDS = [
+            'ISSUE_TRACKER_STATUS',
+            'ISSUE_TRACKER',
+            'ISSUE_TRACKED_FIXED_JDKS',
+            'EXCLUDE_FILE',
+        ]
         def childParams = []
-        // Fields that are internal to this pipeline or not meaningful to Grinder
-        // are excluded from the child job parameters.
-        // ISSUE_TRACKED_FIXED_JDKS is pipeline-internal metadata from issue_status.py;
-        // Grinder does not declare it as a parameter and will reject the job if it is present.
-        def SKIP_FIELDS = ['ISSUE_TRACKER_STATUS', 'ISSUE_TRACKER', 'ISSUE_TRACKED_FIXED_JDKS']
         entry.each { k, v ->
             if (k.startsWith('_') || SKIP_FIELDS.contains(k)) return
             childParams << string(name: k.toString(), value: v.toString())
         }
+
+        // --- Required Grinder parameters not present in output.json ------------
+        // Values taken from the canonical Grinder parambuild URL used in production.
+        // These are constants that never vary per-test; they tell Grinder where to
+        // find the SDK, the test repos, and how to run the job.
+        childParams += [
+            // SDK / build
+            string(name: 'SDK_RESOURCE',       value: 'nightly'),
+            string(name: 'BUILD_LIST',          value: 'openjdk'),
+
+            // aqa-tests repo
+            string(name: 'ADOPTOPENJDK_REPO',   value: 'https://github.com/adoptium/aqa-tests.git'),
+            string(name: 'ADOPTOPENJDK_BRANCH', value: 'master'),
+
+            // Owner/branch pins for TKG and related test repos
+            string(name: 'TKG_OWNER_BRANCH',
+                   value: 'adoptium:master'),
+            string(name: 'ADOPTOPENJDK_SYSTEMTEST_OWNER_BRANCH',
+                   value: 'adoptium:master'),
+            string(name: 'STF_OWNER_BRANCH',
+                   value: 'adoptium:master'),
+            string(name: 'OPENJ9_REPO',
+                   value: 'https://github.com/eclipse-openj9/openj9.git'),
+            string(name: 'OPENJ9_BRANCH',      value: 'master'),
+            string(name: 'OPENJ9_SYSTEMTEST_OWNER_BRANCH',
+                   value: 'eclipse:master'),
+            string(name: 'JCK_GIT_BRANCH',     value: 'master'),
+
+            // Credentials / infra
+            string(name: 'CUSTOMIZED_SDK_URL_CREDENTIAL_ID',
+                   value: 'eclipse_temurin_bot_email_and_token'),
+            string(name: 'SLACK_CHANNEL',       value: 'aqavit-bot'),
+
+            // Run control
+            string(name: 'PARALLEL',            value: 'None'),
+            string(name: 'ITERATIONS',          value: '1'),
+            string(name: 'RERUN_ITERATIONS',    value: '0'),
+            string(name: 'TIME_LIMIT',          value: '30'),
+            string(name: 'ACTIVE_NODE_TIMEOUT', value: '10'),
+
+            // Flags
+            string(name: 'AUTO_DETECT',             value: 'true'),
+            string(name: 'KEEP_REPORTDIR',          value: 'true'),
+            string(name: 'GENERATE_JOBS',           value: 'false'),
+            string(name: 'PERSONAL_BUILD',          value: 'false'),
+            string(name: 'DOCKER_REQUIRED',         value: 'false'),
+            string(name: 'DYNAMIC_COMPILE',         value: 'false'),
+            string(name: 'ARCHIVE_TEST_RESULTS',    value: 'false'),
+            string(name: 'RERUN_FAILURE',           value: 'false'),
+            string(name: 'USE_JRE',                 value: 'false'),
+            string(name: 'LIGHT_WEIGHT_CHECKOUT',   value: 'false'),
+            string(name: 'USE_TESTENV_PROPERTIES',  value: 'false'),
+            string(name: 'SETUP_JCK_RUN',           value: 'false'),
+            string(name: 'KEEP_WORKSPACE',          value: 'false'),
+        ]
 
         parallelJobs[parallelKey] = {
             try {
