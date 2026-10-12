@@ -80,33 +80,37 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
 
         def aqaCredId = params.AQA_GITHUB_TOKEN ?: 'aqa-github-token'
 
+        // Write the shell script to a file so the Groovy parser never sees
+        // shell glob patterns like [0-9] — the CPS parser misreads [ ] as
+        // Groovy list literals and loses brace-balance for the rest of the file.
+        writeFile file: "${env.WORKSPACE}/s1_parse.sh", text: '''#!/bin/sh
+set -e
+cd "$WORKSPACE/aqa-tests"
+
+pip install --quiet -r scripts/disabled_tests/requirements.txt
+
+find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*.txt' > exclude_files.txt
+find openjdk/excludes/alpine -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
+
+if [ -n "$S1_JDK_IMPL" ] && [ -d "openjdk/excludes/vendors/$S1_JDK_IMPL" ]; then
+    find "openjdk/excludes/vendors/$S1_JDK_IMPL" -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
+fi
+
+if [ "$S1_JDK_IMPL" = "openj9" ]; then
+    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*-openj9.txt' >> exclude_files.txt
+    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdkvalhalla-openj9.txt' >> exclude_files.txt
+fi
+
+cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py > exclude.json
+jq -s 'flatten(1)' exclude.json > all.json
+cat all.json | python scripts/disabled_tests/issue_status.py \
+    --github-user "$S1_AQA_USER" \
+    --github-token "$AQA_GH_TOKEN" \
+    $S1_MAX_FIXED_ARG > output.json
+'''
+
         withCredentials([string(credentialsId: aqaCredId, variable: 'AQA_GH_TOKEN')]) {
-            sh '''
-                set -e
-                cd "$WORKSPACE/aqa-tests"
-
-                pip install --quiet -r scripts/disabled_tests/requirements.txt
-
-                # Discover exclude files.
-                find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*.txt' > exclude_files.txt
-                find openjdk/excludes/alpine -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
-
-                if [ -n "$S1_JDK_IMPL" ] && [ -d "openjdk/excludes/vendors/$S1_JDK_IMPL" ]; then
-                    find "openjdk/excludes/vendors/$S1_JDK_IMPL" -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
-                fi
-
-                if [ "$S1_JDK_IMPL" = "openj9" ]; then
-                    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*-openj9.txt' >> exclude_files.txt
-                    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdkvalhalla-openj9.txt' >> exclude_files.txt
-                fi
-
-                cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py > exclude.json
-                jq -s 'flatten(1)' exclude.json > all.json
-                cat all.json | python scripts/disabled_tests/issue_status.py \
-                    --github-user "$S1_AQA_USER" \
-                    --github-token "$AQA_GH_TOKEN" \
-                    $S1_MAX_FIXED_ARG > output.json
-            '''
+            sh 'sh "$WORKSPACE/s1_parse.sh"'
         }
 
         def all = readJSON(file: "${env.WORKSPACE}/aqa-tests/output.json") as List<Map<String, Object>>
