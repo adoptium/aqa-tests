@@ -61,22 +61,21 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
             if [ ! -d "${ws}/aqa-tests/.git" ]; then
                 git clone --depth 1 https://github.com/adoptium/aqa-tests.git "${ws}/aqa-tests"
             else
-                # On subsequent runs the workspace already exists; the shallow clone
-                # may have local modifications from Stage 4's git-add/commit on the
-                # *previous* build.  Reset hard to origin/HEAD so Stage 1 sees a
-                # clean tree, then re-fetch to pick up any upstream changes.
                 git -C "${ws}/aqa-tests" fetch --depth 1 origin
                 git -C "${ws}/aqa-tests" reset --hard origin/HEAD
             fi
         """
 
-        withCredentials([
-            string(credentialsId: params.AQA_GITHUB_TOKEN ?: 'aqa-github-token',
-                   variable: 'AQA_GH_TOKEN')
-        ]) {
-            def maxFixedArg = MAX_FIXED > 0 ? "--max-fixed ${MAX_FIXED}" : ''
-            def aqaUser     = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
+        // Build --max-fixed arg without a ternary (CPS parser rejects ternaries
+        // containing GString interpolation inside withCredentials).
+        def maxFixedArg = ''
+        if (MAX_FIXED > 0) {
+            maxFixedArg = "--max-fixed ${MAX_FIXED}"
+        }
+        def aqaUser = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
+        def aqaCredId = params.AQA_GITHUB_TOKEN ?: 'aqa-github-token'
 
+        withCredentials([string(credentialsId: aqaCredId, variable: 'AQA_GH_TOKEN')]) {
             sh """
                 set -e
                 cd ${ws}/aqa-tests
@@ -109,39 +108,40 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
 
         def all = readJSON(file: "${ws}/aqa-tests/output.json") as List<Map<String, Object>>
 
-        // Avoid a closure literal inside a ternary — CPS parser rejects that form.
-        def jdkFilter = null
+        // Build the JDK version filter list without a ternary.
+        def jdkFilter = []
         if (params.JDK_VERSIONS) {
-            jdkFilter = params.JDK_VERSIONS.split(',').collect { it.trim() }
+            params.JDK_VERSIONS.split(',').each { jdkFilter << it.trim() }
         }
 
-        all.each { entry ->
-            if (entry['ISSUE_TRACKER_STATUS'] != 'closed') return
+        for (def entry in all) {
+            if (entry['ISSUE_TRACKER_STATUS'] != 'closed') { continue }
             // Only hotspot — never modify exclusions for other JDK implementations.
-            if (entry['JDK_IMPL'].toString() != 'hotspot') return
-            if (jdkFilter && !jdkFilter.contains(entry['JDK_VERSION'].toString())) return
+            if (entry['JDK_IMPL'].toString() != 'hotspot') { continue }
+            if (jdkFilter && !jdkFilter.contains(entry['JDK_VERSION'].toString())) { continue }
 
-            // Only run a Grinder if this specific JDK version is listed in ISSUE_TRACKED_FIXED_JDKS.
-            // ISSUE_TRACKED_FIXED_JDKS is populated by issue_status.py from the bug-tracker
-            // resolution (e.g. "8,11,17+"). An empty string means fix applies to all versions.
-            // A non-numeric JDK_VERSION (e.g. "all") passes through — it has no version to check.
-            def fixedJdks = entry['ISSUE_TRACKED_FIXED_JDKS']?.toString()?.trim() ?: ''
+            // Only run a Grinder if this specific JDK version is listed in
+            // ISSUE_TRACKED_FIXED_JDKS (e.g. "8,11,17+").
+            // An empty string means the fix applies to all versions.
+            // A non-numeric JDK_VERSION (e.g. "all") passes through unchecked.
+            def fixedJdks = ''
+            if (entry['ISSUE_TRACKED_FIXED_JDKS']) {
+                fixedJdks = entry['ISSUE_TRACKED_FIXED_JDKS'].toString().trim()
+            }
             if (fixedJdks) {
                 def jdkVer = entry['JDK_VERSION'].toString()
                 if (jdkVer.isInteger()) {
                     def ver = jdkVer.toInteger()
-                    // Parse tokens like "8", "11", "17+" where "17+" means 17 and above.
-                    boolean covered = fixedJdks.split(',').any { token ->
+                    def covered = false
+                    for (def token in fixedJdks.split(',')) {
                         token = token.trim()
                         if (token.endsWith('+')) {
-                            ver >= token[0..-2].toInteger()
+                            if (ver >= token[0..-2].toInteger()) { covered = true }
                         } else if (token.isInteger()) {
-                            ver == token.toInteger()
-                        } else {
-                            false
+                            if (ver == token.toInteger()) { covered = true }
                         }
                     }
-                    if (!covered) return   // this JDK version not fixed — skip
+                    if (!covered) { continue }
                 }
             }
 
