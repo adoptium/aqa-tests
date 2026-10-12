@@ -52,33 +52,38 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         // Check out this pipeline's own repo so its scripts are available on the agent.
         // Note: remove_exclusions.py lives in scripts/disabled_tests/ inside this repo.
         checkout scm
-        def ws = env.WORKSPACE
 
-        // Clone aqa-tests into a predictable subdirectory.
-        // We do a shallow clone to keep Stage 1 fast.
-        sh """
+        // Use single-quoted sh strings wherever possible to avoid the CPS parser
+        // miscounting braces inside Groovy GString interpolations.
+        // Variables that must be injected into shell are passed via env.* so the
+        // shell can reference them as plain $VAR (no Groovy ${ } needed).
+
+        // Clone / refresh aqa-tests — no Groovy variables needed in this block.
+        sh '''
             set -e
-            if [ ! -d "${ws}/aqa-tests/.git" ]; then
-                git clone --depth 1 https://github.com/adoptium/aqa-tests.git "${ws}/aqa-tests"
+            if [ ! -d "$WORKSPACE/aqa-tests/.git" ]; then
+                git clone --depth 1 https://github.com/adoptium/aqa-tests.git "$WORKSPACE/aqa-tests"
             else
-                git -C "${ws}/aqa-tests" fetch --depth 1 origin
-                git -C "${ws}/aqa-tests" reset --hard origin/HEAD
+                git -C "$WORKSPACE/aqa-tests" fetch --depth 1 origin
+                git -C "$WORKSPACE/aqa-tests" reset --hard origin/HEAD
             fi
-        """
+        '''
 
-        // Build --max-fixed arg without a ternary (CPS parser rejects ternaries
-        // containing GString interpolation inside withCredentials).
-        def maxFixedArg = ''
+        // Inject Groovy variables into the environment so the shell script
+        // can reference them as plain $VAR in a single-quoted string.
+        env.S1_MAX_FIXED_ARG = ''
         if (MAX_FIXED > 0) {
-            maxFixedArg = "--max-fixed ${MAX_FIXED}"
+            env.S1_MAX_FIXED_ARG = "--max-fixed ${MAX_FIXED}"
         }
-        def aqaUser = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
+        env.S1_AQA_USER    = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
+        env.S1_JDK_IMPL    = JDK_IMPL_ARG
+
         def aqaCredId = params.AQA_GITHUB_TOKEN ?: 'aqa-github-token'
 
         withCredentials([string(credentialsId: aqaCredId, variable: 'AQA_GH_TOKEN')]) {
-            sh """
+            sh '''
                 set -e
-                cd ${ws}/aqa-tests
+                cd "$WORKSPACE/aqa-tests"
 
                 pip install --quiet -r scripts/disabled_tests/requirements.txt
 
@@ -86,27 +91,27 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
                 find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*.txt' > exclude_files.txt
                 find openjdk/excludes/alpine -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
 
-                if [ -n "${JDK_IMPL_ARG}" ] && [ -d "openjdk/excludes/vendors/${JDK_IMPL_ARG}" ]; then
-                    find "openjdk/excludes/vendors/${JDK_IMPL_ARG}" -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
+                if [ -n "$S1_JDK_IMPL" ] && [ -d "openjdk/excludes/vendors/$S1_JDK_IMPL" ]; then
+                    find "openjdk/excludes/vendors/$S1_JDK_IMPL" -name 'ProblemList_openjdk[0-9]*.txt' >> exclude_files.txt
                 fi
 
-                if [ "${JDK_IMPL_ARG}" = "openj9" ]; then
-                    find openjdk/excludes -maxdepth 1 \\( \\
-                        -name 'ProblemList_openjdk[0-9]*-openj9.txt' \\
-                        -o -name 'ProblemList_openjdkvalhalla-openj9.txt' \\
-                    \\) >> exclude_files.txt
+                if [ "$S1_JDK_IMPL" = "openj9" ]; then
+                    find openjdk/excludes -maxdepth 1 \( \
+                        -name 'ProblemList_openjdk[0-9]*-openj9.txt' \
+                        -o -name 'ProblemList_openjdkvalhalla-openj9.txt' \
+                    \) >> exclude_files.txt
                 fi
 
                 cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py > exclude.json
                 jq -s 'flatten(1)' exclude.json > all.json
-                cat all.json | python scripts/disabled_tests/issue_status.py \\
-                    --github-user "${aqaUser}" \\
-                    --github-token "\${AQA_GH_TOKEN}" \\
-                    ${maxFixedArg} > output.json
-            """
+                cat all.json | python scripts/disabled_tests/issue_status.py \
+                    --github-user "$S1_AQA_USER" \
+                    --github-token "$AQA_GH_TOKEN" \
+                    $S1_MAX_FIXED_ARG > output.json
+            '''
         }
 
-        def all = readJSON(file: "${ws}/aqa-tests/output.json") as List<Map<String, Object>>
+        def all = readJSON(file: "${env.WORKSPACE}/aqa-tests/output.json") as List<Map<String, Object>>
 
         // Build the JDK version filter list without a ternary.
         def jdkFilter = []
@@ -584,80 +589,78 @@ stage('Open unexclusion PR') {
     node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         checkout scm
 
-        withCredentials([string(credentialsId: params.GITHUB_TOKEN ?: 'github-token',
-                                variable: 'GH_TOKEN')]) {
+        // Inject all Groovy values into env so sh single-quoted strings can
+        // reference them as plain $VAR — no GString interpolation inside sh blocks.
+        def repo       = 'adoptium/aqa-tests'
+        def branchName = "auto-unexclude-${env.BUILD_NUMBER}"
+        def summaryText = env.SUMMARY_TEXT
+        def passingKeys = env.PASSING_KEYS.split('\n').toList()
 
-            def ws          = env.WORKSPACE
-            def repo        = 'adoptium/aqa-tests'
-            def branchName  = "auto-unexclude-${env.BUILD_NUMBER}"
-            def passingKeys = env.PASSING_KEYS.split('\n').toList()
-            def summaryText = env.SUMMARY_TEXT
+        env.S4_BRANCH      = branchName
+        env.S4_GITHUB_USER = GITHUB_USER
 
-            // --- Perform removals in Python (reuses existing repo tooling) ----
-            // Write the list of job keys to a file so the helper script can
-            // look up the matching lines in each ProblemList and remove them.
-            writeFile(
-                file: "${ws}/aqa-tests/passing_keys.txt",
-                text: passingKeys.join('\n')
-            )
+        // Write passing_keys.txt and commit_message.txt via Groovy (safe).
+        writeFile(
+            file: "${env.WORKSPACE}/aqa-tests/passing_keys.txt",
+            text: passingKeys.join('\n')
+        )
+        def commitMsg = 'chore: remove exclusions for tests that now pass\n\n' +
+                        "Auto-generated by retestClosedIssues (build #${env.BUILD_NUMBER}).\n" +
+                        summaryText
+        writeFile(file: "${env.WORKSPACE}/aqa-tests/commit_message.txt", text: commitMsg)
 
-            // Write the commit message to a file to avoid shell injection from
-            // summaryText (which contains arbitrary test names and JDK versions).
-            def commitMsg = "chore: remove exclusions for tests that now pass\n\n" +
-                            "Auto-generated by retestClosedIssues (build #${env.BUILD_NUMBER}).\n" +
-                            summaryText
-            writeFile(file: "${ws}/aqa-tests/commit_message.txt", text: commitMsg)
+        // Build PR body in Groovy (safe — no sh involved).
+        def skipSection = ''
+        if (targetErrors) {
+            def errorLines = targetErrors.collect { '- ' + it }.join('\n')
+            skipSection = '\n\n### Tests skipped — not found in upstream OpenJDK repos\n\n' +
+                errorLines +
+                '\n\nThese tests were excluded from this run because their source file ' +
+                'could not be confirmed in any known repository location. Manual follow-up is recommended.'
+        }
+        def prBody = 'This PR was auto-generated by the retestClosedIssues Jenkins job ' +
+                     "(build #${env.BUILD_NUMBER}).\n" +
+                     'The tests listed below passed on their target platforms when retested ' +
+                     'against a nightly JDK build, and have been removed from the relevant ' +
+                     "ProblemList exclude files.\n\n" +
+                     summaryText + skipSection +
+                     '\n\nPlease review the diff to confirm the removals are appropriate before merging.'
+
+        def ghCredId = params.GITHUB_TOKEN ?: 'github-token'
+
+        withCredentials([string(credentialsId: ghCredId, variable: 'GH_TOKEN')]) {
 
             // --- Commit the removals locally (always) -------------------------
-            // The commit is always made locally so that git format-patch can
-            // produce an artifact even if the push or PR creation fails later.
-            sh """
+            sh '''
                 set -e
-                cd ${ws}/aqa-tests
+                cd "$WORKSPACE/aqa-tests"
 
                 git config user.email "jenkins@adoptium.net"
-                git config user.name  "${GITHUB_USER}"
-                # Create the branch; if a previous run already created it (same
-                # BUILD_NUMBER, e.g. on a manual re-run), just switch to it.
-                git checkout -b ${branchName} 2>/dev/null || git checkout ${branchName}
+                git config user.name  "$S4_GITHUB_USER"
+                git checkout -b "$S4_BRANCH" 2>/dev/null || git checkout "$S4_BRANCH"
 
                 python scripts/disabled_tests/remove_exclusions.py \
                     --keys-file passing_keys.txt \
                     --workspace .
 
                 git add openjdk/excludes
-                # Only commit if there is something to commit
                 git diff --cached --quiet || git commit -F commit_message.txt
                 rm -f commit_message.txt
-            """
+            '''
 
-            // --- Build skip-notice section (used in both PR body and patch) ---
-            def skipSection = ''
-            if (targetErrors) {
-                skipSection = '\n\n### Tests skipped — not found in upstream OpenJDK repos\n\n' +
-                    targetErrors.collect { "- ${it}" }.join('\n') +
-                    '\n\nThese tests were excluded from this run because their source file ' +
-                    'could not be confirmed in any known repository location. Manual follow-up is recommended.'
-            }
-
-            def prBody = """This PR was auto-generated by the retestClosedIssues Jenkins job (build #${env.BUILD_NUMBER}).
-The tests listed below passed on their target platforms when retested against a nightly JDK build, and have been removed from the relevant ProblemList exclude files.
-
-${summaryText}${skipSection}
-
-Please review the diff to confirm the removals are appropriate before merging."""
-
-            // --- Attempt push + PR; fall back to patch artifact on any failure -
+            // --- Attempt push + PR; fall back to patch artifact on failure ----
             try {
-                sh """
+                // Push — inject token via env so it stays out of the sh string.
+                env.S4_GH_TOKEN = env.GH_TOKEN
+                env.S4_REPO     = repo
+                sh '''
                     set -e
-                    git -C ${ws}/aqa-tests push \
-                        "https://${GH_TOKEN}@github.com/${repo}.git" \
-                        HEAD:refs/heads/${branchName}
-                """
+                    git -C "$WORKSPACE/aqa-tests" push \
+                        "https://$S4_GH_TOKEN@github.com/$S4_REPO.git" \
+                        HEAD:refs/heads/"$S4_BRANCH"
+                '''
 
-                // Build the PR payload as a JSON string and write it to a file
-                // so that curl reads it directly — avoids quoting/injection risk.
+                // Write PR payload via Groovy (safe).
                 def prTitle   = "chore: auto-unexclude tests with closed issues (build #${env.BUILD_NUMBER})"
                 def prPayload = groovy.json.JsonOutput.toJson([
                     title: prTitle,
@@ -666,84 +669,60 @@ Please review the diff to confirm the removals are appropriate before merging.""
                     base:  'master',
                     draft: false,
                 ])
-                writeFile(file: "${ws}/aqa-tests/pr_payload.json", text: prPayload)
+                writeFile(file: "${env.WORKSPACE}/aqa-tests/pr_payload.json", text: prPayload)
 
                 def prResponse = sh(
-                    script: """
+                    script: '''
                         curl -sf -X POST \
-                            -H "Authorization: token ${GH_TOKEN}" \
+                            -H "Authorization: token $S4_GH_TOKEN" \
                             -H "Accept: application/vnd.github+json" \
-                            --data @${ws}/aqa-tests/pr_payload.json \
-                            https://api.github.com/repos/${repo}/pulls
-                        rm -f ${ws}/aqa-tests/pr_payload.json
-                    """,
+                            --data @"$WORKSPACE/aqa-tests/pr_payload.json" \
+                            "https://api.github.com/repos/$S4_REPO/pulls"
+                        rm -f "$WORKSPACE/aqa-tests/pr_payload.json"
+                    ''',
                     returnStdout: true
                 ).trim()
 
                 def prJson   = readJSON(text: prResponse)
                 def prNumber = prJson['number']
                 def prUrl    = prJson['html_url']
-
                 echo "PR created: ${prUrl}"
 
-                // Assign reviewer
-                sh """
+                // Assign reviewer — number injected via env.
+                env.S4_PR_NUMBER = prNumber.toString()
+                sh '''
                     curl -sf -X POST \
-                        -H "Authorization: token ${GH_TOKEN}" \
+                        -H "Authorization: token $S4_GH_TOKEN" \
                         -H "Accept: application/vnd.github+json" \
                         -d '{"reviewers": ["adamfarley"]}' \
-                        https://api.github.com/repos/${repo}/pulls/${prNumber}/requested_reviewers
-                """
+                        "https://api.github.com/repos/$S4_REPO/pulls/$S4_PR_NUMBER/requested_reviewers"
+                '''
 
                 echo "Reviewer adamfarley assigned to PR #${prNumber}."
                 currentBuild.description += "<br><a href='${prUrl}'>PR #${prNumber}</a>"
 
             } catch (Exception pushErr) {
-                // Push or PR creation failed.  Generate a git patch file so
-                // the operator can apply the changes and open a PR manually.
                 echo "WARNING: Push/PR creation failed: ${pushErr.message}"
                 echo "Generating patch artifact for manual application..."
 
                 def patchFile = "unexclude-build-${env.BUILD_NUMBER}.patch"
-                sh """
+                env.S4_PATCH_FILE = patchFile
+                sh '''
                     set -e
-                    cd ${ws}/aqa-tests
-                    # format-patch produces one .patch file per commit; stdout
-                    # mode (--stdout) gives a single combined mbox-format file.
-                    git format-patch HEAD~1 --stdout > "${ws}/${patchFile}"
-                """
+                    cd "$WORKSPACE/aqa-tests"
+                    git format-patch HEAD~1 --stdout > "$WORKSPACE/$S4_PATCH_FILE"
+                '''
 
-                // Archive in the Jenkins build workspace so it appears on the
-                // build's Artifacts page and can be downloaded via the UI.
                 archiveArtifacts artifacts: patchFile, fingerprint: true
-
                 currentBuild.result = 'UNSTABLE'
                 currentBuild.description += '<br>⚠ Push failed — patch artifact available'
 
-                echo """
-╔══════════════════════════════════════════════════════════════════╗
-║  MANUAL PR INSTRUCTIONS                                          ║
-╠══════════════════════════════════════════════════════════════════╣
-║  A patch file has been saved as a build artifact:               ║
-║    ${patchFile}                                                  ║
-║                                                                  ║
-║  To apply it and open the PR yourself:                          ║
-║                                                                  ║
-║  1. Clone (or update) your aqa-tests fork:                      ║
-║       git clone https://github.com/${repo}.git                  ║
-║       cd aqa-tests                                               ║
-║                                                                  ║
-║  2. Create a new branch:                                        ║
-║       git checkout -b ${branchName}                             ║
-║                                                                  ║
-║  3. Download the patch from this build's Artifacts page, then:  ║
-║       git am < ${patchFile}                                      ║
-║                                                                  ║
-║  4. Push and open a PR:                                         ║
-║       git push origin ${branchName}                             ║
-║     Then open a PR on GitHub targeting master/main.             ║
-╚══════════════════════════════════════════════════════════════════╝
-"""
+                echo "Manual PR instructions:\n" +
+                     "  1. Download artifact: ${patchFile}\n" +
+                     "  2. git clone https://github.com/${repo}.git && cd aqa-tests\n" +
+                     "  3. git checkout -b ${branchName}\n" +
+                     "  4. git am < ${patchFile}\n" +
+                     "  5. git push origin ${branchName} and open a PR targeting master/main."
             }
         }
     }
