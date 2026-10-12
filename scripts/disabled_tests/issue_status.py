@@ -312,19 +312,35 @@ class Dispatcher:
         raise NoHandlerFoundException()
 
 
-def augment_with_status(issues, issue_status):
+
+def _extract_fixed_jdks(complex_status: str) -> str:
     """
-    Augment all issue items with the provided status
+    Extract the comma-separated JDK version string from a resolution like
+    "CLOSED: Fixed. Action: Unexclude for JDK: 11,17,21+".
+    Returns the version string (e.g. "11,17,21+"), or an empty string when
+    the resolution does not name specific versions (fix applies to all).
     """
+    m = re.search(r'Action: Unexclude for JDK:\s*([0-9+,]+)', complex_status)
+    if m:
+        return m.group(1).rstrip(',')
+    return ''
+
+
+def augment_with_status(issues, issue_status, complex_status: str = ''):
+    """
+    Augment all issue items with the provided status.
+    Also populates ISSUE_TRACKED_FIXED_JDKS from the resolution string.
+    """
+    fixed_jdks = _extract_fixed_jdks(complex_status)
     issues_with_status = [
         models.SchemeWithStatus(
             **issue,
             ISSUE_TRACKER_STATUS=issue_status.scheme_name,
+            ISSUE_TRACKED_FIXED_JDKS=fixed_jdks,
         )
         for issue in issues
     ]
     return issues_with_status
-
 
 def group_issues_by_url(issues: List[models.Scheme]) -> Dict[str, List[models.Scheme]]:
     url_to_issues = defaultdict(list)
@@ -369,23 +385,27 @@ def _handle_completed_future(future, log_prefix, url, url_to_issues) -> List[mod
             return_code = 1
     else:
         LOG.info(f"{log_prefix} Ended processing for {url!r}: {complex_status}")
-        issues_with_status = augment_with_status(url_to_issues[url], issue_status)
+        issues_with_status = augment_with_status(url_to_issues[url], issue_status, complex_status)
         return issues_with_status
     # return an empty list if an error was caught
     return []
 
 
-def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_workers):
+def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_workers,
+                       max_fixed: int = 0):
     """
     Fetch the status of all issue trackers using the provided dispatcher
-    and augment each issue with their respective status
+    and augment each issue with their respective status.
+
+    max_fixed: if > 0, stop after this many issues are identified as
+               fixed/unexcludable ("Action: Unexclude" in the resolution).
+               Useful for quick CI smoke-runs.  Exits cleanly; already-
+               processed results are returned.
     """
     raw_url_to_issues = group_issues_by_url(issues)
 
-    # Split URLs containing multiple URLs
+    # Remove issues whose tracker URL matches a segment listed in EXCEPTIONS.
     url_to_issues = {}
-    
-    # Remove all issues whose tracker contains a URL segment listed in `EXCEPTIONS`
     for url, issues in raw_url_to_issues.items():
         exclude, reason = should_exclude(url)
         if exclude:
@@ -393,13 +413,13 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
         else:
             url_to_issues[url] = issues
 
-    
-
     len_trackers = len(url_to_issues)
     LOG.debug(f"Unique issue trackers found: {len_trackers}")
 
-    # When `max_workers` is None, `ThreadPoolExecutor` uses a sensible default value based on the number of cores
+    fixed_count = 0
     all_issues = []
+
+    # When max_workers is None, ThreadPoolExecutor uses a default based on cores.
     with futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_url = {executor.submit(dispatcher.dispatch, url): url for url in url_to_issues}
         for i, future in enumerate(futures.as_completed(future_to_url)):
@@ -407,6 +427,22 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
             log_prefix = f"{i + 1}/{len_trackers} -"
             issues_with_status = _handle_completed_future(future, log_prefix, url, url_to_issues)
             all_issues.extend(issues_with_status)
+
+            # Tally issues that are actionably fixed.
+            for item in issues_with_status:
+                if "Action: Unexclude" in item.get("ISSUE_TRACKED_FIXED_JDKS", "") \
+                        or "Action: Unexclude" in item.get("ISSUE_TRACKER_STATUS", ""):
+                    fixed_count += 1
+
+            if max_fixed > 0 and fixed_count >= max_fixed:
+                LOG.info(
+                    f"Reached max_fixed limit ({max_fixed}). Stopping early after "
+                    f"{i + 1}/{len_trackers} trackers."
+                )
+                for pending in future_to_url:
+                    pending.cancel()
+                break
+
     return all_issues
 
 
@@ -484,6 +520,9 @@ def main():
                         help=f"GitHub Token used for API [env: {GITHUB_TOKEN_ENV}]")
     parser.add_argument('--max-workers', type=int, default=None,
                         help=f"Maximum number of threads to spawn, default determined by ThreadPoolExecutor")
+    parser.add_argument('--max-fixed', type=int, default=0, metavar='N',
+                        help="Stop after N issues are identified as fixed/unexcludable. "
+                             "0 (default) means no limit. Useful for quick CI smoke-runs.")
     parser.add_argument('--infile', '-i', type=argparse.FileType('r'), default=sys.stdin,
                         help='Input file, defaults to stdin')
     parser.add_argument('--outfile', '-o', type=argparse.FileType('w'), default=sys.stdout,
@@ -530,7 +569,7 @@ def main():
         ]
     )
 
-    issues_with_status = fetch_all_statuses(issues, dispatcher, args.max_workers)
+    issues_with_status = fetch_all_statuses(issues, dispatcher, args.max_workers, args.max_fixed)
 
     LOG.debug(f"Outputting JSON to {getattr(args.outfile, 'name', '<unknown>')}")
     json.dump(
