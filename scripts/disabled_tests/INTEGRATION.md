@@ -117,7 +117,7 @@ the job's `parameters {}` block if you prefer a parameterised pipeline):
 The pipeline requests:
 
 ```groovy
-node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)')
+node('hw.arch.x86&&sw.os.linux&&(ci.role.test||ci.agent.dynamic)')
 ```
 
 The agent must have:

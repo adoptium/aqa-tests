@@ -84,7 +84,7 @@ def s1Script = "set -e\n" +
 // ============================================================================
 List<Map<String, Object>> candidates = []
 
-node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
+node('hw.arch.x86&&sw.os.linux&&ubuntu&&(ci.role.test||ci.agent.dynamic)') {
     stage('Parse disabled tests') {
         checkout scm
 
@@ -177,7 +177,7 @@ def resolveTarget(String testPath, String jdkVersion, String ghToken) {
 // STAGE 2 — Deduplicate and fan out to Grinder (cap at MAX_GRINDERS)
 // ============================================================================
 stage('Launch Grinder jobs') {
-    node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
+    node('hw.arch.x86&&sw.os.linux&&ubuntu&&(ci.role.test||ci.agent.dynamic)') {
 
         def PLATFORM_MAP = [
             's390x_linux'    : ['s390x_linux'],
@@ -386,7 +386,7 @@ stage('Open unexclusion PR') {
         return
     }
 
-    node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
+    node('hw.arch.x86&&sw.os.linux&&ubuntu&&(ci.role.test||ci.agent.dynamic)') {
         checkout scm
 
         def repo        = 'adoptium/aqa-tests'
