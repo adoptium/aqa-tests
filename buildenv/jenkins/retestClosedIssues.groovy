@@ -72,9 +72,9 @@ def s1Script = "set -e\n" +
     "    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk${globPat}*-openj9.txt' >> exclude_files.txt\n" +
     "    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdkvalhalla-openj9.txt' >> exclude_files.txt\n" +
     "fi\n" +
-    "cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py > exclude.json\n" +
+    "cat exclude_files.txt | python3 scripts/disabled_tests/exclude_parser.py > exclude.json\n" +
     "jq -s '${flattenFn}' exclude.json > all.json\n" +
-    "cat all.json | python scripts/disabled_tests/issue_status.py \\\n" +
+    "cat all.json | python3 scripts/disabled_tests/issue_status.py \\\n" +
     "    --github-user \"\$S1_AQA_USER\" \\\n" +
     "    --github-token \"\$AQA_GH_TOKEN\" \\\n" +
     "    \$S1_MAX_FIXED_ARG > output.json\n"
@@ -416,7 +416,7 @@ stage('Open unexclusion PR') {
             env.S4_GH_TOKEN = env.GH_TOKEN
 
             sh("cd \"\$WORKSPACE/aqa-tests\" && git config user.email 'jenkins@adoptium.net' && git config user.name \"\$S4_GITHUB_USER\" && git checkout -b \"\$S4_BRANCH\" 2>/dev/null || git checkout \"\$S4_BRANCH\"")
-            sh("cd \"\$WORKSPACE/aqa-tests\" && python scripts/disabled_tests/remove_exclusions.py --keys-file passing_keys.txt --workspace .")
+            sh("cd \"\$WORKSPACE/aqa-tests\" && python3 scripts/disabled_tests/remove_exclusions.py --keys-file passing_keys.txt --workspace .")
             sh("cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && (git diff --cached --quiet || git commit -F commit_message.txt) && rm -f commit_message.txt")
 
             try {
