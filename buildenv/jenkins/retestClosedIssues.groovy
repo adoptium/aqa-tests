@@ -143,9 +143,21 @@ def githubFileExists(String url, String ghToken) {
     def rawUrl = url
         .replace('https://github.com/', 'https://raw.githubusercontent.com/')
         .replace('/blob/', '/')
-    def authFlag = ghToken ? "-H \"Authorization: token ${ghToken}\"" : ''
-    def result = sh(script: "curl -sf --head --max-time 10 ${authFlag} '${rawUrl}' -o /dev/null && echo YES || echo NO", returnStdout: true).trim()
-    return result == 'YES'
+    // Pass token via env var to avoid Groovy string interpolation of the secret
+    // and to ensure the shell sees the header value as a single quoted token.
+    withEnv(["GFE_TOKEN=${ghToken}", "GFE_URL=${rawUrl}"]) {
+        def result = sh(
+            script: '''
+                if [ -n "$GFE_TOKEN" ]; then
+                    curl -sf --head --max-time 10 -H "Authorization: token $GFE_TOKEN" "$GFE_URL" -o /dev/null && echo YES || echo NO
+                else
+                    curl -sf --head --max-time 10 "$GFE_URL" -o /dev/null && echo YES || echo NO
+                fi
+            ''',
+            returnStdout: true
+        ).trim()
+        return result == 'YES'
+    }
 }
 
 def resolveTarget(String testPath, String jdkVersion, String ghToken) {
