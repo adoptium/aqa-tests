@@ -96,7 +96,8 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
                 fi
 
                 if [ "$S1_JDK_IMPL" = "openj9" ]; then
-                    find openjdk/excludes -maxdepth 1 \( -name 'ProblemList_openjdk[0-9]*-openj9.txt' -o -name 'ProblemList_openjdkvalhalla-openj9.txt' \) >> exclude_files.txt
+                    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk[0-9]*-openj9.txt' >> exclude_files.txt
+                    find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdkvalhalla-openj9.txt' >> exclude_files.txt
                 fi
 
                 cat exclude_files.txt | python scripts/disabled_tests/exclude_parser.py > exclude.json
