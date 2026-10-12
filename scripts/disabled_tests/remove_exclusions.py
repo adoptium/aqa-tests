@@ -5,10 +5,10 @@ remove_exclusions.py
 Removes entries from ProblemList exclude files for tests that have been
 confirmed passing by a Grinder run.
 
-Called by triggerGrinder.groovy Stage 4.
+Called by retestClosedIssues.groovy Stage 4.
 
 Input: a plain-text file of record keys, one per line, in the pipe-delimited
-format written by triggerGrinder.groovy:
+format written by retestClosedIssues.groovy:
 
     jdk{VER}|{GRINDER_PLATFORM}|{FULL_TEST_PATH}|{EXCLUDE_FILE}
 

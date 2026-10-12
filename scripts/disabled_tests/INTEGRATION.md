@@ -12,6 +12,7 @@ The files are already at their correct locations within this repository:
 | File | Path in aqa-tests |
 |---|---|
 | Jenkins pipeline | `buildenv/jenkins/retestClosedIssues.groovy` |
+| Issue status script (stdlib rewrite, no pip) | `buildenv/jenkins/issue_status.py` |
 | Exclusion removal script | `scripts/disabled_tests/remove_exclusions.py` |
 | Unit tests | `scripts/disabled_tests/tests/test_remove_exclusions.py` |
 | CI workflow | `.github/workflows/test-grinder-maker.yml` |
@@ -121,10 +122,13 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)')
 
 The agent must have:
 - **Python 3.9+** (3.11 recommended — matches the CI workflow)
-- **pip** (for installing `scripts/disabled_tests/requirements.txt`)
 - **git**
 - **curl**
 - **jq** (used in Stage 1 to flatten the JSON arrays from `exclude_parser.py`)
+
+pip is **not** required. `issue_status.py` in `buildenv/jenkins/` is a stdlib
+rewrite that Stage 1 copies into `scripts/disabled_tests/` at runtime,
+replacing the upstream version which depends on `requests`.
 
 If your agents use a different label expression, update both `node()` calls
 (there is one at the top of Stage 1 and one inside Stage 4).

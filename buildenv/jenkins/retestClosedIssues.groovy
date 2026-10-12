@@ -57,9 +57,12 @@ def globPat   = '[0-9]'   // stored as a variable so '[' never appears inline be
 def flattenFn = 'flatten(1)'
 def maxFixedFlag = MAX_FIXED > 0 ? "--max-fixed ${MAX_FIXED}" : ''
 
+// issue_status.py is our stdlib rewrite (no pip required).  It lives alongside
+// this Groovy file in buildenv/jenkins/ and is copied into the aqa-tests working
+// directory at runtime so it sits next to exclude_parser.py and common/.
 def s1Script = "set -e\n" +
     "cd \"\$WORKSPACE/aqa-tests\"\n" +
-    "pip install --quiet -r scripts/disabled_tests/requirements.txt\n" +
+    "cp \"\$S1_ISSUE_STATUS_SRC\" scripts/disabled_tests/issue_status.py\n" +
     "find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk${globPat}*.txt' > exclude_files.txt\n" +
     "find openjdk/excludes/alpine -name 'ProblemList_openjdk${globPat}*.txt' >> exclude_files.txt\n" +
     "if [ -n \"\$S1_JDK_IMPL\" ] && [ -d \"openjdk/excludes/vendors/\$S1_JDK_IMPL\" ]; then\n" +
@@ -87,9 +90,12 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
 
         sh "if [ ! -d \"\$WORKSPACE/aqa-tests/.git\" ]; then git clone --depth 1 https://github.com/adoptium/aqa-tests.git \"\$WORKSPACE/aqa-tests\"; else git -C \"\$WORKSPACE/aqa-tests\" fetch --depth 1 origin && git -C \"\$WORKSPACE/aqa-tests\" reset --hard origin/HEAD; fi"
 
-        env.S1_MAX_FIXED_ARG = maxFixedFlag
-        env.S1_AQA_USER      = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
-        env.S1_JDK_IMPL      = JDK_IMPL_ARG
+        env.S1_MAX_FIXED_ARG     = maxFixedFlag
+        env.S1_AQA_USER          = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
+        env.S1_JDK_IMPL          = JDK_IMPL_ARG
+        // Resolve the path to our stdlib issue_status.py relative to this Groovy file.
+        // scm checkout places the repo at WORKSPACE; the file lives in buildenv/jenkins/.
+        env.S1_ISSUE_STATUS_SRC  = "${env.WORKSPACE}/buildenv/jenkins/issue_status.py"
 
         def aqaCredId = params.AQA_GITHUB_TOKEN ?: 'aqa-github-token'
         withCredentials([string(credentialsId: aqaCredId, variable: 'AQA_GH_TOKEN')]) {
