@@ -9,6 +9,7 @@ class Scheme(TypedDict):
     CUSTOM_TARGET: str
     PLATFORM: str
     ISSUE_TRACKER: str
+    EXCLUDE_FILE: str
 
 
 class SchemeWithStatus(Scheme):

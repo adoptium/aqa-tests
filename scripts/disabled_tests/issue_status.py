@@ -337,6 +337,7 @@ def augment_with_status(issues, issue_status, complex_status: str = ''):
             **issue,
             ISSUE_TRACKER_STATUS=issue_status.scheme_name,
             ISSUE_TRACKED_FIXED_JDKS=fixed_jdks,
+            _complex_status=complex_status,
         )
         for issue in issues
     ]
@@ -429,9 +430,10 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher, max_
             all_issues.extend(issues_with_status)
 
             # Tally issues that are actionably fixed.
+            # _complex_status carries the full resolution string from the handler
+            # (e.g. "CLOSED: Fixed. Action: Unexclude for JDK: 11,17+").
             for item in issues_with_status:
-                if "Action: Unexclude" in item.get("ISSUE_TRACKED_FIXED_JDKS", "") \
-                        or "Action: Unexclude" in item.get("ISSUE_TRACKER_STATUS", ""):
+                if "Action: Unexclude" in item.get("_complex_status", ""):
                     fixed_count += 1
 
             if max_fixed > 0 and fixed_count >= max_fixed:
