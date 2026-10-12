@@ -109,7 +109,11 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
 
         def all = readJSON(file: "${ws}/aqa-tests/output.json") as List<Map<String, Object>>
 
-        def jdkFilter = params.JDK_VERSIONS ? params.JDK_VERSIONS.split(',').collect { it.trim() } : null
+        // Avoid a closure literal inside a ternary — CPS parser rejects that form.
+        def jdkFilter = null
+        if (params.JDK_VERSIONS) {
+            jdkFilter = params.JDK_VERSIONS.split(',').collect { it.trim() }
+        }
 
         all.each { entry ->
             if (entry['ISSUE_TRACKER_STATUS'] != 'closed') return
