@@ -237,7 +237,7 @@ stage('Launch Grinder jobs') {
             def rawPath    = (entry['CUSTOM_TARGET'] ?: entry['TARGET']).toString()
             def cleanPath  = stripTestSuffix(rawPath)
             def jdkVersion = entry['JDK_VERSION'].toString()
-            def cacheKey   = "${cleanPath}|${jdkVersion}"
+            String cacheKey = "${cleanPath}|${jdkVersion}"
 
             if (!targetCache.containsKey(cacheKey)) {
                 targetCache[cacheKey] = resolveTarget(cleanPath, jdkVersion)
