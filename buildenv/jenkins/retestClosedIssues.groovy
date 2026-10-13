@@ -438,7 +438,7 @@ stage('Open unexclusion PR') {
             sh("cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && (git diff --cached --quiet || git commit -F commit_message.txt) && rm -f commit_message.txt")
 
             try {
-                sh("git -C \"\$WORKSPACE/aqa-tests\" push \"https://\$S4_GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
+                sh("git -C \"\$WORKSPACE/aqa-tests\" push \"https://x-access-token:\$S4_GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
 
                 def prTitle   = "chore: auto-unexclude tests with closed issues (build #${env.BUILD_NUMBER})"
                 def prPayload = groovy.json.JsonOutput.toJson([title: prTitle, body: prBody, head: branchName, base: 'master', draft: false])
@@ -461,7 +461,7 @@ stage('Open unexclusion PR') {
 
                 def patchFile = "unexclude-build-${env.BUILD_NUMBER}.patch"
                 env.S4_PATCH_FILE = patchFile
-                sh("cd \"\$WORKSPACE/aqa-tests\" && git format-patch HEAD~1 --stdout > \"\$WORKSPACE/\$S4_PATCH_FILE\"")
+                sh("cd \"\$WORKSPACE/aqa-tests\" && git format-patch -1 HEAD --stdout > \"\$WORKSPACE/\$S4_PATCH_FILE\"")
                 archiveArtifacts artifacts: patchFile, fingerprint: true
                 currentBuild.result = 'UNSTABLE'
                 currentBuild.description += '<br>Push failed - patch artifact available'
