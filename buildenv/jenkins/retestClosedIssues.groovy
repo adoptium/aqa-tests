@@ -57,8 +57,8 @@ def globPat   = '[0-9]'   // stored as a variable so '[' never appears inline be
 def flattenFn = 'flatten(1)'
 def maxFixedFlag = MAX_FIXED > 0 ? "--max-fixed ${MAX_FIXED}" : ''
 
-// issue_status.py is our stdlib rewrite (no pip required).  It lives alongside
-// this Groovy file in buildenv/jenkins/ and is copied into the aqa-tests working
+// issue_status.py is our stdlib rewrite (no pip required). It is copied from
+// scripts/disabled_tests/ into the upstream aqa-tests clone working
 // directory at runtime so it sits next to exclude_parser.py and common/.
 def s1Script = "set -e\n" +
     "cd \"\$WORKSPACE/aqa-tests\"\n" +
@@ -93,9 +93,8 @@ node('hw.arch.x86&&sw.os.linux&&ubuntu&&(ci.role.test||ci.agent.dynamic)') {
         env.S1_MAX_FIXED_ARG     = maxFixedFlag
         env.S1_AQA_USER          = params.AQA_GITHUB_USER ?: env.AQA_GITHUB_USER ?: ''
         env.S1_JDK_IMPL          = JDK_IMPL_ARG
-        // Resolve the path to our stdlib issue_status.py relative to this Groovy file.
-        // scm checkout places the repo at WORKSPACE; the file lives in buildenv/jenkins/.
-        env.S1_ISSUE_STATUS_SRC  = "${env.WORKSPACE}/buildenv/jenkins/issue_status.py"
+        // Resolve the path to our stdlib issue_status.py relative to this SCM workspace.
+        env.S1_ISSUE_STATUS_SRC  = "${env.WORKSPACE}/scripts/disabled_tests/issue_status.py"
 
         def aqaCredId = params.AQA_GITHUB_TOKEN ?: 'aqa-github-token'
         withCredentials([string(credentialsId: aqaCredId, variable: 'AQA_GH_TOKEN')]) {
@@ -431,20 +430,18 @@ stage('Open unexclusion PR') {
 
         def ghCredId4 = params.GITHUB_TOKEN ?: 'github-token'
         withCredentials([string(credentialsId: ghCredId4, variable: 'GH_TOKEN')]) {
-            env.S4_GH_TOKEN = env.GH_TOKEN
-
             sh("cd \"\$WORKSPACE/aqa-tests\" && git config user.email 'jenkins@adoptium.net' && git config user.name \"\$S4_GITHUB_USER\" && git checkout -b \"\$S4_BRANCH\" 2>/dev/null || git checkout \"\$S4_BRANCH\"")
             sh("cd \"\$WORKSPACE/aqa-tests\" && python3 scripts/disabled_tests/remove_exclusions.py --keys-file passing_keys.txt --workspace .")
             sh("cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && (git diff --cached --quiet || git commit -F commit_message.txt) && rm -f commit_message.txt")
 
             try {
-                sh("GIT_TERMINAL_PROMPT=0 git -C \"\$WORKSPACE/aqa-tests\" push \"https://x-access-token:\$S4_GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
+                sh("GIT_TERMINAL_PROMPT=0 git -C \"\$WORKSPACE/aqa-tests\" push \"https://x-access-token:\$GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
 
                 def prTitle   = "chore: auto-unexclude tests with closed issues (build #${env.BUILD_NUMBER})"
                 def prPayload = groovy.json.JsonOutput.toJson([title: prTitle, body: prBody, head: branchName, base: 'master', draft: false])
                 writeFile(file: "${env.WORKSPACE}/aqa-tests/pr_payload.json", text: prPayload)
 
-                def prResponse = sh(script: "curl -sf -X POST -H \"Authorization: token \$S4_GH_TOKEN\" -H \"Accept: application/vnd.github+json\" --data @\"\$WORKSPACE/aqa-tests/pr_payload.json\" \"https://api.github.com/repos/\$S4_REPO/pulls\" && rm -f \"\$WORKSPACE/aqa-tests/pr_payload.json\"", returnStdout: true).trim()
+                def prResponse = sh(script: "curl -sf -X POST -H \"Authorization: token \$GH_TOKEN\" -H \"Accept: application/vnd.github+json\" --data @\"\$WORKSPACE/aqa-tests/pr_payload.json\" \"https://api.github.com/repos/\$S4_REPO/pulls\" && rm -f \"\$WORKSPACE/aqa-tests/pr_payload.json\"", returnStdout: true).trim()
 
                 def prJson   = readJSON(text: prResponse)
                 def prNumber = prJson['number']
@@ -452,7 +449,7 @@ stage('Open unexclusion PR') {
                 echo "PR created: ${prUrl}"
 
                 env.S4_PR_NUMBER = prNumber.toString()
-                sh("curl -sf -X POST -H \"Authorization: token \$S4_GH_TOKEN\" -H \"Accept: application/vnd.github+json\" -d '{\"reviewers\": [\"adamfarley\"]}' \"https://api.github.com/repos/\$S4_REPO/pulls/\$S4_PR_NUMBER/requested_reviewers\"")
+                sh("curl -sf -X POST -H \"Authorization: token \$GH_TOKEN\" -H \"Accept: application/vnd.github+json\" -d '{\"reviewers\": [\"adamfarley\"]}' \"https://api.github.com/repos/\$S4_REPO/pulls/\$S4_PR_NUMBER/requested_reviewers\"")
                 echo "Reviewer adamfarley assigned to PR #${prNumber}."
                 currentBuild.description += "<br><a href='${prUrl}'>PR #${prNumber}</a>"
 

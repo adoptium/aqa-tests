@@ -12,7 +12,7 @@ The files are already at their correct locations within this repository:
 | File | Path in aqa-tests |
 |---|---|
 | Jenkins pipeline | `buildenv/jenkins/retestClosedIssues.groovy` |
-| Issue status script (stdlib rewrite, no pip) | `buildenv/jenkins/issue_status.py` |
+| Issue status script (stdlib rewrite, no pip) | `scripts/disabled_tests/issue_status.py` |
 | Exclusion removal script | `scripts/disabled_tests/remove_exclusions.py` |
 | Unit tests | `scripts/disabled_tests/tests/test_remove_exclusions.py` |
 | CI workflow | `.github/workflows/test-grinder-maker.yml` |
@@ -126,8 +126,8 @@ The agent must have:
 - **curl**
 - **jq** (used in Stage 1 to flatten the JSON arrays from `exclude_parser.py`)
 
-pip is **not** required. `issue_status.py` in `buildenv/jenkins/` is a stdlib
-rewrite that Stage 1 copies into `scripts/disabled_tests/` at runtime,
+pip is **not** required. `issue_status.py` in `scripts/disabled_tests/` is a stdlib
+rewrite that Stage 1 copies into the upstream `aqa-tests` clone at runtime,
 replacing the upstream version which depends on `requests`.
 
 If your agents use a different label expression, update both `node()` calls
