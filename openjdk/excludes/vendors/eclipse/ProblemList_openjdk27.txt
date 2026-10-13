@@ -20,6 +20,7 @@
 
 compiler/gallery/TestNormalMapping.java#visual https://github.com/adoptium/infrastructure/issues/211 macosx-all,windows-all
 compiler/gallery/TestParticleLife.java https://github.com/adoptium/infrastructure/issues/211 macosx-all,windows-all
+compiler/gcbarriers/UnsafeIntrinsicsTest.java#Shenandoah https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
 compiler/compilercontrol/matcher/MethodMatcherTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 compiler/compilercontrol/InlineMatcherTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
 compiler/compilercontrol/mixed/RandomValidCommandsTest.java https://github.com/adoptium/infrastructure/issues/4326 macosx-x64
@@ -30,6 +31,71 @@ compiler/oracle/MethodMatcherTest.java https://github.com/adoptium/infrastructur
 # hotspot_gc
 
 gc/arguments/TestMaxRAMPercentage.java https://bugs.openjdk.org/browse/JDK-8392794 linux-all,windows-all
+gc/TestAllocHumongousFragment.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/TestHumongousReferenceObject.java#id2 https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestAllocIntArrays.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestAllocIntArrays.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestAllocObjectArrays.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestAllocObjectArrays.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestAllocObjects.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestDynamicSoftMaxHeapSize.java#satb-aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestEvilSyncBug.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestEvilSyncBug.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestHeapUncommit.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestJcmdHeapDump.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestJcmdHeapDump.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestJcmdHeapDump.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestReferenceShortcutCycle.java#generational-100 https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestReferenceShortcutCycle.java#satb-100 https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestRefprocSanity.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestRefprocSanity.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestResizeTLAB.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestResizeTLAB.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestRetainObjects.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#no-tlab https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestSieveObjects.java#no-tlab-genshen https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestStringDedup.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestStringDedupStress.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestStringDedupStress.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestStringInternCleanup.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/TestVerifyJCStress.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/compiler/TestClone.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/compiler/TestClone.java#aggressive-verify https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/compiler/TestLinkToNativeRBP.java https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/compiler/TestReferenceCAS.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/generational/TestOldGrowthTriggers.java https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/jni/TestJNICritical.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/jni/TestPinnedGarbage.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestChurnNotifications.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestChurnNotifications.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestChurnNotifications.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestChurnNotifications.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestPauseNotifications.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestPauseNotifications.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestPauseNotifications.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/mxbeans/TestPauseNotifications.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/shenandoah/oom/TestClassLoaderLeak.java https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#adaptive-deopt-nmethod https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#aggressive-deopt-nmethod https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#compact-deopt-nmethod https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcbasher/TestGCBasherWithShenandoah.java#generational-deopt-nmethod https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcold/TestGCOldWithShenandoah.java#adaptive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcold/TestGCOldWithShenandoah.java#aggressive https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcold/TestGCOldWithShenandoah.java#compact https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/gcold/TestGCOldWithShenandoah.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/systemgc/TestSystemGCWithShenandoah.java#default https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stress/systemgc/TestSystemGCWithShenandoah.java#generational https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stringdedup/TestStringDeduplicationAgeThreshold.java#Shenandoah https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stringdedup/TestStringDeduplicationTableResize.java#Shenandoah https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
+gc/stringdedup/TestStringDeduplicationYoungGC.java#Shenandoah https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
 
 ############################################################################
 
@@ -91,6 +157,8 @@ java/net/DatagramSocket/DatagramSocketMulticasting.java https://github.com/adopt
 ############################################################################
 
 # jdk_io
+
+java/io/ObjectStreamClass/ObjectStreamClassCaching.java#Shenandoah https://bugs.openjdk.org/browse/JDK-8390452 linux-riscv64
 
 ############################################################################
 
