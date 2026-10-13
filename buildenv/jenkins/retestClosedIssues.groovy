@@ -63,8 +63,8 @@ def maxFixedFlag = MAX_FIXED > 0 ? "--max-fixed ${MAX_FIXED}" : ''
 def s1Script = "set -e\n" +
     "cd \"\$WORKSPACE/aqa-tests\"\n" +
     "cp \"\$S1_ISSUE_STATUS_SRC\" scripts/disabled_tests/issue_status.py\n" +
-    "find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk${globPat}*.txt' > exclude_files.txt\n" +
-    "find openjdk/excludes/alpine -name 'ProblemList_openjdk${globPat}*.txt' >> exclude_files.txt\n" +
+    "find openjdk/excludes -maxdepth 1 -name 'ProblemList_openjdk${globPat}*.txt' ! -name '*-*.txt' > exclude_files.txt\n" +
+    "find openjdk/excludes/alpine -name 'ProblemList_openjdk${globPat}*.txt' ! -name '*-*.txt' >> exclude_files.txt\n" +
     "if [ -n \"\$S1_JDK_IMPL\" ] && [ -d \"openjdk/excludes/vendors/\$S1_JDK_IMPL\" ]; then\n" +
     "    find \"openjdk/excludes/vendors/\$S1_JDK_IMPL\" -name 'ProblemList_openjdk${globPat}*.txt' >> exclude_files.txt\n" +
     "fi\n" +
