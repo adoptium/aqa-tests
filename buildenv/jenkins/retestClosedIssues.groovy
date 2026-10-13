@@ -146,11 +146,7 @@ def githubFileExists(String url) {
     withEnv(["GFE_URL=${rawUrl}"]) {
         def result = sh(
             script: '''
-                if [ -n "$GH_TOKEN_STAGE2" ]; then
-                    curl -sf --head --max-time 10 -H "Authorization: token $GH_TOKEN_STAGE2" "$GFE_URL" -o /dev/null && echo YES || echo NO
-                else
-                    curl -sf --head --max-time 10 "$GFE_URL" -o /dev/null && echo YES || echo NO
-                fi
+                curl -sf --head --max-time 10 "$GFE_URL" -o /dev/null && echo YES || echo NO
             ''',
             returnStdout: true
         ).trim()
@@ -237,33 +233,30 @@ stage('Launch Grinder jobs') {
         Map targetCache = [:]
         List resolved = []
 
-        def ghCredId2 = params.GITHUB_TOKEN ?: 'github-token'
-        withCredentials([string(credentialsId: ghCredId2, variable: 'GH_TOKEN_STAGE2')]) {
-            expanded.each { entry ->
-                def rawPath    = (entry['CUSTOM_TARGET'] ?: entry['TARGET']).toString()
-                def cleanPath  = stripTestSuffix(rawPath)
-                def jdkVersion = entry['JDK_VERSION'].toString()
-                def cacheKey   = "${cleanPath}|${jdkVersion}"
+        expanded.each { entry ->
+            def rawPath    = (entry['CUSTOM_TARGET'] ?: entry['TARGET']).toString()
+            def cleanPath  = stripTestSuffix(rawPath)
+            def jdkVersion = entry['JDK_VERSION'].toString()
+            def cacheKey   = "${cleanPath}|${jdkVersion}"
 
-                if (!targetCache.containsKey(cacheKey)) {
-                    targetCache[cacheKey] = resolveTarget(cleanPath, jdkVersion)
-                }
-                def result = targetCache[cacheKey]
-
-                if (!result.target) {
-                    if (result.target == null) {
-                        targetCache[cacheKey] = [target: '', url: '']
-                        targetErrors << "Could not locate test file for ${cleanPath} (JDK ${jdkVersion}) in any known OpenJDK repository location. This test was not retested."
-                        echo "TARGET resolution failed: ${cleanPath} (JDK ${jdkVersion})"
-                    }
-                    return
-                }
-
-                def record = [:] + entry
-                record['TARGET']        = result.target
-                record['CUSTOM_TARGET'] = cleanPath
-                resolved << record
+            if (!targetCache.containsKey(cacheKey)) {
+                targetCache[cacheKey] = resolveTarget(cleanPath, jdkVersion)
             }
+            def result = targetCache[cacheKey]
+
+            if (!result.target) {
+                if (result.target == null) {
+                    targetCache[cacheKey] = [target: '', url: '']
+                    targetErrors << "Could not locate test file for ${cleanPath} (JDK ${jdkVersion}) in any known OpenJDK repository location. This test was not retested."
+                    echo "TARGET resolution failed: ${cleanPath} (JDK ${jdkVersion})"
+                }
+                return
+            }
+
+            def record = [:] + entry
+            record['TARGET']        = result.target
+            record['CUSTOM_TARGET'] = cleanPath
+            resolved << record
         }
 
         echo "TARGET resolution complete: ${resolved.size()} record(s) ready (${targetErrors.size()} test(s) skipped)."
