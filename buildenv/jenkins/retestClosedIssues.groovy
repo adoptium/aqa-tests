@@ -430,7 +430,14 @@ stage('Open unexclusion PR') {
 
         sh("cd \"\$WORKSPACE/aqa-tests\" && git config user.email 'jenkins@adoptium.net' && git config user.name \"\$S4_GITHUB_USER\" && git checkout -b \"\$S4_BRANCH\" 2>/dev/null || git checkout \"\$S4_BRANCH\"")
         sh("cd \"\$WORKSPACE/aqa-tests\" && python3 scripts/disabled_tests/remove_exclusions.py --keys-file passing_keys.txt --workspace .")
-        sh("cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && (git diff --cached --quiet || git commit -F commit_message.txt) && rm -f commit_message.txt")
+        def hasChanges = sh(script: "cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && ! git diff --cached --quiet", returnStatus: true) == 0
+        if (!hasChanges) {
+            sh("rm -f \"\$WORKSPACE/aqa-tests/commit_message.txt\"")
+            echo 'No ProblemList changes were made - no patch needs to be created.'
+            currentBuild.description += '<br>No changes - no patch created'
+            return
+        }
+        sh("cd \"\$WORKSPACE/aqa-tests\" && git commit -F commit_message.txt && rm -f commit_message.txt")
 
         // Archive the commit as a patch and tell the user how to apply it.
         def savePatch = {

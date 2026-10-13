@@ -351,8 +351,11 @@ def resolve_files(jdk_label: str, exclude_file: str, workspace: Path) -> List[Pa
 
     jdk_version = jdk_label.removeprefix('jdk')
     excludes_dir = workspace / 'openjdk' / 'excludes'
+    # Fallback: only match plain hotspot files (ProblemList_openjdk<VER>.txt).
+    # Vendor/impl-suffixed files (e.g. -openj9.txt, -sap.txt) must be reached
+    # via their explicit EXCLUDE_FILE path; we never touch them by default.
     pattern = re.compile(
-        rf'ProblemList_openjdk{re.escape(jdk_version)}([-.].*)?\.txt$'
+        rf'ProblemList_openjdk{re.escape(jdk_version)}\.txt$'
     )
     return sorted(
         p for p in excludes_dir.rglob('ProblemList_*.txt')

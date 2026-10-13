@@ -30,6 +30,7 @@ from remove_exclusions import (
     parse_key,
     process_file,
     reduce_platforms,
+    resolve_files,
     token_covered_by_passing,
     token_represented_in_comment_set,
 )
@@ -2060,6 +2061,35 @@ class TestIssueTrackedFixedJdksFilter(unittest.TestCase):
         """ISSUE_TRACKED_FIXED_JDKS='8,11,17' — JDK 11 IS in the list."""
         entries = [self._make_entry('11', fixed_jdks='8,11,17')]
         self.assertEqual(len(_filter_with_fixed_jdks(entries)), 1)
+
+
+class TestResolveFilesFallback(unittest.TestCase):
+    """Fallback glob must never return impl-suffixed (-openj9, -sap) files."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.ws = Path(self._tmp.name)
+        self.excludes = self.ws / 'openjdk' / 'excludes'
+        self.excludes.mkdir(parents=True)
+        for name in ('ProblemList_openjdk21.txt',
+                     'ProblemList_openjdk21-openj9.txt',
+                     'ProblemList_openjdk21-sap.txt',
+                     'ProblemList_openjdk2.txt'):
+            (self.excludes / name).write_text('', encoding='utf-8')
+
+    def test_fallback_returns_only_plain_hotspot_file(self):
+        result = resolve_files('jdk21', '', self.ws)
+        self.assertEqual([p.name for p in result], ['ProblemList_openjdk21.txt'])
+
+    def test_missing_exclude_file_fallback_excludes_openj9(self):
+        result = resolve_files('jdk21', 'openjdk/excludes/does_not_exist.txt', self.ws)
+        self.assertNotIn('ProblemList_openjdk21-openj9.txt', [p.name for p in result])
+
+    def test_explicit_exclude_file_still_honoured(self):
+        explicit = 'openjdk/excludes/ProblemList_openjdk21-openj9.txt'
+        result = resolve_files('jdk21', explicit, self.ws)
+        self.assertEqual(result, [self.ws / explicit])
 
 
 if __name__ == '__main__':
