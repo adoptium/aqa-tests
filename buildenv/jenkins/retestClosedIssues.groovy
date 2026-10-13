@@ -438,7 +438,7 @@ stage('Open unexclusion PR') {
             sh("cd \"\$WORKSPACE/aqa-tests\" && git add openjdk/excludes && (git diff --cached --quiet || git commit -F commit_message.txt) && rm -f commit_message.txt")
 
             try {
-                sh("git -C \"\$WORKSPACE/aqa-tests\" -c http.extraHeader=\"Authorization: token \$S4_GH_TOKEN\" push \"https://github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
+                sh("GIT_TERMINAL_PROMPT=0 git -C \"\$WORKSPACE/aqa-tests\" push \"https://\$S4_GITHUB_USER:\$S4_GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
 
                 def prTitle   = "chore: auto-unexclude tests with closed issues (build #${env.BUILD_NUMBER})"
                 def prPayload = groovy.json.JsonOutput.toJson([title: prTitle, body: prBody, head: branchName, base: 'master', draft: false])
