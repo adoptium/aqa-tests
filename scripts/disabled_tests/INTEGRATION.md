@@ -105,7 +105,7 @@ the job's `parameters {}` block if you prefer a parameterised pipeline):
 | `MAX_FIXED` | String | `0` | Passed to `issue_status.py --max-fixed`.  Set to a small integer (e.g. `3`) for a quick smoke-run without processing all issues.  `0` means no limit. |
 | `MAX_GRINDERS` | String | `100` | Hard cap on parallel Grinder jobs in Stage 2. |
 | `GRINDER_JOB` | String | `Grinder` | Jenkins job name for the upstream Grinder job. |
-| `GITHUB_USER` | String | `jenkins-bot` | Git author name used for the automated commit in Stage 4. |
+| `GITHUB_USER` | String | *(empty)* | Git author name for the Stage 4 commit. **If left blank**, the git push and PR creation are skipped; a patch file is archived instead and the console prints manual `git am` instructions. |
 | `GITHUB_TOKEN` | String | `github-token` | Jenkins credential ID for the `github-token` secret (PR creation, git push, TARGET resolution). |
 | `AQA_GITHUB_TOKEN` | String | `aqa-github-token` | Jenkins credential ID for the token passed to `issue_status.py`. |
 | `AQA_GITHUB_USER` | String | *(empty)* | GitHub username for `issue_status.py --github-user`.  Can also be set as a Jenkins environment variable. |
