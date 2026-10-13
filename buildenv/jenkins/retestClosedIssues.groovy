@@ -139,17 +139,15 @@ def stripTestSuffix(String path) {
     return m ? m[0][1] : path
 }
 
-def githubFileExists(String url, String ghToken) {
+def githubFileExists(String url) {
     def rawUrl = url
         .replace('https://github.com/', 'https://raw.githubusercontent.com/')
         .replace('/blob/', '/')
-    // Pass token via env var to avoid Groovy string interpolation of the secret
-    // and to ensure the shell sees the header value as a single quoted token.
-    withEnv(["GFE_TOKEN=${ghToken}", "GFE_URL=${rawUrl}"]) {
+    withEnv(["GFE_URL=${rawUrl}"]) {
         def result = sh(
             script: '''
-                if [ -n "$GFE_TOKEN" ]; then
-                    curl -sf --head --max-time 10 -H "Authorization: token $GFE_TOKEN" "$GFE_URL" -o /dev/null && echo YES || echo NO
+                if [ -n "$GH_TOKEN_STAGE2" ]; then
+                    curl -sf --head --max-time 10 -H "Authorization: token $GH_TOKEN_STAGE2" "$GFE_URL" -o /dev/null && echo YES || echo NO
                 else
                     curl -sf --head --max-time 10 "$GFE_URL" -o /dev/null && echo YES || echo NO
                 fi
@@ -160,7 +158,7 @@ def githubFileExists(String url, String ghToken) {
     }
 }
 
-def resolveTarget(String testPath, String jdkVersion, String ghToken) {
+def resolveTarget(String testPath, String jdkVersion) {
     def ver = jdkVersion.isInteger() ? jdkVersion.toInteger() : -1
     if (ver == -1) return [target: null, url: null]
 
@@ -181,7 +179,7 @@ def resolveTarget(String testPath, String jdkVersion, String ghToken) {
         }
     }
 
-    def hit = candidateList.find { githubFileExists(it.url, ghToken) }
+    def hit = candidateList.find { githubFileExists(it.url) }
     return hit ? [target: hit.target, url: hit.url] : [target: null, url: null]
 }
 
@@ -248,7 +246,7 @@ stage('Launch Grinder jobs') {
                 def cacheKey   = "${cleanPath}|${jdkVersion}"
 
                 if (!targetCache.containsKey(cacheKey)) {
-                    targetCache[cacheKey] = resolveTarget(cleanPath, jdkVersion, env.GH_TOKEN_STAGE2)
+                    targetCache[cacheKey] = resolveTarget(cleanPath, jdkVersion)
                 }
                 def result = targetCache[cacheKey]
 
