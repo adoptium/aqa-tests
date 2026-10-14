@@ -171,120 +171,79 @@ timestamps{
             parallel testJobs
         }
     } else if (!JOB_NAME.contains("_imagePull") && !JOB_NAME.contains("_imageUpload") && params.TARGET == "dev.external" ) {
-        def types = ["criu", "scc"]
+        // Load portable container feature configurations from JSON config files.
+        // Config files live in buildenv/jenkins/config/portable-container/<type>/.
+        // To add a new feature, create a new subdirectory with imageUploadMap.json
+        // and imagePullMap.json — no changes to this file are needed.
+        def portableContainerConfigs = [:]
+        def configBasePath = "./aqa-tests/buildenv/jenkins/config/portable-container"
+        node("worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)") {
+            checkout scm
+            dir(env.WORKSPACE) {
+                // Auto-discover feature types from the config directory.
+                // Any subdirectory containing imageUploadMap.json is treated as a feature.
+                // Adding a new feature requires only adding JSON files here — no Groovy changes needed.
+                def configFiles = findFiles(glob: "${configBasePath}/*/imageUploadMap.json")
+                for (def configFile : configFiles) {
+                    def featureType = configFile.path.tokenize('/')[-2]
+                    portableContainerConfigs[featureType] = [
+                        upload: readJSON(file: "${configBasePath}/${featureType}/imageUploadMap.json"),
+                        pull:   readJSON(file: "${configBasePath}/${featureType}/imagePullMap.json")
+                    ]
+                }
+            }
+        }
+
         def imageUploadJobs = [:]
         def imagePullJobs = [:]
-        for (String type : types) {
-            def imageUploadMap = []
-            def imagePullMap = []
+        for (String type : portableContainerConfigs.keySet().toList()) {
+            def imageUploadMap = [:]
+            def imagePullMap = [:]
             def target = "dev.external"
             def buildList = ""
+
+            def uploadConfig = portableContainerConfigs[type].upload
+            def pullConfig   = portableContainerConfigs[type].pull
+
             if (type == "criu") {
                 // Temporarily exclude JDK26+ due to lack of dockerfile
-                if (!(params.JDK_VERSION.isInteger() && params.JDK_VERSION.toInteger() >= 26)) {
-                    def commonLabel = "sw.tool.podman&&sw.tool.container.criu"
-                    if (params.LABEL_ADDITION) {
-                        commonLabel += "&&${params.LABEL_ADDITION}"
-                    }
-                    buildList="external/criu,external/criu-portable-checkpoint,external/criu-portable-checkpoint,external/criu-portable-checkpoint,criu-ubi-portable-restore,external/criu-ubi-portable-checkpoint"
-                    imageUploadMap = [
-                        'x86-64_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
-                                ],
-                        'aarch64_linux' : [
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.20"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.aarch64.armv8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.aarch64.armv8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.aarch64.armv8"]
-                                ],
-                        's390x_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z13"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z14"],
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.s390x.z15"],
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z13"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z14"],
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.s390x.z15"],
-                                    // rhel.9 s390x excluded from upload: sudo requires password on all available nodes (runtimes_backlog_issues_879)
-                                    // ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"]
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z15"]
-                                ],
-                        'ppc64le_linux' : [
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p9"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.ppc64le.p10"],
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.98&&hw.arch.ppc64le.p10"],
-                        ]
-                    ]
-                    imagePullMap = [
-                        'x86-64_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.broadwell"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.broadwell"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8&&hw.arch.x86.skylake"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.amd"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.x86.broadwell"]
-                                ],
-                        'aarch64_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.ubuntu.22"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.8"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9"]
-                                ],
-                        's390x_linux' : [
-                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z13"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z14"]
-                                    // no machine available ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.s390x.z15"]
-                                ],
-                        'ppc64le_linux' : [
-                                    // Temporarily exclude ubuntu 24 machines due to issue runtimes_backlog 1506
-                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p10&&!sw.os.ubuntu.24"],
-                                    ['LABEL_ADDITION' : "${commonLabel}&&hw.arch.ppc64le.p9&&!sw.os.ubuntu.24"]
-                                ]
-                    ]
-                    target = "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi10,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test"
-
-                    if (params.PLATFORM == "ppc64le_linux") {
-                        // exclude criu-portable-checkpoint_test on plinux due to github_ibm/runtimes/backlog/issues/1099
-                        target = target.minus("disabled.criu-portable-checkpoint_test,")
-                    }
+                if (params.JDK_VERSION.isInteger() && params.JDK_VERSION.toInteger() >= 26) {
+                    echo "Skipping CRIU for JDK ${params.JDK_VERSION}: JDK26+ not yet supported (no dockerfile)"
+                    continue
                 }
-            } else if (type == "scc") {
-                def commonLabel = "sw.tool.podman"
-                if (params.LABEL_ADDITION) {
-                    commonLabel += "&&${params.LABEL_ADDITION}"
-                }
-                buildList="external/scc"
-                imageUploadMap = [
-                    's390x_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z17"],
-                            ],
-                    'ppc64le_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p11"],
-                    ]
-                ]
-                imagePullMap = [
-                    's390x_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z14"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.s390x.z17"],
-                            ],
-                    'ppc64le_linux' : [
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p9"],
-                                ['LABEL_ADDITION' : "${commonLabel}&&sw.os.rhel.9&&hw.arch.ppc64le.p11"]
-                            ]
-                ]
-
-                target = "testList TESTLIST=disabled.portable_scc_CreateImageAndPushToRegistry_ubi9"
-
             }
+
+            // Build commonLabel from config base + any user-supplied LABEL_ADDITION
+            def commonLabel = uploadConfig.commonLabelBase as String
+            if (params.LABEL_ADDITION) {
+                commonLabel += "&&${params.LABEL_ADDITION}"
+            }
+            buildList = uploadConfig.buildList as String
+            target    = uploadConfig.target    as String
+
+            // Apply platform-specific target exclusions (e.g., plinux CRIU backlog/1099)
+            if (uploadConfig.excludeTargetOnPlatform && uploadConfig.excludeTargetOnPlatform[params.PLATFORM]) {
+                target = target.minus(uploadConfig.excludeTargetOnPlatform[params.PLATFORM] as String)
+            }
+
+            // Build imageUploadMap: { platform -> [ ['LABEL_ADDITION': fullLabel], ... ] }
+            uploadConfig.platforms.each { platform, labelSuffixes ->
+                imageUploadMap[platform as String] = labelSuffixes.collect { suffix ->
+                    ['LABEL_ADDITION': "${commonLabel}&&${suffix}"]
+                }
+            }
+
+            // Build imagePullMap with its own commonLabel (may differ from upload's)
+            def pullCommonLabel = pullConfig.commonLabelBase as String
+            if (params.LABEL_ADDITION) {
+                pullCommonLabel += "&&${params.LABEL_ADDITION}"
+            }
+            pullConfig.platforms.each { platform, labelSuffixes ->
+                imagePullMap[platform as String] = labelSuffixes.collect { suffix ->
+                    ['LABEL_ADDITION': "${pullCommonLabel}&&${suffix}"]
+                }
+            }
+
             // trigger xxx_imageUpload test job, then xxx_imagePull test job
             if (params.PLATFORM && imageUploadMap[params.PLATFORM] != null && imagePullMap[params.PLATFORM] != null) {
                 def imageUploadJobName = "${JOB_NAME}_${type}_imageUpload"

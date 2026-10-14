@@ -1,0 +1,33 @@
+{
+    "commonLabelBase": "sw.tool.podman&&sw.tool.container.criu",
+    "buildList": "external/criu,external/criu-portable-checkpoint,external/criu-portable-checkpoint,external/criu-portable-checkpoint,criu-ubi-portable-restore,external/criu-ubi-portable-checkpoint",
+    "target": "testList TESTLIST=disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi8,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi9,disabled.criu_pingPerf_testCreateRestoreImageAndPushToRegistry_ubi10,disabled.criu-portable-checkpoint_test,disabled.criu-ubi-portable-checkpoint_test",
+    "excludeTargetOnPlatform": {
+        "ppc64le_linux": "disabled.criu-portable-checkpoint_test,"
+    },
+    "platforms": {
+        "x86-64_linux": [
+            "sw.os.ubuntu.22&&hw.arch.x86.broadwell",
+            "sw.os.ubuntu.22&&hw.arch.x86.amd",
+            "sw.os.rhel.8&&hw.arch.x86.broadwell",
+            "sw.os.rhel.8&&hw.arch.x86.amd",
+            "sw.os.rhel.8&&hw.arch.x86.skylake",
+            "sw.os.rhel.9&&hw.arch.x86.amd",
+            "sw.os.rhel.9&&hw.arch.x86.broadwell"
+        ],
+        "aarch64_linux": [
+            "sw.os.ubuntu.22&&hw.arch.aarch64.armv8",
+            "sw.os.rhel.8&&hw.arch.aarch64.armv8",
+            "sw.os.rhel.9&&hw.arch.aarch64.armv8"
+        ],
+        "s390x_linux": [
+            "sw.os.ubuntu.22&&hw.arch.s390x.z13",
+            "sw.os.ubuntu.22&&hw.arch.s390x.z14",
+            "sw.os.rhel.8&&hw.arch.s390x.z14"
+        ],
+        "ppc64le_linux": [
+            "sw.os.rhel.8&&hw.arch.ppc64le.p10",
+            "sw.os.rhel.9&&hw.arch.ppc64le.p9"
+        ]
+    }
+}
