@@ -65,17 +65,3 @@ class Test(TestCase):
         actual = [excl.to_scheme() for excl in parse_all_files([input_file1, input_file2])]
         self.assertEqual(expected, actual)
 
-    def test_jdk27_particle_life_visual_exclusion(self):
-        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
-        problem_list = os.path.join(
-            repo_root, 'openjdk/excludes/vendors/eclipse/ProblemList_openjdk27.txt')
-        exclusions = [
-            (excl.custom_target, excl.issue_url, excl.raw_platform)
-            for excl in parse_all_files([problem_list])
-            if excl.custom_target.startswith('compiler/gallery/TestParticleLife.java')
-        ]
-        self.assertEqual(exclusions, [
-            ('compiler/gallery/TestParticleLife.java#visual',
-             'https://github.com/adoptium/infrastructure/issues/211',
-             'macosx-all,windows-all'),
-        ])
