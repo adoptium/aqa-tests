@@ -147,7 +147,8 @@ def setupEnv() {
 		// This is a known Jenkins issue: https://issues.jenkins.io/browse/JENKINS-42971
 		if (!env.ADOPTOPENJDK_REPO.contains("adoptium/aqa-tests")) {
 			env.LIGHT_WEIGHT_CHECKOUT = false
-			env.GENERATE_JOBS = true
+			// TEST ONLY REMOVE 
+			// env.GENERATE_JOBS = true
 			echo "ADOPTOPENJDK_REPO is set to personal repo in Grinder. Auto-set LIGHT_WEIGHT_CHECKOUT: ${env.LIGHT_WEIGHT_CHECKOUT} and GENERATE_JOBS: ${env.GENERATE_JOBS}"
 		}
 	} else {
