@@ -79,6 +79,14 @@ pipeline {
             description: '(Optional) Override the ADOPTOPENJDK_BRANCH parameter on the rerun build. ' +
                          'When empty, the original build\'s value is used.'
         )
+        credentials(
+            name: 'CREDENTIAL_PARAMETER',
+            defaultValue: '',
+            description: '(Optional) Username+API-token credential for the Jenkins REST API. ' +
+                         'Leave empty to use anonymous access.',
+            credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+            required: false
+        )
     }
 
     options {
@@ -95,6 +103,7 @@ pipeline {
                     def mode                = params.MODE?.trim() ?: ''
                     def adoptopenjdkRepo    = params.ADOPTOPENJDK_REPO?.trim() ?: ''
                     def adoptopenjdkBranch  = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
+                    def jenkinsCredId       = params.CREDENTIAL_PARAMETER?.trim() ?: ''
 
                     if (!jobName) {
                         error "JOB_NAME parameter must be set."
@@ -134,7 +143,7 @@ pipeline {
                         // Fetch the remote rerunJobs build description to extract
                         // the triggered job names and their statuses.
                         def remoteApiUrl  = "https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}/api/json?tree=description"
-                        def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}")
+                        def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}", jenkinsCredId)
                         def remoteJobDesc = remoteInfo?.description ?: ''
 
                         def desc = "<br>rerunJobs #${remoteBuildNum}: ${remoteResult}"
@@ -154,7 +163,7 @@ pipeline {
                          (scmReference ? " (SCM_REFERENCE='${scmReference}')" : '') + " ==="
 
                     // --- Fetch last build info via Jenkins REST API ---
-                    def buildInfo = getLastBuildInfo(jobName)
+                    def buildInfo = getLastBuildInfo(jobName, jenkinsCredId)
                     if (!buildInfo) {
                         echo "Job '${jobName}' not found or has no builds. No rerun triggered."
                         currentBuild.result = 'FAILURE'
@@ -200,7 +209,7 @@ pipeline {
                     }
 
                     // --- Build and run rerun tasks ---
-                    def rerunTasks = buildRerunTasks(jobName, buildInfo, result, adoptopenjdkRepo, adoptopenjdkBranch)
+                    def rerunTasks = buildRerunTasks(jobName, buildInfo, result, adoptopenjdkRepo, adoptopenjdkBranch, jenkinsCredId)
 
                     echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
                     def rerunResults = parallel rerunTasks
@@ -227,22 +236,36 @@ pipeline {
  * Returns the parsed JSON map, or null if the job/build does not exist.
  * Folder-style job names (with '/') are converted to /job/A/job/B paths.
  */
-def getLastBuildInfo(String jobName) {
+def getLastBuildInfo(String jobName, String credentialsId = '') {
     def jobPath = jobName.split('/').join('/job/')
     def apiUrl  = "${env.JENKINS_URL}job/${jobPath}/lastBuild/api/json?tree=number,building,result,description,actions%5Bparameters%5Bname,value%5D%5D"
-    return fetchBuildJson(apiUrl, "last build of '${jobName}'")
+    return fetchBuildJson(apiUrl, "last build of '${jobName}'", credentialsId)
 }
 
 /**
  * Internal helper: curl a Jenkins API URL and parse the JSON response.
+ * When credentialsId is non-empty, the stored Username+API-token credential is
+ * bound and passed to curl as -u "$JENKINS_API_AUTH".  The value is masked in
+ * logs automatically by Jenkins.
  * Returns the parsed map, or null on HTTP error or missing content.
  */
-def fetchBuildJson(String apiUrl, String label) {
+def fetchBuildJson(String apiUrl, String label, String credentialsId = '') {
     try {
-        def json = sh(
-            script: "curl -sf --connect-timeout 10 '${apiUrl}'",
-            returnStdout: true
-        ).trim()
+        def json
+        if (credentialsId) {
+            echo " credeintal"
+            withCredentials([usernameColonPassword(credentialsId: credentialsId, variable: 'JENKINS_API_AUTH')]) {
+                json = sh(
+                    script: "curl -sf --connect-timeout 10 -u \"\$JENKINS_API_AUTH\" '${apiUrl}'",
+                    returnStdout: true
+                ).trim()
+            }
+        } else {
+            json = sh(
+                script: "curl -sf --connect-timeout 10 '${apiUrl}'",
+                returnStdout: true
+            ).trim()
+        }
         if (!json) {
             echo "No response from Jenkins API for ${label}."
             return null
@@ -316,7 +339,7 @@ def toJenkinsParams(List paramMaps) {
  * rerun link in their own description).
  * Regular _testList_ children are ignored.
  */
-def buildRerunTasks(String jobName, def buildInfo, String result, String adoptopenjdkRepo, String adoptopenjdkBranch) {
+def buildRerunTasks(String jobName, def buildInfo, String result, String adoptopenjdkRepo, String adoptopenjdkBranch, String credentialsId = '') {
     def tasks          = [:]
     def originalParams = collectParamsFromInfo(buildInfo)
 
@@ -338,7 +361,7 @@ def buildRerunTasks(String jobName, def buildInfo, String result, String adoptop
         childEntries.each { childName, childBuildNum ->
             def jobPath    = childName.split('/').join('/job/')
             def apiUrl     = "${env.JENKINS_URL}job/${jobPath}/${childBuildNum}/api/json?tree=number,building,result,description,actions%5Bparameters%5Bname,value%5D%5D"
-            def childInfo  = fetchBuildJson(apiUrl, "build #${childBuildNum} of '${childName}'")
+            def childInfo  = fetchBuildJson(apiUrl, "build #${childBuildNum} of '${childName}'", credentialsId)
             if (!childInfo) return
             def childResult = childInfo?.result ?: 'UNKNOWN'
             echo "  _rerun child '${childName}' #${childBuildNum}: ${childResult}"
