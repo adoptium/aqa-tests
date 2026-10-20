@@ -95,7 +95,10 @@ pipeline {
                     def mode                = params.MODE?.trim() ?: ''
                     def adoptopenjdkRepo    = params.ADOPTOPENJDK_REPO?.trim() ?: ''
                     def adoptopenjdkBranch  = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
-                    def jenkinsCredId       = params.CREDENTIAL_PARAMETER?.trim() ?: ''
+                    // Read credential ID from Jenkins global environment variable RERUN_CRED_ID.
+                    // Set once in Manage Jenkins → System → Global properties on each server.
+                    // Falls back to anonymous access when not set.
+                    def jenkinsCredId       = env.RERUN_CRED_ID?.trim() ?: ''
 
                     if (!jobName) {
                         error "JOB_NAME parameter must be set."
