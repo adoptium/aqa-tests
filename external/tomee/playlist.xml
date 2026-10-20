@@ -14,16 +14,35 @@
 -->
 <playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../TKG/resources/playlist.xsd">
 	<test>
-		<testCaseName>tomee_test_j9</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		<testCaseName>tomee_startup_test</testCaseName>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --testtarget smoke --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
 		$(TEST_STATUS); \
 		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir tomee
 		</command>
+		<levels>
+			<level>sanity</level>
+		</levels>
+		<groups>
+			<group>external</group>
+		</groups>
+		<versions>
+			<version>8</version>
+		</versions>
+	</test>
+	<test>
+		<testCaseName>tomee_test_j9</testCaseName>
 		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/7243</comment>
+			</disable>
 			<disable>
 				<comment>https://github.ibm.com/runtimes/backlog/issues/1204</comment>
 			</disable>
 		</disables>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --testtarget full --reportsrc /testResults/surefire-reports --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir tomee
+		</command>
 		<versions>
 			<version>8</version>
 		</versions>
@@ -40,10 +59,15 @@
 	</test>
 	<test>
 		<testCaseName>tomee_test_hs</testCaseName>
-		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
-                $(TEST_STATUS); \
-                $(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir tomee
-                </command>
+		<disables>
+			<disable>
+				<comment>https://github.com/adoptium/aqa-tests/issues/7243</comment>
+			</disable>
+		</disables>
+		<command> $(TEST_ROOT)$(D)external$(D)external.sh --run --tag "${DOCKERIMAGE_TAG}" --dir tomee --testtarget full --reportdst $(REPORTDIR) --docker_args "$(EXTRA_DOCKER_ARGS)" ; \
+		$(TEST_STATUS); \
+		$(TEST_ROOT)$(D)external$(D)external.sh --clean --tag "${DOCKERIMAGE_TAG}" --dir tomee
+		</command>
 		<versions>
 			<version>8</version>
 		</versions>
