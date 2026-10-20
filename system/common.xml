@@ -262,8 +262,8 @@
 				<isset property="env.SYSTEM_LIB_DIR"/>
 			</not>
 		</condition>
-		<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs" if:true="system_lib_dir_not_set"/>
-		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/" if:true="system_lib_dir_not_set">
+		<mkdir dir="${SYSTEMTEST_DEST}/systemtest_prereqs" if:true="${system_lib_dir_not_set}"/>
+		<copy todir="${SYSTEMTEST_DEST}/systemtest_prereqs/" if:true="${system_lib_dir_not_set}">
 			<fileset dir="${TEST_ROOT}/systemtest_prereqs/" includes="**"/>
 		</copy>
 		

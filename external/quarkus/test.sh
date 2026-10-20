@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ export MAVEN_OPTS="-Xmx1g"
 
 export OPENJ9_JAVA_OPTIONS="-Xmx1g"
 
+# Smoke build scope: independent-projects/bootstrap/core only.
+# quarkus-documentation: no Java sources, doc-only module.
+# quarkus-openshift-deployment: requires OpenShift SDK not available in CI.
+# The full suite re-enables all modules via excludeProject below.
 excludeProject="-pl !:quarkus-documentation,\
 !:quarkus-openshift-deployment"
 
@@ -52,8 +56,6 @@ excludeProject="-pl !:quarkus-documentation,\
 #!:quarkus-maven-plugin,\
 
 
-echo "Compile and run quarkus tests"
-
 if [ "$JDK_VERSION" == "11" ]; then
 	excludeProject="-pl !:quarkus-documentation,\
 !:quarkus-reactive-routes-deployment,\
@@ -61,8 +63,25 @@ if [ "$JDK_VERSION" == "11" ]; then
 !:quarkus-integration-test-no-awt,\
 !:quarkus-avro-reload-test"
 fi
-./mvnw --batch-mode --fail-at-end $excludeProject clean install
-test_exit_code=$?
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-exit $test_exit_code
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
+
+set -e
+echo "Building quarkus"
+./mvnw --batch-mode -pl independent-projects/bootstrap/core --also-make compile -DskipTests
+set +e
+echo "Quarkus build completed"
+
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	# build succeeded (set -e would have exited on failure)
+	exit 0
+else
+	echo "Compile and run quarkus tests"
+	./mvnw --batch-mode --fail-at-end $excludeProject clean install $TEST_OPTIONS
+	test_exit_code=$?
+	echo "Build quarkus completed"
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	exit $test_exit_code
+fi

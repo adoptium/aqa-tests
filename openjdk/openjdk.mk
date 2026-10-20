@@ -218,7 +218,7 @@ TIMEOUT_HANDLER:=
 # in the build.xml dist target.
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	ifneq ($(filter Valhalla, $(JDK_VERSION)),)
-		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk26-openj9.txt
+		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk28-openj9.txt
 		PROBLEM_LIST_FILE_VALHALLA:=excludes/ProblemList_openjdkvalhalla-openj9.txt
 	else
 		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk$(JDK_VERSION)-openj9.txt

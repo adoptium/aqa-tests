@@ -190,6 +190,14 @@
 	</test>
 	<test>
 		<testCaseName>dacapo-xalan</testCaseName>
+		<disables>
+			<disable>
+				<comment>https://bugs.openjdk.org/browse/JDK-8391660</comment>
+				<version>8</version>
+				<impl>hotspot</impl>
+				<platform>arm_linux</platform>
+			</disable>
+		</disables>
 		<command>$(JAVA_COMMAND) $(JVM_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)dacapo.jar$(Q) xalan; \
 		$(TEST_STATUS)</command>
 		<levels>

@@ -19,6 +19,8 @@ limitations under the License.
         </description>
 
 	<import file="${TEST_ROOT}/functional/MBCS_Tests/buildDependencies.xml"/>
+	<import file="${TEST_ROOT}/functional/MBCS_Tests/unicodeVers.xml"/>
+	<import file="${TEST_ROOT}/TKG/scripts/getDependencies.xml"/>
 
 	<!-- set global properties for this build -->
 	<property name="DEST" value="${BUILD_ROOT}/functional/MBCS_Tests/codepoint" />
@@ -26,7 +28,7 @@ limitations under the License.
 	<!--Properties for this particular build-->
 	<property name="src" location="./src" />
 	<property name="build" location="./bin" />
-	
+
 	<condition property="jdk8above" value="true">
 		<not>
 			<equals arg1="${JDK_VERSION}" arg2="8" />
@@ -50,7 +52,12 @@ limitations under the License.
 		</javac>
 	</target>
 
-	<target name="dist" depends="compile,copyData" description="generate the distribution">
+	<target name="setUnicodeVersion">
+		<resolve-unicode-version jdk-version="${JDK_VERSION}"/>
+		<property name="LIB" value="unicode_gb18030_2022,unicode_unihan_${unicode.ver.key},unicode_ucd_unicodedata_${unicode.ver.key}"/>
+	</target>
+
+	<target name="dist" depends="compile,copyData,extractUnicodeData" description="generate the distribution">
 		<jar jarfile="${DEST}/codepoint.jar" filesonly="true">
 			<fileset dir="${build}" />
 			<fileset dir="${src}/../resources/" />
@@ -61,6 +68,20 @@ limitations under the License.
 			<fileset dir="${src}/../" includes="expected.txt" />
 			<fileset dir="../tools/" includes="*" />
 		</copy>
+	</target>
+
+	<target name="extractUnicodeData" depends="setUnicodeVersion,getDependentLibs,init">
+		<mkdir dir="${DEST}/data"/>
+
+		<copy todir="${DEST}/data">
+			<fileset dir="${LIB_DIR}" includes="UnicodeData-${unicode.ver}.txt"/>
+		</copy>
+
+		<unzip src="${LIB_DIR}/Unihan-${unicode.ver}.zip" dest="${DEST}/data">
+			<patternset><include name="Unihan_IRGSources.txt"/></patternset>
+			<mapper type="glob" from="Unihan_IRGSources.txt" to="Unihan_IRGSources-${unicode.ver}.txt"/>
+		</unzip>
+
 		<copy todir="${DEST}/data">
 			<fileset dir="${src}/../data/" />
 		</copy>

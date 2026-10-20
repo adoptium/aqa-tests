@@ -318,7 +318,7 @@
 		<copy todir="${DEST}" if:set="is_openj9_valhalla">
 			<!-- When updating the problem list version also update
 			 PROBLEM_LIST_FILE for OpenJ9 in openjdk.mk -->
-			<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk26-openj9.txt,**/ProblemList_openjdkvalhalla-openj9.txt,*.mk"/>
+			<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk28-openj9.txt,**/ProblemList_openjdkvalhalla-openj9.txt,*.mk"/>
 		</copy>
 		<copy todir="${DEST}" unless:set="is_openj9_valhalla">
 			<fileset dir="${src}" includes="*.xml,**/ProblemList_openjdk${env.JDK_VERSION}*.txt,*.mk"/>

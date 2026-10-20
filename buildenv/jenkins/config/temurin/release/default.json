@@ -1,0 +1,32 @@
+[
+    {
+        "TEST_FLAG": "NONE",
+        "COMMENT": "Level 2: Release build configuration for JDK 25+ (including JDK 26, 27, etc.). Merged with Level 1 (config/temurin/default.json). For JDK 21 and earlier, see jdk21.json",
+        "DEFAULT_TEST_TARGETS": "sanity.functional,extended.functional,special.functional,sanity.openjdk,extended.openjdk,sanity.system,extended.system,sanity.perf,extended.perf",
+        "GLOBAL_BUILD_CONFIG": {
+            "USE_TESTENV_PROPERTIES": true
+        },
+        "PLATFORM_ADDITIONAL_TEST_PARAMS": {
+            "ppc64_aix": {
+                "TIME_LIMIT": "30"
+            }
+        },
+        "PLATFORM_ADDITIONAL_TEST_LABELS": {
+            "x86-64_linux": "!sw.tool.glibc.2_12"
+        },
+        "PLATFORM_TARGETS": [
+            { "aarch64_linux": "defaultTestTargets" },
+            { "aarch64_mac": "defaultTestTargets" },
+            { "ppc64_aix": "defaultTestTargets" },
+            { "ppc64le_linux": "defaultTestTargets" },
+            { "s390x_linux": "defaultTestTargets" },
+            { "x86-64_linux": "defaultTestTargets" },
+            { "x86-64_mac": "defaultTestTargets" },
+            { "x86-64_windows": "defaultTestTargets" },
+            { "x86-64_alpine-linux": "defaultTestTargets" },
+            { "aarch64_alpine-linux": "defaultTestTargets" },
+            { "aarch64_windows": "defaultTestTargets" },
+            { "riscv64_linux": "defaultTestTargets" }
+        ]
+    }
+]

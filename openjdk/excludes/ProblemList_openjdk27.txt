@@ -71,6 +71,7 @@ java/lang/String/concat/IntegerMinValue.java https://github.com/adoptium/aqa-tes
 jdk/internal/loader/NativeLibraries/Main.java https://github.com/adoptium/aqa-tests/issues/1920 generic-all
 java/lang/invoke/lambda/LambdaFileEncodingSerialization.java https://bugs.openjdk.java.net/browse/JDK-8249079 generic-all
 java/lang/ProcessBuilder/Basic.java#id0 https://github.com/adoptium/aqa-tests/issues/1920 aix-ppc64
+java/lang/Thread/virtual/MonitorPinnedEvents.java https://bugs.openjdk.org/browse/JDK-8386675 windows-all
 java/lang/Thread/virtual/stress/PingPong.java#ltq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 java/lang/Thread/virtual/stress/PingPong.java#sq https://github.com/adoptium/aqa-tests/issues/5677 generic-all
 java/lang/instrument/RetransformRecordTypeAnn/TestRetransformRecord.java https://github.com/adoptium/aqa-tests/issues/7039 generic-all
@@ -175,6 +176,7 @@ com/sun/net/httpserver/simpleserver/StressDirListings.java https://github.com/ad
 java/net/vthread/HttpALot.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/InterruptHttp.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 jdk/net/ExtendedSocketOption/DontFragmentTest.java https://github.com/adoptium/aqa-tests/issues/4440 aix-all
+java/net/SocketOption/OptionsTest.java https://github.com/adoptium/aqa-tests/issues/7782 windows-all
 java/net/vthread/BlockingSocketOps.java#direct-register https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/net/vthread/BlockingSocketOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
 java/nio/channels/vthread/BlockingChannelOps.java#default https://github.com/adoptium/aqa-tests/issues/4440 aix-all
@@ -201,10 +203,10 @@ com/sun/jdi/FinalizerTest.java https://github.com/adoptium/aqa-tests/issues/5705
 
 # jdk_nio
 
-# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java is excluded for two different reasons on different platforms https://github.com/adoptium/aqa-tests/issues/1016
+# java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1016 macosx-all
 # java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x
 java/nio/channels/DatagramChannel/MulticastSendReceiveTests.java https://github.com/adoptium/aqa-tests/issues/1267 macosx-all,linux-s390x
-# java/nio/channels/DatagramChannel/Promiscuous.java is excluded on macosx due to different issue https://github.com/adoptium/aqa-tests/issues/602
+# java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/aqa-tests/issues/602 macosx-all
 java/nio/channels/DatagramChannel/Promiscuous.java https://github.com/adoptium/infrastructure/issues/699 linux-s390x,macosx-all 
 # java/nio/channels/FileChannel/LargeGatheringWrite.java https://bugs.openjdk.org/browse/JDK-8278469 aix-all,linux-aarch64
 java/net/ipv6tests/UdpTest.java https://bugs.openjdk.java.net/browse/JDK-8198266 generic-all
@@ -252,6 +254,7 @@ sun/security/lib/cacerts/VerifyCACerts.java https://github.com/adoptium/aqa-test
 sun/security/ssl/X509TrustManagerImpl/distrust/Symantec.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Entrust.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
 sun/security/ssl/X509TrustManagerImpl/distrust/Camerfirma.java https://github.com/adoptium/aqa-tests/issues/3976 generic-all
+sun/security/ssl/X509TrustManagerImpl/distrust/Chunghwa.java https://github.com/adoptium/aqa-tests/issues/7761 generic-all
 ###########################################################################
 
 # jdk_security4
@@ -302,6 +305,7 @@ tools/jpackage/windows/WinInstallerIconTest.java https://github.com/adoptium/inf
 tools/jpackage/share/AddLShortcutTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/jpackage/share/AppContentTest.java https://github.com/adoptium/infrastructure/issues/2310 windows-all
 tools/launcher/JliLaunchTest.java https://github.com/adoptium/aqa-tests/issues/5010 aix-all
+
 ############################################################################
 
 # jdk_jdi
@@ -345,6 +349,7 @@ compiler/jvmci/jdk.vm.ci.hotspot.test/src/jdk/vm/ci/hotspot/test/TestTranslatedE
 compiler/codegen/aes/Test8292158.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
 compiler/codegen/aes/TestAESMain.java https://github.com/adoptium/aqa-tests/issues/4470 linux-s390x
 compiler/vectorapi/TestVectorReallocation.java https://bugs.openjdk.org/browse/JDK-8381257 linux-s390x
+compiler/inlining/LateInlineQueueDrainTest.java https://bugs.openjdk.org/browse/JDK-8388170 linux-s390x
 
 ############################################################################
 
@@ -426,7 +431,8 @@ runtime/ErrorHandling/UncaughtNativeExceptionTest.java https://github.com/adopti
 runtime/cds/CheckDefaultArchiveFile.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
 #runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
 runtime/cds/TestCDSVMCrash.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
-runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
+runtime/cds/appcds/CommandLineFlagCombo.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all,windows-aarch64
+runtime/cds/appcds/complexURI/ComplexURITest.java https://github.com/adoptium/aqa-tests/issues/5920 windows-aarch64
 runtime/cds/appcds/TestDumpClassListSource.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 runtime/cds/appcds/dynamicArchive/TestAutoCreateSharedArchiveNoDefaultArchive.java https://github.com/adoptium/aqa-tests/issues/5645 macosx-all
 #runtime/jni/nativeStack/TestNativeStack.java https://github.com/adoptium/aqa-tests/issues/5671 windows-aarch64
@@ -484,12 +490,19 @@ vmTestbase/jit/misctests/fpustack/GraphApplet.java https://github.com/adoptium/i
 # hotspot_vmTestbase_vm_mlvm
 
 vmTestbase/vm/mlvm/mixed/stress/java/findDeadlock/TestDescription.java https://github.com/adoptium/aqa-tests/issues/6715 aix-all
+vmTestbase/vm/mlvm/hiddenloader/stress/byteMutation/Test.java https://github.com/adoptium/aqa-tests/issues/7024 windows-aarch64
 
 ############################################################################
 
 # hotspot_vmTestbase_vm_gc
 
 vmTestbase/gc/gctests/MTLinkedListGC/MTLinkedListGC.java https://github.com/adoptium/aqa-tests/issues/6849 aix-ppc64
+
+############################################################################
+
+# hotspot_tier1_compiler
+
+compiler/c2/aarch64/TestTrampoline.java https://bugs.openjdk.org/browse/JDK-8378892 windows-aarch64
 
 ############################################################################
 
@@ -552,3 +565,6 @@ sun/security/util/math/TestIntegerModuloP.java#IntegerPolynomialP384 https://git
 sun/security/util/math/TestIntegerModuloP.java#IntegerPolynomialP521 https://github.com/adoptium/infrastructure/issues/3855 windows-x64
 sun/security/util/math/TestIntegerModuloP.java#P384OrderField https://github.com/adoptium/infrastructure/issues/3855 windows-x64
 
+runtime/NMT/NMTPrintMallocSiteOfCorruptedMemory.java https://bugs.openjdk.org/browse/JDK-8378049 windows-all,linux-s390x
+gc/shenandoah/TestLargeObjectAlignment.java#default https://github.com/adoptium/infrastructure/issues/4550 generic-all
+gc/shenandoah/TestLargeObjectAlignment.java#generational https://github.com/adoptium/infrastructure/issues/4550 generic-all

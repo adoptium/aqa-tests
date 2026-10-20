@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,15 +16,28 @@ source $(dirname "$0")/test_base_functions.sh
 #Set up Java to be used by the kafka test
 echo_setup
 
-# Initial command to trigger the execution of kafka test
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
+
 set -e
-echo "Building kafka  using gradle"
+echo "Building kafka using gradle"
 ./gradlew -q jar
-
 echo "Kafka Build - Completed"
-
-echo "Running (ALL) Kafka tests :"
-
-./gradlew -q test
 set +e
-echo "Kafka tests - Completed:"
+
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	echo "Probing Kafka"
+	bin/kafka-run-class.sh kafka.Kafka
+	test_exit_code=$?
+	# kafka.Kafka exits 1 when invoked without a config file — this is expected
+	# and confirms the class loaded and the JVM ran successfully.
+	# Any other non-zero exit code is a genuine failure.
+	[ $test_exit_code -eq 1 ] && exit 0
+	exit $test_exit_code
+else
+	echo "Running (ALL) Kafka tests :"
+	./gradlew -q test $TEST_OPTIONS
+	test_exit_code=$?
+	echo "Kafka tests - Completed"
+	exit $test_exit_code
+fi

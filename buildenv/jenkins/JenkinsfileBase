@@ -2,6 +2,7 @@
 import org.tap4j.consumer.TapConsumer;
 import org.tap4j.consumer.TapConsumerFactory;
 import org.tap4j.model.TestSet;
+import groovy.transform.Field
 
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
@@ -66,7 +67,7 @@ def setupEnv() {
 			env.ADOPTOPENJDK_REPO = env.ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
 			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 		}
-		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "master"
+		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "main"
 	}
 
 	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
@@ -686,14 +687,22 @@ def makeCompileTest(){
 	if (JDK_IMPL == 'hotspot' && PLATFORM.contains('alpine-linux')) {
 		makeTestCmd = "unset LD_LIBRARY_PATH; $makeTestCmd"
 	}
-	dir('aqa-tests') {
-		if (!env.SPEC.startsWith('zos')) {
-			sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+	try {
+		dir('aqa-tests') {
+			if (!env.SPEC.startsWith('zos')) {
+				sshagent (credentials: ["$params.SSH_AGENT_CREDENTIAL"], ignoreMissing: true) {
+					sh "$makeTestCmd";
+				}
+			} else {
 				sh "$makeTestCmd";
 			}
-		} else {
-			sh "$makeTestCmd";
 		}
+	} catch (e) {
+		// moveDmp.pl exits `false` after moving core/javacore/jitdump/Snap dumps to output_compilation/.
+		// At this point env.jobStatus is still SUCCESS so the FAILURE branch in post() is
+		// never reached, and cleanWs would wipe the dumps. Archive them here before re-throwing.
+		archiveArtifacts artifacts: "aqa-tests/TKG/output_compilation/**/*.dmp,aqa-tests/TKG/output_compilation/**/*.trc,aqa-tests/TKG/output_compilation/**/javacore*.txt", allowEmptyArchive: true
+		throw e
 	}
 }
 
@@ -904,30 +913,42 @@ def runTest( ) {
 		if (env.ITER_COUNT.toInteger() == 0) {
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
-			def summary = createBadgeSummary("error.svg")
+			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
 			appendSummaryText(summary,"TEST BUILD FAILURE!")
 		} 
 	}
 }
 
+// Maps Badge Plugin 3.x Ionicons symbol names to the legacy .svg icon names used by 1.x and 2.x
+// Assisted by IBM Bob
+@Field static final Map ICON_LEGACY_FALLBACK = [
+	'symbol-close-circle-outline plugin-ionicons-api'     : 'error.svg',
+	'symbol-warning-outline plugin-ionicons-api'          : 'warning.svg',
+	'symbol-checkmark-circle-outline plugin-ionicons-api' : 'accept.svg',
+	'symbol-folder-open-outline plugin-ionicons-api'      : 'folder-delete.svg',
+]
+
 def createBadgeSummary(iconName) {
-	// Try new method first (badge plugin v3.583+), fallback to deprecated method for older versions
-	def summary = null
+	// Badge Plugin 3.x: addSummary is a Pipeline DSL step — no manager.* prefix, named parameters
+	// Assisted by IBM Bob
 	try {
-		summary = manager.addSummary(iconName)
+		return addSummary(icon: iconName, text: '')
 	} catch (Exception e) {
-		echo "addSummary failed, trying deprecated createSummary method: ${e.message}"
+		echo "Badge Plugin 3.x addSummary step unavailable, trying 2.x manager.addSummary: ${e.message}"
+		def legacyIcon = ICON_LEGACY_FALLBACK.getOrDefault(iconName, iconName)
+		// Badge Plugin 2.x: addSummary is a method on the manager object
 		try {
-			summary = manager.createSummary(iconName)
+			return manager.addSummary(legacyIcon)
 		} catch (Exception e2) {
-			echo "Both addSummary and createSummary failed: ${e2.message}"
-			throw e2
+			echo "Badge Plugin 2.x manager.addSummary unavailable, trying 1.x manager.createSummary: ${e2.message}"
+			// Badge Plugin 1.x: createSummary is the original Groovy Postbuild API
+			return manager.createSummary(legacyIcon)
 		}
 	}
-	return summary
 }
 
 def appendSummaryText(summary, text) {
+	// Assisted by IBM Bob
 	try {
 		def currentText = summary.getText() ?: ""
 		summary.setText(currentText + text)
@@ -954,7 +975,7 @@ def checkTestResults(results) {
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
-		summary = createBadgeSummary("folder-delete.svg")
+		summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
 		appendSummaryText(summary, "NO TEST FOUND!")
 		return
 	}
@@ -980,14 +1001,14 @@ def writeSummary() {
 
 	// Handle case where no tests were found
 	if (totalTests == 0) {
-		def summary = createBadgeSummary("folder-delete.svg")
+		def summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
 		appendSummaryText(summary,"NO TEST FOUND!")
 		return
 	}
 
 	// Choose icon based on test results
-	def svg = failedTests != 0 ? "warning.svg" : "accept.svg"
-	def summary = createBadgeSummary(svg)
+	def icon = failedTests != 0 ? "symbol-warning-outline plugin-ionicons-api" : "symbol-checkmark-circle-outline plugin-ionicons-api"
+	def summary = createBadgeSummary(icon)
 
 	// Add iteration count to header if multiple iterations ran
 	def header = iterCount > 1
@@ -1461,10 +1482,9 @@ def addGrinderLink() {
 	env.CUSTOM_TARGET_KEY_VALUE = customTargetKeyValue
 
 	currentBuild.description += "<br><a href=\"https://github.com/adoptium/aqa-tests/wiki/How-to-Run-a-Grinder-Build-on-Jenkins\">Grinder Wiki</a>"
-	echo "Rerun in Grinder: ${url}"
+	echo "Rerun in Grinder: ${url.replace('&amp;', '&')}"
 	currentBuild.description += "<br><a href=${url}>Rerun in Grinder</a> Change TARGET to run only the failed test targets."
 	def sameMachineUrl = url.replace(labelValue,"LABEL=${NODE_NAME}")
-	echo "Rerun in Grinder on same machine: ${sameMachineUrl}"
 	currentBuild.description += "<br><a href=${sameMachineUrl}>Rerun in Grinder on same machine</a> Change TARGET to run only the failed test targets. For dynamic vm agents as they are created at runtime and quickly recycled, it may not be possible to rerun on the same agent."
 }
 
@@ -1578,7 +1598,7 @@ def addFailedTestsGrinderLink(paths="") {
 			def filteredFailedTestLists = env.FAILED_TESTS.split(',').collect{ it.trim() }.findAll { !it.contains('_custom') }.join(',')
 			String failedTestList = "testList+TESTLIST=" + filteredFailedTestLists
 			def failedTestUrl = url.replace(env.FAILED_TEST_TARGET, "TARGET=$failedTestList")
-			echo "Rerun in Grinder with failed test targets: ${failedTestUrl}"
+			echo "Rerun in Grinder with failed test targets: ${failedTestUrl.replace('&amp;', '&')}"
 			currentBuild.description += "<br><a href=${failedTestUrl}> Rerun in Grinder with failed test targets</a>"
 		}
 		if ( customizedTestCases != null ) {
@@ -1587,7 +1607,6 @@ def addFailedTestsGrinderLink(paths="") {
 				tempTestCases = URLEncoder.encode(tempTestCases.toString(), "UTF-8")
 				def customURL = url.replace(env.FAILED_TEST_TARGET, "TARGET=${target}_custom")
 				customURL = customURL.replace(env.CUSTOM_TARGET_KEY_VALUE, "CUSTOM_TARGET=$tempTestCases")
-				echo "Rerun failed ${target} test cases in Grinder with ${target}_custom target: ${customURL}"
 				currentBuild.description += "<br><a href=${customURL}> Rerun failed ${target} test cases in Grinder with ${target}_custom target</a>"
 			}
 		}
