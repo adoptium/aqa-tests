@@ -25,10 +25,10 @@
  *
  * Credentials
  * -----------
- *   Set the Jenkins global environment variable RERUN_CRED_ID in
- *   Manage Jenkins → System → Global properties on each server independently.
- *   It must be the ID of a Username+password credential that can authenticate
- *   against that server's REST API.  Leave unset (or empty) to use anonymous access.
+ *   A Username+password credential that can authenticate against that server's REST API. 
+ *   Leave unset to use anonymous access.
+ *   Since the parameter is not declared in this script, the job config is never
+ *   overwritten on re-run — the operator-set value persists permanently.
  *
  * Pre-conditions (all checked before any rerun is triggered — local mode only)
  * ----------------------------------------------------------------------------
@@ -64,9 +64,6 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         def mode               = params.MODE?.trim() ?: ''
         def adoptopenjdkRepo   = params.ADOPTOPENJDK_REPO?.trim() ?: ''
         def adoptopenjdkBranch = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
-        // Read credential ID from Jenkins global environment variable RERUN_CRED_ID.
-        // Set once in Manage Jenkins → System → Global properties on each server
-        // independently. Falls back to anonymous access when not set.
         def jenkinsCredId      = params.CREDENTIAL_PARAMETER?.trim() ?: ''
 
         if (!jobName) {
