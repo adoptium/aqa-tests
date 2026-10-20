@@ -79,14 +79,6 @@ pipeline {
             description: '(Optional) Override the ADOPTOPENJDK_BRANCH parameter on the rerun build. ' +
                          'When empty, the original build\'s value is used.'
         )
-        credentials(
-            name: 'CREDENTIAL_PARAMETER',
-            defaultValue: '',
-            description: '(Optional) Username+API-token credential for the Jenkins REST API. ' +
-                         'Leave empty to use anonymous access.',
-            credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-            required: false
-        )
     }
 
     options {
@@ -117,6 +109,8 @@ pipeline {
 
                     // --- RELAY mode: forward to remote private Jenkins ---
                     if (mode == 'RELAY') {
+                        // Credential for fetching the remote Jenkins REST API.
+                        // Uses the same credential already configured on this server for temurin-compliance.
                         echo "=== rerunJobs RELAY: forwarding rerun of '${jobName}' to temurin-compliance ==="
                         def remoteParamList = [
                             MapParameter(name: 'JOB_NAME',           value: jobName),
