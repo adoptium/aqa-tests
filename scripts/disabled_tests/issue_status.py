@@ -353,7 +353,7 @@ class BugsOpenJdkHandler(BaseHandler):
                 return "Fixed. Action: Unexclude for JDK: " + versions_string[:-1]
             return "Fixed. No commits found."
 
-        return f'"{resolution}". Action: Unexclude or change link.'
+        return f'Unknown resolution: "{resolution}". Action: investigate.'
 
     def _comments_parser(self, comments: list, urls_list: List[str]) -> List[str]:
         authors = {"dukebot", "roboduke", "hgupdate"}
