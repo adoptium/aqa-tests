@@ -23,6 +23,13 @@
  *                             (temurin-compliance) via triggerRemoteJob, instead of
  *                             inspecting and triggering jobs locally.
  *
+ * Credentials
+ * -----------
+ *   Set the Jenkins global environment variable RERUN_CRED_ID in
+ *   Manage Jenkins → System → Global properties on each server independently.
+ *   It must be the ID of a Username+password credential that can authenticate
+ *   against that server's REST API.  Leave unset (or empty) to use anonymous access.
+ *
  * Pre-conditions (all checked before any rerun is triggered — local mode only)
  * ----------------------------------------------------------------------------
  *   • Job does not exist          → FAILURE, log and stop.
@@ -48,178 +55,135 @@
  * the worst status among them (ABORTED > FAILURE > UNSTABLE > SUCCESS).
  */
 
-pipeline {
-    agent { label 'worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)' }
+node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
 
-    parameters {
-        string(
-            name: 'JOB_NAME',
-            defaultValue: '',
-            description: 'Full Jenkins job name to rerun (e.g. Test_openjdk21_hs_sanity.functional_x86-64_linux)'
-        )
-        string(
-            name: 'SCM_REFERENCE',
-            defaultValue: '',
-            description: '(Optional) Substring that must appear in the last build\'s CUSTOMIZED_SDK_URL parameter. ' +
-                         'When empty, the check is skipped entirely.'
-        )
-        string(
-            name: 'MODE',
-            defaultValue: '',
-            description: '(Optional) Set to RELAY to forward the rerun request to the remote private Jenkins ' +
-                         '(temurin-compliance) instead of running locally.'
-        )
-        string(
-            name: 'ADOPTOPENJDK_REPO',
-            description: '(Optional) Override the ADOPTOPENJDK_REPO parameter on the rerun build. ' +
-                         'When empty, the original build\'s value is used.'
-        )
-        string(
-            name: 'ADOPTOPENJDK_BRANCH',
-            description: '(Optional) Override the ADOPTOPENJDK_BRANCH parameter on the rerun build. ' +
-                         'When empty, the original build\'s value is used.'
-        )
-    }
+    timestamps {
 
-    options {
-        timestamps()
-        skipDefaultCheckout()
-    }
+        def jobName            = params.JOB_NAME?.trim()
+        def scmReference       = params.SCM_REFERENCE?.trim() ?: ''
+        def mode               = params.MODE?.trim() ?: ''
+        def adoptopenjdkRepo   = params.ADOPTOPENJDK_REPO?.trim() ?: ''
+        def adoptopenjdkBranch = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
+        // Read credential ID from Jenkins global environment variable RERUN_CRED_ID.
+        // Set once in Manage Jenkins → System → Global properties on each server
+        // independently. Falls back to anonymous access when not set.
+        def jenkinsCredId      = params.CREDENTIAL_PARAMETER?.trim() ?: ''
 
-    stages {
-        stage('Rerun') {
-            steps {
-                script {
-                    def jobName             = params.JOB_NAME?.trim()
-                    def scmReference        = params.SCM_REFERENCE?.trim() ?: ''
-                    def mode                = params.MODE?.trim() ?: ''
-                    def adoptopenjdkRepo    = params.ADOPTOPENJDK_REPO?.trim() ?: ''
-                    def adoptopenjdkBranch  = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
-                    // Read credential ID from Jenkins global environment variable RERUN_CRED_ID.
-                    // Set once in Manage Jenkins → System → Global properties on each server.
-                    // Falls back to anonymous access when not set.
-                    def jenkinsCredId       = env.RERUN_CRED_ID?.trim() ?: ''
+        if (!jobName) {
+            error "JOB_NAME parameter must be set."
+        }
+        if (jobName.contains('..')) {
+            error "JOB_NAME must not contain '..' path segments."
+        }
+        if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
+            error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
+        }
 
-                    if (!jobName) {
-                        error "JOB_NAME parameter must be set."
-                    }
-                    if (jobName.contains('..')) {
-                        error "JOB_NAME must not contain '..' path segments."
-                    }
-                    if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
-                        error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
-                    }
+        // --- RELAY mode: forward to remote private Jenkins ---
+        if (mode == 'RELAY') {
+            echo "=== rerunJobs RELAY: forwarding rerun of '${jobName}' to temurin-compliance ==="
+            def remoteParamList = [
+                MapParameter(name: 'JOB_NAME',           value: jobName),
+                MapParameter(name: 'SCM_REFERENCE',       value: scmReference),
+                MapParameter(name: 'ADOPTOPENJDK_REPO',   value: adoptopenjdkRepo),
+                MapParameter(name: 'ADOPTOPENJDK_BRANCH', value: adoptopenjdkBranch)
+            ]
+            def handle = triggerRemoteJob(
+                abortTriggeredJob:      true,
+                blockBuildUntilComplete: true,
+                pollInterval:           60,
+                job:                    'rerunJobs',
+                parameters:             MapParameters(parameters: remoteParamList),
+                remoteJenkinsName:      'temurin-compliance',
+                shouldNotFailBuild:     false,
+                token:                  'RemoteTrigger',
+                useCrumbCache:          true,
+                useJobInfoCache:        true
+            )
+            def remoteResult   = handle.getBuildResult().toString()
+            def remoteBuildNum = handle.getBuildNumber()
+            echo "Remote rerunJobs #${remoteBuildNum} result: ${remoteResult}"
 
-                    // --- RELAY mode: forward to remote private Jenkins ---
-                    if (mode == 'RELAY') {
-                        // Credential for fetching the remote Jenkins REST API.
-                        // Uses the same credential already configured on this server for temurin-compliance.
-                        echo "=== rerunJobs RELAY: forwarding rerun of '${jobName}' to temurin-compliance ==="
-                        def remoteParamList = [
-                            MapParameter(name: 'JOB_NAME',           value: jobName),
-                            MapParameter(name: 'SCM_REFERENCE',       value: scmReference),
-                            MapParameter(name: 'ADOPTOPENJDK_REPO',   value: adoptopenjdkRepo),
-                            MapParameter(name: 'ADOPTOPENJDK_BRANCH', value: adoptopenjdkBranch)
-                        ]
-                        def handle = triggerRemoteJob(
-                            abortTriggeredJob:      true,
-                            blockBuildUntilComplete: true,
-                            pollInterval:           60,
-                            job:                    'rerunJobs',
-                            parameters:             MapParameters(parameters: remoteParamList),
-                            remoteJenkinsName:      'temurin-compliance',
-                            shouldNotFailBuild:     false,
-                            token:                  'RemoteTrigger',
-                            useCrumbCache:          true,
-                            useJobInfoCache:        true
-                        )
-                        def remoteResult   = handle.getBuildResult().toString()
-                        def remoteBuildNum = handle.getBuildNumber()
-                        echo "Remote rerunJobs #${remoteBuildNum} result: ${remoteResult}"
+            // Fetch the remote rerunJobs build description to extract
+            // the triggered job names and their statuses.
+            def remoteApiUrl  = "https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}/api/json?tree=description"
+            def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}", jenkinsCredId)
+            def remoteJobDesc = remoteInfo?.description ?: ''
 
-                        // Fetch the remote rerunJobs build description to extract
-                        // the triggered job names and their statuses.
-                        def remoteApiUrl  = "https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}/api/json?tree=description"
-                        def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}", jenkinsCredId)
-                        def remoteJobDesc = remoteInfo?.description ?: ''
-
-                        def desc = "<br>rerunJobs #${remoteBuildNum}: ${remoteResult}"
-                        if (remoteJobDesc) {
-                            // remoteJobDesc contains lines like:
-                            //   <br><a href='...'>JobName #N: RESULT</a>
-                            // Strip the anchor tags, keep only the text.
-                            def plainEntries = remoteJobDesc.replaceAll(/<a [^>]*>/, '').replaceAll(/<\/a>/, '')
-                            desc += plainEntries
-                        }
-                        currentBuild.description = (currentBuild.description ?: '') + desc
-                        setWorstResult(remoteResult)
-                        return
-                    }
-
-                    echo "=== rerunJobs: inspecting last build of '${jobName}'" +
-                         (scmReference ? " (SCM_REFERENCE='${scmReference}')" : '') + " ==="
-
-                    // --- Fetch last build info via Jenkins REST API ---
-                    def buildInfo = getLastBuildInfo(jobName, jenkinsCredId)
-                    if (!buildInfo) {
-                        echo "Job '${jobName}' not found or has no builds. No rerun triggered."
-                        currentBuild.result = 'FAILURE'
-                        return
-                    }
-
-                    def buildNum = buildInfo.number as int
-                    def building = buildInfo.building as boolean
-                    def result   = buildInfo.result ?: 'UNKNOWN'
-
-                    // --- Check if still running ---
-                    if (building) {
-                        echo "Last build #${buildNum} of '${jobName}' is still running. No rerun triggered."
-                        currentBuild.result = 'FAILURE'
-                        return
-                    }
-
-                    echo "Last build: #${buildNum}, result: ${result}"
-
-                    // --- Optional SCM_REFERENCE filter check against CUSTOMIZED_SDK_URL ---
-                    if (scmReference) {
-                        def sdkUrl = getBuildParamFromInfo(buildInfo, 'CUSTOMIZED_SDK_URL') ?: ''
-                        // Normalise scmReference to match the artifact filename convention:
-                        //   '+' → '_'  (e.g. 26.0.2.1+1 → 26.0.2.1_1)
-                        //   leading '8u…' form: remove '-'  (e.g. 8u482-b08 → 8u482b08)
-                        def normalizedRef = scmReference.replace('+', '_')
-                        if (normalizedRef.startsWith('8u')) {
-                            normalizedRef = normalizedRef.replace('-', '')
-                        }
-                        if (!sdkUrl.contains(normalizedRef)) {
-                            echo "CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}'). No rerun triggered."
-                            currentBuild.result = 'FAILURE'
-                            return
-                        }
-                        echo "CUSTOMIZED_SDK_URL matches SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}') — proceeding."
-                    }
-
-                    // --- Check result ---
-                    if (result == 'SUCCESS') {
-                        echo "Last build #${buildNum} passed. No rerun needed."
-                        currentBuild.result = 'SUCCESS'
-                        return
-                    }
-
-                    // --- Build and run rerun tasks ---
-                    def rerunTasks = buildRerunTasks(jobName, buildInfo, result, adoptopenjdkRepo, adoptopenjdkBranch, jenkinsCredId)
-
-                    echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
-                    def rerunResults = parallel rerunTasks
-                    // Each closure returns [result: '...', description: '...'].
-                    // Aggregate descriptions and compute worst result in the main thread.
-                    rerunResults.each { key, res ->
-                        if (res?.description) {
-                            currentBuild.description = (currentBuild.description ?: '') + res.description.toString()
-                        }
-                        setWorstResult(res?.result?.toString())
-                    }
-                }
+            def desc = "<br>rerunJobs #${remoteBuildNum}: ${remoteResult}"
+            if (remoteJobDesc) {
+                // remoteJobDesc contains lines like:
+                //   <br><a href='...'>JobName #N: RESULT</a>
+                // Strip the anchor tags, keep only the text.
+                def plainEntries = remoteJobDesc.replaceAll(/<a [^>]*>/, '').replaceAll(/<\/a>/, '')
+                desc += plainEntries
             }
+            currentBuild.description = (currentBuild.description ?: '') + desc
+            setWorstResult(remoteResult)
+            return
+        }
+
+        echo "=== rerunJobs: inspecting last build of '${jobName}'" +
+             (scmReference ? " (SCM_REFERENCE='${scmReference}')" : '') + " ==="
+
+        // --- Fetch last build info via Jenkins REST API ---
+        def buildInfo = getLastBuildInfo(jobName, jenkinsCredId)
+        if (!buildInfo) {
+            echo "Job '${jobName}' not found or has no builds. No rerun triggered."
+            currentBuild.result = 'FAILURE'
+            return
+        }
+
+        def buildNum = buildInfo.number as int
+        def building = buildInfo.building as boolean
+        def result   = buildInfo.result ?: 'UNKNOWN'
+
+        // --- Check if still running ---
+        if (building) {
+            echo "Last build #${buildNum} of '${jobName}' is still running. No rerun triggered."
+            currentBuild.result = 'FAILURE'
+            return
+        }
+
+        echo "Last build: #${buildNum}, result: ${result}"
+
+        // --- Optional SCM_REFERENCE filter check against CUSTOMIZED_SDK_URL ---
+        if (scmReference) {
+            def sdkUrl = getBuildParamFromInfo(buildInfo, 'CUSTOMIZED_SDK_URL') ?: ''
+            // Normalise scmReference to match the artifact filename convention:
+            //   '+' → '_'  (e.g. 26.0.2.1+1 → 26.0.2.1_1)
+            //   leading '8u…' form: remove '-'  (e.g. 8u482-b08 → 8u482b08)
+            def normalizedRef = scmReference.replace('+', '_')
+            if (normalizedRef.startsWith('8u')) {
+                normalizedRef = normalizedRef.replace('-', '')
+            }
+            if (!sdkUrl.contains(normalizedRef)) {
+                echo "CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}'). No rerun triggered."
+                currentBuild.result = 'FAILURE'
+                return
+            }
+            echo "CUSTOMIZED_SDK_URL matches SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}') — proceeding."
+        }
+
+        // --- Check result ---
+        if (result == 'SUCCESS') {
+            echo "Last build #${buildNum} passed. No rerun needed."
+            currentBuild.result = 'SUCCESS'
+            return
+        }
+
+        // --- Build and run rerun tasks ---
+        def rerunTasks = buildRerunTasks(jobName, buildInfo, result, adoptopenjdkRepo, adoptopenjdkBranch, jenkinsCredId)
+
+        echo "Triggering ${rerunTasks.size()} rerun task(s) in parallel ..."
+        def rerunResults = parallel rerunTasks
+        // Each closure returns [result: '...', description: '...'].
+        // Aggregate descriptions and compute worst result in the main thread.
+        rerunResults.each { key, res ->
+            if (res?.description) {
+                currentBuild.description = (currentBuild.description ?: '') + res.description.toString()
+            }
+            setWorstResult(res?.result?.toString())
         }
     }
 }
@@ -241,7 +205,7 @@ def getLastBuildInfo(String jobName, String credentialsId = '') {
 
 /**
  * Internal helper: curl a Jenkins API URL and parse the JSON response.
- * When credentialsId is non-empty, the stored Username+API-token credential is
+ * When credentialsId is non-empty, the stored Username+password credential is
  * bound and passed to curl as -u "$JENKINS_API_AUTH".  The value is masked in
  * logs automatically by Jenkins.
  * Returns the parsed map, or null on HTTP error or missing content.
@@ -250,7 +214,6 @@ def fetchBuildJson(String apiUrl, String label, String credentialsId = '') {
     try {
         def json
         if (credentialsId) {
-            echo " credeintal"
             withCredentials([usernameColonPassword(credentialsId: credentialsId, variable: 'JENKINS_API_AUTH')]) {
                 json = sh(
                     script: "curl -sf --connect-timeout 10 -u \"\$JENKINS_API_AUTH\" '${apiUrl}'",
