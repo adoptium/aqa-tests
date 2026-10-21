@@ -31,7 +31,7 @@ import urllib.parse
 import urllib.request
 from collections import defaultdict
 from concurrent import futures
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from common import models
 
@@ -255,11 +255,61 @@ class BugsOpenJdkHandler(BaseHandler):
     def can_handle(self, url: str) -> bool:
         return 'bugs.openjdk' in url
 
+    def _find_duplicate_target_key(self, resp_json: dict) -> Optional[str]:
+        """
+        In Jira issuelinks, an inwardIssue with type 'Duplicate' indicates that
+        the current issue is a duplicate of that inward issue.
+        """
+        for link in (resp_json.get('fields', {}).get('issuelinks') or []):
+            type_name = link.get('type', {}).get('name', '')
+            if type_name.lower() == 'duplicate':
+                inward = link.get('inwardIssue')
+                if inward and inward.get('key'):
+                    return inward.get('key')
+        return None
+
+    def _follow_duplicates(self, issue_key: str, resp_json: dict) -> Tuple[str, dict]:
+        """
+        Follows the chain of duplicate issues until finding the core issue
+        that is not closed as a duplicate (or has no further duplicate links).
+        """
+        visited = {issue_key}
+        current_key = issue_key
+        current_json = resp_json
+
+        while True:
+            resolution = ((current_json.get('fields', {}).get('resolution') or {}).get('name') or '')
+            if resolution.lower() != 'duplicate':
+                break
+
+            target_key = self._find_duplicate_target_key(current_json)
+            if not target_key or target_key in visited:
+                break
+
+            visited.add(target_key)
+            target_url = self.BUGS_OPENJDK_API_BASE_URL + '/' + target_key
+            try:
+                target_json = self.get_resp_json(target_url)
+                current_key = target_key
+                current_json = target_json
+            except Exception as e:
+                LOG.warning(f"Could not fetch duplicate target issue {target_key}: {e}")
+                break
+
+        return current_key, current_json
+
     def handle(self, url: str) -> tuple:
         path = _extract_path(url)
         *_, issue_key = path.split('/')
         api_url = self.BUGS_OPENJDK_API_BASE_URL + '/' + issue_key
         resp_json = self.get_resp_json(api_url)
+
+        resolution = ((resp_json.get('fields', {}).get('resolution') or {}).get('name') or '')
+        if resolution.lower() == 'duplicate':
+            core_key, core_json = self._follow_duplicates(issue_key, resp_json)
+            if core_key != issue_key:
+                resp_json = core_json
+
         status_name = resp_json.get('fields', {}).get('status', {}).get('name', '').lower()
         status_enum = self.name_to_status(status_name)
         if status_enum == Status.OPEN:

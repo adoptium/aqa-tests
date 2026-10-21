@@ -8,7 +8,7 @@
 // Stage 1: Parse exclude files inline (inline equivalent of parse-issues.yml).
 // Stage 2: Fan out to Grinder (max 100 jobs, deduplicated by test+platform+JDK).
 // Stage 3: Collect results and produce a human-readable summary.
-// Stage 4: Open a GitHub PR removing passing tests; assign reviewer adamfarley.
+// Stage 4: Push branch and generate URL to create a PR removing passing tests.
 // =============================================================================
 
 // ---------------------------------------------------------------------------
@@ -22,8 +22,8 @@
 //                 Set to a small number (e.g. 3) for quick smoke-runs.
 // AQA_GITHUB_USER  - GitHub username for issue_status.py API auth
 // AQA_GITHUB_TOKEN - Credential ID for the GitHub token used by issue_status.py
-// GITHUB_TOKEN  - Credential ID for the GitHub API token (PR creation / HEAD checks)
-// GITHUB_USER   - GitHub user; if blank, Stage 4 skips git push / PR and only archives a patch
+// GITHUB_TOKEN  - Credential ID for the GitHub API token (used for git push)
+// GITHUB_USER   - GitHub user; if blank, Stage 4 skips git push and only archives a patch
 // GRINDER_JOB   - name of the upstream Grinder job (default: "Grinder")
 // MAX_GRINDERS  - hard cap on parallel Grinder jobs (default: 100)
 // ---------------------------------------------------------------------------
@@ -380,11 +380,11 @@ stage('Summarise results') {
 }
 
 // ============================================================================
-// STAGE 4 — Open a GitHub PR removing passing tests; assign adamfarley
+// STAGE 4 — Push branch and generate PR creation URL
 // ============================================================================
-stage('Open unexclusion PR') {
+stage('Push unexclusion branch') {
     if (!env.PASSING_KEYS) {
-        echo 'No passing tests — skipping PR creation.'
+        echo 'No passing tests — skipping branch push.'
         return
     }
 
@@ -439,6 +439,8 @@ stage('Open unexclusion PR') {
         }
         sh("cd \"\$WORKSPACE/aqa-tests\" && git commit -F commit_message.txt && rm -f commit_message.txt")
 
+        echo "=== SUGGESTED PR DESCRIPTION ===\n${prBody}\n================================"
+
         // Archive the commit as a patch and tell the user how to apply it.
         def savePatch = {
             def patchFile = "unexclude-build-${env.BUILD_NUMBER}.patch"
@@ -449,7 +451,7 @@ stage('Open unexclusion PR') {
         }
 
         if (!GITHUB_USER) {
-            echo 'GITHUB_USER is blank - skipping git push and PR creation.'
+            echo 'GITHUB_USER is blank - skipping git push.'
             savePatch()
             currentBuild.description += '<br>No push (GITHUB_USER blank) - patch artifact available'
         } else {
@@ -458,24 +460,13 @@ stage('Open unexclusion PR') {
                 try {
                     sh("GIT_TERMINAL_PROMPT=0 git -C \"\$WORKSPACE/aqa-tests\" push \"https://x-access-token:\$GH_TOKEN@github.com/\$S4_REPO.git\" HEAD:refs/heads/\"\$S4_BRANCH\"")
 
-                    def prTitle   = "chore: auto-unexclude tests with closed issues (build #${env.BUILD_NUMBER})"
-                    def prPayload = groovy.json.JsonOutput.toJson([title: prTitle, body: prBody, head: branchName, base: 'master', draft: false])
-                    writeFile(file: "${env.WORKSPACE}/aqa-tests/pr_payload.json", text: prPayload)
-
-                    def prResponse = sh(script: "curl -sf -X POST -H \"Authorization: token \$GH_TOKEN\" -H \"Accept: application/vnd.github+json\" --data @\"\$WORKSPACE/aqa-tests/pr_payload.json\" \"https://api.github.com/repos/\$S4_REPO/pulls\" && rm -f \"\$WORKSPACE/aqa-tests/pr_payload.json\"", returnStdout: true).trim()
-
-                    def prJson   = readJSON(text: prResponse)
-                    def prNumber = prJson['number']
-                    def prUrl    = prJson['html_url']
-                    echo "PR created: ${prUrl}"
-
-                    env.S4_PR_NUMBER = prNumber.toString()
-                    sh("curl -sf -X POST -H \"Authorization: token \$GH_TOKEN\" -H \"Accept: application/vnd.github+json\" -d '{\"reviewers\": [\"adamfarley\"]}' \"https://api.github.com/repos/\$S4_REPO/pulls/\$S4_PR_NUMBER/requested_reviewers\"")
-                    echo "Reviewer adamfarley assigned to PR #${prNumber}."
-                    currentBuild.description += "<br><a href='${prUrl}'>PR #${prNumber}</a>"
+                    def compareUrl = "https://github.com/${repo}/compare/master...${branchName}?expand=1"
+                    echo "Branch pushed successfully: ${branchName}"
+                    echo "Create PR URL: ${compareUrl}"
+                    currentBuild.description += "<br><a href='${compareUrl}'>Create PR: ${branchName}</a>"
 
                 } catch (Exception pushErr) {
-                    echo "WARNING: Push/PR creation failed: ${pushErr.message}"
+                    echo "WARNING: Push failed: ${pushErr.message}"
                     savePatch()
                     currentBuild.result = 'UNSTABLE'
                     currentBuild.description += '<br>Push failed - patch artifact available'
