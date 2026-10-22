@@ -62,8 +62,8 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         def jobName            = params.JOB_NAME?.trim()
         def scmReference       = params.SCM_REFERENCE?.trim() ?: ''
         def mode               = params.MODE?.trim() ?: ''
-        def adoptopenjdkRepo   = params.ADOPTOPENJDK_REPO?.trim() ?: ''
-        def adoptopenjdkBranch = params.ADOPTOPENJDK_BRANCH?.trim() ?: ''
+        def adoptopenjdkRepo   = params.ADOPTOPENJDK_REPO?.trim() ?: 'https://github.com/adoptium/aqa-tests.git'
+        def adoptopenjdkBranch = params.ADOPTOPENJDK_BRANCH?.trim() ?: 'master'
         def jenkinsCredId      = params.CREDENTIAL_PARAMETER?.trim() ?: ''
 
         if (!jobName) {
