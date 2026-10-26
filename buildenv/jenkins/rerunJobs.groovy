@@ -31,8 +31,9 @@
  * Build description
  * -----------------
  * The description starts with "Rerun job: <JOB_NAME>" so the requested target is
- * visible even when no rerun is triggered. Each triggered job and its result are
- * then listed with a link to that build.
+ * visible even when no rerun is triggered. In local mode, each triggered job and
+ * its result are then listed with a link to that build; relay mode includes the
+ * remote rerun result and target job entries.
  *
  * Credentials
  * -----------
