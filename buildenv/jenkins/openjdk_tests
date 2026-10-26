@@ -13,6 +13,7 @@ def PLATFORM_MAP = [
     'aarch64_linux' : [
         'SPEC' : 'linux_aarch64',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
+        'DynamicAgents' : ['EBC']
     ],
     'aarch64_windows' : [
         'SPEC' : 'windows_aarch64',
@@ -43,7 +44,7 @@ def PLATFORM_MAP = [
     'ppc64le_linux' : [
         'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
+        'DynamicAgents' : ['fyre', 'EBC']
     ],
     'riscv64_linux' : [
         'SPEC' : 'linux_riscv64',
@@ -65,6 +66,7 @@ def PLATFORM_MAP = [
     's390x_linux' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['EBC']
     ],
     's390x_zos' : [
         'SPEC' : 'zos_390-64',
