@@ -30,10 +30,9 @@
  *
  * Build description
  * -----------------
- * The description starts with "Rerun job: <JOB_NAME>" so the requested target is
- * visible even when no rerun is triggered. In local mode, each triggered job and
- * its result are then listed with a link to that build; relay mode includes the
- * remote rerun result and target job entries.
+ * In local mode, each triggered job and its result are listed with a link to
+ * that build. In relay mode, the description includes the target job name and
+ * remote rerun result, followed by any target job entries from the remote build.
  *
  * Credentials
  * -----------
@@ -87,8 +86,6 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
             error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
         }
-
-        currentBuild.description = "Rerun job: ${jobName}"
 
         // --- RELAY mode: forward to remote private Jenkins ---
         if (mode == 'RELAY') {
