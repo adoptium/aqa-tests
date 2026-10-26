@@ -2,10 +2,11 @@
 /*
  * rerunJobs.groovy
  *
- * Standalone pipeline that triggers a rerun of the last build of a given Jenkins
- * job.
+ * Standalone pipeline that inspects the last build of a given Jenkins job and
+ * triggers a full or targeted rerun when appropriate.
  *
- * Uses the Jenkins REST API (JSON) to inspect builds
+ * Uses the Jenkins REST API (JSON) to inspect builds and preserves the original
+ * build parameters unless a targeted rerun or explicit override requires changes.
  *
  * Parameters
  * ----------
@@ -17,18 +18,28 @@
  *                             substring; if it does not match, no rerun is
  *                             triggered and a message is logged.
  *                             When empty, the check is skipped entirely.
+ *   ADOPTOPENJDK_REPO          (optional) Repository override for the rerun.
+ *   ADOPTOPENJDK_BRANCH        (optional) Branch override for the rerun.
  *   MODE                      (optional) When set to 'RELAY', this pipeline acts
  *                             as a relay: it forwards the rerun request to the
  *                             same rerunJobs pipeline on the remote private Jenkins
  *                             (temurin-compliance) via triggerRemoteJob, instead of
  *                             inspecting and triggering jobs locally.
+ *   CREDENTIAL_PARAMETER      (optional) Jenkins Username+password credential ID
+ *                             used to authenticate REST API requests.
+ *
+ * Build description
+ * -----------------
+ * The description starts with "Rerun job: <JOB_NAME>" so the requested target is
+ * visible even when no rerun is triggered. Each triggered job and its result are
+ * then listed with a link to that build.
  *
  * Credentials
  * -----------
- *   A Username+password credential that can authenticate against that server's REST API. 
- *   Leave unset to use anonymous access.
- *   Since the parameter is not declared in this script, the job config is never
- *   overwritten on re-run — the operator-set value persists permanently.
+ *   CREDENTIAL_PARAMETER refers to a Username+password credential that can
+ *   authenticate against that server's REST API. Leave unset to use anonymous
+ *   access. Since the parameter is not declared in this script, the job config
+ *   is never overwritten on re-run — the operator-set value persists permanently.
  *
  * Pre-conditions (all checked before any rerun is triggered — local mode only)
  * ----------------------------------------------------------------------------
@@ -75,6 +86,8 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
         if (!(jobName ==~ /[A-Za-z0-9_.\-\/]+/)) {
             error "JOB_NAME contains illegal characters; allowed: letters, digits, '_', '.', '-', and '/'."
         }
+
+        currentBuild.description = "Rerun job: ${jobName}"
 
         // --- RELAY mode: forward to remote private Jenkins ---
         if (mode == 'RELAY') {
