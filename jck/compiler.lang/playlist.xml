@@ -427,7 +427,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) tests=lang/LMBD testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=lang/LMBD testsuite=COMPILER $(if $(findstring win,$(SPEC)),concurrency=1); \
 		$(EXEC_COMPILER_TEST); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=lang/LMBD testsuite=COMPILER
@@ -563,7 +563,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) tests=lang/MOD testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=lang/MOD testsuite=COMPILER $(if $(findstring win,$(SPEC)),concurrency=1); \
 		$(EXEC_COMPILER_TEST); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=lang/MOD testsuite=COMPILER
@@ -600,7 +600,7 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(GEN_JTB_GENERIC) tests=lang/PKGS testsuite=COMPILER; \
+		<command>$(GEN_JTB_GENERIC) tests=lang/PKGS testsuite=COMPILER $(if $(findstring win,$(SPEC)),concurrency=1); \
 		$(EXEC_COMPILER_TEST); \
 		$(TEST_STATUS); \
 		$(GEN_SUMMARY_GENERIC) tests=lang/PKGS testsuite=COMPILER
