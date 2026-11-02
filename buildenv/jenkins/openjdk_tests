@@ -511,7 +511,7 @@ timestamps{
                     }
                 }
             }
-            env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test"
+            env.SETUP_LABEL = params.SETUP_LABEL ?: "ci.role.test&&sw.os.linux&&hw.arch.x86"
             if (env.PARALLEL == 'None' && env.jobStatus == 'UNSTABLE') {
                 jenkinsfile.triggerRerunJob(env.jobStatus)
             } else if ( env.PARALLEL != 'None' && currentBuild.result != 'FAILURE') {
