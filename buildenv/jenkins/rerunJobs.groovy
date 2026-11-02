@@ -112,20 +112,7 @@ node('worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)') {
             def remoteBuildNum = handle.getBuildNumber()
             echo "Remote rerunJobs #${remoteBuildNum} result: ${remoteResult}"
 
-            // Fetch the remote rerunJobs build description to extract
-            // the triggered job names and their statuses.
-            def remoteApiUrl  = "https://ci.eclipse.org/temurin-compliance/job/rerunJobs/${remoteBuildNum}/api/json?tree=description"
-            def remoteInfo    = fetchBuildJson(remoteApiUrl, "remote rerunJobs #${remoteBuildNum}", jenkinsCredId)
-            def remoteJobDesc = remoteInfo?.description ?: ''
-
             def desc = "<br>Remote rerunJobs #${remoteBuildNum} rerun ${jobName} : ${remoteResult}"
-            if (remoteJobDesc) {
-                // remoteJobDesc contains lines like:
-                //   <br><a href='...'>JobName #N: RESULT</a>
-                // Strip the anchor tags, keep only the text.
-                def plainEntries = remoteJobDesc.replaceAll(/<a [^>]*>/, '').replaceAll(/<\/a>/, '')
-                desc += plainEntries
-            }
             currentBuild.description = (currentBuild.description ?: '') + desc
             setWorstResult(remoteResult)
             return
