@@ -13,10 +13,13 @@ def PLATFORM_MAP = [
     'aarch64_linux' : [
         'SPEC' : 'linux_aarch64',
         'LABEL' : 'ci.role.test&&sw.os.linux&&hw.arch.aarch64',
+        'DynamicAgents' : ['EBC']
     ],
     'aarch64_windows' : [
         'SPEC' : 'windows_aarch64',
         'LABEL' : 'ci.role.test&&sw.os.windows&&hw.arch.aarch64',
+        'DynamicAgents' : ['azure'],
+        'azureTemplates' : ['sw.os.windows.11']
     ],
     'aarch64_alpine-linux' : [
         'SPEC' : 'alpine-linux_aarch64',
@@ -41,7 +44,7 @@ def PLATFORM_MAP = [
     'ppc64le_linux' : [
         'SPEC' : 'linux_ppc-64_le',
         'LABEL' : 'ci.role.test&&hw.arch.ppc64le&&sw.os.linux',
-        'DynamicAgents' : ['fyre']
+        'DynamicAgents' : ['fyre', 'EBC']
     ],
     'riscv64_linux' : [
         'SPEC' : 'linux_riscv64',
@@ -63,6 +66,7 @@ def PLATFORM_MAP = [
     's390x_linux' : [
         'SPEC' : 'linux_390-64',
         'LABEL' : 'ci.role.test&&hw.arch.s390x&&sw.os.linux',
+        'DynamicAgents' : ['EBC']
     ],
     's390x_zos' : [
         'SPEC' : 'zos_390-64',
@@ -363,7 +367,7 @@ timestamps{
             if (params.TEST_FLAG) {
                 if (params.TEST_FLAG == "FIPS140_2") {
                     LABEL = LABEL.minus("ci.role.test&&").concat("&&ci.role.test.fips")
-                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true"
+                    env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.restrictedsecurity.ignoresunsetexpiration=true -Dsemeru.restrictedsecurity.suppresssunsetwarning"
                 } else if (params.TEST_FLAG == "FIPS140_3_OpenJCEPlusFIPS") {
                     // Temporarily hardcode jvm option for FIPS140_3_OpenJCEPlusFIPS. For details, please see runtimes/automation/issues/653
                     env.EXTRA_OPTIONS += " -Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Weakly-Enforced"
@@ -725,7 +729,7 @@ def forceCleanWS() {
             //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
             //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
             dir (env.WORKSPACE) {
-                echo "Force clean Workspace at $pwd"
+                echo "Force clean Workspace at ${pwd()}"
                 sh "rm -rf aqa-tests/TKG"
             }
             // call cleanWs() again

@@ -6,7 +6,7 @@ Platform: x64_linux | x64_mac | s390x_linux | ppc64le_linux | aarch64_linux
 
 Java Version: SE80 | SE90 | SE100
 
-Set up your test machine with this [set of prerequisites](https://github.com/eclipse-openj9/openj9/blob/master/test/docs/Prerequisites.md).
+Set up your test machine with this [set of prerequisites](https://github.com/eclipse-openj9/openj9/blob/main/test/docs/Prerequisites.md).
 
 ## Jenkins setup and running
 While you can [run all the tests manually](#local-testing-via-make-targets-on-the-commandline) via the make targets on the command line, you may also run the tests in Jenkins. As part of the AdoptOpenJDK continuous integration (CI), AdoptOpenJDK runs test builds against the release and nightly SDK builds.
@@ -215,7 +215,7 @@ Usage : get.sh  --testdir|-t openjdktestdir
 
 #### Set environment variables, configure, build and run tests
 
-You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse-openj9/openj9/blob/master/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you.
+You can use the same approach as described in the [OpenJ9 functional tests README file]( https://github.com/eclipse-openj9/openj9/blob/main/test/README.md).  In the case of the tests run at AdoptOpenJDK, instead of using a make target called _sanity.functional, you can provide the appropriate make target to run the tests of interest to you.
 
 ##### Top-level test targets:
 - openjdk
@@ -229,7 +229,7 @@ You can use the same approach as described in the [OpenJ9 functional tests READM
 - _extended.openjdk, _extended.system, _extended.external, _extended.perf, etc.
 
 ##### Sub-targets by directory:
-Refer to these instructions for how to [run tests by directory](https://github.com/eclipse-openj9/openj9/blob/master/test/README.md#5-how-to-execute-a-directory-of-tests)
+Refer to these instructions for how to [run tests by directory](https://github.com/eclipse-openj9/openj9/blob/main/test/README.md#5-how-to-execute-a-directory-of-tests)
 
 ##### Sub-targets by test name:
 In each playlist.xml file in each test directory, there are tests defined.  Test targets are generated from the ```<testCaseName>``` tag, so you can use the test case name as a make target.
@@ -620,6 +620,21 @@ Or remove ```<impl>``` element to exclude test against all implementations:
   </disables>
   ...
 ```
+
+#### Unexclusion automation
+
+Once a week, the parse-issues.yml workflow runs in GitHub, and lists tests that are:
+- Currently excluded/disabled.
+- Associated with a valid URL which is:
+  - A closed OpenJDK bug where the fix is present in the OpenJDK source code.
+  - Or a closed Adoptium GitHub issue
+
+These tests are subsequently assessed for unexclusion.
+
+If you want to prevent a test from being considered for unexclusion, even
+after the associated issue is closed, you can do this to the associated issue:
+  - OpenJDK bug: use the resolution "Won't Fix"
+  - GitHub issue: add the label "exclusion:permanent" or "wontfix"
 
 ## Cherry-pick a merged PR to a release branch
 

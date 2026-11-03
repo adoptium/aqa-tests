@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,18 +12,31 @@
 # limitations under the License.
 #
 source $(dirname "$0")/test_base_functions.sh
-#Set up Java to be used by the netty test
+#Set up Java to be used by the zookeeper test
 echo_setup
 
 testList="-Dtest=!org.apache.zookeeper.server.quorum.QuorumPeerMainTest,!org.apache.zookeeper.server.quorum.QuorumPeerMainMultiAddressTest,!org.apache.zookeeper.ZKUtilTest,!org.apache.zookeeper.server.util.RequestPathMetricsCollectorTest,!org.apache.zookeeper.test.ReadOnlyModeTest,!org.apache.zookeeper.server.NettyServerCnxnTest,!org.apache.zookeeper.server.ZooKeeperServerMainTest,!org.apache.zookeeper.server.quorum.EagerACLFilterTest,!org.apache.zookeeper.server.quorum.Zab1_0Test,!org.apache.zookeeper.server.quorum.UnifiedServerSocketTest,!org.apache.zookeeper.server.quorum.CommitProcessorConcurrencyTest,!org.apache.zookeeper.server.util.JvmPauseMonitorTest"
 
-echo "Compile and run zookeeper tests"
-echo mvn test --batch-mode --fail-at-end $testList
-mvn test --batch-mode --fail-at-end $testList
-test_exit_code=$?
-echo "Build zookeeper completed"
+TEST_OPTIONS=$1
+[ "$TEST_OPTIONS" = "full" ] && TEST_OPTIONS=""
 
-find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
-echo "Test results copied"
+set -e
+echo "Building zookeeper"
+mvn package -DskipTests --batch-mode
+set +e
+echo "Zookeeper build completed"
 
-exit $test_exit_code
+if [ "$TEST_OPTIONS" = "smoke" ]; then
+	echo "Probing Zookeeper version"
+	bin/zkServer.sh version
+	test_exit_code=$?
+	exit $test_exit_code
+else
+	echo "Compile and run zookeeper tests"
+	mvn test --batch-mode --fail-at-end $testList $TEST_OPTIONS
+	test_exit_code=$?
+	echo "Zookeeper tests completed"
+	find ./ -type d -name 'surefire-reports' -exec cp -r "{}" /testResults \;
+	echo "Test results copied"
+	exit $test_exit_code
+fi

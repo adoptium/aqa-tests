@@ -137,6 +137,13 @@ ifeq ($(ARCH),riscv64)
 	JTREG_KEY_OPTIONS := -k:'!headful'
 	VMOPTION_HEADLESS := -Djava.awt.headless=true
 endif
+# s390x linux, ppc64 aix and ppc64le linux are built in headless mode for eclipse/temurin
+ifneq ($(filter eclipse temurin, $(JDK_VENDOR)),)
+	ifneq ($(filter linux_390-64 aix_ppc-64 linux_ppc-64_le, $(SPEC)),)
+		JTREG_KEY_OPTIONS := -k:'!headful'
+		VMOPTION_HEADLESS := -Djava.awt.headless=true
+	endif
+endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
 # set JTREG_BASIC_OPTIONS value into a new parameter before adding EXTRA_JTREG_OPTIONS
@@ -218,7 +225,7 @@ TIMEOUT_HANDLER:=
 # in the build.xml dist target.
 ifneq ($(filter openj9 ibm, $(JDK_IMPL)),)
 	ifneq ($(filter Valhalla, $(JDK_VERSION)),)
-		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk26-openj9.txt
+		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk28-openj9.txt
 		PROBLEM_LIST_FILE_VALHALLA:=excludes/ProblemList_openjdkvalhalla-openj9.txt
 	else
 		PROBLEM_LIST_FILE:=excludes/ProblemList_openjdk$(JDK_VERSION)-openj9.txt

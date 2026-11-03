@@ -19,7 +19,6 @@
             "RERUN_ITERATIONS": "1",
             "BUILD_LIST": "",
             "TIME_LIMIT": "25",
-            "GENERATE_JOBS": false,
             "ADDITIONAL_TEST_PARAMS": {}
         },
         "TARGET_SPECIFIC_CONFIG": {
@@ -67,6 +66,11 @@
                 "x86-64_mac": {
                     "LABEL": "ci.role.test.repro&&hw.arch.aarch64&&(sw.os.osx||sw.os.mac)"
                 }
+            },
+            "extended.openjdk": {
+                "x86-64_mac": {
+                    "NUM_MACHINES": "5"
+                }
             }
         },
         "PLATFORM_ADDITIONAL_TEST_LABELS": {
@@ -80,6 +84,9 @@
                 "CLOUD_PROVIDER": "gha"
             },
             "x86-64_windows": {
+                "CLOUD_PROVIDER": "azure"
+            },
+            "aarch64_windows": {
                 "CLOUD_PROVIDER": "azure"
             }
         }

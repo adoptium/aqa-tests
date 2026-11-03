@@ -24,7 +24,7 @@ public class DateFormatTest {
     private String version;
 
     // ResourceBundleTest_NN fix versions to try and load in order..
-    private static final long[] resourceBundleFixVersionsToTry = {26L, 22L, 19L, 16L};
+    private static final long[] resourceBundleFixVersionsToTry = {27L, 26L, 22L, 19L, 16L};
 
     public DateFormatTest(Locale locale) {
         this.locale = locale;

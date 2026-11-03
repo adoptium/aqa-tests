@@ -18,7 +18,7 @@
 		<testCaseName>jdk_valhalla_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) $(JDK_NATIVE_OPTIONS) \
@@ -54,7 +54,7 @@
 		<testCaseName>hotspot_valhalla_runtime_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) \
@@ -91,7 +91,7 @@
 		<testCaseName>serviceability_valhalla_j9</testCaseName>
 		<variations>
 			<variation>NoOptions</variation>
-			<variation>-XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
+			<variation>-XX:+EnableFlattening -XX:ValueTypeFlatteningThreshold=99999 -XX:+EnableArrayFlattening</variation>
 		</variations>
 		<command>$(JAVA_COMMAND) -Xmx512m $(APPLICATION_OPTIONS) -jar $(Q)$(TEST_RESROOT)$(D)jtreg$(D)lib$(D)jtreg.jar$(Q) \
 			$(JTREG_BASIC_OPTIONS) \

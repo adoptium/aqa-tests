@@ -7,16 +7,16 @@
             "RERUN_ITERATIONS": "1",
             "RERUN_FAILURE": true,
             "KEEP_REPORTDIR": true,
-            "AUTO_AQA_GEN": false,
-            "SETUP_JCK_RUN": false
+            "SETUP_JCK_RUN": false,
+            "TIME_LIMIT": "50"
         },
         "PLATFORM_TARGETS": [
             { "aarch64_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
             { "aarch64_mac": "sanity.jck, extended.jck, special.jck, dev.jck" },
-            { "arm_linux": "sanity.jck, extended.jck, special.jck" },
+            { "arm_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
             { "ppc64_aix": "sanity.jck, extended.jck, special.jck" },
-            { "ppc64le_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
-            { "s390x_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
+            { "ppc64le_linux": "sanity.jck, extended.jck, special.jck" },
+            { "s390x_linux": "sanity.jck, extended.jck, special.jck" },
             { "x86-64_linux": "sanity.jck, extended.jck, special.jck, dev.jck" },
             { "x86-64_mac": "sanity.jck, extended.jck, special.jck, dev.jck" },
             { "x86-64_windows": "sanity.jck, extended.jck, special.jck, dev.jck" },
@@ -58,7 +58,10 @@
             },
             "dev.jck": {
                 "x86-64_windows": {
-                    "LABEL": "ci.role.test.interactive"
+                    "LABEL": "sw.os.windows&&hw.arch.x86&&ci.role.test.interactive"
+                },
+                "aarch64_windows": {
+                    "LABEL": "sw.os.windows&&hw.arch.aarch64&&ci.role.test.interactive"
                 }
             },
             "jck": {

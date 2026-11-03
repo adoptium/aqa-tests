@@ -44,7 +44,10 @@ There are many different test jobs running at the adoptium project.  No matter w
 - exclude in the most minimal way possible, if failing only on 1 platform, version or implementation, only exclude for that instance
 - put the full link to the associated open issue into the exclude file
 - exclude files vary depending on what test group you are triaging, refer to the README files in the aqa-tests subdirectories for more details
-  - for openjdk tests, see [Exclude an openjdk test](https://github.com/adoptium/aqa-tests/tree/master/openjdk#exclude-a-testcase)
+  - for openjdk tests, see [Exclude an openjdk test](https://github.com/adoptium/aqa-tests/tree/master/openjdk#exclude-a-testcase).
   - for other tests (like system, external and perf tests), tests are typically disabled via the associated playlist.xml (see [example playlist](https://github.com/adoptium/aqa-tests/blob/master/external/example-test/playlist.xml)) file either by using `<platformRequirements>^os.win</platformRequirements>` for permanent exclusion based on platform, or `<disable>` tag for temporary exclusion.
+- to prevent a test being assessed for unexclusion once the issue is closed, you can do this to the associated issue:
+  - OpenJDK bug: use the resolution "Won't Fix"
+  - GitHub issue: add the label "exclusion:permanent" or "wontfix"
 
 ![Common Triage Paths](./diagrams/commonTriagePaths.png)

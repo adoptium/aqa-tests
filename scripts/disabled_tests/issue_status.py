@@ -90,21 +90,21 @@ class BaseHandler(abc.ABC):
         timeout_s = 30
         is_github_api = url.startswith("https://api.github.com/")
         is_github_web = url.startswith("https://github.com/")
+        auth = None
+        if all([self.user, self.token]):
+            auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
+
+        headers = None
+        if is_github_api:
+            headers = self.PARAMS
+
+        adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
+        session: requests.Session = requests.Session()
+        session.mount("https://", adapter)
         if is_github_api or is_github_web:
-            auth = None
-            if all([self.user, self.token]):
-                auth = requests.auth.HTTPBasicAuth(username=str(self.user), password=str(self.token))
-
-            headers = None
-            if is_github_api:
-                headers = self.PARAMS
-
-            adapter: HTTPAdapter = HTTPAdapter(max_retries=self.retry_strategy)
-            session: requests.Session = requests.Session()
-            session.mount("https://", adapter)
             resp = session.get(url, params=headers, auth=auth, timeout=timeout_s)
         else:
-            resp = requests.get(url, timeout=timeout_s)
+            resp = session.get(url, params=headers, timeout=timeout_s)
         resp.raise_for_status()
         return resp
 
@@ -361,9 +361,13 @@ def _handle_completed_future(future, log_prefix, url, url_to_issues) -> List[mod
         LOG.error(f"{log_prefix} No handler found for {url!r}")
         return_code = 1
     except Exception as e:
-        # Ignore "Unauthorized for url" errors as this is currently permitted.
         if "Unauthorized for url" in str(e):
-            LOG.debug(f"{log_prefix} Ignoring access denial when handling {url!r}: {e}")
+            # Ignore "Unauthorized for url" errors as this is currently permitted.
+            LOG.warning(f"{log_prefix} Ignoring access denial when handling {url!r}: {e}")
+        elif "too many 403 error responses" in str(e):
+            # Ignoring intermittent 403 return codes as "forbidden" errors are to be 
+            # expected when making multiple, rapid calls against the same api.
+            LOG.warning(f"{log_prefix} Ignoring 403 error response while handling {url!r}: {e}")
         else:
             LOG.error(f"{log_prefix} Uncaught exception for {url!r}: {e}")
             return_code = 1
