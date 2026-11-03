@@ -741,7 +741,8 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     MapParameter(name: 'RERUN_ITERATIONS', value: rerunIterations),
                     MapParameter(name: 'RERUN_FAILURE', value: rerunFailure),
                     MapParameter(name: 'EXTRA_OPTIONS', value: extraOptions),
-                    MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun)
+                    MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun),
+                    MapParameter(name: 'TIME_LIMIT', value: config.TIME_LIMIT)
                 ]
                 
                 // Add LABEL if specified
