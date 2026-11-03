@@ -9,6 +9,16 @@ import groovy.transform.Field
 @Field String SDK_RESOURCE
 @Field String GET_SH_CMD
 @Field String RESOLVED_MAKE
+@Field String OPENJ9_REPO
+@Field String OPENJ9_BRANCH
+@Field String TKG_REPO
+@Field String TKG_BRANCH
+@Field String PLATFORM
+@Field String CUSTOM_TARGET
+@Field int ITERATIONS
+@Field int NUM_MACHINES
+@Field Map parallel_tests
+@Field Map parallelTestParams
 
 def makeTest(testParam) {
 	String tearDownCmd = "$RESOLVED_MAKE; \$MAKE -f ./aqa-tests/TKG/testEnv.mk testEnvTeardown"
@@ -63,29 +73,23 @@ def setupEnv() {
 	env.SPEC = "${SPEC}"
 	if(!params.USE_TESTENV_PROPERTIES){
 		env.ADOPTOPENJDK_REPO = params.ADOPTOPENJDK_REPO ? params.ADOPTOPENJDK_REPO : "https://github.com/adoptium/aqa-tests.git"
-		OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
+		this.@OPENJ9_REPO = params.OPENJ9_REPO ? params.OPENJ9_REPO : "https://github.com/eclipse-openj9/openj9.git"
 		String[] tkg = getGitRepoBranch(params.TKG_OWNER_BRANCH, "adoptium:master", "TKG")
-		TKG_REPO = tkg[0]
-		TKG_BRANCH = tkg[1]
+		this.@TKG_REPO = tkg[0]
+		this.@TKG_BRANCH = tkg[1]
 		//For Zos, the right repo should be something like: git@github.ibm.com:runtimes/openj9-openjdk-jdk**-zos.git and for now there is only jdk11
 		env.JDK_REPO = params.JDK_REPO ? params.JDK_REPO : ""
 		if (env.SPEC.startsWith('zos')) {
 			env.ADOPTOPENJDK_REPO = env.ADOPTOPENJDK_REPO.replace("https://github.com/","git@github.com:")
-			OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
+			this.@OPENJ9_REPO = OPENJ9_REPO.replace("https://github.com/","git@github.com:")
 		}
-		OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "main"
+		this.@OPENJ9_BRANCH = params.OPENJ9_BRANCH ? params.OPENJ9_BRANCH : "main"
 	}
 
-	PLATFORM = params.PLATFORM ? params.PLATFORM : ""
+	this.@PLATFORM = params.PLATFORM ? params.PLATFORM : ""
 	env.ADOPTOPENJDK_BRANCH = params.ADOPTOPENJDK_BRANCH ? params.ADOPTOPENJDK_BRANCH : "master"
-	CLONE_OPENJ9 = params.CLONE_OPENJ9 ? params.CLONE_OPENJ9 : "true"
-	CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
-	UPSTREAM_JOB_NAME = params.UPSTREAM_JOB_NAME ? params.UPSTREAM_JOB_NAME : ""
-	UPSTREAM_JOB_NUMBER = params.UPSTREAM_JOB_NUMBER ? params.UPSTREAM_JOB_NUMBER : ""
-	SSH_AGENT_CREDENTIAL = params.SSH_AGENT_CREDENTIAL ? params.SSH_AGENT_CREDENTIAL : ""
-	KEEP_WORKSPACE = params.KEEP_WORKSPACE ? params.KEEP_WORKSPACE : false
-	OPENJ9_SHA = params.OPENJ9_SHA ? params.OPENJ9_SHA : ""
-	CLOUD_PROVIDER = params.CLOUD_PROVIDER ? params.CLOUD_PROVIDER : ""
+	this.@CUSTOM_TARGET = params.CUSTOM_TARGET ? params.CUSTOM_TARGET : ""
+	def CLOUD_PROVIDER = params.CLOUD_PROVIDER ? params.CLOUD_PROVIDER : ""
 	env.JDK_BRANCH = params.JDK_BRANCH ? params.JDK_BRANCH : ""
 	env.USER_CREDENTIALS_ID = params.USER_CREDENTIALS_ID ? params.USER_CREDENTIALS_ID : ""
 	env.TEST_JDK_HOME = "$WORKSPACE/jdkbinary/j2sdk-image"
@@ -112,7 +116,7 @@ def setupEnv() {
 	env.DOCKER_REGISTRY_DIR = params.DOCKER_REGISTRY_DIR ? params.DOCKER_REGISTRY_DIR : ""
 	env.DOCKER_REGISTRY_URL_CREDENTIAL_ID = params.DOCKER_REGISTRY_URL_CREDENTIAL_ID ? params.DOCKER_REGISTRY_URL_CREDENTIAL_ID : ""
 	env.BASE_DOCKER_REGISTRY_CREDENTIAL_ID = params.BASE_DOCKER_REGISTRY_CREDENTIAL_ID ? params.BASE_DOCKER_REGISTRY_CREDENTIAL_ID : ""
-	ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
+	this.@ITERATIONS = params.ITERATIONS ? "${params.ITERATIONS}".toInteger() : 1
 	env.TKG_ITERATIONS = params.TKG_ITERATIONS ? "${params.TKG_ITERATIONS}".toInteger() : 1
 	env.EXIT_FAILURE = params.EXIT_FAILURE ? params.EXIT_FAILURE : false
 	env.EXIT_SUCCESS = params.EXIT_SUCCESS ? params.EXIT_SUCCESS : false
@@ -125,7 +129,7 @@ def setupEnv() {
 	env.ITER_FAILED = '0'
 	env.ITER_DISABLED = '0'
 	env.ITER_SKIPPED = '0'
-	NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
+	this.@NUM_MACHINES = params.NUM_MACHINES ? params.NUM_MACHINES.toInteger() : 1
 	if (CLOUD_PROVIDER == 'azure') {
 		// Needs to be inside the workspace as the docker container won't have permissions to write to higher level directories
 		env.LIB_DIR = "${WORKSPACE}/externalDependency/lib"
@@ -212,7 +216,7 @@ def setupParallelEnv() {
 		int childJobNum = 1
 		def UPSTREAM_TEST_JOB_NAME = ""
 		def UPSTREAM_TEST_JOB_NUMBER = ""
-		parallel_tests = [:]
+		this.@parallel_tests = [:]
 
 		if (env.PARALLEL == "NodesByIterations") {
 			childJobNum = NUM_MACHINES
@@ -321,8 +325,8 @@ def setupParallelEnv() {
 		UPSTREAM_TEST_JOB_NUMBER = BUILD_NUMBER
 
 		echo "[PARALLEL: ${env.PARALLEL}] childJobNum is ${childJobNum}, creating jobs and running them in parallel..."
-		create_jobs = [:]
-		parallelTestParams =[:]
+		def create_jobs = [:]
+		this.@parallelTestParams =[:]
 		for (int i = 0; i < childJobNum; i++) {
 			def buildListName = env.BUILD_LIST
 			def childTest = ""
@@ -806,7 +810,7 @@ def runTest( ) {
 
 		def CUSTOM_OPTION = ''
 
-		TARGET = "${params.TARGET}";
+		def TARGET = "${params.TARGET}";
 		if (TARGET.contains('custom') && CUSTOM_TARGET!='') {
 			if (TARGET == 'system_custom') {
 				env.SYSTEM_CUSTOM_TARGET=CUSTOM_TARGET
@@ -827,7 +831,7 @@ def runTest( ) {
 			}
 		}
 
-		RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
+		def RUNTEST_CMD = "${TARGET} ${CUSTOM_OPTION}"
 		if (env.BUILD_LIST.contains('jck') || env.BUILD_LIST.contains('openjdk') || env.BUILD_LIST.contains('functional')) {
 			if (env.SPEC.startsWith('aix')) {
 				sh "/usr/bin/X11/X -force -vfb -x abx -x dbe -x GLX -secIP 000 :0 &"
@@ -982,7 +986,7 @@ def checkTestResults(results) {
 	if (results["TOTAL"] == 0) {
 		env.jobStatus = 'FAILURE'
 		echo 'No test ran, current build status is FAILURE.'
-		summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
+		def summary = createBadgeSummary("symbol-folder-open-outline plugin-ionicons-api")
 		appendSummaryText(summary, "NO TEST FOUND!")
 		return
 	}
@@ -1167,13 +1171,13 @@ def post(output_name) {
 }
 
 def testBuild() {
-	TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
+	def TIME_LIMIT = params.TIME_LIMIT ? params.TIME_LIMIT.toInteger() : 10
 	timeout(time: TIME_LIMIT, unit: 'HOURS') {
 		boolean runMulticastCmd = false
 
 		if (JOB_NAME.contains("special.jck") || JOB_NAME.contains("extended.openjdk") || TARGET == "special.jck" || TARGET == "extended.openjdk" || TARGET.contains("_nio") || TARGET.contains("_net") || TARGET.contains("_custom")) {
 			// only enable on linux based platforms atm
-			if (PLATFORM.contains('linux')) {
+			if (params.PLATFORM.contains('linux')) {
 				def statusCode =  sh returnStatus: true, script: """
 					which activate_multicast
 					"""
@@ -1217,9 +1221,9 @@ def testBuild() {
 			if (!params.KEEP_WORKSPACE) {
 				forceCleanWS()
 				// clean up remaining core files
-				if (PLATFORM.contains("mac")) {
+				if (params.PLATFORM.contains("mac")) {
 					sh "find /cores -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
-				} else if (PLATFORM.contains("windows")) {
+				} else if (params.PLATFORM.contains("windows")) {
 					sh "find /cygdrive/c/temp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
 				} else {
 					sh "find /tmp -name '*core*' -print 2>/dev/null -exec rm -f {} \\; || true"
