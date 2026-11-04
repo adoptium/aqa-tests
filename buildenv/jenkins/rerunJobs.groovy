@@ -214,7 +214,7 @@ def getLastBuildInfo(String jobName, String credentialsId = '') {
 def fetchBuildJson(String apiUrl, String label, String credentialsId = '') {
     try {
         def parsed = null
-        node('worker || (ci.role.test&&hw.arch.x86&&sw.os.windows)') {
+        node('worker || (ci.role.test)') {
             def json
             if (credentialsId) {
                 withCredentials([usernameColonPassword(credentialsId: credentialsId, variable: 'JENKINS_API_AUTH')]) {
