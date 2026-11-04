@@ -67,6 +67,8 @@ After changing these templates, regenerate existing jobs through their generatio
 Updating the Groovy files alone does not update a job's stored SCM definition.
 For manually configured jobs, remove the deprecated extensions and update the script path together.
 The `LIGHT_WEIGHT_CHECKOUT` choice and repository/branch parameter behavior remain unchanged.
+Regenerate performance jobs to update `GENERATE_JOBS` to a boolean parameter, matching the
+performance Pipeline's conditional checks; `PLATFORM` retains its string parameter type.
 
 ## Configuration File Format
 
