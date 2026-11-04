@@ -210,6 +210,8 @@ def getLastBuildInfo(String jobName, String credentialsId = '') {
  * bound and passed to curl as -u "$JENKINS_API_AUTH".  The value is masked in
  * logs automatically by Jenkins.
  * Returns the parsed map, or null on HTTP error or missing content.
+ * Pipeline interruptions (FlowInterruptedException, e.g. build cancelled while
+ * waiting for a node) are rethrown rather than treated as a failed lookup.
  */
 def fetchBuildJson(String apiUrl, String label, String credentialsId = '') {
     try {
@@ -236,6 +238,9 @@ def fetchBuildJson(String apiUrl, String label, String credentialsId = '') {
             }
         }
         return parsed
+    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+        // Build was cancelled/aborted (e.g. while waiting for an executor): propagate.
+        throw e
     } catch (Exception e) {
         echo "Could not fetch ${label}: ${e.message}"
         return null
