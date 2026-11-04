@@ -3,6 +3,7 @@
 import groovy.transform.Field
 
 @Field Script jenkinsfile
+@Field String CLOUD_PROVIDER
 
 def PLATFORM_MAP = [
     'arm_linux' : [
@@ -136,7 +137,7 @@ def PLATFORMS = params.PLATFORM.trim().split("\\s*,\\s*");
 def JDK_VERSIONS = params.JDK_VERSION.trim().split("\\s*,\\s*");
 def JDK_IMPLS = params.JDK_IMPL.trim().split("\\s*,\\s*");
 
-def CLOUD_PROVIDER = params.CLOUD_PROVIDER ?: ""
+this.@CLOUD_PROVIDER = params.CLOUD_PROVIDER ?: ""
 
 // if multiple JDK_VERSION / JDK_IMPL / PLATFORM are provided, run test jobs in parallel
 timestamps{
@@ -426,7 +427,7 @@ timestamps{
                                     echo 'Exception: ' + e.toString()
                                     echo "Cannot launch EBC node ..."
                                     echo "Use static node ${LABEL}..."
-                                    CLOUD_PROVIDER = ''
+                                    this.@CLOUD_PROVIDER = ''
                                 }
 
                             } else {
