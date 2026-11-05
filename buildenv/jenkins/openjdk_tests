@@ -573,14 +573,15 @@ def runTest() {
                 timeout(time: 1, unit: 'HOURS') {
                     forceCleanWS()
                 }
-                checkout scm: [$class: 'GitSCM',
-                    branches: [[name: "${scm.branches[0].name}"]],
-                    extensions: [
-                        [$class: 'CleanBeforeCheckout'],
-                        [$class: 'CloneOption', reference: ref_cache],
-                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'aqa-tests']],
-                    userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
-                ]
+                dir('aqa-tests') {
+                    checkout scm: [$class: 'GitSCM',
+                        branches: [[name: "${scm.branches[0].name}"]],
+                        extensions: [
+                            [$class: 'CleanBeforeCheckout'],
+                            [$class: 'CloneOption', reference: ref_cache]],
+                        userRemoteConfigs: [[url: "${gitConfig.getUrl()}"]]
+                    ]
+                }
             }
         }
         if (params.TEST_FLAG == "OpenJCEPlus") {
