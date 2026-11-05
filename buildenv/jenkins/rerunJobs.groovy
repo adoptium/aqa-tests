@@ -129,9 +129,16 @@ timestamps {
         return
     }
 
-    echo "=== rerunJobs: inspecting last build of '${jobName}'" +
+    echo "=== rerunJobs: inspecting recent builds of '${jobName}'" +
          (scmReference ? " (SCM_REFERENCE='${scmReference}')" : '') + " ==="
 
+    // --- Fetch last build info via Jenkins REST API ---
+    def buildInfo = getLastBuildInfo(jobName, jenkinsCredId)
+    if (!buildInfo) {
+        echo "Job '${jobName}' not found or has no builds. No rerun triggered."
+        currentBuild.result = 'FAILURE'
+        return
+    }
 
     // --- Optional SCM_REFERENCE filter check against CUSTOMIZED_SDK_URL ---
     // If the last build does not match, look back through up to
@@ -207,6 +214,17 @@ timestamps {
 // ---------------------------------------------------------------------------
 // Jenkins REST API helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Fetch the last build JSON for a job via the Jenkins REST API using curl.
+ * Returns the parsed JSON map, or null if the job/build does not exist.
+ * Folder-style job names (with '/') are converted to /job/A/job/B paths.
+ */
+def getLastBuildInfo(String jobName, String credentialsId = '') {
+    def jobPath = jobName.split('/').join('/job/')
+    def apiUrl  = "${env.JENKINS_URL}job/${jobPath}/lastBuild/api/json?tree=number,building,result,description,actions%5Bparameters%5Bname,value%5D%5D"
+    return fetchBuildJson(apiUrl, "last build of '${jobName}'", credentialsId)
+}
 
 /**
  * Fetch a specific build's JSON for a job. Returns null if the build does not exist
