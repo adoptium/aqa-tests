@@ -13,10 +13,14 @@
  *   JOB_NAME                  (required) Full Jenkins job name to inspect.
  *                             If the job does not exist, no rerun is triggered
  *                             and a message is logged.
- *   SCM_REFERENCE              (optional) When non-empty, checks that the last
- *                             build's CUSTOMIZED_SDK_URL parameter contains this
- *                             substring; if it does not match, no rerun is
- *                             triggered and a message is logged.
+ *   SCM_REFERENCE              (optional) When non-empty, looks for a build whose
+ *                             CUSTOMIZED_SDK_URL parameter contains this substring
+ *                             immediately followed by '.tar.gz' or '.zip'
+ *                             (e.g. 8u512b09 does not match ..._8u512b09-ea.tar.gz).
+ *                             The last build is checked first; if it does not match,
+ *                             up to 4 earlier builds are checked (5 in total) and the
+ *                             first match is the one rerun. If none match, no rerun
+ *                             is triggered and a message is logged.
  *                             When empty, the check is skipped entirely.
  *   ADOPTOPENJDK_REPO          (optional) Repository override for the rerun.
  *   ADOPTOPENJDK_BRANCH        (optional) Branch override for the rerun.
@@ -44,9 +48,9 @@
  * Pre-conditions (all checked before any rerun is triggered — local mode only)
  * ----------------------------------------------------------------------------
  *   • Job does not exist          → FAILURE, log and stop.
- *   • Last build is still running → FAILURE, log and stop.
- *   • SCM_REFERENCE set but does not match CUSTOMIZED_SDK_URL → FAILURE, log and stop.
- *   • Last build result is SUCCESS → SUCCESS, log "passed, no rerun needed" and stop.
+ *   • SCM_REFERENCE set but none of the last 5 builds match CUSTOMIZED_SDK_URL → FAILURE, log and stop.
+ *   • Selected build (last build, or first SCM_REFERENCE match) is still running → FAILURE, log and stop.
+ *   • Selected build result is SUCCESS → SUCCESS, log "passed, no rerun needed" and stop.
  *
  * Rerun rules
  * ----------------------------------------------------------------------------------
@@ -74,6 +78,8 @@
  */
 
 timestamps {
+
+    final int MAX_BUILDS_TO_CHECK = 5
 
     def jobName            = params.JOB_NAME?.trim()
     def scmReference       = params.SCM_REFERENCE?.trim() ?: ''
@@ -123,7 +129,7 @@ timestamps {
         return
     }
 
-    echo "=== rerunJobs: inspecting last build of '${jobName}'" +
+    echo "=== rerunJobs: inspecting recent builds of '${jobName}'" +
          (scmReference ? " (SCM_REFERENCE='${scmReference}')" : '') + " ==="
 
     // --- Fetch last build info via Jenkins REST API ---
@@ -134,22 +140,10 @@ timestamps {
         return
     }
 
-    def buildNum = buildInfo.number as int
-    def building = buildInfo.building as boolean
-    def result   = buildInfo.result ?: 'UNKNOWN'
-
-    // --- Check if still running ---
-    if (building) {
-        echo "Last build #${buildNum} of '${jobName}' is still running. No rerun triggered."
-        currentBuild.result = 'FAILURE'
-        return
-    }
-
-    echo "Last build: #${buildNum}, result: ${result}"
-
     // --- Optional SCM_REFERENCE filter check against CUSTOMIZED_SDK_URL ---
+    // If the last build does not match, look back through up to
+    // MAX_BUILDS_TO_CHECK builds in total (including the last) and use the first match.
     if (scmReference) {
-        def sdkUrl = getBuildParamFromInfo(buildInfo, 'CUSTOMIZED_SDK_URL') ?: ''
         // Normalise scmReference to match the artifact filename convention:
         //   '+' → '_'  (e.g. 26.0.2.1+1 → 26.0.2.1_1)
         //   leading '8u…' form: remove '-'  (e.g. 8u482-b08 → 8u482b08)
@@ -157,17 +151,47 @@ timestamps {
         if (normalizedRef.startsWith('8u')) {
             normalizedRef = normalizedRef.replace('-', '')
         }
-        if (!sdkUrl.contains(normalizedRef)) {
-            echo "CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}'). No rerun triggered."
+        def lastNum = buildInfo.number as int
+        def matched = null
+        for (int i = 0; i < MAX_BUILDS_TO_CHECK && (lastNum - i) >= 1; i++) {
+            def candidate = (i == 0) ? buildInfo : getBuildInfo(jobName, lastNum - i, jenkinsCredId)
+            if (!candidate) {
+                continue
+            }
+            def sdkUrl = getBuildParamFromInfo(candidate, 'CUSTOMIZED_SDK_URL') ?: ''
+            // Require the ref to be followed by the archive extension so that e.g.
+            // 8u512b09 does not match ..._8u512b09-ea.tar.gz
+            if (sdkUrl.contains(normalizedRef + '.tar.gz') || sdkUrl.contains(normalizedRef + '.zip')) {
+                matched = candidate
+                break
+            }
+            echo "Build #${lastNum - i} CUSTOMIZED_SDK_URL ('${sdkUrl}') does not contain SCM_REFERENCE '${scmReference}' followed by .tar.gz or .zip (normalized: '${normalizedRef}')."
+        }
+        if (!matched) {
+            echo "None of the last ${MAX_BUILDS_TO_CHECK} builds of '${jobName}' match SCM_REFERENCE '${scmReference}'. No rerun triggered."
             currentBuild.result = 'FAILURE'
             return
         }
-        echo "CUSTOMIZED_SDK_URL matches SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}') — proceeding."
+        buildInfo = matched
+        echo "Build #${buildInfo.number} CUSTOMIZED_SDK_URL matches SCM_REFERENCE '${scmReference}' (normalized: '${normalizedRef}') — proceeding."
     }
+
+    def buildNum = buildInfo.number as int
+    def building = buildInfo.building as boolean
+    def result   = buildInfo.result ?: 'UNKNOWN'
+
+    // --- Check if still running ---
+    if (building) {
+        echo "Build #${buildNum} of '${jobName}' is still running. No rerun triggered."
+        currentBuild.result = 'FAILURE'
+        return
+    }
+
+    echo "Selected build: #${buildNum}, result: ${result}"
 
     // --- Check result ---
     if (result == 'SUCCESS') {
-        echo "Last build #${buildNum} passed. No rerun needed."
+        echo "Build #${buildNum} passed. No rerun needed."
         currentBuild.result = 'SUCCESS'
         return
     }
@@ -200,6 +224,16 @@ def getLastBuildInfo(String jobName, String credentialsId = '') {
     def jobPath = jobName.split('/').join('/job/')
     def apiUrl  = "${env.JENKINS_URL}job/${jobPath}/lastBuild/api/json?tree=number,building,result,description,actions%5Bparameters%5Bname,value%5D%5D"
     return fetchBuildJson(apiUrl, "last build of '${jobName}'", credentialsId)
+}
+
+/**
+ * Fetch a specific build's JSON for a job. Returns null if the build does not exist
+ * (e.g. it was deleted).
+ */
+def getBuildInfo(String jobName, int buildNumber, String credentialsId = '') {
+    def jobPath = jobName.split('/').join('/job/')
+    def apiUrl  = "${env.JENKINS_URL}job/${jobPath}/${buildNumber}/api/json?tree=number,building,result,description,actions%5Bparameters%5Bname,value%5D%5D"
+    return fetchBuildJson(apiUrl, "build #${buildNumber} of '${jobName}'", credentialsId)
 }
 
 /**
