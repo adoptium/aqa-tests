@@ -146,7 +146,7 @@ ifneq ($(filter eclipse temurin, $(JDK_VENDOR)),)
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
-# If on Windows, never try to use wsl as our wsl setups are not set up for testing.
+# If on Windows, never try to use wsl as it is not set up for testing.
 ifeq ($(CYGWIN),1)
 	JTREG_CYGWIN_LOCK := -cygwin
 endif
