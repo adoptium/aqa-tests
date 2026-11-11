@@ -146,6 +146,12 @@ ifneq ($(filter eclipse temurin, $(JDK_VENDOR)),)
 endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
 
+# If on Windows, never try to use wsl as it is not set up for testing.
+ifeq ($(CYGWIN),1)
+	JTREG_CYGWIN_LOCK := -cygwin
+endif
+JTREG_BASIC_OPTIONS += $(JTREG_CYGWIN_LOCK)
+
 # set JTREG_BASIC_OPTIONS value into a new parameter before adding EXTRA_JTREG_OPTIONS
 JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS := $(JTREG_BASIC_OPTIONS)
 JTREG_BASIC_OPTIONS += $(EXTRA_JTREG_OPTIONS)
