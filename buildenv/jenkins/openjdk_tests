@@ -741,14 +741,14 @@ def terminateLeftoverTestProcesses(String repoUrl, String branch) {
             def ref = resolveParamRefs(branch).replaceFirst('^\\*/', '')
             echo "${scriptPath} is missing from the dirty workspace, fetching a copy from ${resolvedRepo} ${ref}"
             def tmpDir = pwd(tmp: true).replace('\\', '/') + '/terminateTestProcesses'
-            def fetchRc = sh(script: "mkdir -p ${shQuote(tmpDir)} && cd ${shQuote(tmpDir)} && git init -q . && git fetch -q --depth 1 ${shQuote(resolvedRepo)} ${shQuote(ref)} && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)
+            def fetchRc = timeout(time: 1, unit: 'HOURS') { sh(script: "mkdir -p ${shQuote(tmpDir)} && cd ${shQuote(tmpDir)} && git init -q . && git fetch -q --depth 1 ${shQuote(resolvedRepo)} ${shQuote(ref)} && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)}
             if (fetchRc != 0) {
                 echo "rc = ${fetchRc}, Unable to fetch terminateTestProcesses.sh, skip terminating processes."
                 return
             }
             scriptPath = "${tmpDir}/terminateTestProcesses.sh"
         }
-        def statusCode = sh(script: "sh '${scriptPath}' ${env.USER} 2>&1", returnStatus: true)
+        def statusCode = sh(script: "sh ${shQuote(scriptPath)} ${env.USER} 2>&1", returnStatus: true)
         if (statusCode != 0) {
             echo "rc = ${statusCode}, Unable to terminate all processes."
         }
