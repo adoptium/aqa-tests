@@ -731,6 +731,10 @@ def terminateLeftoverTestProcesses() {
             }
         }
     } catch (Exception e) {
+        // Do not swallow build aborts; let runTest() handle the interruption and stop
+        if (e.toString().contains("FlowInterruptedException")) {
+            throw e
+        }
         echo 'Exception: ' + e.toString()
     }
 }
