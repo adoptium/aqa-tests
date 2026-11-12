@@ -554,6 +554,7 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                terminateLeftoverTestProcesses(SCM_GIT_REPO_VAL, SCM_GIT_BRANCH)
                 timeout(time: 1, unit: 'HOURS') {
                     forceCleanWS()
                 }
@@ -570,6 +571,7 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
+                terminateLeftoverTestProcesses(gitConfig.getUrl(), scm.branches[0].name)
                 timeout(time: 1, unit: 'HOURS') {
                     forceCleanWS()
                 }
@@ -716,6 +718,63 @@ def checkErrors(errorList) {
 }
 
 
+// Terminate leftover test processes from a previous run that may hold locks on workspace files
+// (e.g. on Windows) before cleaning the workspace.
+// Only does work when the workspace is dirty (aqa-tests dir exists); a clean workspace has nothing left behind.
+// A failed cleanWs can delete aqa-tests/terminateTestProcesses.sh while leaving a locked TKG/output_*
+// subtree and its owning process behind, so a missing script does not mean no processes remain.
+// In that case fetch a trusted copy of the script from the repo/branch being tested into the
+// workspace's tmp dir (<workspace>@tmp, which cleanWs does not touch) and run that copy instead.
+def terminateLeftoverTestProcesses(String repoUrl, String branch) {
+    try {
+        if (!fileExists('aqa-tests') && !fileExists('jdkbinary')) {
+            return
+        }
+        echo "PROCESSCATCH: Terminating any hung/left over test processes before cleaning workspace:"
+        def scriptPath = 'aqa-tests/terminateTestProcesses.sh'
+        if (!fileExists(scriptPath)) {
+            // The job template configures the scm url/branch as build parameter references
+            // (e.g. ${ADOPTOPENJDK_REPO}/${ADOPTOPENJDK_BRANCH}); the scm object returns them unexpanded,
+            // so resolve them before passing to git. Do this before normalizing the branch.
+            def resolvedRepo = resolveParamRefs(repoUrl)
+            // scm branch can be "*/master"; git fetch needs "master"
+            def ref = resolveParamRefs(branch).replaceFirst('^\\*/', '')
+            echo "${scriptPath} is missing from the dirty workspace, fetching a copy from ${resolvedRepo} ${ref}"
+            def tmpDir = pwd(tmp: true).replace('\\', '/') + '/terminateTestProcesses'
+            def fetchRc = timeout(time: 1, unit: 'HOURS') { sh(script: "mkdir -p ${shQuote(tmpDir)} && cd ${shQuote(tmpDir)} && git init -q . && git fetch -q --depth 1 ${shQuote(resolvedRepo)} ${shQuote(ref)} && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)}
+            if (fetchRc != 0) {
+                echo "rc = ${fetchRc}, Unable to fetch terminateTestProcesses.sh, skip terminating processes."
+                return
+            }
+            scriptPath = "${tmpDir}/terminateTestProcesses.sh"
+        }
+        def statusCode = sh(script: "sh ${shQuote(scriptPath)} ${env.USER} 2>&1", returnStatus: true)
+        if (statusCode != 0) {
+            echo "rc = ${statusCode}, Unable to terminate all processes."
+        }
+    } catch (Exception e) {
+        // Do not swallow build aborts; let runTest() handle the interruption and stop
+        if (e.toString().contains("FlowInterruptedException")) {
+            throw e
+        }
+        echo 'Exception: ' + e.toString()
+    }
+}
+
+// Expand ${PARAM} references in value using the build parameters
+def resolveParamRefs(String value) {
+    def resolved = value
+    params.each { k, v ->
+        resolved = resolved.replace('${' + k + '}', v == null ? '' : v.toString())
+    }
+    return resolved
+}
+
+// Single-quote a value for safe use as one shell argument
+def shQuote(String value) {
+    return "'" + value.replace("'", "'\\''") + "'"
+}
+
 def forceCleanWS() {
     def retry_count = 0
     def max_retries = 3
@@ -733,7 +792,7 @@ def forceCleanWS() {
             //cleanWs has issue to delete workspace that contains non-ASCII filename in TKG output https://issues.jenkins.io/browse/JENKINS-33478
             //cannot delete workspace directly. Otherwise, Jenkins job will abort due to missing workspace
             dir (env.WORKSPACE) {
-                echo "Force clean Workspace at ${pwd()}"
+                echo "Force clean Workspace at ${env.WORKSPACE}"
                 sh "rm -rf aqa-tests/TKG"
             }
             // call cleanWs() again
