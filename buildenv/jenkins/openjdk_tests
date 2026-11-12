@@ -554,7 +554,7 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
-                terminateLeftoverTestProcesses()
+                terminateLeftoverTestProcesses(SCM_GIT_REPO_VAL, SCM_GIT_BRANCH)
                 timeout(time: 1, unit: 'HOURS') {
                     forceCleanWS()
                 }
@@ -571,7 +571,7 @@ def runTest() {
                     sleep(sleep_time)
                 }
                 retry_count++
-                terminateLeftoverTestProcesses()
+                terminateLeftoverTestProcesses(gitConfig.getUrl(), scm.branches[0].name)
                 timeout(time: 1, unit: 'HOURS') {
                     forceCleanWS()
                 }
@@ -719,16 +719,34 @@ def checkErrors(errorList) {
 
 
 // Terminate leftover test processes from a previous run that may hold locks on workspace files
-// (e.g. on Windows) before cleaning the workspace. The script is only available if a previous
-// run left aqa-tests in the workspace; otherwise there is nothing to terminate.
-def terminateLeftoverTestProcesses() {
+// (e.g. on Windows) before cleaning the workspace.
+// Only does work when the workspace is dirty (aqa-tests dir exists); a clean workspace has nothing left behind.
+// A failed cleanWs can delete aqa-tests/terminateTestProcesses.sh while leaving a locked TKG/output_*
+// subtree and its owning process behind, so a missing script does not mean no processes remain.
+// In that case fetch a trusted copy of the script from the repo/branch being tested into the
+// workspace's tmp dir (<workspace>@tmp, which cleanWs does not touch) and run that copy instead.
+def terminateLeftoverTestProcesses(String repoUrl, String branch) {
     try {
-        if (fileExists('aqa-tests/terminateTestProcesses.sh')) {
-            echo "PROCESSCATCH: Terminating any hung/left over test processes before cleaning workspace:"
-            def statusCode = sh(script: "aqa-tests/terminateTestProcesses.sh ${env.USER} 2>&1", returnStatus: true)
-            if (statusCode != 0) {
-                echo "rc = ${statusCode}, Unable to terminate all processes."
+        if (!fileExists('aqa-tests')) {
+            return
+        }
+        echo "PROCESSCATCH: Terminating any hung/left over test processes before cleaning workspace:"
+        def scriptPath = 'aqa-tests/terminateTestProcesses.sh'
+        if (!fileExists(scriptPath)) {
+            echo "${scriptPath} is missing from the dirty workspace, fetching a copy from ${repoUrl} ${branch}"
+            // scm branch can be "*/master"; git fetch needs "master"
+            def ref = branch.replaceFirst('^\\*/', '')
+            def tmpDir = pwd(tmp: true).replace('\\', '/') + '/terminateTestProcesses'
+            def fetchRc = sh(script: "mkdir -p '${tmpDir}' && cd '${tmpDir}' && git init -q . && git fetch -q --depth 1 '${repoUrl}' '${ref}' && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)
+            if (fetchRc != 0) {
+                echo "rc = ${fetchRc}, Unable to fetch terminateTestProcesses.sh, skip terminating processes."
+                return
             }
+            scriptPath = "${tmpDir}/terminateTestProcesses.sh"
+        }
+        def statusCode = sh(script: "sh '${scriptPath}' ${env.USER} 2>&1", returnStatus: true)
+        if (statusCode != 0) {
+            echo "rc = ${statusCode}, Unable to terminate all processes."
         }
     } catch (Exception e) {
         // Do not swallow build aborts; let runTest() handle the interruption and stop
