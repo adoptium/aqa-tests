@@ -727,17 +727,21 @@ def checkErrors(errorList) {
 // workspace's tmp dir (<workspace>@tmp, which cleanWs does not touch) and run that copy instead.
 def terminateLeftoverTestProcesses(String repoUrl, String branch) {
     try {
-        if (!fileExists('aqa-tests')) {
+        if (!fileExists('aqa-tests') && !fileExists('jdkbinary')) {
             return
         }
         echo "PROCESSCATCH: Terminating any hung/left over test processes before cleaning workspace:"
         def scriptPath = 'aqa-tests/terminateTestProcesses.sh'
         if (!fileExists(scriptPath)) {
-            echo "${scriptPath} is missing from the dirty workspace, fetching a copy from ${repoUrl} ${branch}"
+            // The job template configures the scm url/branch as build parameter references
+            // (e.g. ${ADOPTOPENJDK_REPO}/${ADOPTOPENJDK_BRANCH}); the scm object returns them unexpanded,
+            // so resolve them before passing to git. Do this before normalizing the branch.
+            def resolvedRepo = resolveParamRefs(repoUrl)
             // scm branch can be "*/master"; git fetch needs "master"
-            def ref = branch.replaceFirst('^\\*/', '')
+            def ref = resolveParamRefs(branch).replaceFirst('^\\*/', '')
+            echo "${scriptPath} is missing from the dirty workspace, fetching a copy from ${resolvedRepo} ${ref}"
             def tmpDir = pwd(tmp: true).replace('\\', '/') + '/terminateTestProcesses'
-            def fetchRc = sh(script: "mkdir -p '${tmpDir}' && cd '${tmpDir}' && git init -q . && git fetch -q --depth 1 '${repoUrl}' '${ref}' && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)
+            def fetchRc = sh(script: "mkdir -p ${shQuote(tmpDir)} && cd ${shQuote(tmpDir)} && git init -q . && git fetch -q --depth 1 ${shQuote(resolvedRepo)} ${shQuote(ref)} && git show FETCH_HEAD:terminateTestProcesses.sh > terminateTestProcesses.sh", returnStatus: true)
             if (fetchRc != 0) {
                 echo "rc = ${fetchRc}, Unable to fetch terminateTestProcesses.sh, skip terminating processes."
                 return
@@ -755,6 +759,20 @@ def terminateLeftoverTestProcesses(String repoUrl, String branch) {
         }
         echo 'Exception: ' + e.toString()
     }
+}
+
+// Expand ${PARAM} references in value using the build parameters
+def resolveParamRefs(String value) {
+    def resolved = value
+    params.each { k, v ->
+        resolved = resolved.replace('${' + k + '}', v == null ? '' : v.toString())
+    }
+    return resolved
+}
+
+// Single-quote a value for safe use as one shell argument
+def shQuote(String value) {
+    return "'" + value.replace("'", "'\\''") + "'"
 }
 
 def forceCleanWS() {
