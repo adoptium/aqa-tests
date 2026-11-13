@@ -1117,7 +1117,9 @@ def post(output_name) {
 		if (displayStatus == 'SUCCESS' && (env.ITER_COUNT ?: '0').toInteger() == 0) {
 			displayStatus = 'NOT_RUN'
 		}
-		currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus, env.jobStatus)}<br/><br/>" + (currentBuild.description ?: "")
+		// Leaf job: show test status only. post() runs before later infra events (cleanWs, abort), so a
+		// JENKINS JOB STATUS badge written here could not be kept correct; Jenkins shows the job result itself.
+		currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus)}<br/><br/>" + (currentBuild.description ?: "")
 		echo "TEST EXECUTE STATUS: ${displayStatus} (job status: ${env.jobStatus})"
 
 		if (env.DISPLAY != null) {
@@ -2002,6 +2004,9 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED' ]
 	def testIdx = severityOrder.indexOf(testStatus)
 	def jobIdx  = severityOrder.indexOf(jobStatus)
+	// Only parent jobs (archiveChildJobTap) write a JENKINS JOB STATUS badge. Keep it in sync when
+	// the header already has one; leaf jobs show test status only, so don't add one here.
+	def badgeJobStatus = currentBuild.description?.contains('JENKINS JOB STATUS:') ? jobStatus : null
 
 	if (testsRanMeaningfully && jobIdx > testIdx) {
 		// Case A: tests ran, infra degraded the job — show summary badge and inline warning.
@@ -2009,18 +2014,18 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue."
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
-		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, jobStatus)}${warning}")
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, badgeJobStatus)}${warning}")
 	} else if (testsRanMeaningfully) {
-		// Case A (no degradation): keep the JENKINS JOB STATUS badge in sync with the final job status,
-		// which may have changed after the header was first written (e.g. after a rerun).
-		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, jobStatus)}")
+		// Case A (no degradation): keep the parent's JENKINS JOB STATUS badge in sync with the final
+		// job status, which may have changed after the header was first written (e.g. after a rerun).
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, badgeJobStatus)}")
 	} else {
 		// Case B: tests never ran meaningfully — update testStatus to match jobStatus,
 		// rewrite description badges to show the actual job outcome, no warning needed.
 		if (env.testStatus == testStatus) {
 			env.testStatus = jobStatus
 		}
-		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus, jobStatus)}")
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus, badgeJobStatus)}")
 		echo "TEST EXECUTE STATUS: updated to ${jobStatus} (tests did not run meaningfully)"
 	}
 }
