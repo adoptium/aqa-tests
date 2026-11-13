@@ -52,8 +52,13 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
-		env.testStatus = 'UNSTABLE'
-		env.jobStatus = 'UNSTABLE'
+		// Only move from a non-failing state so an earlier FAILURE/ABORTED is never downgraded to UNSTABLE.
+		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN') {
+			env.testStatus = 'UNSTABLE'
+		}
+		if (env.jobStatus == 'SUCCESS') {
+			env.jobStatus = 'UNSTABLE'
+		}
 	} finally {
 		sh "$tearDownCmd"
 	}
@@ -144,7 +149,7 @@ def setupEnv() {
 	env.PARALLEL = env.PARALLEL ? params.PARALLEL : "None"
 	env.LIGHT_WEIGHT_CHECKOUT = (params.LIGHT_WEIGHT_CHECKOUT == false) ? params.LIGHT_WEIGHT_CHECKOUT : true
 	env.GENERATE_JOBS = params.GENERATE_JOBS ?: false
-	env.testStatus = 'NO_RUN'
+	env.testStatus = 'NOT_RUN'
 	env.jobStatus = 'SUCCESS'
 
 	if (JOB_NAME.contains("Grinder")) {
@@ -922,7 +927,7 @@ def runTest( ) {
 		}
 		// Check if any iterations ran and accumulated results
 		if (env.ITER_COUNT.toInteger() == 0) {
-			env.testStatus = 'NO_RUN'
+			env.testStatus = 'NOT_RUN'
 			env.jobStatus = 'FAILURE'
 			echo 'Could not find test result, set build result to FAILURE.'
 			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
@@ -994,8 +999,13 @@ def checkTestResults(results) {
 	}
 
 	if (results["FAILED"] != 0) {
-		env.testStatus = 'UNSTABLE'
-		env.jobStatus = 'UNSTABLE'
+		// Only move from a non-failing state so an earlier FAILURE (e.g. TOTAL == 0 in a previous iteration) is retained.
+		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN') {
+			env.testStatus = 'UNSTABLE'
+		}
+		if (env.jobStatus == 'SUCCESS') {
+			env.jobStatus = 'UNSTABLE'
+		}
 		echo 'There were test failures, current build status is UNSTABLE.'
 	}
 	
@@ -1715,7 +1725,7 @@ def generateJob (newJobs, childTest, testJobName) {
  * - rerun due to failed test(s) - RERUN_ITERATIONS > 0 and list of failed test target(s) (i.e., env.FAILED_TESTS cannot be empty)
  * - rerun due to test job in FAILURE state - RERUN_FAILURE is true and rerunTestJobParams cannot be empty
  * If the JOB_NAME contains _rerun, _testList_ or _iteration_, rerun job will not be triggered at the same level.
- * originalStatus must be env.testStatus (test-only outcome). currentBuild.result is set to env.jobStatus
+ * originalTestStatus must be env.testStatus (test-only outcome); originalJobStatus must be env.jobStatus. currentBuild.result is set to the job status
  * (worst of test + infra) so that infrastructure failures are visible but rerun decisions are driven
  * purely by test outcomes.
 */
@@ -1866,7 +1876,7 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 					def childTestResult = (rawChildTestResult && rawChildTestResult != 'null') ? rawChildTestResult : 'NOT_RUN'
 					echo "${name} #${buildId} completed with job status ${childJobResult}, test status ${childTestResult}"
 					// track FAILURE job childTestJobParams if its test outcome was FAILURE (not just infra)
-					if ( originalStatus == "SUCCESS" && childTestResult == "NOT_RUN" ) {
+					if ( originalTestStatus == "SUCCESS" && childTestResult == "NOT_RUN" ) {
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
 					if (isWorseThan( childJobResult, currentJobStatus)) {
@@ -1896,7 +1906,7 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 						duration = "${hours}h ${minutes}m ${seconds}s"
 					}
 					def testBadgeUrl = getTestStatusBadgeUrl(childTestResult)
-					def infraNote = isWorseThan(childJobResult, childTestResult) ? "<br/><font color='grey'><small>⚠ job degraded to ${childResult}</small></font>" : ""
+					def infraNote = isWorseThan(childJobResult, childTestResult) ? "<br/><font color='grey'><small>⚠ job degraded to ${childJobResult}</small></font>" : ""
 					childJobStatus += """
 							<tr>
 								<td>${name}/${buildId}</td>
@@ -1919,16 +1929,16 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			env.testStatus = currentTestStatus
 
 			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised.
-			// Do NOT pass currentStatus here — annotateInfraFailure() is the single source for the
+			// Do NOT pass currentJobStatus here — annotateInfraFailure() is the single source for the
 			// inline ⚠ warning, called below after jobStatus is assigned. Passing it here would cause
 			// a duplicate warning because annotateInfraFailure() patches the same line.
 			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
-			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentStatus})"
-			env.jobStatus = currentStatus
+			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentJobStatus})"
+			env.jobStatus = currentJobStatus
 			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {
-					if ( originalStatus == "SUCCESS" ) {
+					if ( originalTestStatus == "SUCCESS" ) {
 						getFailedAndCustomizedTest(buildPaths[0..-2])
 					} else {
 						addFailedTestsGrinderLink(buildPaths[0..-2])
