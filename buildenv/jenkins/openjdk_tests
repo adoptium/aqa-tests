@@ -663,8 +663,8 @@ def runTest() {
         if (env.testStatus && !(currentBuild.description?.contains('TEST EXECUTE STATUS:'))) {
             try {
                 def desc = (jenkinsfile != null)
-                    ? jenkinsfile.getTestStatusDescription(env.testStatus)
-                    : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>"
+                    ? jenkinsfile.getTestStatusDescription(env.testStatus, env.jobStatus)
+                    : "<font color='grey'><big><b>— ${env.testStatus}</b></big></font>&nbsp;&nbsp;&nbsp;JENKINS JOB STATUS: <font color='grey'><big><b>— ${env.jobStatus}</b></big></font>"
                 currentBuild.description = "TEST EXECUTE STATUS: ${desc}<br/><br/>" + (currentBuild.description ?: "")
                 println("TEST EXECUTE STATUS: ${env.testStatus} (job status: ${env.jobStatus})")
             } catch (Exception descEx) {

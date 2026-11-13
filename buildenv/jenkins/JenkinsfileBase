@@ -1066,9 +1066,9 @@ def getTestStatusLabel(status) {
 	return "<font color='${s.color}'><big><b>${s.icon} ${s.label}</b></big></font>"
 }
 
-// Returns a badge URL for test-only status using the embeddable-build-status
-// pill style (tests|passing), matching the style used in aqaTestPipeline.
-def getTestStatusBadgeUrl(status) {
+// Returns an embeddable-build-status pill badge URL (subject|status), matching the style
+// used in aqaTestPipeline.
+def getStatusBadgeUrl(subject, status) {
 	def statusMap = [
 		'SUCCESS'  : [text: 'passing',  color: 'brightgreen'],
 		'UNSTABLE' : [text: 'unstable', color: 'yellow'],
@@ -1077,16 +1077,26 @@ def getTestStatusBadgeUrl(status) {
 		'NOT_RUN': [text: 'not_run',  color: 'lightgrey'],
 	]
 	def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']
-	return "${env.JENKINS_URL}buildStatus/icon?subject=tests&status=${entry.text}&color=${entry.color}"
+	return "${env.JENKINS_URL}buildStatus/icon?subject=${subject}&status=${entry.text}&color=${entry.color}"
 }
 
-// Returns the TEST EXECUTE STATUS line for currentBuild.description: the pill badge image,
-// optionally followed by an infra-degradation warning when jobStatus is worse than testStatus.
+// Test-only status badge (tests|passing).
+def getTestStatusBadgeUrl(status) {
+	return getStatusBadgeUrl('tests', status)
+}
+
+// Jenkins job status badge (build|passing); same label as the build badge in aqaTestPipeline.
+def getJobStatusBadgeUrl(status) {
+	return getStatusBadgeUrl('build', status)
+}
+
+// Returns the status header content for currentBuild.description: the TEST EXECUTE STATUS pill
+// badge, followed by the JENKINS JOB STATUS pill badge when jobStatus is given.
+// The infra-degradation warning is NOT added here; annotateInfraFailure() is its only source.
 def getTestStatusDescription(status, jobStatus = null) {
-	def badgeUrl = getTestStatusBadgeUrl(status)
-	def html = "<img src='${badgeUrl}' />"
-	if (jobStatus && isWorseThan(jobStatus, status)) {
-		html += " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
+	def html = "<img src='${getTestStatusBadgeUrl(status)}' />"
+	if (jobStatus) {
+		html += "&nbsp;&nbsp;&nbsp;JENKINS JOB STATUS: <img src='${getJobStatusBadgeUrl(jobStatus)}' />"
 	}
 	return html
 }
@@ -1103,7 +1113,7 @@ def post(output_name) {
 		if (displayStatus == 'SUCCESS' && (env.ITER_COUNT ?: '0').toInteger() == 0) {
 			displayStatus = 'NOT_RUN'
 		}
-		currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus)}<br/><br/>" + (currentBuild.description ?: "")
+		currentBuild.description = "TEST EXECUTE STATUS: ${getTestStatusDescription(displayStatus, env.jobStatus)}<br/><br/>" + (currentBuild.description ?: "")
 		echo "TEST EXECUTE STATUS: ${displayStatus} (job status: ${env.jobStatus})"
 
 		if (env.DISPLAY != null) {
@@ -1928,11 +1938,11 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			archiveAQAvitFiles()
 			env.testStatus = currentTestStatus
 
-			// Prepend TEST EXECUTE STATUS at the top of the parent description, now that currentTestStatus is finalised.
-			// Do NOT pass currentJobStatus here — annotateInfraFailure() is the single source for the
-			// inline ⚠ warning, called below after jobStatus is assigned. Passing it here would cause
-			// a duplicate warning because annotateInfraFailure() patches the same line.
-			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus)}<br/><br/>"
+			// Prepend TEST EXECUTE STATUS and JENKINS JOB STATUS at the top of the parent description,
+			// now that currentTestStatus and currentJobStatus are finalised.
+			// getTestStatusDescription() does not add the inline ⚠ warning; annotateInfraFailure()
+			// is the single source for it and rewrites this same line.
+			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentJobStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
 			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentJobStatus})"
 			env.jobStatus = currentJobStatus
@@ -1995,14 +2005,18 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 		appendSummaryText(summary, "TEST EXECUTE STATUS: ${getTestStatusLabel(testStatus)} (job status degraded to <b>${jobStatus}</b> due to infrastructure issue)")
 		echo "TEST EXECUTE STATUS: ${testStatus} — job status degraded to ${jobStatus} due to an infrastructure issue."
 		def warning = " <font color='grey'><b>⚠ job degraded to ${jobStatus}</b></font>"
-		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus)}${warning}")
-	} else if (!testsRanMeaningfully) {
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, jobStatus)}${warning}")
+	} else if (testsRanMeaningfully) {
+		// Case A (no degradation): keep the JENKINS JOB STATUS badge in sync with the final job status,
+		// which may have changed after the header was first written (e.g. after a rerun).
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(testStatus, jobStatus)}")
+	} else {
 		// Case B: tests never ran meaningfully — update testStatus to match jobStatus,
-		// rewrite description badge to show the actual job outcome, no warning needed.
+		// rewrite description badges to show the actual job outcome, no warning needed.
 		if (env.testStatus == testStatus) {
 			env.testStatus = jobStatus
 		}
-		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus)}")
+		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus, jobStatus)}")
 		echo "TEST EXECUTE STATUS: updated to ${jobStatus} (tests did not run meaningfully)"
 	}
 }
