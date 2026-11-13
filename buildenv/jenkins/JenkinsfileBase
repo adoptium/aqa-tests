@@ -1007,6 +1007,10 @@ def checkTestResults(results) {
 			env.jobStatus = 'UNSTABLE'
 		}
 		echo 'There were test failures, current build status is UNSTABLE.'
+	} else if (env.testStatus == 'NOT_RUN') {
+		// Tests ran (TOTAL > 0) and none failed. testStatus starts as NOT_RUN, so promote it here;
+		// only from NOT_RUN so an earlier FAILURE/UNSTABLE is never overwritten.
+		env.testStatus = 'SUCCESS'
 	}
 	
 	// Summary writing is deferred to writeSummary() after all iterations complete
