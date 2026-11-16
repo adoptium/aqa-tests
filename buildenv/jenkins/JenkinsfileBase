@@ -929,7 +929,7 @@ def runTest( ) {
 		if (env.ITER_COUNT.toInteger() == 0) {
 			env.testStatus = 'NOT_RUN'
 			env.jobStatus = 'FAILURE'
-			echo 'Could not find test result, set build result to FAILURE.'
+			echo 'Could not find test result, set test result to FAILURE.'
 			def summary = createBadgeSummary("symbol-close-circle-outline plugin-ionicons-api")
 			appendSummaryText(summary,"TEST BUILD FAILURE!")
 		} 
