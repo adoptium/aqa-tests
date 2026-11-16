@@ -1963,7 +1963,7 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			// is the single source for it and rewrites this same line.
 			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentJobStatus)}<br/><br/>"
 			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
-			echo "TEST EXECUTE STATUS: ${currentTestStatus} (job status: ${currentJobStatus})"
+			echo "TEST EXECUTE STATUS: ${currentTestStatus}"
 			env.jobStatus = currentJobStatus
 			if (currentTestStatus != "SUCCESS") {
 				if ( buildPaths!= "" ) {
@@ -2040,7 +2040,7 @@ def annotateInfraFailure(String testStatus, String jobStatus) {
 			env.testStatus = jobStatus
 		}
 		rewriteTestExecuteStatusHeader("TEST EXECUTE STATUS: ${getTestStatusDescription(jobStatus, badgeJobStatus)}")
-		echo "TEST EXECUTE STATUS: updated to ${jobStatus} (tests did not run meaningfully)"
+		echo "TEST EXECUTE STATUS: ${testStatus} updated to ${jobStatus} (tests did not run meaningfully)"
 	}
 }
 
