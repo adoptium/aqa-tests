@@ -75,6 +75,7 @@ def getTestStatusBadgeUrl(status) {
         'UNSTABLE' : [text: 'unstable', color: 'yellow'],
         'FAILURE'  : [text: 'failing',  color: 'red'],
         'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
+        'RUNNING'  : [text: 'running',  color: 'lightgrey'],
         'NOT_RUN': [text: 'not_run',  color: 'lightgrey'],
     ]
     def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']

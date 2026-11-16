@@ -52,8 +52,13 @@ def makeTest(testParam) {
 			sh "$makeTestCmd"
 		}
 	} catch (err) {
+		// Do not swallow build aborts/timeouts: the tests started but did not finish, so testStatus must stay
+		// RUNNING and be degraded to the job status by annotateInfraFailure(), not reported as UNSTABLE.
+		if (err.toString().contains("FlowInterruptedException")) {
+			throw err
+		}
 		// Only move from a non-failing state so an earlier FAILURE/ABORTED is never downgraded to UNSTABLE.
-		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN') {
+		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN' || env.testStatus == 'RUNNING') {
 			env.testStatus = 'UNSTABLE'
 		}
 		if (env.jobStatus == 'SUCCESS') {
@@ -849,6 +854,12 @@ def runTest( ) {
 				echo "env.DISPLAY is ${env.DISPLAY}"
 			}
 		}
+		// Tests are about to start. RUNNING distinguishes "started but never finished" (e.g. aborted mid-run)
+		// from "never started" (NOT_RUN). If an exception interrupts the run, RUNNING is left behind and
+		// annotateInfraFailure() degrades it to the job status, the same as NOT_RUN. Only move from NOT_RUN.
+		if (env.testStatus == 'NOT_RUN') {
+			env.testStatus = 'RUNNING'
+		}
 		for (int i = 1; i <= ITERATIONS; i++) {
 			echo "ITERATION: ${i}/${ITERATIONS}"
 			if (env.SPEC.contains('linux') && (BUILD_LIST != "external")) {
@@ -1000,16 +1011,16 @@ def checkTestResults(results) {
 
 	if (results["FAILED"] != 0) {
 		// Only move from a non-failing state so an earlier FAILURE (e.g. TOTAL == 0 in a previous iteration) is retained.
-		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN') {
+		if (env.testStatus == 'SUCCESS' || env.testStatus == 'NOT_RUN' || env.testStatus == 'RUNNING') {
 			env.testStatus = 'UNSTABLE'
 		}
 		if (env.jobStatus == 'SUCCESS') {
 			env.jobStatus = 'UNSTABLE'
 		}
 		echo 'There were test failures, current build status is UNSTABLE.'
-	} else if (env.testStatus == 'NOT_RUN') {
-		// Tests ran (TOTAL > 0) and none failed. testStatus starts as NOT_RUN, so promote it here;
-		// only from NOT_RUN so an earlier FAILURE/UNSTABLE is never overwritten.
+	} else if (env.testStatus == 'NOT_RUN' || env.testStatus == 'RUNNING') {
+		// Tests ran (TOTAL > 0) and none failed. testStatus starts as NOT_RUN and is RUNNING while tests
+		// execute, so promote it here; only from those states so an earlier FAILURE/UNSTABLE is never overwritten.
 		env.testStatus = 'SUCCESS'
 	}
 	
@@ -1064,6 +1075,7 @@ def getTestStatusLabel(status) {
 		'UNSTABLE' : [color: '#b8860b', icon: '⚠', label: 'UNSTABLE'],
 		'FAILURE'  : [color: 'red',     icon: '✘', label: 'FAILURE'],
 		'ABORTED'  : [color: 'grey',    icon: '⊘', label: 'ABORTED'],
+		'RUNNING'  : [color: 'grey',    icon: '…', label: 'RUNNING'],
 		'NOT_RUN': [color: 'grey',    icon: '—', label: 'NOT_RUN'],
 	]
 	def s = styleMap[status] ?: [color: 'grey', icon: '?', label: status]
@@ -1078,6 +1090,7 @@ def getStatusBadgeUrl(subject, status) {
 		'UNSTABLE' : [text: 'unstable', color: 'yellow'],
 		'FAILURE'  : [text: 'failing',  color: 'red'],
 		'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
+		'RUNNING'  : [text: 'running',  color: 'lightgrey'],
 		'NOT_RUN': [text: 'not_run',  color: 'lightgrey'],
 	]
 	def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']
@@ -1995,7 +2008,8 @@ def isWorseThan(String resultA, String resultB) {
 //   - Show summary badge + inline "⚠ job degraded to X" warning.
 //   - env.testStatus preserved.
 //
-// Case B — testStatus is FAILURE, ABORTED, or NOT_RUN (tests did not complete usefully):
+// Case B — testStatus is FAILURE, ABORTED, NOT_RUN or RUNNING (tests did not complete usefully;
+//   RUNNING left over here means tests started but an exception, e.g. an abort, interrupted them):
 //   - Tests never produced a meaningful result; jobStatus is the true outcome.
 //   - Rewrite description badge to show jobStatus — no degradation warning needed.
 //   - env.testStatus updated to jobStatus.
