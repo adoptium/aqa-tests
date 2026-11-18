@@ -1893,6 +1893,7 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			def childJobStatus = "<table><tr><th><b>Child Job</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Test Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Job Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Duration</b></th></tr>"
 			def jobList = childJobs.values().toList()
 			sortByProjectName(jobList)
+			def hasFailedChildRerun = jobList.any { it.getProjectName().contains("_testList_") }
 			jobList.each {
 				cjob ->
 					def buildId = cjob.getNumber()
@@ -1904,15 +1905,32 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 					def rawChildTestResult = cjob.getBuildVariables()["testStatus"]
 					def childTestResult = (rawChildTestResult && rawChildTestResult != 'null') ? rawChildTestResult : 'NOT_RUN'
 					echo "${name} #${buildId} completed with job status ${childJobResult}, test status ${childTestResult}"
-					// track FAILURE job childTestJobParams if its test outcome was FAILURE (not just infra)
-					if ( originalTestStatus == "SUCCESS" && childTestResult == "NOT_RUN" ) {
+					// track FAILURE job childTestJobParams: same as upstream, child job result FAILURE (tests FAILURE or never ran)
+					if ( originalTestStatus == "SUCCESS" && childJobResult == "FAILURE" ) {
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
-					if (isWorseThan( childJobResult, currentJobStatus)) {
-						currentJobStatus = childJobResult
+					// In the rerun pass, a rerun job must not be worse than the original it reruns:
+					//  - <parent>_testList_N_rerun reruns a FAILURE child, so it is capped at the original (FAILURE) status;
+					//  - <parent>_rerun reruns failed tests of the other children (originally UNSTABLE), so it is capped at UNSTABLE.
+					// The capped results are then combined (worst wins).
+					def effectiveJobResult = childJobResult
+					def effectiveTestResult = childTestResult
+					if (originalTestStatus != "SUCCESS" || originalJobStatus != "SUCCESS") {
+						def failedChildRerun = name.contains("_testList_")
+						def jobCap = (failedChildRerun || !isWorseThan(originalJobStatus, 'UNSTABLE')) ? originalJobStatus : 'UNSTABLE'
+						def testCap = (failedChildRerun || !isWorseThan(originalTestStatus, 'UNSTABLE')) ? originalTestStatus : 'UNSTABLE'
+						if (isWorseThan(effectiveJobResult, jobCap)) {
+							effectiveJobResult = jobCap
+						}
+						if (isWorseThan(effectiveTestResult, testCap)) {
+							effectiveTestResult = testCap
+						}
 					}
-					if (isWorseThan( childTestResult, currentTestStatus)) {
-						currentTestStatus = childTestResult
+					if (isWorseThan( effectiveJobResult, currentJobStatus)) {
+						currentJobStatus = effectiveJobResult
+					}
+					if (isWorseThan( effectiveTestResult, currentTestStatus)) {
+						currentTestStatus = effectiveTestResult
 					}
 					try {
 						timeout(time: 1, unit: 'HOURS') {
@@ -1946,14 +1964,16 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 						"""
 			}
 			childJobStatus += "</table>"
-			// In case rerun job status be worse than original job status
-			if ( originalJobStatus != "SUCCESS" && isWorseThan( currentJobStatus, originalJobStatus)) {
-				currentJobStatus = originalJobStatus
+			// If the original was worse than UNSTABLE (a child FAILURE) but that child was not rerun
+			// (e.g. RERUN_FAILURE is off), it is still failed: don't let the capped _rerun job hide it.
+			if (!hasFailedChildRerun) {
+				if (isWorseThan(originalJobStatus, 'UNSTABLE') && isWorseThan(originalJobStatus, currentJobStatus)) {
+					currentJobStatus = originalJobStatus
+				}
+				if (isWorseThan(originalTestStatus, 'UNSTABLE') && isWorseThan(originalTestStatus, currentTestStatus)) {
+					currentTestStatus = originalTestStatus
+				}
 			}
-			if ( originalTestStatus != "SUCCESS" && isWorseThan( currentTestStatus, originalTestStatus)) {
-				currentTestStatus = originalTestStatus
-			}
-
 			archiveAQAvitFiles()
 			env.testStatus = currentTestStatus
 
