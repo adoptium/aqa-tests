@@ -1961,8 +1961,15 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			// now that currentTestStatus and currentJobStatus are finalised.
 			// getTestStatusDescription() does not add the inline ⚠ warning; annotateInfraFailure()
 			// is the single source for it and rewrites this same line.
-			def testStatusHeader = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentJobStatus)}<br/><br/>"
-			currentBuild.description = testStatusHeader + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
+			// This runs twice when a rerun is triggered; on the second call update the existing
+			// header in place and append the rerun table rather than prepending a second header.
+			def testStatusHeaderText = "TEST EXECUTE STATUS: ${getTestStatusDescription(currentTestStatus, currentJobStatus)}"
+			if (currentBuild.description?.contains('TEST EXECUTE STATUS:')) {
+				rewriteTestExecuteStatusHeader(testStatusHeaderText)
+				currentBuild.description = currentBuild.description + "<br>" + childJobStatus
+			} else {
+				currentBuild.description = testStatusHeaderText + "<br/><br/>" + ((currentBuild.description) ? currentBuild.description + "<br>" + childJobStatus : childJobStatus)
+			}
 			echo "TEST EXECUTE STATUS: ${currentTestStatus}"
 			env.jobStatus = currentJobStatus
 			if (currentTestStatus != "SUCCESS") {
