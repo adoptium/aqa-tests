@@ -75,7 +75,7 @@ def getTestStatusBadgeUrl(status) {
         'UNSTABLE' : [text: 'unstable', color: 'yellow'],
         'FAILURE'  : [text: 'failing',  color: 'red'],
         'ABORTED'  : [text: 'aborted',  color: 'lightgrey'],
-        'RUNNING'  : [text: 'running',  color: 'lightgrey'],
+        'NOT_FINISHED'  : [text: 'not_finished',  color: 'lightgrey'],
         'NOT_RUN': [text: 'not_run',  color: 'lightgrey'],
     ]
     def entry = statusMap[status] ?: [text: 'unknown', color: 'lightgrey']
@@ -354,6 +354,11 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
             // string "null" that results from assigning null to an env var.
             def rawTestStatus = downstreamJob.getBuildVariables()["testStatus"]
             def childTestStatus = (rawTestStatus && rawTestStatus != 'null') ? rawTestStatus : 'NOT_RUN'
+            // NOT_RUN / NOT_FINISHED are transient; a finished job that still reports them never produced
+            // a test result, so show FAILURE (ABORTED if the job was aborted).
+            if (childTestStatus == 'NOT_RUN' || childTestStatus == 'NOT_FINISHED') {
+                childTestStatus = (downstreamJobResult == 'ABORTED') ? 'ABORTED' : 'FAILURE'
+            }
             def testBadgeUrl = getTestStatusBadgeUrl(childTestStatus)
             currentBuild.description += """
                 <p>${TEST_JOB_NAME}/${buildId}:
