@@ -519,7 +519,7 @@ timestamps{
             env.SETUP_LABEL = params.SETUP_LABEL ?: "worker || (ci.role.test&&hw.arch.x86&&sw.os.linux)"
             if (env.PARALLEL == 'None' && env.testStatus == 'UNSTABLE') {
                 jenkinsfile.triggerRerunJob(env.jobStatus, env.testStatus)
-            } else if ( env.PARALLEL != 'None' && currentBuild.result != 'FAILURE') {
+            } else if ( env.PARALLEL != 'None' && currentBuild.result != 'FAILURE' && currentBuild.result != 'ABORTED') {
                 def parallelResults = jenkinsfile.runParallelTests()
                 if ( parallelResults.testStatus != 'SUCCESS' ) {
                     jenkinsfile.triggerRerunJob(parallelResults.jobStatus, parallelResults.testStatus, parallelResults.jobParams)
@@ -638,8 +638,8 @@ def runTest() {
         if (e.toString().contains("FlowInterruptedException")) {
             currentBuild.result = 'ABORTED'
         } else {
-            currentBuild.result = 'ABORTED'
-        } 
+            currentBuild.result = 'FAILURE'
+        }
         // build result may not be updated correctly at the moment (see https://issues.jenkins.io/browse/JENKINS-56402)
         // For any exception (abort, timeout, cleanWs, git clone, etc.), degrade env.jobStatus but
         // preserve env.testStatus. annotateInfraFailure() will only fire a badge when
