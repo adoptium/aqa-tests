@@ -1,0 +1,119 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Release engineering for the AQAvit repositories.
+#
+# The central repository (default adoptium/aqa-tests) is the one that is released
+# and branched. For it, this workflow:
+#   1. tags the head of the base branch with <tag>
+#   2. creates the release branch <tag>-release from the same commit
+#   3. creates a GitHub release for <tag>, titled <tag>-release
+#   4. (optionally) opens a PR against <tag>-release that updates
+#      testenv/testenv.properties to reference the newly tagged repositories
+#
+# The other repositories (TKG, STF, ...) are tagged with <tag> at the head of
+# their default branch, before the central repository is processed.
+#
+# Release types:
+#   type     expected months                     base branch (default)         tag other repos   update testenv
+#   feature  March, September                    master                        yes               yes
+#   cpu      January, April, July, October       master                        yes               yes
+#   cspu     Feb, May, Jun, Aug, Nov, (Dec)      previous CPU branch (required) no                no
+#   ifix     any time                            most recent release branch    no                no
+# "tag other repos" and "update testenv" can be overridden with the inputs below.
+# A release type run outside its expected months only produces a warning.
+
+name: Release AQAvit
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to create (e.g. v1.0.17). The release and the release branch are named <tag>-release"
+        required: true
+        type: string
+      releaseType:
+        description: "Type of release"
+        required: true
+        type: choice
+        options:
+          - feature
+          - cpu
+          - cspu
+          - ifix
+      baseBranch:
+        description: "Branch of the central repo to tag and branch from. Default: master (feature, cpu), most recent release branch (ifix). Required for cspu: the previous CPU release branch"
+        required: false
+        type: string
+      centralRepository:
+        description: "Central repository that is released and branched (an AQAvit repository in the adoptium org)"
+        required: false
+        type: string
+        default: "adoptium/aqa-tests"
+      repositories:
+        description: "Repositories to tag, separated by commas, spaces or newlines. Must be AQAvit project repositories in the adoptium org (TKG, aqa-systemtest, aqa-test-tools, STF, bumblebench, run-aqa, aqa-tests, openj9-systemtest, aqa-cbt, aqa-triage-data)"
+        required: false
+        type: string
+        default: "aqa-tests TKG aqa-systemtest aqa-test-tools STF bumblebench openj9-systemtest"
+      tagRepositories:
+        description: "Tag the repositories other than the central one? auto = yes for feature/cpu, no for cspu/ifix"
+        required: false
+        type: choice
+        options:
+          - auto
+          - "yes"
+          - "no"
+        default: auto
+      updateTestenv:
+        description: "Open a PR updating testenv.properties on the release branch? auto = yes for feature/cpu, no for cspu/ifix"
+        required: false
+        type: choice
+        options:
+          - auto
+          - "yes"
+          - "no"
+        default: auto
+      dryRun:
+        description: "Dry run: report what would be done without creating anything"
+        required: false
+        type: boolean
+        default: false
+
+# Cross-repository operations need a token with contents:write on every listed
+# repository (and pull-requests:write on the central one). Provide it as the
+# RELEASE_TOKEN secret; GITHUB_TOKEN only works for the repository running the workflow.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release engineering script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github/workflows
+          persist-credentials: false
+
+      - name: Tag, branch, release and update testenv
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          RELEASE_TYPE: ${{ inputs.releaseType }}
+          BASE_BRANCH_INPUT: ${{ inputs.baseBranch }}
+          CENTRAL_INPUT: ${{ inputs.centralRepository }}
+          REPOSITORIES: ${{ inputs.repositories }}
+          TAG_REPOS_INPUT: ${{ inputs.tagRepositories }}
+          UPDATE_TESTENV_INPUT: ${{ inputs.updateTestenv }}
+          DRY_RUN: ${{ inputs.dryRun }}
+        run: bash .github/workflows/release-aqavit.sh
