@@ -44,6 +44,19 @@ class TestAutoTestPRTitles(TestCase):
                 self.assertEqual(result["title"], expected)
                 self.assertEqual(result["testcases"], testcases)
 
+    def test_multiple_tests_show_first_and_preserve_full_list(self):
+        prefix = "Exclude OpenJDK test: "
+        for first in ("test1.java", "a" * 47, "a" * 48, "a" * 200):
+            with self.subTest(first=first):
+                testcases = f"{first},test2.java,test3.java"
+                result = self.run_step("Parse exclude command",
+                                       f"/exclude {testcases} https://example.com linux-x64")
+                title = prefix + first + "..."
+                expected = title if len(title) <= 72 else title[:69] + "..."
+                self.assertEqual(result["title"], expected)
+                self.assertEqual(result["testcases"], testcases)
+                self.assertLessEqual(len(result["title"]), 72)
+
     def test_multiline_and_unicode(self):
         legacy = self.run_step("Prepare title", "auto exclude test é\r\ninjected=value")
         self.assertEqual(legacy["title"], "auto exclude test é ")

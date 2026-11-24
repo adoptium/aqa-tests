@@ -134,7 +134,10 @@ jobs:
           TESTCASES=$(printf '%s\n' "${COMMENT_BODY%%$'\n'*}" | awk '{print $2}')
           TESTCASES=${TESTCASES//$'\r'/}
           echo "testcases=$TESTCASES" >> "$GITHUB_OUTPUT"
-          TITLE="Exclude OpenJDK test: $TESTCASES"
+          TITLE="Exclude OpenJDK test: ${TESTCASES%%,*}"
+          if [[ "$TESTCASES" == *,* ]]; then
+            TITLE="${TITLE}..."
+          fi
           if (( ${#TITLE} > 72 )); then
             TITLE="${TITLE:0:69}..."
           fi
