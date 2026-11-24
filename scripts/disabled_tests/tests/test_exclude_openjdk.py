@@ -308,4 +308,77 @@ test1.java https://bugs.openjdk.java.net/browse/JDK-1234 macosx-all
         non_empty_lines = [l for l in lines if l.strip() and not l.strip().startswith('#')]
         self.assertEqual(len(non_empty_lines), 1)
 
+class TestMergeExclusionIntoExistingLine(TestCase):
+    """Test merging platforms/issues into an existing ProblemList line."""
+    
+    ISSUE = 'https://bugs.openjdk.org/browse/JDK-8368206'
+    TEST = 'compiler/vectorapi/VectorMaskCompareNotTest.java'
+    
+    def setUp(self):
+        self.temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt')
+        self.temp_file.write(
+            "# Test ProblemList file\n"
+            f"{self.TEST} {self.ISSUE} linux-riscv64,aix-ppc64\n"
+            "other.java https://bugs.openjdk.org/browse/JDK-1 macosx-all\n"
+        )
+        self.temp_file.close()
+    
+    def tearDown(self):
+        os.unlink(self.temp_file.name)
+    
+    def _read(self):
+        with open(self.temp_file.name, 'r') as f:
+            return f.read()
+    
+    def test_merge_platform_into_existing_line(self):
+        result = add_exclusion_to_file(self.temp_file.name, self.TEST, self.ISSUE, 'x86-64_linux')
+        
+        self.assertTrue(result)
+        self.assertEqual(
+            self._read(),
+            "# Test ProblemList file\n"
+            f"{self.TEST} {self.ISSUE} linux-riscv64,aix-ppc64,x86-64_linux\n"
+            "other.java https://bugs.openjdk.org/browse/JDK-1 macosx-all\n"
+        )
+    
+    def test_merge_is_idempotent(self):
+        add_exclusion_to_file(self.temp_file.name, self.TEST, self.ISSUE, 'x86-64_linux')
+        before = self._read()
+        
+        result = add_exclusion_to_file(self.temp_file.name, self.TEST, self.ISSUE, 'x86-64_linux')
+        
+        self.assertFalse(result)
+        self.assertEqual(self._read(), before)
+    
+    def test_merge_multiple_platforms_skips_present_ones(self):
+        result = add_exclusion_to_file(
+            self.temp_file.name, self.TEST, self.ISSUE, 'aix-ppc64,x86-64_linux,windows-all')
+        
+        self.assertTrue(result)
+        self.assertIn(f"{self.TEST} {self.ISSUE} linux-riscv64,aix-ppc64,x86-64_linux,windows-all\n", self._read())
+    
+    def test_merge_different_issue_url_appends_comma_separated(self):
+        new_issue = 'https://bugs.openjdk.org/browse/JDK-9999'
+        result = add_exclusion_to_file(self.temp_file.name, self.TEST, new_issue, 'x86-64_linux')
+        
+        self.assertTrue(result)
+        self.assertIn(
+            f"{self.TEST} {self.ISSUE},{new_issue} linux-riscv64,aix-ppc64,x86-64_linux\n", self._read())
+    
+    def test_new_testcase_still_appended(self):
+        result = add_exclusion_to_file(self.temp_file.name, 'new.java', self.ISSUE, 'x86-64_linux')
+        
+        self.assertTrue(result)
+        self.assertTrue(self._read().endswith(f"new.java {self.ISSUE} x86-64_linux\n"))
+    
+    def test_commented_line_is_not_merged(self):
+        with open(self.temp_file.name, 'a') as f:
+            f.write("#commented.java https://bugs.openjdk.org/browse/JDK-2 linux-x64\n")
+        
+        add_exclusion_to_file(self.temp_file.name, 'commented.java', self.ISSUE, 'aix-ppc64')
+        
+        content = self._read()
+        self.assertIn("#commented.java https://bugs.openjdk.org/browse/JDK-2 linux-x64\n", content)
+        self.assertTrue(content.endswith(f"commented.java {self.ISSUE} aix-ppc64\n"))
+
 # Made with Bob
