@@ -1018,7 +1018,7 @@ def checkTestResults(results) {
 			env.jobStatus = 'UNSTABLE'
 		}
 		echo 'There were test failures, current build status is UNSTABLE.'
-	} else if (env.testStatus == 'NOT_RUN' || env.testStatus == 'NOT_FINISHED') {
+	} else if ((env.testStatus == 'NOT_RUN' || env.testStatus == 'NOT_FINISHED') && env.ITER_COUNT.toInteger() == ITERATIONS) {
 		// Tests ran (TOTAL > 0) and none failed. testStatus starts as NOT_RUN and is NOT_FINISHED while tests
 		// execute, so promote it here; only from those states so an earlier FAILURE/UNSTABLE is never overwritten.
 		env.testStatus = 'SUCCESS'
