@@ -61,7 +61,7 @@ def getResultBadgeUrl(result) {
         'UNSTABLE'  : [text: 'unstable', color: 'yellow'],
         'FAILURE'   : [text: 'failing',  color: 'red'],
         'ABORTED'   : [text: 'aborted',  color: 'lightgrey'],
-        'NOT_RUN' : [text: 'not_run',  color: 'lightgrey']
+        'NOT_BUILT' : [text: 'not_run',  color: 'lightgrey']
     ]
     def entry = statusMap[result] ?: [text: 'unknown', color: 'lightgrey']
     return "${env.JENKINS_URL}buildStatus/icon?status=${entry.text}&color=${entry.color}"
