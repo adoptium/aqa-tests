@@ -1893,7 +1893,7 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 			def childJobStatus = "<table><tr><th><b>Child Job</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Test Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Job Status</b>&nbsp;&nbsp;&nbsp;&nbsp;</th><th><b>Duration</b></th></tr>"
 			def jobList = childJobs.values().toList()
 			sortByProjectName(jobList)
-			def hasFailedChildRerun = jobList.any { it.getProjectName().contains("_testList_") }
+			def hasFailedChildRerun = jobList.any { isFailedChildRerun(it.getProjectName()) }
 			jobList.each {
 				cjob ->
 					def buildId = cjob.getNumber()
@@ -1916,13 +1916,13 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 						childTestJobParams << parallelTestParams.findAll {it.key == name}
 					}
 					// In the rerun pass, a rerun job must not be worse than the original it reruns:
-					//  - <parent>_testList_N_rerun reruns a FAILURE child, so it is capped at the original (FAILURE) status;
+					//  - <parent>_testList_N_rerun / <parent>_iteration_N_rerun reruns a FAILURE child, so it is capped at the original (FAILURE) status;
 					//  - <parent>_rerun reruns failed tests of the other children (originally UNSTABLE), so it is capped at UNSTABLE.
 					// The capped results are then combined (worst wins).
 					def effectiveJobResult = childJobResult
 					def effectiveTestResult = childTestResult
 					if (originalTestStatus != "SUCCESS" || originalJobStatus != "SUCCESS") {
-						def failedChildRerun = name.contains("_testList_")
+						def failedChildRerun = isFailedChildRerun(name)
 						def jobCap = (failedChildRerun || !isWorseThan(originalJobStatus, 'UNSTABLE')) ? originalJobStatus : 'UNSTABLE'
 						def testCap = (failedChildRerun || !isWorseThan(originalTestStatus, 'UNSTABLE')) ? originalTestStatus : 'UNSTABLE'
 						if (isWorseThan(effectiveJobResult, jobCap)) {
@@ -2023,6 +2023,14 @@ def archiveChildJobTap(childJobs, originalTestStatus = 'SUCCESS', originalJobSta
 		return [jobStatus: currentJobStatus, testStatus: currentTestStatus, jobParams: childTestJobParams]
 	}
 }
+
+// True for the rerun of a failed parallel child: <parent>_testList_N_rerun (Dynamic) or
+// <parent>_iteration_N_rerun (NodesByIterations). The rerun of failed tests is <parent>_rerun,
+// which has neither marker, and first-pass children have no _rerun suffix.
+def isFailedChildRerun(String jobName) {
+	return jobName.endsWith("_rerun") && (jobName.contains("_testList_") || jobName.contains("_iteration_"))
+}
+
 
 def isWorseThan(String resultA, String resultB) {
 	def severityOrder = [ 'SUCCESS', 'UNSTABLE', 'FAILURE', 'ABORTED']
