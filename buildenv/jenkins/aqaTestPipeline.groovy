@@ -356,7 +356,7 @@ def triggerChildJob(TEST_JOB_NAME, childParams) {
             def childTestStatus = (rawTestStatus && rawTestStatus != 'null') ? rawTestStatus : 'NOT_RUN'
             // NOT_RUN / NOT_FINISHED are transient; a finished job that still reports them never produced
             // a test result, so show FAILURE (ABORTED if the job was aborted).
-            if (childTestStatus == 'NOT_RUN' || childTestStatus == 'NOT_FINISHED') {
+            if (rawTestStatus && rawTestStatus != 'null' && (childTestStatus == 'NOT_RUN' || childTestStatus == 'NOT_FINISHED')) {
                 childTestStatus = (downstreamJobResult == 'ABORTED') ? 'ABORTED' : 'FAILURE'
             }
             def testBadgeUrl = getTestStatusBadgeUrl(childTestStatus)
