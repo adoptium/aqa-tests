@@ -210,6 +210,44 @@ def get_all_jdk_versions(excludes_dir: str) -> List[str]:
     return available_versions
 
 
+def parse_platform(platform_str: str) -> Tuple[str, str]:
+    """
+    Parse a platform string 'os-arch' into (os, arch).
+    
+    Args:
+        platform_str: Platform specification (e.g. 'linux-x64', 'macosx-all')
+        
+    Returns:
+        Tuple of (os, arch)
+    """
+    if '-' in platform_str:
+        os_val, arch_val = platform_str.split('-', 1)
+        return os_val.strip(), arch_val.strip()
+    return platform_str.strip(), ""
+
+
+def check_platform_conflicts(platforms: List[str], testcase: str) -> None:
+    """
+    Check if any platforms share the same OS but different arch where one is 'all'.
+    
+    Args:
+        platforms: List of platform strings (e.g. ['linux-x64', 'linux-all'])
+        testcase: Test case name for error reporting
+        
+    Raises:
+        ExcludeCommandError: If conflicting platforms are detected
+    """
+    for i in range(len(platforms)):
+        os1, arch1 = parse_platform(platforms[i])
+        for j in range(i + 1, len(platforms)):
+            os2, arch2 = parse_platform(platforms[j])
+            if os1 == os2 and arch1 != arch2 and (arch1 == "all" or arch2 == "all"):
+                raise ExcludeCommandError(
+                    f"Conflicting platforms for test '{testcase}': '{platforms[i]}' and '{platforms[j]}' "
+                    f"share the same OS '{os1}' with conflicting architectures (one is 'all')."
+                )
+
+
 def check_exclusion_exists(file_path: str, testcase: str, platform: str) -> bool:
     """
     Check if an exclusion already exists in the ProblemList file.
@@ -239,9 +277,20 @@ def check_exclusion_exists(file_path: str, testcase: str, platform: str) -> bool
     return False
 
 
+def dedupe_preserving_order(items: List[str]) -> List[str]:
+    """Remove duplicate entries from a list while preserving first-seen order."""
+    seen = set()
+    result = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
 def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platform: str) -> bool:
     """
-    Add an exclusion entry to a ProblemList file.
+    Add or update an exclusion entry in a ProblemList file.
     
     Args:
         file_path: Path to the ProblemList file
@@ -250,31 +299,104 @@ def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platfor
         platform: Platform specification
         
     Returns:
-        True if exclusion was added, False if it already existed
+        True if file was modified, False otherwise
+        
+    Raises:
+        ExcludeCommandError: If conflicting platforms are detected
     """
-    # Check if exclusion already exists
-    if check_exclusion_exists(file_path, testcase, platform):
-        print(f"  ⚠️  Exclusion already exists in {os.path.basename(file_path)}")
-        return False
-    
-    # Read the file
-    with open(file_path, 'r') as f:
+    # newline='' prevents Python translating line endings, so existing lines are not normalised
+    with open(file_path, 'r', newline='') as f:
         lines = f.readlines()
     
-    # Add the exclusion at the end of the file
-    exclusion_line = f"{testcase} {issue_url} {platform}\n"
+    # Detect the line ending used by the file, for any lines we add
+    eol = "\n"
+    for line in lines:
+        if line.endswith("\r\n"):
+            eol = "\r\n"
+            break
+        elif line.endswith("\n"):
+            eol = "\n"
+            break
     
-    # Ensure file ends with newline before adding
-    if lines and not lines[-1].endswith('\n'):
-        lines[-1] += '\n'
+    # Identify if there is an existing uncommented line for this testcase
+    existing_line_idx = None
+    existing_parts = None
     
-    lines.append(exclusion_line)
+    for idx, line in enumerate(lines):
+        if line.strip().startswith('#'):
+            continue
+        
+        # Check if line begins with full test name followed by space or tab
+        if line.startswith(f"{testcase} ") or line.startswith(f"{testcase}\t"):
+            parts = line.strip().split()
+            if len(parts) >= 3:
+                existing_line_idx = idx
+                existing_parts = parts
+                break
     
-    # Write back to file
-    with open(file_path, 'w') as f:
+    new_platforms = [p.strip() for p in platform.split(',') if p.strip()]
+    
+    if existing_line_idx is not None:
+        existing_issue = existing_parts[1]
+        existing_platform_str = existing_parts[2]
+        existing_platforms = [p.strip() for p in existing_platform_str.split(',') if p.strip()]
+        
+        # Exception: existing line has a matching issue link
+        if existing_issue == issue_url:
+            existing_os_set = {parse_platform(p)[0] for p in existing_platforms}
+            new_os_set = {parse_platform(p)[0] for p in new_platforms}
+            
+            # Exception to the exception: an existing platform OS matches a new platform OS
+            if existing_os_set & new_os_set:
+                # 1. Array of all platforms (existing and new), 2. remove duplicates
+                deduped_platforms = dedupe_preserving_order(existing_platforms + new_platforms)
+                
+                # 3. Same OS with a different arch, where one arch is 'all', is an error
+                check_platform_conflicts(deduped_platforms, testcase)
+                
+                updated_platform_str = ",".join(deduped_platforms)
+            else:
+                # No matching OS: simply append the new platform(s)
+                updated_platform_str = f"{existing_platform_str},{platform}"
+            
+            if updated_platform_str == existing_platform_str:
+                print(f"  ⚠️  Exclusion already exists in {os.path.basename(file_path)}")
+                return False
+            
+            # Update the existing line in place, keeping that line's own ending
+            old_line = lines[existing_line_idx]
+            if old_line.endswith("\r\n"):
+                line_eol = "\r\n"
+            elif old_line.endswith("\n"):
+                line_eol = "\n"
+            else:
+                line_eol = ""
+            lines[existing_line_idx] = f"{testcase} {issue_url} {updated_platform_str}{line_eol}"
+            print(f"  ✅ Updated existing exclusion in {os.path.basename(file_path)}")
+        
+        else:
+            # Different issue link: new line carries new platforms plus the existing ones
+            combined_platforms = dedupe_preserving_order(new_platforms + existing_platforms)
+            check_platform_conflicts(combined_platforms, testcase)
+            
+            # Comment out the existing line by adding a hash to its start
+            lines[existing_line_idx] = f"#{lines[existing_line_idx]}"
+            
+            if lines and not lines[-1].endswith('\n'):
+                lines[-1] += eol
+            lines.append(f"{testcase} {issue_url} {','.join(combined_platforms)}{eol}")
+            print(f"  ✅ Commented existing exclusion and added new exclusion to {os.path.basename(file_path)}")
+    
+    else:
+        # No existing line found: add new exclusion at the end
+        if lines and not lines[-1].endswith('\n'):
+            lines[-1] += eol
+        lines.append(f"{testcase} {issue_url} {platform}{eol}")
+        print(f"  ✅ Added exclusion to {os.path.basename(file_path)}")
+    
+    with open(file_path, 'w', newline='') as f:
         f.writelines(lines)
     
-    print(f"  ✅ Added exclusion to {os.path.basename(file_path)}")
     return True
 
 
