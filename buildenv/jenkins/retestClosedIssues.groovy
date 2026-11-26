@@ -35,7 +35,7 @@ def JDK_IMPL_ARG = params.JDK_IMPL     ?: ''
 def MAX_FIXED    = (params.MAX_FIXED   ?: '0').toInteger()
 
 // Results accumulated across Stage 2, consumed by Stages 3 and 4.
-// Key: "jdk{VER}|{PLATFORM}|{FULL_TEST_PATH}|{EXCLUDE_FILE}"  Value: 'PASS' | 'FAIL' | 'ERROR'
+// Key: "jdk{VER}|{PLATFORM}|{FULL_TEST_PATH}|{EXCLUDE_FILE}"  Value: 'PASS' | 'FAIL' | 'ABORTED' | 'ERROR'
 Map<String, String> jobResults = [:]
 // Parallel closures map for Stage 2
 Map<String, Closure> parallelJobs = [:]
@@ -337,7 +337,7 @@ stage('Launch Grinder jobs') {
                 try {
                     def result = build(job: GRINDER_JOB, parameters: childParams, propagate: false, wait: true)
                     def status = result.getResult()
-                    jobResults[recordKey] = (status == 'SUCCESS') ? 'PASS' : 'FAIL'
+                    jobResults[recordKey] = (status == 'SUCCESS') ? 'PASS' : (status == 'ABORTED') ? 'ABORTED' : 'FAIL'
                     echo "[${parallelKey}] Grinder result: ${status}"
                 } catch (Exception e) {
                     jobResults[recordKey] = 'ERROR'
@@ -354,8 +354,9 @@ stage('Launch Grinder jobs') {
 // STAGE 3 — Collect results and produce human-readable summary
 // ============================================================================
 stage('Summarise results') {
-    Map passByJdk  = [:]
-    Map totalByJdk = [:]
+    Map passByJdk    = [:]
+    Map abortedByJdk = [:]
+    Map totalByJdk   = [:]
     List passingKeys = []
 
     jobResults.each { key, result ->
@@ -364,11 +365,17 @@ stage('Summarise results') {
         if (result == 'PASS') {
             passByJdk[jdkVer] = (passByJdk[jdkVer] ?: 0) + 1
             passingKeys << key
+        } else if (result == 'ABORTED') {
+            abortedByJdk[jdkVer] = (abortedByJdk[jdkVer] ?: 0) + 1
         }
     }
 
     def summaryLines = totalByJdk.keySet().sort().collect { jdk ->
-        "${jdk}: ${passByJdk[jdk] ?: 0} test(s) now passing (of ${totalByJdk[jdk]} retested)"
+        def line = "${jdk}: ${passByJdk[jdk] ?: 0} test(s) now passing (of ${totalByJdk[jdk]} retested)"
+        if (abortedByJdk[jdk]) {
+            line += ", ${abortedByJdk[jdk]} aborted (e.g. timed out)"
+        }
+        line
     }
     def summaryText = summaryLines ? summaryLines.join('\n') : 'No tests passed on any platform in this run.'
 

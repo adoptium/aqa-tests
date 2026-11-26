@@ -11,9 +11,14 @@ have been replaced with stdlib equivalents:
   resp.text                                    →  resp.read().decode()
   resp.raise_for_status()                      →  explicit HTTP-error check
 
-The retry strategy exactly mirrors the original urllib3.Retry parameters:
+The retry strategy mirrors the original urllib3.Retry parameters:
   total=10, backoff_factor=7, status_forcelist=[403, 429, 500, 502, 503, 504]
   Backoff delay for attempt n (1-based): 7 * 2**(n-1) seconds.
+Differences from urllib3.Retry:
+  - Retry-After / X-RateLimit-Reset response headers are honoured when present.
+  - The total time spent waiting on a single URL is capped (_RETRY_MAX_TOTAL_WAIT);
+    when the next wait would exceed the cap, the URL is abandoned.
+  - Waits are interruptible so --max-fixed can stop the run promptly.
 """
 
 import abc
@@ -25,6 +30,7 @@ import logging
 import os
 import re
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -45,6 +51,10 @@ GITHUB_TOKEN_ENV = "AQA_ISSUE_TRACKER_GITHUB_TOKEN"
 
 return_code = 0
 
+# URLs abandoned because retries were exhausted (e.g. rate limiting).  These are
+# reported as warnings and do not affect the exit code; see SkippedUrlException.
+skipped_urls: List[str] = []
+
 # Partial URL segments used to filter exceptional issues
 EXCEPTIONS = [
     '/aqa-tests/issues/1297',
@@ -52,10 +62,28 @@ EXCEPTIONS = [
 ]
 
 # Mirrors urllib3.Retry(total=10, backoff_factor=7, status_forcelist=[403,429,500,502,503,504])
-_RETRY_TOTAL        = 10
-_RETRY_BACKOFF      = 7        # seconds; delay = backoff * 2**(attempt-1)
-_RETRY_STATUS_LIST  = frozenset({403, 429, 500, 502, 503, 504})
-_REQUEST_TIMEOUT    = 30       # seconds per attempt
+_RETRY_TOTAL          = 10
+_RETRY_BACKOFF        = 7      # seconds; delay = backoff * 2**(attempt-1)
+_RETRY_STATUS_LIST    = frozenset({403, 429, 500, 502, 503, 504})
+_RETRY_MAX_TOTAL_WAIT = 120    # seconds of sleeping allowed per URL before giving up
+_REQUEST_TIMEOUT      = 30     # seconds per attempt
+
+# Set when the run is being abandoned (e.g. --max-fixed reached) so that worker
+# threads stop retrying and sleeping, and the process can exit promptly.
+_STOP_EVENT = threading.Event()
+
+
+class FetchAborted(Exception):
+    """Raised inside a worker when the run has been stopped early."""
+
+
+class RetryExhausted(Exception):
+    """Raised by _fetch_with_retry when it gives up on a URL (time cap or retry limit)."""
+
+    def __init__(self, url: str, last_exc: Optional[Exception]):
+        super().__init__(f"Gave up on {url!r}: {last_exc}")
+        self.url = url
+        self.last_exc = last_exc
 
 
 class Status(enum.Enum):
@@ -97,6 +125,29 @@ def _fetch(url: str,
         return resp.status, resp.read()
 
 
+def _retry_delay(attempt: int, resp_headers=None) -> float:
+    """
+    Seconds to wait before retry number *attempt* (1-based).
+
+    Prefers the server's own guidance: a numeric Retry-After header, or
+    X-RateLimit-Reset when X-RateLimit-Remaining is 0.  Otherwise falls back
+    to exponential backoff: _RETRY_BACKOFF * 2**(attempt-1).
+    """
+    if resp_headers:
+        retry_after = resp_headers.get('Retry-After')
+        if retry_after:
+            try:
+                return max(float(retry_after), 0.0)
+            except ValueError:
+                pass  # HTTP-date form is not supported; use backoff
+        if resp_headers.get('X-RateLimit-Remaining') == '0':
+            try:
+                return max(float(resp_headers.get('X-RateLimit-Reset')) - time.time(), 0.0) + 1
+            except (TypeError, ValueError):
+                pass
+    return float(_RETRY_BACKOFF * (2 ** (attempt - 1)))
+
+
 def _fetch_with_retry(url: str,
                       headers: dict = None,
                       timeout: int = _REQUEST_TIMEOUT) -> Tuple[int, bytes]:
@@ -107,15 +158,27 @@ def _fetch_with_retry(url: str,
       - The response status is in _RETRY_STATUS_LIST, OR
       - An OSError / urllib.error.URLError is raised (network glitch).
 
-    Backoff: _RETRY_BACKOFF * 2**(attempt-1) seconds between attempts.
-    Raises the last exception / HTTPError on exhaustion.
+    The wait between attempts comes from _retry_delay().  If the next wait
+    would push the total time slept for this URL past _RETRY_MAX_TOTAL_WAIT,
+    or all _RETRY_TOTAL retries are used, RetryExhausted is raised.
+    Raises FetchAborted if _STOP_EVENT is set.
+    Non-retryable HTTP errors (e.g. 404) are raised as urllib.error.HTTPError.
     """
     last_exc: Exception = None
+    waited = 0.0
     for attempt in range(_RETRY_TOTAL + 1):
+        if _STOP_EVENT.is_set():
+            raise FetchAborted(url)
         if attempt:
-            delay = _RETRY_BACKOFF * (2 ** (attempt - 1))
-            LOG.debug(f"Retry {attempt}/{_RETRY_TOTAL} for {url!r} in {delay}s")
-            time.sleep(delay)
+            delay = _retry_delay(attempt, getattr(last_exc, 'headers', None))
+            if waited + delay > _RETRY_MAX_TOTAL_WAIT:
+                LOG.debug(f"Giving up on {url!r} after {waited:.0f}s of retries: "
+                          f"next wait of {delay:.0f}s exceeds the {_RETRY_MAX_TOTAL_WAIT}s limit")
+                break
+            LOG.debug(f"Retry {attempt}/{_RETRY_TOTAL} for {url!r} in {delay:.0f}s")
+            if _STOP_EVENT.wait(delay):
+                raise FetchAborted(url)
+            waited += delay
         try:
             req = urllib.request.Request(url, headers=headers or {}, method='GET')
             with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -133,11 +196,19 @@ def _fetch_with_retry(url: str,
         except OSError as e:          # includes urllib.error.URLError
             last_exc = e
             continue
-    raise last_exc
+    raise RetryExhausted(url, last_exc)
 
 
 class HandlerException(Exception):
     pass
+
+
+class SkippedUrlException(HandlerException):
+    """
+    The URL could not be checked because retries were exhausted (typically
+    rate limiting).  Unlike other handler errors this is non-fatal: the URL is
+    left out of the output and the exit code is unaffected.
+    """
 
 
 class NoHandlerFoundException(Exception):
@@ -184,6 +255,8 @@ class BaseHandler(abc.ABC):
 
         try:
             _status, body = _fetch_with_retry(url, headers=headers)
+        except RetryExhausted as e:
+            raise SkippedUrlException(str(e)) from e
         except urllib.error.HTTPError as e:
             if "Unauthorized" in str(e) or e.code == 401:
                 raise HandlerException(f"Unauthorized for url: {url!r}") from e
@@ -490,6 +563,9 @@ def _handle_completed_future(future, log_prefix, url, url_to_issues):
         result_tuple   = future.result()
         issue_status   = result_tuple[0]
         complex_status = result_tuple[1]
+    except SkippedUrlException as se:
+        LOG.warning(f"{log_prefix} Skipping {url!r}, status not checked: {se}")
+        skipped_urls.append(url)
     except HandlerException as he:
         if "Unauthorized for url" in str(he):
             LOG.debug(f"{log_prefix} Ignoring access denial when handling {url!r}: {he}")
@@ -529,7 +605,11 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher,
     fixed_count = 0
     all_issues  = []
 
-    with futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+    skipped_urls.clear()
+    _STOP_EVENT.clear()
+    executor = futures.ThreadPoolExecutor(max_workers=max_workers)
+    future_to_url = {}
+    try:
         future_to_url = {executor.submit(dispatcher.dispatch, url): url
                          for url in url_to_issues}
         for i, future in enumerate(futures.as_completed(future_to_url)):
@@ -546,9 +626,19 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher,
                     f"Reached max_fixed limit ({max_fixed}). Stopping early after "
                     f"{i + 1}/{len_trackers} trackers."
                 )
-                for pending in future_to_url:
-                    pending.cancel()
                 break
+    finally:
+        # Do not use "with": its exit would block until every in-flight worker
+        # finishes, including workers asleep in retry backoff.  Cancel queued
+        # work, wake sleeping workers, and return without waiting.
+        _STOP_EVENT.set()
+        for pending in future_to_url:
+            pending.cancel()
+        executor.shutdown(wait=False)
+
+    if skipped_urls:
+        LOG.warning(f"{len(skipped_urls)} issue tracker URL(s) were skipped after retries were "
+                    f"exhausted and are not in the output: " + ", ".join(sorted(skipped_urls)))
 
     return all_issues
 
@@ -640,7 +730,8 @@ def main():
     parser.add_argument('--outfile', '-o', type=argparse.FileType('w'), default=sys.stdout,
                         help='Output file (default: stdout)')
     parser.add_argument('--verbose', '-v', action='count', default=0,
-                        help="Increase verbosity (-v info, -vv debug)")
+                        help="Log debug detail such as retries and backoff delays "
+                             "(progress is logged at INFO by default, to stderr)")
     parser.add_argument('--minimal', '-m', action='store_true',
                         help="Minimal high-speed URL validity check only.")
     args = parser.parse_args()
@@ -659,10 +750,7 @@ def main():
             parser.exit(1, message="GitHub Token must be provided as environment variable or "
                                     "command-line argument\n")
 
-    if args.verbose == 1:
-        LOG.setLevel(logging.INFO)
-    elif args.verbose >= 2:
-        LOG.setLevel(logging.DEBUG)
+    LOG.setLevel(logging.DEBUG if args.verbose else logging.INFO)
 
     LOG.debug(f"Loading JSON from {getattr(args.infile, 'name', '<unknown>')}")
     issues: List[models.Scheme] = json.load(args.infile)

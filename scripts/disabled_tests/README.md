@@ -144,7 +144,7 @@ Fetch issue status for each disabled test
 ### Usage
 
 ```
-usage: issue_status.py [-h] [--github-user USER] [--github-token TOKEN] [--max-workers MAX_WORKERS] [--infile INFILE] [--outfile OUTFILE] [--verbose]
+usage: issue_status.py [-h] [--github-user USER] [--github-token TOKEN] [--max-workers MAX_WORKERS] [--max-fixed N] [--infile INFILE] [--outfile OUTFILE] [--verbose]
 
 Fetch issue status for each disabled test
 
@@ -154,12 +154,26 @@ optional arguments:
   --github-token TOKEN  GitHub Token used for API [env: AQA_ISSUE_TRACKER_GITHUB_TOKEN]
   --max-workers MAX_WORKERS
                         Maximum number of threads to spawn, default determined by ThreadPoolExecutor
+  --max-fixed N         Stop after N fixed issues. 0 = no limit.
   --infile INFILE, -i INFILE
                         Input file, defaults to stdin
   --outfile OUTFILE, -o OUTFILE
                         Output file, defaults to stdout
-  --verbose, -v         Enable info logging level, debug level if -vv
+  --verbose, -v         Log debug detail such as retries and backoff delays
 ```
+
+Progress (`N/M - Ended processing ...`) is logged at INFO level to stderr by default.
+The JSON result is only written once processing finishes (or `--max-fixed` is reached).
+
+#### Rate limiting and retries
+
+Requests that fail with 403, 429 or 5xx are retried with exponential backoff (7s, 14s, 28s, ...).
+If the server sends `Retry-After`, or `X-RateLimit-Reset` with no quota remaining, that wait is used instead.
+The total time spent waiting on any one URL is capped at 120 seconds. When the next wait would exceed
+the cap, or the retries run out, the URL is skipped: a warning is logged, the URL is left out of the
+output, and a summary listing every skipped URL is logged at the end. Skipped URLs do **not** affect the
+exit code. Other errors (for example a 404 or a malformed response) still produce a non-zero exit status.
+`--max-fixed` stops promptly: workers that are waiting to retry are woken and abandoned rather than awaited.
 
 #### Output to file pass GitHub token through an environment variable
 ```shell
