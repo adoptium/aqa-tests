@@ -713,6 +713,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                 // SETUP_JCK_RUN is true for release builds
                 def setupJckRun = isReleaseBuild ? "true" : (config.SETUP_JCK_RUN ? "true" : "false")
                 def autoAqaGen = AUTO_AQA_GEN ? "true" : "false"
+                def timeLimit = config.TIME_LIMIT
                 
                 // Build display name
                 def displayName = params.PIPELINE_DISPLAY_NAME ?: "${params.BUILD_TYPE} : jdk${jobJdkVersion} : ${platform} : ${target}"
@@ -741,7 +742,8 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     MapParameter(name: 'RERUN_ITERATIONS', value: rerunIterations),
                     MapParameter(name: 'RERUN_FAILURE', value: rerunFailure),
                     MapParameter(name: 'EXTRA_OPTIONS', value: extraOptions),
-                    MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun)
+                    MapParameter(name: 'SETUP_JCK_RUN', value: setupJckRun),
+                    MapParameter(name: 'TIME_LIMIT', value: timeLimit)
                 ]
                 
                 // Add LABEL if specified
@@ -787,6 +789,7 @@ def remoteTriggerTemurinJCK (jobJdkVersion, jobPlatforms) {
                     RERUN_FAILURE: rerunFailure,
                     EXTRA_OPTIONS: extraOptions,
                     SETUP_JCK_RUN: setupJckRun,
+                    TIME_LIMIT: timeLimit,
                     VARIANT: 'temurin',
                     BUILD_TYPE: params.BUILD_TYPE
                 ]
@@ -917,7 +920,8 @@ def remoteTriggerTemurinJCKDirect() {
                 MapParameter(name: 'RERUN_ITERATIONS', value: (params.RERUN_ITERATIONS ?: '1').toString()),
                 MapParameter(name: 'RERUN_FAILURE', value: (params.RERUN_FAILURE ?: 'true').toString()),
                 MapParameter(name: 'EXTRA_OPTIONS', value: (params.EXTRA_OPTIONS ?: '').toString()),
-                MapParameter(name: 'SETUP_JCK_RUN', value: (params.SETUP_JCK_RUN ?: 'false').toString())
+                MapParameter(name: 'SETUP_JCK_RUN', value: (params.SETUP_JCK_RUN ?: 'false').toString()),
+                MapParameter(name: 'TIME_LIMIT', value: (params.TIME_LIMIT ?: TIME_LIMIT).toString())
             ]
             
             // Add LABEL if specified
@@ -963,6 +967,7 @@ def remoteTriggerTemurinJCKDirect() {
                 RERUN_FAILURE: params.RERUN_FAILURE ?: 'true',
                 EXTRA_OPTIONS: params.EXTRA_OPTIONS ?: '',
                 SETUP_JCK_RUN: params.SETUP_JCK_RUN ?: 'false',
+                TIME_LIMIT: params.TIME_LIMIT ?: TIME_LIMIT,
                 VARIANT: 'temurin',
                 BUILD_TYPE: params.BUILD_TYPE
             ]

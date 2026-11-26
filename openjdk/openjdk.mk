@@ -137,7 +137,20 @@ ifeq ($(ARCH),riscv64)
 	JTREG_KEY_OPTIONS := -k:'!headful'
 	VMOPTION_HEADLESS := -Djava.awt.headless=true
 endif
+# s390x linux, ppc64 aix and ppc64le linux are built in headless mode for eclipse/temurin
+ifneq ($(filter eclipse temurin, $(JDK_VENDOR)),)
+	ifneq ($(filter linux_390-64 aix_ppc-64 linux_ppc-64_le, $(SPEC)),)
+		JTREG_KEY_OPTIONS := -k:'!headful'
+		VMOPTION_HEADLESS := -Djava.awt.headless=true
+	endif
+endif
 JTREG_BASIC_OPTIONS += $(JTREG_KEY_OPTIONS)
+
+# If on Windows, never try to use wsl as it is not set up for testing.
+ifeq ($(CYGWIN),1)
+	JTREG_CYGWIN_LOCK := -cygwin
+endif
+JTREG_BASIC_OPTIONS += $(JTREG_CYGWIN_LOCK)
 
 # set JTREG_BASIC_OPTIONS value into a new parameter before adding EXTRA_JTREG_OPTIONS
 JTREG_BASIC_OPTIONS_WO_EXTRA_OPTS := $(JTREG_BASIC_OPTIONS)

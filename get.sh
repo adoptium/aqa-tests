@@ -714,8 +714,8 @@ moveComplianceRepoToJckRun() {
 	echo "* Replacing jenkins_home/jck_run contents with compliance_repo/jck_run   "
 	echo "*************************************************************************"
 	
-	# Determine jenkins home directory (two levels up from TESTDIR)
-	jenkins_home="$(cd "$TESTDIR/../.." && pwd)"
+	# TESTDIR is <agent home>/workspace/<job>/aqa-tests.
+	jenkins_home="$(cd "$TESTDIR/../../.." && pwd)"
 	echo "Jenkins home: ${jenkins_home}"
 	
 	if [ -d "$TESTDIR/jck_run" ]; then
