@@ -41,16 +41,27 @@ jobs:
         if: failure()
         run: |
           curl -u github-actions:${{ secrets.GITHUB_TOKEN }} -d '{ "body":  "The specified test cannot be excluded. Action run: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}" }' -X POST ${{ github.event.issue.comments_url }}
+      - name: Prepare title
+        id: title
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          TITLE=${COMMENT_BODY%%$'\n'*}
+          TITLE=${TITLE//$'\r'/ }
+          if (( ${#TITLE} > 66 )); then
+            TITLE="${TITLE:0:63}..."
+          fi
+          printf 'title=%s\n' "$TITLE" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           path: 'tests'
-          title: '${{ github.event.comment.body }}'
+          title: '${{ steps.title.outputs.title }}'
           body: |
             related: ${{ github.event.comment.html_url }}
             triggered by @${{ github.event.comment.user.login }}
           commit-message: |
-            AUTO: ${{ github.event.comment.body }}
+            AUTO: ${{ steps.title.outputs.title }}
             - related: ${{ github.event.comment.html_url }}
           branch: 'autoTestPR'
           branch-suffix: 'random'
@@ -120,8 +131,17 @@ jobs:
           fi
           
           # Extract testcases (second word)
-          TESTCASES=$(echo "$COMMENT_BODY" | awk '{print $2}')
+          TESTCASES=$(printf '%s\n' "${COMMENT_BODY%%$'\n'*}" | awk '{print $2}')
+          TESTCASES=${TESTCASES//$'\r'/}
           echo "testcases=$TESTCASES" >> "$GITHUB_OUTPUT"
+          TITLE="Exclude OpenJDK test: ${TESTCASES%%,*}"
+          if [[ "$TESTCASES" == *,* ]]; then
+            TITLE="${TITLE}..."
+          fi
+          if (( ${#TITLE} > 72 )); then
+            TITLE="${TITLE:0:69}..."
+          fi
+          printf 'title=%s\n' "$TITLE" >> "$GITHUB_OUTPUT"
           
       - name: Post acknowledgement comment
         env:
@@ -175,7 +195,7 @@ jobs:
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           path: 'tests'
-          title: 'Exclude OpenJDK test: ${{ steps.parse.outputs.testcases }}'
+          title: '${{ steps.parse.outputs.title }}'
           body: |
             **OpenJDK Test Exclusion**
             
@@ -187,7 +207,7 @@ jobs:
             
             See the commit for details on which ProblemList files were modified.
           commit-message: |
-            Exclude OpenJDK test: ${{ steps.parse.outputs.testcases }}
+            ${{ steps.parse.outputs.title }}
             
             Related: ${{ github.event.comment.html_url }}
           branch: 'exclude-openjdk-test'
