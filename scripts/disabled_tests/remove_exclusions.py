@@ -139,11 +139,13 @@ def _coverage(jdk_version: int) -> Dict[str, FrozenSet[str]]:
     the passing set before that token can be removed.
     """
     # All tokens are ProblemList format 1 (e.g. linux-x64, macosx-aarch64).
-    # linux-arm and linux-riscv64 are included in linux-all across all versions.
+    # linux-arm and linux-riscv64 are deliberately NOT required for linux-all:
+    # they are not retested by the retestClosedIssues pipeline (its all_linux
+    # expands to s390x, ppc64le, x86-64 and aarch64 only), so requiring them
+    # would make a linux-all exclusion impossible to remove.
     if jdk_version <= 8:
         base = {
-            'linux-all':   frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64',
-                                      'linux-arm', 'linux-riscv64'}),
+            'linux-all':   frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64'}),
             'macosx-all':  frozenset({'macosx-x64'}),
             'aix-all':     frozenset({'aix-ppc64'}),
             'windows-all': frozenset({'windows-x64'}),
@@ -152,7 +154,7 @@ def _coverage(jdk_version: int) -> Dict[str, FrozenSet[str]]:
     elif jdk_version <= 17:
         base = {
             'linux-all':   frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64',
-                                      'linux-aarch64', 'linux-arm', 'linux-riscv64'}),
+                                      'linux-aarch64'}),
             'macosx-all':  frozenset({'macosx-x64', 'macosx-aarch64'}),
             'aix-all':     frozenset({'aix-ppc64'}),
             'windows-all': frozenset({'windows-x64'}),
@@ -161,7 +163,7 @@ def _coverage(jdk_version: int) -> Dict[str, FrozenSet[str]]:
     elif jdk_version <= 25:
         base = {
             'linux-all':   frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64',
-                                      'linux-aarch64', 'linux-arm', 'linux-riscv64'}),
+                                      'linux-aarch64'}),
             'macosx-all':  frozenset({'macosx-x64', 'macosx-aarch64'}),
             'aix-all':     frozenset({'aix-ppc64'}),
             'windows-all': frozenset({'windows-x64', 'windows-aarch64'}),
@@ -170,7 +172,7 @@ def _coverage(jdk_version: int) -> Dict[str, FrozenSet[str]]:
     else:  # JDK 26+
         base = {
             'linux-all':   frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64',
-                                      'linux-aarch64', 'linux-arm', 'linux-riscv64'}),
+                                      'linux-aarch64'}),
             'macosx-all':  frozenset({'macosx-aarch64'}),
             'aix-all':     frozenset({'aix-ppc64'}),
             'windows-all': frozenset({'windows-x64', 'windows-aarch64'}),

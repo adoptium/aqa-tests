@@ -354,3 +354,36 @@ class Test(TestCase):
             issue_status.fetch_all_statuses(issues, FakeDispatcher(), max_workers=1)
         self.assertEqual(issue_status.return_code, 1)
         issue_status.return_code = 0
+
+    # ------------------------------------------------------------------
+    # Random selection with --max-fixed
+    # ------------------------------------------------------------------
+
+    def _submission_order(self, max_fixed):
+        order = []
+
+        class RecordingDispatcher:
+            def dispatch(self, url):
+                order.append(url)
+                return issue_status.Status.OPEN, 'OPEN'
+
+        issues = [
+            {'ISSUE_TRACKER': f'https://github.com/adoptium/aqa-tests/issues/{n}'}
+            for n in range(1, 31)
+        ]
+        issue_status.fetch_all_statuses(issues, RecordingDispatcher(), max_workers=1,
+                                        max_fixed=max_fixed)
+        return order
+
+    def test_max_fixed_processes_urls_in_random_order(self):
+        natural = [f'https://github.com/adoptium/aqa-tests/issues/{n}' for n in range(1, 31)]
+        orders = [self._submission_order(max_fixed=5) for _ in range(3)]
+        for order in orders:
+            self.assertEqual(sorted(order), sorted(natural))
+        # 30! orderings: the chance of three runs all matching file order is nil.
+        self.assertTrue(any(order != natural for order in orders))
+        self.assertTrue(any(a != b for a, b in zip(orders, orders[1:])))
+
+    def test_no_max_fixed_keeps_file_order(self):
+        natural = [f'https://github.com/adoptium/aqa-tests/issues/{n}' for n in range(1, 31)]
+        self.assertEqual(self._submission_order(max_fixed=0), natural)

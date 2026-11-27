@@ -128,12 +128,22 @@ class TestCoverage(unittest.TestCase):
                 self.assertIn('aix-all', cov)
                 self.assertIn('aix-ppc64', cov['aix-all'])
 
-    def test_linux_all_includes_arm_and_riscv_all_versions(self):
+    def test_linux_all_excludes_arm_and_riscv_all_versions(self):
+        """arm and riscv64 are not retested, so must not be required for linux-all."""
         for ver in (8, 11, 17, 21, 25, 26):
             with self.subTest(ver=ver):
                 cov = _coverage(ver)
-                self.assertIn('linux-arm',    cov['linux-all'])
-                self.assertIn('linux-riscv64', cov['linux-all'])
+                self.assertNotIn('linux-arm',     cov['linux-all'])
+                self.assertNotIn('linux-riscv64', cov['linux-all'])
+                self.assertNotIn('linux-arm',     cov['generic-all'])
+                self.assertNotIn('linux-riscv64', cov['generic-all'])
+
+    def test_linux_all_matches_pipeline_platforms(self):
+        """linux-all must be satisfiable by exactly the platforms all_linux expands to."""
+        self.assertEqual(
+            _coverage(11)['linux-all'],
+            frozenset({'linux-s390x', 'linux-ppc64le', 'linux-x64', 'linux-aarch64'}),
+        )
 
     def test_macosx_all_jdk8_x64_only(self):
         self.assertEqual(_coverage(8)['macosx-all'], frozenset({'macosx-x64'}))
@@ -512,12 +522,30 @@ class TestProcessFileUnexclusion(unittest.TestCase):
         """linux-all removed when all required linux platforms pass."""
         f = make_problemlist('Foo.java https://example.com linux-all\n')
         passing = {
-            'linux-x64', 'linux-s390x', 'linux-ppc64le',
-            'linux-aarch64', 'linux-arm', 'linux-riscv64',
+            'linux-x64', 'linux-s390x', 'linux-ppc64le', 'linux-aarch64',
         }
         n = process_file(f, 'Foo.java', passing, 25)
         self.assertEqual(n, 1)
         self.assertEqual(read_and_delete(f), '')
+
+    def test_linux_all_removed_without_arm_or_riscv(self):
+        """arm and riscv64 results are not needed to remove linux-all."""
+        f = make_problemlist('Foo.java https://example.com linux-all\n')
+        passing = {'linux-x64', 'linux-s390x', 'linux-ppc64le', 'linux-aarch64'}
+        self.assertNotIn('linux-arm', passing)
+        self.assertNotIn('linux-riscv64', passing)
+        n = process_file(f, 'Foo.java', passing, 25)
+        self.assertEqual(n, 1)
+        self.assertEqual(read_and_delete(f), '')
+
+    def test_linux_all_not_removed_when_a_tested_platform_missing(self):
+        """Dropping arm/riscv must not weaken the requirement for the other linux platforms."""
+        content = 'Foo.java https://example.com linux-all\n'
+        f = make_problemlist(content)
+        passing = {'linux-x64', 'linux-s390x', 'linux-ppc64le'}  # aarch64 missing
+        n = process_file(f, 'Foo.java', passing, 25)
+        self.assertEqual(n, 0)
+        self.assertEqual(read_and_delete(f), content)
 
     def test_solaris_token_never_removed(self):
         """Lines with only solaris platforms are never touched."""

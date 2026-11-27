@@ -19,6 +19,8 @@ Differences from urllib3.Retry:
   - The total time spent waiting on a single URL is capped (_RETRY_MAX_TOTAL_WAIT);
     when the next wait would exceed the cap, the URL is abandoned.
   - Waits are interruptible so --max-fixed can stop the run promptly.
+  - With --max-fixed, URLs are processed in random order so repeated runs
+    do not always report the same first N fixed issues.
 """
 
 import abc
@@ -28,6 +30,7 @@ import enum
 import json
 import logging
 import os
+import random
 import re
 import sys
 import threading
@@ -610,8 +613,13 @@ def fetch_all_statuses(issues: List[models.Scheme], dispatcher: Dispatcher,
     executor = futures.ThreadPoolExecutor(max_workers=max_workers)
     future_to_url = {}
     try:
+        urls = list(url_to_issues)
+        if max_fixed > 0:
+            # Early stop keeps the first N fixed issues to complete, so randomise
+            # the submission order to avoid always picking the same ones.
+            random.shuffle(urls)
         future_to_url = {executor.submit(dispatcher.dispatch, url): url
-                         for url in url_to_issues}
+                         for url in urls}
         for i, future in enumerate(futures.as_completed(future_to_url)):
             url        = future_to_url[future]
             log_prefix = f"{i + 1}/{len_trackers} -"

@@ -178,6 +178,44 @@ def resolveTarget(String testPath, String jdkVersion) {
     return hit ? [target: hit.target, url: hit.url] : [target: null, url: null]
 }
 
+// Randomly choose which jobs to run when there are more than maxJobs, without
+// splitting a test's platforms.  Jobs are grouped by (JDK version, test), which is
+// how remove_exclusions.py builds a test's passing-platform set.  A broad exclusion
+// such as linux-all is only removed if every platform it covers passed, so running
+// only some of a group's platforms can never lead to an unexclusion.  Groups are
+// shuffled and added whole; a group that does not fit in the remaining capacity is
+// skipped (later, smaller groups may still fill the gap).
+// Returns [selected: jobs, skipped: group keys that did not fit,
+//          oversized: group keys larger than maxJobs, which can never be selected].
+def selectJobGroups(List jobs, int maxJobs) {
+    Map groups = [:]
+    jobs.each { job ->
+        String groupKey = "jdk${job['JDK_VERSION']}|${job['CUSTOM_TARGET'] ?: job['TARGET']}"
+        if (!groups.containsKey(groupKey)) {
+            groups[groupKey] = []
+        }
+        groups[groupKey] << job
+    }
+
+    List groupKeys = groups.keySet().toList()
+    Collections.shuffle(groupKeys)
+
+    List selected  = []
+    List skipped   = []
+    List oversized = []
+    groupKeys.each { groupKey ->
+        List members = groups[groupKey]
+        if (members.size() > maxJobs) {
+            oversized << groupKey
+        } else if (selected.size() + members.size() <= maxJobs) {
+            selected.addAll(members)
+        } else {
+            skipped << groupKey
+        }
+    }
+    return [selected: selected, skipped: skipped, oversized: oversized]
+}
+
 // ============================================================================
 // STAGE 2 — Deduplicate and fan out to Grinder (cap at MAX_GRINDERS)
 // ============================================================================
@@ -277,8 +315,23 @@ stage('Launch Grinder jobs') {
         echo "After deduplication: ${deduped.size()} unique jobs."
 
         if (deduped.size() > MAX_GRINDERS) {
-            echo "WARNING: ${deduped.size()} jobs exceed MAX_GRINDERS (${MAX_GRINDERS}). Truncating to first ${MAX_GRINDERS}."
-            deduped = deduped.take(MAX_GRINDERS)
+            // Pick a random subset so repeated runs do not keep retesting the
+            // same tests (which may all still fail) while others are never tried.
+            // Each test keeps all of its platforms together; see selectJobGroups.
+            def selection = selectJobGroups(deduped, MAX_GRINDERS)
+            echo "WARNING: ${deduped.size()} jobs exceed MAX_GRINDERS (${MAX_GRINDERS}). " +
+                 "Randomly selected ${selection.selected.size()} job(s), keeping each test's platforms together."
+            if (selection.oversized) {
+                echo "WARNING: these tests need more platforms than MAX_GRINDERS and can never be selected: " +
+                     selection.oversized.sort().join(', ')
+            }
+            if (selection.skipped) {
+                echo "Not selected this run (did not fit in the remaining capacity): " +
+                     selection.skipped.sort().join(', ')
+            }
+            deduped = selection.selected
+            List selectedKeys = deduped.collect { it['_jobKey'].toString() }
+            echo "Selected jobs: " + selectedKeys.sort().join(', ')
         }
 
         Map jobKeyCount = [:]

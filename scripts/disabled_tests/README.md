@@ -175,6 +175,13 @@ output, and a summary listing every skipped URL is logged at the end. Skipped UR
 exit code. Other errors (for example a 404 or a malformed response) still produce a non-zero exit status.
 `--max-fixed` stops promptly: workers that are waiting to retry are woken and abandoned rather than awaited.
 
+#### Random selection with `--max-fixed`
+
+When `--max-fixed N` is set, issue tracker URLs are processed in random order, and the run stops once N
+fixed issues have been found. Repeated runs therefore tend to report different fixed issues rather than
+always the first N in file order. Runs with `--max-fixed` are not reproducible. Without `--max-fixed`
+(or with `0`), every URL is processed and the order has no effect on the result.
+
 #### Output to file pass GitHub token through an environment variable
 ```shell
 # Environment variables:
