@@ -9,10 +9,14 @@ class Scheme(TypedDict):
     CUSTOM_TARGET: str
     PLATFORM: str
     ISSUE_TRACKER: str
+    EXCLUDE_FILE: str
 
 
 class SchemeWithStatus(Scheme):
     ISSUE_TRACKER_STATUS: str
+    ISSUE_TRACKER_RESOLUTION: str
+    ISSUE_TRACKER_ACTION: str
+    ISSUE_TRACKED_FIXED_JDKS: str
 
 
 @datacls.dataclass
