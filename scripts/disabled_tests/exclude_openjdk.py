@@ -239,9 +239,55 @@ def check_exclusion_exists(file_path: str, testcase: str, platform: str) -> bool
     return False
 
 
+def _merge_csv(existing: str, requested: str) -> str:
+    """Append items of comma-separated `requested` missing from `existing`, keeping order."""
+    items = existing.split(',')
+    for item in requested.split(','):
+        if item and item not in items:
+            items.append(item)
+    return ','.join(items)
+
+
+def merge_into_existing_line(lines: List[str], testcase: str, issue_url: str, platform: str) -> Optional[bool]:
+    """
+    Merge the issue URL and platform into the existing uncommented line of `testcase`.
+
+    Args:
+        lines: File lines; the matching line is updated in place when something changes
+        testcase: Test case name
+        issue_url: Issue tracker URL
+        platform: Platform specification (comma-separated)
+
+    Returns:
+        None if the testcase has no existing line, True if the line was updated,
+        False if the line already contains the URL and all platforms
+    """
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        parts = stripped.split(None, 3)
+        if len(parts) < 3 or parts[0] != testcase:
+            continue
+        
+        merged_issues = _merge_csv(parts[1], issue_url)
+        merged_platforms = _merge_csv(parts[2], platform)
+        if merged_issues == parts[1] and merged_platforms == parts[2]:
+            return False
+        
+        parts[1], parts[2] = merged_issues, merged_platforms
+        lines[i] = ' '.join(parts) + '\n'
+        return True
+    
+    return None
+
+
 def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platform: str) -> bool:
     """
     Add an exclusion entry to a ProblemList file.
+    
+    If the testcase already has a line, the platform and issue URL are merged into
+    that line (comma-separated) instead of adding a duplicate line.
     
     Args:
         file_path: Path to the ProblemList file
@@ -250,16 +296,21 @@ def add_exclusion_to_file(file_path: str, testcase: str, issue_url: str, platfor
         platform: Platform specification
         
     Returns:
-        True if exclusion was added, False if it already existed
+        True if the file was changed, False if the exclusion already existed
     """
-    # Check if exclusion already exists
-    if check_exclusion_exists(file_path, testcase, platform):
-        print(f"  ⚠️  Exclusion already exists in {os.path.basename(file_path)}")
-        return False
-    
     # Read the file
     with open(file_path, 'r') as f:
         lines = f.readlines()
+    
+    merged = merge_into_existing_line(lines, testcase, issue_url, platform)
+    if merged is False:
+        print(f"  ⚠️  Exclusion already exists in {os.path.basename(file_path)}")
+        return False
+    if merged is True:
+        with open(file_path, 'w') as f:
+            f.writelines(lines)
+        print(f"  ✅ Merged exclusion into existing line in {os.path.basename(file_path)}")
+        return True
     
     # Add the exclusion at the end of the file
     exclusion_line = f"{testcase} {issue_url} {platform}\n"
