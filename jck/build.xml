@@ -356,8 +356,7 @@
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
 
 		<!-- On headless platforms, delete JCK materials of other JDK versions (e.g. JCK8-unzipped when running JDK 17)
-		     to save disk space. Only sibling JCK*-unzipped folders of JCK_ROOT_USED are removed; JCK_ROOT_USED itself is kept.
-		     If JCK_GIT_REPO_USED is a local directory, the sibling folder containing it is kept too, as it is the clone source. -->
+		     to save disk space. Only sibling JCK*-unzipped folders of JCK_ROOT_USED are removed; JCK_ROOT_USED itself is kept. -->
 		<!-- Same headless definition as jck/jtrunner/JavatestUtil.java -->
 		<condition property="jck_headless_platform">
 			<or>
@@ -375,18 +374,6 @@
 		</condition>
 		<dirname property="jck_root_parent_dir" file="${JCK_ROOT_USED}"/>
 		<basename property="jck_root_used_name" file="${JCK_ROOT_USED}"/>
-		<!-- Name of the sibling folder (under jck_root_parent_dir) that contains a local JCK_GIT_REPO_USED, if any -->
-		<condition property="jck_git_repo_is_local_dir">
-			<available file="${JCK_GIT_REPO_USED}" type="dir"/>
-		</condition>
-		<pathconvert property="jck_git_repo_protected_name" setonempty="false" if:set="jck_git_repo_is_local_dir">
-			<path path="${JCK_GIT_REPO_USED}"/>
-			<chainedmapper>
-				<globmapper from="${jck_root_parent_dir}/*" to="*"/>
-				<regexpmapper from="^([^/]+).*$" to="\1"/>
-			</chainedmapper>
-		</pathconvert>
-		<property name="jck_git_repo_protected_name" value="__no_local_jck_git_repo_to_protect__"/>
 		<condition property="delete_other_jck_material">
 			<and>
 				<isset property="jck_headless_platform"/>
@@ -398,7 +385,6 @@
 			<fileset dir="${jck_root_parent_dir}" defaultexcludes="no" followsymlinks="false">
 				<include name="JCK*-unzipped/**"/>
 				<exclude name="${jck_root_used_name}/**"/>
-				<exclude name="${jck_git_repo_protected_name}/**"/>
 			</fileset>
 		</delete>
 
