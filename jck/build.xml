@@ -354,6 +354,40 @@
 		<property name="JCK_ROOT_USED" location="${JCK_ROOT_RELATIVE_PATH}"/>
 
 		<echo>=== JCK_ROOT_USED is set to ${JCK_ROOT_USED} ===</echo>
+
+		<!-- On headless platforms, delete JCK materials of other JDK versions (e.g. JCK8-unzipped when running JDK 17)
+		     to save disk space. Only sibling JCK*-unzipped folders of JCK_ROOT_USED are removed; JCK_ROOT_USED itself is kept. -->
+		<!-- Same headless definition as jck/jtrunner/JavatestUtil.java -->
+		<condition property="jck_headless_platform">
+			<or>
+				<matches string="${SPEC}" pattern="zos|alpine-linux|riscv"/>
+				<and>
+					<not>
+						<or>
+							<equals arg1="${JDK_IMPL}" arg2="openj9"/>
+							<equals arg1="${JDK_IMPL}" arg2="ibm"/>
+						</or>
+					</not>
+					<matches string="${SPEC}" pattern="aix_ppc-64|linux_ppc-64_le|linux_390-64"/>
+				</and>
+			</or>
+		</condition>
+		<dirname property="jck_root_parent_dir" file="${JCK_ROOT_USED}"/>
+		<basename property="jck_root_used_name" file="${JCK_ROOT_USED}"/>
+		<condition property="delete_other_jck_material">
+			<and>
+				<isset property="jck_headless_platform"/>
+				<available file="${jck_root_parent_dir}" type="dir"/>
+			</and>
+		</condition>
+		<echo message="Headless platform: deleting JCK*-unzipped folders under ${jck_root_parent_dir} other than ${jck_root_used_name}" if:set="delete_other_jck_material"/>
+		<delete includeEmptyDirs="true" failonerror="true" if:set="delete_other_jck_material">
+			<fileset dir="${jck_root_parent_dir}" defaultexcludes="no" followsymlinks="false">
+				<include name="JCK*-unzipped/**"/>
+				<exclude name="${jck_root_used_name}/**"/>
+			</fileset>
+		</delete>
+
 		<!-- Determine JCK_VERSION_USED: use env if set, otherwise derive from JDK_VERSION -->
 		<set-property name="JCK_VERSION_ISSET" if-property-isset="env.JCK_VERSION"/>
 		<condition property="JCK_VERSION_USED" value="${env.JCK_VERSION}">
